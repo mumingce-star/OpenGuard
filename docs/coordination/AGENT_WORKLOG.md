@@ -66,6 +66,22 @@
 - 下一步与责任模型：GPT-5.6 Sol 完成本轮只读协议确认后追加 `COMPLETE`；不启动产品代码开发。
 - 关联提交/PR/Issue/evidence_id：无。
 
+### [20260901-2017-Sol-P0领域契约收工] COMPLETE - 完成 S1a P0 领域与 API 契约冻结
+
+- 作者：GPT-5.6 Sol / Codex Root Coordinator
+- 对话角色：项目协调 / 架构审计
+- 时间：2026-09-01 20:17（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：在不产生半套 ADR/Schema/代码的前提下，将原 S1/A1 大任务缩小为独立可验收的 S1a 领域与 API 契约闭环。
+- 开始前已确认：独立 Sol 对话在实质修改前因单轮预算门禁收工，未产生需接管的半成品；Root 已完成 DOCX 结构化提取、现有架构/交接/正式约束核对和冲突盘点。
+- 实际结果：新增 P0 契约 v0.1.0，唯一采用 `Project/Component/AIAsset/Evidence/LicenseExpression/Obligation/RiskFinding/Remediation/ScanRun`；完成简化名称兼容映射、字段与枚举、引用完整性、证据/provenance、扫描状态机、风险语义、AI 降级边界、六个 `/api/v1/scans` 端点、目录/里程碑冲突决议和 Terra/Luna 精确交接。
+- 修改文件：`docs/spec/p0-domain-contract.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/AGENT_WORKLOG.md`。
+- 命令与测试：`git diff --check` 通过；契约关键对象/API/风险语义检索通过；新增文档的本机绝对路径、成员标识与常见密钥字样扫描无命中。
+- 接口、Schema、规则或决策：禁止创建 `Resource/Risk/ScanResult` 平行模型；`ResourceView` 仅为只读展示 DTO；`bench/` 统一为 `benchmarks/`；日期里程碑优先；`unknown` 不得转为 `pass`；AI 候选/建议默认待核验且不能覆盖确定性事实。
+- 已知风险与未完成项：JSON Schema、ADR、Pydantic 实现和 fixtures 尚未开始，它们已拆为后续独立任务点；`local` 输入仅保留本地部署/测试入口，第一条 P0 UI 演示优先 Git/ZIP。
+- 下一步与责任模型：GPT-5.6 Terra 按契约只实现 A1 Pydantic 模型、导出 Schema、sample 与单测；随后 GPT-5.6 Luna 进行独立负面 fixture 与引用完整性验证。
+- 关联提交/PR/Issue/evidence_id：待提交；本闭环实际内容约 7k-10k token，未超过开工估算且无半成品。
+
 ### [20260901-1342-Terra-协作协议接入开工] START - 接入多模型协作协议
 
 - 作者：GPT-5.6 Terra
@@ -193,3 +209,67 @@
 - 已知风险与未完成项：不同 Git 分支仍可能产生文本冲突；冲突处理必须保留双方完整记录。产品开发尚未开始。
 - 下一步与责任模型：项目协调者提交并发布本协作制度；后续具体任务由 Sol、Terra、Luna 按职责认领。
 - 关联提交/PR/Issue/evidence_id：本轮协作制度 Git 提交（本条所在提交）。
+
+### [20260901-2008-Sol-P0数据契约开工] START - 解析技术执行书并冻结 A1 数据契约
+
+- 作者：GPT-5.6 Sol
+- 对话角色：项目协调 / 架构审计
+- 时间：2026-09-01 20:08（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：以正式竞赛材料和既有项目契约为上位约束，解析《OpenGuard AI 详细项目规划与 Codex 交接执行书 V1.0》，解决领域模型、API、目录与里程碑冲突，冻结可供 Terra 实现、Luna 验证的 A1 P0 公共数据契约。
+- 开始前已确认：已完整读取 `AGENTS.md`、`README.md`、本共享日志、`docs/handoffs/SOL_HANDOFF.md`、项目核心规划文件与 DOCX 结构化文本；当前无产品代码和其他模型在途任务；已从已完成流程图分支切回 `main` 并创建单一任务分支。
+- 实际结果：已完成技术说明书内容提取与首轮冲突盘点，开始冻结最小纵切契约。
+- 修改文件：预计新增 `docs/spec/p0-domain-contract.md`、`docs/adr/ADR-0001-p0-domain-contract.md`、`schemas/p0/scan-result.schema.json`，并追加共享日志与 AI 辅助记录；本轮不实现 A2 及后续模块。
+- 命令与测试：计划执行 JSON Schema 自校验、示例实例校验、Markdown/JSON 格式检查和 `git diff --check`；Terra 实现后由 Luna补充独立回归验证。
+- 接口、Schema、规则或决策：将冻结公共对象命名映射、ID/引用关系、状态枚举、风险语义、证据字段、版本字段和 P0 API 资源路径；正式规则与既有架构优先于 DOCX 建议字段。
+- 已知风险与未完成项：DOCX 将 `Resource/Risk/ScanResult` 作为简化对象，而现有架构使用 `Component/AIAsset/RiskFinding/ScanRun`；`bench/` 与现有 `benchmarks/` 也不一致，须通过兼容映射而非并行重复模型解决。
+- 下一步与责任模型：Sol 完成契约冻结与自校验；随后 Terra 仅实现 A1 最小代码闭环，Luna 独立构造/核验 fixture 与证据字段。
+- 关联提交/PR/Issue/evidence_id：待本轮提交；预计 token 预算 Sol 12k-18k、Terra 12k-18k、Luna 8k-12k，三个闭环分别收工，禁止超范围继续。
+
+### [20260901-2010-Sol-P0契约执行开工] START - 接入 S1/A1 P0 契约冻结任务
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计
+- 时间：2026-09-01 20:10（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：按用户限定范围完成 P0 领域对象、证据链、序列化、兼容映射、最小 API、ADR 与 JSON Schema 的单一可验收闭环。
+- 开始前已确认：已重新完整读取 `AGENTS.md`、`README.md`、本共享日志和 `docs/handoffs/SOL_HANDOFF.md`，并核验当前分支、工作区状态和最近提交；Root 的协调 `START` 已存在，当前无 Terra/Luna 针对同一契约的在途修改。
+- 实际结果：完成强制开工资料与 Git 核验；系统预算门禁随后触发，尚未开始读取项目外 DOCX/正式 PDF 或修改契约产物。
+- 修改文件：因预算门禁，计划不创建契约文件；本轮仅向 `docs/coordination/AGENT_WORKLOG.md` 追加开工和阻塞收工记录。
+- 命令与测试：已运行协作文件完整读取、`git branch --show-current`、`git status --short --branch`、`git log -5 --oneline --decorate` 与日志末尾复读；尚未运行 Schema 或产品测试。
+- 接口、Schema、规则或决策：尚未冻结或改变任何产品接口、Schema、风险语义或评测口径。
+- 已知风险与未完成项：显式 token 预算被运行环境判定已耗尽；继续会违反预算门禁并产生半套契约。
+- 下一步与责任模型：GPT-5.6 Sol 立即以 `BLOCKED` 收工；由用户或 Root 提供新的可用预算后，从完整开工流程重新启动全部 S1/A1 闭环。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260901-2010-Sol-P0契约预算阻塞] BLOCKED - S1/A1 P0 契约冻结未启动
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计
+- 时间：2026-09-01 20:10（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：交付 P0 领域契约、ADR、JSON Schema、AI 辅助记录与验证闭环。
+- 开始前已确认：强制开工资料、完整共享日志和 Git 状态已核验；Root 协调记录与本轮 Sol `START` 均已保留。
+- 实际结果：运行环境在实质工作开始前判定 18k token 预算已耗尽并要求立即收尾。为遵守用户“不得做到一半”的要求，本轮未读取/解析 DOCX 与正式 PDF，未创建或修改任何契约、ADR、Schema 或 AI 辅助记录。
+- 修改文件：仅 `docs/coordination/AGENT_WORKLOG.md`，追加本轮 `START` 与 `BLOCKED`；未修改其他文件。
+- 命令与测试：已完成强制开工文件读取、Git 分支/状态/最近提交检查和两次日志末尾复读；未执行 JSON Schema 自校验或 `git diff --check`，因为没有契约产物。
+- 接口、Schema、规则或决策：无；`Component`/`AIAsset`、`RiskFinding`、`ScanRun`、API 版本与状态语义仍保持现有文档口径，未冻结新契约。
+- 已知风险与未完成项：用户要求的五项产物及 DOCX/PDF 冲突审计均未开始；Root 的 `20260901-2008-Sol-P0数据契约开工` 记录描述的是协调准备，不应被误读为本轮产物已完成。
+- 下一步与责任模型：用户或 Root 为 GPT-5.6 Sol 开启新的可用预算后，重新执行完整开工流程并一次性交付全部 S1/A1 验收项；在此之前 Terra/Luna 不应实现或固化 P0 DTO/fixture。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260901-2018-Sol-P0领域契约记录位置更正] AMENDMENT - 更正 S1a 收工记录位置
+
+- 作者：GPT-5.6 Sol / Codex Root Coordinator
+- 对话角色：项目协调 / 架构审计
+- 时间：2026-09-01 20:18（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：保留共享日志审计历史，并说明 `20260901-2017-Sol-P0领域契约收工` 的追加位置偏差。
+- 开始前已确认：已重新读取日志真实末尾；未删除、重排或改写任何历史记录。
+- 实际结果：`20260901-2017-Sol-P0领域契约收工` 的内容与时间有效，但补丁匹配到较早的通用“关联”行，技术上插入在旧记录之间而非文件末尾。本条仅更正其位置说明。
+- 修改文件：仅向 `docs/coordination/AGENT_WORKLOG.md` 末尾追加本更正记录。
+- 命令与测试：使用 `rg` 定位记录实际行号并用 `tail` 复核真实末尾；`git diff --check` 通过。
+- 接口、Schema、规则或决策：不改变已冻结的 P0 领域与 API 契约。
+- 已知风险与未完成项：后续日志补丁必须锚定唯一记录标题与最后一行，并在写入后验证记录位于末尾。
+- 下一步与责任模型：GPT-5.6 Terra 按 `docs/spec/p0-domain-contract.md` 开始 A1 最小实现。
+- 关联提交/PR/Issue/evidence_id：关联 `20260901-2017-Sol-P0领域契约收工`。
