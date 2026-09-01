@@ -552,3 +552,20 @@
 - 已知风险与未完成项：功能分支尚未推送；`main` 尚未合并；S0剩余评分追踪、S2威胁模型和A2安全输入仍未完成。
 - 下一步与责任模型：Root提交并推送 `feat/p0-domain-contract`，核验远端HEAD，随后追加发布记录；下一个独立任务点为 S0/S2 设计门禁或 A2（需按排期先完成设计门禁）。
 - 关联提交/PR/Issue/evidence_id：待本轮Git提交与远端分支。
+
+### [20260901-2354-Root-A1.1GitHub发布] COMPLETE - 任务分支推送与远端核验完成
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调 / 最终验收与发布
+- 时间：2026-09-01 23:54（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；本地与远端首轮发布 HEAD 均为 `43493fb3857d97f66830bb81b1262ba865c68ee2`。
+- 任务目标：把通过三模型与Root门禁的A1.1竞赛交付物发布到公开GitHub功能分支，并核对提交和文件范围。
+- 开始前已确认：项目负责人已在GitHub设备授权页亲自批准终端OAuth；官方GitHub CLI 2.98.0临时包来自官方Release，下载SHA-256与官方checksums一致，临时工具不进入仓库。
+- 实际结果：`git push -u origin feat/p0-domain-contract`成功；远端分支已建立，`git ls-remote`确认远端HEAD与本地 `43493fb` 完全一致；`main`未修改、未合并。
+- 上传文件范围：相对 `origin/main` 共15个竞赛文件，覆盖协作规则、README、P0领域模型与Python配置、AI辅助记录、共享日志/进度表、P0契约、sample、JSON Schema、测试说明、公开边界fixture和单元测试。
+- 未上传范围：`.pytest_cache`、`__pycache__`、`/private/tmp`隔离环境与临时GitHub CLI、竞赛原始PDF/DOCX、个人凭据及无关本机文件。
+- 命令与测试：发布前全量 `pytest` 为 `46 passed`，Schema/sample/敏感信息/diff门禁通过；发布后 `git ls-remote --heads origin feat/p0-domain-contract` 返回 `43493fb3857d97f66830bb81b1262ba865c68ee2`。
+- 接口、Schema、规则或决策：本次只发布既有v0.1.1冻结交付；功能分支发布不等于并入 `main`，后续仍需Pull Request评审。
+- 已知风险与未完成项：本条发布记录本身将形成后续文档提交；需再次推送并核验最终远端HEAD。S0评分追踪、S2威胁模型和A2安全输入仍未完成。
+- 下一步与责任模型：Root提交本发布记录并推送；随后建议由Sol先闭环S0/S2设计门禁，再允许Terra进入A2。
+- 关联提交/PR/Issue/evidence_id：首轮发布提交 `43493fb`；分支URL `https://github.com/mumingce-star/OpenGuard/tree/feat/p0-domain-contract`；PR创建入口 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/p0-domain-contract`。
