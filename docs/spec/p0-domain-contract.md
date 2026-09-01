@@ -2,7 +2,7 @@
 
 状态：`FROZEN_FOR_A1`
 
-版本：`0.1.0`
+版本：`0.1.1`
 
 冻结日期：2026-09-01
 
@@ -48,7 +48,7 @@
 - `confidence` 为 `0.0..1.0`；确定性解析器也必须记录来源，不能只靠高置信度代替证据。
 - 枚举值使用小写 `snake_case`；数组默认稳定排序并去重。
 - 可选字段缺失时省略，禁止用空字符串表示未知。未知事实使用明确状态或 `null`。
-- 所有聚合结果包含 `contract_version: "0.1.0"`。
+- 所有聚合结果包含 `contract_version: "0.1.1"`。
 
 ### 3.1 公共枚举
 
@@ -218,7 +218,7 @@ AI 不可新增扫描结果中不存在的包、路径、许可证或义务。Sc
 
 | 字段 | 类型 | 必填 | 约束 |
 |---|---|---:|---|
-| `contract_version` | string | 是 | 当前固定 `0.1.0` |
+| `contract_version` | string | 是 | 当前固定 `0.1.1` |
 | `id` | string | 是 | `scn_` 前缀 |
 | `idempotency_key` | string/null | 否 | 创建请求可提供；同键同输入返回同一任务 |
 | `status` | `ScanStatus` | 是 | 状态机约束 |
@@ -246,7 +246,17 @@ AI 不可新增扫描结果中不存在的包、路径、许可证或义务。Sc
 
 ### 5.1 `ProducerRef`
 
-字段：`type: ProducerType`、`name: string`、`version: string`、可选 `config_digest: HashValue`。AI producer 还必须记录模型 ID、provider 和提示词/Schema 版本的不可逆摘要；不得记录密钥。
+| 字段 | 类型 | 通用必填 | AI producer | 约束 |
+|---|---|---:|---:|---|
+| `type` | `ProducerType` | 是 | 是 | `ai` 表示大模型生产者 |
+| `name` | string | 是 | 是 | 工具、规则引擎或模型服务的稳定名称 |
+| `version` | string | 是 | 是 | 生产者/适配器版本 |
+| `config_digest` | `HashValue`/null | 否 | 否 | 非敏感配置的规范化摘要，不记录配置正文 |
+| `provider` | string/null | 否 | 是 | 例如 `ollama`；不得包含主机地址、账号或密钥 |
+| `model_id` | string/null | 否 | 是 | 锁定的模型/权重标识与版本，不得使用含糊别名 |
+| `prompt_schema_digest` | `HashValue`/null | 否 | 是 | 规范化提示词模板与输出 Schema 版本组合后的 SHA-256 摘要 |
+
+当 `type == "ai"` 时，`provider`、`model_id`、`prompt_schema_digest` 三项必须同时存在；当 `type != "ai"` 时三项必须省略或为 `null`。摘要只用于版本追踪，不得反推出提示词正文，也不得包含密钥。
 
 ### 5.2 `RunProvenance`
 
@@ -378,7 +388,7 @@ Luna 不得为使测试通过而修改公共契约；发现歧义应记录失败
 
 ## 12. 冻结门禁与变更流程
 
-本文版本 `0.1.0` 冻结 A1。以下变更属于破坏性变更：对象重命名、删除必填字段、改变枚举语义、改变 ID/引用关系、改变 API 路径或把未知转为通过。必须：
+本文版本 `0.1.1` 冻结 A1.1。以下变更属于破坏性变更：对象重命名、删除必填字段、改变枚举语义、改变 ID/引用关系、改变 API 路径或把未知转为通过。必须：
 
 1. 在共享日志记录变更请求；
 2. 由 Sol 说明竞赛、证据和下游影响；
@@ -388,3 +398,7 @@ Luna 不得为使测试通过而修改公共契约；发现歧义应记录失败
 
 非破坏性可选字段也必须记录来源、用途、验证和披露边界。未经审批，不得用“兼容别名”长期维持两套模型。
 
+### 12.1 版本记录
+
+- `0.1.0`：冻结 A1 核心对象、证据链、状态机和 API。
+- `0.1.1`：经项目负责人确认，为 AI `ProducerRef` 冻结 `provider`、`model_id`、`prompt_schema_digest` 三个条件必填字段；未改变非 AI producer、风险语义或 API 路径。

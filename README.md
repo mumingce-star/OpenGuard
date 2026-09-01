@@ -64,11 +64,13 @@ OpenGuard/
 ## 协作开发
 
 - 所有 Codex 模型开始和结束任务时必须遵守 [AGENTS.md](AGENTS.md)，并读写 [共享工作日志](docs/coordination/AGENT_WORKLOG.md)；
+- 当前完成项、未完成项、责任模型和 GitHub 发布状态统一维护在 [项目进度台账](docs/coordination/PROJECT_PROGRESS.md)；
 - 贡献流程与 Pull Request 要求见 [CONTRIBUTING.md](CONTRIBUTING.md)；
 - 安全问题处理见 [SECURITY.md](SECURITY.md)；
 - 三人 GitHub 权限、分支保护和开放边界见 [docs/06-github-collaboration.md](docs/06-github-collaboration.md)；
 - 第三方资源在首次引入时登记，不在提交前集中补录；
 - `main` 保持可运行，功能开发通过短分支和 Pull Request 合并。
+- 每个验收通过的任务点由 Root Coordinator 统一整理、提交并推送到 GitHub，只上传最终竞赛作品所需内容。
 
 ## 评委验收门槛
 

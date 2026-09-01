@@ -442,3 +442,113 @@
 - 已知风险与未完成项：需项目负责人确认是否采用 `provider`、`model_id`、`prompt_schema_digest` 三个 AI producer 字段；确认后由 Sol/Root 更新契约，Terra 实现，Luna补回归。分支尚未创建 PR。
 - 下一步与责任模型：项目负责人确认 AI producer 字段方案；随后完成 A1.1 小版本闭环，再进入 A2 Git/ZIP 安全输入。
 - 关联提交/PR/Issue/evidence_id：`02c3d46`、`b2fd061`；本轮后续提交待创建。
+
+### [20260901-2330-Sol-A1.1治理与字段冻结开工] START - 固化新协作要求并冻结 AI ProducerRef 字段
+
+- 作者：GPT-5.6 Sol / Codex Root Coordinator
+- 对话角色：项目协调 / 架构审计
+- 时间：2026-09-01 23:30（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；开始前工作区干净，HEAD `4d4e65f`。
+- 任务目标：落实项目负责人确认的 `provider`、`model_id`、`prompt_schema_digest`，建立详细项目进度台账，并把“任务点验收后统一整理、提交、推送竞赛成果代码”的要求固化为跨模型规则。
+- 开始前已确认：已完整读取 README、全量共享日志、Sol 交接文档，检查分支、状态、最近提交、远端和目录结构；当前无其他模型在途修改。
+- 实际结果：完成开工预检，开始 A1.1 治理与字段契约更新。
+- 修改文件：预计更新 `AGENTS.md`、`README.md`、`docs/spec/p0-domain-contract.md`、`docs/05-ai-assistance-log.md`、本共享日志；新增 `docs/coordination/PROJECT_PROGRESS.md`；后续 Terra/Luna 分别实现和验证字段。
+- 命令与测试：计划执行契约/Schema一致性、全量 pytest、目录与敏感信息检查、`git diff --check`；验收后提交并推送本任务分支到 GitHub。
+- 接口、Schema、规则或决策：AI 类型 `ProducerRef` 将强制 `provider`、`model_id`、`prompt_schema_digest`；非 AI producer 不允许携带这三个字段。Root 统一推送，模型不得上传未验收或非竞赛文件。
+- 已知风险与未完成项：字段进入公共 Schema，需要 Terra 重导出 Schema、Luna 增加正反例；GitHub 分支尚未发布。
+- 下一步与责任模型：Sol/Root 更新治理与契约；Terra实现并导出；Luna独立回归；Root更新进度表、提交并推送。
+- 关联提交/PR/Issue/evidence_id：用户已明确确认字段方案；token 估算 8k-12k，不设置硬截断。
+
+### [20260901-2332-Sol-A1.1治理与字段冻结收工] COMPLETE - 完成治理规则与 AI ProducerRef 契约冻结
+
+- 作者：GPT-5.6 Sol / Codex Root Coordinator
+- 对话角色：项目协调 / 架构审计
+- 时间：2026-09-01 23:32（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：完成 A1.1 公共字段决策，并把进度表、GitHub推送和竞赛目录整理要求转化为可执行规则。
+- 开始前已确认：用户已明确批准字段；当前无其他模型在途修改；远端为公开仓库 `mumingce-star/OpenGuard`。
+- 实际结果：契约提升至 v0.1.1，AI producer 条件必填 `provider`、`model_id`、`prompt_schema_digest`，非AI producer禁止携带；新增详细项目进度台账；协作规则加入开工必读进度、token估算、Root统一验收推送、竞赛文件白名单和目录归位规则。
+- 修改文件：`AGENTS.md`、`README.md`、`docs/spec/p0-domain-contract.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`、本共享日志。
+- 命令与测试：`git diff --check` 通过；字段、版本、敏感信息和本机绝对路径检索通过；本阶段只改契约/治理，运行测试由 Terra实现后统一执行。
+- 接口、Schema、规则或决策：A1.1 不改变API、风险语义或非AI producer；提示词/Schema只保存SHA-256摘要，不保存正文、主机、账号或密钥。
+- 已知风险与未完成项：Pydantic、sample、导出Schema和测试仍是v0.1.0，需要Terra/Luna闭环；进度表GitHub状态将在实际推送后更新。
+- 下一步与责任模型：GPT-5.6 Terra实现v0.1.1并重导Schema；GPT-5.6 Luna独立验证条件字段；Root验收、提交、推送并在当前对话给出进度表。
+- 关联提交/PR/Issue/evidence_id：待本轮任务提交与GitHub分支发布。
+
+### [20260901-2335-Terra-A1.1实现开工] START - 实现冻结的 AI ProducerRef 三字段
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-01 23:35（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；保留 Root 已完成但未提交的治理/契约、进度与日志修改；不切换分支、不提交、不推送。
+- 任务目标：实现契约 v0.1.1 的 `ProducerRef.provider`、`model_id`、`prompt_schema_digest` 条件字段并闭环 sample、导出 Schema 和聚焦测试；不进入 A2。
+- 开始前已确认：已完整读取 `README.md`、全量共享日志、`PROJECT_PROGRESS.md`、Terra 交接和 v0.1.1 契约；已检查 Git 状态/分支/最近提交。Sol/Root 已完成字段冻结，Luna 已完成 A1 基线复核，尚待本轮字段边界回归。
+- 预计修改文件：`backend/app/domain/models.py`、`examples/sample-scan-result.json`、`schemas/p0/scan-result.schema.json`、`tests/unit/test_p0_domain_models.py`、`docs/05-ai-assistance-log.md` 和本共享日志；不修改 A2、API 或他人治理/契约文件。
+- 命令与测试：预计约 4k-6k token（估算非硬限制）；执行 `/private/tmp/openguard-a1-venv` 的全量 pytest、Pydantic/JSON Schema/sample 三重验证、Schema 导出一致、`git diff --check` 与敏感信息扫描。
+- 接口、Schema、规则或决策：仅按已批准 v0.1.1 新增三个公开 Schema 字段；AI producer 三项同在，非 AI producer 三项同为空/省略，摘要复用 SHA-256 `HashValue`。
+- 已知风险与未完成项：公开 Schema 将结构性新增字段；需避免把 sample 的 `ai_enabled=false` 误写为 AI 实际运行事实，并保留 Luna 已有边界测试。
+- 下一步与责任模型：Terra 完成实现和验收后，Luna 以全量入口补 AI producer 正反边界；Root 统一验收、提交与推送。
+- 关联提交/PR/Issue/evidence_id：基线 `4d4e65f`；无新提交/PR/Issue/evidence_id。
+
+### [20260901-2340-Terra-A1.1实现收工] COMPLETE - AI ProducerRef 三字段实现与 Schema 闭环
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-01 23:40（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；未提交、未推送、未切换分支；Root 的治理/契约/进度表改动完整保留。
+- 任务目标：实现冻结的 v0.1.1 三个 AI `ProducerRef` 条件字段，更新 sample、Schema 和测试，不进入 A2。
+- 实际结果：`ProducerRef` 新增 `provider`、`model_id`、`prompt_schema_digest`；AI producer 必须同时提供三项，非 AI producer 必须全部省略或为 `null`；字符串字段拒绝空白和凭据片段，摘要复用 `HashValue` 的 SHA-256 约束。主 sample 的根/provenance 契约版本均为 `0.1.1`，仍为 `ai_enabled=false`/`ai_model=null`，未声称产品 AI 运行事实。
+- 修改文件：`backend/app/domain/models.py`、`examples/sample-scan-result.json`、`schemas/p0/scan-result.schema.json`、`tests/unit/test_p0_domain_models.py`、`docs/05-ai-assistance-log.md` 和本共享日志；未修改 A2/API、Root 的治理/契约/进度文件或 Luna 既有边界 fixture。
+- 命令与测试：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q` => `43 passed in 0.10s`；Pydantic + Draft 2020-12 JSON Schema + sample 三重验证通过；存储 Schema 等于 `ScanRun.model_json_schema()` 且含三字段；`git diff --check` 通过；交付产物凭据与绝对路径扫描无命中。
+- 接口、Schema、规则或决策：Schema 对 `ProducerRef` 新增三个可空属性；“AI 三项同在/非 AI 全空”及脱敏是 Pydantic 运行时语义，未改变 API、风险语义、状态机或其他对象。
+- 已知风险与未完成项：Luna 尚未对 A1.1 的新增字段执行独立回归；Root 尚未统一提交、推送和更新任务点的最终 GitHub 状态；不得据此启动 A2。
+- 下一步与责任模型：Luna 运行 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q`，并至少复核：完整 AI 三字段有效、各字段缺失、非 AI 携带、provider/model_id 空白与凭据片段、无效 SHA-256、sample 非 AI 事实与 Schema 导出一致。Root 验收后统一提交和推送。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue/evidence_id；实现基线 `4d4e65f`。
+
+### [20260901-2340-Luna-A1.1独立回归] START - 独立复核 AI ProducerRef 三字段契约
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试材料
+- 时间：2026-09-01 23:40（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；HEAD `4d4e65f`；保留 Root/Terra 全部未提交改动，不提交、不推送、不切换分支。
+- 任务目标：独立验证契约 v0.1.1 的 AI `ProducerRef.provider`、`model_id`、`prompt_schema_digest` 条件字段，以及 sample、Draft 2020-12 Schema 和导出一致性。
+- 开始前已确认：已按更新后的 `AGENTS.md` 完整读取 README、全量共享日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、v0.1.1 契约和 Terra 最新 `COMPLETE`；已完成 Git 分支、状态和最近提交检查。
+- 预计修改文件：仅必要的 `tests/unit/` 边界测试、必要 fixture、`docs/05-ai-assistance-log.md` 和本共享日志；不修改 `backend/`、契约、Schema、sample 或项目进度台账。
+- 实际结果：开始执行 A1.1 独立回归；将分别覆盖三字段完整有效、逐字段缺失、非 AI 携带/显式 null、空白/凭据片段、无效 SHA-256，以及 sample 的非 AI 运行事实。
+- 命令与测试：预定运行 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q`，并执行 Schema 导出一致、Draft 2020-12、diff、公开 fixture/进度文档敏感信息和本机路径检查。
+- 接口、Schema、规则或决策：不新增或改变 v0.1.1 公共字段、API、规则或评测口径；AI 三字段按已冻结契约验证。
+- 已知风险与未完成项：若发现缺陷，保留稳定失败测试并追加 `PARTIAL` 升级 Terra/Sol；若全部通过，追加 `COMPLETE` 并明确 GitHub 仍待 Root 提交/推送。
+- 下一步与责任模型：完成独立测试和材料扫描后按 Luna 收工协议记录测试总数、缺陷状态和 GitHub 发布状态。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260901-2342-Luna-A1.1独立回归收工] COMPLETE - AI ProducerRef 三字段独立回归通过
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试材料
+- 时间：2026-09-01 23:42（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；HEAD `4d4e65f`；未提交、未推送、未切换分支。
+- 任务目标：独立验证契约 v0.1.1 的 AI `ProducerRef` 三字段、sample 版本事实、Pydantic/Schema 一致性及公开材料边界。
+- 开始前已确认：已按 `AGENTS.md` 完整读取 README、全量共享日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、v0.1.1 契约和 Terra 最新 `COMPLETE`；已完成 Git 分支、状态和最近提交检查。
+- 实际结果：新增 3 项独立字段回归断言；完整测试总数 `46 passed`。AI producer 三字段完整有效；分别缺失 provider/model_id/prompt_schema_digest、非 AI 携带字段、非 AI 显式 null、空白/凭据片段和错误 SHA-256 均按契约处理；sample 根与 provenance 均为 `0.1.1`，且 `ai_enabled=false`、`ai_model=null`。
+- 修改文件：仅 `tests/unit/test_p0_domain_models.py`、`docs/05-ai-assistance-log.md` 和本共享日志；未修改 backend、契约、Schema、sample、fixture、`PROJECT_PROGRESS.md` 或 `tests/README.md`。
+- 命令与测试：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q` => `46 passed in 0.11s`；独立复核确认 `sample_v011_non_ai=true`、`schema_export_equal=true`、`ai_producer_all_boundaries=true`、`fixture_progress_credentials_paths_scan=true`、`progress_policy_terms_are_non_identity=true`；`git diff --check` 通过。
+- 接口、Schema、规则或决策：未新增或改变接口、契约、Schema、规则或评测口径；未进入 Bench/A2。
+- 已知风险与未完成项：本轮未发现实现缺陷；`PROJECT_PROGRESS.md` 中命中的“学校/教师/成员”仅为匿名化规则词条，无实际身份信息；GitHub 任务分支仍待 Root 统一提交、推送并更新进度台账。
+- 下一步与责任模型：Root 负责最终验收、提交和推送 `feat/p0-domain-contract`；Sol 后续继续负责契约/评测决策；Terra/Luna 不自行推送，不据此启动 A2。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue/evidence_id；验收基线 `4d4e65f`。
+
+### [20260901-2348-Root-A1.1统一验收] COMPLETE - 三模型交付与发布前门禁通过
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调 / 最终验收与发布
+- 时间：2026-09-01 23:48（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；验收基线 `4d4e65f`，包含 Sol/Root、Terra、Luna 本轮未提交交付。
+- 任务目标：统一验收 A1.1 契约、实现、Schema、sample、测试、协作治理和目录状态，形成只含竞赛交付物的待提交集合。
+- 开始前已确认：Sol已冻结 v0.1.1；Terra已完成实现与Schema闭环；Luna已完成独立正反边界回归；三方均未自行提交或推送。
+- 实际结果：接受三方交付；`PROJECT_PROGRESS.md` 已把 A1.1、A1 领域模型及协作发布治理更新为已完成。顶层目录沿用既有稳定结构，未新增临时/重复目录。
+- 修改文件：本轮待提交集合为治理/进度文档、P0契约、Pydantic领域模型、公开Schema、非AI sample、单元测试和AI辅助记录；本机隔离环境与缓存不纳入Git。
+- 命令与测试：全量 `pytest` 为 `46 passed in 0.10s`；sample通过Pydantic和Draft 2020-12；存储Schema等于模型导出；`git diff --check`通过。敏感扫描对源码中的 `parsed.password` 和测试用 `api_key=redacted` 规则样例进行人工判读，确认不是凭据；公开交付内容无真实密钥、GitHub token或本机用户绝对路径。
+- 接口、Schema、规则或决策：接受 `provider`、`model_id`、`prompt_schema_digest` 为 AI producer 条件必填字段；非AI显式null兼容；未改变API、风险四态或 unknown 语义。
+- 已知风险与未完成项：功能分支尚未推送；`main` 尚未合并；S0剩余评分追踪、S2威胁模型和A2安全输入仍未完成。
+- 下一步与责任模型：Root提交并推送 `feat/p0-domain-contract`，核验远端HEAD，随后追加发布记录；下一个独立任务点为 S0/S2 设计门禁或 A2（需按排期先完成设计门禁）。
+- 关联提交/PR/Issue/evidence_id：待本轮Git提交与远端分支。

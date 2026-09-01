@@ -1,5 +1,5 @@
 {
-  "contract_version": "0.1.0",
+  "contract_version": "0.1.1",
   "id": "scn_123e4567-e89b-12d3-a456-426614174000",
   "status": "completed",
   "stage": "completed",
@@ -201,7 +201,7 @@
       }
     ],
     "ruleset_version": "0.1.0",
-    "contract_version": "0.1.0",
+    "contract_version": "0.1.1",
     "ai_enabled": false,
     "ai_model": null,
     "run_environment": {

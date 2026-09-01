@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
-CONTRACT_VERSION = "0.1.0"
+CONTRACT_VERSION = "0.1.1"
 _ID_SUFFIX = r"(?:[0-9a-hjkmnp-tv-z]{26}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
 _ABSOLUTE_PATH = re.compile(r"^(?:/|\\\\|[A-Za-z]:[\\/])")
 _SENSITIVE_FRAGMENT = re.compile(r"(?i)(?:api[_-]?key|secret|token|password)\s*[=:]")
@@ -181,6 +181,29 @@ class ProducerRef(P0Model):
     name: str = Field(min_length=1, max_length=200)
     version: str = Field(min_length=1, max_length=100)
     config_digest: HashValue | None = None
+    provider: str | None = Field(default=None, max_length=200)
+    model_id: str | None = Field(default=None, max_length=300)
+    prompt_schema_digest: HashValue | None = None
+
+    @field_validator("provider", "model_id")
+    @classmethod
+    def validate_ai_identity_field(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
+        if not value.strip():
+            raise ValueError("AI producer fields cannot be empty")
+        if _SENSITIVE_FRAGMENT.search(value):
+            raise ValueError("AI producer fields must not contain credential fragments")
+        return value
+
+    @model_validator(mode="after")
+    def validate_ai_fields(self) -> "ProducerRef":
+        ai_fields = (self.provider, self.model_id, self.prompt_schema_digest)
+        if self.type is ProducerType.AI and any(value is None for value in ai_fields):
+            raise ValueError("AI producer requires provider, model_id, and prompt_schema_digest")
+        if self.type is not ProducerType.AI and any(value is not None for value in ai_fields):
+            raise ValueError("non-AI producer cannot include AI producer fields")
+        return self
 
 
 class RunEnvironment(P0Model):

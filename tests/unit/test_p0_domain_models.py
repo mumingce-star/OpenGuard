@@ -12,7 +12,7 @@ from pydantic import ValidationError
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
 
-from app.domain.models import ScanRun  # noqa: E402
+from app.domain.models import ProducerRef, ScanRun  # noqa: E402
 
 
 SAMPLE_PATH = ROOT / "examples" / "sample-scan-result.json"
@@ -37,7 +37,10 @@ def test_sample_validates_with_pydantic_and_exported_json_schema() -> None:
     jsonschema.validate(instance=sample, schema=schema)
     assert schema == ScanRun.model_json_schema()
 
-    assert scan.contract_version == "0.1.0"
+    assert scan.contract_version == "0.1.1"
+    assert scan.provenance.contract_version == "0.1.1"
+    assert scan.provenance.ai_enabled is False
+    assert scan.provenance.ai_model is None
     assert scan.summary.finding_counts["review_required"] == 1
 
 
@@ -164,7 +167,7 @@ def test_ai_candidate_and_ai_remediation_remain_pending() -> None:
         detected_by="ai_candidate", verification_status="pending"
     )
     value["remediations"][0].update(
-        generated_by={"type": "ai", "name": "qwen3", "version": "0.1"},
+        generated_by=valid_ai_producer(),
         verification_status="pending",
     )
 
@@ -181,7 +184,7 @@ def test_ai_candidate_and_ai_remediation_remain_pending() -> None:
             detected_by="ai_candidate", verification_status="verified"
         ),
         lambda value: value["remediations"][0].update(
-            generated_by={"type": "ai", "name": "qwen3", "version": "0.1"},
+            generated_by=valid_ai_producer(),
             verification_status="verified",
         ),
     ],
@@ -239,14 +242,98 @@ def test_terminal_statuses_require_finished_at(status: str) -> None:
 def test_unknown_fields_are_rejected_in_nested_objects() -> None:
     invalid = copy.deepcopy(load_sample())
     invalid["provenance"]["ai_model"] = {
-        "type": "ai",
-        "name": "qwen3",
-        "version": "0.1",
+        **valid_ai_producer(),
         "model_provider": "ollama",
     }
 
     with pytest.raises(ValidationError):
         ScanRun.model_validate(invalid)
+
+
+def valid_ai_producer() -> dict:
+    return {
+        "type": "ai",
+        "name": "qwen3-adapter",
+        "version": "0.1.1",
+        "provider": "ollama",
+        "model_id": "qwen3:8b",
+        "prompt_schema_digest": {
+            "algorithm": "sha256",
+            "value": "e" * 64,
+        },
+    }
+
+
+def test_ai_producer_ref_requires_all_frozen_fields() -> None:
+    producer = ProducerRef.model_validate(valid_ai_producer())
+
+    assert producer.provider == "ollama"
+    assert producer.model_id == "qwen3:8b"
+    assert producer.prompt_schema_digest is not None
+
+
+@pytest.mark.parametrize("missing_field", ["provider", "model_id", "prompt_schema_digest"])
+def test_ai_producer_ref_rejects_each_missing_frozen_field(missing_field: str) -> None:
+    invalid = valid_ai_producer()
+    invalid.pop(missing_field)
+
+    with pytest.raises(ValidationError, match="AI producer requires"):
+        ProducerRef.model_validate(invalid)
+
+
+def test_non_ai_producer_ref_rejects_ai_only_fields() -> None:
+    invalid = valid_ai_producer() | {"type": "scanner"}
+
+    with pytest.raises(ValidationError, match="non-AI producer cannot include"):
+        ProducerRef.model_validate(invalid)
+
+
+def test_non_ai_producer_ref_allows_explicit_null_ai_fields() -> None:
+    producer = ProducerRef.model_validate(
+        {
+            "type": "scanner",
+            "name": "scancode",
+            "version": "32.3.1",
+            "provider": None,
+            "model_id": None,
+            "prompt_schema_digest": None,
+        }
+    )
+
+    assert producer.provider is None
+    assert producer.model_id is None
+    assert producer.prompt_schema_digest is None
+
+
+def test_ai_producer_ref_is_valid_inside_ai_enabled_provenance() -> None:
+    value = copy.deepcopy(load_sample())
+    value["provenance"].update(ai_enabled=True, ai_model=valid_ai_producer())
+
+    scan = ScanRun.model_validate(value)
+
+    assert scan.provenance.ai_model is not None
+    assert scan.provenance.ai_model.provider == "ollama"
+    assert scan.provenance.ai_model.model_id == "qwen3:8b"
+    assert scan.provenance.ai_model.prompt_schema_digest.algorithm == "sha256"
+
+
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda value: value.update(provider="   "),
+        lambda value: value.update(model_id="   "),
+        lambda value: value.update(provider="token=redacted"),
+        lambda value: value.update(model_id="api_key=redacted"),
+        lambda value: value["prompt_schema_digest"].update(algorithm="sha1"),
+        lambda value: value["prompt_schema_digest"].update(value="not-a-sha256"),
+    ],
+)
+def test_ai_producer_ref_rejects_empty_sensitive_or_invalid_digest(mutate) -> None:
+    invalid = valid_ai_producer()
+    mutate(invalid)
+
+    with pytest.raises(ValidationError):
+        ProducerRef.model_validate(invalid)
 
 
 def test_public_boundary_fixture_contains_no_sensitive_or_identifying_strings() -> None:
