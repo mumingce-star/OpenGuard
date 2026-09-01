@@ -737,3 +737,20 @@
 - 已知风险与未完成项：S2 总工作包保持 `进行中`，直到 A2 实现并关闭 TrustedEgress、Linux profile、阈值拆分、ZIP header corpus、实际依赖台账和全量真实测试；`CLM-07-002` 保持 `planned`。A2 当前仍为 `未开始`，不能把设计文档作为产品效果证据。
 - 下一步与责任模型：Root 提交并推送本分支；下一独立开发任务建议 Terra 先做 A2-0 运行前置设计/验证和 A2-1 ZIP 安全纵切，Luna 同步建立授权、匿名、脱敏的可运行测试记录，Sol 只处理契约/安全冲突。
 - 关联提交/PR/Issue/evidence_id：设计证据 `EVD-OFFICIAL-RULES-20260812`、`EVD-S2-DESIGN-001`；提交与 GitHub 分支待发布后追加记录。
+
+### [20260902-0049-Root-S0S2GitHub发布] COMPLETE - S0/S2竞赛文档分支发布并核验
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调 / GitHub 发布验收
+- 时间：2026-09-02 00:49（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；首轮发布提交与远端 HEAD 均为 `ffa9390cd479f4dadd870284e3e73693c34ad67f`。
+- 任务目标：将通过 Sol/Terra/Luna/Root 门禁的 S0 与 S2 条件性设计基线发布到公开 GitHub 功能分支，并核对远端提交和上传范围。
+- 开始前已确认：全量 A1 回归 46 项通过，文档 ID、状态、差异、敏感信息和绝对路径门禁通过；暂存区只含 12 个竞赛交付文件。
+- 实际结果：`git push -u origin feat/s0-s2-design-gates` 成功；`git ls-remote` 返回的远端分支 HEAD 与本地 `ffa9390cd479f4dadd870284e3e73693c34ad67f` 完全一致；`main` 未修改、未合并。
+- 上传文件范围：五份竞赛规则/评分/提交/证据/非目标规范，四份威胁模型/安全验收/工程审查/测试审计文档，以及 AI 辅助记录、共享工作日志和项目进度台账。
+- 未上传范围：竞赛原始 PDF/DOCX、`/private/tmp/openguard-s0-pdf` 核验工件、虚拟环境/缓存、backend/tests/fixtures 变更、个人凭据和无关本机文件。
+- 命令与测试：提交 `ffa9390` 共 12 个文件、1324 行新增与 5 行修改；推送成功；远端 HEAD 只读核验一致；本次发布后工作树仅新增本发布记录和进度状态更新，待二次提交。
+- 接口、Schema、规则或决策：P0 v0.1.1、公共 API/Schema 和 A1 代码保持不变；功能分支发布不等于合并 `main`，也不表示 A2 安全控制已实现。
+- 已知风险与未完成项：本发布记录需二次提交推送；S2 总包与 A2 真实实现仍未完成，TrustedEgress/Linux profile/依赖台账/全量运行证据保持待办。
+- 下一步与责任模型：Root 提交并推送本发布记录，核验最终远端 HEAD；随后进入 A2-0/A2-1 独立开发任务。
+- 关联提交/PR/Issue/evidence_id：首轮发布提交 `ffa9390`；分支 `https://github.com/mumingce-star/OpenGuard/tree/feat/s0-s2-design-gates`；PR 创建入口 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/s0-s2-design-gates`。
