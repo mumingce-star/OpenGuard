@@ -569,3 +569,171 @@
 - 已知风险与未完成项：本条发布记录本身将形成后续文档提交；需再次推送并核验最终远端HEAD。S0评分追踪、S2威胁模型和A2安全输入仍未完成。
 - 下一步与责任模型：Root提交本发布记录并推送；随后建议由Sol先闭环S0/S2设计门禁，再允许Terra进入A2。
 - 关联提交/PR/Issue/evidence_id：首轮发布提交 `43493fb`；分支URL `https://github.com/mumingce-star/OpenGuard/tree/feat/p0-domain-contract`；PR创建入口 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/p0-domain-contract`。
+
+### [20260901-2358-Root-S0S2设计门禁开工] START - 冻结竞赛评分追踪与A2安全验收
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调 / 正式规则核验 / 安全门禁编排
+- 时间：2026-09-01 23:58（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`，基线为已发布的 `feat/p0-domain-contract` 最终提交 `1d77a51`；开始前工作区干净。
+- 任务目标：完成S0竞赛需求、评分追踪、提交检查、报告证据映射与非目标，并完成S2威胁模型和可供Terra实现、Luna验证的A2安全验收门禁；本轮不编写A2业务代码。
+- 开始前已确认：已完整读取README、全量共享日志、项目进度台账与Sol交接，检查Git分支/状态/最近提交；已重新核验三份正式竞赛PDF。附件1和附件2全文可提取；通知PDF为扫描版，已渲染并逐页视觉核验7页。
+- 预计修改文件：新增 `docs/spec/competition-requirements.md`、`scoring-traceability.md`、`submission-checklist.md`、`report-evidence-map.md`、`non-goals.md`、`docs/security/threat-model.md`、`docs/security/a2-security-acceptance.md`；更新AI辅助记录、进度台账并只追加本共享日志。
+- 命令与测试：预计总计14k-20k token（非硬截断）；Sol完成正式要求与安全架构，Terra只做可实现性审查，Luna独立审计验收可测性；Root执行正式规则映射、Markdown链接/ID完整性、敏感信息、绝对路径、`git diff --check`和现有46项回归。
+- 接口、Schema、规则或决策：正式PDF高于内部目标；官方评分项与团队目标分必须分栏；未知事实保持待验证。S2仅冻结不可信输入、安全资源限制、SSRF、ZIP、命令执行、清理与脱敏门禁，不改变P0 v0.1.1公共领域Schema和API路径。
+- 已知风险与未完成项：通知中的报名/赛事阶段与附件1的作品要求需交叉映射；安全限制若过严可能损伤公开Git仓库可用性，必须经Terra实现性审查和Luna负面测试审计后才冻结。
+- 下一步与责任模型：GPT-5.6 Sol产出S0/S2规范；GPT-5.6 Terra审查A2实现接口与限制；GPT-5.6 Luna审查负面测试、匿名与证据可核验性；Root统一验收、提交并推送本任务分支。
+- 关联提交/PR/Issue/evidence_id：正式来源为通知全智赛组委会〔2026〕31号、附件1、附件2；待本轮提交与GitHub分支。
+
+### [20260902-0004-Sol-S0S2规范开工] START - 编制竞赛追踪与 A2 安全设计门禁
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计 / 竞赛规则与安全验收
+- 时间：2026-09-02 00:04（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；基线 `1d77a51`；工作区仅有 Root 已追加的协调 `START`，本轮不切分支、不提交、不推送。
+- 任务目标：完成 S0 正式竞赛要求、100 分评分证据追踪、提交门禁、九章报告证据控制面和 P0 非目标，并冻结 S2 威胁模型与可实现、可测试的 `SEC-A2-*` 安全验收；不进入 A2 代码。
+- 开始前已确认：已按 `AGENTS.md` 完整读取根 README、全量共享日志、项目进度台账与 Sol 交接文档，核对分支、工作区、最近提交及其他模型状态；已完整读取项目核心文档与模块 README；已用全文提取和逐页渲染重读三份正式 PDF，通知为 7 页扫描件，附件 1/2 各 5 页。
+- 实际结果：强制预检与正式来源页码核验完成，当前无 Terra/Luna 同文件在途修改，开始编写 S0/S2 规范。
+- 修改文件：计划新增 `docs/spec/competition-requirements.md`、`docs/spec/scoring-traceability.md`、`docs/spec/submission-checklist.md`、`docs/spec/report-evidence-map.md`、`docs/spec/non-goals.md`、`docs/security/threat-model.md`、`docs/security/a2-security-acceptance.md`；更新 `docs/05-ai-assistance-log.md`；仅追加本共享日志。本执行单元不修改 `PROJECT_PROGRESS.md`，由 Root 统一验收后更新。
+- 命令与测试：预计 8k-12k token（估算非硬截断）；将执行正式来源页码/规则映射复核、跨文档 ID 和状态一致性、Markdown 相对链接、敏感信息与本机绝对路径扫描、`git diff --check`；现有代码回归由 Root 汇总验收。
+- 接口、Schema、规则或决策：官方硬约束、评分标准、参考建议和内部决策分层；官方分值与内部目标严格分开；无实验、截图、用户反馈或贡献记录不得标为已验证。A2 设计只冻结不可信 Git/ZIP 输入、资源限额、SSRF、路径/链接、命令执行、清理和脱敏门禁，不改变 P0 v0.1.1 Schema/API；如需新字段只提出变更请求。
+- 已知风险与未完成项：ZIP/Git 默认限额需在安全性与公开仓库可用性间平衡，均标为“设计默认值、尚未实现”，并交 Terra 可实现性审查与 Luna 负面测试审计；正式通知中的复赛/总决赛时间与附件 1 的评分、补正规则须保持来源分离。
+- 下一步与责任模型：GPT-5.6 Sol 完成七份规范和 AI 辅助记录后追加收工记录；Terra 审查实现接口与错误码，Luna 审查负面矩阵、匿名与证据状态，Root 统一验收、进度更新和发布。
+- 关联提交/PR/Issue/evidence_id：分支基线 `1d77a51`；正式来源为全智赛组委会〔2026〕31号通知、附件 1、附件 2；无提交/PR/Issue/evidence_id。
+
+### [20260902-0022-Sol-S0S2规范收工] COMPLETE - 竞赛追踪与 A2 安全设计门禁完成
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计 / 竞赛规则与安全验收
+- 时间：2026-09-02 00:22（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；基线 `1d77a51`；未切分支、未提交、未推送。
+- 任务目标：完成 S0 正式要求/评分/提交/报告证据/非目标基线，并冻结 S2 威胁模型和 A2 可实现、可测试的安全门禁，不进入 A2 代码。
+- 开始前已确认：已按强制流程完成 README、全量共享日志、项目进度、Sol 交接、核心文档、模块 README 和 Git 核验；三份正式 PDF 已全文/表格/逐页渲染复核，正式来源优先。
+- 实际结果：完成全部七份规范。正式规则已按硬约束、官方 100 分评分、参考建议和内部决策分层，覆盖省级复赛奖项/晋级、官方截止、形式审查、一票否决、一次补正、匿名、AI 披露、授权和开放边界；评分矩阵严格分离官方满分与 88 分内部目标；九章报告控制面包含 27 个 `claim_id`，无实验、截图、用户反馈或最终链接的主张保持 `planned/blocked`。S2 冻结 20 个 `SEC-A2-*`、5 个正向和 36 个负面验收，覆盖 Git/ZIP、路径/链接/压缩炸弹、SSRF/DNS/重定向、资源与超时、命令、脱敏、清理和扫描器供应链。
+- 修改文件：新增 `docs/spec/competition-requirements.md`、`docs/spec/scoring-traceability.md`、`docs/spec/submission-checklist.md`、`docs/spec/report-evidence-map.md`、`docs/spec/non-goals.md`、`docs/security/threat-model.md`、`docs/security/a2-security-acceptance.md`；更新 `docs/05-ai-assistance-log.md`；仅向本共享日志追加 `START` 和本条 `COMPLETE`。未修改 `PROJECT_PROGRESS.md`、A2 代码、P0 契约、Schema、API、数据库或 fixtures。
+- 命令与测试：`git diff --check` 通过；`PYTHONPATH=... python -m pytest -q tests/unit/test_p0_domain_models.py` 为 `46 passed in 0.10s`；20 个安全验收定义、36 个负面测试和 27 个报告主张计数通过；SCORE/SEC 跨文档 ID、证据状态、来源页码、敏感信息和新增文件本机绝对路径检查通过；PDF 渲染中间文件已在核验后清理。
+- 接口、Schema、规则或决策：P0 v0.1.1 完全不变。Git 默认仅接受无凭据、无 query/fragment、443 端口的公开 HTTPS 域名，每跳和连接前复核全部解析地址；ZIP 逐项规范化并只流式创建普通文件；默认限额均明确为设计值、尚未实现且请求不可放宽。输入安全拒绝只使用冻结顶层错误码和既有 `details.reason`，绝不标 `partial`；`partial` 只用于 inventory 成功后的下游可恢复失败。三个潜在公共变更仅记录为 `CR-A2-001..003`，均未批准。
+- 已知风险与未完成项：安全设计尚未实现/集成验证；DNS 到实际连接固定、Git transfer 限额和扫描器无网络隔离需 Terra 证明；拒绝 symlink/gitlink 会损伤部分真实仓库可用性，不能未经变更评审放宽；A6/F0 仍需 HTML/CSV/终端输出注入门禁。真实需求、Bench、端到端、用户反馈、最终资源台账/链接/授权和材料均未形成，已保持 `planned/blocked`，无虚构效果数字。
+- 下一步与责任模型：Terra 只做 A2 可实现性审查，重点审查网络固定、Git 隔离、fd 安全解压、资源限制、状态/错误映射和清理；Luna 独立审计 5 个正向/36 个负面测试、边界值、匿名和证据状态；发现需公共字段时只提交 `CR-A2-*`，不得直接改 v0.1.1。Root 统一更新 `PROJECT_PROGRESS.md`、验收待提交清单并决定发布。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue；设计证据 `EVD-OFFICIAL-RULES-20260812`、`EVD-S2-DESIGN-001`；分支基线 `1d77a51`。
+
+### [20260902-0028-Terra-S0S2可实现性审查开工] START - 审查 A2 安全设计的工程落地路径
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-02 00:28（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`，基线 `1d77a51`；保留 Sol/Root 已完成但未提交的 S0/S2 文档、AI 记录与共享日志改动；不提交、不推送、不切换分支。
+- 任务目标：从工程实现角度逐项审查 `SEC-A2-001..020`，输出可实现性结论、模块边界、分阶段顺序、测试接口和待测量/阻塞事项；不进入 A2 业务代码。
+- 开始前已确认：已完整读取 README、全量共享日志、项目进度台账、Terra 交接、Git 状态/最近提交，以及 Sol 新增全部 S0/S2 文档，重点包括威胁模型和 A2 安全验收。Sol S0/S2 规范为 COMPLETE；Luna 尚待独立可测性审计。
+- 预计修改文件：新增 `docs/security/a2-implementation-review.md`，更新 `docs/05-ai-assistance-log.md`，并只追加本共享日志；不改写 Sol 的安全语义、公共 Schema/API、backend 代码或 fixtures。
+- 命令与测试：预计约 4k-6k token（估算非硬限制）；仅运行文档/ID/差异/敏感信息检查，不运行或声称运行 A2 安全实现测试。
+- 接口、Schema、规则或决策：不改变 v0.1.1；任何发现仅作为精确修订建议或实现前置条件记录，尤其 DNS-to-connect、Git transfer 配额和部署层隔离。
+- 已知风险与未完成项：直接 Git 子进程无法天然提供每跳受控重定向、TLS/SNI 保持的连接 pinning 或精确网络字节计量；macOS 开发环境也无法等价证明 Linux cgroup/egress 隔离。
+- 下一步与责任模型：Terra 完成审查后，Luna 审计负面测试可测性；Sol/Root 决定是否接受文档化修订，再批准 A2 实现顺序。
+- 关联提交/PR/Issue/evidence_id：设计基线 `1d77a51`；`EVD-S2-DESIGN-001`；无新提交/PR/Issue。
+
+### [20260902-0040-Terra-S0S2可实现性审查收工] COMPLETE - A2 安全门禁工程落地路径已审查
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-02 00:40（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`，基线 `1d77a51`；未提交、未推送、未切换分支；完整保留 Sol/Root 的未提交 S0/S2 文档改动。
+- 任务目标：逐项审查 `SEC-A2-001..020` 的实现路径，不进入 A2 业务代码。
+- 实际结果：新增 A2 工程可实现性审查：12 项 `ACCEPT`、6 项 `ADJUST`、2 项 `BLOCK`。明确 URL/地址、Git argv/env/config、no-checkout blob materialization、dirfd ZIP、inventory、错误状态与生命周期的模块边界；输出分阶段实现和 Luna 可注入测试接口。
+- 修改文件：新增 `docs/security/a2-implementation-review.md`；更新 `docs/05-ai-assistance-log.md`；仅追加本共享日志。未修改 Sol 安全语义、P0 v0.1.1 Schema/API、backend 代码、fixtures、测试或项目进度台账。
+- 命令与测试：审查文档断言 `SEC` 覆盖 20 项且结论为 `12 ACCEPT/6 ADJUST/2 BLOCK`、Markdown fence 平衡；`git diff --check` 通过；审查文档和 AI 记录的凭据/绝对路径/Markdown 检查无命中。**未运行 A2 安全实现测试**，因为本轮未实现 A2 代码；不得将现有 A1 回归当作 A2 证据。
+- 接口、Schema、规则或决策：不改变公共契约。同步拒绝继续使用既有 HTTP `details.reason`；异步 ingestion 失败使用 `ScanRun.status=failed`、`stage=ingestion` 和脱敏 `ScanError`；`partial` 只保留给 inventory 后的下游可恢复失败。
+- 已知风险与未完成项：`SEC-A2-004` 在没有受控 CONNECT egress proxy/sidecar 时阻塞；`SEC-A2-015` 在没有 Linux container/cgroup/egress profile 时阻塞。Git transfer bytes、ZIP preflight、供应链范围和跨 worker 幂等需按审查中五项精确建议补足后才能关闭。
+- 下一步与责任模型：Luna 审计 `POS-A2-001..005`/`NEG-A2-001..036` 的可测性与公开 fixture 边界；Sol/Root 决定是否接受审查中的 5 项规范澄清；Terra 仅在部署前置条件和最终实现顺序获准后从 A2-0/A2-1 开始。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue；设计证据 `EVD-S2-DESIGN-001`，实现审查为 `docs/security/a2-implementation-review.md`。
+
+### [20260902-0033-Sol-A2实现性澄清开工] START - 精确回修 A2 安全设计门禁
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计 / 安全验收回修
+- 时间：2026-09-02 00:33（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；基线 `1d77a51`；保留 Root、Sol、Terra 全部未提交文档改动，不切分支、不提交、不推送。
+- 任务目标：采纳 Terra 可实现性审查的五项澄清和 ZIP external attributes 策略，收紧报告审计责任表述；保持 P0 v0.1.1 与 `SEC/POS/NEG` 数量不变，不进入代码、测试或 fixture。
+- 开始前已确认：已重新读取共享日志尾部、完整 `docs/security/a2-implementation-review.md`、当前 Git 分支/状态/diff；Terra 审查为 `12 ACCEPT/6 ADJUST/2 BLOCK`，Luna 尚未完成独立可测性审计。
+- 实际结果：完成回修前预检，确认只需修改 `docs/security/a2-security-acceptance.md`、`docs/spec/report-evidence-map.md`、`docs/05-ai-assistance-log.md` 并只追加日志；威胁模型语义已能容纳 TrustedEgress/Linux profile，无需扩大修改。
+- 修改文件：预计仅修改上述三个文件并追加本日志；不修改 `backend/`、`tests/`、fixtures、P0 契约/Schema/API 或 Terra 审查文档。
+- 命令与测试：预计 2k-3k token（估算非硬截断）；将检查 20 个 `SEC-A2-*`、5 个 `POS-A2-*`、36 个 `NEG-A2-*` 数量不变，执行 `git diff --check`、敏感信息/绝对路径扫描并人工判读日志中的预期临时路径。
+- 接口、Schema、规则或决策：直接 Git 默认零重定向；`TrustedEgress`、保守隧道字节、Linux container/cgroup/deny-egress、供应链按实际引入范围、durable task registry 与 ZIP 零/未知 external attributes 作为实现前置澄清；不新增字段、路径或枚举。
+- 已知风险与未完成项：Luna 仍待审；TrustedEgress、Linux profile 和 durable registry 当前均无实现证据；若 registry 不随 A2 引入，跨 worker/重启幂等转为 A3 前置且 A2 不得宣称。
+- 下一步与责任模型：Sol 完成精确文档回修和验证后追加 `COMPLETE`；Luna 再按修订基线独立审计，Root 统一验收。
+- 关联提交/PR/Issue/evidence_id：`EVD-S2-DESIGN-001`、`docs/security/a2-implementation-review.md`；无提交/PR/Issue。
+
+### [20260902-0033-Sol-PDF工件状态更正] AMENDMENT - 更正旧 Sol 收工记录的 PDF 临时工件表述
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计 / 审计历史更正
+- 时间：2026-09-02 00:33（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；不改写历史记录。
+- 任务目标：更正 `20260902-0022-Sol-S0S2规范收工` 中“PDF 渲染中间文件已在核验后清理”的不准确表述。
+- 开始前已确认：只读检查确认 `/private/tmp/openguard-s0-pdf` 仍存在，包含通知页渲染和三份 PDF 的文本核验工件；该目录位于 Git 仓库外。
+- 实际结果：旧记录的其他验收结论保持有效；正确事实为上述核验工件仍保留，未清理、未修改，且不纳入 Git 待提交范围。
+- 修改文件：仅向本共享日志追加本 `AMENDMENT`；未触碰临时工件或历史记录。
+- 命令与测试：使用 `ls`/`find` 只读确认目录和文件；绝对路径为本条审计更正的必要目标，后续敏感/路径扫描需人工判读。
+- 接口、Schema、规则或决策：无变化。
+- 已知风险与未完成项：临时工件含正式材料的渲染/提取结果，应继续保留在仓库外，不得提交或公开；清理需由用户/Root 另行明确决定。
+- 下一步与责任模型：Root 在最终待提交清单中确认该目录未被 Git 跟踪；Sol 继续当前 A2 设计回修。
+- 关联提交/PR/Issue/evidence_id：关联 `20260902-0022-Sol-S0S2规范收工`；无提交/PR/Issue/evidence_id。
+
+### [20260902-0036-Sol-A2实现性澄清收工] COMPLETE - Terra 审查意见已精确回写安全基线
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计 / 安全验收回修
+- 时间：2026-09-02 00:36（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；基线 `1d77a51`；未切分支、未提交、未推送，保留 Root、Sol、Terra 全部未提交文档改动。
+- 任务目标：精确采纳 Terra 已获 Root 接受的 A2 实现性澄清，修正审计责任和临时 PDF 工件事实，不进入代码、测试或 fixture。
+- 开始前已确认：已重新读取共享日志尾部、Terra 审查全文和当前 Git diff；回修前追加了本轮 `START`，并以独立 `AMENDMENT` 更正旧 Sol 记录而未改写历史。
+- 实际结果：直接 Git 默认 `git_redirects_max=0`；仅在 TrustedEgress 能逐连接记录 host、解析地址、实际拨号 IP、TLS server name 且集成验证后允许配置重定向。Git transfer 由 egress proxy 按隧道字节保守执行；Linux container/cgroup/deny-egress 成为安全完成证据，macOS 仅开发验证；供应链只覆盖 A2 实际引入依赖；跨 worker/重启幂等以 durable task registry 为条件，否则转 A3 前置；ZIP 零/未知 external attributes 只写普通文件字节且不恢复元数据。`CLM-07-001` 现明确为 Sol 设计、Terra 审查完成、Luna 待审，不宣称双审闭环或实现有效。
+- 修改文件：修改 `docs/security/a2-security-acceptance.md`、`docs/spec/report-evidence-map.md`、`docs/05-ai-assistance-log.md`；仅向本共享日志追加 `START`、`AMENDMENT` 和本条 `COMPLETE`。无需修改 `docs/security/threat-model.md`；未修改 backend、tests、fixtures、P0 契约/Schema/API。
+- 命令与测试：安全基线计数保持 20 个 `SEC-A2-*`、5 个 `POS-A2-*`、36 个 `NEG-A2-*`，报告主张仍为 27 个；`git diff --check` 通过；凭据模式扫描无命中。本机绝对路径扫描只在共享历史中命中既有开发命令和本轮必要审计更正，已人工判读；`/private/tmp/openguard-s0-pdf` 未被 Git 跟踪。本轮为纯文档回修，未运行或宣称 A2 实现测试。
+- 接口、Schema、规则或决策：P0 v0.1.1 完全不变；`SEC/POS/NEG` ID 与数量不变；`POS-A2-003` 在未引入 durable registry 时不计入 A2 完成证据，相关测试 ID 保留给 A3 前置追踪；设计默认值仍标为尚未实现。
+- 已知风险与未完成项：TrustedEgress、Linux 安全 profile、Git tunnel-byte quota 和 durable registry 均未形成实现证据；ScanCode/Syft/规则尚未引入，只能为 `planned`；Luna 独立可测性审计尚未完成。
+- 下一步与责任模型：Luna 按修订后的 5 个正向/36 个负面测试及证据状态独立审计；Terra 实现时必须满足部署/代理前置；Root 统一验收、决定 A2/A3 registry 边界并管理提交发布。
+- 关联提交/PR/Issue/evidence_id：`EVD-S2-DESIGN-001`、`docs/security/a2-implementation-review.md`；无新提交/PR/Issue。
+
+### [20260902-0040-Luna-A2可测性证据审计] START
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试验证 / 安全证据审计
+- 时间：2026-09-02 00:40（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；基线 `1d77a51`；不切分支、不提交、不推送。
+- 任务目标：独立审计 `POS-A2-001..005`、`NEG-A2-001..036` 的可测性、边界、状态/错误精度、真实集成要求和证据字段；核对 Terra 12 ACCEPT/6 ADJUST/2 BLOCK 与 Sol 回修闭环。
+- 预期改动范围：仅新增 `docs/security/a2-test-audit.md`，可追加 `docs/05-ai-assistance-log.md`；不修改 backend、tests、fixtures、公共 Schema/API、PROJECT_PROGRESS 或安全语义基线。
+- 开始前已完整读取：根 README、AGENTS.md、共享日志、PROJECT_PROGRESS、LUNA_HANDOFF、S0/S2 安全与规范文档（含 `a2-security-acceptance.md`、`threat-model.md`、`a2-implementation-review.md`、`report-evidence-map.md`、`submission-checklist.md`）。
+- 约束：本轮不实现 A2、不生成 fixture、不运行或声称 A2 实现测试；完成前执行 ID、状态、Markdown、diff、敏感信息和绝对路径检查。
+
+### [20260902-0040-Luna-A2可测性证据审计] COMPLETE
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试验证 / 安全证据审计
+- 时间：2026-09-02 00:40（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；基线 `1d77a51`；未切分支、未提交、未推送。
+- 任务目标：独立审计 `POS-A2-001..005`、`NEG-A2-001..036` 的可测性、边界、状态/错误精度、真实集成要求和证据条件；核对 Terra 12 ACCEPT/6 ADJUST/2 BLOCK 与 Sol 回修闭环。
+- 实际结果：新增 `docs/security/a2-test-audit.md`。正向项判定为 1 `PASS-DESIGN`、3 `GAP`、1 `BLOCK`；负面项判定为 9 `PASS-DESIGN`、20 `GAP`、7 `BLOCK`。逐 ID 表覆盖全部 5+36 项，补充等于/刚超过边界、DNS mixed/rebinding/redirect/TLS/SNI/实际目的 IP、Git/ZIP 特殊输入、TOCTOU、生命周期、Linux 隔离、同步/异步错误差异和 `partial` 约束。
+- Terra/Sol 闭环：12 ACCEPT、6 ADJUST、2 BLOCK 的文档修订已逐项核对；TrustedEgress、Linux container/cgroup/deny-egress、实际依赖台账和 durable registry 的运行/部署条件仍未闭合。`POS-A2-003` 仍只能作为 A3 条件，`CLM-07-002` 不得从 `planned` 升级。
+- 修改文件：新增 `docs/security/a2-test-audit.md`；追加 `docs/05-ai-assistance-log.md`；仅向本共享日志追加本条 `COMPLETE`。未修改 backend、tests、fixtures、P0 公共 Schema/API、PROJECT_PROGRESS、安全语义基线或报告映射。
+- 命令与测试：完成 ID 行覆盖检查（41 行）、非法 ID 检查、状态词检查、Markdown 尾随空白检查、`git diff --check`、新增文档 diff check、敏感/凭据模式和本机绝对路径扫描；未运行 A2 实现测试，不声称任何 POS/NEG 通过。
+- 接口、Schema、规则或决策：无变化。建议将当前 S2 视为条件性设计基线，不允许冻结为最终验收门禁；实现后必须由 Terra 提供真实 profile/egress/依赖证据，再由 Luna 运行全量验收并绑定脱敏 run_id/evidence index。
+- 已知风险与未完成项：测试拆分、完整阈值矩阵、ZIP header corpus、真实 egress、Linux 安全 profile、供应链台账和 registry 仍待 Terra/Root/Sol 后续关闭；本审计文档本身不是 A2 实现证据。
+- 下一步与责任模型：Terra 先交付 A2-0 运行前置条件和真实集成接口；Root 决定 registry 的 A2/A3 边界；Sol/Root 更新 report-evidence-map 的 Luna 审计状态（本轮未直接改映射）；Luna 待实施指令后生成授权、匿名、脱敏的测试记录并运行验证。
+- 关联提交/PR/Issue/evidence_id：沿用 `EVD-S2-DESIGN-001` 作为设计基线引用；本轮无新提交、PR、Issue 或已批准实现 evidence_id。
+
+### [20260902-0046-Root-S0S2统一验收] COMPLETE - S0完成并冻结S2条件性设计基线
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调 / 正式规则核验 / 三模型统一验收
+- 时间：2026-09-02 00:46（Asia/Shanghai）
+- 分支或工作区：`feat/s0-s2-design-gates`；基线 `1d77a51`；三模型均已收工，当前尚未提交、尚未推送。
+- 任务目标：统一验收 S0 竞赛要求与评分证据治理，以及 S2/A2 威胁模型、安全验收、工程实现审查和独立可测性审计；本轮不实现 A2 业务代码。
+- 开始前已确认：Root 已完整读取三份正式竞赛文件、全部新增规范、Terra/Luna 审查和共享日志；Sol 的 PDF 临时工件状态已通过追加式 `AMENDMENT` 更正，未改写历史、未删除工件。
+- 实际结果：S0 作为独立任务点验收完成；官方 100 分与内部 88 分目标保持分栏，27 项报告主张均按 `verified/planned/blocked` 管理。S2 的设计任务点验收为 `CONDITIONAL_FROZEN_DESIGN_BASELINE`：20 个 `SEC-A2-*`、5 个 `POS-A2-*`、36 个 `NEG-A2-*` 保持稳定；Terra 完成 12 `ACCEPT`/6 `ADJUST`/2 `BLOCK` 工程审查，Sol 已回写实现边界，Luna 完成正向 1/3/1、负面 9/20/7 的逐项设计审计。该结论不表示 A2 安全控制已经实现或测试通过。
+- 修改文件：新增五份 `docs/spec/` 规范和四份 `docs/security/` 设计/审查文档；更新 `docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md`；共享日志只追加模型与 Root 记录。未修改 backend、tests、fixtures、P0 v0.1.1 契约/Schema/API 或竞赛原始附件。
+- 命令与测试：全量 A1 回归 `46 passed in 0.10s`；ID 计数为 `SEC=20/POS=5/NEG=36/CLAIM=27/TERRA=20/LUNA=41`；新增交付物的尾随空白、凭据、本机绝对路径检查无命中；`git diff --check` 通过。共享历史中的既有开发命令和必要临时路径由人工判读；PDF 核验工件位于仓库外且未被 Git 跟踪。本轮没有 A2 实现测试，不声称任何 POS/NEG 已通过。
+- 接口、Schema、规则或决策：P0 v0.1.1 不变；直接 Git 默认零重定向，公网 Git 以后必须经可证明 DNS-to-connect/TLS/SNI/隧道字节的 `TrustedEgress`；A2 安全完成证据必须来自受支持 Linux container/cgroup v2/non-root/只读输入/deny-egress profile。Root 决定 durable task registry 和跨 worker/重启幂等归入 A3 前置；A2 不使用 `POS-A2-003` 宣称该能力。
+- 已知风险与未完成项：S2 总工作包保持 `进行中`，直到 A2 实现并关闭 TrustedEgress、Linux profile、阈值拆分、ZIP header corpus、实际依赖台账和全量真实测试；`CLM-07-002` 保持 `planned`。A2 当前仍为 `未开始`，不能把设计文档作为产品效果证据。
+- 下一步与责任模型：Root 提交并推送本分支；下一独立开发任务建议 Terra 先做 A2-0 运行前置设计/验证和 A2-1 ZIP 安全纵切，Luna 同步建立授权、匿名、脱敏的可运行测试记录，Sol 只处理契约/安全冲突。
+- 关联提交/PR/Issue/evidence_id：设计证据 `EVD-OFFICIAL-RULES-20260812`、`EVD-S2-DESIGN-001`；提交与 GitHub 分支待发布后追加记录。

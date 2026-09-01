@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-01 23:54（Asia/Shanghai）
+更新时间：2026-09-02 00:46（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -13,22 +13,24 @@
 | L-A1 独立边界审计 | P0 | Luna | 已完成 | 46项测试全部通过；覆盖路径脱敏、partial语义及 AI producer 正反边界 | 进入 A2 后扩展输入安全测试 | 已推送 `feat/p0-domain-contract` |
 | A1.1 AI ProducerRef | P0 | Sol→Terra→Luna | 已完成 | `provider`、`model_id`、`prompt_schema_digest` 已完成契约、实现、Schema、sample和独立测试闭环 | 后续变更走 ADR 和回归门禁 | 已推送 `43493fb` |
 | 协作与发布治理 | P0 | Root | 已完成 | 进度表、目录规则、统一验收、每任务点GitHub推送和上传范围复核已固化 | 每个后续任务点持续执行 | 已推送 `43493fb` |
+| S0 竞赛规则与评分证据治理 | P0 | Sol→Root | 已完成 | 三份正式文件映射、官方100分评分追踪、提交清单、九章27项主张与非目标已形成 | 随竞赛通知变更复核；最终材料仍需按证据状态逐项冻结 | 待推送 `feat/s0-s2-design-gates` |
+| S2 条件性安全设计基线 | P0 | Sol→Terra→Luna | 已完成 | 20项安全控制、5项正向/36项负面设计；Terra 12/6/2实现审查与Luna逐项可测性审计完成 | 这只是设计任务完成；TrustedEgress、Linux profile、依赖台账和真实运行证据归 A2，不能声称控制已生效 | 待推送 `feat/s0-s2-design-gates` |
 
 ## 2. P0 工作包全景
 
 | ID | 模块 | 主责 | 状态 | 已完成 | 未完成/验收标准 | 计划阶段 |
 |---|---|---|---|---|---|---|
-| S0 | 竞赛要求与评分追踪 | Sol | 进行中 | 已有评委章程、架构、资源、模型路由、交付计划 | 补 competition requirements、scoring traceability、submission checklist、report evidence map、non-goals | 9月3日前 |
+| S0 | 竞赛要求与评分追踪 | Sol | 已完成 | 正式来源、硬约束、官方评分、提交/补正/匿名/AI披露、27项报告主张与非目标均已映射 | 随正式通知复核；真实需求、实验、用户反馈和最终链接继续保持 planned/blocked | 9月3日前 |
 | S1/A1 | 领域模型与公共契约 | Sol/Terra/Luna | 已完成 | v0.1.1契约、实现、Schema、sample及46项测试完成 | 后续变更需 ADR；A2 不得破坏本契约 | 9月3日前 |
-| S2 | 威胁模型与安全验收 | Sol/Luna | 未开始 | README已有安全原则 | 威胁模型、ZIP穿越/炸弹/SSRF/命令注入/脱敏负面要求 | 9月3日前设计，A2实现 |
-| A2 | Git/ZIP安全输入与Inventory | Terra | 未开始 | 仅有契约与安全边界 | 浅克隆、安全解压、文件/大小限制、SHA256、临时目录生命周期及测试 | 9月4日-11日 |
+| S2 | 威胁模型与安全验收 | Sol/Terra/Luna | 进行中 | 条件性设计基线已完成：20 SEC、5 POS、36 NEG，含实现审查、可测性审计和证据模板 | 最终安全验收需在 A2 关闭 TrustedEgress、Linux profile、阈值拆分、依赖台账与全量真实测试；当前不得写成控制已生效 | 9月3日前设计，A2实现 |
+| A2 | Git/ZIP安全输入与Inventory | Terra | 未开始 | P0契约、条件性安全基线、模块边界和测试层级已具备 | 先做 A2-0 运行前置与 A2-1 ZIP 安全纵切；再做本地Git物化、受控公网Git、Linux隔离和证据冻结 | 9月4日-11日 |
 | B1 | Python/JS依赖解析 | Terra | 未开始 | 统一Component契约已具备 | requirements/pyproject/package.json/package-lock解析、fixtures、去重 | 9月4日-11日 |
 | B2 | ScanCode适配器 | Terra | 未开始 | 第三方候选已登记 | 锁定版本、超时/失败对象、License/Evidence映射及测试 | 9月4日-11日 |
 | B3 | Syft适配器 | Terra | 未开始 | 第三方候选已登记 | 锁定版本、SBOM映射、与解析器结果合并及测试 | 9月4日-11日 |
 | B4 | SPDX标准化 | Sol/Terra | 未开始 | LicenseExpression契约已具备 | SPDX数据版本、别名、复合表达式、LicenseRef及测试 | 9月4日-20日 |
 | B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 未开始 | Obligation/RiskFinding结构已具备 | 规则Schema、原文证据、正反未知冲突样例、人工核验状态 | 9月12日-20日 |
 | B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
-| A3 | FastAPI扫描API | Terra | 未开始 | 6个端点契约已冻结 | OpenAPI、统一错误、状态查询、资源/风险/证据/报告接口 | 9月21日-28日 |
+| A3 | FastAPI扫描API | Terra | 未开始 | 6个端点契约已冻结；Root决定 durable task registry 归入 A3 前置 | 持久任务注册表、跨worker/重启幂等、OpenAPI、统一错误、状态与资源/风险/证据/报告接口 | 9月21日-28日 |
 | A4 | Pipeline编排 | Terra | 未开始 | ScanRun状态机已具备 | ingestion→scan→normalize→rules→AI→report，阶段错误与partial | 9月21日-28日 |
 | A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 未开始 | AI边界与A1.1字段方案已确定 | Qwen3/Ollama锁版、结构化输出、证据引用、失败降级、消融 | 9月12日-28日 |
 | F0 | P0前端核心页面 | Terra/团队前端 | 未开始 | sample可作为共同数据 | New Scan、Progress、Dashboard、Risk Detail、Resource List、Report接真实API | 9月21日-28日 |
@@ -44,6 +46,7 @@
 |---|---|---|---|---|---|
 | 2026-09-01 | 仓库基础骨架 | `main` | `476d954`及以前 | README、协作、安全、目录骨架、交接与第三方工作区 | 已在GitHub |
 | 2026-09-01 | S1a/A1/A1.1 | `feat/p0-domain-contract` | `43493fb`（首轮发布HEAD） | 契约、领域模型、Schema、sample、测试、治理与进度文档 | 已推送；待PR合并 |
+| 2026-09-02 | S0/S2设计门禁 | `feat/s0-s2-design-gates` | 待提交 | 正式规则/评分/提交/报告证据/非目标、威胁模型、安全验收、实现审查、测试审计及协作记录 | 待Root验收并推送 |
 
 ## 4. 目录健康检查
 
