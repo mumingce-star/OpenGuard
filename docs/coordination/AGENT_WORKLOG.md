@@ -321,3 +321,124 @@
 - 已知风险与未完成项：Terra 对话的原待审批工具状态可忽略/拒绝，Root 已完成等价安全验证；Luna 仍需独立补充非对称引用、partial/error、locator 脱敏和 AI producer 等边界审计。
 - 下一步与责任模型：GPT-5.6 Luna 只扩展 A1 fixtures/负面测试和复现说明；发现实现缺陷先以失败测试报告，不擅改公共 Schema。
 - 关联提交/PR/Issue/evidence_id：基线 `02c3d46`；A1 实现提交待创建。
+
+### [20260901-2038-Luna-LA1边界审计] START - 独立审计 P0 领域契约实现与边界 fixtures
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试材料
+- 时间：2026-09-01 20:38（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；基线 `b2fd061`。
+- 任务目标：独立验证 A1 Pydantic 模型、Draft 2020-12 Schema、sample 与现有测试的契约边界，并补充必要的聚焦测试、最小 JSON fixtures 和复现说明。
+- 开始前已确认：已按 `AGENTS.md` 完整读取 `README.md`、完整共享日志、`LUNA_HANDOFF.md`；已检查分支、工作区状态和最近提交；S1a/A1 已由 Root 标记完成。
+- 预计修改文件：`tests/unit/` 聚焦 A1 测试、必要的 `tests/fixtures/` JSON/说明、可更新的 `tests/README.md`、`docs/05-ai-assistance-log.md`、本共享日志；不修改公共契约、`backend/` 实现或既有 sample/schema。
+- 实际结果：开始执行独立测试/fixture/复现闭环；特别审查跨对象非对称引用、partial/error、locator、脱敏、AI producer/candidate、summary、终态时间和未知字段。
+- 命令与测试：预定使用 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest ...`，并独立执行 Pydantic、Draft 2020-12 Schema、Schema/模型导出一致性及公开 fixture 敏感信息检查。
+- 接口、Schema、规则或决策：不改变契约 v0.1.0；AI ProducerRef 的模型/provider/prompt-Schema 摘要字段名未冻结，作为契约缺口单独报告，不自行扩 Schema。
+- 已知风险与未完成项：若发现实现缺陷，先保留稳定失败测试并按责任线升级 Terra/Sol；不得为通过测试而放宽安全边界或改变期望值。
+- 下一步与责任模型：完成后按 Luna 收工字段追加 `COMPLETE`、`PARTIAL` 或 `BLOCKED`，记录测试统计、fixture、Bench/台账/材料状态和升级问题。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260901-2041-Terra-A1核心数据模型收工] COMPLETE - 完成 P0 领域模型最小闭环
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程
+- 时间：2026-09-01 20:41（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；A1 产物当前位于提交 `b2fd061`，本轮未执行提交或切换分支。
+- 任务目标：在冻结契约 v0.1.0 下完成 A1 Pydantic v2 领域模型、Schema、有效样例和聚焦单测，不进入 A2。
+- 开始前已确认：已完成强制开工阅读、Git 核验和 `START`；Sol P0 契约任务为 COMPLETE；收工前重读日志，Luna 已在不改公共契约的范围内开始独立边界审计。
+- 实际结果：实现并验证全部 P0 枚举、值对象和 `Project`、`Component`、`AIAsset`、`Evidence`、`LicenseExpression`、`Obligation`、`Remediation`、`RiskFinding`、`ScanRun`；模型拒绝未知字段并校验 ID 前缀、UTC、sha256、行号、置信度、终态、summary 和跨对象引用。导出 `ScanRun.model_json_schema()` 的 Draft 2020-12 Schema；sample 同时通过 Pydantic 与独立 JSON Schema 校验。
+- 修改文件：`backend/pyproject.toml`、`backend/app/__init__.py`、`backend/app/domain/__init__.py`、`backend/app/domain/models.py`、`schemas/p0/scan-result.schema.json`、`examples/sample-scan-result.json`、`tests/unit/test_p0_domain_models.py`、`docs/05-ai-assistance-log.md`、本共享日志。Luna 当前对 `tests/` 的后续边界审计改动不属于本轮 Terra 范围。
+- 命令与测试：`PYTHONPATH=/private/tmp/openguard-a1-deps:backend .../python3 -m pytest -q tests/unit/test_p0_domain_models.py` => `11 passed`；Pydantic + Draft 2020-12 JSON Schema 校验与 Schema 导出一致性通过；`git diff --check` 通过；敏感信息和绝对路径扫描无真实敏感数据命中，测试/校验器中的预期负例已人工区分。
+- 接口、Schema、规则或决策：未改变冻结契约/API、枚举、风险语义或状态机；未新增 `Resource`、`Risk` 或 `ScanResult` 平行模型。运行依赖声明为 `pydantic==2.13.4`，开发验证依赖为 `pytest==8.4.2` 与 `jsonschema==4.26.0`。
+- 已知风险与未完成项：Pydantic 的导出 Schema 表达结构和 `extra=forbid`，而聚合交叉引用、UTC 与状态机等语义由 Pydantic 运行时校验；AI `ProducerRef` 专属模型/provider/prompt 摘要字段名仍是冻结契约的后续决策，A1 未扩展。
+- 下一步与责任模型：GPT-5.6 Luna 的精确入口为 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_p0_domain_models.py`，并应继续覆盖非对称引用、partial/error、locator 脱敏与 AI 边界；任何公共字段缺口交 Sol，任何实现失败以最小测试交 Terra。
+- 关联提交/PR/Issue/evidence_id：基线 `02c3d46`；A1 产物提交 `b2fd061`；无 PR/Issue/evidence_id。
+
+### [20260901-2041-Luna-LA1边界审计收工] PARTIAL - 完成 A1 独立边界审计并升级实现缺陷
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试材料
+- 时间：2026-09-01 20:41（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；未提交、未切换分支。
+- 任务目标：独立验证 A1 Pydantic 模型、Draft 2020-12 Schema、sample 与边界 fixtures，形成测试/fixture/复现闭环。
+- 开始前已确认：已完整读取 `AGENTS.md`、`README.md`、共享日志、`LUNA_HANDOFF.md`、`docs/spec/p0-domain-contract.md`、A1 models/schema/sample/tests；A1 基线为 `b2fd061`。
+- 实际结果：新增 22 项聚焦边界测试和最小公开 fixture；补充 A1 复现说明；覆盖跨对象非对称引用、partial/error、绝对路径/路径穿越、URL/错误脱敏、AI candidate/remediation pending、summary 四态、终态时间、未知字段及公开材料检查。sample 通过 Pydantic 与 Draft 2020-12 Schema，存储 Schema 等于 `ScanRun.model_json_schema()`。
+- 修改文件：仅 `tests/unit/test_p0_domain_models.py`、`tests/fixtures/p0/a1-boundary-fixtures.json`、`tests/README.md`、`docs/05-ai-assistance-log.md` 和本共享日志；未修改公共契约、`backend/`、既有 sample 或存储 Schema。
+- 命令与测试：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_p0_domain_models.py` 与全量 `pytest -q` 均为 `31 passed, 2 failed`（共 33 项）。`git diff --check` 通过；公开 fixture 敏感信息/本机路径/学校与成员信息扫描通过。
+- 接口、Schema、规则或决策：未新增或改变接口、Schema、规则或评测口径；A1 fixture 使用 Apache-2.0 标记；Bench 批量样例、台账和材料正式审计未启动。
+- 已知风险与未完成项：升级 Terra 修复两项 P2 实现缺陷：1) `partial` 状态无任何结构化错误仍被接受，未落实契约中 partial 必须对应可恢复失败的语义；2) `ScanError.message` 中非开头出现的绝对路径（如 `scanner failed at /private/tmp/secret.txt`）未被脱敏校验拒绝。升级 Sol/Terra 处理 AI `ProducerRef` 所需模型/provider/prompt-Schema 摘要字段名未冻结的契约缺口；本轮未自行扩 Schema。
+- 下一步与责任模型：Terra 修复后由 Luna 重跑 33 项 A1 测试并确认无回归；Sol 冻结 AI ProducerRef 字段后再补对应 Schema/fixture；Root 负责决定是否纳入后续合并门禁。当前因两项失败保持 `PARTIAL`，不进入 Bench 批量样例、A2、扫描器、前端或报告开发。
+- 关联提交/PR/Issue/evidence_id：无；建议建立 Terra 实现缺陷 issue，引用失败测试 `test_partial_scan_without_recoverable_error_is_rejected` 与 `test_scan_error_messages_reject_paths_and_credentials`。
+
+### [20260901-2042-Terra-A1-fix1开工] START - 修复 A1 P0 语义校验缺陷
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-01 20:42（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；保留 Luna 未提交测试、fixture、说明和日志改动，不切换分支、不提交。
+- 任务目标：仅修复 `backend/app/domain/models.py` 中 `partial` 的可恢复结构化错误语义和 `ScanError.message` 的嵌入式绝对路径/凭据片段脱敏；不改变公共契约、Schema 字段或开展 A2。
+- 开始前已确认：已完成 `AGENTS.md`、根 README、完整共享日志、Terra 交接、Git 状态/最近提交核验；已重读 Luna 最新 PARTIAL 与两项稳定失败。Sol 的 P0 契约为冻结状态，Luna 负责修复后的 33 项独立回归。
+- 计划验证：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q` 目标 33/33；检查存储 Schema 与 `model_json_schema()` 一致，执行 `git diff --check` 与交付源文件敏感信息扫描。
+
+### [20260901-2043-Terra-A1-fix1收工] COMPLETE - A1 两项运行时语义缺陷已修复
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-01 20:43（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；未提交、未切换分支；Luna 的未提交测试、fixture 和说明改动保持原样。
+- 任务目标：仅修复 `partial`/`ScanError.message` 语义校验，不改变公共契约、Schema 字段或进入 A2。
+- 实际结果：`partial` 现在必须至少包含一条 `recoverable=true` 的结构化 `ScanError`；错误消息现在拒绝任意位置的 Unix 绝对路径、Windows 盘符路径或 UNC 路径，并继续拒绝凭据片段。语义继续由 Pydantic 运行时执行，未导致 `model_json_schema()` 结构变化。
+- 修改文件：`backend/app/domain/models.py`、`docs/05-ai-assistance-log.md`、本共享日志；未修改 Luna 的测试、fixture、README 或公共 Schema。
+- 命令与测试：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q` => `33 passed`；存储 Schema 等于 `ScanRun.model_json_schema()`；嵌入式 Unix/Windows/UNC 路径拒绝与 HTTPS 非回归通过；`git diff --check` 通过；交付源/Schema/sample 的凭据与本机绝对路径扫描无真实敏感信息命中。
+- 接口、Schema、规则或决策：无公共字段、枚举、导出 Schema 或 API 变更；保留 Luna 对 AI `ProducerRef` 模型/provider/prompt-Schema 摘要字段未冻结的契约缺口。
+- 已知风险与未完成项：需由 Luna 以相同 33 项入口完成独立回归确认；AI `ProducerRef` 字段名仍须 Sol 冻结后才能扩展，Terra 本轮未触碰。
+- 下一步与责任模型：Luna 运行完整 A1 回归并更新其 PARTIAL 结论；Sol 处理冻结契约缺口；Root 决定后续合并门禁。不得据此启动 A2。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue/evidence_id；A1 基线提交为 `b2fd061`。
+
+### [20260901-2047-Luna-LA1复核] START - 独立复核 A1-fix1 边界修订
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试材料
+- 时间：2026-09-01 20:47（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；基线 `b2fd061`；不提交、不切换分支。
+- 任务目标：独立重跑全部 33 项 A1 测试，复核 partial/error、Unix/Windows/UNC 路径拒绝、HTTPS 正常文本不误杀、Schema 导出一致和敏感信息检查。
+- 开始前已确认：已按 `AGENTS.md` 重新完整读取 `README.md`、共享日志、`LUNA_HANDOFF.md`；已检查当前分支、状态和最近提交；Terra 的 A1-fix1 已记录完成。
+- 预计修改文件：仅在必要时更新 `tests/README.md`、`docs/05-ai-assistance-log.md` 和共享日志；本轮不修改 `backend/`、公共契约、Schema、sample、fixtures 或进入 Bench/A2。
+- 实际结果：开始只读运行时复核；AI ProducerRef 字段缺口保持独立已知项，不混入本次运行时修复。
+- 命令与测试：预定执行 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q`，并独立核验导出 Schema、路径/HTTPS 非回归和敏感信息扫描。
+- 接口、Schema、规则或决策：不新增或改变接口、Schema、规则或评测口径。
+- 已知风险与未完成项：若复核仍失败，保留最小失败证据并升级 Terra；若通过，追加 `COMPLETE` 并明确上轮两项失败已闭环。
+- 下一步与责任模型：完成测试和独立检查后追加收工记录；等待 Sol 冻结 AI ProducerRef 字段后再处理该契约缺口。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260901-2048-Luna-LA1复核收工] COMPLETE - A1-fix1 独立回归通过
+
+- 作者：GPT-5.6 Luna
+- 对话角色：测试材料
+- 时间：2026-09-01 20:48（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`；未提交、未切换分支。
+- 任务目标：独立重跑全部 33 项 A1 测试，复核 Terra A1-fix1 的 partial/error、路径脱敏和 HTTPS 非回归。
+- 开始前已确认：已按 `AGENTS.md` 重新完整读取 `README.md`、完整共享日志、`LUNA_HANDOFF.md`；已检查 Git 分支、状态和最近提交；Terra 修订记录已存在。
+- 实际结果：上轮 `PARTIAL` 的两项失败已闭环；完整 A1 回归 `33 passed`。`partial` 无 recoverable error 被拒绝；Unix/Windows/UNC 嵌入路径被拒绝；正常 HTTPS URL、HTTPS 文本不过度误杀；sample 通过 Pydantic 与 Draft 2020-12 Schema，存储 Schema 与模型导出一致。
+- 修改文件：仅 `docs/05-ai-assistance-log.md` 和本共享日志；未修改 `backend/`、公共契约、Schema、sample、测试、fixture 或 `tests/README.md`。
+- 命令与测试：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q` => `33 passed in 0.10s`；独立复核脚本输出 `schema_export_equal=true`、`partial_recoverable_semantics=true`、`unix_windows_unc_rejection=true`、`https_non_regression=true`、`public_fixture_sensitive_scan=true`；`git diff --check` 通过。
+- 接口、Schema、规则或决策：未新增或改变接口、Schema、规则或评测口径；Bench 版本、资源台账和材料正式审计未启动；AI ProducerRef 字段缺口仍独立保留，未混入本次修复。
+- 已知风险与未完成项：AI `ProducerRef` 的模型/provider/prompt-Schema 摘要字段名仍待 Sol 冻结；测试 README 中包含隔离环境复现命令，不属于公开 fixture 敏感内容。
+- 下一步与责任模型：Terra/Root 可据此纳入 A1 回归门禁；Sol 冻结 AI ProducerRef 字段后，Luna 再补对应边界测试；继续等待实施指令，不启动 Bench/A2。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue/evidence_id；基线 `b2fd061`。
+
+### [20260901-2050-Root-首轮开发编排收工] PARTIAL - S1a/A1 实现与独立测试闭环完成
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调 / 评委视角验收
+- 时间：2026-09-01 20:50（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：依据技术执行书启动首轮项目开发，并依次完成 Sol 契约、Terra 实现、Luna 独立审计和缺陷回归。
+- 开始前已确认：技术执行书已结构化读取；正式材料与既有仓库契约优先级已执行；三个模型均按职责留下 START/收工记录。
+- 实际结果：完成 P0 契约 v0.1.0、A1 Pydantic/Schema/sample、33 项边界测试、两项缺陷修复和 Luna 独立复核；公开测试说明已改为环境无关命令，未保留本机临时路径。
+- 修改文件：详见 S1a、A1、L-A1、A1-fix1 各记录；本条额外修正 `tests/README.md` 的公开复现命令。
+- 命令与测试：全量 A1 `33 passed`；Pydantic + Draft 2020-12 Schema 双验证、Schema 导出一致、路径/HTTPS 非回归、fixture 去敏和 `git diff --check` 均通过。
+- 接口、Schema、规则或决策：唯一公共模型和 `/api/v1/scans` 契约已冻结；本轮不进入 A2。AI `ProducerRef` 的字段名属于公共 Schema 决策，未获项目负责人批准前不修改。
+- 已知风险与未完成项：需项目负责人确认是否采用 `provider`、`model_id`、`prompt_schema_digest` 三个 AI producer 字段；确认后由 Sol/Root 更新契约，Terra 实现，Luna补回归。分支尚未创建 PR。
+- 下一步与责任模型：项目负责人确认 AI producer 字段方案；随后完成 A1.1 小版本闭环，再进入 A2 Git/ZIP 安全输入。
+- 关联提交/PR/Issue/evidence_id：`02c3d46`、`b2fd061`；本轮后续提交待创建。

@@ -141,6 +141,28 @@ def _validate_relative_locator(value: str) -> str:
     return value
 
 
+def _contains_absolute_path_fragment(value: str) -> bool:
+    """Detect a Unix or Windows absolute path embedded in user-visible text."""
+    for index, character in enumerate(value):
+        previous = value[index - 1] if index else ""
+        following = value[index + 1] if index + 1 < len(value) else ""
+        boundary = not previous or (not previous.isalnum() and previous not in "_./")
+
+        if character == "/" and boundary and following != "/":
+            return True
+        if (
+            character.isalpha()
+            and following == ":"
+            and index + 2 < len(value)
+            and value[index + 2] in {"/", "\\"}
+            and boundary
+        ):
+            return True
+        if character == "\\" and boundary and following == "\\":
+            return True
+    return False
+
+
 def _stable_unique(values: list[str | StrEnum]) -> list[str | StrEnum]:
     return sorted(set(values), key=lambda item: str(item))
 
@@ -500,7 +522,7 @@ class ScanError(P0Model):
 
     @model_validator(mode="after")
     def validate_error(self) -> "ScanError":
-        if _ABSOLUTE_PATH.search(self.message) or _SENSITIVE_FRAGMENT.search(self.message):
+        if _contains_absolute_path_fragment(self.message) or _SENSITIVE_FRAGMENT.search(self.message):
             raise ValueError("error message must be sanitized")
         for evidence_id in self.evidence_ids:
             _validate_id(evidence_id, "evd")
@@ -582,6 +604,8 @@ class ScanRun(P0Model):
             raise ValueError("non-terminal scan status cannot have finished_at")
         if self.status is ScanStatus.FAILED and not self.errors:
             raise ValueError("failed scan requires at least one structured error")
+        if self.status is ScanStatus.PARTIAL and not any(error.recoverable for error in self.errors):
+            raise ValueError("partial scan requires at least one recoverable structured error")
         if self.status is ScanStatus.COMPLETED and self.stage is not ScanStage.COMPLETED:
             raise ValueError("completed scan must have completed stage")
         if self.status is ScanStatus.QUEUED and (self.stage is not ScanStage.QUEUED or self.progress != 0):

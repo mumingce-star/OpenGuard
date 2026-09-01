@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "purpose": "Public A1 boundary fixtures for domain-contract validation",
+    "author_role": "GPT-5.6 Luna",
+    "license": "Apache-2.0",
+    "public": true
+  },
+  "partial_scan": {
+    "status": "partial",
+    "stage": "report",
+    "errors": [
+      {
+        "code": "scanner_timeout",
+        "stage": "scan",
+        "message": "scanner timed out before the report stage",
+        "recoverable": true
+      }
+    ]
+  }
+}
