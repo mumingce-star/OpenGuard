@@ -1,0 +1,65 @@
+# macOS and editors
+.DS_Store
+.AppleDouble
+.LSOverride
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Node.js
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+dist/
+build/
+coverage/
+
+# Local data and runtime artifacts
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+data/uploads/
+data/cache/
+data/tmp/
+tmp/
+logs/
+*.log
+
+# Generated reports and benchmark runs
+artifacts/
+reports/generated/
+benchmarks/results/local/
+
+# Local model weights and archives
+models/
+*.gguf
+*.safetensors
+*.bin
+*.zip
+*.tar
+*.tar.gz
