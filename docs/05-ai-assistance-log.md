@@ -6,6 +6,7 @@
 |---|---|---|---|---|---|---|
 | 2026-08-31 | GPT-5.6 Sol | 竞赛规则、架构和评分拆解 | 项目总体框架初稿 | 团队后续确认范围 | 对照正式附件逐项核对 | 是 |
 | 2026-09-01 | GPT-5.6 Sol / Codex Root | 解析技术执行书并与正式材料、既有架构交叉核对 | P0 领域与 API 契约 v0.1.0 | 项目负责人需审核公共字段；Terra/Luna分别做实现与独立验证 | Markdown/敏感信息检查，后续以 Pydantic、JSON Schema 和负面 fixture 交叉验证 | 是 |
+| 2026-09-01 | GPT-5.6 Terra / Codex Root | 按冻结契约实现 A1 Pydantic 模型、Schema、样例和负面测试 | `backend/app/domain`、导出 Schema、sample 与 11 个单元测试 | Root 在隔离环境复核依赖与测试；Luna 后续独立审计边界 fixture | pytest 11/11、Pydantic/JSON Schema 双验证、Schema 导出一致性、敏感信息与 diff 检查 | 是 |
 
 记录原则：
 

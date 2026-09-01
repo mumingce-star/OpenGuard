@@ -1,0 +1,218 @@
+{
+  "contract_version": "0.1.0",
+  "id": "scn_123e4567-e89b-12d3-a456-426614174000",
+  "status": "completed",
+  "stage": "completed",
+  "progress": 100,
+  "project": {
+    "id": "prj_123e4567-e89b-12d3-a456-426614174000",
+    "name": "sample-python-project",
+    "source_type": "git",
+    "source": "https://example.org/open/sample-python-project.git",
+    "revision": "a1b2c3d4",
+    "root_digest": {
+      "algorithm": "sha256",
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "created_at": "2026-09-01T12:00:00Z"
+  },
+  "components": [
+    {
+      "id": "cmp_123e4567-e89b-12d3-a456-426614174000",
+      "name": "pydantic",
+      "version": "2.13.4",
+      "ecosystem": "pypi",
+      "component_type": "library",
+      "purl": "pkg:pypi/pydantic@2.13.4",
+      "license_expression_id": "lic_123e4567-e89b-12d3-a456-426614174000",
+      "evidence_ids": [
+        "evd_123e4567-e89b-12d3-a456-426614174000"
+      ],
+      "detected_by": [
+        "manifest_parser"
+      ],
+      "confidence": 1.0
+    }
+  ],
+  "ai_assets": [
+    {
+      "id": "ast_123e4567-e89b-12d3-a456-426614174000",
+      "asset_type": "model",
+      "name": "sample-model",
+      "provider": "hugging_face",
+      "source_url": "https://huggingface.co/example/sample-model",
+      "authorization_status": "pending",
+      "evidence_ids": [
+        "evd_223e4567-e89b-12d3-a456-426614174000"
+      ],
+      "detected_by": [
+        "static_pattern"
+      ],
+      "confidence": 0.9
+    }
+  ],
+  "licenses": [
+    {
+      "id": "lic_123e4567-e89b-12d3-a456-426614174000",
+      "expression": "MIT",
+      "normalized_ids": [
+        "MIT"
+      ],
+      "source_url": "https://spdx.org/licenses/MIT.html",
+      "evidence_ids": [
+        "evd_323e4567-e89b-12d3-a456-426614174000"
+      ],
+      "confidence": 0.95,
+      "verification_status": "pending"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evd_123e4567-e89b-12d3-a456-426614174000",
+      "kind": "manifest_field",
+      "locator": "pyproject.toml:project.dependencies[0]",
+      "excerpt": "pydantic==2.13.4",
+      "start_line": 10,
+      "end_line": 10,
+      "content_hash": {
+        "algorithm": "sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "detected_by": "manifest_parser",
+      "producer": {
+        "type": "parser",
+        "name": "openguard-manifest-parser",
+        "version": "0.1.0"
+      },
+      "observed_at": "2026-09-01T12:01:00Z",
+      "verification_status": "pending"
+    },
+    {
+      "id": "evd_223e4567-e89b-12d3-a456-426614174000",
+      "kind": "url",
+      "locator": "https://huggingface.co/example/sample-model",
+      "detected_by": "static_pattern",
+      "producer": {
+        "type": "parser",
+        "name": "openguard-asset-detector",
+        "version": "0.1.0"
+      },
+      "observed_at": "2026-09-01T12:01:05Z",
+      "verification_status": "pending"
+    },
+    {
+      "id": "evd_323e4567-e89b-12d3-a456-426614174000",
+      "kind": "license_text",
+      "locator": "LICENSE",
+      "excerpt": "MIT License",
+      "detected_by": "manual",
+      "producer": {
+        "type": "human",
+        "name": "sample-review",
+        "version": "1"
+      },
+      "observed_at": "2026-09-01T12:01:10Z",
+      "verification_status": "pending"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "obl_123e4567-e89b-12d3-a456-426614174000",
+      "license_expression_id": "lic_123e4567-e89b-12d3-a456-426614174000",
+      "action": "retain_license_text",
+      "trigger": "distribution context requires review",
+      "description": "Retain applicable license information after human review.",
+      "source_evidence_ids": [
+        "evd_323e4567-e89b-12d3-a456-426614174000"
+      ],
+      "rule_id": "license.notice.review",
+      "rule_version": "0.1.0",
+      "verification_status": "pending"
+    }
+  ],
+  "findings": [
+    {
+      "id": "rsk_123e4567-e89b-12d3-a456-426614174000",
+      "resource_kind": "component",
+      "resource_id": "cmp_123e4567-e89b-12d3-a456-426614174000",
+      "outcome": "review_required",
+      "severity": "low",
+      "title": "License evidence requires review",
+      "description": "The license evidence is present but its distribution context has not been verified.",
+      "rule_id": "license.notice.review",
+      "rule_version": "0.1.0",
+      "trigger": "License evidence is pending verification.",
+      "evidence_ids": [
+        "evd_123e4567-e89b-12d3-a456-426614174000",
+        "evd_323e4567-e89b-12d3-a456-426614174000"
+      ],
+      "obligation_ids": [
+        "obl_123e4567-e89b-12d3-a456-426614174000"
+      ],
+      "remediation_id": "rem_123e4567-e89b-12d3-a456-426614174000",
+      "confidence": 0.9
+    }
+  ],
+  "remediations": [
+    {
+      "id": "rem_123e4567-e89b-12d3-a456-426614174000",
+      "finding_id": "rsk_123e4567-e89b-12d3-a456-426614174000",
+      "summary": "Review the component license evidence before distribution.",
+      "steps": [
+        "Review the referenced license evidence.",
+        "Record the human verification outcome."
+      ],
+      "evidence_ids": [
+        "evd_323e4567-e89b-12d3-a456-426614174000"
+      ],
+      "generated_by": {
+        "type": "rule_engine",
+        "name": "openguard-rule-template",
+        "version": "0.1.0"
+      },
+      "verification_status": "pending"
+    }
+  ],
+  "summary": {
+    "component_count": 1,
+    "ai_asset_count": 1,
+    "evidence_count": 3,
+    "finding_counts": {
+      "pass": 0,
+      "warning": 0,
+      "review_required": 1,
+      "unknown": 0
+    }
+  },
+  "provenance": {
+    "input_digest": {
+      "algorithm": "sha256",
+      "value": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "inventory_digest": {
+      "algorithm": "sha256",
+      "value": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "tool_versions": [
+      {
+        "type": "parser",
+        "name": "openguard-manifest-parser",
+        "version": "0.1.0"
+      }
+    ],
+    "ruleset_version": "0.1.0",
+    "contract_version": "0.1.0",
+    "ai_enabled": false,
+    "ai_model": null,
+    "run_environment": {
+      "python_version": "3.12",
+      "platform": "example-platform",
+      "openguard_version": "0.1.0"
+    }
+  },
+  "errors": [],
+  "report_links": [],
+  "created_at": "2026-09-01T12:00:00Z",
+  "started_at": "2026-09-01T12:00:30Z",
+  "finished_at": "2026-09-01T12:02:00Z"
+}

@@ -273,3 +273,51 @@
 - 已知风险与未完成项：后续日志补丁必须锚定唯一记录标题与最后一行，并在写入后验证记录位于末尾。
 - 下一步与责任模型：GPT-5.6 Terra 按 `docs/spec/p0-domain-contract.md` 开始 A1 最小实现。
 - 关联提交/PR/Issue/evidence_id：关联 `20260901-2017-Sol-P0领域契约收工`。
+
+### [20260901-2020-Terra-A1核心数据模型开工] START - 实现 P0 领域模型最小闭环
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程
+- 时间：2026-09-01 20:20（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`，基线提交 `02c3d46`，开始前工作区干净。
+- 任务目标：仅按冻结的 `docs/spec/p0-domain-contract.md` 实现 A1 Pydantic v2 领域模型、独立 JSON Schema、有效示例与聚焦单测；不开始 A2、API、ingestion、扫描器、规则、AI 或报告。
+- 开始前已确认：已完整读取 `AGENTS.md`、`README.md`、完整共享日志、`docs/handoffs/TERRA_HANDOFF.md` 和 P0 契约；Sol 的 `20260901-2017-Sol-P0领域契约收工` 为 COMPLETE，且最新更正说明其契约仍有效；当前无同范围在途记录。
+- 实际结果：完成协作与契约预检，开始 A1。
+- 修改文件：预计新增 `backend/pyproject.toml`、`backend/app/__init__.py`、`backend/app/domain/__init__.py`、`backend/app/domain/models.py`、`schemas/p0/scan-result.schema.json`、`examples/sample-scan-result.json`、`tests/unit/test_p0_domain_models.py`；更新 `docs/05-ai-assistance-log.md` 并仅追加本共享日志。
+- 命令与测试：将运行 Pydantic/JSON Schema 示例校验、pytest、`git diff --check`、敏感信息与绝对路径检查；不运行目标项目代码或扫描器。
+- 接口、Schema、规则或决策：严格消费契约 v0.1.0；不创建 `Resource`、`Risk` 或 `ScanResult` 平行模型，不改变字段、枚举、风险语义、状态机或 API。
+- 已知风险与未完成项：契约对 `ProducerRef` 的 AI 专属字段未列出稳定字段名；A1 将不扩展该公开结构，且样例保持非 AI producer。任何需新增公共字段的情况立即停止并交 Sol。
+- 下一步与责任模型：GPT-5.6 Terra 完成 A1 后给 Luna 提供有效样例、导出 Schema 和负面验证入口；Luna 负责独立 fixture/引用完整性回归。
+- 关联提交/PR/Issue/evidence_id：无；本轮不提交、不切分支。
+
+### [20260901-2029-Root-首轮开发编排阶段报告] PARTIAL - S1a 已完成，A1 等待权限处理
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调
+- 时间：2026-09-01 20:29（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：解析技术执行书并依次调度 Sol 契约、Terra 实现、Luna 独立验证三个闭环。
+- 开始前已确认：S1a 契约已完整提交为 `02c3d46`；Terra 已完成 A1 开工预检且尚未创建产品文件。
+- 实际结果：S1a 已完成并可独立验收；Terra 当前停在桌面权限审批，工作区只有其 append-only START 记录，未形成半套代码；为避免并发覆盖，Root 未接管 Terra 文件。
+- 修改文件：本条仅追加共享日志；S1a 文件和提交见 `20260901-2017-Sol-P0领域契约收工`。
+- 命令与测试：确认本机 bundled Python 已有 Pydantic 2.13.4，但缺少 pytest/jsonschema；检查 Git 状态确认尚无 Terra 产品文件。
+- 接口、Schema、规则或决策：契约 v0.1.0 保持冻结；不因测试依赖审批改变公共字段。
+- 已知风险与未完成项：A1 需处理依赖安装审批后继续；Luna 必须等待 Terra COMPLETE，避免对未完成 Schema 制作 fixture。
+- 下一步与责任模型：用户仅在审批内容明确为项目隔离环境中的 Pydantic/pytest/jsonschema 安装时批准；Terra随后完成 A1，Luna再执行验证。
+- 关联提交/PR/Issue/evidence_id：`02c3d46`；Terra task `01a05ce8-8817-77b2-8ea2-0a9f0b45240f`。
+
+### [20260901-2037-Root-A1核心模型验收] COMPLETE - 完成 A1 Pydantic、Schema、样例与单测闭环
+
+- 作者：Codex Root Coordinator（实现：GPT-5.6 Terra）
+- 对话角色：项目协调 / 主线工程验收
+- 时间：2026-09-01 20:37（Asia/Shanghai）
+- 分支或工作区：`feat/p0-domain-contract`
+- 任务目标：在冻结契约 v0.1.0 下完成可运行的 A1 领域模型、独立 Schema、共同样例和关键负面测试，不进入 A2。
+- 开始前已确认：Terra 已完整生成预计的 A1 文件；其待审批项仅为隔离测试环境依赖安装，不涉及公共契约或系统级安装。
+- 实际结果：实现 9 个一等领域对象、公共枚举和值对象，覆盖 `extra=forbid`、ID/UTC/哈希/行号/置信度、AI pending、状态终态、summary 和全聚合交叉引用校验；Schema 与 Pydantic 导出完全一致；样例包含组件、AI 资产、3 条证据、复核风险、义务、整改和 provenance。
+- 修改文件：`backend/pyproject.toml`、`backend/app/__init__.py`、`backend/app/domain/__init__.py`、`backend/app/domain/models.py`、`schemas/p0/scan-result.schema.json`、`examples/sample-scan-result.json`、`tests/unit/test_p0_domain_models.py`、`docs/05-ai-assistance-log.md`、本共享日志。
+- 命令与测试：在 `/private/tmp/openguard-a1-venv` 隔离环境安装锁定依赖；`PYTHONPATH=backend .../pytest -q tests/unit/test_p0_domain_models.py` 为 `11 passed in 0.42s`；独立 JSON Schema + sample + Pydantic 校验通过；存储 Schema 等于 `ScanRun.model_json_schema()`；`git diff --check` 与敏感信息/绝对路径扫描通过。
+- 接口、Schema、规则或决策：未改变契约/API；未新增 `Resource/Risk/ScanResult` 平行模型；运行依赖 `pydantic==2.13.4`，开发依赖 `jsonschema==4.26.0`、`pytest==8.4.2`，仅写入项目声明和临时隔离环境。
+- 已知风险与未完成项：Terra 对话的原待审批工具状态可忽略/拒绝，Root 已完成等价安全验证；Luna 仍需独立补充非对称引用、partial/error、locator 脱敏和 AI producer 等边界审计。
+- 下一步与责任模型：GPT-5.6 Luna 只扩展 A1 fixtures/负面测试和复现说明；发现实现缺陷先以失败测试报告，不擅改公共 Schema。
+- 关联提交/PR/Issue/evidence_id：基线 `02c3d46`；A1 实现提交待创建。
