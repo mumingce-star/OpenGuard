@@ -4,7 +4,7 @@
 
 审计日期：2026-09-02
 
-审计对象：分支 `feat/a2-zip-ingestion`、基线 `0b7e4b7` 上尚未提交的 A2-0/A2-1 本地 ZIP 纵切。
+审计对象：分支 `feat/a2-zip-ingestion` 的不可变实现提交 `53499ea`（基线 `0b7e4b7`）所包含的 A2-0/A2-1 本地 ZIP 纵切。
 
 ## 1. 范围与结论
 
@@ -110,12 +110,12 @@ PYTHONPATH=backend python -m pytest -q
 git diff --check
 ```
 
-复现记录还必须绑定 commit 或工作树摘要、Python/ZIP 库版本、运行 profile、配置摘要、命令、结果、复核角色和脱敏状态。当前分支尚未提交，所以不能把 `0b7e4b7` 单独当作包含本实现的不可变版本标识。
+复现记录已绑定实现提交 `53499ea`、Python 3.12.13 标准库 `zipfile`、macOS 本地开发 profile、默认服务端配置、命令、结果、复核角色与脱敏状态。该绑定只支持本地开发纵切证据；后续 Linux/容器 profile 仍须生成独立运行记录。
 
 ## 8. 证据等级与编号建议
 
 - `EVD-S2-DESIGN-001` 只证明 S2/A2 设计、实现审查和独立可测性追溯，**不得**作为本次 ZIP 实现通过证据。
-- 建议 Root 在提交、依赖/运行 profile 固定、复现记录和敏感信息复核后，检查冲突并分配候选 `EVD-A2-ZIP-IMPL-001`。在 Root 正式批准前，其状态只能是 `pending_root_assignment`，不得进入报告的 `verified` claim。
+- Root 已分配 `EVD-A2-ZIP-IMPL-001`，绑定提交 `53499ea`、2026-09-02 本地复现、Python 3.12.13、独立安全测试 36 项与全量 101 项、Root/Sol/Terra/Luna 复核链和推送前脱敏检查。它只能支持 `verified-local-dev-slice` 主张，不得被引用为 A2 总门禁、Linux 隔离、TrustedEgress 或完整 ZIP corpus 已通过。
 - 当前可给出的等级是 `verified-local-dev-slice`：实现已读审、36 项独立安全测试和 101 项全量回归可复现，但系统级控制与完整 corpus 未闭合。
 
 ## 9. 未关闭门禁与 Root 交接

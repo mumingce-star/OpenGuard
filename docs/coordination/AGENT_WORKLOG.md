@@ -1039,3 +1039,14 @@
 - 日志治理：本轮曾出现旧块被追加补丁误复制；未删除或改写历史，已用 EOF AMENDMENT 标明首次记录为权威。后续追加必须只锚定当前唯一 EOF。
 - 下一步与责任模型：Root 执行最终测试、提交并推送；固定提交后批准 `EVD-A2-ZIP-IMPL-001` 并追加发布记录。下一独立任务点在本次发布完成后另行启动。
 - 关联提交/PR/Issue/evidence_id：候选 `EVD-A2-ZIP-IMPL-001` 待首个不可变提交哈希；提交/远端分支待形成。
+
+### [20260902-1048-Root-A2ZIP发布] COMPLETE - 实现证据提交已推送 GitHub
+
+- 作者：Codex Root Coordinator；对话角色：统一验收、证据批准与发布；时间：2026-09-02 10:48（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-ingestion`；实现提交 `53499ea` 已推送到 `origin/feat/a2-zip-ingestion`。
+- 发布内容：20 个竞赛作品文件，包含 `backend/app/security/`、`backend/app/ingestion/`、Terra 单测、Luna 独立安全测试、测试/后端说明、SEC-A2-009 最小澄清、Sol 实现终审、AI 记录、协作日志与进度台账；未上传竞赛原始 PDF/DOCX、缓存、虚拟环境、密钥或成员隐私。
+- 复现证据：Root 在提交前使用 Python 3.12.13 运行全量 `101 passed in 0.25s`，compileall、`git diff --check`、P0 四文件零差异及敏感信息/本机绝对路径扫描通过；Terra/Luna 分项最新为 19/36，P0 为 46。
+- 证据批准：`EVD-A2-ZIP-IMPL-001` 已绑定提交 `53499ea`、2026-09-02 macOS 本地开发 profile、上述命令/结果和四角色复核链，证据等级仅为 `verified-local-dev-slice`。不得引用为完整 ZIP corpus、A2 总门禁、TrustedEgress 或 Linux 隔离完成。
+- GitHub 状态：远端新分支创建成功；PR 创建入口 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/a2-zip-ingestion`。按仓库治理规则不直接合并 `main`。
+- 下一步与责任模型：Root 提交并推送本发布记录/证据回填，使远端最终 HEAD 包含发布元数据；之后另行启动下一个独立任务点。
+- 关联提交/PR/Issue/evidence_id：实现提交 `53499ea`；`EVD-A2-ZIP-IMPL-001`；分支 `https://github.com/mumingce-star/OpenGuard/tree/feat/a2-zip-ingestion`。
