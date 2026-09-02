@@ -16,7 +16,7 @@ from app.security.errors import IngestionSecurityError
 
 if TYPE_CHECKING:
     from app.ingestion import ReadOnlyScanSession
-    from app.scanners import PythonP0MappingResult
+    from app.scanners import JavascriptP0MappingResult, PythonP0MappingResult
 
 
 _SCHEMA = "openguard.zip-inventory"
@@ -30,6 +30,12 @@ _RUNTIME_ERROR = IngestionSecurityError("scanner_failed", "cli_runtime_failed")
 class _PythonDependenciesFailure:
     """A private value lets the scan service perform its mandatory final checks."""
 
+    code: str
+    reason: str
+
+
+@dataclass(frozen=True)
+class _JavascriptDependenciesFailure:
     code: str
     reason: str
 
@@ -151,6 +157,56 @@ def run_local_zip_python_dependencies(
             service.close()
 
 
+def javascript_dependency_payload(inventory: Inventory, mapping: JavascriptP0MappingResult) -> dict[str, object]:
+    """Serialize the frozen JavaScript parser/mapper output with P0 null fields."""
+    from app.scanners import JavascriptP0MappingResult
+
+    if type(mapping) is not JavascriptP0MappingResult:
+        raise _RUNTIME_ERROR
+    return {
+        "schema": "openguard.javascript-dependencies", "version": "1", "root_digest": inventory.root_digest,
+        "mapper_schema_version": mapping.schema_version, "parser_schema_version": "b1-javascript-manifest/v1",
+        "status": mapping.status.value,
+        "components": [item.model_dump(mode="json") for item in mapping.components],
+        "evidence": [item.model_dump(mode="json") for item in mapping.evidence],
+        "diagnostics": [{"code": item.code, "severity": item.severity, "manifest_path": item.manifest_path, "field_locator": item.field_locator, "start_line": item.start_line, "end_line": item.end_line, "message": item.message} for item in mapping.diagnostics],
+    }
+
+
+def run_local_zip_javascript_dependencies(
+    archive_path: Path, workspace_root: Path, *, clock: Callable[[], datetime]
+) -> tuple[Inventory, JavascriptP0MappingResult]:
+    """Run JS parsing only as a bounded A2-2 trusted consumer."""
+    from app.ingestion import ScanReadLimits
+    from app.scanners import map_javascript_manifest_result, parse_javascript_manifests
+
+    try:
+        archive_stream = archive_path.open("rb")
+    except OSError as error:
+        raise _INPUT_ERROR from error
+    service: ZipIngestionService | None = None
+    try:
+        service = ZipIngestionService(workspace_root)
+
+        def consume(session: ReadOnlyScanSession) -> JavascriptP0MappingResult | _JavascriptDependenciesFailure:
+            try:
+                parsed = parse_javascript_manifests(session)
+                return map_javascript_manifest_result(parsed, root_digest=session.inventory.root_digest, observed_at=clock())
+            except IngestionSecurityError as error:
+                return _JavascriptDependenciesFailure(error.code, error.reason)
+            except Exception:
+                return _JavascriptDependenciesFailure(_RUNTIME_ERROR.code, _RUNTIME_ERROR.reason)
+
+        with archive_stream:
+            result = service.ingest_with_consumer(archive_stream, consume, read_limits=ScanReadLimits(single_file_max_bytes=2 * 1024 * 1024, total_max_bytes=8 * 1024 * 1024))
+        if isinstance(result.consumer_result, _JavascriptDependenciesFailure):
+            raise IngestionSecurityError(result.consumer_result.code, result.consumer_result.reason)
+        return result.inventory, result.consumer_result
+    finally:
+        if service is not None:
+            service.close()
+
+
 def _write_error(error: IngestionSecurityError, stream: TextIO) -> None:
     stream.write(f"{error.code}:{error.reason}\n")
 
@@ -171,7 +227,8 @@ def main(
         output.write("usage: python -m app.cli LOCAL_ZIP\n")
         return 0
     python_dependencies = len(args) == 2 and args[0] == "--python-dependencies"
-    if not python_dependencies and len(args) != 1:
+    javascript_dependencies = len(args) == 2 and args[0] == "--javascript-dependencies"
+    if not python_dependencies and not javascript_dependencies and len(args) != 1:
         _write_error(_USAGE_ERROR, errors)
         return 2
 
@@ -180,6 +237,9 @@ def main(
             if python_dependencies:
                 now = clock or (lambda: datetime.now(timezone.utc))
                 inventory, mapping = run_local_zip_python_dependencies(Path(args[1]), Path(directory), clock=now)
+            elif javascript_dependencies:
+                now = clock or (lambda: datetime.now(timezone.utc))
+                inventory, mapping = run_local_zip_javascript_dependencies(Path(args[1]), Path(directory), clock=now)
             else:
                 inventory = run_local_zip(Path(args[0]), Path(directory))
     except IngestionSecurityError as error:
@@ -189,7 +249,7 @@ def main(
         _write_error(_RUNTIME_ERROR, errors)
         return 1
 
-    payload = python_dependency_payload(inventory, mapping) if python_dependencies else inventory_payload(inventory)
+    payload = python_dependency_payload(inventory, mapping) if python_dependencies else javascript_dependency_payload(inventory, mapping) if javascript_dependencies else inventory_payload(inventory)
     json.dump(payload, output, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     output.write("\n")
     return 0

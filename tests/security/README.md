@@ -130,3 +130,34 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_p0_mapper_cli.p
 按 Sol 终审发现、Terra 修复后的 `FINAL-B1P0-001/002` 增补两组独立测试，不增加原冻结 30 个 ID。`FINAL-B1P0-001` 手工构造 `project.optional-dependencies.dev%2Efoo[0]`，验证完整 encoded group 的非 canonical round-trip 被拒绝，并复核真实 parser 合法 optional group。`FINAL-B1P0-002` 手工验证重复 EvidenceDraft、不一致 declared_name、noncanonical raw、带 query direct URL、任意及敏感 diagnostic 均统一失败为 `scanner_failed:python_p0_mapper_failed`，并复核合法 diagnostics、direct URL、VCS 不回归。
 
 本轮真实结果：新增选择 `2 passed`；Luna 全文件 `32 passed`；Terra B1-2 `45 passed`；B1-1 unit+independent `103 passed`；P0 `46 passed`；全量 `355 passed`；`schema_export_equal=true`；compileall、`git diff --check`、敏感信息/本机路径/尾随空白检查通过。仍仅支持本地 macOS/POSIX 可信 consumer 的 Python P0 CLI 纵切，不批准完整 evidence 发布，不外推许可证、JS/lockfile、Web/Git、Linux isolation、TrustedEgress、Bench 或完整竞赛材料。
+
+### B1-3/B1-4 JavaScript manifest、P0 mapper 与 CLI 独立回归
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_b1_javascript_manifest_p0_cli_independent.py
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_b1_javascript_manifest_p0_cli.py
+```
+
+本轮独立文件共收集 27 项：冻结 `10 POS + 16 NEG` 逐 ID 测试，加 1 项 ID 目录校验；结果为 `22 passed`、`5 failed`。Terra 实现侧回归为 `35 passed`。独立测试只新增 `tests/security/test_b1_javascript_manifest_p0_cli_independent.py`，使用标准库动态 JSON/ZIP、手写 locator/UUIDv5 known-answer、JSON/error 字面量；不复用 Terra helper 生成期望值，不修改 backend、Terra unit、规格、P0/Schema/sample、PROJECT_PROGRESS 或 third_party。
+
+通过范围包括四类根直接声明与稳定排序、scoped name/RFC6901、exact/range/tag、lock v2/v3 direct enrichment、duplicate/conflict/partial、固定 clock/known-answer、真实磁盘 ZIP→A2→parser→mapper→CLI、P0 Component/Evidence reload、旧 inventory/Python CLI 字节兼容、JS 0/1/2、错误脱敏、A2 integrity/consumer/正常 cleanup，以及 Node/npm/网络/目标代码/旁路文件 API 不调用。由于独立门禁仍为红色，本轮按放行规则未宣称全量、Schema、compileall 或竞赛 evidence 通过。
+
+稳定复现的 5 项 P1 缺陷如下，失败原样保留在独立测试中，未代 Terra 修改：
+
+| ID | 观察 | 影响 |
+|---|---|---|
+| `POS-B1-JS-001` | 合法 `~2.0.0` semver range 被报为 `dependency_selector_unsafe`，导致该声明丢失 | 四字段解析与可复现依赖清单不完整 |
+| `NEG-B1-JS-009` | `https://registry.npmjs.org/a/../a.tgz` 被接受为 canonical resolved URL | 非 canonical URL 可能进入 source/evidence |
+| `NEG-B1-JS-010` | forged inventory 的 `size_bytes` 与实际读取数据不一致仍可完成 | inventory/read seal 不完整 |
+| `NEG-B1-JS-011` | forged `ParsedJavascriptManifest.size_bytes` 为非 int 仍可通过 mapper | frozen DTO 完整性校验不完整 |
+| `NEG-B1-JS-012` | `package.json:/dependencies//a` 空 JSON-pointer token 仍可通过 mapper | Evidence locator 结构未完全 canonical 化 |
+
+当前仅能批准“本地 macOS/POSIX、可信 A2-2 consumer、根 package.json + lock v2/v3 的直接 npm 声明”这一候选范围；Linux isolation、TrustedEgress、Git/Web/API、传递依赖、许可证/合规、OpenGuard-Bench 和完整竞赛材料仍未被本轮证明。
+
+#### B1-3/B1-4 修复后加固复测
+
+按 Terra `2146 AMENDMENT` 要求，先原样复跑上节 27 项，结果为 `27 passed`；原有 10 POS + 16 NEG ID、断言与失败历史均未放宽或改写。随后在同一独立测试文件追加 5 组不增加冻结 ID 数量的加固断言：严格 JSON 拒绝 `NaN`/`Infinity`/`-Infinity`，手工 DTO 拒绝非法/大写 npm name、file/path/协议 selector，拒绝非 UTF-8 字节序 manifest 以及 filename-kind、跨目录 source/lock、non-canonical resolved URL 篡改。
+
+本轮真实结果：加固选择 `5 passed, 27 deselected`；Luna 独立全文件 `32 passed`；Terra JS unit `37 passed`；JS 实现+独立合计 `69 passed`；Python/A2/P0 聚焦 `355 passed`；全量 `424 passed`；显式 `schema_export_equal=True`；`compileall -q backend/app tests`、`git diff --check` 和敏感模式扫描通过。当前结果只批准本地 macOS/POSIX、可信 A2-2 consumer 的有界 JavaScript 直接依赖候选 evidence；不可变提交绑定、Root/Sol 终审、Linux/TrustedEgress、Git/Web/API、完整 Bench、许可证/合规与报告材料仍未由本轮批准。

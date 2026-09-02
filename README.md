@@ -8,21 +8,23 @@
 
 ## 当前可运行状态（2026-09-02）
 
-现在已经可以独立跑通三层真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**本地 ZIP → 生命周期绑定只读会话 → `requirements*.txt` / `pyproject.toml` → 可溯源 Python 依赖声明 DTO**，以及 **冻结 DTO → P0 `Component`/`Evidence` → 稳定依赖 JSON**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
+现在已经可以独立跑通四层真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**生命周期绑定只读会话 → Python/JavaScript manifest**，**声明与 npm lock v2/v3 → P0 `Component`/`Evidence`**，以及 **Python/JavaScript 两种稳定依赖 JSON CLI**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
 
-当前还不是完整参赛成品：新 CLI 已能把 ZIP 中声明的 Python 依赖映射为 P0 对象，但尚不代表依赖已安装/解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、JavaScript/TypeScript 与 lockfile、许可证规则、AI 解释、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、AI 解释、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
 使用 Python 3.12 环境，在项目根目录运行：
 
 ```bash
 PYTHONPATH=backend python -m app.cli ./your-project.zip
 PYTHONPATH=backend python -m app.cli --python-dependencies ./your-project.zip
+PYTHONPATH=backend python -m app.cli --javascript-dependencies ./your-project.zip
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_javascript_manifest_p0_cli.py tests/security/test_b1_javascript_manifest_p0_cli_independent.py
 PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_p0_mapper_cli.py tests/security/test_b1_python_p0_mapper_cli_independent.py
 PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_manifest_parser.py tests/security/test_b1_python_manifest_parser_independent.py
 PYTHONPATH=backend python -m pytest -q
 ```
 
-第一条命令成功时输出 inventory JSON，第二条输出已声明的 Python 依赖及 P0 `Component`/`Evidence`；安全拒绝、输入错误、只读会话/parser/mapper 用法和退出码说明见 [backend/README.md](backend/README.md)。随后两条命令分别复现 B1-2、B1-1 的实现侧与独立安全测试，最后一条复现当前 355 项自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
+前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper 用法和退出码说明见 [backend/README.md](backend/README.md)。随后三条命令分别复现 JavaScript、Python mapper、Python parser 的实现侧与独立安全测试，最后一条复现当前 424 项自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
 
 ## 竞赛交付定义
 

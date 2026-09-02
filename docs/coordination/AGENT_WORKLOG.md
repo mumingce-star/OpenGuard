@@ -2007,3 +2007,141 @@
 - GitHub 分支 `feat/b1-p0-mapper-cli` 已成功创建并推送；不可变实现提交为 `daee8a8`，证据绑定提交为 `69ca38c`。远端提供 PR 创建入口，但本轮不越权创建或合并 PR。
 - 已上传范围严格限于 13 个竞赛交付文件：项目规则/README、mapper/CLI/export、规格与运行说明、Terra/Luna 测试、AI/共享日志和进度台账；未上传全局规则、正式附件、缓存、虚拟环境、临时 ZIP、凭据或无权再分发内容。
 - 本条仅回填发布事实，不改变 `EVD-B1-PYTHON-P0-CLI-001` 已绑定的实现提交或有界证据范围。
+
+### [20260902-2052-Luna-JSManifest风险同步] START - 只读准备 JavaScript/TypeScript 独立验证
+
+- 作者：GPT-5.6 Luna；时间：2026-09-02 20:52（Asia/Shanghai）；任务配置按用户要求使用 GPT-5.6 Luna、max；分支 `feat/b1-p0-mapper-cli`，不切换、不提交、不推送。
+- 阅读确认：已阅读 `OpenGuard/AGENTS.md`、`README.md`、共享日志至物理 EOF、`PROJECT_PROGRESS.md`，以及最新 `b1-python-manifest-parser.md` 与 `b1-p0-mapper-cli.md`；确认 B1-2 已发布但能力边界仍为本地 Python P0 CLI 纵切。
+- 本轮范围：只读整理下一阶段 JavaScript/TypeScript manifest + P0 映射/CLI 的独立验证风险清单；除本条与收工记录外不修改项目文件，不实现、不生成 fixture、不提交或推送。
+- 验收：风险清单必须区分契约冻结前置、独立性/安全、确定性/P0 映射、CLI 兼容、第三方/材料证据和非目标外推；等待 Root 提供冻结规格、Terra 实现交接及精确 POS/NEG ID 后再开始测试。
+- token：非硬估算 `1k-3k`；客户端无精确遥测，不编造数值。
+
+### [20260902-2053-Luna-JSManifest风险同步] COMPLETE - 只读同步完成，等待冻结规格与实现交接
+
+- 阅读/状态确认：已完成 `AGENTS.md`、`README.md`、共享日志物理 EOF、`PROJECT_PROGRESS.md`、B1-1/B1-2 最新规格及当前 Git 状态核对；当前实际分支为 `feat/b1-js-manifest-p0-cli`，工作区除本轮日志外无修改。START 中沿用的 Python 分支名为上下文笔误，不影响本轮只读结论。
+- 下一阶段风险清单：
+  1. 契约尚未冻结：需先明确 `package.json` 支持字段、npm name/scope 规范化、range/tag/alias/file/link/workspace/git/URL 分类、package-lock 版本及选定 yarn/pnpm lockfile 范围；不得直接套用 Python exact-pin 语义。
+  2. lockfile 不可信输入：必须处理 v1/v2/v3 或明确选定版本、`packages`/`dependencies` 结构、root 与 nested package identity、重复 JSON key、类型/深度/数量/字符串配额、integrity/resolved 的证据和冲突，不静默 first/last。
+  3. P0 身份与 locator：冻结 npm Component 的 version/purl/source_url 规则、`@scope/name`、百分号/Unicode/冒号路径、package.json 字段 locator、跨 manifest/lockfile 合并和冲突诊断；ID、排序、clock、root digest 必须有独立 known-answer。
+  4. 非执行安全：禁止 npm/Node subprocess、lifecycle scripts、`require`/import、构建后端、网络/DNS/registry 访问和目标树旁路读取；继续使用 A2 sealed inventory/read-only session、限额、最终完整性复验及 cleanup 优先级。
+  5. CLI 兼容：冻结新 flag、Python/JS 单独或组合编排、旧 `LOCAL_ZIP` help/usage/stdout/stderr/exit byte compatibility、partial/error sentinel、JSON v1 和无 workspace 残留；旧模式不得导入 JS parser/mapper/clock。
+  6. 独立验证与证据：Root/Sol 需提供逐 ID POS/NEG、DTO/错误字面量、P0 v0.1.1 不变声明、第三方 Node 依赖台账与运行 profile；Luna 用动态小型 ZIP/手工期望值逐 ID 验证，不复用 Terra helper，不把锁文件版本声明推导为已安装/已解析/已合规。
+- 材料边界：本阶段只能证明 JS/TS 本地解析与 P0 纵切；许可证、漏洞、安装/解析、Web/Git、Linux/TrustedEgress、Bench、九章报告、资源表和截图指标追溯仍需独立证据，不能由 Python B1-2 绿灯外推。
+- 本轮无实现、无 fixture、无测试、无第三方台账变更；不提交、不推送。等待 Root 提供冻结 JS/TS 规格、Terra 实现交接及精确 POS/NEG ID 后再开始独立测试。
+- token：本次运行精确 token 数不可获得；开工估算 `1k-3k`，本轮在范围内完成，未发生范围调整；未编造精确消耗。
+
+### [20260902-2054-Sol-B1JSP0CLI设计门禁] START - 冻结 JavaScript manifest parser 与 P0/CLI 兼容契约
+
+- 作者：GPT-5.6 Sol；对话角色：架构、公共契约、安全与竞赛证据门禁；时间：2026-09-02 20:54（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-js-manifest-p0-cli`，基线/HEAD `380b896`；保留 Luna 2052/2053 的 append-only 风险同步记录，不切换分支、不提交、不推送。
+- 前置核验：已完整读取根 `AGENTS.md`、`README.md`、共享日志至当前物理 EOF、`PROJECT_PROGRESS.md` 与 `SOL_HANDOFF.md`，核对 Git 分支、工作区和最近提交；B1-1/B1-2 已发布并有有界证据，当前无 Terra 同范围实现，Luna 只读风险同步已 COMPLETE。
+- 任务目标：新增 B1-3 JavaScript/TypeScript manifest parser 规格与 B1-4 DTO→P0/CLI 规格，冻结 package.json/package-lock.json 发现、资源/JSON安全、npm 声明与 lock 语义、workspace/引用分类、诊断/partial、Evidence/UUID/P0 映射、新 CLI 模式和旧 inventory/Python 模式兼容。
+- 预计修改：仅新增 `docs/spec/b1-javascript-manifest-parser.md`、`docs/spec/b1-javascript-p0-cli.md`，最小追加 `docs/05-ai-assistance-log.md` 与本日志；禁止修改 backend、tests、P0 模型/Schema/sample、`PROJECT_PROGRESS.md`、third_party 或已有冻结规格。
+- 范围裁决方向：本轮至少支持 `package.json` 与 `package-lock.json`；npm-shrinkwrap、yarn、pnpm 是否纳入须以单轮可实现、可独立验证及无需新增第三方 parser 为门槛，宁可明确非目标。禁止 Node/npm 子进程、目标代码执行、安装、联网、路径旁路或从声明推断许可证/已安装事实。
+- 验收计划：对照当前 A2/B1/P0/CLI 实现冻结精确 DTO、错误、版本、known-answer 与 POS/NEG ID；检查两个规格的跨文档一致性、ID 唯一计数、Markdown fence、`git diff --check`、untracked whitespace、受保护路径零差异、敏感信息/本机绝对路径及物理 EOF。
+- token：本 Sol 设计任务非硬估算 `8k-14k`；客户端无本轮精确 token 遥测，收工只报告可验证范围与调整，不编造数值。
+
+### [20260902-2112-Sol-B1JSP0CLI设计门禁] AMENDMENT/PARTIAL - 中断留痕与范围收缩
+
+- 20:54 START 后已完成 B1/P0/A2/CLI 兼容基线读取与 UUID 预计算，但对话被外部中断；中断前未创建规格、未修改实现/测试/P0/进度/third_party，也未提交或推送。
+- Root 将交付收缩为单一 `docs/spec/b1-javascript-manifest-p0-cli.md`，且仅支持 `package.json` 与 `package-lock.json` lockfileVersion 2/3；npm lock v1、npm-shrinkwrap、yarn、pnpm 与 workspace 跨包解析均明确非目标。该裁决替代 20:54 START 中“两份规格”和待定 lockfile 范围，不改写历史。
+- 本条是中断状态留痕，不代表设计完成、实现存在、测试通过或 evidence 可批准。
+
+### [20260902-2113-Sol-B1JSP0CLI设计门禁续跑] START - 单规格最小契约收口
+
+- 作者：GPT-5.6 Sol；在既有 `feat/b1-js-manifest-p0-cli` / `380b896` 上续跑，不重新扩展范围、不切分支、不提交、不推送。
+- 唯一设计交付为 `docs/spec/b1-javascript-manifest-p0-cli.md`（约 500 行以内），另仅追加 AI 记录与本日志；冻结最小 DTO、严格 JSON/限额、npm 字段/引用、lock v2/v3 `packages`、证据/P0/UUID、精确 JS CLI、旧 inventory/Python 字节兼容、0/1/2、cleanup/clock 及 `10 POS + 16 NEG`。
+- token：续跑非硬估算 `4k-8k`；无精确遥测，不伪造数值。
+
+### [20260902-2120-Root-B1JSP0CLI设计接管] AMENDMENT/COMPLETE - Root 收缩并冻结最小契约
+
+- Sol 续跑在限定时间内仍未生成规格文件，为避免长时间占用已由 Root 中断；中断前只追加日志，没有实现、测试或规格产出。Root 保留 Sol 已完成的 B1/A2/P0/CLI 风险分析，并接管最小契约冻结。
+- 新增单一规格 `docs/spec/b1-javascript-manifest-p0-cli.md`，状态 `FROZEN_DESIGN_BASELINE`；只支持 `package.json` 与 `package-lock.json` v2/v3 的根直接依赖，明确排除 npm lock v1、shrinkwrap、Yarn、pnpm 和 workspace 跨包解析。
+- 冻结 DTO、严格 JSON/重复 key/配额、四类依赖字段、selector 安全、lock enrichment、稳定 diagnostic/partial、RFC6901 locator、P0/UUID、`--javascript-dependencies`、旧两模式 CLI 兼容、A2 cleanup 与 10 POS + 16 NEG。
+- 修改边界：除本规格和 append-only 日志外未修改 backend/tests/P0/Schema/sample/PROJECT_PROGRESS/third_party；尚无实现或测试，证据保持 `IMPLEMENTATION_UNVERIFIED`。下一步交 Terra 实现，再交 Luna max 独立验证。
+- token：Root 接管属于本轮 `20k-35k` 总估算内的范围收缩；精确 token 遥测不可获得，不编造数值。
+
+### [20260902-2130-Terra-B1JSManifestP0CLI] START - 实现 B1-3/B1-4 JavaScript 本地依赖纵切
+
+- 作者：GPT-5.6 Terra；时间：2026-09-02 21:30（Asia/Shanghai）；分支 `feat/b1-js-manifest-p0-cli`；不提交、不推送。
+- 开始前确认：已读根 README、共享日志至 Root 2120 物理 EOF、PROJECT_PROGRESS、Terra 交接及唯一冻结规格 `b1-javascript-manifest-p0-cli.md`；B1-1/B1-2 已发布，当前 JS 规格是 `FROZEN_DESIGN_BASELINE`。
+- 预计修改：新增 `javascript_manifest.py`、`javascript_p0_mapper.py` 与 Terra unit；更新 scanner exports、CLI、backend README、AI/共享日志。不得修改 P0/Schema/sample、冻结规格、Luna tests、PROJECT_PROGRESS 或 third_party；无前端、部署或数据库改动。
+- 验收计划：实现 package.json/package-lock v2/v3 根直接依赖解析、冻结 DTO/P0/CLI、10 POS+16 NEG 可检索测试，随后运行 JS/Python/A2/P0/全量/Schema/compileall/diff/敏感检查。若发现规格不可安全实现矛盾，保留失败并标记 BLOCKED。
+- token：本轮非硬估算 `10k-16k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-2150-Terra-B1JSManifestP0CLI] COMPLETE - B1-3/B1-4 实现侧候选完成
+
+- 作者：GPT-5.6 Terra；时间：2026-09-02 21:50（Asia/Shanghai）；未提交、未推送。
+- 实际交付：新增 `javascript_manifest.py`，只经 A2-2 会话读取严格 UTF-8/重复 key 检测的 `package.json` 与 package-lock v2/v3；实现四类根直接 npm 声明、selector/name/限额、lock root/direct-entry/version/resolved 诊断与 partial。新增 `javascript_p0_mapper.py`，生成稳定 Evidence/Component UUID、RFC6901 locator、npm purl、锁定 HTTPS URL，且在 P0 构造前验证冻结 DTO、排序、诊断、UTC/root/locator/evidence。
+- CLI 与边界：新增精确 `--javascript-dependencies LOCAL_ZIP`，使用 2 MiB/8 MiB A2 read limits、单次 clock 与 cleanup 后 sentinel；旧 inventory 和 Python CLI 分派/输出不改。未实现 lock v1/shrinkwrap/Yarn/pnpm/workspace/传递依赖、Node/npm 运行、依赖安装/求解、许可证或合规判断。
+- 测试：新增 `tests/unit/test_b1_javascript_manifest_p0_cli.py`，10 POS+16 NEG ID 均可检索，动态 JSON/ZIP 覆盖字段、scoped/RFC6901、exact/range/tag、v2/v3 enrichment、duplicate/conflict/partial、JSON/限额/selector/lock/DTO/clock/CLI。Terra JS `35 passed`；Python/A2/P0 聚焦 `271 passed`；全量 `390 passed`；`schema_export_equal=True`；compileall 与 `git diff --check` 通过。
+- 实际修改：`backend/app/scanners/javascript_manifest.py`、`javascript_p0_mapper.py`、scanner exports、CLI、backend README、Terra unit、AI/共享日志；无 API、数据库、前端、部署、P0/Schema/任务状态变更。Luna 下一步必须不复用 Terra helper，以动态 ZIP/手工 expected 覆盖 10 POS + 16 NEG、旧模式兼容、A2 cleanup 和篡改 DTO。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，范围未扩展且实现侧任务完整完成；无精确遥测，不能诚实判断实际消耗是否落在估算区间。
+
+### [20260902-2119-Luna-B1JSManifestP0Independent] START - B1-3/B1-4 独立安全验证
+
+- 作者：GPT-5.6 Luna；时间：2026-09-02 21:19（Asia/Shanghai）；分支 `feat/b1-js-manifest-p0-cli`；本轮不提交、不推送。
+- 开始前确认：已按 AGENTS.md 重读项目 README、共享日志至物理 EOF、PROJECT_PROGRESS、Luna 交接、冻结规格 `docs/spec/b1-javascript-manifest-p0-cli.md`，并核对 Terra `2150 COMPLETE`；当前工作树保留 Terra 未提交候选实现及其边界。
+- 本轮允许修改且仅限：新增 `tests/security/test_b1_javascript_manifest_p0_cli_independent.py`，更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本共享日志；不得修改 backend、Terra unit、规格、P0/Schema/sample、PROJECT_PROGRESS、third_party。
+- 验收：逐 ID 独立覆盖冻结 10 POS + 16 NEG；使用动态小 ZIP、手写 expected UUID/locator/JSON/error，不调用 Terra 私有 helper 生成期望值；重点验证重复 key、配额、selector、lock v2/v3、canonical URL、伪造 DTO/diagnostic/status、UTC/未知异常、无执行/网络/旁路读取、旧 CLI、P0 reload、A2 integrity/consumer/cleanup 与未支持范围不外推。失败原样保留并按 P0/P1/P2/P3 升级，不替实现方修复。
+- token：本轮非硬估算 `6k-10k`；客户端无精确 token 遥测，收工时如实报告实际无法精确获得及是否调整范围。
+
+### [20260902-2128-Luna-B1JSManifestP0Independent] PARTIAL - B1-3/B1-4 独立验证完成，发现 5 项 P1
+
+- 作者：GPT-5.6 Luna；时间：2026-09-02 21:28（Asia/Shanghai）；分支 `feat/b1-js-manifest-p0-cli`；不提交、不推送。
+- 本轮仅修改：新增 `tests/security/test_b1_javascript_manifest_p0_cli_independent.py`；更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本共享日志。未修改 backend、Terra unit、冻结规格、P0/Schema/sample、PROJECT_PROGRESS、third_party。
+- 独立验收：27 项收集（10 POS + 16 NEG 逐 ID，另 1 项 ID 目录校验），`22 passed`、`5 failed`。通过项覆盖动态 JSON/ZIP、严格重复 key/配额/name/selector、lock v2/v3、partial diagnostics、固定 clock/UUID known-answer、真实 ZIP→A2→parser→mapper→CLI/P0 reload、旧 inventory/Python CLI 字节、0/1/2、错误脱敏、清理/完整性/consumer 优先级及无 Node/npm/网络/目标代码/旁路文件 API；Terra unit `35 passed`；`git diff --check` 与允许文件尾随空白扫描通过。
+- 失败原样保留并升级 P1：`POS-B1-JS-001` 合法 `~2.0.0` range 被 selector 拒绝；`NEG-B1-JS-009` dot-segment HTTPS URL 被接受；`NEG-B1-JS-010` forged inventory size 与读取数据不一致未拒绝；`NEG-B1-JS-011` forged manifest `size_bytes` 非 int 未拒绝；`NEG-B1-JS-012` Evidence locator 空 JSON-pointer token 未拒绝。未运行全量/Python-A2-P0/Schema/compileall 发布门禁，因为冻结放行要求 Luna 独立验证先全绿。
+- 下一步输入：Terra 需针对上述五项给出修订或保持失败的实现说明与回归证据；Sol 需裁决 dot-segment/空 token 的 canonical 解释及 P1 优先级；Root 需在修复复测、不可变提交绑定和完整门禁后决定 evidence 是否批准。当前不批准 B1-3/B1-4 evidence 发布，不外推 Linux/TrustedEgress、Git/Web/API、传递依赖、许可证/合规、OpenGuard-Bench 或完整竞赛材料。
+- token：本次运行精确 token 数不可获得；开工估算 `6k-10k`，范围未调整；由于无精确遥测，不能诚实判断实际消耗是否落在该区间。
+
+### [20260902-2130-Terra-B1JSP1审计修复] START - 关闭 B1-3/B1-4 独立审计 P1
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 21:30（Asia/Shanghai）；分支 `feat/b1-js-manifest-p0-cli`；不提交、不推送。
+- 开始前确认：已读取共享日志至 Luna `20260902-2128` PARTIAL，完整阅读现有 JS 独立安全测试与冻结 B1-3/B1-4 规格；独立测试、P0/Schema/sample、`PROJECT_PROGRESS.md` 与 third_party 均为保护边界。
+- 修复范围：仅调整 JS parser/mapper、Terra JS 单测、必要 AI/共享日志；关闭 Luna 5 项与 Root 补充探针：selector `~`、HTTPS dot-segment、inventory read size、DTO size、空 locator token、严格 JSON 常量、伪造名称/selector/manifest 顺序，以及 DTO 组合不变量。所有失败保持统一脱敏。
+- 验收计划：先原样重跑 Luna 5 项和 Root 探针，再运行 Terra JS、Luna 全文件、Python/A2/P0、全量、Schema、compileall、diff 与敏感检查；不改冻结规格或独立测试。
+- token：本轮非硬估算 `12k-18k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-2145-Terra-B1JSP1审计修复] COMPLETE - Luna 五项 P1 与 Root JS probe 已关闭
+
+- 作者：GPT-5.6 Terra；时间：2026-09-02 21:45（Asia/Shanghai）；分支 `feat/b1-js-manifest-p0-cli`；未提交、未推送。
+- 修复：selector 仅将 `~/` 视为路径，合法 `~2.0.0` 保留；严格 JSON 拒绝 `NaN`/`Infinity`/`-Infinity`；resolved HTTPS 拒绝明文/percent-decoded dot segment；读取字节同时精确核对 inventory size 与 SHA-256。
+- mapper 加固：拒绝 manifest 非 int/负 size、文件名-kind 不匹配、非 UTF-8 顺序、非法 npm name 或 selector、错误 source/lock kind 或跨目录配对、非 canonical resolved URL、空或非法 RFC6901 token、非 parser 可产生的 Evidence/diagnostic/status 组合；所有失败仍统一为 `scanner_failed:javascript_p0_mapper_failed` 或 parser 稳定错误。
+- 复现与验证：修复前 Luna 五项原样 `5 failed`；修复后同一选择 `5 passed`，Root NaN/Infinity、伪造 name/selector、manifest UTF-8 顺序 probe 通过；Terra JS `37 passed`，Luna 独立全文件 `27 passed`，合并 `64 passed`；Python/A2/P0 聚焦 `236 passed`；全量 `419 passed`；`schema_export_equal=True`，compileall 通过。最终 `git diff --check` 与敏感扫描将在本条后再次复核。
+- 边界：未修改 Luna security test、冻结规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party；不联网、不执行目标代码、不安装 npm 依赖，不提交/推送。当前只完成实现与本地回归，不代表 Root 不可变证据绑定或竞赛发布批准。
+- 下一步：Luna 可原样复跑其全文件确认；随后 Root/Sol 按冻结放行门禁复核、绑定不可变提交与有界 evidence。
+- token：本次运行精确 token 数不可获得；开工估算 `12k-18k`，修复和验证在原范围内完整完成，未发生范围调整；不编造精确消耗。
+
+### [20260902-2146-Terra-B1JSP1审计修复] AMENDMENT - 收工静态门禁复核
+
+- `schema_export_equal=True`、`compileall -q backend/app tests`、`git diff --check` 均在 2145 COMPLETE 后实际通过。
+- 敏感扫描对本轮 parser/mapper/unit/日志未发现凭据、私钥或可交付本机绝对路径；命中仅为代码标识符 `token` 与历史日志的说明性路径文本，已人工判读。
+- 本条只回填收工验证事实，不改写 2145 COMPLETE、冻结契约、Luna 独立测试或任何受保护文件；未提交、未推送。
+
+### [20260902-2138-Luna-B1JSP1IndependentRecheck] START - B1-3/B1-4 修复后独立复核
+
+- 作者：GPT-5.6 Luna；时间：2026-09-02 21:38（Asia/Shanghai）；分支 `feat/b1-js-manifest-p0-cli`；同一 Luna max 任务，不创建新对话；本轮不提交、不推送。
+- 开始前确认：已重读 README、`docs/coordination/PROJECT_PROGRESS.md`、Luna/Terra/Sol 交接及冻结规格；共享日志已读至 Terra `2146 AMENDMENT` 物理 EOF；已核对当前 Terra 修复范围与工作树，原独立测试文件保持 10 POS + 16 NEG ID。
+- 验收顺序：先原样运行现有 27 项，确认此前 5 项断言未放宽；再仅在同一独立测试文件追加不增加冻结 ID 数量的加固断言，覆盖 NaN/Infinity、手工 DTO name/selector、非 UTF-8 manifest 排序、kind/filename、source/lock 同目录及 canonical URL。
+- 允许修改且仅限：`tests/security/test_b1_javascript_manifest_p0_cli_independent.py`、`tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本共享日志；不得修改 backend、冻结规格、P0/Schema、Terra unit、PROJECT_PROGRESS 或 third_party。expected 继续手写，不复用 Terra helper；若失败原样保留并按 P1/P2/P3 报告。
+- 回归计划：新增选择、Luna 全文件、Terra JS、Python/A2/P0、全量、Schema、compileall、diff、敏感/路径检查；若独立门禁不通过，不将实现侧或局部结果外推为发布 evidence。
+- token：本轮非硬估算 `6k-10k`；客户端无精确 token 遥测，收工时如实报告，范围如有调整另行说明。
+
+### [20260902-2141-Luna-B1JSP1IndependentRecheck] COMPLETE - 修复后独立复核与加固门禁通过
+
+- 作者：GPT-5.6 Luna；时间：2026-09-02 21:41（Asia/Shanghai）；分支 `feat/b1-js-manifest-p0-cli`；不提交、不推送。
+- 原样复跑结果：既有 27 项（10 POS + 16 NEG，ID 数量不变、断言未放宽）`27 passed`；新增加固选择 `5 passed, 27 deselected`；Luna 全文件 `32 passed`。加固覆盖严格 JSON 非有限数、手工 DTO 非法/大写 npm name、file/path/协议 selector、非 UTF-8 manifest 排序、filename-kind、source/lock 同目录与 canonical URL。
+- 联合门禁：Terra JS `37 passed`，JS 实现+独立 `69 passed`；Python/A2/P0 聚焦 `355 passed`；全量 `424 passed`；`schema_export_equal=True`；`compileall -q backend/app tests`、`git diff --check`、允许文件尾随空白与敏感模式扫描通过。
+- 修改边界：仅在既有 Luna security 测试文件追加加固断言，并更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本日志；未修改 backend、Terra unit、冻结规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party。未调用 Terra helper 生成 expected，不联网、不执行/安装 Node/npm 目标代码。
+- 结论：实现侧和独立本地回归门禁已通过，但本轮只确认 macOS/POSIX、可信 A2-2 consumer、根 package.json + package-lock v2/v3 直接 npm 声明的候选范围；不可变提交绑定、Root/Sol 最终 evidence 批准、Linux/TrustedEgress、Git/Web/API、传递依赖、许可证/合规、OpenGuard-Bench 与完整竞赛材料仍不由本条批准。
+- token：本次运行精确 token 数不可获得；开工估算 `6k-10k`，范围未调整；因无精确遥测，不能诚实判断实际消耗是否落在该区间。
+
+### [20260902-2148-Root-B1JSP0CLI验收] COMPLETE - 两个连续任务点通过 Root 集成门禁
+
+- 本轮完成 B1-3 JavaScript manifest parser 与 B1-4 P0/CLI 两个连续任务点；Sol 长时设计两次中断后，Root 将范围收缩为单一最小规格，Terra 完成实现，Luna 在原任务以 GPT-5.6 Luna/max 完成两轮独立验证，Terra 关闭全部发现项。
+- 缺陷闭环：Luna 5项 P1（合法 `~` range、dot-segment URL、inventory size、DTO size、空 locator token）和 Root 4类探针（非有限 JSON 常量、伪造 name、伪造 selector、manifest 乱序）均已关闭；Luna 原断言未放宽，并追加5组独立加固验证。
+- Root 回归：Terra JS `37 passed`、Luna JS `32 passed`、合计 `69 passed`；Python/A2/P0保护集 `236 passed`；全量 `424 passed`；P0 Schema 等值、compileall、tracked/untracked whitespace与受保护路径零差异均通过。
+- 真实运行：同一混合 ZIP 的 inventory、Python、JavaScript 三模式均 exit 0/stderr空；Python识别 `requests==2.32.5`，JS识别 `@scope/pkg==1.2.3`、`react==18.2.0`、`vite==5.0.7`，产生7条JS Evidence，全部 Component/Evidence 可由P0模型重新载入；固定 clock 两次 JS 输出逐字节一致，任务 workspace 清理后只保留外层测试ZIP。
+- 证据边界：候选 `EVD-B1-JAVASCRIPT-P0-CLI-001` 只允许 `verified-local-javascript-dependency-p0-cli-slice`；提交绑定前仍不发布为事实，且不外推 npm lock v1、shrinkwrap、Yarn/pnpm/workspace/传递依赖、许可证、安装/求解、Git/Linux/TrustedEgress、Web/API、报告或获奖竞争力。
+- token：本次运行精确 token 数不可获得；Root 开工估算 `20k-35k`，通过范围收缩在同一轮完整交付两个任务点，没有功能范围扩张；因客户端无精确遥测，不能诚实判断实际 token 是否落入估算区间。

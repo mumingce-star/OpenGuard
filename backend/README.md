@@ -134,6 +134,27 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_p0_mapper_cli.p
 这仍是本地 Python manifest 到 P0 的有界纵切，不是完整依赖清单、许可证/合规结论、报告、
 Git intake、TrustedEgress 或 Linux 隔离的运行级证明。
 
+## B1-3/B1-4 JavaScript manifest 与 P0 映射
+
+本地 ZIP 的 JavaScript 依赖纵切可通过以下显式模式运行：
+
+```bash
+PYTHONPATH=backend python -m app.cli --javascript-dependencies ./demo.zip
+```
+
+它仅在 A2-2 的受限只读 consumer 中读取根项目 `package.json` 与同目录
+`package-lock.json` v2/v3；支持四类根直接依赖，并以 lock 的直接 `packages` 条目补充
+精确版本和 canonical HTTPS registry URL。严格 JSON、任意层重复 key、输入配额、不安全
+selector、lock root 不一致与不受支持 lock 均返回稳定 partial 或脱敏失败。不会调用
+Node/npm、执行项目代码、安装依赖或联网；npm v1/shrinkwrap/Yarn/pnpm/workspace/传递依赖、
+许可证和合规结论均不在本纵切范围内。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_javascript_manifest_p0_cli.py
+```
+
 ## 本地 ZIP CLI 演示
 
 在项目根目录、已安装项目测试依赖的环境中，可用以下命令只运行本地 ZIP 安全接收与
