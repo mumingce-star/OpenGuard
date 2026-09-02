@@ -1399,3 +1399,11 @@
 - 上传边界：两个提交均不含原始DOCX/PDF、`.DS_Store`、缓存、虚拟环境、密钥或成员隐私；P0模型/契约/Schema/sample零差异。
 - 当前状态：本地实现与证据绑定完成，下一步推送 `feat/a2-readonly-scan-session` 并回填远端发布状态；不创建或合并main PR。
 - 本条为当前物理 EOF 证据记录。
+
+### [20260902-1547-Root-A2只读会话发布] COMPLETE - A2-2 分支已推送 GitHub
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 15:47（Asia/Shanghai）。
+- 远端结果：`feat/a2-readonly-scan-session` 已创建并跟踪 `origin/feat/a2-readonly-scan-session`；远端已含 `abb6630`、`1f03ce0` 与证据绑定提交 `c5a9721`。
+- 上传内容：仅本任务16个竞赛作品文件及后续说明/证据回填；未上传原始DOCX/PDF、`.DS_Store`、缓存、虚拟环境、密钥或成员隐私。
+- PR入口：`https://github.com/mumingce-star/OpenGuard/pull/new/feat/a2-readonly-scan-session`；按现有治理规则保持未创建/未合并，等待依赖分支合并策略统一处理。
+- 关联证据：`EVD-A2-READONLY-SESSION-001` → `1f03ce0`，等级 `verified-local-dev-slice`；本条为当前物理 EOF 发布记录。
