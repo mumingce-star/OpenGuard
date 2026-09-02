@@ -2001,3 +2001,9 @@
 - `EVD-B1-PYTHON-P0-CLI-001` 已绑定不可变实现提交 `daee8a8b54b2c46adfe98eba31ffcb7c206d4133`，状态提升为 `APPROVED`；证据范围仅 `verified-local-python-dependency-p0-cli-slice`。
 - 绑定内容包括 CPython `3.12.13`、`packaging==26.3`、P0 contract `0.1.1`，B1-2 `77 passed`、聚焦回归 `159 passed`、全量 `355 passed`、Schema 等值、真实磁盘 ZIP 旧/新 CLI、P0 重载、固定 clock 重现、stderr/exit 与清理摘要。
 - 此时只形成本地不可变提交与绑定文档，尚未宣称 GitHub 远端已发布；下一步提交本绑定，再推送任务分支并回填可核对的远端状态。
+
+### [20260902-2043-Root-B1P0发布] COMPLETE - B1-2 任务分支已发布
+
+- GitHub 分支 `feat/b1-p0-mapper-cli` 已成功创建并推送；不可变实现提交为 `daee8a8`，证据绑定提交为 `69ca38c`。远端提供 PR 创建入口，但本轮不越权创建或合并 PR。
+- 已上传范围严格限于 13 个竞赛交付文件：项目规则/README、mapper/CLI/export、规格与运行说明、Terra/Luna 测试、AI/共享日志和进度台账；未上传全局规则、正式附件、缓存、虚拟环境、临时 ZIP、凭据或无权再分发内容。
+- 本条仅回填发布事实，不改变 `EVD-B1-PYTHON-P0-CLI-001` 已绑定的实现提交或有界证据范围。
