@@ -1169,3 +1169,11 @@
 - GitHub/上传范围：计划提交 CLI、两组测试、README/审计/AI/协作/进度和 `.gitignore` 共12个竞赛作品文件；明确排除未跟踪技术 DOCX、原始 PDF、临时 ZIP、缓存、虚拟环境、密钥和成员隐私。
 - 下一步与责任模型：Root 固定首个实现提交、回填 evidence/进度和远端状态，再推送新分支；组员代码若在其他仓库/私有分支，仍需具体链接或分支名才可审查。
 - 关联提交/PR/Issue/evidence_id：候选 `EVD-A2-ZIP-CLI-001`；提交/远端分支待形成；本条为当前物理 EOF 验收记录。
+
+### [20260902-1350-Root-A2ZIPCLI证据绑定] COMPLETE - 本地演示证据已绑定实现提交
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 13:50（Asia/Shanghai）。
+- 不可变实现提交：`910f745`（`feat: add safe local zip CLI demo`），包含经三模型与 Root 验收的12个竞赛作品文件；用户本地 DOCX 已由根 `.gitignore` 命中，未进入暂存或提交。
+- 证据批准：`EVD-A2-ZIP-CLI-001` 已绑定 `910f745`、Python 3.12.13、本轮111项/P0 46项/Schema等值/真实CLI演示，证据等级仅为 `verified-local-demo`。
+- 当前状态：本地实现与证据闭环已完成，下一步只进行远端分支推送和发布状态回填；不创建或合并 `main` PR。
+- 本条为当前物理 EOF 的提交后记录。

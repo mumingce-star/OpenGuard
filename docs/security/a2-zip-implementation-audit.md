@@ -160,4 +160,4 @@ Root 下一步应先决定本审计列出的剩余实现差异是否进入 A2-1 
 
 `BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY` 已于 2026-09-02 13:46 关闭：Luna 实际补充了 `tests/security/README.md` 的独立 CLI 复现命令、5 项覆盖范围及 `5 passed`/全量 `111 passed` 口径，并在共享日志以 AMENDMENT 更正先前声明。Root 随后独立复跑真实 ZIP CLI、全量 111 项、P0 46 项与 Schema 导出等值检查，结果通过。
 
-候选证据编号为 `EVD-A2-ZIP-CLI-001`，等级严格限定为 `verified-local-demo`；提交哈希与发布状态由 Root 在形成不可变提交后回填。该编号不改变第 10 节列出的任何开放系统门禁。
+证据编号 `EVD-A2-ZIP-CLI-001` 已绑定不可变实现提交 `910f745`，等级严格限定为 `verified-local-demo`。运行 profile 为 2026-09-02 macOS 本地开发环境、Python 3.12.13；复现入口、111 项全量测试、46 项 P0 回归、Schema 等值及 Root 真实成功/失败演示均记录于共享日志。本证据不改变第 10 节列出的任何开放系统门禁。
