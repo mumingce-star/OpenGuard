@@ -390,3 +390,22 @@ trigger 探针独立确认均为 `registry_schema_unsupported`，移除对象后
 持久化、幂等、revision/CAS、状态单向性、分页、重启读取、私有路径和损坏失败关闭纵切。
 不包含 FastAPI/HTTP、Git/ZIP 创建请求、worker/A4 Pipeline、Linux isolation、TrustedEgress、
 多机/高可用/灾备、exactly-once 外部副作用、B2-B7、前端、Bench 或完整竞赛作品。
+
+## 13. Root 不可变证据绑定（2026-09-02）
+
+`EVD-A3-DURABLE-SCAN-REGISTRY-001` 正式绑定实现提交
+`d2b26b0897978d156a461abae97e163a6cb3564d`，状态由
+`APPROVED-PENDING-ROOT-BINDING` 更新为 `APPROVED`。OpenGuard 版本以该 Git 提交为唯一标识；
+运行 profile 为本机 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程本地文件系统，
+测试通过既有隔离环境 `/private/tmp/openguard-a1-venv` 执行，未新增第三方运行依赖。
+
+Root 在提交前实际执行并得到：A3 实现侧 32 项 + Luna 独立 45 项合计 `77 passed`；P0
+`46 passed`；仓库全量 `501 passed`；`ScanRun.model_json_schema()` 与
+`schemas/p0/scan-result.schema.json` 等值；`compileall -q backend/app tests`、已跟踪与未跟踪
+文件 whitespace 检查均通过。Sol 已关闭两项审计 P1，Root 发布检查未发现开放 P0/P1、
+真实凭据、本机绝对路径或本轮新增的成员身份信息。
+
+该证据只证明第 12 节列出的单机 SQLite 有界能力。它不是 A3 FastAPI 完成证据，也不能用来
+声称 HTTP、worker/A4、Linux/TrustedEgress、多机/灾备、依赖许可证分析、前端、Bench、报告
+或完整竞赛作品已完成。后续任何代码修改都必须产生新的提交和新 evidence 绑定，不能沿用本 ID
+代表未测试版本。

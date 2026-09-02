@@ -2359,3 +2359,12 @@
 - 有界能力：仅批准本机 macOS/POSIX 单机 SQLite ScanRun 注册表候选；具备 canonical 快照、幂等、revision/CAS、状态单向性、稳定分页、重启读取、私有路径与损坏/schema 失败关闭。仍不包含 FastAPI/HTTP、worker/A4、Git、Linux/TrustedEgress、多机/灾备、Bench、前端或完整作品。
 - 发布状态：本条写入时尚未创建不可变提交，候选 `EVD-A3-DURABLE-SCAN-REGISTRY-001` 仍为 `APPROVED-PENDING-ROOT-BINDING`；下一步仅暂存明确交付文件、创建实现提交并回填提交哈希，然后推送 GitHub。
 - token：本次运行精确 token 数不可获得；Root 开工估算 `18k-28k`。因真人分工核对，范围从原拟的组员 B2 调整为用户 A3-0；调整后的 A3-0 在单轮范围内完整实现和验收，没有留下半成品，不能反推实际消耗是否落在估算区间。
+
+### [20260903-0006-Root-A3证据绑定] COMPLETE - EVD-A3-DURABLE-SCAN-REGISTRY-001 正式批准
+
+- 作者/角色/时间：Root；项目统筹、证据绑定与发布验收；2026-09-03 00:06（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`。
+- 不可变绑定：实现提交为 `d2b26b0897978d156a461abae97e163a6cb3564d`；`EVD-A3-DURABLE-SCAN-REGISTRY-001` 由 `APPROVED-PENDING-ROOT-BINDING` 更新为 `APPROVED`。该 ID 只代表这个提交，后续修改必须重新验证和绑定。
+- 运行 profile：本机 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程本地文件系统；依赖使用既有隔离环境 `/private/tmp/openguard-a1-venv`，A3 实现本身只使用 Python 标准库 `sqlite3/json`。
+- 证据摘要：A3 32+45=`77 passed`；P0 `46 passed`；全量 `501 passed`；Schema 等值、compileall、diff/whitespace、上传范围、隐私与凭据检查通过；当前无开放 P0/P1。
+- 人员边界：绑定内容仍只属于项目负责人（用户）的 A3-0；未接管扫描分析组员 B1-B7 或前端组员任务。发布提交只会包含竞赛工程交付物，不含原始 PDF/DOCX、缓存、虚拟环境或成员身份信息。
+- 严格非目标：未批准 FastAPI/HTTP、worker/A4、Git 输入、Linux/TrustedEgress、多机/灾备、exactly-once 外部副作用、Bench、前端或完整竞赛作品。下一步创建证据绑定提交并推送远端分支，随后回填远端状态。
