@@ -32,11 +32,10 @@ T = TypeVar("T")
 class ZipIngestionService:
     """A server-configured local ZIP boundary with no request-settable limits.
 
-    This service intentionally returns only an in-memory inventory.  The
-    workspace is deleted before the result is returned, so this initial vertical
-    slice cannot accidentally publish a partially materialized tree.  A future
-    task supervisor may retain the same descriptor-safe tree until its final
-    read-only consumer completes.
+    ``ingest`` returns only an in-memory inventory after cleanup.
+    ``ingest_with_consumer`` grants one trusted synchronous parser a bounded,
+    lifecycle-bound read capability, then expires it and removes the workspace
+    before returning. Neither entry point publishes a materialized tree.
     """
 
     def __init__(self, workspace_root: str | Path, limits: ZipSafetyLimits | None = None):
