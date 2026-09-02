@@ -161,3 +161,29 @@ PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_
 按 Terra `2146 AMENDMENT` 要求，先原样复跑上节 27 项，结果为 `27 passed`；原有 10 POS + 16 NEG ID、断言与失败历史均未放宽或改写。随后在同一独立测试文件追加 5 组不增加冻结 ID 数量的加固断言：严格 JSON 拒绝 `NaN`/`Infinity`/`-Infinity`，手工 DTO 拒绝非法/大写 npm name、file/path/协议 selector，拒绝非 UTF-8 字节序 manifest 以及 filename-kind、跨目录 source/lock、non-canonical resolved URL 篡改。
 
 本轮真实结果：加固选择 `5 passed, 27 deselected`；Luna 独立全文件 `32 passed`；Terra JS unit `37 passed`；JS 实现+独立合计 `69 passed`；Python/A2/P0 聚焦 `355 passed`；全量 `424 passed`；显式 `schema_export_equal=True`；`compileall -q backend/app tests`、`git diff --check` 和敏感模式扫描通过。当前结果只批准本地 macOS/POSIX、可信 A2-2 consumer 的有界 JavaScript 直接依赖候选 evidence；不可变提交绑定、Root/Sol 终审、Linux/TrustedEgress、Git/Web/API、完整 Bench、许可证/合规与报告材料仍未由本轮批准。
+
+### A3-0 durable ScanRun registry 独立安全回归
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_a3_scan_registry_independent.py
+```
+
+本轮独立文件共收集 31 项：冻结 `8 POS + 16 NEG` 逐 ID 覆盖，另加 7 项跨场景/加固断言；最终结果为 `30 passed`、`1 failed`。测试不生成或提交持久化 fixture，使用临时 SQLite、第二个 SQLite connection、两个独立 registry instance、真实 POSIX 权限/FIFO/符号链接、手工 SQL/字节损坏注入、线程并发 CAS、重启、close/activity 及错误脱敏探针；canonical JSON、状态转换和 error envelope 均由本文件按冻结契约手工构造，不复用 Terra 私有 helper。
+
+唯一失败为 `test_hardening_schema_declared_types_and_constraints_are_verified`：同名但错误声明类型、缺失 `scan_id` 主键/CHECK/幂等唯一约束的 schema 当前未被拒绝，未返回期望的 `registry_schema_unsupported`。该 P1 实现缺陷已原样保留，未修改 backend 或放宽独立断言；因此本轮未运行 Terra/P0/全量回归，也未批准 A3 evidence 发布。待 Terra 让 schema 类型、主键、检查约束、幂等唯一约束及 metadata 定义均 fail closed 后，由 Luna 原样复测。
+
+本轮仅新增本独立测试并更新本说明、AI 辅助记录和共享工作日志；未修改冻结规格、P0/Schema/sample、PROJECT_PROGRESS、Terra unit、第三方资源台账、HTTP/worker/A4 或扫描分析组员 B2-B7/前端组员任务。当前证据边界仍是本机 macOS/POSIX 单机持久注册表，不外推 Linux isolation、TrustedEgress、多机并发、FastAPI/API、OpenGuard-Bench 或完整竞赛材料。
+
+#### A3-0 schema hardening 复测
+
+按 Terra `2325 COMPLETE` 原样复跑：既有独立 31 项 `31 passed`；新增最小 schema probe 14 项 `14 passed`；独立文件合计 `44 passed`。新增 probe 未改变冻结 ID，逐项验证 metadata 列定义、scan_runs 类型/notnull/PK、revision `CHECK (>= 1)`、幂等 UNIQUE、额外 index/列均 fail closed 为 `registry_schema_unsupported`，并验证合法库 close 后可重开读取。
+
+后续门禁结果：Terra A3 `31 passed`；A3 独立+Terra 合计 `75 passed`；P0 `46 passed`；全量 `499 passed`；`schema_export_equal=True`；compileall、`git diff --check`、尾随空白、敏感模式和 world-writable 文件检查通过。A3-0 独立 P1 已关闭，但仍需 Root/Sol 做不可变提交绑定与有界 evidence 裁决；本地单机 POSIX 结果不外推 FastAPI、worker、Pipeline、Linux isolation、TrustedEgress、集群容灾、Bench 或完整竞赛材料。
+
+#### FINAL-A3-001 sqlite_master 对象 allowlist 独立复测
+
+按 Terra `2345 COMPLETE` 原始探针要求，在既有独立测试中加入 1 组 table/view/`AFTER INSERT` revision trigger 探针：探针选择 `1 passed`，Luna 全文件最终 `45 passed`。合法库分别注入额外用户表、view 及会把新行 revision 改为 999 的 trigger；每次重开均稳定返回 `registry_schema_unsupported`，移除对象后合法库可重开，原快照仍为 revision 1。未修改冻结 `8 POS + 16 NEG` ID 或放宽断言。
+
+联合复测：Terra A3 `32 passed`；A3 独立+Terra 合计 `77 passed`；P0 `46 passed`；全量 `501 passed`；`schema_export_equal=True`；compileall、`git diff --check` 和敏感检查通过。FINAL-A3-001 已由独立测试关闭，但 A3 candidate evidence 仍需 Sol/Root 做不可变提交绑定、范围声明和最终裁决；结果仅覆盖本机 macOS/POSIX 单机 registry，不外推 HTTP、worker、Pipeline、Linux isolation、TrustedEgress、集群容灾、Bench 或完整竞赛作品。

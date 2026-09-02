@@ -18,6 +18,24 @@ app/
 
 第一阶段不执行目标仓库代码，也不安装其依赖。
 
+## A3-0 持久 ScanRun 注册表
+
+`app.persistence.SQLiteScanRunRegistry` 是后续 A3 API/A4 编排的内部前置：在私有 POSIX
+目录中的 SQLite WAL 数据库持久化完整 P0 `ScanRun` 快照，并提供 revision CAS、创建请求
+fingerprint 幂等、稳定 keyset 分页和关闭语义。它不启动 HTTP、worker 或 scanner，也不保存
+ZIP、路径、凭据或报告正文。每次 CRUD 使用独立连接并固定 `WAL`、`FULL`、`foreign_keys` 和
+`trusted_schema=OFF`；快照以 strict UTF-8 canonical JSON BLOB 保存，损坏、未知 schema、锁竞争
+和路径权限问题只暴露稳定、脱敏的 `ScanRegistryError.code`。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_scan_registry.py
+```
+
+此结果仅证明单机 POSIX SQLite 上的持久 ScanRun 注册表纵切；FastAPI、后台 worker、Pipeline、
+外部 scanner、集群/备份/灾难恢复和 exactly-once 外部副作用仍不在范围内。
+
 ## A2-0/A2-1 本地 ZIP 安全边界
 
 `app.ingestion.ZipIngestionService` 是当前首条不联网的输入纵切。服务在构造时只

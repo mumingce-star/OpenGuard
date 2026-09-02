@@ -2069,6 +2069,16 @@
 - 验收计划：实现 package.json/package-lock v2/v3 根直接依赖解析、冻结 DTO/P0/CLI、10 POS+16 NEG 可检索测试，随后运行 JS/Python/A2/P0/全量/Schema/compileall/diff/敏感检查。若发现规格不可安全实现矛盾，保留失败并标记 BLOCKED。
 - token：本轮非硬估算 `10k-16k`；客户端无精确 token 遥测，收工如实报告。
 
+### [20260902-2255-Terra-A3持久注册表] COMPLETE - A3-0 SQLite ScanRun 注册表实现侧候选完成
+
+- 作者：GPT-5.6 Terra；时间：2026-09-02 22:55（Asia/Shanghai）；分支 `feat/a3-durable-scan-registry`；未提交、未推送。
+- 实际交付：新增 `backend/app/persistence/__init__.py` 与 `scan_registry.py`，只用 Python 3.12 标准库实现冻结 `StoredScanRun`、`ScanRunPage`、`ScanRegistryError` 和 `SQLiteScanRunRegistry`。完整 P0 `ScanRun` 以 strict UTF-8、重复 key/非有限数拒绝的 canonical JSON BLOB 保存；实现 create/get/replace/list/close、fingerprint 幂等、revision CAS/no-op、keyset 分页、重启读取、状态/stage/progress/time 单向性、WAL/FULL/private-path、schema/corruption/busy/closed 与 13 个脱敏错误码。
+- 测试与接口：新增 `tests/unit/test_a3_scan_registry.py`，8 POS+16 NEG ID 均可检索，动态 SQLite 覆盖 canonical create/get、跨 instance 幂等、CAS/no-op、分页、重开、终态、非法参数/状态、手工 JSON 损坏、未知 schema、symlink/busy/closed。没有新增 HTTP、OpenAPI、worker、A4 stage 编排、公共 P0 DTO 或数据库迁移接口。
+- 验证：A3 单测 `30 passed`；A3 + P0 `76 passed`；全量 `454 passed`；`schema_export_equal=True`；`compileall -q backend/app tests` 与 `git diff --check` 通过。敏感扫描在本轮代码/测试/说明无凭据、私钥或可交付本机绝对路径；命中仅为历史共享日志说明文本。
+- 边界：实际修改严格限于规格第 11 节的 Terra 文件；未修改 P0/Schema/sample、冻结规格、Luna 测试、PROJECT_PROGRESS 或 third_party；不接管扫描分析组员 B2-B7 或前端组员任务，不提交/推送。当前只是单机 POSIX SQLite 实现侧候选，Luna 尚未进行第二连接、真实权限/链接与 SQL 损坏独立验证，Root/Sol 尚未绑定 evidence。
+- 下一步：Luna 按冻结 8 POS+16 NEG 独立验证；若通过，由 Root/Sol 重跑重启/权限/损坏门禁并绑定不可变提交。不得将本地 registry 外推为 FastAPI、worker、Pipeline、exactly-once、多机容灾或完整 A3。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，实现与验证在原范围内完整完成，未发生范围调整；不编造精确消耗。
+
 ### [20260902-2150-Terra-B1JSManifestP0CLI] COMPLETE - B1-3/B1-4 实现侧候选完成
 
 - 作者：GPT-5.6 Terra；时间：2026-09-02 21:50（Asia/Shanghai）；未提交、未推送。
@@ -2157,3 +2167,195 @@
 - GitHub 分支 `feat/b1-js-manifest-p0-cli` 已成功创建并推送；不可变实现提交 `80ee2a9`，证据绑定提交 `708bc08`。远端提供 PR 创建入口，本轮不创建或合并 PR。
 - 上传范围为13个竞赛交付文件：根/后端运行说明、JS parser/mapper/CLI/export、冻结规格、Terra/Luna测试、security说明、AI/共享日志与进度台账；未上传正式附件、全局配置、缓存、虚拟环境、临时探针/ZIP、凭据或第三方不可再分发内容。
 - 本条只回填发布事实，不改变已绑定实现哈希、测试结果或有界证据范围。
+
+### [20260902-2226-Root-A3持久任务注册表] START - 冻结并实现项目负责人 A3 前置纵切
+
+- 作者：Codex Root Coordinator（调度 GPT-5.6 Sol / Terra / Luna）；对话角色：项目负责人主线协调；时间：2026-09-02 22:26（Asia/Shanghai）。
+- 分支或工作区：`feat/a3-durable-scan-registry`，基线 `3985385`；开始前工作区干净，现有 B1 JavaScript 分支已推送。
+- 任务目标：严格按技术执行书的真人分工，只推进项目负责人所有的 A3 前置能力——持久化 ScanRun 注册表；不实现扫描分析组员所有的 ScanCode/Syft/SPDX/规则/AI资源检测，也不实现前端组员所有的 React 页面。
+- 开始前已确认：重新核对 DOCX 表 5、表 7、表 10，确认项目负责人负责 API、Pipeline、AI Provider、报告、部署与集成，扫描分析组员负责 B1-B7 扫描分析，前端组员负责前端；原拟 B2 已取消。本轮不改变冻结 P0 Domain/API，不接管组员目录。
+- 预计修改文件：新增 `backend/app/persistence/` 的 SQLite 注册表实现与 `tests/unit/` 实现侧测试；Sol 仅新增 `docs/spec/` 规格，Luna 仅新增独立测试/测试说明；更新后端运行说明、AI辅助记录、进度台账和本共享日志。
+- 验收方法：锁定 SQLite/JSON/并发/idempotency/状态转换/重启恢复/损坏数据/路径与错误脱敏契约；运行 Terra 与 Luna 定向测试、P0回归、全量 pytest、Schema 等值、compileall、`git diff --check`、敏感信息与待提交清单检查；Root 验收后提交并推送本任务分支。
+- 接口、Schema、规则或决策：本轮是 A3 内部前置，不新增 HTTP 端点、不修改六个冻结 API、不开始 A4；注册表只持久化完整 P0 `ScanRun`，为后续 FastAPI 查询提供单一事实源。
+- 已知风险与未完成项：FastAPI HTTP 层、multipart ZIP、后台 worker 与真正 Pipeline 均不在本纵切；SQLite 并发和崩溃一致性必须有明确边界，不能以单元测试外推生产集群能力。
+- token：本轮非硬估算 `18k-28k`；因人员边界核对将范围从 B2 调整为 A3 注册表，仍保持单轮完整交付规模；客户端无精确 token 遥测时按全局规则如实报告。
+
+### [20260902-2231-Sol-A3持久注册表规格] START - 冻结 SQLite ScanRun 注册表内部契约
+
+- 作者：GPT-5.6 Sol；对话角色：架构、公共契约与安全门禁；时间：2026-09-02 22:31（Asia/Shanghai）。
+- 分支或工作区：`feat/a3-durable-scan-registry`，基线/HEAD `3985385`；工作区仅有 Root 本轮 append-only START，不切分支、不提交、不推送。
+- 前置核验：已按强制流程完整读取根规则/README、共享日志既有全量并续读至当前物理 EOF、PROJECT_PROGRESS、SOL_HANDOFF、P0 v0.1.1；使用 documents 只读流程核对技术执行书表 5/6/7/8/10/11/21，确认本任务属于项目负责人 A3 前置，不接管扫描分析组员的 B2-B7 或前端组员任务。
+- 任务目标：仅新增 `docs/spec/a3-durable-scan-registry.md`，冻结 SQLite 持久 `ScanRun` 注册表的 canonical JSON、最小 CRUD、幂等、状态转换、CAS/revision、并发、重启恢复、损坏/未知 Schema、路径权限、脱敏错误与关闭语义；不新增 HTTP API、不改变 `ScanRun`。
+- 验收计划：规格至少 `8 POS + 16 NEG`，接口与 P0 状态机逐项交叉核对；最终只更新 AI 辅助记录并在物理 EOF 追加 COMPLETE，运行 ID 唯一计数、Markdown fence、`git diff --check`、受保护路径和敏感/绝对路径静态检查。
+- token：本 Sol 设计轮非硬估算 `5k-9k`；客户端无精确 token 遥测，不编造精确消耗。
+
+### [20260902-2237-Sol-A3持久注册表规格] COMPLETE - A3-0 SQLite ScanRun 契约冻结
+
+- 作者：GPT-5.6 Sol；对话角色：架构、公共契约与安全门禁；时间：2026-09-02 22:37（Asia/Shanghai）；分支 `feat/a3-durable-scan-registry`，基线/HEAD `3985385`；未提交、未推送。
+- 实际交付：新增 `docs/spec/a3-durable-scan-registry.md`（v0.1.0，`IMPLEMENTATION_UNVERIFIED`），更新 `docs/05-ai-assistance-log.md`，并仅追加本日志；未修改 backend/tests/P0/Schema/sample/PROJECT_PROGRESS/third_party。
+- 冻结接口与决策：`SQLiteScanRunRegistry` 的 create/get/replace/list/close，完整 P0 ScanRun canonical JSON BLOB，revision 1 起算、CAS/no-op、请求 fingerprint 幂等、P0 状态/stage/progress/time 单向性、稳定分页、WAL/FULL、本地私有路径权限、重启保持 queued/running、损坏/未知版本失败关闭和 13 个脱敏内部错误码。
+- 验收矩阵：精确 `8 POS + 16 NEG`，覆盖跨 instance 幂等、并发 CAS、重启、分页、合法终态、重复/冲突、篡改 JSON/Schema、symlink/权限、busy、close 与底层错误脱敏；Terra/Luna 文件所有权和不复用 helper 的独立验证边界已冻结。
+- 实际验证：P0 领域回归使用 CPython 3.12.13 运行 `46 passed in 0.14s`；8/16 ID 各唯一出现一次；Markdown fence 12 个成对；`git diff --check` 通过，untracked 规格 no-index check 无空白诊断；受保护 backend/tests/P0/Schema/progress/third_party 零差异；新增 diff 无本机绝对路径、密钥或私钥模式。
+- 已知边界：无 SQLite 实现或运行测试，未批准 evidence；不新增 HTTP/OpenAPI，不实现 worker/lease/A4 Pipeline，不接管扫描分析组员 B2-B7 或前端组员任务，不证明 exactly-once side effect、多机容灾或完整 A3。
+- 下一步：Terra 按规格实现标准库 SQLite 纵切并逐 ID 自测；Luna 用第二连接、真实权限/链接和手工损坏注入独立验证；Root/Sol 仅在无开放 P0/P1 且绑定不可变提交后批准有界 evidence。
+- token：本次运行精确 token 数不可获得；开工估算 `5k-9k`，在收缩后的单规格范围内完整完成，未发生功能范围扩张；不编造精确消耗。
+
+### [20260902-2240-Terra-A3持久注册表] START - 实现 A3-0 SQLite ScanRun 注册表
+
+- 作者：GPT-5.6 Terra；对话角色：项目负责人主线工程 / 系统集成；时间：2026-09-02 22:40（Asia/Shanghai）；分支 `feat/a3-durable-scan-registry`；不提交、不推送。
+- 开始前确认：已按 `AGENTS.md` 阅读 README、共享日志、项目进度、Terra 交接和 Sol 冻结 `a3-durable-scan-registry.md`；Sol `2237 COMPLETE` 为当前物理 EOF。A3-0 仅是单机 SQLite 内部前置，不接管扫描分析组员 B2-B7 或前端组员任务。
+- 预计修改：新增 `backend/app/persistence/__init__.py`、`scan_registry.py`、`tests/unit/test_a3_scan_registry.py`；更新 `backend/README.md`、AI 记录和仅追加本日志。不得修改 P0/Schema/sample、冻结规格、Luna 测试、PROJECT_PROGRESS 或 third_party。
+- 验收计划：仅用 Python 3.12 标准库实现 canonical JSON、create/get/replace/list/close、幂等 fingerprint、CAS/no-op、状态/阶段/时间单向性、WAL/FULL、路径权限、损坏/版本/busy/close 与 13 个稳定脱敏错误；逐 ID 覆盖 8 POS+16 NEG，并运行定向、P0、全量、Schema、compileall、diff/敏感检查。
+- token：本轮非硬估算 `10k-16k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-2256-Terra-A3持久注册表] AMENDMENT/COMPLETE - 物理 EOF 收工权威记录
+
+- 位置更正：`20260902-2255-Terra-A3持久注册表 COMPLETE` 因通用 token 行补丁上下文命中历史记录而位于第 2072 行；其内容和结果不变，但不作为 EOF 收工位置。历史条目不删除、不移动、不改写。
+- 本条位于物理 EOF，确认 A3-0 实现侧候选完整收工：新增 persistence registry 与 Terra 单测，更新 backend README、AI 记录和本日志；未修改冻结规格、P0/Schema/sample、Luna 测试、PROJECT_PROGRESS 或 third_party；未提交、未推送。
+- 验证权威结果：A3 `30 passed`；A3+P0 `76 passed`；全量 `454 passed`；`schema_export_equal=True`；compileall、`git diff --check` 与敏感检查通过。SQLite 范围仅为单机 POSIX durable ScanRun registry，仍待 Luna 独立验证和 Root/Sol evidence 绑定。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，任务在原范围内完整完成，未发生范围调整；不编造精确消耗。
+
+### [20260902-2252-Luna-A3持久注册表独立验证] START - A3-0 SQLite ScanRun 注册表独立安全验证
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / 安全证据 / 材料形式检查
+- 时间：2026-09-02 22:52（Asia/Shanghai）
+- 分支或工作区：`feat/a3-durable-scan-registry`；HEAD `3985385`；保留 Terra/Root/Sol 未提交改动，不提交、不推送。
+- 前置核验：已按 `AGENTS.md` 顺序完整阅读 `README.md`、`docs/coordination/AGENT_WORKLOG.md` 全文至 Terra `2256` 物理 EOF COMPLETE、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、A3 冻结规格，并核对当前分支、工作区和最近提交。
+- 任务目标：独立验证冻结 `POS-A3-REG-001..008` 与 `NEG-A3-REG-001..016`，使用第二个 SQLite connection、独立 registry instance、真实临时 POSIX 权限/符号链接、手工 SQL/字节损坏注入；额外覆盖列类型/约束篡改、terminal 非 completed 却 stage=completed、并发 CAS、重启幂等、close/activity 与底层异常脱敏。
+- 修改边界：仅新增 `tests/security/test_a3_scan_registry_independent.py`，更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，并向本日志追加收工记录；不修改 backend、Terra unit、冻结规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party。
+- 验收方法：先运行独立测试；若失败原样保留最小复现并按 P0/P1/P2/P3 升级 Terra/Sol，不替实现修复。全绿后才运行 Terra A3、P0、全量 pytest、Schema 等值、compileall、`git diff --check`、敏感/路径/文件范围检查；不把本地 SQLite 结果外推为 FastAPI、worker、Pipeline、exactly-once、多机容灾或完整竞赛作品。
+- 独立性与安全：expected canonical/status/error 手工构造，不调用 Terra 私有 helper；测试只用标准库、动态小型数据库/临时文件系统，不联网、不执行目标代码、不安装依赖；不接管扫描分析组员 B2-B7 或前端组员任务。
+- token：本轮非硬估算 `7k-12k`；客户端无精确本轮 token 遥测，收工时如实报告实际无法精确获得及是否发生范围调整。
+
+### [20260902-2302-Luna-A3持久注册表独立验证] PARTIAL - 独立门禁保留一项 P1 实现缺陷
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-02 23:02（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`，未提交、未推送。
+- 目标与结果：按 A3 冻结矩阵逐 ID 独立验证 `POS-A3-REG-001..008` 与 `NEG-A3-REG-001..016`，并补充 schema 声明、terminal stage、并发 CAS、重启幂等、close/activity 与底层异常脱敏探针。独立文件最终 `31 collected: 30 passed, 1 failed`。
+- 独立性：expected canonical JSON、状态转换和 `ScanRegistryError` envelope 手工构造；使用第二个 SQLite connection、两个独立 registry instance、临时 POSIX 权限/FIFO/符号链接、手工 SQL/字节损坏和线程并发；不复用 Terra 私有 helper，不联网、不执行目标代码、不安装依赖，不生成持久化 fixture。
+- 保留缺陷（P1）：`test_hardening_schema_declared_types_and_constraints_are_verified` 稳定发现 `_verify_schema` 仅按列名集合接受篡改 schema；同名表但声明类型错误、缺失 `scan_id` 主键/CHECK/幂等唯一约束时未返回 `registry_schema_unsupported`。这会使错误数据库结构进入 durable registry，破坏数据完整性与 fail-closed 门禁；失败原样保留，未修改 backend、Terra unit、冻结规格或测试期望。
+- 本轮修改：仅新增 `tests/security/test_a3_scan_registry_independent.py`，更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，并追加本记录；未修改 P0/Schema/sample、`PROJECT_PROGRESS.md`、third_party、A3 backend、HTTP/worker/A4、扫描分析组员 B2-B7 或前端组员任务。
+- 验证与放行：首次测试中的测试侧定位/断言问题已仅在独立测试内校正；最终仍有上述实现失败，因此按规则未运行 Terra A3、P0、全量 pytest、Schema/compileall 回归，也未批准 A3 evidence。已保留最小失败复现，待 Terra 校验 `PRAGMA table_info`、PK/CHECK/UNIQUE/index 与 metadata 定义并 fail closed，随后由 Luna 原样复测，Root/Sol 再决定证据绑定。
+- 交接：A3-0 当前状态为 `IMPLEMENTATION_UNVERIFIED` 的独立门禁 PARTIAL；本机 macOS/POSIX 单机结果不得外推 FastAPI、worker、Pipeline、exactly-once、多机容灾、Linux isolation、TrustedEgress、Bench 或完整竞赛材料。
+- token：本次运行精确 token 数不可获得；开工估算 `7k-12k`，本轮在原估算范围内完成可执行的独立验证与缺陷交接，但任务因 1 项 P1 实现缺陷为 PARTIAL；未发生范围调整，不编造精确消耗。
+
+### [20260902-2310-Terra-A3SchemaHardening] START - 关闭 SQLite schema 声明与约束 P1
+
+- 作者：GPT-5.6 Terra；对话角色：项目负责人主线工程 / 系统集成；时间：2026-09-02 23:10（Asia/Shanghai）；分支 `feat/a3-durable-scan-registry`；不提交、不推送。
+- 开始前确认：已读共享日志至 Luna `2302 PARTIAL` 物理 EOF，已阅读独立测试及其 `test_hardening_schema_declared_types_and_constraints_are_verified` 最小复现。仅允许修改 registry、Terra unit、必要 README/AI 记录与追加日志；Luna 测试、冻结规格和 P0/Schema/sample/progress/third_party 均受保护。
+- 修复目标：严格核验 metadata 与 scan_runs 的 `PRAGMA table_info` 列序、类型、notnull、default、pk，核验 scan_id PK、idempotency_key UNIQUE 和 revision `CHECK >= 1`；同名但任何额外、缺失或错误声明统一 fail closed 为 `registry_schema_unsupported`，不泄漏路径或 SQL。
+- 验收计划：先原样复现 Luna hardening 失败，再补 Terra 回归并重跑 Luna 全文件、Terra A3、P0、全量、Schema、compileall、diff/敏感检查。
+- token：本轮非硬估算 `4k-7k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-2325-Terra-A3SchemaHardening] COMPLETE - Luna schema P1 实现侧关闭
+
+- 作者：GPT-5.6 Terra；时间：2026-09-02 23:25（Asia/Shanghai）；分支 `feat/a3-durable-scan-registry`；未提交、未推送。
+- 修复：`_verify_schema` 不再只比较列名；现在精确验证 `registry_metadata` 和 `scan_runs` 的 PRAGMA column cid/name/type/notnull/default/pk，拒绝额外或缺失列；同时验证 `scan_id` 主键、`idempotency_key` 唯一索引、无额外 index，以及包含 `revision >= 1` 的严格规范化已知建表 SQL。所有结构偏差仍为不含路径/SQL/底层错误的 `registry_schema_unsupported`。
+- 回归：修复前 Luna hardening 原样 `1 failed`；修复后最小复现通过，Luna 独立全文件 `31 passed`；Terra A3 `31 passed`；A3+P0 `77 passed`；全量 `486 passed`；`schema_export_equal=True`、compileall、`git diff --check` 和敏感检查通过。
+- 边界：仅修改 `scan_registry.py`、Terra A3 unit、AI 记录和本日志；未修改 Luna 测试、冻结规格、P0/Schema/sample、PROJECT_PROGRESS 或 third_party。未新增 HTTP、worker、Pipeline、扫描分析组员 B2-B7 或前端组员任务；不提交、不推送。
+- 下一步：Luna 可按相同独立文件确认 P1 已关闭；Root/Sol 再决定不可变提交和有界 evidence，不能外推为完整 A3/集群能力。
+- token：本次运行精确 token 数不可获得；开工估算 `4k-7k`，任务在原范围内完整完成，未发生范围调整；不编造精确消耗。
+
+### [20260902-2309-Luna-A3SchemaHardening复核] START - 复核 Terra 2325 schema fail-closed 修复
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-02 23:09（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；不提交、不推送。
+- 前置核验：已读共享日志至 Terra `2325 COMPLETE` 物理 EOF，并核对其修复差异；修复声称 `_verify_schema` 精确校验 metadata/scan_runs 列定义、主键、CHECK、唯一索引、额外 index/列和建表 SQL。
+- 目标：先原样运行 hardening 与独立 31 项；在不放宽既有断言的前提下，按需补充最小独立 probe，覆盖 metadata 列、scan_runs type/notnull/pk、revision CHECK、idempotency UNIQUE、额外 index/列 fail closed，以及合法库可重开。
+- 修改边界：不得修改 backend、Terra unit、冻结规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party；只允许在现有独立测试、安全 README、AI 记录和本日志追加/补充，不生成持久化 fixture，不接管扫描分析组员 B2-B7 或前端组员任务。
+- 验收顺序：独立门禁全绿后，才运行 Terra A3、A3 合计、P0、全量 pytest、Schema 等值、compileall、diff、敏感/权限检查；若任何独立失败，保留失败并以 PARTIAL 交接，不替实现修复或宣称 A3 evidence。
+- token：本轮非硬估算 `3k-6k`；客户端无精确本轮 token 遥测，收工时如实报告。
+
+### [20260902-2312-Luna-A3SchemaHardening复核] COMPLETE - A3-0 schema hardening 独立复测通过
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-02 23:12（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；无 commit、无 PR、未推送。
+- 复测结果：Terra 2325 修复前 hardening 原样失败已保留在历史记录；修复后单项 `1 passed`，完整原有独立 31 项 `31 passed`。新增最小独立 probe 12 个篡改 schema case + 1 个合法重开 case，选择集 `14 passed`；独立文件最终 `44 passed`。
+- Probe 覆盖：metadata 列类型/notnull/额外列，scan_runs 类型/notnull/scan_id PK，revision `CHECK (>= 1)`，idempotency UNIQUE，额外 index/列均 fail closed 为 `registry_schema_unsupported`；合法 registry close 后可重开并读取原快照。未放宽既有断言、未改变冻结 `8 POS + 16 NEG` ID。
+- 联合门禁：Terra A3 `31 passed`；Luna+Terra A3 合计 `75 passed`；P0 `46 passed`；全量 `499 passed`；`schema_export_equal=True`；compileall、`git diff --check`、新增/修改文件尾随空白、敏感模式和 world-writable 检查通过。
+- 文件与边界：仅新增/修改 `tests/security/test_a3_scan_registry_independent.py`、`tests/security/README.md`、`docs/05-ai-assistance-log.md` 并追加本日志；未修改 backend、Terra unit、冻结规格、P0/Schema/sample、PROJECT_PROGRESS 或 third_party，不接管扫描分析组员 B2-B7/前端组员任务，不生成持久化 fixture。
+- 接口/证据裁决：未改变 `SQLiteScanRunRegistry`、P0 `ScanRun` 或错误码契约；A3-0 schema P1 已由独立测试关闭，但当前仍只是本机 macOS/POSIX 单机实现验证，待 Root/Sol 绑定不可变提交并裁决有界 evidence 后方可进入发布材料；不外推 HTTP、worker、Pipeline、Linux isolation、TrustedEgress、集群容灾、Bench 或完整竞赛作品。
+- 下一步：Root/Sol 进行 A3-0 候选 evidence 的提交绑定、范围声明和最终裁决；后续仍需完成 A3 API/worker/A4 以及报告、Bench、资源台账和材料门禁。
+- token：本次运行精确 token 数不可获得；开工估算 `3k-6k`，任务在原范围内完整完成，未发生范围调整；不编造精确消耗。
+
+### [20260902-2316-Sol-A3注册表候选终审] START - 只读核对有界 evidence 放行条件
+
+- 作者/角色/时间：GPT-5.6 Sol；设计契约与证据门禁；2026-09-02 23:16（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；不提交、不推送。
+- 前置核验：已读取共享日志至 Luna `2312 COMPLETE` 物理 EOF，并逐段核对冻结规格、`scan_registry.py`、Terra unit 与 Luna 独立测试；当前受保护工作区改动全部保留。
+- 审计目标：确认冻结 `8 POS + 16 NEG`、首次 schema 声明/约束 P1 的原样复现与独立关闭、P0 v0.1.1/导出 Schema 未变，以及实现未越入 FastAPI、worker/A4、扫描分析组员 B2-B7 或前端组员任务；据此裁决候选 evidence 是否可标 `APPROVED-PENDING-ROOT-BINDING`。
+- 修改边界：仅在必要时向冻结规格末尾追加 CLOSED AMENDMENT、更新 AI 协作记录并向本日志追加 COMPLETE；不修改 backend、tests、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party。
+- 验证边界：本轮复跑 A3 定向 75 项、P0 46 项、Schema 等值及 diff/范围检查；Root 已报告的全量 499 项作为 Root 门禁事实单独引用，不冒充 Sol 重跑。结果只覆盖本机 macOS/POSIX 单机 SQLite 注册表纵切。
+- token：本轮非硬估算 `3k-5k`；客户端无精确本轮 token 遥测，收工时如实报告。
+
+### [20260902-2320-Sol-A3注册表候选终审] COMPLETE - 审计完成，候选 evidence 因新增 P1 暂缓
+
+- 作者/角色/时间：GPT-5.6 Sol；设计契约与证据门禁；2026-09-02 23:20（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；未提交、未推送。
+- 契约核对：冻结规格仍恰有 `POS-A3-REG-001..008` 与 `NEG-A3-REG-001..016`，Luna 测试逐 ID 可检索；首次“列声明/PK/CHECK/UNIQUE 未校验”P1 的失败历史、Terra 修复及 Luna 12 个篡改 case + 合法重开独立复测均成立，该首次 P1 确认已关闭。
+- 新开放 P1 `FINAL-A3-001`：规格 §3.2 禁止 trigger 承载业务逻辑，§4 将 v1 限定为 metadata 与快照两表；当前 `_verify_schema` 只核对两张目标表、目标列/SQL和 index，未对 `sqlite_master` 做对象 allowlist。只读最小探针在合法库追加 `AFTER INSERT` trigger 或 `unexpected_table` 后，registry 重开均被接受；trigger 实际令 `create()` 返回 revision 1、随后 `get()` 读到 revision 999，破坏首 revision、返回值一致性与 CAS 信任前提。
+- 裁决：候选 evidence 当前为 `BLOCKED-P1`，**不是** `APPROVED-PENDING-ROOT-BINDING`；未分配、未绑定、未写 CLOSED AMENDMENT。关闭条件是 Terra 使非 SQLite 内部对象严格符合 v1 allowlist（仅两张冻结表、零 trigger/view、冻结索引），补实现侧回归；Luna 用原始 trigger/额外对象探针独立复测；随后 Sol/Root 重审。
+- P0/边界：无开放 P0；P0 模型、存储 Schema、sample 相对 HEAD 零差异，显式 `schema_export_equal=True`。实现仍仅位于内部 persistence，未新增 HTTP/FastAPI、worker/A4、Git/ZIP、扫描分析组员 B2-B7 或前端组员任务；`PROJECT_PROGRESS.md` 的 Root 既有改动未由本轮触碰，也不构成本轮 evidence。
+- 复跑：Sol 定向 A3 75 + P0 46 合计 `121 passed`；`git diff --check`、未跟踪规格 whitespace、8/16 唯一计数及受保护 P0 路径检查通过。Root 已报告全量 `499 passed`，本轮未冒充重新执行；全绿不能覆盖新增 P1 探针。
+- 文件：本轮仅追加 `docs/05-ai-assistance-log.md` 与本工作日志；未修改冻结规格、backend、tests、P0/Schema/sample、progress 或 third_party。
+- 严格范围：已通过测试的事实仅是 Python 3.12.13 / SQLite 3.53.1、本机 macOS/POSIX、单机本地 SQLite ScanRun registry 候选；在 P1 关闭前连该有界结果也不得形成发布 evidence，更不得外推 FastAPI、worker、Pipeline、Linux、TrustedEgress、多机/容灾、exactly-once side effect、Bench 或完整作品。
+- token：本次运行精确 token 数不可获得；开工估算 `3k-5k`，审计在原范围内完整收工，未编造精确消耗。
+
+### [20260902-2330-Terra-A3SchemaObjectHardening] START - 关闭 FINAL-A3-001 sqlite_master 对象 P1
+
+- 作者：GPT-5.6 Terra；对话角色：项目负责人主线工程 / 系统集成；时间：2026-09-02 23:30（Asia/Shanghai）；分支 `feat/a3-durable-scan-registry`；不提交、不推送。
+- 开始前确认：已读取共享日志物理 EOF 的 Sol `2320 COMPLETE`，并重读冻结规格 §3.2/§4。P1 为额外 user table/view/trigger 可被重开接受，AFTER INSERT trigger 可篡改 revision；候选 evidence 处于 BLOCKED-P1。
+- 允许范围：仅修改 `scan_registry.py`、Terra A3 unit、必要 AI 记录与追加日志；不得修改 Sol/Luna 测试、冻结规格、P0/Schema/sample、PROJECT_PROGRESS 或 third_party。
+- 验收计划：先原样复现 trigger/table 漏洞；随后严格核验 sqlite_master allowlist：仅 `registry_metadata` 与 `scan_runs` 两张用户表，零 view/trigger，索引仅冻结 PK/幂等 UNIQUE 自动索引，任何显式/额外对象为 `registry_schema_unsupported`；补 Terra table/view/trigger/合法库回归并运行 Luna44、Terra、A3合计、P0、全量、Schema/compileall/diff/敏感。
+- token：本轮非硬估算 `3k-6k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-2345-Terra-A3SchemaObjectHardening] COMPLETE - FINAL-A3-001 实现侧关闭
+
+- 作者/角色/时间：GPT-5.6 Terra；主线工程实现与系统集成；2026-09-02 23:45（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；未提交、未推送。
+- 修复：`_verify_schema` 现读取所有非 SQLite 内部 `sqlite_master` 对象，并严格允许仅 `registry_metadata` 与 `scan_runs` 两张用户表；任何额外 table、view 或 trigger 均以净化错误 `registry_schema_unsupported` 拒绝。既有两张 SQLite 自动索引的精确验证保持不变，显式/额外索引仍会拒绝。
+- 复现与回归：修复前，合法库追加 `AFTER INSERT` trigger 后可重开，`create()` 返回 revision 1 而随后 `get()` 为 revision 999；修复后触发器重开稳定报 `registry_schema_unsupported`。新增 Terra 单测覆盖额外 table/view/trigger 三类拒绝及移除对象后的合法重开、首 revision 1。
+- 验证：Luna 独立安全套件 `44 passed in 0.47s`；Terra A3 单测 `32 passed in 0.10s`；A3+P0 定向 `78 passed in 0.16s`（A3 32、P0 46）；全量 `500 passed in 1.37s`；`schema_export_equal=True`、`compileall -q backend/app tests`、`git diff --check` 通过。敏感模式检查仅命中历史审计文字，未发现本轮源码/测试中的密钥。
+- 边界：仅修改 `backend/app/persistence/scan_registry.py`、`tests/unit/test_a3_scan_registry.py`、`docs/05-ai-assistance-log.md` 与本追加日志；未修改 Sol/Luna 测试、冻结规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party。当前 P1 的实现与实现侧回归已关闭；候选发布 evidence 仍须 Luna 以原始探针独立复验、Sol/Root 重新审计与绑定，Terra 不越权批准。
+- token：本次运行精确 token 数不可获得；开工估算 `3k-6k`，在原范围内完整完成，未发生范围调整。
+
+### [20260902-2324-Luna-A3Final001复核] START - 独立复验 sqlite_master 对象 allowlist P1
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-02 23:24（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；不提交、不推送。
+- 前置核验：已读取共享日志至 Terra `2345 COMPLETE` 物理 EOF，并核对 FINAL-A3-001 修复范围；当前工作区既有 Root/Terra/Sol 改动全部保留。
+- 目标：仅在现有独立测试中加入/运行原始额外 table、view、`AFTER INSERT` revision trigger 探针；确认重开均返回 `registry_schema_unsupported`，移除对象后合法库可重开且首 revision 为 1。
+- 修改边界：不得修改 backend、Terra unit、冻结规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party；不放宽既有断言，不生成持久化 fixture，不接管扫描分析组员 B2-B7 或前端组员任务。仅允许更新现有独立测试、安全 README、AI 记录及追加本日志。
+- 验收顺序：先执行新增原始探针与 Luna 全文件；通过后运行 Terra A3、A3 合计、P0、全量、Schema 等值、compileall、diff、敏感检查；任一失败则保留失败并 PARTIAL，否则 COMPLETE。
+- token：本轮非硬估算 `2k-4k`；客户端无精确本轮 token 遥测，收工时如实报告。
+
+### [20260902-2326-Luna-A3Final001复核] COMPLETE - FINAL-A3-001 原始对象探针独立复验通过
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-02 23:26（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；无 commit、无 PR、未推送。
+- 复测结果：原始额外 table/view/`AFTER INSERT` revision trigger 探针 `1 passed`；Luna 独立全文件 `45 passed`。每种额外 sqlite_master 对象重开均返回 `registry_schema_unsupported`，移除后合法库可重开，原快照保持 revision 1；既有冻结 `8 POS + 16 NEG` 断言未放宽、未改变。
+- 联合门禁：Terra A3 `32 passed`；A3 独立+Terra 合计 `77 passed`；P0 `46 passed`；全量 `501 passed`；`schema_export_equal=True`；compileall、`git diff --check`、尾随空白、敏感模式检查通过。
+- 修改与边界：仅在现有 `tests/security/test_a3_scan_registry_independent.py` 增加原始探针，并更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`、本日志；未修改 backend/Terra unit、冻结规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party，不生成持久化 fixture，不接管扫描分析组员 B2-B7/前端组员任务。
+- 接口/证据：未改变 `SQLiteScanRunRegistry`、P0 `ScanRun` 或错误码契约；FINAL-A3-001 已独立关闭，但 A3 candidate evidence 仍待 Sol/Root 进行不可变提交绑定、范围声明和最终裁决，不能外推 HTTP、worker、Pipeline、Linux isolation、TrustedEgress、集群容灾、Bench 或完整竞赛作品。
+- 下一步：Root/Sol 重审 A3-0 有界证据并绑定具体提交；项目后续仍需 A3 API/worker/A4、Bench、报告、资源台账和最终材料门禁。
+- token：本次运行精确 token 数不可获得；开工估算 `2k-4k`，任务在原范围内完整完成，未发生范围调整；不编造精确消耗。
+
+### [20260902-2328-Sol-A3Final001关闭复审] START - 极简复核对象 allowlist 与原始探针
+
+- 作者/角色/时间：GPT-5.6 Sol；设计契约与证据门禁；2026-09-02 23:28（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；不提交、不推送。
+- 目标与边界：只复核 `FINAL-A3-001` 的 sqlite_master allowlist 实现及 Luna 原始额外 table/view/trigger 探针；无新 P0/P1 时仅向规格 EOF 追加 CLOSED AMENDMENT、更新 AI 记录并追加 COMPLETE。不得修改 backend、tests、P0/Schema/sample 或 progress。
+- token：本轮非硬估算 `1.5k-3k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-2331-Sol-A3Final001关闭复审] COMPLETE - P1 关闭并批准有界候选 evidence
+
+- 作者/角色/时间：GPT-5.6 Sol；设计契约与证据门禁；2026-09-02 23:31（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`；未提交、未推送。
+- 复审：`_verify_schema` 现把全部非 SQLite 内部对象严格限定为 `registry_metadata`、`scan_runs` 两表，既有冻结自动索引核验保持；Luna 原始额外 table/view/`AFTER INSERT` revision trigger 探针逐类拒绝为 `registry_schema_unsupported`，移除对象后 revision 1 与快照不变。`FINAL-A3-001` 关闭，无新 P0/P1。
+- 裁决：规格 EOF 已追加 CLOSED AMENDMENT；`EVD-A3-DURABLE-SCAN-REGISTRY-001` 为 `APPROVED-PENDING-ROOT-BINDING`。Root 仍须绑定不可变提交、CPython/SQLite/OpenGuard 版本、运行 profile、命令与输出摘要后方可发布。
+- 验证：Sol 原样复跑 A3 `77 passed`；Root 报告全量 `501 passed`、P0 `46 passed`、Schema 等值、compileall/diff 通过；本轮显式 `schema_export_equal=True`、冻结 ID 唯一计数 `8/16`、P0/Schema/sample 零差异和 `git diff --check` 通过。
+- 文件与边界：本轮仅追加 `docs/spec/a3-durable-scan-registry.md`、`docs/05-ai-assistance-log.md` 和本日志；未修改 backend、tests、P0/Schema/sample、`PROJECT_PROGRESS.md` 或 third_party。
+- 严格范围：批准仅覆盖 Python 3.12.13 / SQLite 3.53.1、本机 macOS/POSIX、单机本地 SQLite 的完整 P0 ScanRun canonical 持久化、幂等、revision/CAS、状态单向性、分页、重启读取、私有路径与损坏失败关闭；不覆盖 FastAPI/HTTP、Git/ZIP、worker/A4、Linux/TrustedEgress、多机/灾备、exactly-once 外部副作用、B2-B7、前端、Bench 或完整作品。
+- token：本次运行精确 token 数不可获得；开工估算 `1.5k-3k`，在原范围内完整收工，未编造精确消耗。
+
+### [20260902-2358-Root-A3持久注册表验收] COMPLETE - A3-0 实现候选通过，待不可变提交绑定
+
+- 作者/角色/时间：Root；项目统筹、真人责任边界与发布验收；2026-09-02 23:58（Asia/Shanghai）。分支 `feat/a3-durable-scan-registry`。
+- 真人任务边界：本轮只完成技术执行书中项目负责人（用户）负责的 A3 前置能力；扫描分析组员负责的 B1-B7 与前端组员负责的 React/Vite 页面均未修改。`PROJECT_PROGRESS.md` 已新增真人责任边界表，明确 Codex 模型角色不等于真人主责。
+- 隐私 AMENDMENT：首次公开提交前，将本轮尚未提交记录中的组员姓名缩写统一规范为“扫描分析组员/前端组员”；只改变公开称谓、不改变职责或历史事实。既有已提交日志不在本任务的重写范围内。
+- Root 门禁：A3 实现侧 32 项与 Luna 独立 45 项合计 `77 passed`；P0 `46 passed`；全量 `501 passed`；Python 3.12.13 / SQLite 3.53.1；存储 Schema 与 `ScanRun.model_json_schema()` 等值；compileall、已跟踪与未跟踪文件 whitespace 检查通过。首次显式 Schema 命令误写为不存在的 `schema/scan_run.schema.json` 并得到 `FileNotFoundError`；随后按仓库权威路径 `schemas/p0/scan-result.schema.json` 复跑为 `schema_export_equal=True`，该工具路径错误未隐藏、不是产品测试失败。
+- 安全裁决：两项审计 P1（Schema 列/约束声明不足、sqlite_master 额外对象）均已由 Terra 修复、Luna 原始探针独立复验、Sol 关闭；当前无开放 P0/P1。源码/新测试不含组员姓名缩写、本机绝对路径或真实凭据。
+- 有界能力：仅批准本机 macOS/POSIX 单机 SQLite ScanRun 注册表候选；具备 canonical 快照、幂等、revision/CAS、状态单向性、稳定分页、重启读取、私有路径与损坏/schema 失败关闭。仍不包含 FastAPI/HTTP、worker/A4、Git、Linux/TrustedEgress、多机/灾备、Bench、前端或完整作品。
+- 发布状态：本条写入时尚未创建不可变提交，候选 `EVD-A3-DURABLE-SCAN-REGISTRY-001` 仍为 `APPROVED-PENDING-ROOT-BINDING`；下一步仅暂存明确交付文件、创建实现提交并回填提交哈希，然后推送 GitHub。
+- token：本次运行精确 token 数不可获得；Root 开工估算 `18k-28k`。因真人分工核对，范围从原拟的组员 B2 调整为用户 A3-0；调整后的 A3-0 在单轮范围内完整实现和验收，没有留下半成品，不能反推实际消耗是否落在估算区间。

@@ -1,10 +1,20 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-02 21:53（Asia/Shanghai）
+更新时间：2026-09-02 23:58（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
 优先级口径：本台账当前展示的是截至提交日必须闭合的 **P0 竞赛主线**，尚未建立产品功能的 P1/P2 增强路线表。共享日志中出现的 P1/P2 通常表示缺陷严重度（P1 阻止任务证据批准，P2 为非阻断债务），不能与产品路线优先级混用。
+
+## 0. 真人责任边界（模型角色不能替代真人主责）
+
+| 真人角色 | 负责范围 | 本轮处理 |
+|---|---|---|
+| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 仅推进其 A3-0 持久 ScanRun 注册表 |
+| 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 本轮不修改；既有 B1 分支归该角色复核/接续 |
+| 前端组员 | React/Vite 与 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 页面 | 本轮不修改 |
+
+Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三位真人的任务归属。后续选题必须先按上表确定真人主责，再分派模型。
 
 ## 1. 当前任务点
 
@@ -23,6 +33,7 @@
 | B1-1 Python manifest 解析纵切 | P0 | Sol→Terra→Luna→Sol→Root | 已完成 | 仅通过只读会话发现/解析 `requirements*.txt`、`pyproject.toml`；PEP 508/440、字段/行级证据草稿、确定性去重/冲突/partial、URL与配额门禁；Terra 40项、Luna独立63项、全量278项、P0 46项通过；`EVD-B1-PYTHON-MANIFEST-001` 已绑定 `7c0d365` | B1-2 已另行闭环；JS/TS与lockfile仍未开始 | 已推送 `feat/b1-python-manifest-parser`；待PR合并 |
 | B1-2 Python P0映射与CLI纵切 | P0 | Sol→Terra→Luna→Sol→Root | 已完成 | 冻结DTO映射为P0 `Component/Evidence`；UUIDv5稳定ID、证据定位/哈希/时间、exact pin、direct/VCS、partial诊断、固定时钟与旧CLI兼容；Sol终审发现并关闭2项P1；Terra 45项、Luna独立32项、全量355项、P0 46项通过；`EVD-B1-PYTHON-P0-CLI-001` 已绑定 `daee8a8` | B1总包下一步进入 JS/TS manifest 与选定 lockfile；本纵切不代表许可证、依赖求解或完整报告 | 已推送 `feat/b1-p0-mapper-cli`；待PR合并 |
 | B1-3/B1-4 JavaScript manifest、P0与CLI | P0 | Sol/Root→Terra→Luna→Terra→Luna→Root | 已完成 | 支持根 `package.json` 四类直接依赖与 `package-lock.json` v2/v3 enrichment；严格JSON、稳定Evidence/UUID/purl/URL、partial与新CLI；Luna首次发现5项P1，连同Root 4类探针均已关闭；Terra 37项、Luna独立32项、JS合计69项、全量424项通过；`EVD-B1-JAVASCRIPT-P0-CLI-001` 已绑定 `80ee2a9` | B1仍缺选定Python lockfile、Yarn/pnpm/workspace/传递依赖；本纵切不代表许可证或安装事实 | 已推送 `feat/b1-js-manifest-p0-cli`；待PR合并 |
+| A3-0 持久 ScanRun 注册表 | P0 | Sol→Terra→Luna→Terra→Luna→Sol→Root | 已完成 | 单机 POSIX SQLite canonical ScanRun、revision/CAS、跨实例/重启幂等、状态单向性、稳定分页、私有路径权限、损坏Schema与额外table/view/trigger失败关闭；两轮审计P1均已关闭；Terra32项、Luna45项、A3合计77项、全量501项通过 | A3仍缺FastAPI、OpenAPI、HTTP错误映射、ZIP/Git创建请求、worker与A4编排；不得外推多机容灾或exactly-once副作用 | 本地验收完成；待Root绑定并推送 `feat/a3-durable-scan-registry` |
 
 ## 2. P0 工作包全景
 
@@ -31,14 +42,14 @@
 | S0 | 竞赛要求与评分追踪 | Sol | 已完成 | 正式来源、硬约束、官方评分、提交/补正/匿名/AI披露、27项报告主张与非目标均已映射 | 随正式通知复核；真实需求、实验、用户反馈和最终链接继续保持 planned/blocked | 9月3日前 |
 | S1/A1 | 领域模型与公共契约 | Sol/Terra/Luna | 已完成 | v0.1.1契约、实现、Schema、sample及46项测试完成 | 后续变更需 ADR；A2 不得破坏本契约 | 9月3日前 |
 | S2 | 威胁模型与安全验收 | Sol/Terra/Luna | 进行中 | 条件性设计基线已完成：20 SEC、5 POS、36 NEG，含实现审查、可测性审计和证据模板 | 最终安全验收需在 A2 关闭 TrustedEgress、Linux profile、阈值拆分、依赖台账与全量真实测试；当前不得写成控制已生效 | 9月3日前设计，A2实现 |
-| A2 | Git/ZIP安全输入与Inventory | Terra | 进行中 | A2-0/A2-1本地ZIP、A2-1D CLI 和 A2-2 只读扫描会话已完成；后续可信 parser 已可在清理前受限读取 inventory 文件；B1-2 已证明该会话可承载 Python parser/mapper | 继续完成完整ZIP corpus、cleanup隔离/清道夫、本地Git物化、受控公网Git、Linux隔离、registry/API与系统级证据冻结 | 9月4日-11日 |
+| A2 | Git/ZIP安全输入与Inventory | Terra | 进行中 | A2-0/A2-1本地ZIP、A2-1D CLI、A2-2只读扫描会话已完成；A3-0已提供独立持久ScanRun/CAS底座，但尚未接HTTP输入；B1-2已证明会话可承载Python parser/mapper | 继续完成完整ZIP corpus、cleanup隔离/清道夫、本地Git物化、受控公网Git、Linux隔离、API映射与系统级证据冻结 | 9月4日-11日 |
 | B1 | Python/JS依赖解析 | Terra | 进行中 | Python requirements/pyproject 与 P0 CLI 已完成；根 package.json 四类直接依赖、package-lock v2/v3 enrichment 与 JS P0 CLI 已完成；当前全量424项通过 | 选定 Python lockfile；Yarn/pnpm/workspace/传递依赖列后续增强；再进入多来源合并 | 9月4日-11日 |
 | B2 | ScanCode适配器 | Terra | 未开始 | 第三方候选已登记 | 锁定版本、超时/失败对象、License/Evidence映射及测试 | 9月4日-11日 |
 | B3 | Syft适配器 | Terra | 未开始 | 第三方候选已登记 | 锁定版本、SBOM映射、与解析器结果合并及测试 | 9月4日-11日 |
 | B4 | SPDX标准化 | Sol/Terra | 未开始 | LicenseExpression契约已具备 | SPDX数据版本、别名、复合表达式、LicenseRef及测试 | 9月4日-20日 |
 | B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 未开始 | Obligation/RiskFinding结构已具备 | 规则Schema、原文证据、正反未知冲突样例、人工核验状态 | 9月12日-20日 |
 | B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
-| A3 | FastAPI扫描API | Terra | 未开始 | 6个端点契约已冻结；Root决定 durable task registry 归入 A3 前置 | 持久任务注册表、跨worker/重启幂等、OpenAPI、统一错误、状态与资源/风险/证据/报告接口 | 9月21日-28日 |
+| A3 | FastAPI扫描API | Terra | 进行中 | 6个端点契约已冻结；A3-0单机SQLite注册表已完成候选闭环，提供canonical ScanRun、revision/CAS、跨实例/重启幂等及严格Schema对象allowlist；全量501项通过 | 实现FastAPI/OpenAPI、统一HTTP错误、Git/ZIP创建请求、状态/资源/风险/证据/报告接口；worker与stage编排归A4 | 9月21日-28日 |
 | A4 | Pipeline编排 | Terra | 未开始 | ScanRun状态机已具备 | ingestion→scan→normalize→rules→AI→report，阶段错误与partial | 9月21日-28日 |
 | A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 未开始 | AI边界与A1.1字段方案已确定 | Qwen3/Ollama锁版、结构化输出、证据引用、失败降级、消融 | 9月12日-28日 |
 | F0 | P0前端核心页面 | Terra/团队前端 | 未开始 | sample可作为共同数据 | New Scan、Progress、Dashboard、Risk Detail、Resource List、Report接真实API | 9月21日-28日 |
