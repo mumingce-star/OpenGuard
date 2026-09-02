@@ -6,6 +6,26 @@
 
 > 产品定位是“合规信息整理与风险提示工具”，不提供法律意见，不替代许可证原文核验或专业法律审查。
 
+## 当前可运行状态（2026-09-02）
+
+现在已经可以独立跑通四层真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**生命周期绑定只读会话 → Python/JavaScript manifest**，**声明与 npm lock v2/v3 → P0 `Component`/`Evidence`**，以及 **Python/JavaScript 两种稳定依赖 JSON CLI**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
+
+当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、AI 解释、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+
+使用 Python 3.12 环境，在项目根目录运行：
+
+```bash
+PYTHONPATH=backend python -m app.cli ./your-project.zip
+PYTHONPATH=backend python -m app.cli --python-dependencies ./your-project.zip
+PYTHONPATH=backend python -m app.cli --javascript-dependencies ./your-project.zip
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_javascript_manifest_p0_cli.py tests/security/test_b1_javascript_manifest_p0_cli_independent.py
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_p0_mapper_cli.py tests/security/test_b1_python_p0_mapper_cli_independent.py
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_manifest_parser.py tests/security/test_b1_python_manifest_parser_independent.py
+PYTHONPATH=backend python -m pytest -q
+```
+
+前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper 用法和退出码说明见 [backend/README.md](backend/README.md)。随后三条命令分别复现 JavaScript、Python mapper、Python parser 的实现侧与独立安全测试，最后一条复现当前 424 项自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
+
 ## 竞赛交付定义
 
 在 2026-10-15 20:00 前形成：
@@ -64,11 +84,13 @@ OpenGuard/
 ## 协作开发
 
 - 所有 Codex 模型开始和结束任务时必须遵守 [AGENTS.md](AGENTS.md)，并读写 [共享工作日志](docs/coordination/AGENT_WORKLOG.md)；
+- 当前完成项、未完成项、责任模型和 GitHub 发布状态统一维护在 [项目进度台账](docs/coordination/PROJECT_PROGRESS.md)；
 - 贡献流程与 Pull Request 要求见 [CONTRIBUTING.md](CONTRIBUTING.md)；
 - 安全问题处理见 [SECURITY.md](SECURITY.md)；
 - 三人 GitHub 权限、分支保护和开放边界见 [docs/06-github-collaboration.md](docs/06-github-collaboration.md)；
 - 第三方资源在首次引入时登记，不在提交前集中补录；
 - `main` 保持可运行，功能开发通过短分支和 Pull Request 合并。
+- 每个验收通过的任务点由 Root Coordinator 统一整理、提交并推送到 GitHub，只上传最终竞赛作品所需内容。
 
 ## 评委验收门槛
 

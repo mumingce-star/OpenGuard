@@ -1,0 +1,19 @@
+[project]
+name = "openguard-backend"
+version = "0.1.0"
+description = "OpenGuard P0 domain contract implementation"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "packaging==26.3",
+  "pydantic==2.13.4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "jsonschema==4.26.0",
+  "pytest==8.4.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["../tests/unit"]
+addopts = "-q"
