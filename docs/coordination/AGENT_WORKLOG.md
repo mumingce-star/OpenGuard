@@ -401,3 +401,35 @@
 - 已知风险与未完成项：本地 `main` 领先远程，尚未推送；后端和前端运行测试需安装/配置相应工具链后复验。
 - 下一步与责任模型：用户确认后可推送本地合并结果；Terra/CZ 继续后端扫描器与规则工作，xzb 将前端 mock 接入真实 API。
 - 关联提交/PR/Issue/evidence_id：`b9d85bf`、`b1a0598`、`1c1fd0d`、`b559bf9`。
+
+### [20260902-1130-Sol-领域字段核查] START - 检查 Resource/Evidence/Risk 字段与 JSON 示例
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查
+- 时间：2026-09-02 11:30（Asia/Shanghai）
+- 分支或工作区：`main`；开始时工作区干净，本地领先 `origin/main`。
+- 任务目标：只读检查上传代码是否包含 Resource、Evidence、Risk 的字段定义和 JSON 示例，并报告实际类型命名与位置。
+- 开始前已确认：已完整阅读 README、共享日志、Sol 交接并检查 Git 状态、分支和近期提交；无其他模型在途产品任务。
+- 实际结果：开始读取 P0 领域模型、Schema、样例和测试。
+- 修改文件：计划仅向本共享日志追加 START 与 COMPLETE 记录。
+- 命令与测试：已完成启动资料、Git 状态核对；后续将使用静态检索和 JSON 解析检查。
+- 接口、Schema、规则或决策：本轮不修改接口、Schema、规则或评测口径。
+- 已知风险与未完成项：项目契约禁止平行 `Resource/Risk/ScanResult` 模型，需确认实际实现采用的规范类型名。
+- 下一步与责任模型：GPT-5.6 Sol 完成字段和示例核查并追加收工记录。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260902-1140-Sol-领域字段核查收工] COMPLETE - 完成 Resource/Evidence/Risk 字段与样例核查
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查
+- 时间：2026-09-02 11:40（Asia/Shanghai）
+- 分支或工作区：`main`；仅共享日志追加。
+- 任务目标：确认上传代码的 Resource、Evidence、Risk 字段及 JSON 示例。
+- 开始前已确认：已完成 README、完整共享日志、Sol 交接和 Git 状态核对。
+- 实际结果：后端 P0 规范对象为 `Component`、`AIAsset`、`Evidence`、`RiskFinding` 和 `ScanRun`，不存在平行后端 `Resource`/`Risk` 类；其字段同时存在于 Pydantic 模型和导出 JSON Schema。前端存在同名 `Resource`/`Risk` TypeScript 类型，但只由 mock 数据使用。`examples/sample-scan-result.json` 提供包含 components、ai_assets、evidence、findings 的完整 JSON 示例。
+- 修改文件：仅 `docs/coordination/AGENT_WORKLOG.md`，追加 START 与 COMPLETE 记录。
+- 命令与测试：静态检索 Pydantic 模型、前端类型、JSON 样例；使用 PowerShell 成功解析 JSON Schema 并核对 Component/Evidence/RiskFinding 属性；`git diff --check` 通过。
+- 接口、Schema、规则或决策：无变化；确认后端应继续以 `Component`/`AIAsset` 替代展示层 `Resource`，以 `RiskFinding` 替代展示层 `Risk`。
+- 已知风险与未完成项：前端 mock 类型与 P0 API 契约字段并不一致，接真实 API 前需要映射 DTO 或替换 mock 类型。
+- 下一步与责任模型：CZ 的解析器/扫描器应产生 Component/AIAsset 与 Evidence；规则引擎应产生 RiskFinding；xzb 负责将前端展示 DTO 接入真实 API。
+- 关联提交/PR/Issue/evidence_id：`1c1fd0d`。
