@@ -91,14 +91,48 @@ Python 私有属性和反射并不是安全沙箱，不得将任意第三方代�
 PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_manifest_parser.py
 ```
 
-这只是 B1-1 的 parser DTO 层：尚未映射 P0 `Component`、扫描许可证或输出最终资源清单；
-Luna 的独立安全验证与 Root 集成门禁完成前，不得把它标记为已完成竞赛能力。
+这只是 B1-1 的 parser DTO 层；B1-2 已在独立模块中把该 DTO 映射为 P0 `Component` 与
+`Evidence`，但两者都尚未扫描许可证或输出最终资源清单。
 
 独立安全回归可单独复现：
 
 ```bash
 PYTHONPATH=backend python -m pytest -q tests/security/test_a2_readonly_scan_session_independent.py
 ```
+
+## B1-2 Python P0 映射
+
+`app.scanners.map_python_manifest_result` 将冻结的 B1-1 DTO 纯内存映射为 P0
+`Component` 与 `Evidence`。映射器以 inventory root digest、manifest locator/hash/excerpt
+和固定 UUIDv5 namespace 生成稳定 ID；调用方必须显式注入零偏移 UTC `observed_at`。
+它不会重读 manifest、求值 marker、访问网络或推断已安装/已解析版本、purl、许可证和风险。
+parser 的 `partial` 与七字段 diagnostic 原样保留，不能等同于未来 `ScanRun` 的状态。
+
+离线本地 ZIP CLI 的显式 Python 依赖模式为：
+
+```bash
+PYTHONPATH=backend python -m app.cli --python-dependencies ./demo.zip
+```
+
+该模式只在 A2-2 生命周期绑定的 read-only consumer 中调用 B1 parser 和 mapper，使用
+`262144` 字节单文件、`4194304` 字节累计读取上限。成功或可恢复的 parser partial 均在
+stdout 输出单行、稳定排序的 `openguard.python-dependencies` JSON；P0 对象完整保留
+`null` 字段，diagnostic 固定输出全部七个字段。固定 `clock`、同一 ZIP 和版本 profile
+可以逐字复现输出；真实 wall-clock 只会改变 Evidence 的 `observed_at`，不会改变 ID。
+
+无 flag 的 `python -m app.cli LOCAL_ZIP` 仍是冻结的 inventory 演示，既不导入也不调用
+parser、mapper 或 clock。两个 CLI 模式均不联网、不执行 ZIP 代码、不安装目标依赖；失败
+只输出稳定的 `code:reason`，不会公开路径、URL、manifest 内容或 traceback，且 task
+workspace 在成功、partial 或失败后均会清理。
+
+实现侧 B1-2 回归可复现为：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_p0_mapper_cli.py
+```
+
+这仍是本地 Python manifest 到 P0 的有界纵切，不是完整依赖清单、许可证/合规结论、报告、
+Git intake、TrustedEgress 或 Linux 隔离的运行级证明。
 
 ## 本地 ZIP CLI 演示
 

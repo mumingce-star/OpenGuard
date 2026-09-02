@@ -109,3 +109,24 @@ Sol 随后裁决 POS-003 的 marker canonical 双引号期望，Luna 仅修订�
 Root 后续补充 FINAL-001 leading/trailing U+2028 探针；选择结果为 `1 passed, 2 failed`，两项失败均显示 `.strip()` 后错误接受 `a==1`，已保留 BLOCKED 证据并等待 Terra，不运行后续回归。
 
 Terra 修复后，FINAL-001 三参数复测为 `3 passed`；Luna 独立全文件 `63 passed`，Terra B1 unit `40 passed`，全量 `278 passed`，P0/Schema/sample `46 passed`。leading/trailing U+2028 均保持为无效单行内容并产生 `requirement_invalid`，未修改冻结 ID。
+
+#### B1-2 Python P0 mapper 与 CLI 独立回归
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/security/test_b1_python_p0_mapper_cli_independent.py
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_p0_mapper_cli.py
+```
+
+本轮真实结果：Luna 独立测试 `30 passed`（冻结 12 POS + 18 NEG，逐 ID 断言）；Terra B1-2 unit `43 passed`；B1-1 parser unit `40 passed`；A2 CLI 聚焦 `10 passed`；P0 领域/Schema/sample `46 passed`；全量 `351 passed`。`compileall`、`git diff --check`、敏感信息/绝对路径检查通过。
+
+独立测试使用标准库动态 ZIP，覆盖三个冻结 known-answer ID、P0 Component/Evidence 全字段、exact/range/marker/direct/VCS/conflict/多证据、percent locator round-trip、partial diagnostics、固定 clock 与旧 CLI 字节兼容；同时覆盖 0/1/2、parser/mapper/clock/A2 错误优先级、错误脱敏、workspace 清理，以及 socket/subprocess/目标代码/旁路 open 禁止。未新增二进制 fixture，不联网、不安装目标依赖、不执行 ZIP 中目标代码，也未调用 Terra helper 生成期望 UUID/locator/JSON/error。
+
+该结果只证明本地 macOS/POSIX、可信 A2 consumer 下的 Python manifest→P0 mapper→离线 CLI 纵切；不等同许可证识别、依赖求解、JS/TS、lockfile、Web/API、Git、Linux isolation、TrustedEgress、OpenGuard-Bench、报告材料或 A2 总门禁完成。
+
+#### B1-2 终审 P1 独立复核
+
+按 Sol 终审发现、Terra 修复后的 `FINAL-B1P0-001/002` 增补两组独立测试，不增加原冻结 30 个 ID。`FINAL-B1P0-001` 手工构造 `project.optional-dependencies.dev%2Efoo[0]`，验证完整 encoded group 的非 canonical round-trip 被拒绝，并复核真实 parser 合法 optional group。`FINAL-B1P0-002` 手工验证重复 EvidenceDraft、不一致 declared_name、noncanonical raw、带 query direct URL、任意及敏感 diagnostic 均统一失败为 `scanner_failed:python_p0_mapper_failed`，并复核合法 diagnostics、direct URL、VCS 不回归。
+
+本轮真实结果：新增选择 `2 passed`；Luna 全文件 `32 passed`；Terra B1-2 `45 passed`；B1-1 unit+independent `103 passed`；P0 `46 passed`；全量 `355 passed`；`schema_export_equal=true`；compileall、`git diff --check`、敏感信息/本机路径/尾随空白检查通过。仍仅支持本地 macOS/POSIX 可信 consumer 的 Python P0 CLI 纵切，不批准完整 evidence 发布，不外推许可证、JS/lockfile、Web/Git、Linux isolation、TrustedEgress、Bench 或完整竞赛材料。
