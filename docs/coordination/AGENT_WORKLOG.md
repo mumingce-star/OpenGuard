@@ -2151,3 +2151,9 @@
 - `EVD-B1-JAVASCRIPT-P0-CLI-001` 已绑定不可变实现提交 `80ee2a98fbd5e598359a5ae097dd21f94839b290`，状态为 `APPROVED`；范围仅 `verified-local-javascript-dependency-p0-cli-slice`。
 - 绑定 Terra37/Luna32/JS69/保护集236/全量424、Schema等值、compileall/static、真实混合ZIP三模式、P0重载、固定clock和cleanup证据；所有首次失败及Root加固探针均闭合。
 - 当前只是本地提交与证据绑定；尚未宣称远端已发布。下一步提交绑定文档并推送任务分支，再回填GitHub状态。
+
+### [20260902-2153-Root-B1JSP0CLI发布] COMPLETE - JavaScript任务分支已发布
+
+- GitHub 分支 `feat/b1-js-manifest-p0-cli` 已成功创建并推送；不可变实现提交 `80ee2a9`，证据绑定提交 `708bc08`。远端提供 PR 创建入口，本轮不创建或合并 PR。
+- 上传范围为13个竞赛交付文件：根/后端运行说明、JS parser/mapper/CLI/export、冻结规格、Terra/Luna测试、security说明、AI/共享日志与进度台账；未上传正式附件、全局配置、缓存、虚拟环境、临时探针/ZIP、凭据或第三方不可再分发内容。
+- 本条只回填发布事实，不改变已绑定实现哈希、测试结果或有界证据范围。
