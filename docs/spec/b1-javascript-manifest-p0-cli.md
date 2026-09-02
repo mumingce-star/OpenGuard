@@ -268,3 +268,22 @@ PROJECT_PROGRESS 或 third_party，不得提交/推送。
 放行必须同时满足：Terra 10 POS/16 NEG、Luna 逐 ID 独立验证、旧两模式 CLI 与 P0 零回归、
 真实磁盘 ZIP/固定 clock/错误/cleanup、Root 不可变提交绑定及 Sol/Root 无开放 P0/P1。绿灯只
 批准本文件开头的有界 evidence scope。
+
+## ROOT EVIDENCE BINDING 2026-09-02
+
+`EVD-B1-JAVASCRIPT-P0-CLI-001` 已绑定不可变实现提交
+`80ee2a98fbd5e598359a5ae097dd21f94839b290`，状态为 `APPROVED`，证据范围严格限定为
+`verified-local-javascript-dependency-p0-cli-slice`。
+
+绑定 profile：CPython `3.12.13`、OpenGuard P0 contract `0.1.1`；Terra JS `37 passed`、
+Luna 独立 `32 passed`、JS 合计 `69 passed`、Python/A2/P0 保护集 `236 passed`、全量
+`424 passed`；存储 Schema 与 `ScanRun.model_json_schema()` 等值，compileall、diff、空白、
+敏感信息和受保护路径检查通过。
+
+真实混合 ZIP 的 inventory、Python、JavaScript 三种 CLI 均 exit 0、stderr 为空；JS 模式输出
+3 个 Component 与 7 个 Evidence，全部可由 P0 模型重新载入，固定 UTC clock 两次输出逐字节
+相同，内部任务 workspace 清理完成。首次独立验证的 5 项 P1 与 Root 4 类加固探针均已关闭，
+且 Luna 原断言未放宽。
+
+该绑定不证明 npm lock v1、shrinkwrap、Yarn、pnpm、workspace、传递依赖、许可证、漏洞、
+依赖安装/求解、Git/Linux/TrustedEgress、Web/API、报告、Bench、完整参赛提交或获奖竞争力。

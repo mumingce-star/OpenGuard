@@ -2145,3 +2145,9 @@
 - 真实运行：同一混合 ZIP 的 inventory、Python、JavaScript 三模式均 exit 0/stderr空；Python识别 `requests==2.32.5`，JS识别 `@scope/pkg==1.2.3`、`react==18.2.0`、`vite==5.0.7`，产生7条JS Evidence，全部 Component/Evidence 可由P0模型重新载入；固定 clock 两次 JS 输出逐字节一致，任务 workspace 清理后只保留外层测试ZIP。
 - 证据边界：候选 `EVD-B1-JAVASCRIPT-P0-CLI-001` 只允许 `verified-local-javascript-dependency-p0-cli-slice`；提交绑定前仍不发布为事实，且不外推 npm lock v1、shrinkwrap、Yarn/pnpm/workspace/传递依赖、许可证、安装/求解、Git/Linux/TrustedEgress、Web/API、报告或获奖竞争力。
 - token：本次运行精确 token 数不可获得；Root 开工估算 `20k-35k`，通过范围收缩在同一轮完整交付两个任务点，没有功能范围扩张；因客户端无精确遥测，不能诚实判断实际 token 是否落入估算区间。
+
+### [20260902-2151-Root-B1JSP0CLI证据绑定] COMPLETE - 绑定不可变实现提交
+
+- `EVD-B1-JAVASCRIPT-P0-CLI-001` 已绑定不可变实现提交 `80ee2a98fbd5e598359a5ae097dd21f94839b290`，状态为 `APPROVED`；范围仅 `verified-local-javascript-dependency-p0-cli-slice`。
+- 绑定 Terra37/Luna32/JS69/保护集236/全量424、Schema等值、compileall/static、真实混合ZIP三模式、P0重载、固定clock和cleanup证据；所有首次失败及Root加固探针均闭合。
+- 当前只是本地提交与证据绑定；尚未宣称远端已发布。下一步提交绑定文档并推送任务分支，再回填GitHub状态。
