@@ -32,6 +32,26 @@ PYTHONPATH=backend python -m pytest -q
 
 该 CLI 结果只证明离线本地 ZIP→inventory 演示候选，不等同 Web、Git/TrustedEgress、Linux profile、durable registry/API 映射或 A2 总门禁完成。
 
+### A2-2 安全只读扫描会话独立回归
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/security/test_a2_readonly_scan_session_independent.py
+```
+
+最终真实结果：共收集 46 个参数化场景，`46 passed`；与该文件一起运行的全量测试共 175 项，`175 passed`。原三项阻塞及 Sol 追加的两项 P1 均已由 Terra/Root 修复并经 Luna 原样复跑确认：
+
+- `NEG-A2-RS-008`：目标 `open` 错误现稳定映射为 `scanner_failed/scan_file_read_failed`。
+- `NEG-A2-RS-008`：目标 `close` 错误现不会静默成功，稳定产生 `scan_file_read_failed`。
+- `NEG-A2-RS-022`：`ReadOnlyScanSession` 公开能力面已收窄为 `inventory`、`read_bytes`。
+- `NEG-A2-RS-008`：消费前验证后的瞬态 `tree` 根 descriptor open 错误稳定映射为 `scan_file_read_failed`，敏感 marker 不泄漏。
+- `NEG-A2-RS-008`：目标 file fd close 故障进入受控 recovery，外层返回 `scan_file_read_failed`，完成后目标 fd 为 `EBADF`。
+
+已通过的场景覆盖绝对/父级/点段/空段/反斜杠/drive/UNC/NFC/case/Path/bytes/目录/未登记路径、外部 sentinel、父目录与文件的 symlink/FIFO/目录替换、同 size 新 inode、同 inode 内容改写、受控读错误、单文件与累计限额刚超 1 byte、重复读取计数、0/bool/非 int/放宽值、`None` 派生兼容、过期引用、真实跨线程中毒、同 session/同 service 重入、独立并发、异常脱敏、consumer catch 仍整体失败、未读取文件最终复验、cleanup 成功/失败与最高优先级、ZIP 前置拒绝零调用、bad ZIP 映射、BaseException 清理重抛、瞬态根 descriptor open 和目标 fd close recovery/EBADF。
+
+本机 macOS/POSIX 结果仅证明当前实现的独立回归行为，不外推为 Linux 隔离、TrustedEgress 或 A2 总门禁；`NEG-A2-RS-024` 的不可信代码执行不属于本接口的可信 consumer 验证范围。
+
 结果演进必须区分历史首次发现与修复后复测：
 
 - 初轮（Terra 修复前）：独立安全测试 35 项，`21 passed`、`14 failed`；全量 97 项，`83 passed`、`14 failed`。这些失败按冻结安全验收 reason 保留，形成了独立缺陷证据。

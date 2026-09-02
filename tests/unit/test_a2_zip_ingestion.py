@@ -255,7 +255,7 @@ def test_server_configuration_is_validated_and_quota_limits_cannot_be_raised_by_
         service.close()
 
     root = tmp_path / "secure-root-single"
-    limits = ZipSafetyLimits(single_file_max_bytes=1 * MIB)
+    limits = ZipSafetyLimits(single_file_max_bytes=1 * MIB, scan_single_file_read_max_bytes=1 * MIB)
     service = _service(root, limits)
     try:
         payload = _archive([("large.bin", b"a" * (MIB + 1))], compression=zipfile.ZIP_STORED)

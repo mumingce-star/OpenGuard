@@ -1185,3 +1185,208 @@
 - 上传内容：仅本任务12个竞赛作品文件及3个文件的提交后证据回填；未上传用户技术 DOCX、竞赛原始 PDF、临时 ZIP、虚拟环境、缓存、密钥或成员隐私。
 - PR：创建入口 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/a2-zip-cli-demo`；按治理规则保持未合并，等待分支审查和既有依赖分支策略统一处理。
 - 关联提交/证据：`910f745`、`83896ba`、`EVD-A2-ZIP-CLI-001`；本条为当前物理 EOF 发布记录。
+
+### [20260902-1358-Root-A2只读扫描会话] START - 建立解压树到后续解析器的安全只读桥梁
+
+- 作者：Codex Root Coordinator；对话角色：任务拆分、接口门禁、统一验收与发布；时间：2026-09-02 13:58（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`，基线 `33cd336`；从已发布 CLI 分支创建单一任务分支，不直接修改或合并 `main`。
+- 任务目标：解决现有 `ZipIngestionService.ingest()` 在返回 inventory 前即清理物化树、导致后续 manifest/许可证解析器无法读取内容的问题。新增受限、只读、生命周期绑定的消费接口，使可信的后续解析器能在清理前读取 inventory 中的普通文件，并在回调返回、失败或越界后可靠清理。
+- 安全不变量：不向消费者暴露宿主机绝对路径、可写目录或原始文件描述符；只能读取 inventory 已登记的普通文件；路径仍走规范化/无跟随 descriptor-relative 打开；单次/累计读取必须有服务端限额；视图在回调结束后失效；消费者异常须转换为稳定脱敏错误且不得产生 `partial`；不联网、不执行目标代码、不安装其依赖。
+- 角色分工：Sol 先冻结内部接口、生命周期、错误语义与验收矩阵；Terra 在冻结设计后实现并编写实现侧测试；Luna 独立验证路径、读限额、并发替换、过期视图、异常清理和泄漏边界；Sol 最终审计；Root 负责全量复跑、真实演示、进度、提交和 GitHub 推送。
+- 预计修改范围：Sol 可新增 `docs/spec/a2-readonly-scan-session.md` 并最小更新安全审计/AI日志；Terra 可修改 `backend/app/ingestion/`、`backend/app/security/`、模块说明和自有单测；Luna 仅增独立安全测试与说明；Root 更新 `PROJECT_PROGRESS.md`。不修改 P0 v0.1.1 模型/Schema/sample，不实现 B1 parser、FastAPI、Git/TrustedEgress 或 Linux profile。
+- 验收标准：有效 ZIP 的受限消费者能按 inventory 读取指定小文件；不存在按任意路径读取、写入、遍历真实路径或回调外继续读取的能力；文件被替换/变型、超限、消费者失败和清理失败均失败关闭并留下稳定 code/reason；现有111项回归不退化；运行证据与未完成边界可复现。
+- 预算评估：本任务四角色合计预计 16k-26k token，非硬预算；必须按 Sol→Terra→Luna→Sol→Root 顺序形成完整闭环，任何扩大公共契约或系统攻击面的需求另拆任务。
+- 关联提交/PR/Issue/evidence_id：暂无；本条为当前物理 EOF 开工记录。
+
+### [20260902-1406-Sol-A2只读扫描会话] START - 冻结安全只读消费契约与验收边界
+
+- 作者：GPT-5.6 Sol；对话角色：设计、安全边界与契约审查；时间：2026-09-02 14:06（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`，基线 `33cd336`；已通读 `AGENTS.md`、共享日志至物理 EOF、`PROJECT_PROGRESS.md`、`SOL_HANDOFF.md`及 A2 ZIP 源码、测试与安全审计。
+- 本轮目标：只新增 `docs/spec/a2-readonly-scan-session.md`，冻结 `ZipIngestionService` 的向后兼容入口、生命周期绑定只读 capability、descriptor-relative/no-follow 重验证、读配额、并发/过期拒绝、错误优先级与 Terra/Luna 验收分工。
+- 安全边界：消费者只允许读取 inventory 已登记普通文件的不可变 `bytes`；不暴露绝对路径、`Path`、目录 fd、流式/可写句柄、扫描器网络或执行能力。任意不可信 Python callback 不是进程内 sandbox，不得以本契约冒充 Linux 隔离证据。
+- 不做事项：不修改 backend、tests、P0 v0.1.1 模型/Schema/sample、`PROJECT_PROGRESS.md`；不实现 B1 parser、Git、TrustedEgress、Linux profile、HTTP API；不提交、不推送、不创建 PR。
+- 当前事实：现有 `ingest()` 在返回 `Inventory` 前即于 `finally` 清理 workspace；inventory 只比较 type/dev/inode/size，尚不足以证明同 inode、同 size 并发内容改写必被拒绝。
+- 关联提交/PR/Issue/evidence_id：暂无；本条为 Sol 当前物理 EOF 开工记录。
+
+### [20260902-1425-Sol-A2只读扫描会话] COMPLETE - 安全只读消费契约已冻结
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 14:25（Asia/Shanghai）。
+- 完成内容：新增 `docs/spec/a2-readonly-scan-session.md` v0.1.0，冻结 `ScanReadLimits`、`ScanSessionResult`、`ReadOnlyScanSession`、`ZipIngestionService.ingest_with_consumer()` 与现有 `ingest()`/CLI 向后兼容语义；记录 AI 辅助边界到 `docs/05-ai-assistance-log.md`。
+- 安全冻结：公开会话只返回 inventory 和完整不可变 `bytes`，无绝对路径/`Path`/fd/stream/write/任意目录能力；文件只能按 inventory 精确相对路径 descriptor-relative/no-follow 读取。
+- 完整性关键裁决：内部 snapshot 同时封印父目录与文件 type/dev/inode/size/SHA-256；每次读取及 consumer 前后全树复验。同 inode、同 size 原地改写必须通过读取内容 SHA-256 与 inventory seal 不符失败关闭，不再只依赖 stat。
+- 配额/生命周期/错误：冻结服务端 2 MiB 单文件、16 MiB 累计默认值与安全范围，调用者只能收紧；会话 owner-thread、重入、并发隔离和保存引用过期拒绝已明确；新错误均为 `scanner_failed`+固定 reason，cleanup 失败优先级最高，无部分结果。
+- 验收与分工：冻结恰好 `8 POS + 24 NEG`；Terra 负责内部实现与 unit，Luna 独立负责真实文件系统 TOCTOU、读限额、过期/线程、脱敏和清理优先级，不互改对方所有文件。
+- 真实检查：`git diff --check` 通过；POS/NEG 唯一 ID 计数为 8/24；Markdown 代码围栏成对；P0 模型/契约/Schema/sample 相对 `33cd336` 零差异；修改范围仅为本规格、AI 记录和 append-only 共享日志。本轮是纯设计任务，未运行/伪称 A2-2 实现测试。
+- 未证明：Terra 实现和 Luna 独立回归尚未发生；不声称 B1 parser、Git、TrustedEgress、Web、完整 ZIP corpus、cleanup quarantine/orphan/worker 或 Linux non-root/cgroup/deny-egress 已完成。任意不可信 Python callback 仍非本进程内契约可隔离的对象。
+- 关联提交/PR/Issue/evidence_id：暂无；本轮未提交、未推送、未创建 PR；本条为 Sol 当前物理 EOF 收工记录。
+
+### [20260902-1427-Terra-A2只读扫描会话] START - 实现受限 ZIP 消费会话
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成；分支 `feat/a2-readonly-scan-session`，基线 `33cd336`，不提交、不推送。
+- 范围：实现冻结的只读会话、服务端读限额、descriptor-relative snapshot 重验证及实现侧 unit；不修改 P0、Sol 规格、Luna 文件或项目进度。
+- 验证：覆盖冻结 POS 与稳定可实现 NEG，运行会话单测、既有 ZIP/Luna/full/P0/Schema 回归、compileall、diff/敏感路径检查；预计 6k-10k token，非硬限额。
+
+### [20260902-1435-Terra-A2只读扫描会话] COMPLETE - 生命周期绑定只读消费接口
+
+- 作者：GPT-5.6 Terra；分支 `feat/a2-readonly-scan-session`，基线 `33cd336`；未提交、未推送、未更新 PROJECT_PROGRESS。
+- 实际结果：新增 `ScanReadLimits`、`ScanSessionResult`、`ReadOnlyScanSession` 与 `ingest_with_consumer()`；保留 `ingest()`/CLI 语义。会话仅返回 inventory 白名单完整 bytes，回调前后和每次读取均由 descriptor-safe tree 重新哈希验证；读取/线程/重入错误锁存，回调结束立即过期，普通异常脱敏为 `scan_consumer_failed`。
+- 修改：`backend/app/ingestion/read_session.py`、`zip_stream.py`、包导出、`backend/app/security/limits.py`、Terra 单测与 AI/共享日志。未修改 Sol 规格、Luna 测试、P0 或项目进度。
+- 验证：会话/ZIP/CLI 定向 `27 passed`，全量 `114 passed`，P0 `46 passed`，Schema 等值、compileall、`git diff --check` 通过。
+- 未证明：当前重验证通过稳定 inventory 重建实现同 inode/size 内容变更检测；Luna 仍须独立完成完整 TOCTOU、cleanup 优先级、并发和 24 NEG 实测。该接口不是不可信 Python sandbox，也不关闭 Git、TrustedEgress、Linux profile、registry/API 或 A2 总门禁。
+
+### [20260902-1440-Terra-A2只读扫描会话] AMENDMENT/START - 修正 Root 静态审查偏差
+
+- 保留 1435 历史 COMPLETE；本轮修正限额静默 clamp、身份 seal、异常仲裁、service 重入与既有 ZIP 映射，随后重新全量验证。
+
+### [20260902-1448-Terra-A2只读扫描会话] PARTIAL - 首版审查修正继续中
+
+- 已修正显式 `scan_single_file_read_max_bytes > single_file_max_bytes` 为启动 ValueError；仅在字段未显式提供时以 archive 单文件上限派生安全默认值，旧 1 MiB ZIP 配置不被放宽。已加入同 service 同线程重入拒绝与最终完整性优先仲裁，当前全量 `114 passed`、`git diff --check` 通过。
+- 未完成：Root 要求的完整 `_InventorySnapshot` 目录/文件 identity seal、基于封印 parts 的打开、坏 ZIP 共用物化映射及 8 POS/指定 NEG 扩充尚未完成。本轮不得声明 A2-2 实现验收完成；后续 Terra 必须继续闭环，Luna 独立 NEG 尚未开始。
+
+### [20260902-1452-Terra-A2只读扫描会话] AMENDMENT/START - 严格规格续作
+
+- 1435/1448 保留为历史；本轮移除 sentinel 派生默认值，继续完成 seal、仲裁和测试闭环。
+
+### [20260902-1449-Sol-A2只读配额兼容] AMENDMENT/COMPLETE - 冻结 `None` 派生默认的最小兼容裁决
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 14:49（Asia/Shanghai）；本条是对 1452 Terra “移除 sentinel 派生默认值”方向的后续契约裁决，实现必须以本条与规格 v0.1.1 AMENDMENT 为准。
+- 真实冲突：既有 Luna 测试构造 `ZipSafetyLimits(single_file_max_bytes=1 * MIB)`；普通 `int=2 * MIB` 无法区分默认与显式值，因而不可同时满足旧配置兼容、标准默认 2 MiB 和显式值不得超过 ZIP 限额三项要求。不允许修改旧 Luna 测试来规避。
+- 冻结方案：`scan_single_file_read_max_bytes: int | None = None`；省略或 `None` 在服务消费输入前解析为 `min(2 * MIB, single_file_max_bytes)`。`None` 不是无限，也不进入 budget；显式 `int` 仍严格验证 64 KiB..32 MiB，不得高于 ZIP 单文件或扫描累计上限，违反时 `ValueError`，绝不静默 clamp。
+- 精确结果：标准 `ZipSafetyLimits()` 有效扫描单文件上限仍为 2 MiB；旧 ZIP 1 MiB 配置在未配扫描值时派生 1 MiB；ZIP 1 MiB + 显式扫描 2 MiB 仍启动 `ValueError`，不得自动降为 1 MiB。
+- 文档修改：向 `docs/spec/a2-readonly-scan-session.md` 物理 EOF 追加 `AMENDMENT v0.1.1`，保留 v0.1.0 历史；增补既有 `POS-A2-RS-001/004` 与 `NEG-A2-RS-011` 断言，不新增 ID；同步追加 AI 辅助记录。
+- 检查：目标文档 whitespace/diff 检查无输出；规格仍为 8 个唯一 POS、24 个唯一 NEG，10 个 Markdown 围栏标记成对；P0 模型/契约/Schema/sample 相对 `33cd336` 零差异。本轮仅裁决并修改文档，未修改 backend/tests/PROJECT_PROGRESS，未为通过而改 Luna 预期。
+- 实现状态：Terra 尚需按 v0.1.1 调整实现并完成其 1452 未闭环项；Luna 独立验证尚未开始。本裁决不代表 A2-2 实现通过，不关闭 TrustedEgress、Linux profile、Git/Web 或 A2 总门禁。
+- 关联提交/PR/Issue/evidence_id：暂无；本轮未提交、未推送；本条为 Sol 当前物理 EOF 收工记录。
+
+### [20260902-1451-Root-A2只读实现接管] COMPLETE - 补齐 Terra 未闭环安全实现并恢复全量绿灯
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 14:51（Asia/Shanghai）；原因：Terra 旧对话连续短回合仅能产出局部补丁，1448 已如实标为 PARTIAL，Root 为避免半成品跨角色流转而接管收尾；保留 Terra 全部作者和历史记录。
+- 完成内容：将 inventory snapshot 重构为明确的目录/文件 frozen seals；构建过程采用稳定排序和流式哈希；新增基于封印 parts 的 descriptor-relative/no-follow 逐层目录 identity 校验、末端 lstat/open/fstat/read/fstat/EOF/hash 校验；只读 session 加入规范路径解析、配额预留、线程安全错误锁存和全树前后复验。
+- 服务编排：抽取两个入口共用的 ZIP 物化流程，恢复 `archive_not_zip`/`archive_integrity_failed` 一致映射；实现同 service 同线程重入错误即使被 consumer 捕获仍锁存；仲裁顺序为 cleanup 最高、最终完整性、service/session 锁存、普通 consumer，BaseException 在成功清理后原样抛出。
+- 配额裁决落地：按 Sol v0.1.1 AMENDMENT 将扫描单文件配置改为 `int | None`；未配置时在消费输入前解析为 `min(2 MiB, ZIP single_file limit)`，显式整数仍严格拒绝放宽，不修改既有 Luna 测试。
+- 测试扩充：实现侧定向由27项增至42项，新增精确累计边界、限额预检零读取、串行/并发隔离、重入、坏 ZIP、显式配置拒绝、same-content/new-inode、same-inode/same-size 改写与非法路径矩阵。
+- 真实验证：定向 `42 passed`；全量 `129 passed`；P0 `46 passed`；compileall 与 `git diff --check` 通过。一次错误的独立 Schema 路径探测因使用不存在的旧路径失败，已确认真实路径为 `schemas/p0/scan-result.schema.json`，P0 测试本身已验证导出等值；不将错误探测记为产品失败。
+- 安全边界：仍只允许可信、非执行性进程内 parser；未实现 B1、Git、TrustedEgress、Linux profile、Web/API、cleanup quarantine/orphan 或 A2 总门禁。下一步必须由 Luna 独立测试，Root 本条不是最终验收。
+- 关联提交/PR/Issue/evidence_id：暂无；未提交、未推送；本条为当前物理 EOF 收工记录。
+
+### [20260902-1453-Luna-A2只读会话独立验证] START - 独立验证 A2-2 安全只读扫描会话
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 14:53（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`；基线 `33cd336`；保留 Root/Terra 未提交工作，不切换分支、不提交、不推送。
+- 开始前已确认：已按 `AGENTS.md` 读取根 README、完整共享日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、Sol A2-2 v0.1.0 规格及 v0.1.1 EOF AMENDMENT，并核对当前实现、分支、状态和 Root 1451 COMPLETE；现有全量为 129 passed，尚无 Luna A2-2 独立证据。
+- 任务目标：以真实临时文件系统和受控故障注入独立验证冻结 `8 POS + 24 NEG`，重点覆盖路径/外部 sentinel、symlink/FIFO/目录、identity/内容 TOCTOU、读取限额计数、过期/线程/重入/并发、异常脱敏与优先级、前置拒绝、公开能力面、ZIP 映射和 BaseException 清理。
+- 预计修改文件：仅新增 `tests/security/test_a2_readonly_scan_session_independent.py`，更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 和本共享日志；绝不修改 backend、tests/unit、Sol 规格、P0 或 `PROJECT_PROGRESS.md`。
+- 验收方法：先运行独立文件，再运行全量、P0、Schema 等值、compileall、`git diff --check`、敏感信息/本机绝对路径检查；缺陷保留最小失败测试并以 BLOCKED 记录，不修改上游使测试通过。
+- 夹具与边界：动态构造小型 ZIP/真实临时目录与 FIFO，必要时仅对 cleanup/open/read 注入受控故障；不联网、不安装依赖、不执行被扫描项目代码，不将本机 macOS 结果外推为 Linux/TrustedEgress/A2 总门禁证据。
+- 关联规格/责任：`docs/spec/a2-readonly-scan-session.md`、`POS-A2-RS-001..008`、`NEG-A2-RS-001..024`；实现缺陷交 Terra，契约或语义争议交 Sol。
+
+### [20260902-1453-Luna-A2只读会话独立验证] BLOCKED - A2-2 独立验证保留三项上游契约缺陷
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 15:01（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`；基线 `33cd336`；未切换分支、未提交、未推送。
+- 任务目标与实际结果：完成 A2-2 冻结 `8 POS + 24 NEG` 的独立安全回归；共收集 44 个参数化场景，41 通过、3 失败，失败均保留为最小独立证据，未修改上游实现或放宽规格。
+- 修改文件：新增 `tests/security/test_a2_readonly_scan_session_independent.py`；更新 `tests/security/README.md` 与 `docs/05-ai-assistance-log.md`；仅追加本共享日志。未修改 backend、tests/unit、Sol 规格、P0 或 `PROJECT_PROGRESS.md`。
+- 三项阻塞（建议 P1，需 Terra 修复并由 Sol 复核）：
+  1. `NEG-A2-RS-008` 受控目标文件 `open` 错误实际返回 `scanner_failed/scan_file_integrity_failed`，规格要求 `scanner_failed/scan_file_read_failed`。
+  2. `NEG-A2-RS-008` 受控目标文件 `close` 错误被静默吞掉，调用成功返回，未产生规格要求的 `scan_file_read_failed`。
+  3. `NEG-A2-RS-022` `ReadOnlyScanSession` 的公开成员集合额外包含 `failure`、`expire`；规格要求公开能力仅 `inventory`、`read_bytes`。无 forbidden `path/fd/open/write/stream/fileno` 名称命中，但精确能力面仍不合契约。
+- 命令与结果：独立 `pytest -q tests/security/test_a2_readonly_scan_session_independent.py` 为 `41 passed`、`3 failed`；全量为 `170 passed`、`3 failed`；P0 `46 passed`；Schema 与 `ScanRun.model_json_schema()` 等值 `true`；compileall 通过；`git diff --check`、尾随空白、敏感信息与本机绝对路径扫描通过。失败均为上述三项，未出现其他失败。
+- 覆盖与材料：真实临时文件系统覆盖路径、sentinel、symlink/FIFO/目录与 TOCTOU、限额/重复计数、过期/线程/重入/并发、异常脱敏、consumer catch、未读文件复验、cleanup 优先级、ZIP 前置拒绝、BaseException 和能力面；fixture 为运行时生成的小型 ZIP/临时文件，不含二进制、不联网、不执行被扫描项目代码。Bench、第三方资源台账和报告证据库存无新增条目。
+- 接口、Schema、规则或决策：无新增或改变；A2-2 仍是可信、非执行性 parser 的进程内只读会话，不等同 Linux sandbox、TrustedEgress 或 A2 总门禁；不得以当前部分绿灯申请最终 evidence ID。
+- 阻塞解除条件与责任：Terra 修正 open/read/close 稳定错误映射、close 失败不可静默成功、公开 session 能力面；Sol 复核与规格一致性；Luna 复跑本文件、全量及发布扫描；Root 之后固定不可变提交、运行 profile 与证据绑定。
+- 已知未证明：完整 ZIP corpus、cleanup quarantine/worker/orphan、强退/取消、durable registry、HTTP/`ScanRun` 映射、Git、TrustedEgress、Linux profile、B1/ScanCode/Syft、依赖/许可证结果和 A2 总门禁继续开放。
+- 关联规格/责任：`docs/spec/a2-readonly-scan-session.md` v0.1.0 + v0.1.1 AMENDMENT；关联 START `20260902-1453-Luna-A2只读会话独立验证`；无提交、PR、Issue 或 evidence_id。本条为当前物理 EOF 收工记录。
+
+### [20260902-1505-Terra-A2只读扫描会话] FIX COMPLETE - Luna 三项上游阻塞复核
+
+- 作者：GPT-5.6 Terra；本条不再修改代码。已复核 Luna 独立会话文件 `44 passed` 与 Terra unit `18 passed`（合计62项）。
+- 修复归属：Terra 完成公开能力面私有化和目标 open 的稳定 `scan_file_read_failed` 映射；Root 补充 close OSError 不再静默成功，并修正私有 failure helper 的调用括号。1435 首版声明由后续 1440-1505 修订取代。
+- 边界：未提交、未推送；仍不外推为 Linux sandbox、TrustedEgress 或 A2 总门禁完成。
+
+### [20260902-1506-Luna-A2只读会话复跑] START - 复跑并核验三项 A2-2 阻塞修复
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 15:06（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`；基线 `33cd336`；保留 Root/Terra 未提交工作，不切换分支、不提交、不推送。
+- 开始前已确认：已读取共享日志物理 EOF；Terra 1505 `FIX COMPLETE` 声明已修复公开能力面与 open 错误映射，Root 补齐 close OSError 处理；当前待 Luna 原样复跑确认。
+- 任务目标：不修改 backend、tests/unit、Sol 规格、P0 或 `PROJECT_PROGRESS.md`，原样运行 `tests/security/test_a2_readonly_scan_session_independent.py`、全量、P0、Schema 等值、compileall、`git diff --check` 和敏感/绝对路径扫描。
+- 预计修改文件：若全绿，仅更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 并向本共享日志追加 AMENDMENT/COMPLETE；若仍失败，保留失败测试并追加 BLOCKED。
+- 验收边界：明确记录原 1501 BLOCKED 的三项测试解除情况及仍未证明的 Linux/TrustedEgress、cleanup quarantine/orphan、完整 ZIP corpus、Git/Web/API 等边界。
+
+### [20260902-1506-Luna-A2只读会话复跑] COMPLETE - 三项 A2-2 独立验证阻塞已关闭
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 15:07（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`；基线 `33cd336`；未切换分支、未提交、未推送。
+- AMENDMENT（保留历史）：原 `20260902-1453-Luna-A2只读会话独立验证 BLOCKED` 的三项原样测试已在 Terra/Root 修复后全部解除：目标 `open` 错误现映射为 `scanner_failed/scan_file_read_failed`；目标 `close` 错误不再静默成功；`ReadOnlyScanSession` 公开能力面现仅含 `inventory`、`read_bytes`。原 BLOCKED 记录未改写。
+- 实际修改：新增独立测试文件已保留；更新 `tests/security/README.md`，将 A2-2 口径由 `41 passed/3 failed`、全量 `170 passed/3 failed` 更正为独立 `44 passed`、全量 `173 passed`；向 `docs/05-ai-assistance-log.md` 追加复跑 AMENDMENT。未修改 backend、tests/unit、Sol 规格、P0 或 `PROJECT_PROGRESS.md`。
+- 命令与结果：原样独立 `pytest -q tests/security/test_a2_readonly_scan_session_independent.py` 为 `44 passed in 0.07s`；全量为 `173 passed in 0.51s`；P0 为 `46 passed in 0.11s`；Schema 与 `ScanRun.model_json_schema()` 等值 `schema_export_equal=true`；compileall 通过；`git diff --check`、尾随空白、敏感信息与本机绝对路径扫描通过。
+- 覆盖与材料：本轮无新增 fixture/二进制；测试继续使用真实临时文件系统、FIFO 和受控 open/read/close 故障注入，不联网、不执行被扫描项目代码。Bench 数据、第三方资源台账、九章证据库存和报告材料无新增条目；A2-2 独立运行证据可交 Root 绑定。
+- 接口、Schema、规则或决策：无变化；三项缺陷属于实现归属，已由 Terra/Root 修复并由 Luna 独立复核；本地 macOS/POSIX 绿灯不外推为 Linux sandbox、TrustedEgress 或 A2 总门禁完成。
+- 未证明边界：完整 ZIP corpus、cleanup quarantine/worker/orphan、强退/取消、durable registry、HTTP/`ScanRun` 映射、Git、TrustedEgress、Linux profile、B1/ScanCode/Syft、依赖/许可证结果和 A2 总门禁仍开放。
+- 下一步与责任模型：Root 负责固定不可变提交、Python/运行 profile、命令与输出摘要并绑定 evidence ID；Terra/Sol 负责后续实现/契约审计，Luna 继续验证新增范围。本条为当前物理 EOF 收工记录。
+- 关联规格/责任：`docs/spec/a2-readonly-scan-session.md` v0.1.0 + v0.1.1 AMENDMENT；关联 BLOCKED `20260902-1453-Luna-A2只读会话独立验证`；无提交、PR 或 Issue。
+
+### [20260902-1513-Sol-A2只读会话终审] START - A2-2 最终架构、安全与竞赛口径审计
+
+- 作者：GPT-5.6 Sol；对话角色：架构、安全契约、竞赛事实与证据边界终审；时间：2026-09-02 15:13（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`，基线/HEAD `33cd336`；保留 Root/Terra/Luna 全部未提交实现、测试与记录，不切分支、不提交、不推送。
+- 开始前已确认：已按 `AGENTS.md` 复核根 README、共享日志至物理 EOF、`PROJECT_PROGRESS.md`、`SOL_HANDOFF.md`、A2-2 v0.1.0 + v0.1.1 规格、全部本轮实现/测试差异、Terra unit、Luna 44 场景独立测试与安全 README。Luna 1501 的 open/close/公开能力三项 BLOCKED 已于 1507 原测试复跑为 44/44 解除，本轮仍独立复核而不直接沿用结论。
+- 任务目标：逐项审查 `ingest()`/CLI 兼容与共用 ZIP 映射、snapshot 身份/哈希、descriptor no-follow、精确路径白名单、派生/显式限额、累计预留、线程/重入/过期/并发、错误优先级与脱敏、公开能力和证据口径。
+- 预计修改：审计通过时仅最小更新 `docs/security/a2-zip-implementation-audit.md`、`docs/05-ai-assistance-log.md` 并只追加本日志；如发现 P0/P1，不修实现，以 `BLOCKED` 记录精确文件/行为/解除条件。不修改 backend、tests、P0、A2-2 规格或 `PROJECT_PROGRESS.md`。
+- 验收方法：运行 Luna A2-2 44 场景、Terra 会话/ZIP unit、全量、P0、Schema 导出等值、compileall、`git diff --check`、敏感/绝对路径、P0 零差异与上传范围检查；预计 3k-5k token，非硬限制。
+- 竞赛口径：候选证据若通过只能限定为本地 macOS/POSIX 可信进程内只读会话纵切；不声称不可信 Python sandbox、Linux/TrustedEgress、Git/Web/B1、完整 ZIP corpus、cleanup quarantine/orphan/worker 或 A2 总门禁完成。
+- 关联提交/PR/Issue/evidence_id：候选 evidence ID 待审计结论；本条为 Sol 当前物理 EOF 开工记录。
+
+### [20260902-1524-Sol-A2只读会话终审] BLOCKED - 两项 descriptor 错误与回收 P1 阻止证据批准
+
+- 作者：GPT-5.6 Sol；对话角色：架构、安全契约、竞赛事实与证据边界终审；时间：2026-09-02 15:24（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`，基线/HEAD `33cd336`；未切换分支、未提交、未推送。
+- 正向结论：共享 `_materialize_archive()`、snapshot 身份/哈希、descriptor-relative/no-follow、精确 inventory 白名单、派生/显式限额、累计预算预留、线程/重入/过期/并发、终态 integrity/service/session/consumer/BaseException 优先级及公开能力主路径符合 v0.1.0 + v0.1.1。Luna 1501 的目标 open、目标 close 静默成功、公开 `failure`/`expire` 三项原阻塞均已由原 44 场景复跑关闭。
+- P1-1 精确证据：`backend/app/ingestion/read_session.py:133` 在消费前重开根 `tree` descriptor；`backend/app/ingestion/secure_dir.py:146-148` 将该层任意 `OSError` 冻结为 `workspace_integrity_failed`；`read_session.py:161-164` 又原样透传该 `IngestionSecurityError`。受控探针仅让预验证后的第二次根 `tree` open 失败，并在终态验证前恢复，实际得到 `scanner_failed:workspace_integrity_failed`，而不是规格冻结的 `scanner_failed:scan_file_read_failed`。解除条件：将未观察到 seal 差异的消费期 descriptor open/read/close 失败稳定映射到冻结 reason，并增加独立真实文件系统回归。
+- P1-2 精确证据：`backend/app/ingestion/read_session.py:186-200` 已把目标 close `OSError` 映射为 `scan_file_read_failed`，但未保留可安全接管的 fd 所有权、未退役/毒化 worker，随后 workspace 路径清理可成功而 descriptor 仍存活。受控探针在目标 fd 首次 close 前抛错，恢复 close 后完成服务清理，实际得到 `scanner_failed:scan_file_read_failed` 且 `failed_close_fd_still_open=True`。解除条件：定义避免重复 close 竞态的 descriptor 所有权/worker 退役或进程级回收模型，并让 Luna 同时断言错误 reason、路径清理和 fd 不存活。
+- P2 文档债：`backend/app/ingestion/zip_stream.py:32-40` 类 docstring 仍称服务只返回 inventory、消费延后，已落后于当前 `consume()` 能力；不单独阻止本轮，但修复时应同步更新。
+- 实际验证：Luna A2-2 独立 `44 passed`；Terra 会话+ZIP unit `37 passed`、CLI `5 passed`，合计 `42 passed`；全量 `173 passed`；P0 `46 passed`；`schema_export_equal=True`；compileall、`git diff --check`、新文件 no-index whitespace、P0 零差异、敏感信息/本机绝对路径与上传范围检查通过。绿灯不能覆盖上述两个额外故障探针。
+- 实际修改：仅向 `docs/security/a2-zip-implementation-audit.md` 增加终审 `SOL_FINAL_AUDIT_BLOCKED_P1` 章节、向 `docs/05-ai-assistance-log.md` 追加 AI 记录，并向本日志追加当前 BLOCKED；未修改 backend、tests、P0、`docs/spec/a2-readonly-scan-session.md` 或 `PROJECT_PROGRESS.md`。
+- 证据与竞赛口径：候选 `EVD-A2-READONLY-SESSION-001` 仅为预留标识，状态 `BLOCKED-NOT-APPROVED`；不得进入 `PROJECT_PROGRESS.md`、九章/报告证据库或发布主张。Linux/TrustedEgress、cleanup quarantine/orphan/worker、强退/取消、完整 ZIP corpus、Git/Web/API、B1/ScanCode/Syft 和 A2 总门禁仍未证明。
+- 下一步责任：Terra/Root 处理两项 P1 且不放宽规格；Luna 增加根 descriptor 错误映射与 fd 存活独立回归并复跑全套；Sol 复审；Root 仅在所有门槛关闭后绑定不可变提交、运行 profile 与正式 evidence ID。本条为当前物理 EOF 收工记录。
+
+### [20260902-1506-Luna-A2只读会话复跑] AMENDMENT/COMPLETE - 复跑并关闭 Sol 1524 两项 descriptor P1
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 15:35（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`；基线 `33cd336`；未切换分支、未提交、未推送。
+- AMENDMENT（保留历史）：在原 1501 BLOCKED 与 1507 COMPLETE 之后，Sol 1524 新增两项 P1 探针；本轮未改写历史，仅新增两项独立测试并完成原样复跑。
+- P1-1 解除：`test_transient_root_descriptor_open_error_is_read_failure_and_is_sanitized` 在消费前全树验证完成后，仅让实际读取阶段的根 `tree` descriptor open 瞬时失败，恢复后外层得到 `scanner_failed:scan_file_read_failed`，敏感 marker 未泄漏，workspace 已清理。
+- P1-2 解除：`test_failed_target_close_is_recovered_and_fd_is_ebadf_after_completion` 在目标 file fd 首次 close 前受控抛错且不实际 close；consumer finally 恢复真实 close，外层得到 `scanner_failed:scan_file_read_failed`，deferred recovery 完成后 `os.fstat(fd)` 为 `EBADF`，workspace 已清理。
+- 实际修改：仅更新 `tests/security/test_a2_readonly_scan_session_independent.py` 增加上述两项精确回归；更新 `tests/security/README.md` 为独立 46/46、全量 175/175；向 `docs/05-ai-assistance-log.md` 追加 AMENDMENT；未修改 backend、tests/unit、Sol 规格、P0 或 `PROJECT_PROGRESS.md`。
+- 命令与结果：独立测试 `46 passed in 0.09s`；全量 `175 passed in 0.52s`；P0 `46 passed in 0.11s`；`schema_export_equal=true`；compileall、`git diff --check`、尾随空白、敏感信息与本机绝对路径扫描通过。
+- 覆盖与材料：原 44 项测试断言未改动、未删除；新增 2 项均使用真实临时文件系统和受控 open/close 注入，无二进制 fixture、不联网、不执行被扫描项目代码。Bench、第三方资源台账、九章证据库存和报告材料无新增条目。
+- 接口、Schema、规则或决策：无变化；Sol 1524 两项 P1 的原样独立证据已解除，候选 `EVD-A2-READONLY-SESSION-001` 仍待 Root 绑定不可变提交与运行 profile；不外推为 Linux sandbox、TrustedEgress 或 A2 总门禁完成。
+- 未证明边界：完整 ZIP corpus、cleanup quarantine/worker/orphan、强退/取消、durable registry、HTTP/`ScanRun` 映射、Git、TrustedEgress、Linux profile、B1/ScanCode/Syft、依赖/许可证结果和 A2 总门禁仍开放。
+- 下一步与责任模型：Sol 复审两项探针；Root 负责正式 evidence ID、不可变提交、运行 profile 和发布范围；Luna 继续维护独立验证与材料追溯。本条为当前物理 EOF 收工记录。
+- 关联规格/责任：`docs/spec/a2-readonly-scan-session.md` v0.1.0 + v0.1.1 AMENDMENT；关联 Sol `20260902-1524-Sol-A2只读会话终审` 与原 Luna `20260902-1453-Luna-A2只读会话独立验证`；无提交、PR 或 Issue。
+
+### [20260902-1540-Sol-A2只读会话终审] FINAL AUDIT COMPLETE - 关闭 15:24 两项 descriptor P1
+
+- 作者：GPT-5.6 Sol；对话角色：架构、安全契约、竞赛事实与证据边界终审；时间：2026-09-02 15:40（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-readonly-scan-session`，基线/HEAD `33cd336`；未切换分支、未提交、未推送。
+- AMENDMENT（保留历史）：原 `20260902-1524-Sol-A2只读会话终审 BLOCKED` 不改写；本条基于当前实现、Luna 新增两项独立测试和 Sol 原样复跑，将两项 P1 更新为 CLOSED，未发现新的 P1。
+- P1-1 CLOSED：消费期 `tree` 根 descriptor 瞬时 open 失败现稳定脱敏为 `scanner_failed:scan_file_read_failed`；只有实际观察到 type/dev/inode/size/hash 差异才进入 integrity reason。Luna 新增根 open 注入测试同时断言 reason、marker 不泄漏及 workspace 清理。
+- P1-2 CLOSED：reader 对全部目录/目标文件 fd 保留 seal 化所有权；close 不确定转入 session 私有 deferred 队列。consumer 结束、cleanup 前按 type/dev/inode/size 确认并回收；无法确认或再次关闭时产生稳定失败并毒化 service，`ingest()` 与 `ingest_with_consumer()` 后续均由 `_ensure_usable()` 拒绝。Luna 新增测试断言故障目标 fd 最终为 `EBADF`。
+- 实际复跑：使用 Python 3.12.13；Luna 独立 `46 passed in 0.10s`，原 44 项断言不变；Terra 会话+ZIP+CLI unit `42 passed in 0.13s`；全量 `175 passed in 0.56s`；P0 `46 passed in 0.16s`；`schema_export_equal=True`；compileall、`git diff --check`、新文件 no-index whitespace、敏感信息/本机绝对路径扫描与 P0 零差异通过。
+- 实际修改：仅向 `docs/security/a2-zip-implementation-audit.md` 追加第 12 节 CLOSED AMENDMENT、向 `docs/05-ai-assistance-log.md` 追加本轮记录，并向本共享日志追加当前条目；未修改 backend、tests、spec、P0 或 `PROJECT_PROGRESS.md`。
+- 证据决定：候选 `EVD-A2-READONLY-SESSION-001` 批准为 `APPROVED-PENDING-ROOT-BINDING`，待 Root 绑定不可变提交、Python/运行 profile、复现命令与输出摘要；绑定前不得称为已发布正式 evidence。
+- 边界：不扩展到既有声明非目标；Linux/TrustedEgress 等状态保持原记录。Root 接管提交与证据绑定，本条为当前物理 EOF 终审收工记录。
+
+### [20260902-1542-Root-A2只读会话验收] COMPLETE - A2-2 已通过本地实现与独立安全门禁
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 15:42（Asia/Shanghai）；分支 `feat/a2-readonly-scan-session`，基线/当前 HEAD `33cd336`。
+- 完成范围：冻结并实现 `ingest_with_consumer()`、`ScanReadLimits`、`ScanSessionResult`、公开面仅含 `inventory/read_bytes` 的 `ReadOnlyScanSession`；inventory snapshot 封印目录/文件 type/dev/inode/size/hash；逐层 descriptor-relative/no-follow 读取与全树前后复验；配额、过期、线程、重入、异常脱敏、cleanup 和 descriptor close 不确定恢复均失败关闭。
+- 缺陷链：Terra 1435 首版声明由1448 PARTIAL及后续修订取代；Luna 1501 的3项阻塞由原44项复跑关闭；Sol 1524新增的根 open reason与fd存活2项P1由Luna新增2项探针关闭；历史BLOCKED均保留未改写。
+- Root 真实验证：Python 3.12.13；全量 `175 passed in 0.59s`；Luna独立 `46 passed in 0.09s`；会话+ZIP+CLI unit `42 passed in 0.11s`；P0 `46 passed in 0.13s`；compileall、`git diff --check`、P0相对`33cd336`零差异通过。内存ZIP真实调用返回正文 `[project]` 与1条inventory。
+- 材料与运行说明：更新根README、backend README和进度台账，明确用户可运行CLI/全量测试，开发者可用只读consumer；不把内部API介绍成完整Web、许可证结果或不可信Python沙箱。
+- 上传范围：计划提交15个竞赛作品文件；原始DOCX、`.DS_Store`、pytest/pycache、虚拟环境、密钥和成员隐私均由ignore排除。候选 `EVD-A2-READONLY-SESSION-001` 已获Sol批准，待下一步绑定本不可变实现提交。
+- 未证明：完整ZIP畸形corpus、cleanup quarantine/orphan/worker进程、强退/取消、durable registry、Git/TrustedEgress、Linux profile、HTTP/API、B1/ScanCode/Syft、依赖/许可证结果及A2总门禁仍开放。
+- 下一步：固定实现提交，回填evidence与GitHub状态后推送远端；本条为当前物理 EOF 验收记录。
+
+### [20260902-1543-Root-A2只读会话验收] AMENDMENT - 更正提交文件计数
+
+- 1542 条“计划提交15个竞赛作品文件”的人工计数更正为16个：12个已跟踪修改文件与4个新增文件；上传边界和排除清单不变。本条保留原记录并在物理 EOF 更正，不改写历史。

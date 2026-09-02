@@ -27,6 +27,8 @@ class ZipSafetyLimits:
     path_depth_max: int = 32
     path_utf8_bytes_max: int = 1_024
     cleanup_retry_max: int = 3
+    scan_single_file_read_max_bytes: int | None = None
+    scan_total_read_max_bytes: int = 16 * MIB
 
     def __post_init__(self) -> None:
         _require_range("upload_max_bytes", self.upload_max_bytes, 8 * MIB, 256 * MIB)
@@ -37,6 +39,25 @@ class ZipSafetyLimits:
         _require_range("path_depth_max", self.path_depth_max, 8, 64)
         _require_range("path_utf8_bytes_max", self.path_utf8_bytes_max, 256, 4_096)
         _require_range("cleanup_retry_max", self.cleanup_retry_max, 1, 5)
+        _require_range("scan_total_read_max_bytes", self.scan_total_read_max_bytes, 1 * MIB, 256 * MIB)
+        if self.scan_single_file_read_max_bytes is not None:
+            _require_range(
+                "scan_single_file_read_max_bytes",
+                self.scan_single_file_read_max_bytes,
+                64 * 1024,
+                32 * MIB,
+            )
+            if self.scan_single_file_read_max_bytes > self.single_file_max_bytes:
+                raise ValueError("scan_single_file_read_max_bytes must not exceed single_file_max_bytes")
+        if not self.effective_scan_single_file_read_max_bytes <= self.scan_total_read_max_bytes <= self.uncompressed_max_bytes:
+            raise ValueError("scan read limits must fit within archive limits")
+
+    @property
+    def effective_scan_single_file_read_max_bytes(self) -> int:
+        """Resolve the omitted A2-2 limit without widening an older ZIP cap."""
+
+        configured = self.scan_single_file_read_max_bytes
+        return min(2 * MIB, self.single_file_max_bytes) if configured is None else configured
 
 
 @dataclass

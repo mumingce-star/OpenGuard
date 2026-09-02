@@ -50,6 +50,37 @@ xattr 或链接。已知 symlink、device、FIFO、socket 等类型会被拒绝�
 注册表、最终 API 状态映射或完整 ZIP64/多卷/header-overlap 语料证明；macOS 的单元
 和文件系统测试不能作为这些部署级安全控制的证据。
 
+## A2-2 生命周期绑定的只读扫描会话
+
+后续可信解析器需要读取 manifest、许可证等小文件时，应使用
+`ingest_with_consumer()`，不能取得临时目录路径或文件描述符：
+
+```python
+from app.ingestion import ZipIngestionService
+
+with open("./demo.zip", "rb") as archive:
+    service = ZipIngestionService("/absolute/server-owned-workspace-root")
+    try:
+        result = service.ingest_with_consumer(
+            archive,
+            lambda session: session.read_bytes("pyproject.toml"),
+        )
+    finally:
+        service.close()
+```
+
+consumer 只能读取 inventory 中精确登记的普通文件，并受服务端单文件/累计读取上限、
+descriptor-relative `O_NOFOLLOW`、目录与文件 identity seal、SHA-256 复验约束。回调
+结束后保存的 session 引用永久失效；open/read/close、替换竞态、跨线程、重入、consumer
+异常和 cleanup 均按稳定错误失败关闭。该接口仅供可信、非执行性的进程内解析器使用；
+Python 私有属性和反射并不是安全沙箱，不得将任意第三方代码作为 consumer 执行。
+
+独立安全回归可单独复现：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/security/test_a2_readonly_scan_session_independent.py
+```
+
 ## 本地 ZIP CLI 演示
 
 在项目根目录、已安装项目测试依赖的环境中，可用以下命令只运行本地 ZIP 安全接收与

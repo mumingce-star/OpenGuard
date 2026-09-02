@@ -8,7 +8,7 @@
 
 ## 当前可运行状态（2026-09-02）
 
-现在已经可以独立跑通第一条真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**。这条演示不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
+现在已经可以独立跑通第一条真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**。在此基础上，后端还提供生命周期绑定的只读扫描会话，使后续可信解析器能在清理前按 inventory 白名单读取小文件；读取结束后能力立即失效。这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
 
 当前还不是完整参赛成品：Web 界面、公开 Git/本地目录输入、Python/JavaScript 依赖识别、许可证规则、AI 解释、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
@@ -19,7 +19,7 @@ PYTHONPATH=backend python -m app.cli ./your-project.zip
 PYTHONPATH=backend python -m pytest -q
 ```
 
-第一条命令成功时输出 JSON；安全拒绝、输入错误和退出码说明见 [backend/README.md](backend/README.md)。第二条命令用于复现当前自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
+第一条命令成功时输出 JSON；安全拒绝、输入错误、只读会话示例和退出码说明见 [backend/README.md](backend/README.md)。第二条命令用于复现当前 175 项自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
 
 ## 竞赛交付定义
 

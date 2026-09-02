@@ -161,3 +161,101 @@ Root 下一步应先决定本审计列出的剩余实现差异是否进入 A2-1 
 `BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY` 已于 2026-09-02 13:46 关闭：Luna 实际补充了 `tests/security/README.md` 的独立 CLI 复现命令、5 项覆盖范围及 `5 passed`/全量 `111 passed` 口径，并在共享日志以 AMENDMENT 更正先前声明。Root 随后独立复跑真实 ZIP CLI、全量 111 项、P0 46 项与 Schema 导出等值检查，结果通过。
 
 证据编号 `EVD-A2-ZIP-CLI-001` 已绑定不可变实现提交 `910f745`，等级严格限定为 `verified-local-demo`。运行 profile 为 2026-09-02 macOS 本地开发环境、Python 3.12.13；复现入口、111 项全量测试、46 项 P0 回归、Schema 等值及 Root 真实成功/失败演示均记录于共享日志。本证据不改变第 10 节列出的任何开放系统门禁。
+
+## 11. A2-2 安全只读扫描会话终审（2026-09-02）
+
+终审状态：`SOL_FINAL_AUDIT_BLOCKED_P1`
+
+审计对象：分支 `feat/a2-readonly-scan-session`、基线/HEAD `33cd336` 上的未提交 A2-2 工作树；契约为 `docs/spec/a2-readonly-scan-session.md` v0.1.0 + v0.1.1 AMENDMENT。
+
+结论：主体架构、向后兼容和已冻结的 44 个独立场景均可复现；Luna 15:01 的目标文件 open、close 静默成功和公开能力面三项 BLOCKED 已由原测试 44/44 复跑解除。但 Sol 终审补充的树根 descriptor 瞬时 open 与 close 后 descriptor 存活探针发现两项未覆盖 P1；因此不批准候选 A2-2 evidence ID，不允许 Root 在本状态下固定为“实现通过”。
+
+### 11.1 已通过的契约面
+
+| 审计面 | 结论 | 证据 |
+|---|---|---|
+| `ingest()` / CLI 兼容与 ZIP 错误映射 | `PASS` | 两入口共用 `_materialize_archive()`；旧 ZIP/CLI 回归与全量 173 项通过，非 ZIP 在两入口均是 `invalid_archive/archive_not_zip`。 |
+| snapshot / TOCTOU | `PASS-COVERED-SCOPE` | 目录与文件 seal 包含 type/dev/inode，文件另含 size/SHA-256；逐层 dirfd/no-follow，同 inode 同 size 改写和 same-content 新 inode 均独立失败。 |
+| 路径白名单 | `PASS` | 只接受与 snapshot 中 parts 精确相等的 `str`；绝对/父级/点段/别名/Path/bytes/目录/未登记值均在文件打开前失败。 |
+| 配额 | `PASS` | `None` 派生 `min(2 MiB, ZIP single)`；显式值严格拒绝放宽；累计按 seal size 在 open 前预留，失败不退回，重读重复计数。 |
+| 生命周期与仲裁 | `PASS-COVERED-SCOPE` | owner thread、session/service 重入、保存引用过期、独立并发、consumer catch 后锁存、final integrity、consumer/BaseException 脱敏/重抛和 cleanup 最高优先级均有运行回归。 |
+| 公开 capability | `PASS-BOUNDED` | `dir(ReadOnlyScanSession)` 过滤私有名后只有 `inventory`/`read_bytes`；无 Path/fd/open/write/stream。Python 私有反射仍能看到内部 workspace，因此只允许可信非执行性 parser，不是安全沙箱。 |
+| P0 与竞赛口径 | `PASS-UNCHANGED` | P0 模型/契约/Schema/sample 相对 `33cd336` 零差异；本地结果不外推 Linux/TrustedEgress/Git/Web/B1 或 A2 总门禁。 |
+
+### 11.2 P1-1 - 树根 descriptor 瞬时 open 逸出冻结 reason 字典
+
+精确证据：`backend/app/ingestion/read_session.py:133` 通过 `SecureWorkspace.open_directory(("tree",))` 打开已封印树根；`backend/app/security/secure_dir.py:146-148` 将该路径内部任一 `OSError` 先转换为 `scanner_failed/workspace_integrity_failed`。`read_snapshot_file()` 在 `read_session.py:161-164` 对 `IngestionSecurityError` 直接重抛，因此没有进入 `OSError -> scan_file_read_failed` 分支。
+
+Sol 在 consumer 读取的前置全树验证通过后，只对随后的树根 `os.open` 注入一次瞬时 `OSError`，并在 final validation 前恢复原函数；实际观察为：
+
+```text
+observed=scanner_failed:workspace_integrity_failed
+```
+
+该 reason 不在 A2-2 第 6 节允许字典内，且本场景没有观察到 seal/type/inode/size/hash 差异；冻结结果应为 `scanner_failed/scan_file_read_failed`。当 consumer catch 住该异常时，session 还会锁存这个规格外 reason，外层最终继续返回同一错误。
+
+解除条件：Terra 必须在只读 reader 边界区分“已观察身份/完整性差异”与“纯 descriptor open/read/close 系统失败”；不建议改变全局 `SecureWorkspace` 的 ingestion 错误语义。Luna 应新增一项“前置验证已成功、只有随后 tree-root open 瞬时失败、final validation 成功”的原样错误映射回归。
+
+### 11.3 P1-2 - 受控 close 失败后目标文件 descriptor 仍存活
+
+精确证据：`read_session.py:186-200` 会把 `os.close` 错误稳定映射为 `scan_file_read_failed`，解除了 Luna 15:01 的“静默成功”缺陷；但实现在 close 抛错后不再持有可回收的 fd 所有权、不标记 service/worker 不可复用，而 POSIX 路径删除又可在文件仍被打开时成功。
+
+Sol 复用 Luna close 故障形态，在目标文件第二次 close 调用前抛出受控 `OSError`，恢复原函数后检查该 fd；实际观察为：
+
+```text
+observed=scanner_failed:scan_file_read_failed
+failed_close_fd_still_open=True
+```
+
+这证明当前测试的“workspace 目录已空”不等于不可信字节的 descriptor 已关闭，与 A2-2 第 7 节“关闭会话内部 reader/descriptor 后再 cleanup”尚不一致。盲目重试同一 fd 可能在部分系统 close 语义下误关已复用的 descriptor，因此不能仅靠无条件二次 `close` 修复。
+
+解除条件：Terra/Root 需给出可审计的 descriptor 所有权/关闭失败策略；若进程内不能安全确认已关闭，至少必须阻止该 service/worker 复用并由上级进程回收，不得把仅删除目录写成完整清理。Luna 应扩展 close 故障用例，在恢复原 `os.close` 后验证该目标 fd 已不可访问，或验证 worker/service 已被标记不可复用并完成进程级回收。
+
+### 11.4 真实运行结果与证据决定
+
+| 验证 | 实际结果 |
+|---|---|
+| Luna A2-2 独立测试 | `44 passed in 0.09s` |
+| Terra 会话 + ZIP unit | `37 passed in 0.08s` |
+| Terra CLI unit | `5 passed in 0.05s`；实现侧合计 42 项 |
+| 全量 | `173 passed in 0.53s` |
+| P0 | `46 passed in 0.13s` |
+| Schema | `schema_export_equal=True` |
+| 其他 | compileall、`git diff --check`、高置信敏感/新增绝对路径扫描、P0 零差异与待上传范围检查通过 |
+
+上述绿灯证明已覆盖行为的可复现性，但不能覆盖两项新 P1 证据。候选名称 `EVD-A2-READONLY-SESSION-001` 仅作预留标识，状态为 `BLOCKED-NOT-APPROVED`，不得进入 `PROJECT_PROGRESS.md`、报告证据库或发布主张。
+
+次要文档偏差：`ZipIngestionService` 类 docstring 仍声称服务“只返回 inventory”并把保留到最后只读 consumer 写成 future，与已新增 `ingest_with_consumer()` 不同步。这是 P2 说明债，可与 P1 修复同步更正，但不单独决定本次 BLOCKED。
+
+未证明边界保持不变：完整 ZIP corpus、cleanup quarantine/worker/orphan、强退/取消、durable registry、HTTP/`ScanRun` 映射、Git、TrustedEgress、受支持 Linux profile、B1/ScanCode/Syft、依赖/许可证结果、Web 和 A2 总门禁均未关闭。
+
+## 12. AMENDMENT - Sol 15:24 两项 P1 复审关闭（2026-09-02）
+
+复审状态：`SOL_FINAL_AUDIT_BLOCKED_P1_CLOSED`
+
+本节只修订第 11 节的两项 P1 结论，保留原始 BLOCKED 与探针证据，不改写历史。当前实现与 Luna 新增的两项独立测试已关闭阻塞；未发现新的 P1。
+
+### 12.1 P1-1 根 descriptor 错误映射：CLOSED
+
+`read_snapshot_file()` 现在在消费期打开 `tree` 根 descriptor 时捕获 `SecureWorkspace.open_directory()` 的稳定错误，并将未观察到 seal 差异的瞬时失败转换为 `scanner_failed/scan_file_read_failed`；实际身份替换仍由 descriptor `fstat` 与消费后全树验证归入 `scan_file_integrity_failed`。Luna 的 `test_transient_root_descriptor_open_error_is_read_failure_and_is_sanitized` 在前置验证之后注入根 open 故障，验证 reason、敏感 marker 不泄漏和 workspace 清理，实跑通过。
+
+### 12.2 P1-2 descriptor 所有权与回收：CLOSED
+
+reader 现在保留所有已打开目录 fd 及目标文件 fd 的所有权列表；close 结果不确定时，将 fd 与 type/dev/inode/size seal 转入 session 私有 deferred 队列。consumer 结束、session 过期后且 workspace cleanup 前，`_recover_deferred_closes()` 先以 `fstat` 核对所有权 seal，再关闭仍由该 session 持有的 descriptor；已是 `EBADF` 视为完成。无法确认或再次关闭失败会产生稳定 `scan_file_read_failed`，并由 `ZipIngestionService._poison()` 毒化 service；`ingest()` 与 `ingest_with_consumer()` 均由 `_ensure_usable()` 禁止后续接收。
+
+Luna 的 `test_failed_target_close_is_recovered_and_fd_is_ebadf_after_completion` 在目标 fd 首次 close 前注入失败，恢复真实 close 后验证外层 reason、最终 `os.fstat(fd) -> EBADF` 与 workspace 清理，实跑通过。原 44 项独立断言保持不变，总计 46 项。
+
+### 12.3 最终复跑与证据决定
+
+| 验证 | Sol 复审实跑结果 |
+|---|---|
+| Luna A2-2 独立测试 | `46 passed in 0.10s` |
+| Terra 会话 + ZIP + CLI unit | `42 passed in 0.13s` |
+| 全量 | `175 passed in 0.56s` |
+| P0 | `46 passed in 0.16s` |
+| Schema | `schema_export_equal=True` |
+| 其他 | Python 3.12.13；compileall、`git diff --check`、新文件 no-index whitespace、敏感信息/本机绝对路径扫描及 P0 零差异通过 |
+
+因此，第 11 节的 `BLOCKED-NOT-APPROVED` 已由本 AMENDMENT 关闭。候选 `EVD-A2-READONLY-SESSION-001` 状态更新为 `APPROVED-PENDING-ROOT-BINDING`：仅批准 Root 绑定不可变提交、Python/运行 profile、复现命令与输出摘要；在完成绑定前不得作为已发布正式证据使用。
+
+证据边界沿用第 11 节，不扩展到 Linux/TrustedEgress 等已声明非目标；第 11 节记录的 class docstring P2 说明债仍为非阻塞项。
