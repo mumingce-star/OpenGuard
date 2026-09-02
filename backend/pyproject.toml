@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "OpenGuard P0 domain contract implementation"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+  "packaging==26.3",
   "pydantic==2.13.4",
 ]
 

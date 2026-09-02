@@ -8,18 +8,19 @@
 
 ## 当前可运行状态（2026-09-02）
 
-现在已经可以独立跑通第一条真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**。在此基础上，后端还提供生命周期绑定的只读扫描会话，使后续可信解析器能在清理前按 inventory 白名单读取小文件；读取结束后能力立即失效。这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
+现在已经可以独立跑通两层真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，以及 **本地 ZIP → 生命周期绑定只读会话 → `requirements*.txt` / `pyproject.toml` → 可溯源 Python 依赖声明 DTO**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
 
-当前还不是完整参赛成品：Web 界面、公开 Git/本地目录输入、Python/JavaScript 依赖识别、许可证规则、AI 解释、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+当前还不是完整参赛成品：现有 CLI 仍只输出安全 inventory；Python parser 尚未映射为最终 `Component`/`Evidence` 或接入报告。公开 Git/本地目录输入、JavaScript/TypeScript 依赖识别、许可证规则、AI 解释、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
 使用 Python 3.12 环境，在项目根目录运行：
 
 ```bash
 PYTHONPATH=backend python -m app.cli ./your-project.zip
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_manifest_parser.py tests/security/test_b1_python_manifest_parser_independent.py
 PYTHONPATH=backend python -m pytest -q
 ```
 
-第一条命令成功时输出 JSON；安全拒绝、输入错误、只读会话示例和退出码说明见 [backend/README.md](backend/README.md)。第二条命令用于复现当前 175 项自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
+第一条命令成功时输出 inventory JSON；安全拒绝、输入错误、只读会话/parser 用法和退出码说明见 [backend/README.md](backend/README.md)。第二条命令聚焦复现 B1-1 实现侧与独立安全测试，第三条命令复现当前 278 项自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
 
 ## 竞赛交付定义
 

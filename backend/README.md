@@ -75,6 +75,25 @@ descriptor-relative `O_NOFOLLOW`、目录与文件 identity seal、SHA-256 复�
 异常和 cleanup 均按稳定错误失败关闭。该接口仅供可信、非执行性的进程内解析器使用；
 Python 私有属性和反射并不是安全沙箱，不得将任意第三方代码作为 consumer 执行。
 
+## B1 Python manifest 解析器
+
+`app.scanners.parse_python_manifests` 是可信、非执行性的 A2-2 consumer：仅从
+`ReadOnlyScanSession.inventory` 发现 `pyproject.toml` 与精确小写的
+`requirements*.txt`，再以 `read_bytes()` 在固定额度内读取。它解析 PEP 508 声明、
+`project.dependencies`、optional dependency groups 和 `build-system.requires`，生成
+稳定的不可变中间 DTO 与字段/行级 evidence draft；不会打开目标路径、执行代码、安装
+目标依赖、联网或求值 marker。`packaging==26.3` 是精确锁定的解析依赖；缺失或版本不符
+时以 `scanner_failed:python_manifest_parser_unavailable` 失败关闭。
+
+实现侧回归与真实内存 ZIP 纵切可复现为：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_manifest_parser.py
+```
+
+这只是 B1-1 的 parser DTO 层：尚未映射 P0 `Component`、扫描许可证或输出最终资源清单；
+Luna 的独立安全验证与 Root 集成门禁完成前，不得把它标记为已完成竞赛能力。
+
 独立安全回归可单独复现：
 
 ```bash

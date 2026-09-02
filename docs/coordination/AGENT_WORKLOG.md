@@ -1407,3 +1407,417 @@
 - 上传内容：仅本任务16个竞赛作品文件及后续说明/证据回填；未上传原始DOCX/PDF、`.DS_Store`、缓存、虚拟环境、密钥或成员隐私。
 - PR入口：`https://github.com/mumingce-star/OpenGuard/pull/new/feat/a2-readonly-scan-session`；按现有治理规则保持未创建/未合并，等待依赖分支合并策略统一处理。
 - 关联证据：`EVD-A2-READONLY-SESSION-001` → `1f03ce0`，等级 `verified-local-dev-slice`；本条为当前物理 EOF 发布记录。
+
+### [20260902-1621-Root-B1Python解析器] START - 启动 manifest 发现与 Python 依赖解析纵切
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 16:21（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线 `9b70ba6`。
+- 本轮目标：在既有 A2-2 生命周期绑定只读会话之上，完成 B1 的第一个可运行纵切：安全发现 Python manifest，解析冻结范围内的 `requirements*.txt` 与 `pyproject.toml` 依赖，输出确定性、可溯源且可测试的中间结果；不执行目标代码、不安装其依赖、不联网。
+- 模型分工：Sol 冻结范围、语义、错误与验收；Terra 完成 backend 与自有 unit；Luna 在不改上游实现的前提下新增独立 fixture/回归；Sol 终审，Root 集成、全量验收、进度/证据更新、提交并推送。
+- 预计修改：`docs/spec/` 中的 B1 规格、`backend/app/scanners/` 解析实现与说明、`tests/unit/` 和 `tests/fixtures/`/独立测试、AI 辅助日志、项目进度和本共享日志；实际范围由 Sol 门禁冻结后收敛。P0 v0.1.1 公共 Schema/sample 不变。
+- 验收方法：真实 ZIP → `ReadOnlyScanSession` → parser 的内存纵切；确定性顺序/去重、字段级证据、无执行/无网络、限额与错误语义测试；既有 A2/P0/Schema 回归、compileall、`git diff --check`、敏感信息/绝对路径和上传清单检查。
+- token 预算：本任务点开工估算 `18k-30k` token，非硬限制。当前客户端未暴露本轮精确 token 遥测；收工时必须明确报告精确值是否可获得、是否在估算范围内完整交付及范围调整情况，不得编造数值。
+- 非目标：本轮不实现 JavaScript/TypeScript、lockfile 完整解析、ScanCode、Syft、许可证结论、Web/FastAPI、Git/TrustedEgress、Linux profile 或完整 A2 总门禁；不创建或合并 `main` PR。
+
+### [20260902-1629-Sol-B1Python解析器设计门禁] START - 冻结 Python manifest parser 最小纵切
+
+- 作者：GPT-5.6 Sol；角色：架构、契约、安全与证据门禁；时间：2026-09-02 16:29（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线 `9b70ba6`。
+- 前置核验：已读根目录 `README.md`、`PROJECT_PROGRESS.md`、Sol handoff、共享日志至物理 EOF、三份正式竞赛 PDF、P0 v0.1.1 契约、A2-2 规格与当前实现；正式要求与本纵切未发现阻断性冲突。
+- 本轮目标：仅新增 `docs/spec/b1-python-manifest-parser.md`，冻结 `ReadOnlyScanSession.inventory/read_bytes` 消费边界、manifest 发现/顺序、requirements 与 pyproject 语义、DTO/P0 映射、确定性错误/部分成功、安全界限、精确 POS/NEG 验收 ID 与 Terra/Luna 责任接口。
+- 依赖门禁：优先标准库；完整 PEP 508/PEP 440 解析拟锁定 `packaging==26.3`，本轮仅记录必要性、版本、许可证、登记影响与无依赖降级方案，不安装、不改依赖清单。
+- 修改边界：仅 B1 设计规范、`docs/05-ai-assistance-log.md` 与本共享日志；不改 backend、tests、P0 Schema/sample、`PROJECT_PROGRESS.md` 或既有冻结规格，不提交、不推送。
+- 验收：检查 Markdown 结构、精确 POS/NEG ID 与数量、`git diff --check`、改动路径、受保护路径零差异、敏感信息与绝对路径；实现与测试均留给后续代理，不把设计审计表述为运行时证明。
+- token 估算：本 Sol 设计门禁约 `4k-7k` token，非硬限制；客户端未提供精确 token 遥测，收工不编造精确数值。
+
+### [20260902-1648-Sol-B1Python解析器设计门禁] COMPLETE - B1-1 最小可执行设计已冻结
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 16:48（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线/HEAD `9b70ba6`。
+- 设计结论：新增 `docs/spec/b1-python-manifest-parser.md` v0.1.0，冻结仅消费 A2-2 `inventory/read_bytes` 的可信非执行 parser、manifest 发现与顺序、requirements/pyproject 支持/拒绝语义、不可变 DTO、Evidence/P0 后置映射、去重/冲突/partial、配额、稳定错误及恶意输入/泄漏边界；状态保持 `IMPLEMENTATION_UNVERIFIED`。
+- 第三方决策：完整 PEP 508/PEP 440 解析锁定候选 `packaging==26.3`；本轮未安装或改依赖。Terra 实现前须由 Luna/Root 登记并复核官方来源、`Apache-2.0 OR BSD-2-Clause` 许可证与 NOTICE/开放义务；缺失或错版失败关闭，不静默 reduced-profile。
+- 验收矩阵：冻结 12 个唯一 `POS-B1-PY-*` 与 24 个唯一 `NEG-B1-PY-*`，共 36 项；本轮仅验证设计可执行性和静态完整性，未运行 B1 backend 测试、未批准 B1 evidence。
+- 静态验证：14 个二级章节、16 个代码围栏成对、AI 日志 7 列结构；`git diff --check`、未跟踪规格 whitespace、尾随空白、敏感信息/本机绝对路径检查通过；backend、tests、P0 契约、A2-2 规格及 `PROJECT_PROGRESS.md` 零差异。
+- 实际修改：新增 B1 规格；追加 `docs/05-ai-assistance-log.md` 与本共享日志。未修改已有 `AGENTS.md` 差异，不提交、不推送。
+- Terra 可执行交接：只在规格 13.1 所列实现面工作；实现 12 POS + 24 NEG 对应 unit，保持 marker 不求值、URL 不访问、构建后端不加载、A2 错误原样传播；再交 Luna 按 13.2 独立验证，最后由 Root 跑 13.3 全量命令与真实内存 ZIP 纵切。
+- token：客户端未提供本轮精确 token 遥测，故不能诚实核验数值是否落在 `4k-7k` 估算区间；未编造精确值。任务范围未扩张，冻结规格、日志与静态验收均已完整交付。
+
+### [20260902-1652-Terra-B1Python解析器] START - 实现 Python manifest parser 纵切
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 16:52（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`，基线/HEAD `9b70ba6`；保留既有 Sol/Root 未提交的规格、台账、AI 日志与 `AGENTS.md` 改动。
+- 任务目标：仅按 `docs/spec/b1-python-manifest-parser.md` v0.1.0 在冻结 A2-2 `ReadOnlyScanSession.inventory/read_bytes` 边界上实现 requirements/pyproject 的确定性、安全、非执行解析器及 Terra 自有 unit。
+- 开始前已确认：已阅读根 README、完整共享日志至物理 EOF、项目进度、Terra 交接、B1 规格与 A2-2 会话实现；`packaging==26.3` 已由 Root/Luna 登记，运行环境可用。P0/Schema/sample、Sol 规格、Luna 独立测试和进度台账不在改动范围。
+- 预计修改：`backend/app/scanners/__init__.py`、`backend/app/scanners/python_manifest.py`、`backend/pyproject.toml`、`backend/README.md`、`tests/unit/test_b1_python_manifest_parser.py`、`docs/05-ai-assistance-log.md` 与本日志；不改前端、部署、P0/API/数据库或其他 A2 文件。
+- 验收计划：映射 12 POS + 24 NEG unit、真实内存 ZIP → A2 会话 → parser、A2/P0 回归、compileall、diff、敏感信息与绝对路径检查；之后交 Luna 按独立测试边界复核。
+- token：本任务开工估算 `8k-12k` token，非硬限制。当前客户端没有本轮精确 token 遥测；收工时将如实报告范围情况，不编造精确值。
+
+### [20260902-1657-Terra-B1Python解析器] COMPLETE - 完成 Terra 实现侧 parser 与回归
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 16:57（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`，基线 `9b70ba6`；未提交、未推送。保留 Sol/Root 的既有未提交 `AGENTS.md`、B1 规格、台账和日志改动。
+- 实际结果：新增 `app.scanners.python_manifest` 与公开 scanner exports；仅消费 session inventory/read_bytes，发现受支持 manifest、预检配额、严格 UTF-8/TOML、PEP 508/440 规范化、受限 direct/VCS URL、hash、pyproject 三种来源、不可变 DTO/evidence、稳定诊断、去重/冲突和错误失败关闭。无目标路径、代码执行、安装或网络能力。
+- 修改文件：`backend/app/scanners/__init__.py`、`backend/app/scanners/python_manifest.py`、`backend/pyproject.toml`、`backend/README.md`、`tests/unit/test_b1_python_manifest_parser.py`、`docs/05-ai-assistance-log.md` 与本日志；未修改 P0/Schema/sample、Sol B1 规格、Luna 独立测试、项目进度、前端、部署、API 或数据库。
+- 命令与测试：B1 实现矩阵 `36 passed`；真实内存 ZIP → A2 session → parser 两次结果完全相等且发现 `pydantic`、`requests` 两项；A2/P0 定向 `83 passed`；全量 `211 passed`；P0 `46 passed`；`compileall` 与 `git diff --check` 通过。受保护路径零差异；变更范围敏感信息/本机绝对路径扫描无命中。
+- 接口、Schema、规则或决策：新增唯一入口 `parse_python_manifests(session) -> PythonManifestParseResult`，schema 版本固定 `b1-python-manifest/v1`；运行时要求精确 `packaging==26.3`，缺失/错版为 `scanner_failed:python_manifest_parser_unavailable`。未新增 P0/API/数据库字段，P0 mapper 仍为后续工作。
+- 已知风险与未完成项：本条仅完成 Terra 实现侧，不等于 B1-1 正式完成或竞赛证据批准。Luna 仍须按 13.2 在不改上游实现的前提下完成 36 ID 独立断言；Root/Sol 仍须按 13.3 复跑独立安全测试、全量/Schema 等值、真实会话副作用 sentinel，并绑定不可变提交/运行 profile/evidence。尚不涵盖 lockfile、JS/TS、许可证、P0 mapper、报告或 A2 总门禁。
+- 下一步与责任模型：Luna 进行 `tests/security/test_b1_python_manifest_parser_independent.py` 与 fixture 复核；Root 集成并交 Sol 终审。Terra 等待缺陷反馈，不自行放宽冻结语义。
+- token：本次运行精确 token 数不可获得；开工估算为 `8k-12k`，实现侧范围已在同一轮完整交付，未发生范围调整，未编造精确消耗。
+
+### [20260902-1700-Terra-B1Luna缺口修复] START - 修复 B1 独立验证发现的实现缺口
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 17:00（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；保留 Luna 的独立测试/fixture 和既有 Sol/Root 未提交改动，不提交、不推送。
+- 任务目标：依照 Luna 物理 EOF AMENDMENT 的原样失败清单修复 DTO nullable 语义、URL fragment、EOF continuation、dependency-groups、异常封装、重复 inventory 与 canonical raw declaration；不放宽任何 Luna 断言。
+- 开始前已确认：已重读共享日志物理 EOF、Luna 新增独立测试和当前 Terra parser；Luna 原样结果为 `15 failed, 36 deselected`，是上游实现缺口而非测试问题。
+- 修改范围：仅 `backend/app/scanners/python_manifest.py`、Terra unit、`backend/README.md`（如需）、`docs/05-ai-assistance-log.md` 和本日志；不改 Luna 测试、Sol 规格、third_party、P0/Schema/sample 或进度。
+- 验收计划：先原样重跑 Luna AMENDMENT，再跑其全文件、Terra 36、全量/P0/Schema、compileall/diff/敏感信息扫描。
+- token：本轮估算 `4k-7k` token，非硬限制；客户端无精确本轮遥测，收工如实报告。
+
+### [20260902-1702-Luna-B1Python独立验证] START - 独立验证 Python manifest parser
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:02（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 前置核验：已完整读取根 `AGENTS.md`、`README.md`、共享工作日志至物理 EOF、`PROJECT_PROGRESS.md`、`docs/handoffs/LUNA_HANDOFF.md`、冻结 B1 规格、Terra parser 实现/自有 unit、A2-2 只读 session 实现、测试说明与第三方 packaging 登记；Terra 已声明 B1 unit `36 passed`，但本轮不复用其 helper/期望。
+- 任务目标：只新增 Luna 独立安全测试与小型文字 fixture，覆盖冻结矩阵 12 个 POS + 24 个 NEG；重点加固 NEG-013/021/023/024、候选只读一次/限额先拒绝、无 secret 泄漏、pyproject locator/证据/冲突、真实内存 ZIP → A2 session → parser 两次确定性相等、session 过期与 packaging 缺失/错版分支。
+- 修改边界：仅 `tests/security/test_b1_python_manifest_parser_independent.py`、`tests/fixtures/b1-python-manifest/`、`tests/security/README.md`、必要时 `third_party/README.md`、`docs/05-ai-assistance-log.md` 与本日志；不修改 backend、Terra unit、Sol 规格、P0/Schema/sample 或 `PROJECT_PROGRESS.md`。
+- 安全与缺陷规则：测试输入为小型本地文本/内存 ZIP，不联网、不执行目标代码、不安装依赖；独立测试若失败，保留原样证据并向 Terra（实现缺陷）或 Sol（契约/语义缺陷）升级，不修改实现以迎合测试。最终如实报告 A2/Linux/TrustedEgress 未被本地测试外推证明。
+- 验收计划：独立测试先跑；若通过再跑 Terra B1 unit、全量、P0、Schema 等值、compileall、`git diff --check`、敏感信息/绝对路径检查，并复核仅授权文件变化及本日志物理 EOF。当前客户端无精确 token 遥测，不编造数值。
+- 关联规格/责任：`docs/spec/b1-python-manifest-parser.md` v0.1.0；Terra 实现记录 `20260902-1657-Terra-B1Python解析器`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1710-Luna-B1Python独立验证] COMPLETE - B1-1 独立矩阵与集成门禁通过
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:10（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；未切换分支、未提交、未推送。
+- 实际修改：新增 `tests/security/test_b1_python_manifest_parser_independent.py`，新增 `tests/fixtures/b1-python-manifest/README.md`、`requirements-basic.txt`、`pyproject-basic.toml`；更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`；未修改 backend、Terra unit、Sol B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。`third_party/README.md` 中已有的 packaging 26.3 登记无需更正。
+- 独立结果：Luna `tests/security/test_b1_python_manifest_parser_independent.py` 为 `36 passed`，对应冻结 `12 POS + 24 NEG`；Terra `tests/unit/test_b1_python_manifest_parser.py` 为 `36 passed`。首轮夹具草案曾为 `28 passed / 8 failed`，失败均定位为测试侧 canonical 空白/父目录准备，以及 A2 按冻结规则将 consumer 自构造错误包装为 `scan_consumer_failed`；未修改实现，改为在真实 consumer 内捕获并断言 parser 原始 reason 后 `36/36` 通过。该首次结果链不掩盖实现缺陷，亦未发现需升级 Terra/Sol 的实现或契约问题。
+- 覆盖与证据：真实标准库内存 ZIP → `ZipIngestionService.ingest_with_consumer` → parser 两次结果逐字段相等；候选只读一次、读取前 64/262144/4194304 限额拒绝、4096 声明、8192 逻辑行、UTF-8/TOML/PEP 508、pyproject locator、EvidenceDraft、重复/冲突、URL/option 脱敏、marker 不求值、packaging 错版、session 过期、仅 inventory/read_bytes 能力、subprocess/socket/open/target import 零副作用均有独立断言。两份 fixture 为团队自有小型文字，README 说明 Apache-2.0 项目许可、来源与不联网/不执行边界；无二进制、目标依赖安装或网络访问。
+- 集成门禁：全量 `247 passed in 0.67s`；P0 领域/Schema/sample `46 passed in 0.10s`（含 `ScanRun.model_json_schema()` 等值校验）；compileall、`git diff --check`、新增材料尾随空白、敏感信息/本机绝对路径扫描通过。当前工作区仍保留 Root/Terra/Sol 既有未提交文件，未越权清理或重写。
+- 证据边界与后续：本轮只证明 macOS/POSIX 本地可信 parser consumer 纵切，不外推 Linux isolation、TrustedEgress、Git/Web/API、许可证/漏洞扫描、P0 mapper、OpenGuard-Bench、九章报告证据库存或 A2 总门禁；Root 仍负责最终统一复跑、不可变提交、evidence 绑定、进度/提交/发布。无新 evidence_id、提交、PR 或 Issue；当前物理 EOF 收工记录。
+- token：客户端未提供精确 token 遥测；本轮无用户指定硬 token 预算，未编造精确消耗。
+
+### [20260902-1713-Luna-B1Python独立验证-AMENDMENT] START - 加固冻结语义覆盖并保留实现失败证据
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:13（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；保留既有未提交工作，不切换分支、不提交、不推送。
+- 触发原因：Root 集成审查发现既有 36 个独立 ID 尚未精确断言若干冻结语义。本 AMENDMENT 不新增或改动 `12 POS + 24 NEG` 冻结 ID，只在既有 Luna 测试文件增加加固回归。
+- 新增验证面：pyproject EvidenceDraft 行号 `None`、bare name `version_specifier=None`、ParserDiagnostic `manifest_path: str | None` 类型/可构造性；四类及重复 key 的 URL subdirectory 拒绝；requirements EOF 悬空反斜杠；顶层 `dependency-groups` 拒绝；意外 TOML/内部 parser 异常稳定失败与脱敏；重复 inventory path 的最严格失败关闭；canonical raw declaration 不随空白变化。
+- 修改边界：仅 `tests/security/test_b1_python_manifest_parser_independent.py`、`tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本日志；不改 backend、Terra unit、B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。
+- 执行规则：先原样运行新增加固测试并保留每个失败行为；若确认是实现缺口则追加 `BLOCKED`，只交 Terra/Sol，不修改实现或放宽断言。预计 3k-5k token，客户端无精确 token 遥测，不编造数值。
+
+### [20260902-1715-Luna-B1Python独立验证-AMENDMENT] BLOCKED - 冻结语义加固暴露 Terra 实现缺口，等待 Terra
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:15（Asia/Shanghai）。
+- 原样命令与结果：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_b1_python_manifest_parser_independent.py -k amendment`；`15 failed, 36 deselected`。未运行 Terra unit、全量、P0 或其他后续门禁，以保留首轮失败边界并等待 Terra。
+- 失败逐项映射（均为实现/契约闭合前阻塞，独立断言未放宽）：
+  1. `test_amendment_dto_evidence_line_annotations_allow_none`：`ManifestEvidenceDraft.start_line/end_line` 实际注解为 `int`，未允许 `int | None`。
+  2. `test_amendment_pyproject_evidence_lines_are_none`：pyproject EvidenceDraft 实际返回第 2 行，冻结值要求 `start_line/end_line=None`。
+  3. `test_amendment_bare_name_version_specifier_is_none`：bare name 实际返回空字符串，冻结值要求 `version_specifier=None`。
+  4. `test_amendment_parser_diagnostic_manifest_path_is_optional_and_constructible`：`ParserDiagnostic.manifest_path` 实际注解为 `str`，未声明 `str | None`；传入 `None` 的构造路径本身可用。
+  5-8. `test_amendment_url_subdirectory_dot_segments_are_rejected` 四个参数：`./a`、`a/./b`、`a/.`、`a/..` 均实际被接受为依赖，未产生 `requirement_reference_unsafe`。
+  9. `test_amendment_url_duplicate_subdirectory_key_is_rejected`：重复 `subdirectory` key 实际被接受，未拒绝。
+  10. `test_amendment_eof_dangling_backslash_is_invalid_and_produces_no_dependency`：EOF 悬空未转义反斜杠实际生成 `a==1` 依赖，未产生无效声明诊断。
+  11. `test_amendment_top_level_dependency_groups_is_unsupported`：顶层 `dependency-groups` 实际被忽略，结果为 complete，无 `pyproject_tool_table_unsupported`。
+  12. `test_amendment_unexpected_toml_error_is_stable_and_sanitized`：注入意外 TOML 异常实际原样抛出 `RuntimeError`，未稳定映射 `scanner_failed:python_manifest_parser_failed`。
+  13. `test_amendment_unexpected_internal_parser_error_is_stable_and_sanitized`：注入内部 parser 异常实际原样抛出 `RuntimeError`，未稳定映射且无法满足 marker/traceback 脱敏断言。
+  14. `test_amendment_duplicate_inventory_path_fails_before_duplicate_reads`：重复 `relative_path` 实际未触发内部不变量失败，严格“首读前失败、零重复读取”断言未满足。
+  15. `test_amendment_canonical_raw_declaration_does_not_depend_on_input_whitespace`：语义相同声明合并后实际保留 `a == 1`，未按 canonical 字段重建为 `a==1`。
+- 已保留证据与边界：失败输出来自独立测试文件；只修改了允许的 Luna 独立测试、AI 记录和本日志，未修改 backend、Terra unit、Sol 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账；未提交、未推送。此前 B1 `36/36` 绿灯不覆盖本 AMENDMENT 新增语义，不能继续宣称 B1-1 完整闭合。
+- 升级与下一步：交 Terra 处理 parser DTO/异常/URL/manifest 语义缺口；若 Terra 判定规格解释存在冲突，再交 Sol 裁决。Luna 暂停后续复跑，等待 Terra 提供修订实现或明确契约输入；本条为当前物理 EOF 的阻塞记录。
+- token：客户端未提供精确 token 遥测；本轮按用户给定 `3k-5k` 仅作估算范围，未编造精确消耗。
+
+### [20260902-1720-Terra-B1Luna缺口修复] AMENDMENT/COMPLETE - 关闭 Luna 加固测试的 15 项实现缺口
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 17:20（Asia/Shanghai）。
+- AMENDMENT：保留 Luna `20260902-1715` 的 `15 failed, 36 deselected` 历史证据，不改写独立断言；本条只记录上游实现修复及原样复跑结果。
+- 实际修改：仅 `backend/app/scanners/python_manifest.py`、`tests/unit/test_b1_python_manifest_parser.py`、`docs/05-ai-assistance-log.md` 与本日志。未修改 Luna 测试、Sol 规格、third_party、P0/Schema/sample、进度、前端、部署、API 或数据库。
+- 缺口关闭：EvidenceDraft 行号与 ParserDiagnostic manifest path 注解改为可空；pyproject evidence 无行号、bare dependency specifier 为 `None`；URL fragment 逐段拒绝 `.`/`..` 与重复 `subdirectory`；EOF 悬空 continuation 稳定 `requirement_invalid`；顶层 `dependency-groups` 发出冻结 tool-table 诊断；非 `IngestionSecurityError` Exception 稳定包装为 `scanner_failed:python_manifest_parser_failed` 且不捕获 BaseException；重复 inventory path 在第一次 read 前失败；raw declaration 由规范化字段重建。
+- 命令与测试：Luna amendment 原样 `15 passed, 36 deselected`；Luna 独立全文件 `51 passed`；Terra unit `38 passed`；全量 `264 passed`；P0/Schema/sample `46 passed`（含 `ScanRun.model_json_schema()` 等值）；compileall、`git diff --check` 通过。受保护路径零差异；变更路径敏感信息/本机绝对路径扫描无命中。
+- 接口与边界：公开入口与 schema 版本不变；A2 `IngestionSecurityError` 原样传播，其他普通异常失败关闭且脱敏。未新增 P0/API/数据库字段、许可证或报告结论。
+- 下一步与责任模型：请 Luna 复核当前修复而不改上游实现；Root 进行集成/Schema/真实会话证据复核，Sol 进行终审。未提交、未推送。
+- token：本次运行精确 token 数不可获得；开工估算 `4k-7k`，本轮修复和规定验证已完整交付，未发生范围调整，未编造精确值。
+
+### [20260902-1722-Luna-B1Python独立验证-AMENDMENT] START - 复核 Terra 关闭的 15 项加固缺口
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:22（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 前置核验：已读当前共享日志 EOF 与 Terra `20260902-1720` AMENDMENT/COMPLETE；只读检查 backend parser 修订，确认修改集中于 Terra 允许实现/unit 文件，Luna 独立断言未被改写。
+- 目标：原样复跑 `tests/security/test_b1_python_manifest_parser_independent.py` 全文件及 Terra unit、全量、P0/Schema、compileall、`git diff --check`、敏感信息/绝对路径；逐项核对 15 项修订未以测试迎合方式关闭。
+- 修改边界：不修改 backend、Terra unit、B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账；仅必要时更新 Luna security README、AI 日志和本日志。无新 ID、无新 fixture、无提交/推送。
+- 验收规则：若全套通过，追加 AMENDMENT/COMPLETE；若任一失败，保留原样输出并追加 BLOCKED，交 Terra/Sol，不放宽独立断言。token 非硬预算 `2k-4k`，客户端无精确遥测，不编造数值。
+
+### [20260902-1723-Luna-B1Python独立验证-AMENDMENT] COMPLETE - Terra 修订经独立复核通过
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:23（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；未切换分支、未提交、未推送。
+- 原样复跑结果：Luna 独立全文件 `51 passed in 0.15s`；其中 AMENDMENT 加固选择 `15 passed`；Terra B1 unit `38 passed in 0.05s`；全量 `264 passed in 0.68s`；P0/Schema/sample `46 passed in 0.10s`。compileall、`git diff --check`、敏感信息/绝对路径与尾随空白检查通过。
+- 独立性核对：Luna 测试文件在 Terra 修订后未被修改或放宽；15 项断言逐项关闭此前 DTO 可空类型/值、URL dot-segment/重复 key、EOF continuation、顶层 dependency-groups、意外异常脱敏、duplicate inventory 首读前失败和 canonical raw declaration 缺口。backend 修订与上述行为一一对应，未发现测试迎合或遗漏。
+- 范围与材料：仅更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本日志；未修改 backend、Terra unit、Sol 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账；无新 ID、fixture、evidence_id、提交或推送。
+- 证据边界：本地 macOS/POSIX 结果仅支持 B1 parser 在真实 A2 trusted consumer 纵切的独立回归，不外推 Linux isolation、TrustedEgress、Git/Web/API、许可证/漏洞扫描、P0 mapper、OpenGuard-Bench、九章报告证据库存或 A2 总门禁。后续由 Root/Sol 进行统一集成、终审和不可变证据绑定。
+- token：客户端未提供精确 token 遥测；本轮按用户给定 `2k-4k` 仅作估算范围，未编造精确消耗。
+
+### [20260902-1724-Luna-B1Python独立验证-AMENDMENT] START - Root 二次探针三项语义加固
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:24（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 目标：只在 Luna 独立测试增加 3 组加固回归，映射既有 POS-002/004、NEG-003/011/020：canonical raw/normalized marker、direct URL subdirectory 空 segment 与 percent decode、`project.dynamic` 非 list 的 `manifest_field_invalid`。
+- 修改边界：仅 `tests/security/test_b1_python_manifest_parser_independent.py` 与本日志；必要时只追加 AI 记录。不改 backend、Terra unit、B1 规格、P0/Schema/sample 或 `PROJECT_PROGRESS.md`，不改变冻结 ID 数量。
+- 执行规则：先原样运行新增回归，预期保留实现失败证据；失败即追加 BLOCKED 并等待 Terra，不放宽断言。token 估算 `1k-2k`，客户端无精确遥测，不编造数值。
+
+### [20260902-1725-Luna-B1Python独立验证-AMENDMENT] BLOCKED - 二次探针仍发现 3 类实现缺口
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:25（Asia/Shanghai）。
+- 原样命令与结果：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_b1_python_manifest_parser_independent.py -k amendment`；`5 failed, 15 passed, 36 deselected`。按要求未运行 Terra unit、全量、P0 或其他后续门禁。
+- 失败映射：
+  1. `test_amendment_canonical_raw_uses_normalized_name_and_packaging_marker`：语义等价的 Requests/requests 声明合并后仍输出 `Requests[socks]>=2 ; python_version<"3.14"`，未使用 normalized name，也未采用 packaging canonical marker 文本。
+  2-4. `test_amendment_url_subdirectory_empty_segments_are_rejected` 三个参数：`a//b`、`a/`、percent decode 后形成空 segment 的 `a/%2F/b` 均被接受，未产生 `requirement_reference_unsafe`。
+  5. `test_amendment_non_list_project_dynamic_is_invalid_field`：`project.dynamic='dependencies'` 被静默忽略，结果仍为 complete，未产生 `manifest_field_invalid`。
+- 证据与边界：失败输出已保留；独立测试断言未修改或放宽，冻结 ID 数量未变化。仅新增 Luna 独立测试与 AI/协作日志；未修改 backend、Terra unit、B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账；未提交、未推送。
+- 升级与下一步：交 Terra 处理 canonical raw、URL segment 和 dynamic 类型缺口；若需解释冻结语义，再由 Sol 裁决。Luna 停止本任务后续运行，等待 Terra 修订实现；本条为当前物理 EOF 阻塞记录。
+- token：客户端未提供精确 token 遥测；本轮按用户给定 `1k-2k` 仅作估算范围，未编造精确消耗。
+
+### [20260902-1748-Sol-B1最终架构安全证据终审] AMENDMENT/BLOCKED - 恢复最终审计物理 EOF 权威状态
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 17:48（Asia/Shanghai）。因并发代理追加使 `20260902-1747` BLOCKED 不再位于物理 EOF，本条只恢复日志顺序，不改写或删除任何历史。
+- 权威终态：B1-1 仍为 `FINAL_AUDIT_BLOCKED (P1_OPEN)`；`P1-B1-FINAL-001..005`（Unicode 行边界、raw 1,000 上限、extras 去重、冻结排序键、IPv6 URL canonical）全部开放，完整证据见规格第 15 节与 `20260902-1747` 记录。
+- 候选 evidence ID 未批准；56/38/269/P0 46 与 Schema/静态绿灯不得覆盖五项只读探针。未修改 backend/tests/P0/进度/third_party，未提交、未推送。
+- 后续只允许按前条责任链由 Terra 修实现、Luna 独立补回归、Root 全量复跑、Sol 复审；关闭前本条为当前物理 EOF 的最终状态。
+
+### [20260902-1747-Sol-B1最终架构安全证据终审] BLOCKED - 五项 P1 阻止 B1-1 候选 evidence 放行
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 17:47（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线/HEAD `9b70ba6`。本条是本地最终审计结论，不是提交绑定或产品完成声明。
+- 已通过主门禁：Python 3.12.13 / `packaging 26.3`；Luna 独立 `56 passed in 0.17s`、Terra B1 `38 passed in 0.06s`、全量 `269 passed in 0.72s`、真实 P0 `tests/unit/test_p0_domain_models.py` 为 `46 passed in 0.11s`；`schema_export_equal=true`、compileall、`git diff --check`、未跟踪文件 no-index whitespace、尾随空白、敏感信息/本机绝对路径、P0 受保护路径和规格/Luna 12 POS + 24 NEG 唯一 ID 检查通过。静态脚本首轮因误用 zsh 只读变量 `status` 中止，改用任务专用变量后原样复跑通过，未掩盖该中止。
+- 依赖/材料：`backend/pyproject.toml` 精确锁定 `packaging==26.3`；官方 PyPI、安装 METADATA 与 `third_party/README.md` 一致为 Python `>=3.9`、`Apache-2.0 OR BSD-2-Clause`，使用/自研/开放边界登记完整；fixture 为团队自有 Apache-2.0 小型文字输入，无下载、安装、网络或目标代码执行。
+- P1 证据：
+  1. `P1-B1-FINAL-001`：`a==1<U+2028>b==2` 被 `str.splitlines()` 解析为依赖 `a,b`，违反只允许 CRLF/LF/裸 CR 的声明边界。
+  2. `P1-B1-FINAL-002`：1,001 字符合法 name 产生 `len(raw_declaration)==1001`，违反 1,000 code-point DTO/披露上限。
+  3. `P1-B1-FINAL-003`：`a[x_y,x-y]` 输出 extras `('x-y', 'x-y')`，canonical collision 未去重。
+  4. `P1-B1-FINAL-004`：`a` 与 `a>=1` 输出顺序为 `>=1,None`；实现按 `repr(identity)` 排序，违反冻结的逐字段/None-empty-bytes 顺序。
+  5. `P1-B1-FINAL-005`：公开入口 complete 接受 `a @ https://[::1]/pkg`，却保存畸形 `https://::1/pkg`，IPv6 brackets 丢失。
+- P2 复现债：规格 13.3 历史命令 `tests/unit/test_p0_contract.py` 不存在；本轮使用并在审计 AMENDMENT 冻结的真实路径为 `tests/unit/test_p0_domain_models.py`。错误命令尝试返回 exit 4/no tests，未计作 P0 产品失败，也未被后续 46 项绿灯覆盖或删除。
+- 状态/证据：规格更新为 `FROZEN_DESIGN_BASELINE / FINAL_AUDIT_BLOCKED (P1_OPEN)` 并追加第 15 节审计；不批准、不预留或绑定 B1 候选 evidence ID。现有 56/38/269/46 只能证明已覆盖样本，不能覆盖上述探针。
+- 修改边界：本轮仅修改 `docs/spec/b1-python-manifest-parser.md` 的状态/审计 AMENDMENT、追加 `docs/05-ai-assistance-log.md` 与本日志；未修改 backend、Terra/Luna tests、P0/Schema/sample、`PROJECT_PROGRESS.md`、third_party，未提交、未推送。
+- 关闭责任：Terra 仅修五项实现并补 unit；Luna 按规格第 15 节映射既有 ID 新增独立回归且不放宽上游；Root 重跑 56/38/全量/P0/Schema/compileall/diff/敏感路径与五项探针，再交 Sol 复审。未关闭前不得更新进度或证据状态。
+- 非外推：JavaScript/TypeScript、lockfile、P0 mapper、许可证识别/结论、Web/API、Git、Linux isolation、TrustedEgress、完整 ZIP corpus、Bench、报告与 A2 总门禁均未因此完成。
+- token：客户端未提供本轮精确 token 遥测，无法诚实核验数值是否落在 `3k-5k` 估算区间；未编造精确值。审查范围未扩张，终审证据与阻断已完整交付。
+
+### [20260902-1735-Sol-B1最终架构安全证据终审] START - 审查 B1-1 本地候选放行门禁
+
+- 作者：GPT-5.6 Sol；对话角色：最终架构/安全/竞赛证据终审；时间：2026-09-02 17:35（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线 `9b70ba6`。
+- 前置核验：已读共享日志至当前物理 EOF、B1 冻结规格、当前 parser、Terra unit、Luna 独立 56 项、`backend/pyproject.toml`、第三方台账、backend/security/root README；已纳入两轮 amendment 与 Sol canonical quote 裁决。
+- 终审范围：逐项核对 12 POS + 24 NEG、session capability、读取前配额、PEP 508/440、URL fragment、canonical raw、TOML/partial/整体错误、异常脱敏、重复/冲突/排序、DTO/P0 后置映射及 `packaging==26.3` 版本/许可证；原样运行指定 56/38/269/46、Schema 等值、compileall/diff/敏感路径，并可增加只读探针。
+- 修改边界：只允许更新 Sol 规格状态/审计说明、`docs/05-ai-assistance-log.md` 与本共享日志；不修改 backend、Terra/Luna tests、P0/Schema/sample、`PROJECT_PROGRESS.md`、third_party，不提交、不推送。发现 P0/P1 时只保留证据并 BLOCKED，不代修。
+- token 估算：`3k-5k`，非硬限制；客户端无精确 token 遥测，不编造数值。
+
+### [20260902-1726-Terra-B1二次缺口修复] START - 关闭 Luna 二次 amendment 的最小 parser 缺口
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 17:26（Asia/Shanghai）。
+- 开始前已确认：已读取 Luna 物理 EOF `5 failed, 15 passed, 36 deselected`、新增断言与当前 parser；失败属于 Terra 实现缺口，独立测试、规格、P0/Schema/sample、进度和第三方台账保持不改。
+- 修改范围：仅 `backend/app/scanners/python_manifest.py`、Terra unit、AI/协作日志；不提交、不推送。
+- 任务目标：canonical raw 使用 normalized fields/packaging marker；拒绝 subdirectory 空段；校验 `project.dynamic` 为 `list[str]` 后再作动态依赖诊断。
+- token：本轮非硬估算 `1k-3k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-1730-Terra-B1二次缺口修复] BLOCKED - 二次 amendment 已闭合，但旧 POS-003 与新 raw 契约冲突
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 17:30（Asia/Shanghai）。
+- 实际修改：仅 `backend/app/scanners/python_manifest.py`、`docs/05-ai-assistance-log.md` 与本日志；未修改 Luna 测试、Sol 规格、P0/Schema/sample、进度或第三方台账，未提交、未推送。
+- 已关闭二次缺口：raw declaration 使用 normalized name/extras/specifier 和 `str(requirement.marker)`；URL subdirectory 解码后逐段拒绝空、`.`、`..`；`project.dynamic` 先要求 `list[str]`，非法值诊断 `manifest_field_invalid`，合法列表才检查动态依赖。
+- 验证：Luna 二次 amendment 原样 `20 passed, 36 deselected`；Terra unit `38 passed`；P0/Schema/sample `46 passed`、compileall 与 `git diff --check` 通过。运行独立全文件时仅 `test_pos_b1_py_003_preserves_continuation_line_evidence` 失败，因此链式全量未执行。
+- 精确阻塞：旧 POS-003 断言 raw 为 `a==1 ; python_version > '3'`（保留输入单引号）；本轮用户指定 raw 必须使用 `str(requirement.marker)`，实际且新 amendment 要求的 canonical 值为 `a==1 ; python_version > "3"`。两者对同一输入互斥；为避免违反新契约以输入子串/特判恢复单引号，未修改实现或 Luna 断言。需要 Root/Sol 裁决 canonical raw 的唯一 quote 规则后才能恢复独立全文件与全量门禁。
+- 下一步与责任模型：Root/Sol 决定保留旧 POS-003 字面值或以包装 marker canonical 文本更新其冻结断言；获裁决后 Terra 只按批准语义完成最小实现，并由 Luna 原样复跑。
+- token：本次运行精确 token 数不可获得；开工估算 `1k-3k`，二次缺口修复在范围内完成；因上述外部契约冲突未完成全套验收，未编造精确数值。
+
+### [20260902-1735-Terra-B1最终审计P1修复] START - 关闭 Sol FINAL_AUDIT_BLOCKED 五项 parser P1
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 17:35（Asia/Shanghai）。
+- 开始前已确认：已读 B1 规格第 15 节 `FINAL_AUDIT_BLOCKED`、AI 日志和共享日志物理 EOF；五项 P1 均为 Terra parser 实现缺口，Sol 规格/Luna 测试/P0/进度/台账保持不改。
+- 修改范围：仅 `backend/app/scanners/python_manifest.py`、Terra unit、AI/共享日志；不提交、不推送。
+- 任务目标：修正物理行分割、raw/excerpt 1000 codepoint 边界、extras 去重排序、identity 字段排序及 IPv6 URL canonical，并为每项添加 Terra 回归。
+- token：本轮非硬估算 `3k-5k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-1729-Sol-B1CanonicalRaw裁决] START - 裁决 marker quote 的唯一 canonical raw 契约
+
+- 作者：GPT-5.6 Sol；对话角色：架构/契约单点裁决；时间：2026-09-02 17:29（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线 `9b70ba6`。
+- 输入范围：只读 B1 规格相关段、Luna 旧 POS-003 与新增 canonical raw 测试、Terra 当前实现及共享日志物理 EOF；不进入其他设计或实现问题。
+- 修改边界：仅向本共享日志追加 START 与 DECISION/COMPLETE；不修改 backend、tests、B1 规格、P0/Schema/sample、PROJECT_PROGRESS、AI 日志或第三方台账，不提交、不推送。
+- 裁决问题：输入 marker 使用单引号时，canonical `raw_declaration` 应保留输入引号，还是必须采用固定 `packaging==26.3` 的 `str(requirement.marker)` 双引号输出。
+- token 估算：`1k-2k`，非硬限制；客户端无精确遥测，不编造数值。
+
+### [20260902-1729-Sol-B1CanonicalRaw裁决] DECISION/COMPLETE - canonical marker 双引号为唯一合法期望
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 17:29（Asia/Shanghai）。本条为单点契约裁决，不是 B1 全量验收或 evidence 批准。
+- 唯一合法期望：对输入 `a==1 ; python_version > '3'`，冻结输出必须是 `a==1 ; python_version > "3"`。原因一：规格 4.2 明定 marker 保存固定 `packaging` 版本产生的 canonical 文本；原因二：规格 6 明定 canonical `raw_declaration` 由规范化字段重建、不得依赖输入空白/表面拼写。保留输入单引号会使语义等价声明产生不同 raw，并破坏确定性去重。
+- 实现裁决：Terra 当前 `marker = str(requirement.marker)` 且以该字段重建 raw 的行为符合冻结契约；本冲突不需要 backend 回退、输入子串保留或 quote 特判。新增 `test_amendment_canonical_raw_uses_normalized_name_and_packaging_marker` 的双引号期望正确，应保留。
+- 测试债：Luna 旧 `test_pos_b1_py_003_preserves_continuation_line_evidence` 中 raw 单引号断言不合法。该 ID 的冻结职责仅是 continuation/comment 的 1-based `start_line/end_line`；Luna 应只把期望改为 `a==1 ; python_version > "3"`，保留行号断言与测试名称，不改变实现或冻结 ID 数量。
+- 后续执行：Luna 负责最小修订上述单一断言并原样复跑独立全文件；通过后 Terra/Root 再恢复全量链。若出现其他失败，按新证据另行升级，不得用本裁决放宽无关断言。
+- 修改与验证边界：本轮只追加两段共享日志；未修改 backend、tests、B1 规格、P0/Schema/sample、PROJECT_PROGRESS、AI 日志或第三方台账，未运行测试、未提交、未推送。
+- token：客户端无精确 token 遥测，无法核验数值是否落在 `1k-2k` 估算区间；未编造精确值。裁决范围未扩张，单点结论已完整交付。
+
+### [20260902-1730-Luna-B1Python独立验证-AMENDMENT] START - 对齐 Sol canonical marker 单点裁决
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:30（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 修改目标：仅将既有 POS-003 的 `raw_declaration` 期望由 `a==1 ; python_version > '3'` 改为 `a==1 ; python_version > "3"`；保留测试名、行号断言、冻结 ID 和所有其他独立断言不变。
+- 修改边界：仅允许修改 `tests/security/test_b1_python_manifest_parser_independent.py` 该一处断言，以及本日志；不改 backend、Terra unit、B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。AI 记录仅在收工时必要追加。
+- 验收计划：依次运行 Luna 全文件、Terra unit、全量、P0/Schema、compileall、`git diff --check`、敏感信息/绝对路径扫描；按 Sol 裁决判断 COMPLETE/BLOCKED。token 估算 `1k-2k`，无精确遥测，不编造数值。
+
+### [20260902-1732-Luna-B1Python独立验证-AMENDMENT] COMPLETE - POS-003 canonical marker 单点债务关闭
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:32（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；未切换分支、未提交、未推送。
+- 修改范围：仅将 `test_pos_b1_py_003_preserves_continuation_line_evidence` 的一处 `raw_declaration` 期望改为 packaging canonical 双引号；测试名、行号断言、冻结 ID 及其他独立断言保持不变。同步更新 security README 与 AI 日志；未修改 backend、Terra unit、规格、P0/Schema/sample 或项目进度。
+- 验证结果：Luna 独立全文件 `56 passed in 0.19s`；Terra B1 unit `38 passed in 0.06s`；全量 `269 passed in 0.69s`；P0/Schema/sample `46 passed in 0.10s`；compileall、`git diff --check`、敏感信息/绝对路径和尾随空白检查通过。
+- 结论：Sol 单点裁决已按最小测试债修订落实，无新增实现缺陷、冻结 ID 或 evidence_id；第三方台账无需变更。当前物理 EOF 收工，后续由 Root/Sol 继续统一集成、终审和证据绑定。
+- token：客户端未提供精确 token 遥测；本轮按用户给定 `1k-2k` 仅作估算范围，未编造精确消耗。
+
+### [20260902-1749-Sol-B1最终架构安全证据终审-EOF] AMENDMENT/BLOCKED - 最终审计物理 EOF
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 17:49（Asia/Shanghai）。前两次单行 anchor 与历史同文记录重合，未落在物理 EOF；本条使用末尾完整条目作唯一 anchor，保留全部历史且不改写事实。
+- 最终权威状态：`FINAL_AUDIT_BLOCKED (P1_OPEN)`；`P1-B1-FINAL-001..005` 仍开放，B1 候选 evidence ID 未批准。完整测试绿灯、探针证据、P2 命令债、修改边界与责任链以规格第 15 节和 `20260902-1747` BLOCKED 为准。
+- 未新增测试或实现变更，未修改 backend/tests/P0/进度/third_party，未提交、未推送；本条为当前物理 EOF 终态。
+
+### [20260902-1750-Terra-B1最终审计P1修复] COMPLETE - 实现侧关闭 FINAL_AUDIT_BLOCKED 五项 P1
+
+### [20260902-1751-Luna-B1Python独立验证-AMENDMENT] START - 独立复核 FINAL-001..005 五项 P1
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:51（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 前置核验：已读当前日志 EOF 与 Terra `20260902-1750` AMENDMENT/COMPLETE，确认 Terra 声明仅修改 backend parser、Terra unit、AI/协作日志，未修改 Luna 独立测试；当前五项 P1 仍待 Luna 独立逐字面断言。
+- 目标：在既有 POS-002/004、NEG-003/011/020 映射下增加五项 P1 独立回归：U+2028 物理行语义、1001 canonical raw 上限、extras canonical collision、`None` 空 bytes 排序、IPv6 bracket canonical URL；不新增冻结 ID、不复用 Terra helper。
+- 修改边界：仅 `tests/security/test_b1_python_manifest_parser_independent.py`、必要的 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本日志；不改 backend、Terra unit、B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。
+- 验收计划：先运行新增 P1 选择；通过后运行独立全文件、Terra unit、全量、P0/Schema、compileall、`git diff --check`、敏感信息/绝对路径扫描。任一失败保留 BLOCKED，不放宽断言。token 估算 `2k-4k`，客户端无精确遥测，不编造数值。
+
+### [20260902-1755-Luna-B1Python独立验证-AMENDMENT] COMPLETE - FINAL-001..005 五项 P1 独立复核通过
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:55（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；未切换分支、未提交、未推送。
+- 新增范围：仅在 `tests/security/test_b1_python_manifest_parser_independent.py` 增加 5 组逐字面断言，映射既有 `P1-B1-FINAL-001..005` / POS-002/004、NEG-003/011/020，不新增或改变冻结 ID；未复用 Terra helper。
+- 验证结果：P1 选择 `5 passed, 56 deselected`；Luna 独立全文件 `61 passed in 0.16s`；Terra B1 unit `40 passed in 0.06s`；全量 `276 passed in 0.70s`；P0/Schema/sample `46 passed in 0.10s`；compileall、`git diff --check`、敏感信息/绝对路径和尾随空白检查通过。
+- 覆盖确认：逐字面验证 U+2028 不拆物理行、1001 字符 canonical raw 失败且不越界、extras `x_y/x-y` collision 去重、`None` 作为空 bytes 排在非空 specifier 前、IPv6 HTTPS canonical reference 保留方括号。初次 P1 选择曾因额外错误的 `complete` 状态断言出现 `4 passed/1 failed`；已仅将该断言对齐冻结的 `dependency_multiple_constraints` warning，核心排序断言未放宽。
+- 范围与证据边界：Terra backend 修订逐项通过独立断言，未发现测试迎合；仅更新安全 README、AI 记录与本日志，未修改 backend、Terra unit、规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。结果仍仅证明本地 macOS/POSIX 可信 consumer 纵切，不外推 Linux isolation、TrustedEgress 或 A2 总门禁；Root/Sol 后续负责最终证据绑定。
+- token：客户端未提供精确 token 遥测；本轮按用户给定 `2k-4k` 仅作估算范围，未编造精确消耗。
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 17:50（Asia/Shanghai）。
+- AMENDMENT：Sol `20260902-1749` 的 P1_OPEN 历史不改写；本条仅记录允许实现面的五项修复和当前复跑结果，最终 evidence 状态仍由 Root/Sol 决定。
+- 实际修改：仅 `backend/app/scanners/python_manifest.py`、`tests/unit/test_b1_python_manifest_parser.py`、`docs/05-ai-assistance-log.md` 与本日志。未修改 Sol 规格、Luna 测试、P0/Schema/sample、进度、台账、前端、部署、API 或数据库；未提交、未推送。
+- P1 关闭：物理行仅以 CRLF/LF/裸CR 分割，Unicode separator 作为单条 PEP 508 无效内容；canonical raw/excerpt 受 1000 codepoint 上限并失败关闭；extras canonical 后去重并按 UTF-8 排序；依赖输出使用逐字段 bytes 排序（`None` 为空 bytes，不用 repr）；IPv6 HTTPS host 重新加方括号。
+- 验证：Luna 现有独立全文件 `56 passed`；Terra unit（含五项新探针）`40 passed`；全量 `271 passed`；P0/Schema/sample `46 passed`；compileall、`git diff --check`、受保护路径零差异和敏感信息/本机绝对路径扫描通过。
+- 下一步与责任模型：Luna 需在不改上游实现的前提下新增/复跑五项独立 P1 断言；Root 按第15节完整 profile 与真实内存探针复核，Sol 终审并决定 evidence。当前仅声明 Terra 实现侧完成，不批准 B1 evidence 或外推非目标。
+- token：本次运行精确 token 数不可获得；开工估算 `3k-5k`，实现与规定验证均在本轮完成、未发生范围调整，未编造精确数值。
+
+### [20260902-1751-Luna-B1Python独立验证-AMENDMENT] START - 独立复核 FINAL-001..005 五项 P1（物理 EOF 锚定）
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:51（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 前置核验：已读当前日志 EOF 与 Terra `20260902-1750` AMENDMENT/COMPLETE，确认 Terra 声明仅修改 backend parser、Terra unit、AI/协作日志，未修改 Luna 独立测试；当前五项 P1 仍待 Luna 独立逐字面断言。
+- 目标：在既有 POS-002/004、NEG-003/011/020 映射下增加五项 P1 独立回归：U+2028 物理行语义、1001 canonical raw 上限、extras canonical collision、`None` 空 bytes 排序、IPv6 bracket canonical URL；不新增冻结 ID、不复用 Terra helper。
+- 修改边界：仅 `tests/security/test_b1_python_manifest_parser_independent.py`、必要的 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本日志；不改 backend、Terra unit、B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。
+- 验收计划：先运行新增 P1 选择；通过后运行独立全文件、Terra unit、全量、P0/Schema、compileall、`git diff --check`、敏感信息/绝对路径扫描。任一失败保留 BLOCKED，不放宽断言。token 估算 `2k-4k`，客户端无精确遥测，不编造数值。
+
+### [20260902-1755-Luna-B1Python独立验证-AMENDMENT] COMPLETE - FINAL-001..005 五项 P1 独立复核通过（物理 EOF 记录）
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 17:55（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；未切换分支、未提交、未推送。
+- 新增范围：仅在 `tests/security/test_b1_python_manifest_parser_independent.py` 增加 5 组逐字面断言，映射既有 `P1-B1-FINAL-001..005` / POS-002/004、NEG-003/011/020，不新增或改变冻结 ID；未复用 Terra helper。
+- 验证结果：P1 选择 `5 passed, 56 deselected`；Luna 独立全文件 `61 passed in 0.16s`；Terra B1 unit `40 passed in 0.06s`；全量 `276 passed in 0.70s`；P0/Schema/sample `46 passed in 0.10s`；compileall、`git diff --check`、敏感信息/绝对路径和尾随空白检查通过。
+- 覆盖确认：逐字面验证 U+2028 不拆物理行、1001 字符 canonical raw 失败且不越界、extras `x_y/x-y` collision 去重、`None` 作为空 bytes 排在非空 specifier 前、IPv6 HTTPS canonical reference 保留方括号。初次 P1 选择曾因额外错误的 `complete` 状态断言出现 `4 passed/1 failed`；已仅将该断言对齐冻结的 `dependency_multiple_constraints` warning，核心排序断言未放宽。
+- 范围与证据边界：Terra backend 修订逐项通过独立断言，未发现测试迎合；仅更新安全 README、AI 记录与本日志，未修改 backend、Terra unit、规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。结果仍仅证明本地 macOS/POSIX 可信 consumer 纵切，不外推 Linux isolation、TrustedEgress 或 A2 总门禁；Root/Sol 后续负责最终证据绑定。
+- 日志完整性：本条使用当前物理 EOF 追加，保留先前历史记录及任何非 EOF anchor 结果，不改写或删除既有内容。
+- token：客户端未提供精确 token 遥测；本轮按用户给定 `2k-4k` 仅作估算范围，未编造精确消耗。
+
+### [20260902-1756-Sol-B1最终复审] START - 复核 FINAL-001..005 关闭与候选 evidence 门禁
+
+- 作者：GPT-5.6 Sol；对话角色：最终架构/安全/竞赛证据复审；时间：2026-09-02 17:56（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线 `9b70ba6`。
+- 输入与目标：只读当前 backend/parser、Terra unit、Luna 独立测试与共享日志；逐项复核 `P1-B1-FINAL-001..005`，原样复跑五项探针、Luna 61、Terra 40、全量 276、P0 46、Schema/diff/敏感路径。
+- 修改边界：只允许在规格第 15 节后追加 CLOSED AMENDMENT/更新状态、追加 AI 日志与本共享日志；不修改 backend、tests、P0/Schema/sample、PROJECT_PROGRESS 或 third_party，不提交、不推送。
+- 放行口径：无新 P0/P1 时，仅批准 `EVD-B1-PYTHON-MANIFEST-001` 为 `APPROVED-PENDING-ROOT-BINDING`，范围限本地可信 A2 consumer parser；若发现新 P0/P1，保留证据并 BLOCKED，不代修。
+- token 估算：`2k-4k`，非硬限制；客户端无精确 token 遥测，不编造数值。
+
+### [20260902-1759-Sol-B1最终复审] COMPLETE - 五项 P1 关闭并批准待 Root 绑定的本地候选 evidence
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 17:59（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线/HEAD `9b70ba6`。未发现新的 P0/P1。
+- 关闭结论：逐项确认 FINAL-001 仅 CRLF/LF/CR、FINAL-002 raw 1,000 上限失败关闭、FINAL-003 extras canonical 去重、FINAL-004 None-empty-bytes 字段排序、FINAL-005 IPv6 brackets canonical；Terra 实现与 Luna 独立逐字面断言一致。
+- 本轮原样结果：P1 选择 `5 passed, 56 deselected in 0.03s`；Luna `61 passed in 0.20s`；Terra `40 passed in 0.07s`；全量 `276 passed in 0.72s`；P0 `46 passed in 0.12s`；`schema_export_equal=true`，compileall 通过。
+- 独立只读探针：Unicode separator → `requirement_invalid:0`；1001 raw → `requirement_invalid:0`；extras → `('x-y',)`；版本顺序 → `(None, '>=1')`；IPv6 → `https://[::1]/pkg`。
+- 静态门禁：规格与 Luna 均保持 12 POS + 24 NEG 唯一 ID；`git diff --check`、未跟踪文件 no-index whitespace、尾随空白、敏感信息/本机绝对路径、P0/Schema/sample/进度受保护路径检查通过。
+- 规格/证据：状态更新为 `LOCAL_CANDIDATE (APPROVED-PENDING-ROOT-BINDING)` 并追加第 16 节 CLOSED AMENDMENT；批准 `EVD-B1-PYTHON-MANIFEST-001` 为 `APPROVED-PENDING-ROOT-BINDING`，scope 仅 `verified-local-trusted-consumer-parser-candidate`。Root 必须绑定不可变提交、运行 profile、版本、命令和输出后才可进入进度/报告证据。
+- 修改边界：本轮仅修改 Sol 规格状态/审计说明、追加 AI 日志与本共享日志；未修改 backend、Terra/Luna tests、P0/Schema/sample、PROJECT_PROGRESS 或 third_party，未提交、未推送。
+- 非外推：JavaScript/TypeScript、lockfile、P0 mapper、依赖安装、许可证识别/结论、Web/API、Git、Linux isolation、TrustedEgress、完整 ZIP corpus、Bench、报告与 A2 总门禁均未因此完成。
+- token：客户端无精确 token 遥测，无法诚实核验数值是否落在 `2k-4k` 估算区间；未编造精确值。复审范围未扩张，候选放行与边界已完整交付。
+
+### [20260902-1802-Luna-B1Python独立验证-AMENDMENT] START - FINAL-001 leading/trailing U+2028 边界探针
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 18:02（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 目标：仅在现有 `test_p1_b1_final_001_unicode_line_separator_is_not_a_physical_line_break` 中追加 leading/trailing U+2028 参数；两者均须不拆物理行、不被通用 `strip()` 当作可接受空白，输出 `requirement_invalid` 且零依赖；不新增 ID。
+- 修改边界：仅 `tests/security/test_b1_python_manifest_parser_independent.py` 与本日志，必要时追加 AI 记录；不改 backend、Terra unit、规格、P0/Schema/sample 或 `PROJECT_PROGRESS.md`。
+- 验收计划：先运行 `-k p1_b1_final_001` 选择；按结果追加 COMPLETE/BLOCKED。token 估算不超过 `1k`，客户端无精确遥测，不编造数值。
+
+### [20260902-1803-Luna-B1Python独立验证-AMENDMENT] BLOCKED - FINAL-001 leading/trailing U+2028 仍被错误接受
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 18:03（Asia/Shanghai）。
+- 原样命令与结果：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_b1_python_manifest_parser_independent.py -k p1_b1_final_001`；`1 passed, 2 failed, 60 deselected`。
+- 失败行为：输入 leading U+2028 + `a==1` 与 `a==1` + trailing U+2028 均经通用 `strip()` 后生成依赖，未输出 `requirement_invalid` 且未保持零依赖；既有中间 U+2028 参数通过，说明物理行不拆边界本身仍成立。
+- 证据与边界：失败输出已保留；仅在现有 FINAL-001 增加两个参数，未新增冻结 ID，未放宽断言。未修改 backend、Terra unit、规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账；未提交、未推送，也未运行后续测试。
+- 升级与下一步：交 Terra 处理 U+2028 不得被通用 whitespace strip 接受的实现缺口；若需语义解释再交 Sol。Luna 停止等待 Terra 修订，不批准 FINAL-001 完整闭合。
+- token：客户端未提供精确 token 遥测；本轮按用户给定不超过 `1k` 仅作估算范围，未编造精确消耗。
+
+### [20260902-1804-Terra-B1FINAL001空白修复] START - 修复 U+2028 leading/trailing requirements 词法边界
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 18:04（Asia/Shanghai）。
+- 开始前已确认：已读 Luna EOF 的 `1 passed, 2 failed`、新增 FINAL-001 参数和当前 parser；物理行分割已正确，缺口仅为通用 Unicode whitespace 裁剪/切分错误接受 U+2028。
+- 修改范围：仅 parser、Terra unit、AI/共享日志；不改 Luna、Sol规格、P0/Schema/sample、进度或第三方台账，不提交、不推送。
+- token：本轮非硬估算 `1k-2k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260902-1806-Terra-B1FINAL001空白修复] COMPLETE - U+2028 leading/trailing 词法边界关闭
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程 / 系统集成；时间：2026-09-02 18:06（Asia/Shanghai）。
+- 实际修改：仅 `backend/app/scanners/python_manifest.py`、`tests/unit/test_b1_python_manifest_parser.py`、`docs/05-ai-assistance-log.md` 与本日志；未修改 Luna、Sol规格、P0/Schema/sample、进度或第三方台账，未提交、未推送。
+- 修复：requirements 逻辑行 continuation、行注释和声明外层只裁剪 ASCII space/tab，token 只以 ASCII space/tab 拆分；U+2028 在首/中/尾均保留为无效 PEP 508 内容。`_parse_requirement` 的 start/end 注解改为 `int | None`，并删除未使用的 `_toml_lines`，不改变公开 DTO 或错误契约。
+- 验证：Luna FINAL-001 原样选择 `3 passed, 60 deselected`；Luna 独立全文件 `63 passed`；Terra unit `40 passed`；全量 `278 passed`；P0/Schema/sample `46 passed`；compileall、`git diff --check`、受保护路径零差异、敏感信息/本机绝对路径扫描通过。
+- 下一步：Luna/Root/Sol 可按当前结果恢复最终独立与 evidence 复核；本条仅完成 Terra 实现侧，不自行声明 evidence 绑定或非目标能力完成。
+- token：本次运行精确 token 数不可获得；开工估算 `1k-2k`，本轮实现与全部指定验证在范围内完成、未发生范围调整，未编造精确值。
+
+### [20260902-1806-Luna-B1Python独立验证-AMENDMENT] START - 复核 Terra U+2028 首尾边界修复
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 18:06（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；不切换分支、不提交、不推送。
+- 目标：原样复跑 FINAL-001 三参数（中间、leading、trailing U+2028），确认三者均不拆物理行、不被裁剪为有效空白，均输出 `requirement_invalid` 且零依赖；不新增冻结 ID。
+- 修改边界：仅必要时更新 Luna security README、AI 记录与本日志；不改 backend、Terra unit、B1 规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。
+- 验收计划：选择通过后运行 Luna 全文件、Terra unit、全量、P0/Schema、compileall、`git diff --check`、敏感信息/绝对路径扫描；失败保留 BLOCKED，不放宽断言。token 估算 `1k-2k`，无精确遥测，不编造数值。
+
+### [20260902-1808-Luna-B1Python独立验证-AMENDMENT] COMPLETE - FINAL-001 U+2028 首尾边界独立复核通过
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 18:08（Asia/Shanghai）。
+- 分支或工作区：`feat/b1-python-manifest-parser`；基线 `9b70ba6`；未切换分支、未提交、未推送。
+- 原样结果：FINAL-001 三参数 `3 passed, 60 deselected in 0.02s`；Luna 独立全文件 `63 passed in 0.17s`；Terra B1 unit `40 passed in 0.06s`；全量 `278 passed in 0.71s`；P0/Schema/sample `46 passed in 0.11s`。
+- 覆盖确认：中间、leading、trailing U+2028 均作为单条非 CRLF/LF/CR 分隔内容处理，产生 `requirement_invalid` 且零依赖；此前 leading/trailing 失败证据保留，Terra 修复经独立复核关闭。
+- 静态与范围：compileall、`git diff --check`、敏感信息/绝对路径和尾随空白检查通过；仅更新现有 FINAL-001 测试参数、security README、AI/共享日志，未修改 backend、Terra unit、规格、P0/Schema/sample、`PROJECT_PROGRESS.md` 或第三方台账。
+- 边界：结果仍仅证明本地 macOS/POSIX 可信 consumer parser 纵切，不外推 Linux isolation、TrustedEgress 或 A2 总门禁；Root/Sol 继续负责候选 evidence 绑定。当前条目为物理 EOF 收工记录。
+- token：客户端未提供精确 token 遥测；本轮按用户给定 `1k-2k` 仅作估算范围，未编造精确消耗。
+
+### [20260902-1807-Sol-B1U2028边界复审] START - 复核 FINAL-001 首尾 Unicode separator 关闭
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 18:07（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线 `9b70ba6`。
+- 单点范围：只读 Terra 针对 leading/trailing U+2028 的 ASCII space/tab 裁剪修复、Luna 三参数逐字面测试与当前日志；原样复跑对应选择集并裁决 `EVD-B1-PYTHON-MANIFEST-001` 候选批准是否继续有效。
+- 修改边界：仅向规格第 16 节与本共享日志追加 AMENDMENT；不修改 backend、tests、P0/Schema/sample、PROJECT_PROGRESS、third_party 或 AI 日志，不提交、不推送。
+- token 估算：`1k-2k`，非硬限制；客户端无精确 token 遥测，不编造数值。
+
+### [20260902-1810-Sol-B1U2028边界复审] COMPLETE - 首尾 U+2028 关闭，候选 evidence 批准继续有效
+
+- 作者：GPT-5.6 Sol；时间：2026-09-02 18:10（Asia/Shanghai）；本条为 FINAL-001 单点复审，不重新执行或改写 B1 全量终审。
+- 只读代码结论：requirements continuation、注释尾部、声明外层与 token 仅裁剪/分割 ASCII space/tab；U+2028 在 leading/middle/trailing 均保留给 PEP 508 解析并稳定拒绝，不改变 CRLF/LF/裸 CR 唯一物理行边界。
+- 本轮原样结果：`-k p1_b1_final_001` 为 `3 passed, 60 deselected in 0.02s`；独立内存探针三种位置均为 `requirement_invalid:0`。未发现新 P0/P1。
+- 上游证据核对：Luna 已记录独立 `63 passed`、Terra `40 passed`、全量 `278 passed`、P0 `46 passed`；本轮未重复运行并未冒充这些计数。diff/no-index whitespace、尾随空白与规格敏感路径检查通过。
+- 裁决：`EVD-B1-PYTHON-MANIFEST-001` 的 `APPROVED-PENDING-ROOT-BINDING` 继续有效，scope 不变且仍待 Root 绑定不可变提交/运行 profile；不重新分配 evidence ID。
+- 修改边界：仅向规格第 16 节追加 16.1 CLOSED AMENDMENT 与本日志 START/COMPLETE；未修改 backend、tests、P0/Schema/sample、PROJECT_PROGRESS、third_party 或 AI 日志。Root 并发产生的 README/PROJECT_PROGRESS 差异保持原样，未触碰；未提交、未推送。
+- 非外推：JS/lockfile、P0 mapper、许可证、Web、Linux isolation、TrustedEgress 与 A2 总门禁仍不在候选范围。
+- token：客户端无精确 token 遥测，无法核验数值是否落在 `1k-2k` 估算区间；未编造精确值。单点复审已完整交付。
+
+### [20260902-1812-Root-B1Python解析器验收] COMPLETE - B1-1 本地可信 parser 纵切通过 Root 门禁
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 18:12（Asia/Shanghai）；分支 `feat/b1-python-manifest-parser`，基线/当前 HEAD `9b70ba6`。
+- 完成范围：冻结并实现只消费 A2 `ReadOnlyScanSession.inventory/read_bytes` 的 Python manifest parser；支持 `requirements*.txt`、`pyproject.toml` 的 runtime/optional/build 依赖声明，PEP 508/440 规范化、行/字段 evidence draft、确定性排序/去重/冲突/partial、URL/VCS/hash 与资源限额安全门禁；精确锁定并登记 `packaging==26.3`。
+- 缺陷闭环：保留 Luna 首轮加固 `15 failed`、二次探针 `5 failed`、Sol 终审五项 P1、U+2028 首尾 `2 failed` 及 canonical quote 测试债历史；Terra 最小修复后均由 Luna 原样独立复跑关闭，Sol 最终确认候选 evidence 批准继续有效。
+- Root 真实验证：Python 3.12.13、`packaging==26.3`；Terra unit `40 passed`，Luna 独立 `63 passed`，全量 `278 passed`，P0/Schema/sample `46 passed`，`schema_export_equal=true`，compileall 与 `git diff --check` 通过。真实内存 ZIP 两次运行逐字段相等，仅读取 `pyproject.toml`/`requirements.txt` 各一次，稳定输出 `pydantic`/`requests`/`setuptools` 三项与零诊断。
+- 材料与治理：更新根/后端运行说明、第三方资源台账、AI 辅助记录和项目进度；项目 `AGENTS.md` 增加 token 收工透明度规则，全局 `/Users/mumingce/.codex/AGENTS.md` 已写入同类规则但不属于仓库上传范围。台账明确当前全景仅为产品 P0 主线，日志 P1/P2 是缺陷严重度。
+- 边界：当前 CLI 仍只输出 inventory；B1-1 尚未映射 P0 `Component/Evidence`，也不包含 JS/TS、lockfile、许可证结论、Web/API、Git、Linux isolation、TrustedEgress、Bench、报告或 A2 总门禁。
+- 证据与发布：`EVD-B1-PYTHON-MANIFEST-001` 已获 Sol `APPROVED-PENDING-ROOT-BINDING`；下一步先提交本实现与验证材料，随后以不可变实现提交、运行 profile、命令和输出摘要完成绑定并推送 GitHub。原始竞赛附件、本机缓存/虚拟环境、密钥和个人信息不进入提交。
+- token：本次运行精确 token 数不可获得；Root 开工估算 `18k-30k`，任务范围未扩展到 B1-2/JS/Web，B1-1 已在本轮完整交付；因客户端无精确遥测，不能诚实判断实际值是否落在估算区间，未编造数值。

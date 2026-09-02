@@ -79,3 +79,33 @@ PYTHONPATH=backend python -m pytest -q tests/security/test_a2_readonly_scan_sess
 | 条目、单文件、总量、上传、ratio 超限 | 分别返回 `zip_entry_count_max_exceeded`、`single_file_max_bytes_exceeded`、`zip_uncompressed_max_bytes_exceeded`、`zip_upload_max_bytes_exceeded`、`zip_entry_expansion_ratio_exceeded`，未使用验收矩阵要求的稳定 `archive_*_limit` reason。 |
 
 初轮实现缺陷已由 Root/Terra 处理；Luna 未修改 backend、P0 契约、Schema/sample 或现有 unit 测试。完整 ZIP64 多卷、central-directory overlap、inventory 并发变更、清理失败/quarantine、Linux cgroup/deny-egress、TrustedEgress、Git 和最终 API `ScanRun` 映射仍不是本机测试证据，须后续真实集成层关闭。首次失败记录不可被修复后结果覆盖，最终证据应同时保留两次运行的命令、版本与复核状态。
+
+### B1-1 Python manifest parser 独立回归
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/security/test_b1_python_manifest_parser_independent.py
+PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_manifest_parser.py
+PYTHONPATH=backend python -m pytest -q
+```
+
+当前真实结果：Luna 独立矩阵 `36 passed`（12 POS + 24 NEG）；Terra B1 unit `36 passed`；全量 `247 passed`；P0 领域/Schema/sample 回归 `46 passed`。独立测试以小型标准库内存 ZIP 调用真实 A2 `ZipIngestionService.ingest_with_consumer`，仅通过 `inventory/read_bytes` 代理记录读取，不复用 Terra helper 或期望。
+
+独立重点覆盖：候选 manifest 只读一次、64 候选/262144 单文件/4194304 总字节读取前拒绝、4096 声明与 8192 逻辑行上限、requirements/pyproject locator 与 EvidenceDraft、重复/冲突语义、marker 跨环境不求值、option/URL 内容不泄漏、packaging 错版与真实 session 过期分离、能力面不含 path/fd/workspace、subprocess/socket/open/target import 零副作用，以及两次真实 ZIP→A2→parser 结果逐字段相等。
+
+fixture 仅为 `tests/fixtures/b1-python-manifest/` 下两份团队自有小型文字输入，README 说明来源、Apache-2.0 项目许可和开放边界；不提交二进制、不联网、不安装依赖、不执行目标代码。macOS/POSIX 本地结果不外推为 Linux 隔离、TrustedEgress 或 A2 总门禁完成。
+
+#### B1-1 AMENDMENT 复测
+
+Root 集成审查后新增 15 项不增加冻结 ID 的精确加固断言。Terra 修订后，Luna 加固选择集 `15 passed`、独立全文件 `51 passed`（原 36 项 + 15 项加固），Terra B1 unit `38 passed`，全量 `264 passed`，P0/Schema/sample `46 passed`。原 `15 failed` 首轮证据保留在共享工作日志中；本次未修改独立断言或冻结契约，也未运行/宣称 Linux 隔离、TrustedEgress 或 A2 总门禁证据。
+
+Sol 随后裁决 POS-003 的 marker canonical 双引号期望，Luna 仅修订该一处测试断言并保留测试名、行号断言与冻结 ID；复跑后独立全文件 `56 passed`，Terra B1 unit `38 passed`，全量 `269 passed`，P0/Schema/sample `46 passed`。未修改 backend、Terra unit、B1 规格、P0/Schema/sample 或项目进度。
+
+#### FINAL-001..005 P1 独立复核
+
+按 Terra/Sol 终审要求新增 5 组逐字面独立断言，不改变冻结 `12 POS + 24 NEG` ID 数量：U+2028 物理行、1001 字符 canonical raw、extras canonical collision、`None` 空 bytes 排序和 IPv6 bracket URL。新增选择 `5 passed`；独立全文件 `61 passed`，Terra B1 unit `40 passed`，全量 `276 passed`，P0/Schema/sample `46 passed`。本地结果不外推为 Linux 隔离、TrustedEgress 或 A2 总门禁。
+
+Root 后续补充 FINAL-001 leading/trailing U+2028 探针；选择结果为 `1 passed, 2 failed`，两项失败均显示 `.strip()` 后错误接受 `a==1`，已保留 BLOCKED 证据并等待 Terra，不运行后续回归。
+
+Terra 修复后，FINAL-001 三参数复测为 `3 passed`；Luna 独立全文件 `63 passed`，Terra B1 unit `40 passed`，全量 `278 passed`，P0/Schema/sample `46 passed`。leading/trailing U+2028 均保持为无效单行内容并产生 `requirement_invalid`，未修改冻结 ID。
