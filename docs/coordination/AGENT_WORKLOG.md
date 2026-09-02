@@ -754,3 +754,288 @@
 - 已知风险与未完成项：本发布记录需二次提交推送；S2 总包与 A2 真实实现仍未完成，TrustedEgress/Linux profile/依赖台账/全量运行证据保持待办。
 - 下一步与责任模型：Root 提交并推送本发布记录，核验最终远端 HEAD；随后进入 A2-0/A2-1 独立开发任务。
 - 关联提交/PR/Issue/evidence_id：首轮发布提交 `ffa9390`；分支 `https://github.com/mumingce-star/OpenGuard/tree/feat/s0-s2-design-gates`；PR 创建入口 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/s0-s2-design-gates`。
+
+### [20260902-0942-Root-A2ZIP纵切开工] START - A2-0运行前置与A2-1 ZIP安全输入
+
+- 作者：Codex Root Coordinator
+- 对话角色：项目协调 / 任务拆分 / 统一验收
+- 时间：2026-09-02 09:42（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`，基线为已发布的 `feat/s0-s2-design-gates` 最终提交 `0b7e4b7`；开工前工作区干净。
+- 任务目标：解决旧 Sol 对话继承 18k `/goal` 而反复 `budget_limited` 的问题，并完成下一个独立开发任务点：A2-0 可运行前置探测与 A2-1 ZIP 安全输入到稳定 inventory/root digest 的最小纵切。本轮不开放公网 Git，不实现 TrustedEgress，不改变 P0 v0.1.1 公共 Schema/API。
+- 开始前已确认：已按 `AGENTS.md` 读取根 README、完整共享日志、项目进度、Terra/Luna 交接、安全条件基线、Git 分支/状态/最近提交；旧 Sol 任务已重命名归档，新 Sol 任务已创建且未触发 `budget_limited`。官方文档确认 `/goal` 是跨回合持久目标并可用 `/goal clear` 管理；跨任务接口无法直接清除另一任务目标，因此采用归档旧任务、新建无 goal 任务的等价处理。
+- 预计修改文件：Terra 预计新增 `backend/app/security/` 与 `backend/app/ingestion/` 的 ZIP/settings/workspace/inventory 实现，补充 `backend/pyproject.toml` 或模块说明；Luna 预计新增 `tests/security/`、`tests/fixtures/` 的自建可公开小型 fixture/metadata 和测试；更新 AI 辅助记录、项目进度并只追加共享日志。具体范围由各模型 START 再声明。
+- 命令与测试：总估算 15k-22k token（不设置硬截断）；要求现有 46 项 A1 回归不退化，A2-1 正常 ZIP、路径穿越、重复/碰撞、链接/特殊属性、配额、CRC/损坏、TOCTOU、稳定摘要和清理路径有可运行证据；执行全量 pytest、Schema/sample一致、`git diff --check`、敏感信息/绝对路径和待提交清单检查。
+- 接口、Schema、规则或决策：durable task registry 继续归 A3；A2-1 只支持 POSIX macOS/Linux 能力探测，缺失 `dir_fd`/`O_NOFOLLOW` 时失败关闭；ZIP 限额采用可注入服务端配置，不能由请求提高；安全拒绝不得标 `partial`。
+- 已知风险与未完成项：Python 标准库 `zipfile` 不能单独证明全部 central/local header 重叠与 ZIP64 安全，首纵切必须诚实标注支持边界；Linux cgroup/deny-egress、TrustedEgress、公网 Git 与全量 36 项负面验收不属于本独立任务完成范围。
+- 下一步与责任模型：GPT-5.6 Terra 主写 A2-0/A2-1 实现与首轮单元/集成测试；GPT-5.6 Luna 在 Terra 收工后独立扩展安全 fixture 和边界审计；新 GPT-5.6 Sol 仅处理契约/安全冲突；Root 统一验收、更新进度、提交并推送 GitHub。
+- 关联提交/PR/Issue/evidence_id：分支 `feat/a2-zip-ingestion`；设计依据 `EVD-S2-DESIGN-001`；提交/PR/evidence_id 待形成。
+
+### [20260902-0948-Terra-A2ZIP纵切开工] START - 实现 A2-0 与 A2-1 本地 ZIP 安全链路
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-02 09:48（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；保留 Root 已追加的开工记录，不切换分支、不提交、不推送。
+- 任务目标：交付仅限本地 ZIP 的 A2-0 运行时 POSIX 能力失败关闭、受控 workspace，以及 A2-1 ZIP 预检、descriptor-safe 流式物化、稳定 inventory/root digest 和清理的最小纵切。
+- 开始前已确认：已完整读取 `AGENTS.md`、根/模块 README、完整共享日志、`PROJECT_PROGRESS.md`、Terra/Luna 交接、A2 安全验收与实现审查，已检查当前 Git 状态、分支和最近提交。P0 v0.1.1、公开 API/Schema、TrustedEgress、公开 Git、Linux cgroup/deny-egress 与 durable task registry 均不在本轮实现范围。
+- 预计修改文件：新增 `backend/app/security/` 与 `backend/app/ingestion/` 的 ZIP/settings/workspace/inventory 代码和包初始化；新增 `tests/unit/test_a2_zip_ingestion.py`；更新 `backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md`；只追加本共享日志。不会修改 P0 模型、Schema、sample、Sol 规范、Luna 文件或项目进度台账。
+- 命令与测试：将运行全量 `PYTHONPATH=backend ... pytest -q`、聚焦 ZIP 测试、Schema/sample 一致性回归、`git diff --check` 及交付物敏感信息/绝对路径检查；不运行不可信目标代码或安装其依赖。
+- 接口、Schema、规则或决策：仅增加内部 Python DTO/服务接口；服务器端 `ZipSafetyLimits` 具备默认值和启动校验，调用方不能覆盖或放宽配额。安全拒绝保持内部稳定 code/reason，不创建 `partial`。
+- 已知风险与未完成项：标准库 `zipfile` 不能独立证明所有 ZIP64、多卷、central/local header overlap 变体；macOS 上的本地测试不能作为 Linux sandbox 或网络隔离证据。Luna 后续须独立扩展边界/TOCTOU/畸形 header corpus 测试。
+- 下一步与责任模型：Terra 实现、运行首轮单元和集成式文件系统测试后追加收工记录；Luna 仅在 Terra 收工后独立新增安全 fixtures/负面回归；Sol 保持契约和安全语义决策；Root 统一验收、更新进度、提交与推送。
+- 关联提交/PR/Issue/evidence_id：设计依据 `EVD-S2-DESIGN-001`；无新提交/PR/Issue/evidence_id。
+
+### [20260902-1002-Luna-A2ZIP独立安全测试-修正] AMENDMENT - 更正 START 物理位置
+
+- 作者：GPT-5.6 Luna
+- 说明：本轮 `START` 标题保留在历史记录中；因读取/追加窗口使用了重复上下文锚点，物理上出现在 Terra 09:48 `COMPLETE` 之前。实际独立测试工作于 Terra 收工后、10:02 开始。
+- 影响：未移动、删除或改写任何历史记录；测试范围和结果不受影响。
+- 收尾：本条之后紧接追加本轮 `PARTIAL`，作为当前工作日志最新 EOF。
+- 关联提交/PR/Issue/evidence_id：关联 `20260902-1002-Luna-A2ZIP独立安全测试`；无新提交/PR/Issue/evidence_id。
+
+### [20260902-1010-Luna-A2ZIP独立安全测试] PARTIAL - A2-0/A2-1 独立安全验证收尾
+
+- 作者：GPT-5.6 Luna；角色：独立测试、fixture provenance、安全证据与材料形式检查。时间：2026-09-02 10:10（Asia/Shanghai）。分支：`feat/a2-zip-ingestion`，基线 `0b7e4b7`；未提交、未推送。
+- 实际修改：新增 `tests/security/test_a2_zip_security_independent.py` 与 `tests/security/README.md`，追加 `docs/05-ai-assistance-log.md` 和本日志；未修改 Terra `backend/`、P0 模型、Schema/sample、既有 `tests/unit/test_a2_zip_ingestion.py` 或 `PROJECT_PROGRESS.md`。
+- 测试与证据：独立 35 项 `21 passed, 14 failed`；全量 97 项 `83 passed, 14 failed`。入口均为 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q`。测试仅使用标准库动态构造 ZIP 字节，覆盖路径/Unicode 冲突、类型、ZIP64/data descriptor、CRC/加密/header、配额等于与刚超过、inventory/digest、真实父目录 symlink 与失败清理；未提交二进制大文件或不透明 fixture。
+- 缺陷升级 Root/Terra：13 项显示冻结错误契约漂移（冲突/重复 3、深度/路径长度 2、特殊类型 3、条目数/单文件/总量/上传/ratio 5；实现分别返回 `archive_path_collision`、`archive_duplicate_name`、`archive_file_directory_conflict`、`archive_path_depth_exceeded`、`archive_path_utf8_bytes_exceeded`、`archive_entry_type_rejected`、`zip_*_exceeded` 等）；1 项 `SEC-A2-008` 级别问题为篡改 local header size 后未拒绝、仍产出结果。不得放宽测试期望配合通过；header 完整性按 P1 安全输入问题、reason 漂移按 P2 契约一致性升级。
+- 未完成/不声称：未证明 Git/TrustedEgress、Linux cgroup/deny-egress、持久 registry、最终 API/ScanRun 映射、清理失败隔离、inventory 并发修改、完整 ZIP64/多卷及 header overlap；本机测试不是 Linux 隔离 profile 证据。OpenGuard-Bench 与第三方资源台账本轮无新增条目；无新增批准 evidence_id，仅引用 `EVD-S2-DESIGN-001`。
+- 形式检查：`git diff --check` 通过；新增测试/README 无尾随空白；敏感凭据与本机绝对路径扫描无命中。请 Terra 修正稳定 reason 与 local/central header 校验后，由 Luna 重跑独立/全量测试，Root 再统一验收、更新进度并决定提交。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue/evidence_id；本条是当前物理 EOF 收尾记录。
+
+### [20260902-1020-Terra-A2ZIP日志重复更正] AMENDMENT - 声明 1014 START 后的误复制历史段
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成。
+- 说明：`[20260902-1014-Terra-A2ZIP缺陷修正开工] START` 后出现的四段（Luna 1002 START、Terra 0948 COMPLETE、Luna 1002 EOF AMENDMENT、Luna 1010 EOF PARTIAL）是追加补丁上下文误复制。各记录以其首次出现的位置为权威，不代表任务重复执行。
+- 影响：未移动、删除或改写任何历史副本；本条仅消除阅读歧义。
+- 关联提交/PR/Issue/evidence_id：关联 `20260902-1014-Terra-A2ZIP缺陷修正开工`；无新提交、PR、Issue 或 evidence_id。
+
+### [20260902-1020-Terra-A2ZIP缺陷修正] PARTIAL - 冻结 reason 与 local/central 完整性修复
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成；时间：2026-09-02 10:20（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-ingestion`，基线 `0b7e4b7`；保留 Root/Luna 未提交变更；本轮未切换分支、未提交、未推送，且未更新 `PROJECT_PROGRESS.md`。
+- 任务目标与实际结果：修复 Luna 独立验证的 14 项 ZIP 缺陷。实现已将重复/碰撞/文件目录冲突统一为 `invalid_archive/archive_duplicate_path`，已知特殊类型统一为 `invalid_archive/archive_entry_type_unsafe`，并将上传、总解压、单文件、条目数、ratio、路径深度、路径长度统一为冻结的 `archive_limit_exceeded/archive_*_limit`。物化前新增 central/local header 的标志、压缩方式、文件名、CRC、尺寸核验；小型 ZIP64 尺寸字段与当前 data descriptor 均经过交叉校验，矛盾或截断返回 `invalid_archive/archive_integrity_failed`。
+- 修改文件：`backend/app/ingestion/zip_preflight.py`、`backend/app/ingestion/zip_stream.py`、`backend/app/security/{archive_path,limits}.py`、Terra 自有 `tests/unit/test_a2_zip_ingestion.py`、`backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md`，以及仅追加本日志。未修改 `tests/security/`、P0 模型、Schema/sample、Sol 规范或项目进度台账。
+- 命令与测试：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_a2_zip_ingestion.py` => `18 passed`；Luna 独立入口 => `33 passed, 2 failed`；全量 `pytest -q` => `97 passed, 2 failed`；P0 领域回归 => `46 passed`；Pydantic + sample + 存储 Schema 与 `ScanRun.model_json_schema()` 等值通过；`git diff --check` 通过，敏感模式仅命中既有脱敏/随机名代码，本机绝对路径扫描无命中。
+- 接口、Schema、规则或决策：没有新增公开 API、DTO、P0 Schema 或 sample 字段。内部 `IngestionSecurityError(code, reason)` reason 以冻结 `docs/security/a2-security-acceptance.md` 为准；data descriptor 与 ZIP64 仅覆盖已运行的本地小型语料，不扩展为完整多卷/overlap 支持声明。
+- 已知失败、风险与未完成项：Luna 独立测试剩余两项均为路径深度和 UTF-8 长度超限；其当前断言 `invalid_archive`，冻结验收要求 `archive_limit_exceeded`。为避免弱化 Luna 测试或背离冻结契约，本轮不使用上下文特判，故状态为 `PARTIAL`。另未证明完整 ZIP64/多卷/header-overlap、TOCTOU/inventory 并发、清理隔离、Git/TrustedEgress、Linux cgroup/deny-egress、durable registry 或最终 API/ScanRun 映射。
+- 下一步与责任模型：Sol/Root 应裁决或以追加式契约说明解决这两个测试期望与冻结验收的冲突；Luna 在裁决后保持独立测试边界重跑，Root 再统一验收、更新进度、提交和推送。
+- 关联提交/PR/Issue/evidence_id：分支 `feat/a2-zip-ingestion`；引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1014-Terra-A2ZIP缺陷修正开工] START - 修复 ZIP 稳定 reason 与 local header 完整性
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-02 10:14（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；保留 Root/Terra 已有未提交实现与 Luna 新增独立测试，不切换分支、不提交、不推送。
+- 任务目标：依据冻结 `a2-security-acceptance.md` 和 Luna 的 14 个稳定失败，修复 ZIP 路径/条目/配额 reason 到冻结值，并在物化前交叉校验 central/local header；保持 data descriptor 与小成员 ZIP64 独立测试可通过。
+- 开始前已确认：已重新完整读取 `AGENTS.md`、根 README、完整共享日志、项目进度、Terra/Luna 交接、独立安全 README/测试及冻结安全验收；Luna 最新 `PARTIAL` 为 35 项 `21 passed/14 failed`，明确禁止弱化或修改其测试。P0 Schema/sample、公开 API、项目进度、Git/TrustedEgress/Linux profile 均不在本轮修改范围。
+- 预计修改文件：`backend/app/security/{archive_path,limits}.py`、`backend/app/ingestion/zip_preflight.py` 和必要的 `zip_stream.py`；更新 Terra 自有 `tests/unit/test_a2_zip_ingestion.py`、`backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md`，仅追加本日志。不会修改 `tests/security/`、P0 模型/Schema/sample、Sol 规范或 `PROJECT_PROGRESS.md`。
+- 命令与测试：预计 5k-9k token（非硬限额）；依次运行 Terra unit、Luna independent security、全量 pytest、Pydantic/Schema/sample 等值、`git diff --check`、敏感信息和本机绝对路径检查。仅当所有失败闭合才 `COMPLETE`，否则保留失败证据并 `PARTIAL`。
+- 接口、Schema、规则或决策：不新增公开接口或 DTO 字段；内部 `IngestionSecurityError(code, reason)` 的 reason 对齐冻结 `details.reason` 枚举。local/central 结构矛盾、解析异常一律 `invalid_archive/archive_integrity_failed`，不信任任一单独 header。
+- 已知风险与未完成项：本回合不解决完整 overlap/多卷 corpus、inventory 并发变更、清理失败隔离、Git/TrustedEgress、Linux sandbox/cgroup/deny-egress、durable registry 或最终 API/ScanRun 映射；不得将本机 ZIP 回归写成 A2 总门禁完成。
+- 下一步与责任模型：Terra 修复实现及自有断言；Luna 的独立测试保持原样并作为验收入口，之后由 Luna/Root 复核；Sol 只在出现冻结契约冲突时裁决。
+- 关联提交/PR/Issue/evidence_id：设计依据 `EVD-S2-DESIGN-001`；无新提交/PR/Issue/evidence_id。
+
+### [20260902-1002-Luna-A2ZIP独立安全测试] START - 独立验证 A2-0/A2-1 本地 ZIP 安全纵切
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / fixture provenance / 安全证据
+- 时间：2026-09-02 10:02（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；不切分支、不提交、不推送。
+- 任务目标：在不修改 Terra backend、P0 模型、Schema/sample 或其既有 `tests/unit/test_a2_zip_ingestion.py` 的前提下，新增 `tests/security/` 独立测试，验证 A2-0/A2-1 本地 ZIP 的路径、条目类型、完整性、配额、文件系统、inventory、清理和稳定错误边界。
+- 预计修改文件：新增 `tests/security/` 测试及必要的公开构造说明；可更新 `tests/README.md`、`docs/05-ai-assistance-log.md`；只追加本共享日志。不修改 `backend/`、P0 契约/Schema/sample、既有 Terra 单测或 `PROJECT_PROGRESS.md`。
+- 已确认范围：本轮不声称 TrustedEgress、公开 Git、Linux cgroup/deny-egress、完整 ZIP64/header-overlap 支持或最终 API envelope 已通过；稳定可构造性不足的语料明确记录为未覆盖/待后续集成。
+- 验收方法：使用标准库动态生成小型、可公开说明来源的 ZIP 字节；先独立测试再全量 pytest；记录精确 passed/failed/skipped、实现缺陷、fixture 授权/匿名/脱敏、`git diff --check`、敏感信息/本机绝对路径和日志 EOF 结果。
+
+### [20260902-0948-Terra-A2ZIP纵切收工] COMPLETE - A2-0/A2-1 本地 ZIP 安全输入最小纵切
+
+- 作者：GPT-5.6 Terra
+- 对话角色：主线工程与系统集成
+- 时间：2026-09-02 09:48（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；未提交、未推送、未切换分支。
+- 任务目标：完成仅本地 ZIP 的启动失败关闭、受控 workspace、安全物化、稳定 inventory/root digest、整包失败清理与首轮可运行测试，不进入 Git/公网/隔离 profile 或公开 API。
+- 开始前已确认：已完成强制阅读、Git 核验及本轮 `START`；P0 v0.1.1、公开 API/Schema、Sol 安全语义和 Luna 既有文件保持不在 Terra 修改范围。
+- 实际结果：新增服务器端 `ZipSafetyLimits`（采用冻结默认值与范围校验）、POSIX `dir_fd`/`O_DIRECTORY`/`O_NOFOLLOW` 启动探测、非绝对/不安全/可写 root 的稳定失败关闭、随机 0700 task workspace、descriptor-relative 独占写入及失败关闭清理。ZIP 不调用 `extract`/`extractall`；预检拒绝不安全路径、原名重复、NFC/case-fold 与文件/目录冲突、加密、已知 Unix symlink/special、超限与不支持压缩；零/未知属性只物化为新普通字节。通过 `ZipExtFile` 分块读取及 CRC EOF 校验，按实际输出执行单文件/总量/ratio 配额；从安全树重算稳定 UTF-8 inventory 与 `openguard-inventory-v1` root digest。成功仅返回内存 inventory，清理失败同样失败关闭且不返回结果。
+- 修改文件：新增 `backend/app/security/{__init__,errors,limits,archive_path,secure_dir}.py`、`backend/app/ingestion/{__init__,workspace,zip_preflight,zip_stream,inventory}.py`、`tests/unit/test_a2_zip_ingestion.py`；更新 `backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md`，并仅追加本日志。未修改 P0 模型、公开 Schema/API、sample、数据库、任务状态机或 `PROJECT_PROGRESS.md`。
+- 命令与测试：`PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_a2_zip_ingestion.py` => `16 passed`；同入口全量 `pytest -q` => `62 passed in 0.14s`；Pydantic + Draft 2020-12 sample 校验及 `ScanRun.model_json_schema()` 等值 => `schema_sample_model_equal=true`；`git diff --check` 通过；新增/修改交付物凭据和本机绝对路径扫描无命中。
+- 接口、Schema、规则或决策：新增的是内部 Python `ZipIngestionService`、不可变 inventory DTO 与稳定 `IngestionSecurityError(code, reason)`，不改变 P0 数据模型或对外错误 envelope。限额只由服务构造时的管理员配置决定，请求不能提高。输入安全失败不产生 `partial`；异步 `ScanRun` 映射留待未来 supervisor/API 实现。
+- 已知风险与未完成项：本实现未证明或开放 TrustedEgress、公开 Git、Git tunnel-byte quota、Linux cgroup/deny-egress、持久 registry/跨 worker、orphan 清道夫、最终 API 映射或完整 ZIP64/多卷/data-descriptor/central-local overlap 支持语料；macOS 文件系统测试不是 Linux 运行 profile 证据。`zipfile` 的已知能力边界已写入模块 README，不能据此把 A2 总门禁标记完成。
+- 下一步与责任模型：Luna 的独立入口为 `PYTHONPATH=backend python -m pytest -q tests/unit/test_a2_zip_ingestion.py`；应不改 Terra 代码地新增授权且匿名的真实 TOCTOU 父目录替换、ZIP64/多卷/data descriptor/header overlap、阈值等于/刚超过、未知 producer 属性、inventory 修改、清理失败和 Linux/egress 分层证据。Sol 仅裁决新增 ZIP 支持或安全语义；Root 再统一验收、更新进度、提交和推送。
+- 关联提交/PR/Issue/evidence_id：设计依据 `EVD-S2-DESIGN-001`；无新提交/PR/Issue/evidence_id。
+
+### [20260902-1002-Luna-A2ZIP独立安全测试-EOF] AMENDMENT - 更正 START 物理位置
+
+- 作者：GPT-5.6 Luna
+- 说明：本轮 `START` 记录保留在历史位置；由于读取/追加窗口使用了重复上下文锚点，物理上出现在 Terra 09:48 `COMPLETE` 之前。实际独立测试工作于 Terra 收工后、10:02 开始。
+- 影响：未移动、删除或改写任何历史记录；测试范围和结果不受影响。
+- 关联提交/PR/Issue/evidence_id：关联 `20260902-1002-Luna-A2ZIP独立安全测试`；无新提交/PR/Issue/evidence_id。
+
+### [20260902-1010-Luna-A2ZIP独立安全测试-EOF] PARTIAL - A2-0/A2-1 独立安全验证收尾
+
+- 作者：GPT-5.6 Luna；角色：独立测试、fixture provenance、安全证据与材料形式检查。时间：2026-09-02 10:10（Asia/Shanghai）。分支：`feat/a2-zip-ingestion`，基线 `0b7e4b7`；未提交、未推送。
+- 实际修改：新增 `tests/security/test_a2_zip_security_independent.py` 与 `tests/security/README.md`，追加 `docs/05-ai-assistance-log.md` 和本日志；未修改 Terra `backend/`、P0 模型、Schema/sample、既有 `tests/unit/test_a2_zip_ingestion.py` 或 `PROJECT_PROGRESS.md`。
+- 测试与证据：独立 35 项 `21 passed, 14 failed`；全量 97 项 `83 passed, 14 failed`。入口均为 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q`。测试仅使用标准库动态构造 ZIP 字节，覆盖路径/Unicode 冲突、类型、ZIP64/data descriptor、CRC/加密/header、配额等于与刚超过、inventory/digest、真实父目录 symlink 与失败清理；未提交二进制大文件或不透明 fixture。
+- 缺陷升级 Root/Terra：13 项显示冻结错误契约漂移（冲突/重复 3、深度/路径长度 2、特殊类型 3、条目数/单文件/总量/上传/ratio 5；实现分别返回 `archive_path_collision`、`archive_duplicate_name`、`archive_file_directory_conflict`、`archive_path_depth_exceeded`、`archive_path_utf8_bytes_exceeded`、`archive_entry_type_rejected`、`zip_*_exceeded` 等）；1 项 `SEC-A2-008` 级别问题为篡改 local header size 后未拒绝、仍产出结果。不得放宽测试期望配合通过；header 完整性按 P1 安全输入问题、reason 漂移按 P2 契约一致性升级。
+- 未完成/不声称：未证明 Git/TrustedEgress、Linux cgroup/deny-egress、持久 registry、最终 API/ScanRun 映射、清理失败隔离、inventory 并发修改、完整 ZIP64/多卷及 header overlap；本机测试不是 Linux 隔离 profile 证据。OpenGuard-Bench 与第三方资源台账本轮无新增条目；无新增批准 evidence_id，仅引用 `EVD-S2-DESIGN-001`。
+- 形式检查：`git diff --check` 通过；新增测试/README 无尾随空白；敏感凭据与本机绝对路径扫描无命中。请 Terra 修正稳定 reason 与 local/central header 校验后，由 Luna 重跑独立/全量测试，Root 再统一验收、更新进度并决定提交。
+- 关联提交/PR/Issue/evidence_id：无新提交/PR/Issue/evidence_id；本条是当前物理 EOF 收尾记录。
+
+### [20260902-1021-Terra-A2ZIP日志重复更正-EOF] AMENDMENT - 以当前真实 EOF 为准
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成。
+- 说明：`[20260902-1014-Terra-A2ZIP缺陷修正开工] START` 后的 Luna 1002 START、Terra 0948 COMPLETE、Luna 1002 EOF AMENDMENT、Luna 1010 EOF PARTIAL 四段为追加补丁上下文误复制；各自首次出现为权威，非重复执行。此前 1020 更正/收工记录也因重复锚点落在较早位置，均保留不改写。
+- 影响：本条是当前物理 EOF 的权威更正；紧随其后的 1021 PARTIAL 是本轮唯一收工状态。
+- 关联提交/PR/Issue/evidence_id：关联 `20260902-1014-Terra-A2ZIP缺陷修正开工`；无新提交、PR、Issue 或 evidence_id。
+
+### [20260902-1021-Terra-A2ZIP缺陷修正-EOF] PARTIAL - 冻结 reason 与 local/central 完整性修复
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成；时间：2026-09-02 10:21（Asia/Shanghai）；分支 `feat/a2-zip-ingestion`、基线 `0b7e4b7`，未提交、未推送、未更新 `PROJECT_PROGRESS.md`。
+- 实际结果：13 项稳定 reason 漂移与 1 项 local header 尺寸矛盾均已闭合。重复/碰撞/文件目录冲突为 `invalid_archive/archive_duplicate_path`；特殊类型为 `invalid_archive/archive_entry_type_unsafe`；七类配额为冻结的 `archive_limit_exceeded/archive_*_limit`。预检新增 central/local header 标志、压缩方式、文件名、CRC、尺寸核验；已测小型 ZIP64 尺寸字段与 data descriptor 通过，矛盾/截断为 `invalid_archive/archive_integrity_failed`。
+- 修改文件：`backend/app/ingestion/zip_preflight.py`、`backend/app/ingestion/zip_stream.py`、`backend/app/security/{archive_path,limits}.py`、Terra 自有 `tests/unit/test_a2_zip_ingestion.py`、`backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md` 与本日志。未修改 Luna `tests/security/`、P0 模型、Schema/sample、Sol 规范或项目进度。
+- 验证：Terra ZIP 单元 `18 passed`；Luna 独立 `33 passed, 2 failed`；全量 `97 passed, 2 failed`；P0 回归 `46 passed`；Pydantic/sample/存储 Schema 与 `ScanRun.model_json_schema()` 等值、`git diff --check`、源代码和材料敏感信息/本机绝对路径检查均通过。
+- 接口与裁决：无公开 API、DTO、P0 Schema 或 sample 变化。Sol 裁决剩余两项须保持 `archive_limit_exceeded`，reason 是 `archive_path_depth_limit` 和 `archive_path_length_limit`；Luna 当前 `invalid_archive` 期望为测试侧待修，Terra 不改回错误 code。
+- 未完成与下一步：`PARTIAL` 仅因 Luna 两项测试待按 Sol 裁决更新，非 14 项实现缺陷遗留；完整 ZIP64/多卷/overlap、TOCTOU、Git/TrustedEgress、Linux profile、registry/API 映射仍未关闭。Luna 更新期望并独立重跑，Root 再验收、更新进度、提交与推送；Terra 等待指令。
+- 关联提交/PR/Issue/evidence_id：引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1026-Luna-A2ZIP裁决复测] START - 按 Sol 裁决完成 A2 ZIP 独立复测
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / 安全证据 / 材料形式检查
+- 时间：2026-09-02 10:26（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；不切分支、不提交、不推送。
+- 任务目标：复核 Terra 对 13 项稳定 reason 与 1 项 local header 完整性问题的修复，并按 Sol 裁决将两项路径超限测试的 code 期望对齐为 `archive_limit_exceeded`，保留初轮失败证据。
+- 预计修改文件：仅 `tests/security/test_a2_zip_security_independent.py`、`tests/security/README.md`，必要时追加 `docs/05-ai-assistance-log.md` 和本共享日志；不修改 backend、Terra unit、P0/Schema/sample 或 `PROJECT_PROGRESS.md`。
+- 验收方法：运行独立 35 项、Terra ZIP unit、全量 pytest，并检查可比历史 97 项、`git diff --check`、敏感信息/本机绝对路径、尾随空白及 fixture provenance；预计 2k-4k token。
+- 开始前已确认：已按 `AGENTS.md` 读取根 README、完整共享日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md` 和冻结 `a2-security-acceptance.md`；已读取最新 Terra 1021 `PARTIAL` 与 Sol 裁决上下文。初轮为独立 21/14、全量 83/14，Terra 修复后待本轮复测。
+- 接口、Schema、规则或决策：不改变公共接口、Schema、样例或安全语义；只接受 Sol 对路径超限 code 的裁决。
+- 关联提交/PR/Issue/evidence_id：引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1027-Luna-A2ZIP裁决复测] COMPLETE - A2 ZIP 独立复测通过
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / 安全证据 / 材料形式检查
+- 时间：2026-09-02 10:27（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；未提交、未推送。
+- 任务目标与实际结果：按 Sol 裁决仅修正深度/UTF-8 路径长度两项测试 code 期望为 `archive_limit_exceeded`，并原样复核 Terra 的 13 项稳定 reason 与 local/central header 完整性修复；独立安全测试 `35 passed`。
+- 修改文件：`tests/security/test_a2_zip_security_independent.py`、`tests/security/README.md`、`docs/05-ai-assistance-log.md` 和本共享日志；未修改 backend、Terra unit、P0 模型、Schema/sample 或 `PROJECT_PROGRESS.md`。工作区中 Terra 既有未提交文件保持原样。
+- 命令与测试：独立 35 项 `35 passed in 0.11s`；Terra ZIP unit 18 项 `18 passed in 0.03s`；当前全量 99 项 `99 passed in 0.24s`；排除 Terra 本轮新增的 2 项 unit 后，历史可比 97 项为 `97 passed, 2 deselected in 0.23s`；`git diff --check` 通过，新增安全文件/日志无尾随空白，敏感信息与本机绝对路径扫描无命中。
+- 演进与证据：初轮独立 `21 passed/14 failed`、全量 `83 passed/14 failed` 的首次发现已在 README 和历史日志保留；修复后为独立 `35/0`、当前全量 `99/0`（历史可比口径 `97/0`）。全部 ZIP 语料仍为标准库动态构造的小型、可审计字节，无不透明二进制或真实内网访问。
+- 接口、Schema、规则或决策：无变化；两项路径测试只按 Sol 裁决调整 code 断言，reason 保持 `archive_path_depth_limit` / `archive_path_length_limit`。不将本机 ZIP 复测写成 Git、TrustedEgress、Linux cgroup/deny-egress、durable registry 或最终 API/ScanRun 的完成证据。
+- 已知风险与下一步：完整 ZIP64/多卷/overlap、TOCTOU/inventory 并发、清理隔离、Git/TrustedEgress、Linux profile、registry/API 映射仍待真实集成层关闭；Root 负责统一验收、更新进度、整理提交并推送，Terra/Root 后续不得因本轮通过而跳过这些门禁。
+- 关联提交/PR/Issue/evidence_id：引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准实现 evidence_id；本条为当前物理 EOF 收工记录。
+
+### [20260902-1031-Sol-A2ZIP最终架构审计] START - A2-0/A2-1 本地 ZIP 纵切最终审计
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构、安全契约与比赛证据终审
+- 时间：2026-09-02 10:31（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；保留 Root、Terra、Luna 现有未提交工作，不切换分支、不提交、不推送。
+- 任务目标：只读核验 Terra A2-0/A2-1 本地 ZIP 实现与 Luna 独立复测是否符合冻结设计；最小修正 `SEC-A2-009` 的失败映射歧义；新增实现审计材料并明确本地子纵切证据与 A2 系统门禁的边界。
+- 开始前已确认：已按 `AGENTS.md` 完整读取根 README、共享日志真实 EOF、项目进度、`SOL_HANDOFF.md`、冻结安全验收、Terra 新增 backend、Luna 安全 README/全部测试及相关说明；当前分支与用户声明一致，最新证据链为独立 `21/14 -> 35/0`、Terra unit `18/0`、全量 `99/0`、P0 `46/0`。
+- 预计修改文件：`docs/security/a2-security-acceptance.md`、新增 `docs/security/a2-zip-implementation-audit.md`、`docs/05-ai-assistance-log.md`，并仅追加本日志。`docs/security/README.md` 仅在索引确有必要时才修改；不修改 backend、任何测试、P0 模型/Schema/sample、公开 API 或 `PROJECT_PROGRESS.md`。
+- 命令与测试：预计 4k-7k token（非硬限额）；运行独立安全、Terra ZIP unit、P0 与全量 pytest，检查 `git diff --check`、P0 文件零差异、稳定 ID/错误矩阵、敏感信息与本机绝对路径，并复核最终 diff/状态。
+- 接口、Schema、规则或决策：不新增公开错误码或 P0 字段。非法路径形态/碰撞仍为 `invalid_archive`；路径深度与 UTF-8 长度阈值超限按 `SEC-A2-011` 为 `archive_limit_exceeded`。`EVD-S2-DESIGN-001` 只作设计追溯，不作实现通过证据。
+- 已知风险与未完成项：TrustedEgress、Git、受支持 Linux 隔离/cgroup、完整 ZIP corpus、持久 registry、API/ScanRun 映射仍不在本地 ZIP 测试证明范围；审计通过也不得宣称 A2 总门禁关闭。
+- 下一步与责任模型：Sol 形成只读审计结论和最小文档修正；Root 负责批准并分配实现 evidence_id、更新进度、提交与推送，以及继续关闭系统级门禁。
+- 关联提交/PR/Issue/evidence_id：设计依据 `EVD-S2-DESIGN-001`；建议实现证据位待 Root 批准，本轮无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1035-Sol-A2ZIP最终架构审计] COMPLETE - 本地 ZIP 纵切条件通过，系统门禁保持开放
+
+- 作者：GPT-5.6 Sol；对话角色：架构、安全契约与比赛证据终审；时间：2026-09-02 10:35（Asia/Shanghai）。
+- 审计结论：A2-0/A2-1 本地 ZIP 最小纵切达到 `verified-local-dev-slice`，可判定条件通过；P0 v0.1.1 保持不变。该结论只覆盖当前 macOS/POSIX 本地接收、预检、descriptor-relative 物化、实际配额、inventory/root digest 和失败关闭清理，A2 总门禁仍未通过。
+- 实际修改：最小修正 `docs/security/a2-security-acceptance.md` 的 `SEC-A2-009` 失败句，明确结构非法/碰撞为 `invalid_archive`、深度/长度阈值为 `archive_limit_exceeded`；新增 `docs/security/a2-zip-implementation-audit.md`；追加 `docs/05-ai-assistance-log.md` 与本日志。未修改 backend、任何测试、P0 模型/Schema/sample、公开 API、`PROJECT_PROGRESS.md` 或其他 README。
+- 实现核验：local/central flag、compression、filename、CRC、size 交叉检查，小型 ZIP64 size 与带签名 32-bit data descriptor 定向样本、dirfd/openat 风格 no-follow 独占写入、声明/实际双阶段配额、普通文件独立重读和冻结 root digest、所有路径 `finally` 清理均已对照代码；安全失败不返回部分 inventory。
+- 测试与检查：本轮实跑 Luna 独立 `35 passed in 0.11s`、Terra ZIP unit `18 passed in 0.03s`、P0 `46 passed in 0.10s`、全量 `99 passed in 0.23s`；Python compileall、`git diff --check`、P0 四文件零差异、20 SEC/5 POS/36 NEG 计数、尾随空白、高置信凭据和交付物本机绝对路径扫描均通过。
+- 开放差异：冻结 `SEC-A2-009` 要求拒绝 `~`，当前规范化器仍接受 `~/x`；多卷、EOCD/offset/区段 overlap、完整 ZIP64/descriptor 与非 Unix 特殊属性 corpus 未闭合；inventory 同 inode/同尺寸并发内容改写未证明必拒绝；清理失败尚无 quarantine、worker 禁用和 orphan 清道夫。这些差异已写入终审，不由现有绿灯覆盖。
+- 系统级阻塞：TrustedEgress、Git、受支持 Linux non-root/cgroup v2/deny-egress、durable registry、最终 HTTP/`ScanRun` 映射、完整生命周期和供应链台账仍无实现运行证据；不得将本审计用于把 A2、`CLM-07-002` 或相关系统 claim 标记为 verified。
+- 证据治理：`EVD-S2-DESIGN-001` 仅保留设计追溯资格，不是实现证据。候选 `EVD-A2-ZIP-IMPL-001` 仅为 `pending_root_assignment`；Root 必须在形成包含本实现的不可变提交、固定运行/依赖信息并检查编号冲突后再批准。
+- Root 交接：先决定四类开放实现差异的修复批次，再由 Terra 修实现、Luna补独立用例；完成后由 Root 更新 `PROJECT_PROGRESS.md`、分配 evidence_id、整理提交并决定推送。本轮未提交、未推送。
+- 关联提交/PR/Issue/evidence_id：基线 `0b7e4b7`；无新提交、PR、Issue 或已批准 evidence_id；关联 START `20260902-1031-Sol-A2ZIP最终架构审计`。
+
+### [20260902-1037-Terra-A2ZIPHomeShorthand] START - 修复 SEC-A2-009 home shorthand 路径拒绝
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成；时间：2026-09-02 10:37（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-ingestion`，基线 `0b7e4b7`；保留 Sol/Luna/Root 的未提交变更，不切换分支、不提交、不推送。
+- 任务目标：按 Sol 终审的最后一个窄修复，令 home shorthand 路径形态在物化前失败关闭；最少覆盖 `~/x`，并保持冻结 `invalid_archive/archive_path_unsafe` 语义和 descriptor-safe 后续流程不变。
+- 预计修改文件：`backend/app/security/archive_path.py`、Terra 自有 `tests/unit/test_a2_zip_ingestion.py`，必要时 `backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md`，以及仅追加本日志。不会修改 Luna `tests/security/`、P0 模型、Schema/sample、`PROJECT_PROGRESS.md` 或 Sol 安全规范。
+- 验收方法：新增 `~/x`、`~user/x` 拒绝及 `ordinary/file~.txt` 允许的实现侧断言；运行 Terra ZIP unit、Luna 独立、全量、P0、Schema/sample 等值、`git diff --check`、敏感信息与本机绝对路径检查。预计 1.5k-3k token，不设硬限额。
+- 接口、Schema、规则或决策：采用窄规则——仅拒绝首个路径段等于 `~` 或以 `~` 开头；非首位普通文件名中的波浪号不受影响。无公开接口、DTO 或错误 envelope 变化。
+- 已知边界：Luna 尚未新增对应独立用例；完整 ZIP corpus、TOCTOU、Git/TrustedEgress、Linux profile、registry/API 映射仍不在本轮范围。
+- 关联提交/PR/Issue/evidence_id：引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1040-Terra-A2ZIPHomeShorthand] COMPLETE - SEC-A2-009 home shorthand 窄修复
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成；时间：2026-09-02 10:40（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-ingestion`，基线 `0b7e4b7`；未切换分支、未提交、未推送，未更新 `PROJECT_PROGRESS.md`。
+- 任务目标与实际结果：关闭 Sol 终审发现的唯一窄路径缺口。`normalize_member_path` 现只在首个路径段等于 `~` 或以 `~` 开头时拒绝，因此 `~/x`、`~user/x` 均为 `invalid_archive/archive_path_unsafe`；后续普通文件名 `ordinary/file~.txt` 保持允许。路径在物化前失败，未改变 descriptor-safe 流程或冻结配额语义。
+- 修改文件：`backend/app/security/archive_path.py`、Terra 自有 `tests/unit/test_a2_zip_ingestion.py`、`backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md`，以及仅追加本日志。未修改 Luna `tests/security/`、P0 模型、Schema/sample、Sol 规范或项目进度。
+- 命令与测试：Terra ZIP unit `19 passed`；Luna independent `35 passed`；全量 `100 passed`；P0 `46 passed`；Pydantic/sample/存储 Schema 与 `ScanRun.model_json_schema()` 等值通过；`git diff --check` 通过，敏感信息与本机绝对路径扫描无命中。
+- 接口、Schema、规则或决策：无公开 API、DTO、P0 Schema/sample 或错误 envelope 变化；明确采用“仅首段”规则，避免误拒文件名中非首位波浪号。
+- 已知风险与下一步：Luna 现有独立套件尚未新增 home shorthand 用例，本轮只能声明 Terra 实现侧修复完成；Luna 应补独立正反例后重跑。完整 ZIP corpus、TOCTOU、Git/TrustedEgress、Linux profile、registry/API 映射仍未关闭。
+- 关联提交/PR/Issue/evidence_id：引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1040-Luna-A2ZIPHomeShorthand] START - SEC-A2-009 home shorthand 独立回归
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / 安全证据 / 材料形式检查
+- 时间：2026-09-02 10:40（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；不切分支、不提交、不推送。
+- 任务目标：独立验证 `~/escape.txt` 与 `~user/escape.txt` 拒绝为 `invalid_archive/archive_path_unsafe`，并验证 `ordinary/file~.txt` 正常进入 inventory；不扩大“仅首段”窄规则。
+- 预计修改文件：仅 `tests/security/test_a2_zip_security_independent.py`、`tests/security/README.md`，必要时追加 AI log 和本日志；不修改 backend、Terra unit、P0/Schema/sample 或 `PROJECT_PROGRESS.md`。
+- 验收方法：运行 Luna independent、Terra ZIP unit、全量 pytest、P0 回归、`git diff --check`、敏感信息/本机绝对路径检查，并保留 fixture provenance；预计 1k-2.5k token。
+- 开始前已确认：已按 `AGENTS.md` 完整读取根 README、完整共享日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、冻结安全验收和 Terra 最新 1040 `COMPLETE`；当前 home shorthand 独立用例尚不存在。
+- 接口、Schema、规则或决策：不改变任何实现或公共契约，仅新增独立安全回归覆盖。
+- 关联提交/PR/Issue/evidence_id：引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1042-Luna-A2ZIPHomeShorthand] COMPLETE - SEC-A2-009 home shorthand 独立回归通过
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / 安全证据 / 材料形式检查
+- 时间：2026-09-02 10:42（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；未提交、未推送。
+- 任务目标与实际结果：新增独立用例验证 `~/escape.txt`、`~user/escape.txt` 均为 `invalid_archive/archive_path_unsafe`，`ordinary/file~.txt` 正常落入 inventory；仅覆盖首段窄规则，未扩大契约。
+- 修改文件：`tests/security/test_a2_zip_security_independent.py`、`tests/security/README.md`、`docs/05-ai-assistance-log.md` 和本共享日志；未修改 backend、Terra unit、P0/Schema/sample 或 `PROJECT_PROGRESS.md`。工作区其他未提交变更保持原样。
+- 命令与测试：Luna independent `36 passed in 0.12s`；Terra ZIP unit `19 passed in 0.03s`；全量 `101 passed in 0.24s`；P0 `46 passed in 0.10s`；`git diff --check`、新增文件尾随空白、敏感信息与本机绝对路径检查均通过。
+- 证据与演进：此前独立 `35 passed`、全量 `99 passed` 扩展为当前独立 `36 passed`、全量 `101 passed`；新增测试仍使用标准库动态 ZIP，无第三方或不透明二进制 fixture。未新增 Bench 数据或第三方资源台账条目。
+- 接口、Schema、规则或决策：无变化；home shorthand 仅在首段拒绝，后续普通文件名中的 `~` 保持可接受。未将本地回归写成 Git、TrustedEgress、Linux cgroup/deny-egress、durable registry 或 A2 总门禁证据。
+- 已知风险与下一步：完整 ZIP corpus、TOCTOU/inventory 并发、清理隔离、Git/TrustedEgress、Linux profile、registry/API 映射仍待后续真实集成；Root 负责统一验收、更新进度、提交与推送。
+- 关联提交/PR/Issue/evidence_id：引用 `EVD-S2-DESIGN-001`；无新提交、PR、Issue 或已批准 evidence_id；本条为当前物理 EOF 收工记录。
+
+### [20260902-1044-Sol-A2ZIP终审材料刷新] START - 同步 home shorthand 修复闭环
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构、安全契约与比赛证据终审
+- 时间：2026-09-02 10:44（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-ingestion`；基线 `0b7e4b7`；保留 Terra/Luna/Root 全部未提交变更，不切换分支、不提交、不推送。
+- 任务目标：仅更新 Sol 终审材料，使其反映 Terra 首段 `~`/`~user` 窄修复及 Luna 独立回归闭环；保留历史 `21/14 -> 35/0` 发现/修复链，并追加当前 `36/101` 口径。
+- 开始前已确认：已按 `AGENTS.md` 重新完整读取根 README、共享日志、项目进度和 `SOL_HANDOFF.md`，并核对 Terra 1040 与 Luna 1042 均为 `COMPLETE`；当前无其他模型在途修改终审文档。
+- 预计修改文件：仅 `docs/security/a2-zip-implementation-audit.md`、必要的 `docs/05-ai-assistance-log.md`，并只追加本日志。不修改 backend、tests、P0 模型/Schema/sample、`PROJECT_PROGRESS.md` 或安全验收基线。
+- 验收方法：文档内旧/新计数与开放项一致性检查、`git diff --check`、尾随空白、高置信凭据和本机绝对路径扫描、最终 diff/状态复核；预计 1k-2.5k token（非硬限额）。
+- 接口、Schema、规则或决策：home shorthand 仅首段拒绝，`~/x`、`~user/x` 为 `invalid_archive/archive_path_unsafe`，后续普通文件名中的 `~` 仍允许；不新增公共错误、Schema 或 API。
+- 已知风险与未完成项：完整 ZIP corpus、inventory 并发、cleanup 隔离、Git、TrustedEgress、Linux profile、registry/API 仍保持开放；A2 总门禁不因本次文档刷新改变。
+- 关联提交/PR/Issue/evidence_id：候选 `EVD-A2-ZIP-IMPL-001` 继续为 `pending_root_assignment`；无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1046-Sol-A2ZIP终审材料刷新] COMPLETE - home shorthand 修复已纳入终审证据链
+
+- 作者：GPT-5.6 Sol；对话角色：架构、安全契约与比赛证据终审；时间：2026-09-02 10:46（Asia/Shanghai）。
+- 任务目标与实际结果：终审材料已同步 Terra 首段 `~`/`~user` 窄修复和 Luna 独立正反例；home shorthand 从开放差异移为已关闭，`ordinary/file~.txt` 非回归边界保留。总体结论仍为“本地 ZIP 最小纵切条件通过；A2 总门禁未通过”。
+- 修改文件：更新 `docs/security/a2-zip-implementation-audit.md`，向 `docs/05-ai-assistance-log.md` 追加本轮材料刷新记录，并只追加本日志。未修改 backend、tests、P0 模型/Schema/sample、`PROJECT_PROGRESS.md` 或安全验收基线。
+- 测试与证据口径：保留独立首轮 `21 passed/14 failed` 到裁决复测 `35/0`、全量 `99/0` 的历史链；新增终审后闭环口径为 Luna `36/0`、Terra ZIP `19/0`、全量 `101/0`、P0 `46/0`。本轮未重复执行 pytest，以上数据来自并已交叉核对 Terra 1040、Luna 1042 真实运行记录及对应代码/测试差异。
+- 命令与检查：文档旧/新计数、开放项和候选 evidence 状态一致；`git diff --check`、尾随空白、高置信凭据、本机绝对路径检查通过；P0 四文件和 `PROJECT_PROGRESS.md` 零差异；最终状态无本轮范围外新增文件。
+- 接口、Schema、规则或决策：首段 home shorthand 保持 `invalid_archive/archive_path_unsafe`，后续普通文件名中的 `~` 仍允许；无公共 API、P0 Schema、错误 envelope 或安全验收 ID 变化。
+- 已知风险与未完成项：完整 ZIP corpus、inventory 同尺寸并发改写、cleanup quarantine/worker/orphan、Git、TrustedEgress、Linux profile、durable registry 和最终 API/`ScanRun` 映射继续开放，不能由 101 项本地回归替代。
+- 下一步与责任模型：Root 统一验收当前工作树，决定剩余 A2-1 修复批次，更新进度并整理提交/推送；候选实现证据仍需在不可变提交与运行信息固定后分配。
+- 关联提交/PR/Issue/evidence_id：基线 `0b7e4b7`；`EVD-A2-ZIP-IMPL-001` 仍为 `pending_root_assignment`；无新提交、PR、Issue 或已批准 evidence_id；关联 START `20260902-1044-Sol-A2ZIP终审材料刷新`。
+
+### [20260902-1046-Root-A2ZIP纵切验收] COMPLETE - A2-0/A2-1 本地 ZIP 最小纵切进入发布
+
+- 作者：Codex Root Coordinator；对话角色：项目协调、统一验收与发布；时间：2026-09-02 10:46（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-ingestion`，基线 `0b7e4b7`；三模型均已收工且当前无在途修改，Root 开始固定不可变提交。
+- 任务目标与实际结果：旧 Sol 硬预算任务已停用归档，新 Sol 确认 `goal=null`；Terra 完成 A2-0 POSIX 能力/受控 workspace 与 A2-1 本地 ZIP 安全输入；Luna 首轮发现 14 项缺陷并完成独立复测；Sol 完成冻结契约裁决、SEC-A2-009 最小澄清与实现终审。home shorthand 终审缺口也已由 Terra/Luna 闭环。
+- 实现范围：新增服务端安全限额、路径规范化、POSIX descriptor-safe 目录/文件操作、工作区生命周期、central/local header 交叉校验、流式解压、稳定 inventory/root digest；不调用 `extract`/`extractall`，不修改 P0 v0.1.1 公共模型/API/Schema/sample。
+- 测试与证据：Root 使用项目 Python 3.12 独立复跑全量测试；在 home shorthand 用例加入前为 `99 passed`，Terra/Luna 最新真实记录为独立 `36 passed`、Terra ZIP `19 passed`、P0 `46 passed`、全量 `101 passed`。首轮 `21 passed/14 failed` 的发现链、修复和裁决均保留。提交前还将重跑当前 101 项、Schema/sample等值、`git diff --check`、敏感信息/绝对路径及上传清单检查。
+- 进度与口径：`PROJECT_PROGRESS.md` 已将 A2-0/A2-1 子纵切标为 `已完成`，A2 总包保持 `进行中`。完整 ZIP corpus、inventory 并发完整性、cleanup quarantine/worker/orphan、Git/TrustedEgress、Linux profile、durable registry 与 API/`ScanRun` 映射仍开放；不得把本地绿灯写成 A2 总门禁通过。
+- 日志治理：本轮曾出现旧块被追加补丁误复制；未删除或改写历史，已用 EOF AMENDMENT 标明首次记录为权威。后续追加必须只锚定当前唯一 EOF。
+- 下一步与责任模型：Root 执行最终测试、提交并推送；固定提交后批准 `EVD-A2-ZIP-IMPL-001` 并追加发布记录。下一独立任务点在本次发布完成后另行启动。
+- 关联提交/PR/Issue/evidence_id：候选 `EVD-A2-ZIP-IMPL-001` 待首个不可变提交哈希；提交/远端分支待形成。

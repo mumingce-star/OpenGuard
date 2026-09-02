@@ -145,7 +145,7 @@ Git 获取必须使用锁定的绝对二进制和参数数组，默认分支浅�
 4. 计算规范路径、NFC+case-fold 键和父目录类型；任一重复/碰撞/文件目录冲突即拒绝；
 5. 安全 join 后再次证明目标位于本任务 root 内；字符串前缀比较不足以通过。
 
-失败：`invalid_archive`，原因 `archive_path_unsafe` 或 `archive_duplicate_path`。
+失败：结构非法或路径/碰撞拒绝使用 `invalid_archive`，原因 `archive_path_unsafe` 或 `archive_duplicate_path`；路径深度或 UTF-8 长度阈值超限按 `SEC-A2-011` 使用 `archive_limit_exceeded`，原因 `archive_path_depth_limit` 或 `archive_path_length_limit`。
 
 ### `SEC-A2-010` - ZIP 条目类型
 
