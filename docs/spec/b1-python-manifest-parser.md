@@ -1,7 +1,7 @@
 # B1-1 Python Manifest Parser 设计门禁
 
 - 版本：`v0.1.0`
-- 状态：`FROZEN_DESIGN_BASELINE / LOCAL_CANDIDATE (APPROVED-PENDING-ROOT-BINDING)`
+- 状态：`FROZEN_DESIGN_BASELINE / LOCAL_VERIFIED (BOUND: 7c0d365)`
 - 日期：2026-09-02
 - 设计负责人：Sol
 - 后续实现负责人：Terra
@@ -491,3 +491,20 @@ Root 在第 16 节批准后补充 leading/trailing U+2028 探针；Luna 首轮�
 Sol 本轮只读复跑 `-k p1_b1_final_001`，结果为 `3 passed, 60 deselected in 0.02s`；独立内存探针对 middle、leading、trailing 三种输入均得到 `requirement_invalid:0`。Luna 已记录独立全文件 `63 passed`、Terra `40 passed`、全量 `278 passed`、P0 `46 passed`；本单点复审未重复冒充这些上游全量运行。
 
 `EVD-B1-PYTHON-MANIFEST-001` 的 `APPROVED-PENDING-ROOT-BINDING` 候选批准继续有效，不重新分配 ID，也不扩大 scope。Root 仍须完成不可变提交/运行 profile 绑定；范围仍仅为本地可信 A2 consumer parser，不外推既有 JavaScript/lockfile、P0 mapper、许可证、Web、Linux/TrustedEgress 或 A2 总门禁非目标。
+
+## 17. Root 不可变证据绑定
+
+```text
+evidence_id: EVD-B1-PYTHON-MANIFEST-001
+status: VERIFIED-LOCAL-DEV-SLICE
+implementation_commit: 7c0d365
+branch: feat/b1-python-manifest-parser
+runtime: CPython 3.12.13 on local macOS/POSIX
+parser_dependency: packaging 26.3
+dependency_license: Apache-2.0 OR BSD-2-Clause
+scope: verified-local-trusted-consumer-parser
+```
+
+Root 在提交前最终复跑：Terra unit `40 passed`，Luna 独立 `63 passed`，全量 `278 passed`，P0/Schema/sample `46 passed`，`schema_export_equal=true`，compileall 与 `git diff --check` 通过。真实内存 ZIP 通过 `ZipIngestionService.ingest_with_consumer()` 两次运行逐字段相等，候选读取顺序恰为 `pyproject.toml`、`requirements.txt` 且各一次，输出 `pydantic`、`requests`、`setuptools` 三项、零诊断；未执行目标代码、安装目标依赖或联网。
+
+该绑定把候选状态提升为上述本地开发纵切证据，不改变第 16.1 节及各历史 BLOCKED 记录，也不证明跨平台、产品级或任何已列非目标能力。

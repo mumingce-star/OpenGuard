@@ -1821,3 +1821,11 @@
 - 边界：当前 CLI 仍只输出 inventory；B1-1 尚未映射 P0 `Component/Evidence`，也不包含 JS/TS、lockfile、许可证结论、Web/API、Git、Linux isolation、TrustedEgress、Bench、报告或 A2 总门禁。
 - 证据与发布：`EVD-B1-PYTHON-MANIFEST-001` 已获 Sol `APPROVED-PENDING-ROOT-BINDING`；下一步先提交本实现与验证材料，随后以不可变实现提交、运行 profile、命令和输出摘要完成绑定并推送 GitHub。原始竞赛附件、本机缓存/虚拟环境、密钥和个人信息不进入提交。
 - token：本次运行精确 token 数不可获得；Root 开工估算 `18k-30k`，任务范围未扩展到 B1-2/JS/Web，B1-1 已在本轮完整交付；因客户端无精确遥测，不能诚实判断实际值是否落在估算区间，未编造数值。
+
+### [20260902-1814-Root-B1Python证据绑定] COMPLETE - B1-1 不可变实现提交已绑定
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 18:14（Asia/Shanghai）。
+- 实现提交：`7c0d365`，共 17 个竞赛作品文件，包含 parser、依赖锁版/台账、规格、Terra/Luna 测试与 fixture、运行说明、AI/协作/进度和项目 token 透明度规则。
+- 证据绑定：`EVD-B1-PYTHON-MANIFEST-001` → `7c0d365`；profile 为 CPython 3.12.13、`packaging==26.3`、本地 macOS/POSIX、可信 A2 consumer；结果为 Terra 40/40、Luna 63/63、全量 278/278、P0 46/46、Schema 等值、真实 ZIP 两次确定性相等且候选各读一次。
+- 上传边界：提交不含全局 `/Users/mumingce/.codex/AGENTS.md`、原始 PDF/DOCX、缓存、虚拟环境、密钥、个人信息或无权再分发内容。下一步推送任务分支并回填远端状态；不创建或合并 `main` PR。
+- token：本次运行精确 token 数不可获得；本条为前述 `18k-30k` 任务估算内的文档绑定步骤，不另行虚构精确数值。
