@@ -2368,3 +2368,10 @@
 - 证据摘要：A3 32+45=`77 passed`；P0 `46 passed`；全量 `501 passed`；Schema 等值、compileall、diff/whitespace、上传范围、隐私与凭据检查通过；当前无开放 P0/P1。
 - 人员边界：绑定内容仍只属于项目负责人（用户）的 A3-0；未接管扫描分析组员 B1-B7 或前端组员任务。发布提交只会包含竞赛工程交付物，不含原始 PDF/DOCX、缓存、虚拟环境或成员身份信息。
 - 严格非目标：未批准 FastAPI/HTTP、worker/A4、Git 输入、Linux/TrustedEgress、多机/灾备、exactly-once 外部副作用、Bench、前端或完整竞赛作品。下一步创建证据绑定提交并推送远端分支，随后回填远端状态。
+
+### [20260903-0012-Root-A3远端发布] COMPLETE - A3-0 分支已推送 GitHub
+
+- 作者/角色/时间：Root；项目统筹与发布验收；2026-09-03 00:12（Asia/Shanghai）。
+- 远端事实：`feat/a3-durable-scan-registry` 已创建并推送到 `origin`；不可变实现提交 `d2b26b0897978d156a461abae97e163a6cb3564d` 与证据绑定提交 `0cadbbe` 均已上传。GitHub 给出的 PR 创建入口为 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/a3-durable-scan-registry`；本轮按既有治理不创建、不合并 PR，不改变 `main`。
+- 上传范围：仅 A3-0 registry 源码、Terra/Luna 两组测试、冻结规格、运行说明、AI/协作日志与项目进度；不含原始 PDF/DOCX、缓存、虚拟环境、真实凭据、成员身份信息、扫描分析组员 B1-B7 新工作或前端组员代码。
+- 下一步：提交本远端回填记录并二次推送，随后用本地 tracking 状态与远端 ref 核对完全同步。后续工程应继续项目负责人拥有的 A3-1 FastAPI 最小只读/创建 API 纵切，不越入 B2-B7 或前端页面。
