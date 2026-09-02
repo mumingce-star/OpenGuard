@@ -66,6 +66,51 @@
 - 下一步与责任模型：GPT-5.6 Sol 完成本轮只读协议确认后追加 `COMPLETE`；不启动产品代码开发。
 - 关联提交/PR/Issue/evidence_id：无。
 
+### [20260902-1250-Sol-任务1至8实现收工] PARTIAL - 代码已完成，待运行环境验收
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 主线实现
+- 时间：2026-09-02 12:50（Asia/Shanghai）
+- 分支或工作区：`main`；未创建提交，保留工作区改动供后续复核。
+- 任务目标和实际结果：任务 1～5 的契约、样例、Python/JavaScript manifest 已在已合并代码中；补齐任务 6 的 `merge_components`，以及任务 7/8 的 ScanCode/Syft 受限 JSON 适配、P0 映射、错误降级和回归测试。
+- 修改或新增文件：`backend/app/scanners/external_tools.py`、`backend/app/scanners/__init__.py`、`tests/unit/test_b2_b3_external_tools.py`、`docs/spec/b2-b3-external-tool-adapters.md`、`third_party/README.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 与本日志。
+- 命令与测试结果：`git diff --check` 通过；Node 成功解析 `examples/sample-scan-result.json` 和 `schemas/p0/scan-result.schema.json`；`python -m pytest tests/unit/test_b2_b3_external_tools.py` 未启动，因为系统找不到 `python`，`py --list-paths` 也显示无已安装 Python。
+- 接口、Schema、规则和重要决策：未改变冻结 P0 Schema。ScanCode 仅生成许可证候选 Evidence，SPDX 标准化留给 B4；Syft 仅在 artifact 有相对位置证据时生成 Component；外部执行禁用 shell、丢弃 stderr、限时限量并不暴露 A2-2 会话目录。
+- 已知风险、失败项和未完成内容：未安装 Python、ScanCode 或 Syft，故新增 pytest 与真实工具 JSON 兼容性尚未运行；实际部署仍需固定工具版本、二进制校验和隔离运行目录。B2/B3 已更新为“进行中”，未误报为完成。
+- 建议下一步及责任模型：CZ/Terra 在受控 Python 3.12 环境执行新增 pytest，再以已固定版本的 ScanCode/Syft 运行 fixture/真实仓库回归；Sol 在 B4 接续 SPDX 候选标准化。
+- 关联的分支、提交、PR、Issue 或 evidence_id：无新提交或 evidence_id。
+
+### [20260902-1400-Sol-安装扫描环境收工] COMPLETE - Python、ScanCode 与 Syft 已安装并验证
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 开发环境配置
+- 时间：2026-09-02 14:00（Asia/Shanghai）
+- AMENDMENT：开始记录 `20260902-1300-Sol-安装扫描环境` 因共享日志定位异常出现在历史位置；不删除该记录，本条作为按时间顺序的正式收工报告。
+- 分支或工作区：`main`；保留既有未提交项目改动，未执行重置或覆盖。
+- 任务目标和实际结果：已按用户授权安装并验证 Python 3.12.10、ScanCode Toolkit 32.5.0 和 Anchore Syft 1.51.0；已更新当前用户 PATH。
+- 修改或新增文件：`third_party/README.md`、`docs/05-ai-assistance-log.md` 与本日志；工具安装在当前用户目录和项目忽略的 `.tools` 运行目录，不纳入 Git。
+- 命令与测试结果：Python 安装程序 Authenticode 签名有效；ScanCode Windows 发布包 SHA-256 为 `d659258d8067d36403f8a4df21ca0446b1a56f615754c92139d8a264d57abe49`，与官方发布信息相符；Syft 包 SHA-256 为 `fc5ffaeffb993576ece9c791da5a688fb2c8969a1479bbfe58583672c64da336`，与官方 checksums 文件相符；`python --version`、`syft version`、`scancode --version` 均成功；`git diff --check` 通过。
+- 接口、Schema、规则和重要决策：不改变 P0 接口、Schema、规则或风险语义；ScanCode 离线 wheel 运行环境置于 `.tools` 以规避当前受限缓存的跨卷写入问题。
+- 已知风险、失败项和未完成内容：新终端需重新打开以读取更新后的用户 PATH；项目 Python 依赖和 pytest 尚未安装/执行，不属于本次工具安装范围。
+- 建议下一步及责任模型：CZ/Terra 创建项目虚拟环境、安装 `backend` 的开发依赖后运行新增 pytest，再进行真实仓库的 ScanCode/Syft 回归。
+- 关联的分支、提交、PR、Issue 或 evidence_id：无新提交或 evidence_id。
+
+### [20260902-1300-Sol-安装扫描环境] START - 安装 Python、ScanCode 与 Syft
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 开发环境配置
+- 时间：2026-09-02 13:00（Asia/Shanghai）
+- 分支或工作区：`main`；存在上一任务未提交的产品代码与文档改动，安装过程不得覆盖或重置它们。
+- 任务目标：按用户授权安装 Python 3.12、ScanCode Toolkit 和 Anchore Syft，并验证版本及项目测试入口。
+- 开始前已确认：已完整阅读 README、共享日志和 Sol 交接，检查 Git 状态/近期提交和其他模型记录；当前无其他模型在途记录，且系统尚无已安装 Python。
+- 实际结果：已开始检查 Windows 包管理器与安全安装路径；安装将通过受控的官方包源或官方发布渠道进行。
+- 修改文件：预计仅追加第三方资源台账、AI 使用记录和共享日志；不修改项目产品逻辑。
+- 命令与测试：已确认 `python` 不可用、`py --list-paths` 无已安装版本；后续将验证 `python --version`、`scancode --version`、`syft version` 与 pytest。
+- 接口、Schema、规则或决策：不改变 P0 接口或 Schema；安装的外部工具版本将写入可复现验证记录。
+- 已知风险与未完成项：网络下载和系统级安装需要用户已授权的提升权限；ScanCode/Syft 的实际发布版本须由包源可用版本决定并登记。
+- 下一步与责任模型：GPT-5.6 Sol 完成安装、版本校验、最小回归并追加收工记录。
+- 关联提交/PR/Issue/evidence_id：无。
+
 ### [20260901-1500-Sol-项目分析收工] COMPLETE - 完成项目现状与风险分析
 
 - 作者：GPT-5.6 Sol
@@ -433,3 +478,110 @@
 - 已知风险与未完成项：前端 mock 类型与 P0 API 契约字段并不一致，接真实 API 前需要映射 DTO 或替换 mock 类型。
 - 下一步与责任模型：CZ 的解析器/扫描器应产生 Component/AIAsset 与 Evidence；规则引擎应产生 RiskFinding；xzb 负责将前端展示 DTO 接入真实 API。
 - 关联提交/PR/Issue/evidence_id：`1c1fd0d`。
+
+### [20260902-1200-Sol-任务1至8实现] START - 完成契约到 Syft 适配的 P0 代码
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 主线实现
+- 时间：2026-09-02 12:00（Asia/Shanghai）
+- 分支或工作区：`main`；开始时工作区干净，本地领先 `origin/main`。
+- 任务目标：实现此前拆分的任务 1～8：契约/样例、Python 与 JavaScript manifest、证据统一、ScanCode 适配及 Syft 适配。
+- 开始前已确认：已完整阅读 README、共享日志、Sol 交接、P0/manifest 冻结规格并检查 Git 状态与近期提交；远程合并已含任务 1～6 的部分实现，无其他模型在途记录。
+- 实际结果：开始差距分析；预计主要新增 ScanCode/Syft 受限适配层、集成编排、测试、资源台账和必要文档，不重写已冻结 P0 或现有 manifest 实现。
+- 修改文件：计划涉及 `backend/app/scanners/`、`backend/app/` 编排/CLI、`tests/`、`docs/spec/`、`docs/05-ai-assistance-log.md`、`third_party/` 及共享日志。
+- 命令与测试：已完成静态资料核对；将优先运行现有测试，若本机 Python 缺失则记录为环境阻塞并尽可能完成静态/Node 验证。
+- 接口、Schema、规则或决策：不改变 P0 公共模型；扫描器只能产生 Component/AIAsset、Evidence 与诊断，许可证/风险结论仅在有规则和证据时产生。
+- 已知风险与未完成项：当前环境无 Python 运行时，且 ScanCode/Syft 未安装；外部工具适配器需设计成可测试的可执行文件注入与安全降级。
+- 下一步与责任模型：GPT-5.6 Sol 完成实现、测试和收工记录；需要后端运行环境时请求用户授权安装/配置。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260902-1255-Sol-任务1至8收工更正] PARTIAL - 代码已完成，待运行环境验收
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 主线实现
+- 时间：2026-09-02 12:55（Asia/Shanghai）
+- AMENDMENT：`20260902-1250-Sol-任务1至8实现收工` 因共享日志追加定位错误而落在历史条目附近；该记录内容有效，但以本条作为按时间顺序的正式收工报告，不删除旧记录以保留审计轨迹。
+- 分支或工作区：`main`；未创建提交，保留工作区改动供后续复核。
+- 任务目标和实际结果：任务 1～5 的契约、样例、Python/JavaScript manifest 已在已合并代码中；补齐任务 6 的 `merge_components`，以及任务 7/8 的 ScanCode/Syft 受限 JSON 适配、P0 映射、错误降级和回归测试。
+- 修改或新增文件：`backend/app/scanners/external_tools.py`、`backend/app/scanners/__init__.py`、`tests/unit/test_b2_b3_external_tools.py`、`docs/spec/b2-b3-external-tool-adapters.md`、`third_party/README.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 与本日志。
+- 命令与测试结果：`git diff --check` 通过；Node 成功解析 `examples/sample-scan-result.json` 和 `schemas/p0/scan-result.schema.json`；`python -m pytest tests/unit/test_b2_b3_external_tools.py` 未启动，因为系统找不到 `python`，`py --list-paths` 也显示无已安装 Python。
+- 接口、Schema、规则和重要决策：未改变冻结 P0 Schema。ScanCode 仅生成许可证候选 Evidence，SPDX 标准化留给 B4；Syft 仅在 artifact 有相对位置证据时生成 Component；外部执行禁用 shell、丢弃 stderr、限时限量并不暴露 A2-2 会话目录。
+- 已知风险、失败项和未完成内容：未安装 Python、ScanCode 或 Syft，故新增 pytest 与真实工具 JSON 兼容性尚未运行；实际部署仍需固定工具版本、二进制校验和隔离运行目录。B2/B3 已更新为“进行中”，未误报为完成。
+- 建议下一步及责任模型：CZ/Terra 在受控 Python 3.12 环境执行新增 pytest，再以已固定版本的 ScanCode/Syft 运行 fixture/真实仓库回归；Sol 在 B4 接续 SPDX 候选标准化。
+- 关联的分支、提交、PR、Issue 或 evidence_id：无新提交或 evidence_id。
+
+### [20260902-1405-Sol-安装扫描环境收工更正] COMPLETE - Python、ScanCode 与 Syft 已安装并验证
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 开发环境配置
+- 时间：2026-09-02 14:05（Asia/Shanghai）
+- AMENDMENT：`20260902-1300` START 与 `20260902-1400` COMPLETE 因共享日志定位异常出现在历史位置；保留原记录，本条是按时间顺序的正式收工报告。
+- 分支或工作区：`main`；既有未提交项目改动未覆盖或重置。
+- 任务目标和实际结果：按用户授权安装并验证 Python 3.12.10、ScanCode Toolkit 32.5.0 和 Anchore Syft 1.51.0，已更新当前用户 PATH。
+- 修改或新增文件：`third_party/README.md`、`docs/05-ai-assistance-log.md` 与本日志；工具位于当前用户目录和项目忽略的 `.tools`，不纳入 Git。
+- 命令与测试结果：Python 安装程序 Authenticode 签名有效；ScanCode Windows 包 SHA-256 `d659258d8067d36403f8a4df21ca0446b1a56f615754c92139d8a264d57abe49` 与官方发布信息一致；Syft 包 SHA-256 `fc5ffaeffb993576ece9c791da5a688fb2c8969a1479bbfe58583672c64da336` 与官方 checksums 一致；`python --version`、`syft version`、`scancode --version` 均成功；`git diff --check` 通过。
+- 接口、Schema、规则和重要决策：未改变 P0 接口、Schema、规则或风险语义；ScanCode 离线运行环境置于 `.tools`，规避受限缓存目录的跨卷写入问题。
+- 已知风险、失败项和未完成内容：需重新打开终端以读取用户 PATH；项目 Python 依赖和 pytest 尚未安装/执行，不属于本次工具安装范围。
+- 建议下一步及责任模型：CZ/Terra 安装 `backend` 开发依赖后运行 pytest，再进行真实仓库 ScanCode/Syft 回归。
+- 关联的分支、提交、PR、Issue 或 evidence_id：无新提交或 evidence_id。
+
+### [20260902-1410-Sol-任务1至8验收检查] START - 检查任务 1～8 的完成状态
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 验收检查
+- 时间：2026-09-02 14:10（Asia/Shanghai）
+- 分支或工作区：`main`；保留既有未提交改动，只做检查与日志追加。
+- 任务目标：按此前拆分的任务 1～8 检查代码、测试、工具和可复现验收状态。
+- 开始前已确认：已完整阅读 README、共享日志和 Sol 交接，并检查 Git 状态、近期提交及当前 B1/B2/B3 进度；无其他模型在途记录。
+- 实际结果：开始逐项核对实现文件、测试文件和工具版本；不修改产品逻辑。
+- 修改文件：仅计划追加本日志。
+- 命令与测试：已完成静态资料、Git 和进度台账核对；将补充实际 Python 测试可执行性检查。
+- 接口、Schema、规则或决策：不改变接口、Schema、规则或风险语义。
+- 已知风险与未完成项：此前 B2/B3 标记为进行中，真实工具回归和新增 pytest 尚待实测确认。
+- 下一步与责任模型：GPT-5.6 Sol 输出逐项验收结论并追加收工记录。
+- 关联提交/PR/Issue/evidence_id：无。
+
+### [20260902-1420-Sol-任务1至8验收收工] PARTIAL - 任务 1～5 完成，6～8 待验收/集成
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审查 / 验收检查
+- 时间：2026-09-02 14:20（Asia/Shanghai）
+- 分支或工作区：`main`；仅追加日志，未修改产品逻辑。
+- 任务目标和实际结果：任务 1（P0 契约与样例）、2（现有 fixtures/回归）、3（requirements）、4（pyproject）、5（package.json/package-lock）已有实现和历史测试证据；任务 6（跨来源合并）、7（ScanCode JSON 适配）、8（Syft JSON 适配）代码与测试文件已存在，但未达到完整验收。
+- 修改或新增文件：仅 `docs/coordination/AGENT_WORKLOG.md`。
+- 命令与测试结果：新增 `external_tools.py` 与对应测试通过 Python 3.12 `py_compile`；`python -m pytest -q tests/unit/test_b2_b3_external_tools.py` 失败，原因为当前 Python 环境尚未安装 `pytest`。Python 3.12.10、ScanCode 32.5.0、Syft 1.51.0 已安装并可报告版本。
+- 接口、Schema、规则和重要决策：不改变 P0 契约。当前 B2/B3 仅提供受限工具执行与 JSON→P0 映射；没有将实际 ScanCode/Syft 调用接入 ZIP 扫描主流程，不能以工具已安装替代端到端验收。
+- 已知风险、失败项和未完成内容：任务 6 的合并回归未实际运行；任务 7/8 缺失真实工具输出 fixture/真实仓库回归和编排入口集成；任务 1～5 的代码也尚未在本次新安装环境复跑既有全量测试。进度台账将 B1/B2/B3 标为“进行中”，与此结论一致。
+- 建议下一步及责任模型：CZ/Terra 在项目虚拟环境安装 `backend` 开发依赖后执行新旧 pytest；随后实现受控 A4 编排入口，把固定版本的 ScanCode/Syft 实际调用、超时和 `ScanError` 接入，并使用 fixture 和真实仓库回归。
+- 关联的分支、提交、PR、Issue 或 evidence_id：无。
+### [20260902-1430-Sol-安装pytest] START - 安装 pytest 测试框架
+
+- 作者：GPT-5.6 Sol
+- 对话角色：开发环境配置
+- 时间：2026-09-02 14:30（Asia/Shanghai）
+- 分支或工作区：`main`；保留既有未提交项目改动，仅追加日志及第三方资源登记。
+- 任务目标：将项目锁定版本 `pytest==8.4.2` 安装到当前用户 Python 3.12 环境并验证可执行性。
+- 开始前已确认：已完整阅读 README、共享日志和 Sol 交接，并检查当前 Git 分支、工作区、近期提交与在途记录；未发现其他模型正在修改本次涉及的文件。
+- 预计修改文件：`docs/coordination/AGENT_WORKLOG.md`、`third_party/README.md`、`docs/05-ai-assistance-log.md`。
+### [20260903-0005-Sol-安装pytest收工] COMPLETE - pytest 已安装并验证
+
+- 作者：GPT-5.6 Sol
+- 对话角色：开发环境配置
+- 时间：2026-09-03 00:05（Asia/Shanghai）
+- 分支或工作区：`main`；未覆盖或重置既有未提交项目改动。
+- 任务目标和实际结果：已将 `pytest==8.4.2` 安装到当前用户 Python 3.12.10 环境，并确认模块可由该解释器调用。
+- 修改或新增文件：`third_party/README.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/AGENT_WORKLOG.md`；未修改产品代码。
+- 命令与测试结果：`C:\Users\cz180\AppData\Local\Programs\Python\Python312\python.exe -m pip install --no-input pytest==8.4.2` 成功；`python -m pytest --version` 输出 `pytest 8.4.2`；`pip show pytest` 确认版本、安装位置及 MIT 许可证；`git diff --check` 通过。
+- 接口、Schema、规则和重要决策：未改变接口、Schema、规则或风险语义；pytest 仅作为项目测试依赖登记。
+- 已知风险、失败项和未完成内容：尚未安装/验证完整 `backend` 开发依赖，故本轮不宣称项目测试已运行或通过。
+- 建议下一步及责任模型：CZ/Terra 可安装 `backend` 开发依赖并运行任务 1～8 的目标 pytest；Sol/Luna 再进行独立验收。
+- 关联的分支、提交、PR、Issue 或 evidence_id：无新提交或 evidence_id。
+### [20260903-0015-Sol-同步GitHub] START - 提交并推送当前验收改动
+
+- 作者：GPT-5.6 Sol
+- 对话角色：发布协调
+- 时间：2026-09-03 00:15（Asia/Shanghai）
+- 分支或工作区：`main`；当前仅配置 `origin=git@github.com:mumingce-star/OpenGuard.git`，尚未发现单独的队友远程地址。
+- 任务目标：核验当前未提交改动，创建可追溯提交并推送到用户可写的 GitHub 远程；如存在第二个已配置远程，一并同步。
+- 开始前已确认：已完整阅读 README、共享日志和 Sol 交接，检查当前分支、工作区、最近提交及远程；未发现其他模型在途修改同一文件、Schema 或接口。
+- 预计修改文件：仅 `docs/coordination/AGENT_WORKLOG.md` 追加发布记录；随后对既有工作区改动创建 Git 提交并进行远程推送。

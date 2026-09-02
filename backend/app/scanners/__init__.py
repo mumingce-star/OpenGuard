@@ -11,6 +11,16 @@ from .python_manifest import (
 from .python_p0_mapper import MAPPER_SCHEMA_VERSION, PythonP0MappingResult, map_python_manifest_result
 from .javascript_manifest import JavascriptParseStatus, JavascriptManifestParseResult, parse_javascript_manifests
 from .javascript_p0_mapper import JavascriptP0MappingResult, map_javascript_manifest_result
+from .external_tools import (
+    ComponentMergeResult,
+    ScanCodeMappingResult,
+    SyftMappingResult,
+    map_scancode_output,
+    map_syft_output,
+    merge_components,
+    parse_json_output,
+    run_json_tool,
+)
 
 __all__ = [
     "DependencyScope",
@@ -27,4 +37,12 @@ __all__ = [
     "parse_javascript_manifests",
     "JavascriptP0MappingResult",
     "map_javascript_manifest_result",
+    "ComponentMergeResult",
+    "ScanCodeMappingResult",
+    "SyftMappingResult",
+    "map_scancode_output",
+    "map_syft_output",
+    "merge_components",
+    "parse_json_output",
+    "run_json_tool",
 ]
