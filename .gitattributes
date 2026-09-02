@@ -6,3 +6,6 @@
 *.gif binary
 *.pdf binary
 *.mp4 binary
+
+# Shared task logs retain every concurrent append during merge.
+docs/coordination/AGENT_WORKLOG.md merge=union
