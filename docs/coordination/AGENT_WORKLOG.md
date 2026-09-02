@@ -1829,3 +1829,11 @@
 - 证据绑定：`EVD-B1-PYTHON-MANIFEST-001` → `7c0d365`；profile 为 CPython 3.12.13、`packaging==26.3`、本地 macOS/POSIX、可信 A2 consumer；结果为 Terra 40/40、Luna 63/63、全量 278/278、P0 46/46、Schema 等值、真实 ZIP 两次确定性相等且候选各读一次。
 - 上传边界：提交不含全局 `/Users/mumingce/.codex/AGENTS.md`、原始 PDF/DOCX、缓存、虚拟环境、密钥、个人信息或无权再分发内容。下一步推送任务分支并回填远端状态；不创建或合并 `main` PR。
 - token：本次运行精确 token 数不可获得；本条为前述 `18k-30k` 任务估算内的文档绑定步骤，不另行虚构精确数值。
+
+### [20260902-1818-Root-B1Python发布] COMPLETE - B1-1 分支已推送 GitHub
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 18:18（Asia/Shanghai）。
+- 远端结果：`feat/b1-python-manifest-parser` 已创建并跟踪 `origin/feat/b1-python-manifest-parser`；远端包含实现提交 `7c0d365` 与证据绑定提交 `bb83e6b`。
+- 上传内容：仅本任务 17 个竞赛作品文件及证据绑定文档；包含 parser、精确依赖声明/第三方台账、实现与独立测试、两份自建文本 fixture、规格/审计、运行说明、AI/协作/进度和项目 token 透明度规则。全局 Codex 规则、原始附件、缓存、虚拟环境、密钥和个人信息未上传。
+- PR 入口：`https://github.com/mumingce-star/OpenGuard/pull/new/feat/b1-python-manifest-parser`；本轮未创建或合并 PR，`main` 未改变。
+- token：本次运行精确 token 数不可获得；推送是既定 B1-1 收尾，不扩大前述 `18k-30k` 任务范围，未编造精确值。
