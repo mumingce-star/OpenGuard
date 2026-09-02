@@ -1050,3 +1050,122 @@
 - GitHub 状态：远端新分支创建成功；PR 创建入口 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/a2-zip-ingestion`。按仓库治理规则不直接合并 `main`。
 - 下一步与责任模型：Root 提交并推送本发布记录/证据回填，使远端最终 HEAD 包含发布元数据；之后另行启动下一个独立任务点。
 - 关联提交/PR/Issue/evidence_id：实现提交 `53499ea`；`EVD-A2-ZIP-IMPL-001`；分支 `https://github.com/mumingce-star/OpenGuard/tree/feat/a2-zip-ingestion`。
+
+### [20260902-1325-Root-A2ZIPCLI演示] START - 建立可由参赛者独立运行的本地 ZIP 演示入口
+
+- 作者：Codex Root Coordinator；对话角色：任务拆分、统一验收与发布；时间：2026-09-02 13:25（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；创建依赖于已发布 A2 ZIP 纵切的新分支，不改写或直接合并 `main`。
+- 任务目标：把已经验证的 `ZipIngestionService` 暴露为一个最小、可解释、可复现的命令行演示：用户提供本地 ZIP，程序只进行安全接收、校验和临时物化，随后在标准输出产生稳定 JSON inventory/root digest；为成功、受控拒绝和使用错误定义可测试退出语义，并给出参赛者可照抄的运行步骤。
+- 安全边界：不联网，不克隆 Git，不执行目标项目代码，不安装目标项目依赖，不扩大服务端安全限额，不输出本机 workspace 路径或解析器异常；仍由已有服务负责失败关闭和清理。该入口不等同于完整 Web 应用、依赖/许可证扫描或 A2 总门禁完成。
+- 角色分工：Terra 负责 CLI 与实现侧测试/运行说明；Luna 随后独立验证成功、恶意 ZIP、错误输出和残留清理；Sol 最后只读审查产品边界、评委可解释性和证据措辞；Root 负责最终复跑、进度台账、提交与 GitHub 推送。
+- 预计修改范围：`backend/` 下 CLI/包入口与必要说明、Terra 自有单测、Luna 独立测试、三模型 AI/共享日志，以及 Root 的 `PROJECT_PROGRESS.md`；不修改 P0 v0.1.1 模型/Schema/sample，不新增未冻结 HTTP API，不引入第三方运行时依赖。
+- 验收标准：至少证明有效 ZIP 输出稳定 JSON；拒绝路径穿越等恶意输入时只输出稳定 code/reason 且非零退出；参数/文件错误不泄漏本机路径；workspace 无任务残留；既有 101 项回归不退化；文档命令由 Root 在当前环境真实跑通。
+- 预算评估：Root 预计协调、三模型实现/复核、测试和发布合计约 12k-20k token，非硬预算；任务范围保持单一纵切，若出现更大契约或环境问题则停在完整可验收边界，不带病扩展。
+- GitHub/组员核对：截至本条开始，`origin` 仅有 `main`、`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`，均由 `mumingce-star` 提交；远端无 PR refs，GitHub 公共 API 显示主仓库 Fork 数为 0，未发现 `xzb123-hash` 或 `zhengchen529` 名下的 OpenGuard Fork。若组员使用私有/其他仓库，须提供链接或分支名后另行核对。
+- 关联提交/PR/Issue/evidence_id：暂无；本条为当前物理 EOF 的任务开始记录。
+
+### [20260902-1326-Terra-A2ZIPCLI] START - 实现本地 ZIP 安全演示命令
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成；时间：2026-09-02 13:26（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；保留 Root 开工记录，不切换分支、不提交、不推送。
+- 任务目标：提供只接收本地 ZIP 的 CLI，成功 stdout 输出稳定 JSON inventory/root digest，受控安全拒绝仅 stderr 输出稳定 `code/reason` 并以非零退出；参数、文件和 workspace 错误不得泄漏本机路径或原始异常。
+- 预计修改文件：新增 Terra 所有的 `backend/app/cli.py` 或等价入口，可能更新 `backend/pyproject.toml`、`backend/README.md`、Terra 自有 `tests/unit/` 测试、`docs/05-ai-assistance-log.md`，并仅追加本日志。不会修改 Luna `tests/security/`、P0 模型/Schema/sample、安全验收或 `PROJECT_PROGRESS.md`。
+- 验收方法：动态构造有效/恶意 ZIP，断言 JSON 排序与字段、stderr/退出码、错误脱敏和 workspace 清理；运行定向、Luna independent、全量、P0、Schema/sample 等值、`git diff --check`、敏感信息与本机绝对路径检查。预计 4k-7k token，不设硬限额。
+- 接口、Schema、规则或决策：入口只使用标准库和现有 `ZipIngestionService`，默认 `ZipSafetyLimits` 不公开提升参数；不联网、不运行目标代码、不新增 HTTP API/DTO/P0 字段。
+- 已知边界：CLI 仅展示安全 ZIP→inventory 纵切，不等同依赖/许可证扫描、Web API、Git/TrustedEgress、Linux profile 或 A2 总门禁；Luna 后续独立验证本入口。
+- 关联提交/PR/Issue/evidence_id：无新提交、PR、Issue 或 evidence_id。
+
+### [20260902-1332-Terra-A2ZIPCLI] COMPLETE - 本地 ZIP 安全演示命令可复现
+
+- 作者：GPT-5.6 Terra；对话角色：主线工程与系统集成；时间：2026-09-02 13:32（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；未切换分支、未提交、未推送，未更新 `PROJECT_PROGRESS.md`。
+- 任务目标与实际结果：新增 `python -m app.cli LOCAL_ZIP`。成功时 stdout 仅以稳定排序 JSON 输出 `schema`、`version`、`root_digest` 和 entry 的 `relative_path`、`size_bytes`、`sha256`；安全拒绝仅 stderr 输出既有稳定 `code:reason` 且退出 1；参数或输入文件错误不回显路径或原始异常，退出 2。CLI 使用临时 0700 root 和现有服务，成功/失败后均无 task workspace 残留。
+- 修改文件：新增 `backend/app/cli.py`、Terra 自有 `tests/unit/test_a2_zip_cli.py`；更新 `backend/README.md`、`tests/README.md`、`docs/05-ai-assistance-log.md`，并仅追加本日志。未修改 Luna `tests/security/`、P0 模型/Schema/sample、安全验收或项目进度。
+- 命令与测试：CLI unit/module-entrypoint `5 passed`；Terra ZIP `19 passed`；Luna independent `36 passed`；全量 `106 passed`；P0 `46 passed`；Pydantic/sample/存储 Schema 与 `ScanRun.model_json_schema()` 等值通过；`python -m app.cli --help` 成功；`git diff --check`、敏感信息与本机绝对路径扫描无命中。
+- 接口、Schema、规则或决策：新增内部 CLI 模块，无 `project.scripts` 或新第三方依赖；默认 `ZipSafetyLimits` 没有 CLI 覆盖入口。无 HTTP API、DTO、P0 Schema/sample、错误 envelope、Git 或网络行为变化。
+- 已知限制与交接：该命令仅演示本地安全 ZIP→inventory，不替代完整 Web、依赖/许可证扫描、Git/TrustedEgress、Linux profile、完整 ZIP corpus、registry/API 映射或 A2 总门禁。Luna 应独立覆盖有效 ZIP、恶意 ZIP、stderr/退出语义和无残留。
+- 关联提交/PR/Issue/evidence_id：无新提交、PR、Issue 或 evidence_id；Root 负责后续验收、进度、提交和推送。
+
+### [20260902-1332-Luna-A2ZIPCLI独立回归] START - 独立验证本地 ZIP CLI 演示入口
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / 安全证据 / 材料形式检查
+- 时间：2026-09-02 13:32（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-cli-demo`；基线 `693c7c4`；不切分支、不提交、不推送。
+- 任务目标：独立审阅 `backend/app/cli.py`，验证有效 ZIP 确定性 JSON、恶意 ZIP 稳定拒绝与空 stdout、错误输入脱敏、成功/拒绝无 workspace 残留及模块子进程退出码 0/1/2。
+- 预计修改文件：仅新增 `tests/security/test_a2_zip_cli_independent.py`，更新 `tests/README.md`、`docs/05-ai-assistance-log.md` 和本共享日志；不修改 Terra backend、Terra unit、P0/Schema/sample、安全验收或 `PROJECT_PROGRESS.md`。
+- 验收方法：只动态生成小型可审计 ZIP，不联网、不运行目标代码；运行独立定向、Terra CLI/ZIP、全量、P0、Schema 等值、`git diff --check`、敏感信息与绝对路径检查。预计 3k-6k token。
+- 开始前已确认：已按 `AGENTS.md` 完整读取根 README、完整共享日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、冻结安全验收；已核对 Root 1325 `START`、Terra 1332 `COMPLETE`、当前分支/状态/最近提交和 `cli.py` 实现。
+- 接口、Schema、规则或决策：不改变任何实现或公共契约；CLI 仅作为本地 ZIP→inventory 演示入口验证。
+- 关联提交/PR/Issue/evidence_id：候选实现证据沿用 `EVD-A2-ZIP-IMPL-001`，无新提交、PR、Issue 或已批准 evidence_id。
+
+### [20260902-1334-Luna-A2ZIPCLI独立回归] COMPLETE - 本地 ZIP CLI 独立安全回归通过
+
+- 作者：GPT-5.6 Luna
+- 对话角色：独立测试 / 安全证据 / 材料形式检查
+- 时间：2026-09-02 13:34（Asia/Shanghai）
+- 分支或工作区：`feat/a2-zip-cli-demo`；基线 `693c7c4`；未提交、未推送。
+- 任务目标与实际结果：独立验证 `backend/app/cli.py` 的有效 ZIP 确定性 JSON 与排序、重复运行一致性、路径穿越稳定拒绝/空 stdout、缺文件/目录/非 ZIP/错误参数脱敏、成功/拒绝 workspace 清理及模块退出码 0/1/2；全部通过。
+- 修改文件：新增 `tests/security/test_a2_zip_cli_independent.py`，更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，并仅追加本日志；未修改 backend、Terra unit、P0/Schema/sample、安全验收或 `PROJECT_PROGRESS.md`。
+- 命令与测试：Luna CLI 独立测试 `5 passed in 0.12s`；Terra CLI+ZIP unit `24 passed in 0.07s`；全量 `111 passed in 0.37s`；P0 `46 passed in 0.10s`；Schema 与 `ScanRun.model_json_schema()` 等值 `schema_export_equal=true`；`python -m app.cli --help` 成功；`git diff --check`、尾随空白、敏感信息与本机绝对路径检查通过。
+- 证据与 fixture：新增测试仅动态创建标准库 ZIP/本地文本，未提交二进制 fixture，不联网、不执行目标代码；本轮新增独立测试 5 项，Bench 与第三方资源台账无新增条目。历史 CLI 实现侧 5 项、独立 ZIP 36 项和全量 106 项记录保留，当前全量为 111 项。
+- 接口、Schema、规则或决策：无变化；CLI 仍为离线本地 ZIP→inventory 演示，不扩大为 Web、Git/TrustedEgress、Linux profile 或 A2 总门禁证据。
+- 已知风险与下一步：完整 ZIP corpus、TOCTOU/inventory 并发、cleanup quarantine/worker/orphan、Git、TrustedEgress、Linux profile、durable registry 和最终 API/ScanRun 映射仍开放；Root 负责统一验收、更新进度、提交与推送。
+- 关联提交/PR/Issue/evidence_id：候选 `EVD-A2-ZIP-IMPL-001` 继续沿用；无新提交、PR、Issue 或已批准 evidence_id；本条为当前物理 EOF 收工记录。
+
+### [20260902-1337-Sol-A2ZIPCLI终审] START - 本地 ZIP CLI 演示终审
+
+- 作者：GPT-5.6 Sol；对话角色：架构、安全契约、评委演示与证据边界终审；时间：2026-09-02 13:37（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；保留 Root/Terra/Luna 当前未提交工作，不切换分支、不提交、不推送。
+- 任务目标：只读审查 `backend/app/cli.py`、Terra/Luna CLI 测试与运行说明，核验产品边界、失败脱敏、默认限额、清理、稳定输出、退出语义和评委可解释性；发现缺陷只记录并交接 Root/Terra，不修改 backend 或测试。
+- 开始前已确认：已按 `AGENTS.md` 完整读取根 README、全量共享日志、`PROJECT_PROGRESS.md`、`SOL_HANDOFF.md`、冻结安全验收、威胁模型、工程/测试审查及既有 ZIP 实现终审；已核对当前分支/基线、Git 状态、物理 EOF 与模型状态。Terra 1332、Luna 1334 均为 `COMPLETE`，当前仅 Sol 在途。
+- 预计修改文件：若审查通过，仅最小更新 `docs/security/a2-zip-implementation-audit.md`、`docs/05-ai-assistance-log.md` 并追加本日志；不修改 backend、tests、P0 模型/Schema/sample 或 `PROJECT_PROGRESS.md`。仓库根未跟踪 DOCX 视为用户本地材料，只登记上传边界，不读取、不解释、不纳入提交范围。
+- 验收方法：实跑 CLI 成功/拒绝/使用错误演示、Terra/Luna 定向测试、全量/P0/Schema 回归，检查稳定 JSON、stdout/stderr、退出码、临时残留、`git diff --check`、P0 零差异、敏感信息/本机路径和上传清单。预计 3k-6k token（非硬截断）。
+- 接口、Schema、规则或决策：CLI 只能作为离线本地 ZIP→inventory 的 `verified-local-demo` 候选证据，不等同完整 Web、依赖/许可证扫描、Git/TrustedEgress、Linux profile、durable registry/API 映射或 A2 总门禁完成；不新增公共错误码、HTTP API 或 P0 字段。
+- 关联提交/PR/Issue/evidence_id：沿用 `EVD-A2-ZIP-IMPL-001` 的实现追溯；CLI 演示候选证据须待 Root 固定不可变提交与运行信息后批准。本轮无提交、PR、Issue 或已批准新 evidence_id。
+
+### [20260902-1343-Sol-A2ZIPCLI终审] COMPLETE - CLI 实现通过，证据冻结因文档追踪差异暂缓
+
+- 作者：GPT-5.6 Sol；对话角色：架构、安全契约、评委演示与证据边界终审；时间：2026-09-02 13:43（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；未切换分支、未提交、未推送，未修改 `PROJECT_PROGRESS.md`。
+- 审计结论：CLI 实现与演示行为通过，可作为 `verified-local-demo` 候选；成功/拒绝/调用错误分别稳定退出 0/1/2，stdout/stderr 分离、路径和原始异常不泄漏，输出字段/排序稳定，CLI 无限额抬升参数，成功与拒绝均无 task workspace 残留。该结论不等同 Web、依赖/许可证扫描、Git/TrustedEgress、Linux profile 或 A2 总门禁完成。
+- 证据冻结状态：`BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY`。Luna 1334 收工记录称更新 `tests/security/README.md`，但当前 Git 差异显示该文件未修改，且其中没有 CLI 独立测试命令/5 项结果。该差异不推翻运行绿灯，但会使声明修改范围与上传范围不一致；Root 应交 Luna 补说明，或追加 `AMENDMENT` 更正原记录后再批准 evidence ID。Sol 未越权修改 Luna 文件。
+- 修改文件：更新 `docs/security/a2-zip-implementation-audit.md`，补记 Luna/Sol 的 `docs/05-ai-assistance-log.md`，并只追加本日志。未修改 backend、任何 tests、P0 模型/Schema/sample、安全验收或项目进度。
+- 命令与测试：本轮实跑 Luna CLI `5 passed in 0.12s`、Terra CLI+ZIP `24 passed in 0.07s`、全量 `111 passed in 0.40s`、P0 `46 passed in 0.10s`；P0 测试同时验证 sample、Draft 2020-12 Schema 和模型导出等值；`--help` 与真实有效/穿越/缺失输入模块入口按 0/1/2 返回且无路径泄漏；compileall、UTF-8/尾随空白、`git diff --check`、P0/PROJECT_PROGRESS 零差异及新增文本凭据/本机路径扫描通过。
+- 上传边界：仓库根未跟踪技术 DOCX 未被读取、解释或扫描，必须从暂存、提交和上传范围排除。候选交付仅为 CLI、两组 CLI 测试、现有 README/AI/审计/日志增量；当前无提交或推送。
+- 开放门禁：完整 ZIP corpus、inventory 同尺寸并发改写、cleanup quarantine/worker/orphan、Git、TrustedEgress、Linux profile、durable registry、最终 HTTP/`ScanRun` 映射、依赖/许可证扫描与 A2 总门禁继续开放。
+- 下一步与责任模型：Root/Luna 先关闭上述文档追踪差异；Root 再固定不可变提交、Python/运行 profile、命令和输出摘要，之后才可批准或分配 `verified-local-demo` evidence ID。Terra 仅在 Root 发现新的实现缺陷时介入，本轮没有代码缺陷交接。
+- 关联提交/PR/Issue/evidence_id：沿用 `EVD-A2-ZIP-IMPL-001` 作为旧实现追溯，但其不覆盖本次 CLI 增量；本轮无新提交、PR、Issue 或已批准新 evidence_id；关联 START `20260902-1337-Sol-A2ZIPCLI终审`。
+
+### [20260902-1346-Luna-A2ZIPCLI证据追踪修复] START - 补齐独立 CLI 测试说明与历史记录更正
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 13:46（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；保留现有未提交工作，不切换分支、不提交、不推送。
+- 任务目标：关闭 `BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY`，仅在 `tests/security/README.md` 补齐 `tests/security/test_a2_zip_cli_independent.py` 的复现命令、5 项覆盖范围与真实结果口径；必要时仅向 AI 日志追加更正说明。
+- 预计修改文件：仅 `tests/security/README.md`、`docs/05-ai-assistance-log.md`（如需）及本共享日志；不修改 backend、其他测试、P0、安全规范或 `PROJECT_PROGRESS.md`。
+- 验收方法：实跑独立测试与全量测试，执行 `git diff --check`、敏感信息/本机绝对路径检查；在物理 EOF 追加 COMPLETE 与 AMENDMENT，明确原 Luna 1334 记录中的 README 更新已实际完成，不改写历史。
+- 关联阻塞：`BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY`；无新 evidence_id、提交、PR 或 Issue。
+
+### [20260902-1346-Luna-A2ZIPCLI证据追踪修复] COMPLETE - 文档追踪阻塞已关闭
+
+- 作者：GPT-5.6 Luna；对话角色：独立测试 / 安全证据 / 材料形式检查；时间：2026-09-02 13:45（Asia/Shanghai，记录追加时间以实际命令为准）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；未切换分支、未提交、未推送。
+- 完成内容：仅更新 `tests/security/README.md`，加入 `tests/security/test_a2_zip_cli_independent.py` 的复现命令、5 项覆盖范围、动态标准库 ZIP/无网络/不执行目标代码约束，以及当前独立 CLI `5 passed`、全量 `111 passed` 的真实口径；向 `docs/05-ai-assistance-log.md` 追加一条更正记录。
+- 复核结果：独立测试 `5 passed in 0.13s`；全量测试 `111 passed in 0.38s`；`git diff --check`、尾随空白、敏感信息与本机绝对路径扫描通过。
+- AMENDMENT（不改写历史）：原 `20260902-1334-Luna-A2ZIPCLI独立回归 COMPLETE` 中“更新 `tests/security/README.md`”当时尚未在 Git 差异中实际体现；本次已实际完成，并在 AI 日志与本记录中明确更正。原记录及 Sol 1343 终审记录均保留。
+- 边界与证据：未修改 backend、其他测试、P0、安全规范或 `PROJECT_PROGRESS.md`；无新 evidence_id、提交、PR 或 Issue。`BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY` 已因文档/声明一致性修复关闭，但 CLI 仍仅是 `verified-local-demo` 候选，不扩大为 A2 总门禁证据。
+- 后续责任：Root 负责固定不可变提交、运行 profile、命令与输出摘要，并决定候选 evidence ID；根目录未跟踪 DOCX 继续排除在暂存、提交和上传范围外。
+- 关联 START：`20260902-1346-Luna-A2ZIPCLI证据追踪修复`；本条为当前物理 EOF 收工记录。
+
+### [20260902-1348-Root-A2ZIPCLI验收] COMPLETE - 本地 ZIP CLI 演示进入不可变提交
+
+- 作者：Codex Root Coordinator；对话角色：统一验收、证据治理与发布；时间：2026-09-02 13:48（Asia/Shanghai）。
+- 分支或工作区：`feat/a2-zip-cli-demo`，基线 `693c7c4`；Terra、Luna、Sol 均已收工，无在途模型修改。
+- 完成内容：Terra 新增离线 `python -m app.cli LOCAL_ZIP` 与5项实现侧测试；Luna 新增5项独立安全回归并补齐测试说明；Sol 完成产品/安全/证据边界终审；Root 新增根 README 当前可运行状态、进度记录及根目录 PDF/DOCX 上传忽略规则。未读取、修改或暂存用户本地技术 DOCX。
+- Root 实际演示：用当前根 README 生成本地 ZIP 后运行 CLI，退出 0，stdout 为单行 `openguard.zip-inventory` v1 JSON，含1个 `README.md` 条目、SHA-256 与稳定 root digest；不存在输入路径、workspace 或异常文本。缺失文件真实入口退出 2，仅输出 `invalid_request:input_file_unavailable`。
+- 测试与检查：Root 全量 `111 passed in 0.39s`；P0 `46 passed in 0.10s`；`schema_export_equal=true`；compileall 与 `git diff --check` 通过；P0 模型/Schema/sample/契约相对 `693c7c4` 零差异。敏感模式扫描命中均为历史审计词或规则名称，人工判读无真实凭据；新增交付源无本机绝对路径。
+- 阻塞处置：Sol 的 `BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY` 已由 Luna 1346 的 README 实际补充与 append-only AMENDMENT 关闭。候选 `EVD-A2-ZIP-CLI-001` 等级仅为 `verified-local-demo`，待本次不可变提交哈希形成后绑定。
+- 产品与安全边界：本任务只证明本地 ZIP 安全接收、校验、临时物化、inventory 与 JSON 演示；完整 Web、公开 Git/本地目录输入、依赖/许可证/AI/报告/Bench、完整 ZIP corpus、TrustedEgress、Linux 隔离、registry/API 和 A2 总门禁仍未完成。
+- GitHub/上传范围：计划提交 CLI、两组测试、README/审计/AI/协作/进度和 `.gitignore` 共12个竞赛作品文件；明确排除未跟踪技术 DOCX、原始 PDF、临时 ZIP、缓存、虚拟环境、密钥和成员隐私。
+- 下一步与责任模型：Root 固定首个实现提交、回填 evidence/进度和远端状态，再推送新分支；组员代码若在其他仓库/私有分支，仍需具体链接或分支名才可审查。
+- 关联提交/PR/Issue/evidence_id：候选 `EVD-A2-ZIP-CLI-001`；提交/远端分支待形成；本条为当前物理 EOF 验收记录。

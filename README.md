@@ -6,6 +6,21 @@
 
 > 产品定位是“合规信息整理与风险提示工具”，不提供法律意见，不替代许可证原文核验或专业法律审查。
 
+## 当前可运行状态（2026-09-02）
+
+现在已经可以独立跑通第一条真实纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**。这条演示不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
+
+当前还不是完整参赛成品：Web 界面、公开 Git/本地目录输入、Python/JavaScript 依赖识别、许可证规则、AI 解释、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+
+使用 Python 3.12 环境，在项目根目录运行：
+
+```bash
+PYTHONPATH=backend python -m app.cli ./your-project.zip
+PYTHONPATH=backend python -m pytest -q
+```
+
+第一条命令成功时输出 JSON；安全拒绝、输入错误和退出码说明见 [backend/README.md](backend/README.md)。第二条命令用于复现当前自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
+
 ## 竞赛交付定义
 
 在 2026-10-15 20:00 前形成：

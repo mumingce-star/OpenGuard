@@ -130,3 +130,34 @@ git diff --check
 6. 实际依赖/基础镜像版本、来源、digest/checksum/signature、SBOM/NOTICE 和第三方台账。
 
 Root 下一步应先决定本审计列出的剩余实现差异是否进入 A2-1 修复批次，再由 Terra 修实现、Luna补独立用例；随后冻结提交、分配实现 evidence ID、更新 `PROJECT_PROGRESS.md` 并决定提交/推送。本审计本身不授权这些后续动作。
+
+## 10. 本地 ZIP CLI 演示终审
+
+终审状态：`PASS-IMPLEMENTATION / BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY`。
+
+本节只扩展“如何让评委离线复现既有 ZIP→inventory 纵切”，不扩大第 1 至 9 节的实现和证据边界。`python -m app.cli LOCAL_ZIP` 接受恰好一个参赛者本地准备的 ZIP 路径；`--help` 只显示单行用法。CLI 没有网络、Git、目标代码执行、依赖安装、HTTP API、P0 字段或安全限额覆盖参数，构造 `ZipIngestionService` 时使用既有 `ZipSafetyLimits` 默认值。
+
+| 终审面 | 结论 | 可核验行为 |
+|---|---|---|
+| 成功输出 | `PASS` | 退出 0；stderr 为空；stdout 为单行 UTF-8 JSON，含 `schema=openguard.zip-inventory`、`version=1`、`root_digest` 和按 UTF-8 相对路径稳定排序的 `entries`；不含 workspace 或输入 ZIP 的本机路径。 |
+| 安全拒绝 | `PASS` | 路径穿越等 `IngestionSecurityError` 退出 1；stdout 为空；stderr 仅为代码拥有的 `code:reason`，不输出解析器异常、堆栈或本机路径。 |
+| 调用/文件错误 | `PASS` | 参数数量错误或输入文件不可用退出 2，分别输出 `invalid_request:invalid_arguments` 或 `invalid_request:input_file_unavailable`；不回显用户路径。 |
+| 默认限额 | `PASS-NO-OVERRIDE` | CLI 没有上传、解压、文件、路径、压缩比或 cleanup 限额参数；请求侧不能抬高既有服务默认值。 |
+| 临时目录 | `PASS-COVERED-SCOPE` | 外层 `TemporaryDirectory` 与服务内 task workspace 均有 `finally`/上下文清理；成功和受控拒绝测试均证明无 task 残留，cleanup 失败仍失败关闭。quarantine、worker 禁用和 orphan 清道夫仍不在该结论内。 |
+| 评委解释口径 | `PASS-BOUNDED` | 运行说明明确要求用户自备本地 ZIP，并把结果限定为安全接收、校验、临时物化和 inventory/root digest；不得介绍成 Web 产品、依赖/许可证扫描结果或 A2 完成证据。 |
+
+本轮终审实跑：Luna CLI 独立 `5 passed`；Terra CLI+ZIP `24 passed`；全量 `111 passed`；P0 `46 passed`，其中 P0 测试同时验证 sample、Draft 2020-12 存储 Schema 和 `ScanRun.model_json_schema()` 等值；`--help` 与真实有效/穿越/缺失输入的模块入口均按 0/1/2 退出且无路径泄漏。
+
+证据冻结前有一项文档追踪差异必须由 Root/Luna 关闭：Luna 的 `20260902-1334` 收工记录称更新了 `tests/security/README.md`，但本轮终审的 Git 差异显示该文件相对基线未修改，文件中也没有 `tests/security/test_a2_zip_cli_independent.py` 的独立复现命令或 5 项结果。该差异不推翻 CLI 运行、独立测试或 111 项全量结果，但会造成“声明修改文件”与实际上传范围不一致；Root 应在固定证据前由 Luna 补充该说明，或以 append-only `AMENDMENT` 更正原记录。Sol 不越权修改 Luna 所有文件。
+
+证据治理结论：CLI 实现可作为等级为 `verified-local-demo` 的**候选证据**；在上述文档追踪差异关闭，且 Root 固定包含本入口的不可变提交、Python/运行 profile、命令与输出摘要前，不得批准或分配 evidence ID。既有 `EVD-A2-ZIP-IMPL-001` 继续只证明提交 `53499ea` 的 `verified-local-dev-slice`，不能自动覆盖本次未提交 CLI 增量。
+
+上传边界：仓库根存在一份未跟踪的用户本地技术 DOCX。本审计未读取、未解释其内容，也未对其作公开性、授权或脱敏判断；Root 必须将其从本分支暂存、提交和上传清单中排除。该文件的存在是发布边界风险，不是 CLI 演示证据。
+
+本节不关闭完整 ZIP corpus、inventory 同尺寸并发改写、cleanup quarantine/worker/orphan、Git/TrustedEgress、Linux profile、durable registry、最终 HTTP/`ScanRun` 映射、依赖/许可证扫描或 A2 总门禁。
+
+### 10.1 Root 证据追踪处置
+
+`BLOCK-EVIDENCE-FREEZE-DOC-TRACEABILITY` 已于 2026-09-02 13:46 关闭：Luna 实际补充了 `tests/security/README.md` 的独立 CLI 复现命令、5 项覆盖范围及 `5 passed`/全量 `111 passed` 口径，并在共享日志以 AMENDMENT 更正先前声明。Root 随后独立复跑真实 ZIP CLI、全量 111 项、P0 46 项与 Schema 导出等值检查，结果通过。
+
+候选证据编号为 `EVD-A2-ZIP-CLI-001`，等级严格限定为 `verified-local-demo`；提交哈希与发布状态由 Root 在形成不可变提交后回填。该编号不改变第 10 节列出的任何开放系统门禁。

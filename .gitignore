@@ -63,3 +63,7 @@ models/
 *.zip
 *.tar
 *.tar.gz
+
+# Local competition source documents (keep outside public commits)
+/*.pdf
+/*.docx

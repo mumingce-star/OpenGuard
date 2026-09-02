@@ -49,3 +49,18 @@ xattr 或链接。已知 symlink、device、FIFO、socket 等类型会被拒绝�
 当前范围不包含公开 Git、TrustedEgress、Linux cgroup/network namespace、持久任务
 注册表、最终 API 状态映射或完整 ZIP64/多卷/header-overlap 语料证明；macOS 的单元
 和文件系统测试不能作为这些部署级安全控制的证据。
+
+## 本地 ZIP CLI 演示
+
+在项目根目录、已安装项目测试依赖的环境中，可用以下命令只运行本地 ZIP 安全接收与
+inventory 摘要演示：
+
+```bash
+PYTHONPATH=backend python -m app.cli ./demo.zip
+```
+
+命令不联网、不执行 ZIP 中的代码、不安装其依赖，也没有可以抬高默认安全限额的命令行
+选项。成功时 stdout 仅输出稳定 JSON（`schema`、`version`、`root_digest` 与排序后的
+`entries`）；安全拒绝时 stdout 为空，stderr 仅输出稳定的 `code:reason`，退出码为 1。
+参数或输入文件不可用时同样不回显路径或原始异常，并以退出码 2 失败。临时 workspace
+仅用于本次进程，服务关闭后不会保留任务目录。

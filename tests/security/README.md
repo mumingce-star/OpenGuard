@@ -11,6 +11,27 @@ PYTHONPATH=backend python -m pytest -q tests/security/test_a2_zip_security_indep
 PYTHONPATH=backend python -m pytest -q
 ```
 
+### 本地 ZIP CLI 演示独立回归
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/security/test_a2_zip_cli_independent.py
+PYTHONPATH=backend python -m pytest -q
+```
+
+当前真实结果：独立 CLI 测试 `5 passed`；全量测试 `111 passed`。独立测试仅动态生成小型、可审计的标准库 ZIP，不提交二进制 fixture、不联网、不执行不可信目标代码。
+
+5 项覆盖范围：
+
+1. 有效 ZIP 的确定性 JSON、条目排序与同输入重复运行一致性。
+2. 路径穿越 ZIP 的稳定拒绝、空 stdout、固定 stderr 及无 workspace 残留。
+3. 缺失文件、目录、非 ZIP 和错误参数的退出语义、脱敏输出与无异常堆栈/路径泄漏。
+4. `python -m app.cli` 子进程成功/拒绝/调用错误的退出码 0/1/2 与输出隔离。
+5. `run_local_zip` 成功和拒绝路径的显式 workspace 清理。
+
+该 CLI 结果只证明离线本地 ZIP→inventory 演示候选，不等同 Web、Git/TrustedEgress、Linux profile、durable registry/API 映射或 A2 总门禁完成。
+
 结果演进必须区分历史首次发现与修复后复测：
 
 - 初轮（Terra 修复前）：独立安全测试 35 项，`21 passed`、`14 failed`；全量 97 项，`83 passed`、`14 failed`。这些失败按冻结安全验收 reason 保留，形成了独立缺陷证据。

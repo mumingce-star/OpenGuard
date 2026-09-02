@@ -37,3 +37,14 @@ Unicode 碰撞、文件目录冲突、链接属性、加密、CRC 损坏、centr
 深度与 UTF-8 长度配额）。
 它不替代 Luna 需要补充的真实 TOCTOU、ZIP64/多卷/异常 header 语料、边界矩阵、Linux
 sandbox 和 TrustedEgress 集成证据。
+
+## A2 本地 ZIP CLI 演示复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a2_zip_cli.py
+PYTHONPATH=backend python -m app.cli ./demo.zip
+```
+
+实现侧测试覆盖成功 JSON 的稳定字段与排序、安全拒绝的 stderr/退出码、参数或文件错误
+脱敏，以及成功和失败后的 task workspace 清理。CLI 只演示本地 ZIP→inventory，不替代
+Git、依赖/许可证扫描、Web API 或完整 A2 系统门禁。
