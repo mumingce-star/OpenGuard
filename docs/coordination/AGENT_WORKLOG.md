@@ -1390,3 +1390,12 @@
 ### [20260902-1543-Root-A2只读会话验收] AMENDMENT - 更正提交文件计数
 
 - 1542 条“计划提交15个竞赛作品文件”的人工计数更正为16个：12个已跟踪修改文件与4个新增文件；上传边界和排除清单不变。本条保留原记录并在物理 EOF 更正，不改写历史。
+
+### [20260902-1545-Root-A2只读会话证据绑定] COMPLETE - 不可变实现 HEAD 已形成
+
+- 作者：Codex Root Coordinator；时间：2026-09-02 15:45（Asia/Shanghai）。
+- 提交结果：主体实现、规格、测试、审计、说明、AI/协作与进度共16个竞赛作品文件已固定为 `abb6630`；随后以 `1f03ce0` 仅关闭 Sol 指出的 class docstring P2，最终证据实现 HEAD 为 `1f03ce0`。
+- 证据绑定：`EVD-A2-READONLY-SESSION-001` 绑定 `1f03ce0`、Python 3.12.13、Root全量175/175、Luna独立46/46、定向unit42/42、P0 46/46、Schema等值、内存ZIP真实消费与descriptor P1修复链，等级仅为 `verified-local-dev-slice`。
+- 上传边界：两个提交均不含原始DOCX/PDF、`.DS_Store`、缓存、虚拟环境、密钥或成员隐私；P0模型/契约/Schema/sample零差异。
+- 当前状态：本地实现与证据绑定完成，下一步推送 `feat/a2-readonly-scan-session` 并回填远端发布状态；不创建或合并main PR。
+- 本条为当前物理 EOF 证据记录。

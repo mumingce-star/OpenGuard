@@ -259,3 +259,11 @@ Luna 的 `test_failed_target_close_is_recovered_and_fd_is_ebadf_after_completion
 因此，第 11 节的 `BLOCKED-NOT-APPROVED` 已由本 AMENDMENT 关闭。候选 `EVD-A2-READONLY-SESSION-001` 状态更新为 `APPROVED-PENDING-ROOT-BINDING`：仅批准 Root 绑定不可变提交、Python/运行 profile、复现命令与输出摘要；在完成绑定前不得作为已发布正式证据使用。
 
 证据边界沿用第 11 节，不扩展到 Linux/TrustedEgress 等已声明非目标；第 11 节记录的 class docstring P2 说明债仍为非阻塞项。
+
+## 13. Root 不可变提交与证据绑定（2026-09-02）
+
+`EVD-A2-READONLY-SESSION-001` 已绑定不可变实现 HEAD `1f03ce0`；主体实现与16个竞赛作品文件形成于父提交 `abb6630`，`1f03ce0` 仅关闭第12节指出的 class docstring P2，不改变运行语义。证据等级严格限定为 `verified-local-dev-slice`。
+
+运行 profile：macOS/POSIX 本地开发环境，Python 3.12.13，项目依赖来自既有隔离虚拟环境。Root 在绑定前复跑全量 `175 passed`、Luna 独立 `46 passed`、会话+ZIP+CLI unit `42 passed`、P0 `46 passed`、`schema_export_equal=True`、compileall、`git diff --check` 与 P0 零差异；另用内存 ZIP 调用 `ingest_with_consumer()`，读取 `pyproject.toml` 得到预期正文和1条 inventory。
+
+该 evidence 只证明本地 ZIP 物化后的可信进程内、生命周期绑定只读消费能力及已覆盖的错误/竞态/回收边界。它不证明完整 ZIP 畸形 corpus、worker 进程退出、quarantine/orphan、Git/TrustedEgress、受支持 Linux profile、HTTP/API、B1/ScanCode/Syft、许可证结论或 A2 总门禁。
