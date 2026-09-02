@@ -1995,3 +1995,9 @@
 - 静态与发布边界：`git diff --check`、四个未跟踪文件 no-index whitespace、P0/Schema/sample及既有冻结规格零差异检查通过；敏感扫描仅命中历史共享日志对全局配置路径的上传排除说明，无凭据、私钥或交付源绝对路径。本任务只批准 `verified-local-python-dependency-p0-cli-slice`，不外推许可证、依赖求解/安装、JS/TS/lockfile、Web/API、Git/Linux/TrustedEgress、Bench、完整提交或获奖竞争力。
 - 治理：项目与全局 `AGENTS.md` 已新增竞赛就绪度收工规则；全局文件不进入仓库。根 README、后端说明和进度台账已更新；下一步先创建不可变实现提交，再绑定 `EVD-B1-PYTHON-P0-CLI-001` 并推送。
 - token：本次运行精确 token 数不可获得；开工估算 `18k-30k`，任务点已在原定范围内完整完成且未扩展功能范围；由于客户端无精确遥测，不能诚实判定实际 token 是否落入估算区间，未以字符数或上下文窗口冒充精确消耗。
+
+### [20260902-2040-Root-B1P0证据绑定] COMPLETE - 绑定不可变实现提交
+
+- `EVD-B1-PYTHON-P0-CLI-001` 已绑定不可变实现提交 `daee8a8b54b2c46adfe98eba31ffcb7c206d4133`，状态提升为 `APPROVED`；证据范围仅 `verified-local-python-dependency-p0-cli-slice`。
+- 绑定内容包括 CPython `3.12.13`、`packaging==26.3`、P0 contract `0.1.1`，B1-2 `77 passed`、聚焦回归 `159 passed`、全量 `355 passed`、Schema 等值、真实磁盘 ZIP 旧/新 CLI、P0 重载、固定 clock 重现、stderr/exit 与清理摘要。
+- 此时只形成本地不可变提交与绑定文档，尚未宣称 GitHub 远端已发布；下一步提交本绑定，再推送任务分支并回填可核对的远端状态。

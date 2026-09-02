@@ -590,3 +590,20 @@ Sol 未发现新的开放 P0/P1，批准 `EVD-B1-PYTHON-P0-CLI-001` 状态为
 OpenGuard profile、命令与输出摘要前，该 evidence 仍不得进入发布或报告事实；本批准不外推
 许可证、依赖求解/安装、JS/TS/lockfile、Web/Git、Linux isolation、TrustedEgress、Bench、
 A2 总门禁、完整作品提交或获奖竞争力。
+
+## ROOT EVIDENCE BINDING 2026-09-02
+
+`EVD-B1-PYTHON-P0-CLI-001` 现绑定到不可变实现提交
+`daee8a8b54b2c46adfe98eba31ffcb7c206d4133`，状态为 `APPROVED`，证据范围严格限定为
+`verified-local-python-dependency-p0-cli-slice`。
+
+绑定运行 profile：CPython `3.12.13`、`packaging==26.3`、OpenGuard P0 contract `0.1.1`；
+Terra B1-2 `45 passed`、Luna 独立 `32 passed`、B1-1/A2 CLI/P0 聚焦 `159 passed`、全量
+`355 passed`，存储 Schema 与 `ScanRun.model_json_schema()` 等值，compileall 与 diff 检查通过。
+真实磁盘 ZIP 的旧 CLI 返回 `openguard.zip-inventory`，新 CLI 返回
+`openguard.python-dependencies`，3 个 Component/3 个 Evidence 可被 P0 模型重新载入，固定
+clock 两次输出逐字节相同，两个模式均 exit 0、stderr 为空且任务 workspace 清理完成。
+
+该绑定只证明本地 ZIP 中的 `requirements*.txt`/`pyproject.toml` 声明可通过 A2 只读会话、
+B1 parser 和 mapper 输出 P0 对象；不证明许可证识别、依赖求解或安装、JS/TS/lockfile、
+Git/TrustedEgress、Linux 隔离、Web/API、报告、Bench、完整参赛提交或获奖竞争力。
