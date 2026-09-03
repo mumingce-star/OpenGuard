@@ -623,3 +623,28 @@
 - 建议下一步及责任模型：Terra 在 Linux 受控环境完成 B2/B3 实际工具与 A4 集成；Luna 追加真实工具 fixture/独立回归；Sol 继续 B4 SPDX 规范化审计。
 - 关联的分支、提交、PR、Issue 或 evidence_id：本轮待提交；既有适配器提交 `e244588`，分支 `codex/p0-external-tools-sync`。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 8,000～14,000，本轮在该范围内完成，无范围调整。
+### [20260903-0110-Sol-任务7ScanCodeZIP接入] START - 将 ScanCode 接入受控 ZIP 主流程并复现真实输出
+
+- 作者：GPT-5.6 Sol
+- 对话角色：后端主线实现 / 安全架构审计
+- 时间：2026-09-03 01:10（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；本轮仅处理 B2 ScanCode 的 ZIP 编排，不覆盖 B3 Syft 或其他在途接口。
+- 任务目标：在受控 ZIP 物化边界后实际调用固定 ScanCode，并将 JSON 映射成 P0 Evidence/许可证候选；使用本仓库合成 ZIP 取得真实工具输出并回归。
+- 开始前已确认：已完整读取 README、共享日志、PROJECT_PROGRESS 与 Sol 交接，检查当前分支、工作区和近期提交；B2/B3 当前均为进行中，未发现同一 ScanCode 编排文件有其他模型在途修改。
+- 预计修改文件：`backend/app/scanners/`、`backend/app/cli.py`、`tests/unit/`、`tests/fixtures/`或动态测试、`docs/spec/`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`和本日志。
+- 验收方法：静态安全审查、定向 pytest、ScanCode 32.5.0 对合成安全目录/ZIP 的真实 JSON 输出、JSON→P0 映射断言、`git diff --check` 和敏感信息检查。
+- token 用量估算：12,000～20,000；系统未提供本轮精确 token 遥测。
+### [20260903-0145-Sol-任务7ScanCodeZIP接入收工] PARTIAL - ScanCode ZIP 接入完成，Linux 端到端待复跑
+
+- 作者：GPT-5.6 Sol
+- 对话角色：后端主线实现 / 安全架构审计
+- 时间：2026-09-03 01:45（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；实现提交 `293c52b`，收工记录待随后一并推送。
+- 任务目标和实际结果：实现 `ZipIngestionService.ingest_with_tree_consumer`，将封存 ZIP 树的只读目录描述符传递给受信任 ScanCode 子进程；新增固定 `--license --strip-root --json -` 命令、JSON→P0 pending Evidence 映射、`--scancode-licenses` CLI 入口与 MIT fixture。真实 ScanCode 32.5.0 输出已产生 `mit` 候选和 `LICENSE` 相对 locator。
+- 修改或新增文件：`backend/app/ingestion/zip_stream.py`、`backend/app/scanners/scancode_pipeline.py`、`backend/app/scanners/external_tools.py`、CLI/导出/说明、测试 fixture、B2/B3 规格、进度和 AI 记录。
+- 命令与测试结果：任务 6/7 定向 pytest `5 passed, 1 skipped`；`compileall backend`、`git diff --check` 通过。真实 ScanCode 32.5.0 扫描最小 MIT fixture 的 JSON 被映射为候选 `mit`、证据 `LICENSE`。跳过项为 Linux-only real-tool test；Windows 因 POSIX 安全能力门禁不能执行密封 ZIP 子进程主流程。
+- 接口、Schema、规则和重要决策：未改变 P0 Schema 或风险语义；新增内部 `TrustedTreeScan` 仅向代码拥有的 scanner callback 暴露 descriptor-backed `/proc/self/fd/<n>`，不暴露工作区路径。ScanCode 输出仍只是 pending 证据/候选，SPDX 与风险结论仍属 B4/B5。
+- 已知风险、失败项和未完成内容：本机 Windows 未能执行真正 ZIP→descriptor→ScanCode 端到端回归；Linux runner 必须提供已校验 `OPENGUARD_SCANCODE_BIN` 后复跑。B2 仍缺运行 provenance/partial ScanError 接入；B3 Syft 与 A4 通用编排仍未完成。
+- 建议下一步及责任模型：Terra 在 Linux 运行 ZIP 端到端与失败/超时回归并接入 ScanRun partial；Luna 固化真实输出 fixture/独立安全测试；Sol 审核 B4 SPDX 候选标准化。
+- 关联的分支、提交、PR、Issue 或 evidence_id：`293c52b`；PR 候选 `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 12,000～20,000，本轮在该范围内完成；因平台 POSIX 限制将端到端 Linux 回归调整为明确待办。
