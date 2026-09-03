@@ -684,3 +684,17 @@
 - 预计修改文件：本日志、`docs/coordination/PROJECT_PROGRESS.md`；Git 提交包括现有 Syft 源代码，排除临时工具目录。
 - 验收方法：待提交文件清单、`git diff --check`、定向 pytest/compileall 既有结果、敏感信息检查与远程推送确认。
 - token 用量估算：4,000～7,000；系统未提供本轮精确 token 遥测。
+### [20260904-1015-Sol-发布任务8部分实现收工] PARTIAL - 已推送 Syft 接入草案
+
+- 作者：GPT-5.6 Sol
+- 对话角色：发布协调
+- 时间：2026-09-04 10:15（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；实现提交 `9c504f4`，本条及进度更新待推送。
+- 任务目标和实际结果：已按用户指令提交任务8的 Syft ZIP 接入草案；仅上传源代码和协作文档，未上传 `.tools/` 或下载缓存。
+- 修改或新增文件：Syft pipeline、CLI、外部工具导出及本日志/进度表；无 Schema 改动。
+- 命令与测试结果：`compileall backend` 通过；既有外部工具回归 4/4 通过；`git diff --check` 通过。真实 Syft 输出仍未运行，原因是本机可执行文件不可用且重新下载未完成。
+- 接口、Schema、规则和重要决策：P0 Schema 与风险语义未变；Syft 入口仍要求 POSIX descriptor 环境与受控 `OPENGUARD_SYFT_BIN`。
+- 已知风险、失败项和未完成内容：该提交是部分实现，不得作为任务8完成或真实 SBOM 验收依据；缺少 Syft 真实 fixture、Linux ZIP 回归、超时/错误注入和 A4 ScanRun 集成。
+- 建议下一步及责任模型：CZ 提供可用 Syft 或允许网络恢复后，Terra/Luna 完成真实回归并追加验收提交。
+- 关联的分支、提交、PR、Issue 或 evidence_id：`9c504f4`；PR `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
+- token 使用说明：本次运行精确 token 数不可获得；估算 4,000～7,000，范围内完成。
