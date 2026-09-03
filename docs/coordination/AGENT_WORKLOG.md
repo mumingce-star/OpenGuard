@@ -2576,3 +2576,10 @@
 - 不可变绑定：`EVD-A4-PIPELINE-WORKER-001` 绑定实现/规格/实现测试/独立测试/运行说明提交 `66fc2ae7246f34905d39346feced43195a401f3d`。该提交包含 11 个竞赛交付文件，没有原始附件、缓存、数据库、凭据、成员隐私或组员任务代码。
 - 运行 profile 与证据：macOS/POSIX、CPython 3.12.13、SQLite 3.53.1；A4实现+独立46项，Root A4+A3/P0定向169项，完整集合595项通过；Schema等值、compileall、diff、范围、敏感与权限门禁通过，保留一条第三方弃用warning。
 - 有界裁决：状态升级为 `APPROVED`，只批准显式 plan/可信 Adapter 的单进程 durable Pipeline 编排；A4父任务仍进行中，不证明真实扫描、HTTP自动消费、lease/retry/recovery、Linux/TrustedEgress或完整作品。下一步推送该任务分支并回填远端状态。
+
+### [20260903-1238-Root-A4Pipeline发布] COMPLETE - A4-0 已推送 GitHub 并核对远端
+
+- 作者/角色/时间：Root；项目统筹与远端发布验收；2026-09-03 12:38（Asia/Shanghai）。
+- 远端事实：`feat/a4-pipeline-worker` 已推送至 GitHub；首次发布 HEAD 与本地均为证据绑定提交 `b6311be24d847d573217fbefb1842a2cf40dfb24`，其中不可变实现/独立测试证据为 `66fc2ae7246f34905d39346feced43195a401f3d`。未创建或合并 PR，`main` 未改变。
+- 上传范围：A4 worker、冻结规格、21项实现测试、25项独立测试、根/后端/安全运行说明、AI记录、协作日志和项目进度；没有上传竞赛原始附件、缓存、数据库、凭据、成员隐私、组员 B1-B7 新代码或前端任务。
+- 核验：`git ls-remote` 的远端分支哈希与本地 HEAD 一致，tracking 工作区干净。下一步只需提交并二次推送本发布回填记录，使 GitHub 台账显示最终状态。
