@@ -157,6 +157,20 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_javascript_manifest_p0
 
 ## 本地 ZIP CLI 演示
 
+## B2 ScanCode 许可证证据
+
+Linux 部署环境可将已固定、已校验的 ScanCode 可执行文件配置为
+`OPENGUARD_SCANCODE_BIN`，并运行：
+
+```bash
+OPENGUARD_SCANCODE_BIN=/opt/openguard/scancode PYTHONPATH=backend python -m app.cli --scancode-licenses ./demo.zip
+```
+
+该模式不执行或安装 ZIP 内代码/依赖。它只把 ScanCode 的许可证候选映射为 pending
+`Evidence`，不产生 SPDX、许可证结论或风险；工具只能通过短生命周期目录描述符读取已封存
+的 ZIP 树，扫描前后都会校验 inventory。Windows 会明确拒绝该模式，因为没有 POSIX
+descriptor 安全能力。
+
 在项目根目录、已安装项目测试依赖的环境中，可用以下命令只运行本地 ZIP 安全接收与
 inventory 摘要演示：
 

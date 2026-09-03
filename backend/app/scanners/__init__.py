@@ -11,6 +11,7 @@ from .python_manifest import (
 from .python_p0_mapper import MAPPER_SCHEMA_VERSION, PythonP0MappingResult, map_python_manifest_result
 from .javascript_manifest import JavascriptParseStatus, JavascriptManifestParseResult, parse_javascript_manifests
 from .javascript_p0_mapper import JavascriptP0MappingResult, map_javascript_manifest_result
+from .scancode_pipeline import ScanCodePipelineResult, scan_sealed_tree
 from .external_tools import (
     ComponentMergeResult,
     ScanCodeMappingResult,
@@ -20,6 +21,7 @@ from .external_tools import (
     merge_components,
     parse_json_output,
     run_json_tool,
+    run_scancode_license_scan,
 )
 
 __all__ = [
@@ -45,4 +47,7 @@ __all__ = [
     "merge_components",
     "parse_json_output",
     "run_json_tool",
+    "run_scancode_license_scan",
+    "ScanCodePipelineResult",
+    "scan_sealed_tree",
 ]

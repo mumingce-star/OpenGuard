@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 from dataclasses import dataclass
@@ -17,6 +18,7 @@ from app.security.errors import IngestionSecurityError
 if TYPE_CHECKING:
     from app.ingestion import ReadOnlyScanSession
     from app.scanners import JavascriptP0MappingResult, PythonP0MappingResult
+    from app.scanners import ScanCodePipelineResult
 
 
 _SCHEMA = "openguard.zip-inventory"
@@ -173,6 +175,41 @@ def javascript_dependency_payload(inventory: Inventory, mapping: JavascriptP0Map
     }
 
 
+def scancode_license_payload(inventory: Inventory, result: ScanCodePipelineResult) -> dict[str, object]:
+    """Serialize pending ScanCode license evidence without SPDX conclusions."""
+    return {
+        "schema": "openguard.scancode-license-evidence", "version": "1", "root_digest": inventory.root_digest,
+        "tool_version": result.tool_version,
+        "license_candidates": list(result.mapping.license_candidates),
+        "evidence": [item.model_dump(mode="json") for item in result.mapping.evidence],
+    }
+
+
+def run_local_zip_scancode_licenses(
+    archive_path: Path, workspace_root: Path, *, executable: str, tool_version: str, clock: Callable[[], datetime]
+) -> tuple[Inventory, ScanCodePipelineResult]:
+    """Run ScanCode only through the sealed descriptor-backed ZIP tree flow."""
+    from app.scanners import scan_sealed_tree
+    try:
+        archive_stream = archive_path.open("rb")
+    except OSError as error:
+        raise _INPUT_ERROR from error
+    service: ZipIngestionService | None = None
+    try:
+        service = ZipIngestionService(workspace_root)
+        with archive_stream:
+            result = service.ingest_with_tree_consumer(
+                archive_stream,
+                lambda tree, inventory: scan_sealed_tree(
+                    tree, inventory, executable=executable, tool_version=tool_version, observed_at=clock()
+                ),
+            )
+        return result.inventory, result.consumer_result
+    finally:
+        if service is not None:
+            service.close()
+
+
 def run_local_zip_javascript_dependencies(
     archive_path: Path, workspace_root: Path, *, clock: Callable[[], datetime]
 ) -> tuple[Inventory, JavascriptP0MappingResult]:
@@ -228,7 +265,8 @@ def main(
         return 0
     python_dependencies = len(args) == 2 and args[0] == "--python-dependencies"
     javascript_dependencies = len(args) == 2 and args[0] == "--javascript-dependencies"
-    if not python_dependencies and not javascript_dependencies and len(args) != 1:
+    scancode_licenses = len(args) == 2 and args[0] == "--scancode-licenses"
+    if not python_dependencies and not javascript_dependencies and not scancode_licenses and len(args) != 1:
         _write_error(_USAGE_ERROR, errors)
         return 2
 
@@ -240,6 +278,14 @@ def main(
             elif javascript_dependencies:
                 now = clock or (lambda: datetime.now(timezone.utc))
                 inventory, mapping = run_local_zip_javascript_dependencies(Path(args[1]), Path(directory), clock=now)
+            elif scancode_licenses:
+                executable = os.environ.get("OPENGUARD_SCANCODE_BIN")
+                if not executable:
+                    raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+                now = clock or (lambda: datetime.now(timezone.utc))
+                inventory, mapping = run_local_zip_scancode_licenses(
+                    Path(args[1]), Path(directory), executable=executable, tool_version="32.5.0", clock=now
+                )
             else:
                 inventory = run_local_zip(Path(args[0]), Path(directory))
     except IngestionSecurityError as error:
@@ -249,7 +295,11 @@ def main(
         _write_error(_RUNTIME_ERROR, errors)
         return 1
 
-    payload = python_dependency_payload(inventory, mapping) if python_dependencies else javascript_dependency_payload(inventory, mapping) if javascript_dependencies else inventory_payload(inventory)
+    payload = (
+        python_dependency_payload(inventory, mapping) if python_dependencies else
+        javascript_dependency_payload(inventory, mapping) if javascript_dependencies else
+        scancode_license_payload(inventory, mapping) if scancode_licenses else inventory_payload(inventory)
+    )
     json.dump(payload, output, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     output.write("\n")
     return 0

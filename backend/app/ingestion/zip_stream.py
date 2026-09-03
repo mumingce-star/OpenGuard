@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import threading
 import zipfile
+from dataclasses import dataclass
 from pathlib import Path
 from typing import BinaryIO, Callable, TypeVar
 
@@ -27,6 +28,33 @@ _CHUNK_SIZE = 64 * 1024
 _ARCHIVE_PARTS = ("input.zip",)
 _TREE_PARTS = ("tree",)
 T = TypeVar("T")
+
+
+@dataclass
+class TrustedTreeScan:
+    """Short-lived descriptor target for a code-owned external scanner."""
+
+    _directory_fd: int
+    _active: bool = True
+
+    def proc_target(self) -> str:
+        if not self._active or os.name != "posix":
+            raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+        return f"/proc/self/fd/{self._directory_fd}"
+
+    @property
+    def inherited_fds(self) -> tuple[int, ...]:
+        if not self._active:
+            raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+        return (self._directory_fd,)
+
+    def close(self) -> None:
+        if self._active:
+            self._active = False
+            try:
+                os.close(self._directory_fd)
+            except OSError as error:
+                raise IngestionSecurityError("scanner_failed", "scan_file_read_failed") from error
 
 
 class ZipIngestionService:
@@ -145,6 +173,44 @@ class ZipIngestionService:
         finally:
             if session is not None:
                 session._expire()
+            self._workspaces.cleanup(workspace)
+
+
+    def ingest_with_tree_consumer(
+        self, archive_stream: BinaryIO, consumer: Callable[[TrustedTreeScan, Inventory], T]
+    ) -> ScanSessionResult[T]:
+        """Run one code-owned external scanner over the sealed tree.
+
+        The callback receives a descriptor-backed `/proc/self/fd` target, never
+        an attacker-controlled host path. Inventory seals are checked before
+        and after the scanner; mutations fail closed before workspace cleanup.
+        """
+        if getattr(self._consumer_local, "active", False):
+            raise IngestionSecurityError("scanner_failed", "scan_session_reentrant")
+        self._ensure_usable()
+        workspace = self._workspaces.create()
+        tree: TrustedTreeScan | None = None
+        try:
+            _materialize_archive(workspace, archive_stream, self.limits)
+            snapshot = build_inventory_snapshot(workspace, _TREE_PARTS)
+            validate_inventory_snapshot(workspace, snapshot)
+            tree = TrustedTreeScan(workspace.open_directory(_TREE_PARTS))
+            self._consumer_local.active = True
+            try:
+                result = consumer(tree, snapshot.inventory)
+            except IngestionSecurityError:
+                raise
+            except Exception as error:
+                raise IngestionSecurityError("scanner_failed", "external_scanner_failed") from error
+            finally:
+                self._consumer_local.active = False
+                tree.close()
+                tree = None
+            validate_inventory_snapshot(workspace, snapshot)
+            return ScanSessionResult(inventory=snapshot.inventory, consumer_result=result)
+        finally:
+            if tree is not None:
+                tree.close()
             self._workspaces.cleanup(workspace)
 
 

@@ -114,6 +114,7 @@ def run_json_tool(
     *,
     timeout_seconds: int = 120,
     max_output_bytes: int = _MAX_OUTPUT_BYTES,
+    pass_fds: Sequence[int] = (),
 ) -> ToolExecution:
     """Run a preconstructed tool command without a shell or leaked diagnostics.
 
@@ -122,8 +123,16 @@ def run_json_tool(
     enforcing its own filesystem isolation policy.
     """
 
-    if not tool or timeout_seconds <= 0 or max_output_bytes <= 0 or max_output_bytes > _MAX_OUTPUT_BYTES:
+    if (
+        not tool or timeout_seconds <= 0 or max_output_bytes <= 0 or max_output_bytes > _MAX_OUTPUT_BYTES
+        or any(type(fd) is not int or fd < 0 for fd in pass_fds)
+    ):
         raise ValueError("invalid external tool limits")
+    if pass_fds and os.name != "posix":
+        return ToolExecution(tool, "unavailable", None, "external_scanner_unavailable")
+    options: dict[str, Any] = {}
+    if pass_fds:
+        options["pass_fds"] = tuple(pass_fds)
     try:
         completed = subprocess.run(
             [tool, *arguments],
@@ -133,6 +142,7 @@ def run_json_tool(
             timeout=timeout_seconds,
             check=False,
             shell=False,
+            close_fds=True,
             # Do not forward process credentials.  These are the minimum
             # platform variables required to locate an already-installed tool.
             env={
@@ -140,6 +150,7 @@ def run_json_tool(
                 for key in ("PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "HOME", "TMPDIR", "TEMP", "TMP")
                 if key in os.environ
             },
+            **options,
         )
     except FileNotFoundError:
         return ToolExecution(tool, "unavailable", None, "tool_unavailable")
@@ -152,6 +163,20 @@ def run_json_tool(
     if completed.returncode != 0:
         return ToolExecution(tool, "failed", None, "scanner_failed")
     return ToolExecution(tool, "complete", completed.stdout)
+
+
+def run_scancode_license_scan(tool: str, target: str, *, pass_fds: Sequence[int]) -> ToolExecution:
+    """Run fixed license-only ScanCode JSON over a trusted proc-FD target."""
+
+    if not target.startswith("/proc/self/fd/"):
+        raise ValueError("ScanCode target must be a trusted proc descriptor")
+    return run_json_tool(
+        tool,
+        ("--license", "--strip-root", "--json", "-", target),
+        timeout_seconds=120,
+        max_output_bytes=_MAX_OUTPUT_BYTES,
+        pass_fds=pass_fds,
+    )
 
 
 def parse_json_output(execution: ToolExecution) -> Mapping[str, Any] | None:
