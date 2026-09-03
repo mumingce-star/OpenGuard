@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-02 21:53（Asia/Shanghai）
+更新时间：2026-09-03 00:45（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -33,8 +33,8 @@
 | S2 | 威胁模型与安全验收 | Sol/Terra/Luna | 进行中 | 条件性设计基线已完成：20 SEC、5 POS、36 NEG，含实现审查、可测性审计和证据模板 | 最终安全验收需在 A2 关闭 TrustedEgress、Linux profile、阈值拆分、依赖台账与全量真实测试；当前不得写成控制已生效 | 9月3日前设计，A2实现 |
 | A2 | Git/ZIP安全输入与Inventory | Terra | 进行中 | A2-0/A2-1本地ZIP、A2-1D CLI 和 A2-2 只读扫描会话已完成；后续可信 parser 已可在清理前受限读取 inventory 文件；B1-2 已证明该会话可承载 Python parser/mapper | 继续完成完整ZIP corpus、cleanup隔离/清道夫、本地Git物化、受控公网Git、Linux隔离、registry/API与系统级证据冻结 | 9月4日-11日 |
 | B1 | Python/JS依赖解析 | Terra | 进行中 | Python requirements/pyproject 与 P0 CLI 已完成；根 package.json 四类直接依赖、package-lock v2/v3 enrichment 与 JS P0 CLI 已完成；当前全量424项通过 | 选定 Python lockfile；Yarn/pnpm/workspace/传递依赖列后续增强；再进入多来源合并 | 9月4日-11日 |
-| B2 | ScanCode适配器 | Terra | 进行中 | 安全 JSON 适配、超时/失败对象、许可证证据候选映射和单测已实现 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归；B4 规范化候选 SPDX | 9月4日-11日 |
-| B3 | Syft适配器 | Terra | 进行中 | 安全 JSON 适配、SBOM Component/Evidence 映射、跨来源合并和单测已实现 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归 | 9月4日-11日 |
+| B2 | ScanCode适配器 | Terra | 进行中 | 安全 JSON 适配、超时/失败对象、许可证证据候选映射和 2026-09-03 定向回归 4/4 已通过 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归；B4 规范化候选 SPDX | 9月4日-11日 |
+| B3 | Syft适配器 | Terra | 进行中 | 安全 JSON 适配、SBOM Component/Evidence 映射、跨来源合并和 2026-09-03 定向回归 4/4 已通过 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归；接入 A4 编排入口 | 9月4日-11日 |
 | B4 | SPDX标准化 | Sol/Terra | 未开始 | LicenseExpression契约已具备 | SPDX数据版本、别名、复合表达式、LicenseRef及测试 | 9月4日-20日 |
 | B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 未开始 | Obligation/RiskFinding结构已具备 | 规则Schema、原文证据、正反未知冲突样例、人工核验状态 | 9月12日-20日 |
 | B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
@@ -61,6 +61,7 @@
 | 2026-09-02 | B1-1 Python manifest 解析纵切 | `feat/b1-python-manifest-parser` | `7c0d365`（证据实现提交；绑定`bb83e6b`） | Python parser、依赖锁版/台账、40项实现测试、63项独立测试、规格/审计/运行说明、AI/协作与进度记录 | 已推送；待PR合并 |
 | 2026-09-02 | B1-2 Python P0映射与CLI纵切 | `feat/b1-p0-mapper-cli` | `daee8a8`（不可变实现提交；绑定提交`69ca38c`） | Python P0 mapper、新依赖CLI、45项实现测试、32项独立测试、规格/终审、运行说明、AI/协作与进度记录 | 已推送；待PR合并 |
 | 2026-09-02 | B1-3/B1-4 JavaScript manifest、P0与CLI | `feat/b1-js-manifest-p0-cli` | `80ee2a9`（不可变实现提交；绑定提交`708bc08`） | JS parser、P0 mapper、JS CLI、37项实现测试、32项独立测试、规格/缺陷闭环、运行说明与协作证据 | 已推送；待PR合并 |
+| 2026-09-03 | B2/B3 外部扫描器 JSON 适配与跨来源合并 | `codex/p0-external-tools-sync` | `e244588`、`2378fc4` | 受限工具调用、ScanCode/Syft JSON 映射、跨来源合并、4项回归、规格、台账与验收记录 | 已推送；待PR合并；真实工具/A4 集成未完成 |
 
 ## 4. 目录健康检查
 

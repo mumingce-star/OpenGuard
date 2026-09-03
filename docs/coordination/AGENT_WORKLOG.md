@@ -598,3 +598,28 @@
 - 已知风险、失败项和未完成内容：未向 `main` 直接推送，遵守 main 必须通过 PR 合并的约束；若需同步到队友的独立 GitHub 仓库，仍需其仓库 SSH/HTTPS 地址及写入权限。
 - 建议下一步及责任模型：CZ 创建/审查该分支的 PR；Terra 安装 backend 开发依赖、修复/验证定向 pytest 后再完成 B2/B3 集成验收。
 - 关联的分支、提交、PR、Issue 或 evidence_id：`e244588`；PR 候选：`https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
+### [20260903-0035-Sol-任务6回归与任务1至5核查] START - 运行回归并审计任务状态
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计 / 发布前验收
+- 时间：2026-09-03 00:35（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；保留已推送提交，不覆盖其他模型或用户变更。
+- 任务目标：运行任务 6 跨来源合并回归；结合代码、测试、规格和实际测试结果核查任务 1～5 是否达到完成条件。
+- 开始前已确认：已完整读取 README、共享日志、PROJECT_PROGRESS 与 Sol 交接，并检查分支、工作区、近期提交和远程；B1 已有历史验收记录，B2/B3 为进行中，未发现同文件在途改动。
+- 预计修改文件：`docs/coordination/AGENT_WORKLOG.md`，以及仅在验收结论变化时更新 `docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`。
+- 验收方法：使用 Python 3.12 的 `PYTHONPATH=backend` 运行任务 6 定向 pytest；运行任务 1～5 对应测试集及全量 pytest（依赖齐备后）；检查 Schema/样例/实现和 GitHub 分支状态。
+- token 用量估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+### [20260903-0055-Sol-任务6回归与任务1至5核查收工] COMPLETE - 回归已运行，任务状态已核查
+
+- 作者：GPT-5.6 Sol
+- 对话角色：架构审计 / 发布前验收
+- 时间：2026-09-03 00:55（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；将推送本轮验收记录到同名 GitHub 分支。
+- 任务目标和实际结果：任务 6 的 `tests/unit/test_b2_b3_external_tools.py` 为 4/4 通过；任务 1～5 的已冻结纵切经当前平台定向复核：P0 契约/样例 46/46、Python requirements 与 pyproject 解析 40/40、Python P0 mapper 37/37、JavaScript package.json/package-lock 纯逻辑 36/36。任务 1～5 可判定为各自纵切已完成，B1 总包仍保留“进行中”，因为 Python lockfile、Yarn/pnpm/workspace 与传递依赖不在该五项范围内。
+- 修改或新增文件：`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/AGENT_WORKLOG.md`；未修改产品代码、Schema 或规则。
+- 命令与测试结果：安装项目锁定 `pydantic==2.13.4`、`packaging==26.3`、`jsonschema==4.26.0`；任务6 4/4、P0 46/46、Python parser 40/40、mapper 37/37、JS 36/36、`compileall backend` 与 `git diff --check` 通过。全量 pytest 为 239 passed、189 failed：失败均从 Windows 不具备 POSIX descriptor 安全能力的 `posix_security_capability_unavailable` 开始，涉及 ZIP/CLI 路径；不得解释为任务1～6纯解析逻辑失败。
+- 接口、Schema、规则和重要决策：未改变冻结 P0 Schema 或风险语义；B2/B3 仅确认 JSON 适配和合并单测，不得宣称已完成实际工具回归或 A4 编排集成。
+- 已知风险、失败项和未完成内容：Windows 无法完成依赖 POSIX 安全能力的全量/独立 ZIP 回归；应在受控 Linux 环境复跑。B2/B3 尚缺 ScanCode/Syft 真实输出/真实仓库回归、固定运行 provenance 及 A4 集成；B4～B7、A3～A7等工作包仍未完成。
+- 建议下一步及责任模型：Terra 在 Linux 受控环境完成 B2/B3 实际工具与 A4 集成；Luna 追加真实工具 fixture/独立回归；Sol 继续 B4 SPDX 规范化审计。
+- 关联的分支、提交、PR、Issue 或 evidence_id：本轮待提交；既有适配器提交 `e244588`，分支 `codex/p0-external-tools-sync`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 8,000～14,000，本轮在该范围内完成，无范围调整。
