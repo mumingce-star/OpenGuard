@@ -250,3 +250,19 @@ PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_
 覆盖结果包括：混合/单语言真实 P0 Component/Evidence、partial/单路未知失败、input/root/inventory digest、producer/tool_versions、summary 和 SQLite 重开；成功/拒绝 cleanup；不兼容 queued、不可用/坏 ZIP、安全拒绝、digest mismatch、双路失败、空 manifest、非法 mapper/P0 引用、冲突 ID、一次性 plan 复用，以及 rules partial 时不执行 AI/report。未发现新的 P0/P1/P2 实现缺陷。
 
 本轮仅新增本独立测试并追加本说明、AI 记录和共享日志；未修改 backend 实现、Root/Terra unit、冻结规格、P0/Schema/sample、A2/B1/A3/A4-0、PROJECT_PROGRESS、third_party 或前端。结论仅限本机 macOS/POSIX、CPython 3.12、预先存在且私有的 0700 workspace root、单机 SQLite、显式可信 stage adapter；A4-1 候选 evidence 仍待 Root/Sol 绑定不可变提交、运行 profile 和有界发布裁决，不外推许可证/合规、扫描器、AI、报告、HTTP 自动消费、Linux/TrustedEgress、Bench 或完整竞赛作品。
+
+### A3-2 ZIP multipart HTTP 与进程内后台扫描独立安全复核
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_a3_zip_background_scan_independent.py -k 'not real_uvicorn'
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_a3_zip_background_scan.py tests/security/test_a3_zip_background_scan_independent.py -k 'not real_uvicorn'
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_a3_zip_background_scan_independent.py -k real_uvicorn
+```
+
+独立测试共 22 项，覆盖冻结 `POS-A3ZIP-001..004`、`NEG-A3ZIP-001..006` 及参数化变体。测试独立构造动态 ZIP、multipart 请求和临时 SQLite；TestClient 路径实际经过 A2 安全会话、B1 Python/JavaScript parser/mapper、A4-1 与资源/证据查询，不复用实现侧 helper/expected，不生成持久 fixture。覆盖请求总量与 64 MiB 上传限额、重复字段、百分号编码路径/控制字符、同/异摘要幂等、坏 ZIP、暂存/workspace 清理、错误脱敏、OpenAPI 六路径、Git JSON 兼容和默认 0700/0600 权限。
+
+真实结果：独立非回环 `21 passed`；获准受控环境中的真实 Uvicorn 回环探针 `1 passed, 21 deselected`；A3-2 实现 unit + 独立（非回环）`41 passed`。回环探针实际完成 ZIP `202`、终态 `partial/rules/70`、resources 查询及进程结束后的 SQLite 重开持久读取。`tests/unit` + `tests/security` 全量排除两个回环项为 `684 passed, 2 deselected`，保留一条 Starlette/AnyIO 弃用 warning；Schema、compileall、diff、权限和范围检查通过。
+
+本轮未发现新的 P0/P1/P2 实现缺陷。`partial/rules/70` 仅表示真实依赖资源/证据已可用、许可证规则待接入；本结果不证明持久队列、崩溃恢复、lease/retry、公开 Git、Linux/TrustedEgress、许可证、AI、报告、Bench 或完整竞赛作品。未修改 backend、实现侧 unit、冻结规格、P0/Schema/sample、A2/B1-B7、A3 registry、A4 worker/plan、PROJECT_PROGRESS、third_party、前端或原始附件；A3-2 候选 evidence `EVD-A3-ZIP-BACKGROUND-SCAN-001` 仍待 Root/Sol 绑定不可变提交和发布范围。

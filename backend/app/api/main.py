@@ -10,9 +10,11 @@ from collections.abc import Awaitable, Callable
 from typing import Annotated, AsyncIterator, Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, FastAPI, Query, Request, status
+from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, Query, Request, status
 from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError
 from fastapi.responses import JSONResponse, Response
+from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.models import (
@@ -25,8 +27,10 @@ from app.api.models import (
     RisksResponse,
     ScanCreateAccepted,
     ScanRunStatusView,
+    ZipScanCreateFields,
 )
 from app.api.service import APPLICATION_VERSION, ApiError, ScanApiService
+from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
 from app.persistence import SQLiteScanRunRegistry
 
@@ -72,12 +76,111 @@ def _router() -> APIRouter:
         status_code=status.HTTP_202_ACCEPTED,
         response_model=ScanCreateAccepted,
         responses=_ERROR_RESPONSES,
+        openapi_extra={
+            "requestBody": {
+                "required": True,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["source_type", "source"],
+                            "properties": {
+                                "source_type": {"type": "string", "const": "git"},
+                                "source": {"type": "string", "minLength": 1, "maxLength": 2048},
+                                "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 200},
+                            },
+                            "additionalProperties": False,
+                        },
+                    },
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["source_type", "file"],
+                            "properties": {
+                                "source_type": {"type": "string", "const": "zip"},
+                                "file": {"type": "string", "format": "binary"},
+                                "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 200},
+                            },
+                            "additionalProperties": False,
+                        }
+                    },
+                },
+            }
+        },
     )
-    def create_scan(
-        body: GitScanCreateRequest,
+    async def create_scan(
+        request: Request,
+        background_tasks: BackgroundTasks,
         service: Annotated[ScanApiService, Depends(_service)],
     ) -> ScanCreateAccepted:
-        return service.create_git_scan(body)
+        media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+        if media_type == "application/json":
+            try:
+                body = GitScanCreateRequest.model_validate(await request.json())
+            except Exception:
+                raise ApiError(
+                    status_code=422,
+                    code="invalid_source",
+                    message="Request parameters are invalid.",
+                    reason="request_invalid",
+                ) from None
+            return service.create_git_scan(body)
+
+        if media_type == "multipart/form-data":
+            runtime: ZipScanRuntime | None = request.app.state.zip_scan_runtime
+            if runtime is None:
+                raise ApiError(
+                    status_code=500,
+                    code="internal_error",
+                    message="ZIP scanning is unavailable.",
+                    reason="zip_runtime_unavailable",
+                )
+            try:
+                async with request.form(max_files=1, max_fields=2, max_part_size=64 * 1024 * 1024) as form:
+                    grouped: dict[str, list[object]] = {}
+                    for key, value in form.multi_items():
+                        grouped.setdefault(key, []).append(value)
+                    if set(grouped) - {"source_type", "idempotency_key", "file"}:
+                        raise ValueError
+                    if len(grouped.get("source_type", [])) != 1 or len(grouped.get("file", [])) != 1:
+                        raise ValueError
+                    if len(grouped.get("idempotency_key", [])) > 1:
+                        raise ValueError
+                    source_type = grouped["source_type"][0]
+                    idempotency = grouped.get("idempotency_key", [None])[0]
+                    upload = grouped["file"][0]
+                    if type(source_type) is not str or (idempotency is not None and type(idempotency) is not str):
+                        raise ValueError
+                    if not isinstance(upload, UploadFile):
+                        raise ValueError
+                    fields = ZipScanCreateFields(
+                        source_type=source_type,
+                        idempotency_key=idempotency,
+                    )
+                    return await runtime.submit(upload, fields, service, background_tasks)
+            except ApiError:
+                raise
+            except RequestBodyTooLarge:
+                raise ApiError(
+                    status_code=413,
+                    code="archive_limit_exceeded",
+                    message="ZIP upload exceeds the configured limit.",
+                    reason="archive_upload_size_limit",
+                ) from None
+            except (ValidationError, ValueError, StarletteHTTPException):
+                raise ApiError(
+                    status_code=422,
+                    code="invalid_archive",
+                    message="ZIP upload is invalid.",
+                    reason="request_invalid",
+                ) from None
+
+        raise ApiError(
+            status_code=415,
+            code="invalid_source",
+            message="Request content type is not supported.",
+            reason="unsupported_media_type",
+        )
 
     @router.get("/scans/{scan_id}", response_model=ScanRunStatusView, responses=_ERROR_RESPONSES)
     def get_scan(
@@ -144,6 +247,7 @@ def _router() -> APIRouter:
 def create_app(
     registry: SQLiteScanRunRegistry,
     *,
+    zip_runtime: ZipScanRuntime | None = None,
     close_registry: bool = False,
 ) -> FastAPI:
     @asynccontextmanager
@@ -156,6 +260,55 @@ def create_app(
 
     app = FastAPI(title="OpenGuard API", version=APPLICATION_VERSION, lifespan=lifespan)
     app.state.scan_api_service = ScanApiService(registry)
+    app.state.zip_scan_runtime = zip_runtime
+
+    @app.middleware("http")
+    async def limit_zip_request_body(
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Response:
+        media_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+        if request.method == "POST" and request.url.path == "/api/v1/scans" and media_type == "multipart/form-data":
+            content_length = request.headers.get("content-length")
+            if content_length is not None:
+                try:
+                    declared = int(content_length)
+                except ValueError:
+                    return _error_response(
+                        request,
+                        ApiError(
+                            status_code=422,
+                            code="invalid_archive",
+                            message="ZIP upload is invalid.",
+                            reason="request_invalid",
+                        ),
+                    )
+                if declared < 0 or declared > MULTIPART_REQUEST_MAX_BYTES:
+                    return _error_response(
+                        request,
+                        ApiError(
+                            status_code=413,
+                            code="archive_limit_exceeded",
+                            message="ZIP upload exceeds the configured limit.",
+                            reason="archive_upload_size_limit",
+                        ),
+                    )
+            received = 0
+            original_receive = request._receive
+
+            async def receive() -> dict[str, object]:
+                nonlocal received
+                message = await original_receive()
+                body = message.get("body", b"")
+                if type(body) is not bytes:
+                    raise RequestBodyTooLarge
+                received += len(body)
+                if received > MULTIPART_REQUEST_MAX_BYTES:
+                    raise RequestBodyTooLarge
+                return message
+
+            request._receive = receive
+        return await call_next(request)
 
     @app.middleware("http")
     async def add_request_id(
@@ -224,7 +377,7 @@ def create_default_app() -> FastAPI:
     configured = os.environ.get("OPENGUARD_DATA_DIR", "data")
     if not configured or "\x00" in configured:
         raise RuntimeError("invalid OPENGUARD_DATA_DIR")
-    data_dir = Path(configured)
+    data_dir = Path(configured).resolve()
     try:
         data_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
         info = data_dir.lstat()
@@ -232,7 +385,23 @@ def create_default_app() -> FastAPI:
         raise RuntimeError("OpenGuard data directory is unavailable") from error
     if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
         raise RuntimeError("OpenGuard data directory must be private")
-    return create_app(SQLiteScanRunRegistry(data_dir / "scans.db"), close_registry=True)
+    upload_root = data_dir / "uploads"
+    workspace_root = data_dir / "workspaces"
+    for root in (upload_root, workspace_root):
+        try:
+            root.mkdir(mode=0o700, exist_ok=True)
+            info = root.lstat()
+        except OSError as error:
+            raise RuntimeError("OpenGuard ZIP runtime directory is unavailable") from error
+        if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
+            raise RuntimeError("OpenGuard ZIP runtime directory must be private")
+    registry = SQLiteScanRunRegistry(data_dir / "scans.db")
+    runtime = ZipScanRuntime(
+        registry,
+        upload_root=upload_root,
+        workspace_root=workspace_root,
+    )
+    return create_app(registry, zip_runtime=runtime, close_registry=True)
 
 
 __all__ = ["create_app", "create_default_app"]

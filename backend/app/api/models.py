@@ -36,6 +36,18 @@ class GitScanCreateRequest(P0Model):
         return value
 
 
+class ZipScanCreateFields(P0Model):
+    source_type: Literal["zip"]
+    idempotency_key: str | None = Field(default=None, min_length=1, max_length=200)
+
+    @field_validator("idempotency_key")
+    @classmethod
+    def reject_surrounding_whitespace(cls, value: str | None) -> str | None:
+        if value is not None and value != value.strip():
+            raise ValueError("value cannot contain surrounding whitespace")
+        return value
+
+
 class ScanCreateAccepted(P0Model):
     scan_id: str
     status: ScanStatus
@@ -113,4 +125,5 @@ __all__ = [
     "RisksResponse",
     "ScanCreateAccepted",
     "ScanRunStatusView",
+    "ZipScanCreateFields",
 ]

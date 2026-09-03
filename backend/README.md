@@ -244,5 +244,35 @@ root digest、真实 P0 `Component`/`Evidence`、producer 版本和 summary 持�
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_local_zip_pipeline.py
 ```
 
-该内部工厂尚未接入 A3 HTTP multipart 或后台队列。调用方仍需显式创建 queued 记录、构造计划并执行
-worker；公开 Git、安全网络摄取、许可证规则、AI、报告和 Web 端到端均不属于 A4-1。
+该内部工厂本身不启动 HTTP 或后台队列；A3-2 现已在受控单进程内替调用方创建 queued 记录并通过
+BackgroundTask 显式执行它。公开 Git、安全网络摄取、许可证规则、AI、报告和持久队列仍不属于 A4-1。
+
+## A3-2 ZIP HTTP 与进程内后台扫描
+
+安装 `backend/pyproject.toml` 的精确锁版依赖后，默认应用在既有六条业务路径中同时支持 Git JSON
+与 ZIP multipart。启动：
+
+```bash
+PYTHONPATH=backend OPENGUARD_DATA_DIR=./data uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+另一个终端提交 ZIP：
+
+```bash
+curl -sS -X POST http://127.0.0.1:8000/api/v1/scans \
+  -F source_type=zip \
+  -F idempotency_key=demo-zip-001 \
+  -F file=@./your-project.zip\;type=application/zip
+```
+
+响应中的 `status_url` 可用于轮询。当前合法依赖 ZIP 的预期终态是 `partial/rules/70`：这表示 Python/
+JavaScript 依赖组件与证据已经可以查询，但许可证规则尚未接入；不是 ZIP/Pipeline 失败。资源可通过
+`GET /api/v1/scans/{scan_id}/resources` 查看，证据可通过返回的 evidence ID 查询。
+
+上传和 multipart 请求均有服务端边界，暂存目录与 workspace 为私有目录；任务结束后清理。该后台执行
+仅为 FastAPI 单进程 BackgroundTask，不是持久任务队列：进程中途退出时还没有 lease、重试、恢复或
+孤儿清道夫，不能外推生产可靠性。实现侧复现：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py
+```

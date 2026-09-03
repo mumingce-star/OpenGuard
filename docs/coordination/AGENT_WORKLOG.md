@@ -2692,3 +2692,55 @@
 - 远端事实：新分支 `feat/a4-local-zip-pipeline` 已推送至 GitHub，首次发布 HEAD 为证据绑定提交 `d79da6eee4dc791969aab2f99b25008449cbf621`，其中不可变实现/独立测试 evidence 为 `fbed364f1939172bc6b442eea42c620906579c3f`。未创建或合并 PR，`main` 未改变。
 - 上传范围：A4-1 pipeline/export、冻结规格、29 项实现测试、20 项 Luna 独立测试、根/后端/安全运行说明、AI 记录、协作日志和项目进度；没有上传原始附件、缓存、数据库、凭据、成员隐私、组员 B1-B7 新代码或前端任务。
 - 发布状态：A4-1 子任务标记已完成；A4 父任务保持进行中，仍缺真实许可证规则、HTTP/后台消费、AI 与报告等后续项目负责人工作。下一提交只回填本发布事实与进度，随后二次推送并核对最终远端哈希。
+
+### [20260903-1640-RootSol-A3ZIP后台纵切] START - 冻结并实现 ZIP HTTP 创建与受控后台 A4-1 接线
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 API、Pipeline 集成、架构与发布验收；2026-09-03 16:40（Asia/Shanghai）。分支 `feat/a3-zip-background-scan`，基线 `bce04fe`。
+- 问题澄清：截图中的 `partial/rules/70` 不是 ZIP/Pipeline 失败，而是已产生真实依赖结果后，因组员负责的许可证规则 B5 尚未接入而触发的有界终态。本轮保留该诚实语义，只在公开说明中改为“阶段性结果可用”，不得改成虚假 `completed`。
+- 任务归属与目标：技术执行书与 P0 契约把扫描 API、ZIP 输入接线、Pipeline 和系统集成交给项目负责人；本轮在既有六路由中的同一个 `POST /api/v1/scans` 增加冻结的 ZIP `multipart/form-data` 请求，安全暂存上传、持久创建 queued `ScanRun`，并用 FastAPI 进程内 BackgroundTask 显式调用 A4-1，使状态可查询为带真实 Python/JavaScript 依赖证据的 `partial/rules/70`。
+- 预计修改：新增 `docs/spec/a3-zip-background-scan.md` 与项目负责人范围内的 ZIP API/runtime 实现和实现测试；最小更新 `backend/app/api/`、`backend/pyproject.toml`、`third_party/README.md`、根/后端 README、AI/协作/进度记录。只引入 FastAPI 官方文件上传所需且已核验的 `python-multipart==0.0.32`。
+- 保护边界：不修改 P0 models/Schema/sample、A2 ingestion、安全限额、B1-B7 parser/mapper/规则、A3 registry、A4 worker/local ZIP plan、Luna 既有独立测试、前端或竞赛原始附件；不实现许可证规则、AI、报告、Git 网络输入、持久队列、lease/retry/recovery、Linux/TrustedEgress。
+- 验收门禁：Git JSON 兼容不变；合法 multipart 动态 ZIP 返回 202 且最终可查询真实 partial/resources/evidence；文件/字段/Content-Type/大小/幂等冲突/坏 ZIP/异常均稳定脱敏且暂存清理；OpenAPI 仍恰好六条业务路径；定向、保护集与全量、Schema、compileall、diff、依赖台账、敏感/权限/上传范围均通过后再提交和推送。
+- token：本任务非硬估算 `14k-22k`；当前客户端不提供精确本轮 token 遥测。若进程内 BackgroundTask 无法满足安全文件生命周期，将停在可复现阻塞，不用同步伪装后台或越界补许可证规则。
+
+### [20260903-1725-RootSol-A3ZIP后台实现] COMPLETE - A3-2 实现侧纵切全绿，交 Luna 独立验证
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 API/Pipeline 集成与实现侧验收；2026-09-03 17:25（Asia/Shanghai）。分支 `feat/a3-zip-background-scan`；未提交、未推送。
+- 完成内容：在冻结的同一个 `POST /api/v1/scans` 内显式分流 Git JSON 与 ZIP multipart；新增严格 multipart 字段/文件名/媒体类型校验、请求总量预限、64 MiB 上传流限额、0600随机暂存、上传 SHA-256、ZIP durable queued 创建与摘要幂等、进程内 BackgroundTask→既有 A4-1、成功/拒绝/重复/坏 ZIP 清理和 JSON+multipart OpenAPI。默认工厂创建并验证 0700 uploads/workspaces。
+- 问题处理：`partial/rules/70` 保持为正确终态，根/后端说明已明确其含义是“依赖资源与证据可用，许可证分析待接入”，而不是 ZIP/Pipeline 失败；未通过改状态、伪造 license/finding 或越界实现 B5 来掩盖缺失能力。
+- 依赖与台账：按 FastAPI 文件上传需要引入并精确锁定 `python-multipart==0.0.32`；已核对官方 PyPI 最新版本、Apache-2.0、Python 3.12 支持、Trusted Publishing 与 wheel SHA-256，并同步登记第三方资源表。本机仅安装到既有 `/private/tmp` 隔离测试环境，仓库不包含 wheel/sdist。
+- 测试演进：首轮 18 项为 `16 passed, 2 failed`；两项分别揭示无文件请求实际为 URL-encoded 和 multipart 文件名换行被编码为 `%0A`。实现随后增加百分号解码后的路径/控制字符拒绝，测试改为真实 multipart 缺文件构造；最终实现侧 `20 passed`。A3/A4-1 保护集 `96 passed, 1 deselected`；完整集合排除既有回环沙箱项 `663 passed, 1 deselected`；Schema 等值、compileall 与 diff 通过。
+- 真实功能探针：动态混合 ZIP 经 TestClient 返回 202，随后状态为 `partial/rules/70`，资源接口返回 npm `react` 与 pypi `requests` 两项，证据接口可读，uploads/workspaces 均为空。Git JSON 兼容回归全绿，OpenAPI 仍只有六条业务路径并同时声明 JSON/multipart。
+- 修改与边界：仅项目负责人 API/runtime、实现测试、A3-2 规格、pyproject/第三方台账、README、AI/协作/进度；未修改 P0/Schema/sample、A2、B1-B7、A3 registry、A4 worker/plan、Luna 既有测试、前端或竞赛附件。仍不具备持久队列、进程崩溃恢复、lease/retry/orphan、Linux/TrustedEgress、许可证、AI或报告。
+- 证据状态：实现候选可交 Luna，但 `EVD-A3-ZIP-BACKGROUND-SCAN-001` 尚未独立验证、真实回环复现或不可变提交绑定，当前不得标记 A3-2 已完成或 GitHub 已上传。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `14k-22k`，实现阶段在既定范围内完整完成，未发生功能范围扩张。
+
+### [20260903-1640-Luna-A3ZIP后台独立验证] START - A3-2 ZIP multipart 与 BackgroundTask→A4-1 独立验证
+
+- 作者/角色/时间：GPT-5.6 Luna；测试验证、动态夹具、复现与材料记录；2026-09-03 16:40（Asia/Shanghai）。分支 `feat/a3-zip-background-scan`，基线 `bce04fe`。
+- 只读前置已完成：已完整阅读 `AGENTS.md`、根 `README.md`、共享日志物理 EOF，确认 `20260903-1725-RootSol-A3ZIP后台实现` 为 COMPLETE；已阅读 `PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md` 与冻结规格 `docs/spec/a3-zip-background-scan.md`，并确认当前 Root 实现候选未提交、未推送。
+- 本轮唯一目标：先原样运行 `tests/unit/test_a3_zip_background_scan.py`，再仅新增 `tests/security/test_a3_zip_background_scan_independent.py`，以独立动态 ZIP、multipart 请求、SQLite、真实 A2+B1+A4 和尽可能真实 Uvicorn 回环覆盖 `POS-A3ZIP-001..004`、`NEG-A3ZIP-001..006`；不复用实现侧 helper/expected，不修改实现侧 unit。
+- 允许的附加记录：仅最小追加 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本共享日志；不得修改 backend、冻结规格、P0/Schema/sample、A2/B1-B7、A3 registry、A4 worker/plan、PROJECT_PROGRESS、third_party、前端或原始附件；不提交、不推送。实现缺陷保留原始失败并按 P1/P2 报告，不代修、不放宽断言。
+- 验收方法：完成独立测试后运行实现+独立、相关保护集、全量（回环可单独）、Schema、compileall、diff/敏感/权限/范围检查；任何沙箱 bind 限制单独披露，不冒充产品失败。
+- token：本轮非硬估算 `6k-10k`；当前客户端未提供精确本轮 token 遥测。
+
+### [20260903-1653-Luna-A3ZIP后台独立验证] COMPLETE - A3-2 独立验证与回归门禁通过
+
+- 作者/角色/时间：GPT-5.6 Luna；测试验证、动态 multipart 夹具、回归与材料记录；2026-09-03 16:53（Asia/Shanghai）。分支 `feat/a3-zip-background-scan`；未提交、未推送。
+- 实际修改：仅新增 `tests/security/test_a3_zip_background_scan_independent.py`，最小追加 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本共享日志；未修改 backend、实现侧 unit、冻结规格、P0/Schema/sample、A2/B1-B7、A3 registry、A4 worker/plan、PROJECT_PROGRESS、third_party、前端或原始附件。动态 ZIP/multipart/SQLite 均为测试运行时临时数据，无持久 fixture。
+- 先行 unit：原样运行 `PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_a3_zip_background_scan.py`，结果 `20 passed`，保留一条 Starlette/AnyIO 弃用 warning。
+- 独立与联合结果：独立非回环 `21 passed`；Root 获准受控环境原样复跑真实 Uvicorn 单项 `1 passed, 21 deselected`；A3-2 实现+独立非回环 `41 passed`；`tests/unit` + `tests/security` 全量排除两个回环项 `684 passed, 2 deselected`。受控回环实际验证 ZIP `202`、`partial/rules/70`、resources 查询和进程结束后的 SQLite 重开持久读取。
+- 覆盖与契约：独立构造 multipart 与动态 ZIP，真实经过 A2 安全暂存/只读会话、B1 双路 parser/mapper、A4-1 与 SQLite；覆盖 `POS-A3ZIP-001..004`、`NEG-A3ZIP-001..006`、请求/上传限额、未知/重复字段、百分号编码路径与控制字符、同/异摘要幂等、坏 ZIP、清理、错误脱敏、OpenAPI 六路径、Git JSON 兼容和默认 0700/0600 权限。未新增或改变 API、Schema、错误码、规则语义或可靠性边界；`partial/rules/70` 仍表示许可证规则未接线。
+- 静态门禁：`schema_export_equal=True`、`compileall -q backend/app tests`、`git diff --check` 通过；受保护 tracked diff 为空；backend/tests/docs 下无 world-writable 目录；敏感扫描未发现真实凭据或本机项目路径。无新 P0/P1/P2 实现缺陷，第三方依赖台账沿用 Root 已登记的 `python-multipart==0.0.32`，本轮未新增资源。
+- 证据与下一步：`EVD-A3-ZIP-BACKGROUND-SCAN-001` 仍待 Root/Sol 绑定不可变提交、运行 profile 与最终发布范围；A3-2 当前为实现+独立验证通过的候选，未标记已提交或已推送。Root 负责提交/推送和最终进度回填；后续仍需持久队列、崩溃恢复、lease/retry、公开 Git、许可证、AI、报告、Linux/TrustedEgress、Bench 与材料闭环。
+- token：本次运行精确 token 数不可获得；开工估算 `6k-10k`，任务在该范围内完成，未发生范围调整。
+
+### [20260903-1745-RootSol-A3ZIP后台终审] COMPLETE - A3-2 候选通过有界终审，待不可变提交绑定
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目统筹、独立结果复现、安全边界与发布审计；2026-09-03 17:45（Asia/Shanghai）。分支 `feat/a3-zip-background-scan`；本条记录时未提交、未推送。
+- 终审结论：实现符合 P0 同一 POST 路径的 Git JSON/ZIP multipart 契约，上传请求总量在 form spooling 前受限、文件流再次执行精确 64 MiB 上限，随机 0600 暂存与 0700 根、实际字节摘要、幂等、BackgroundTask、A4-1 和清理边界均成立；OpenAPI 保持六路径。`partial/rules/70` 正确表示可用依赖结果，未伪造 completed 或越界代做 B5。
+- Root/Luna 证据：实现20项、Luna独立非回环21项、合计41项通过；沙箱未过滤全量为 `684 passed, 2 failed`，失败仅为两个回环测试 bind `127.0.0.1` 被拒；获准环境原样联合复跑两个真实 Uvicorn 项为 `2 passed, 45 deselected`，故完整集合等价686项通过。保留一条 Starlette/AnyIO 第三方弃用 warning。
+- 静态与范围：`schema_export_equal=True`、compileall、diff、受保护路径、权限、敏感信息、依赖台账与上传清单通过；未修改 P0/Schema/sample、A2、B1-B7、A3 registry、A4 worker/plan、前端或竞赛附件；无开放 P0/P1/P2。
+- 证据裁决：`EVD-A3-ZIP-BACKGROUND-SCAN-001` 为 `APPROVED-PENDING-ROOT-BINDING`，仅覆盖 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、FastAPI 0.141.1、python-multipart 0.0.32、单进程存活期间的 HTTP ZIP→BackgroundTask→A4-1。不得外推持久队列、崩溃恢复、lease/retry/orphan、公开 Git、许可证、AI、报告、Linux/TrustedEgress、Bench 或完整作品。
+- 下一步：创建只含竞赛交付内容的不可变实现提交、回填哈希、推送功能分支并核对远端；不创建或合并 PR。
+- token：本次运行精确 token 数不可获得；本任务开工非硬估算 `14k-22k`，实现、独立验证与终审均在同一冻结范围内完整完成，未发生功能范围扩张。

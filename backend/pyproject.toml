@@ -7,6 +7,7 @@ dependencies = [
   "fastapi==0.141.1",
   "packaging==26.3",
   "pydantic==2.13.4",
+  "python-multipart==0.0.32",
   "uvicorn==0.52.4",
 ]
 

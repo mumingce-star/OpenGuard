@@ -22,6 +22,7 @@ from app.api.models import (
     RisksResponse,
     ScanCreateAccepted,
     ScanRunStatusView,
+    ZipScanCreateFields,
 )
 from app.domain.models import (
     CONTRACT_VERSION,
@@ -190,6 +191,92 @@ class ScanApiService:
             status=stored.run.status,
             status_url=f"/api/v1/scans/{stored.run.id}",
         )
+
+    def create_zip_scan(
+        self,
+        request: ZipScanCreateFields,
+        *,
+        staged_name: str,
+        project_name: str,
+        input_digest: str,
+    ) -> tuple[ScanCreateAccepted, bool]:
+        if (
+            type(staged_name) is not str
+            or not staged_name
+            or "/" in staged_name
+            or "\\" in staged_name
+            or type(project_name) is not str
+            or not project_name
+            or len(project_name) > 200
+            or type(input_digest) is not str
+            or len(input_digest) != 64
+        ):
+            _fail(status_code=500, code="internal_error", message="The scan could not be created.", reason="zip_runtime_failure")
+        try:
+            int(input_digest, 16)
+        except ValueError:
+            _fail(status_code=500, code="internal_error", message="The scan could not be created.", reason="zip_runtime_failure")
+
+        created_at = self._clock()
+        candidate_id = f"scn_{self._id_factory()}"
+        fingerprint_payload = json.dumps(
+            {"input_digest": input_digest, "source_type": "zip"},
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        run = ScanRun(
+            contract_version=CONTRACT_VERSION,
+            id=candidate_id,
+            idempotency_key=request.idempotency_key,
+            status=ScanStatus.QUEUED,
+            stage=ScanStage.QUEUED,
+            progress=0,
+            project=Project(
+                id=f"prj_{self._id_factory()}",
+                name=project_name,
+                source_type=SourceType.ZIP,
+                source=staged_name,
+                created_at=created_at,
+            ),
+            summary=ScanSummary(
+                component_count=0,
+                ai_asset_count=0,
+                evidence_count=0,
+                finding_counts={outcome: 0 for outcome in FindingOutcome},
+            ),
+            provenance=RunProvenance(
+                input_digest=HashValue(algorithm="sha256", value=input_digest),
+                tool_versions=[],
+                ruleset_version="pending",
+                contract_version=CONTRACT_VERSION,
+                ai_enabled=False,
+                run_environment=RunEnvironment(
+                    python_version=platform.python_version(),
+                    platform=f"{sys.platform}/{platform.machine()}",
+                    openguard_version=APPLICATION_VERSION,
+                ),
+            ),
+            created_at=created_at,
+        )
+        fingerprint = hashlib.sha256(fingerprint_payload).hexdigest() if request.idempotency_key is not None else None
+        try:
+            stored = self._registry.create(run, idempotency_fingerprint=fingerprint)
+        except ScanRegistryError as error:
+            if error.code == "registry_idempotency_conflict":
+                _fail(
+                    status_code=409,
+                    code="invalid_source",
+                    message="Idempotency key was already used for a different source.",
+                    reason="idempotency_conflict",
+                )
+            _fail(status_code=500, code="internal_error", message="The scan could not be created.", reason="registry_failure")
+        accepted = ScanCreateAccepted(
+            scan_id=stored.run.id,
+            status=stored.run.status,
+            status_url=f"/api/v1/scans/{stored.run.id}",
+        )
+        return accepted, stored.run.id == candidate_id
 
     def status(self, scan_id: str) -> ScanRunStatusView:
         run = self._get_run(scan_id)
