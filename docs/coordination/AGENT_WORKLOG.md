@@ -2677,3 +2677,11 @@
 - 证据裁决：候选 `EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001` 升为 `APPROVED-PENDING-ROOT-BINDING`，仅覆盖 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程显式计划、预创建私有 workspace root、真实 A2 会话和既有 B1 公共 parser/mapper。不得外推许可证、HTTP 自动消费、Git 网络输入、AI、报告、Linux/TrustedEgress、Bench 或完整参赛作品。
 - 下一步：创建只含竞赛交付文件的不可变实现提交，回填提交哈希，推送 `feat/a4-local-zip-pipeline` 并核对远端；不自动创建或合并 PR。
 - token：本次运行精确 token 数不可获得；Root 本轮开工非硬估算 `12k-20k`，终审仍在既定 A4-1 收尾范围内，未发生功能范围扩张。
+
+### [20260903-1624-Root-A4本地ZIP证据绑定] COMPLETE - A4-1 绑定不可变实现提交
+
+- 作者/角色/时间：Codex Root Coordinator；证据绑定与发布范围复核；2026-09-03 16:24（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`。
+- 不可变绑定：`EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001` 绑定实现/规格/实现测试/独立测试提交 `fbed364f1939172bc6b442eea42c620906579c3f`；状态由 `APPROVED-PENDING-ROOT-BINDING` 升级为 `APPROVED`。
+- 提交范围：共 11 个竞赛交付文件，包含 A4-1 pipeline/export、冻结规格、29 项实现测试、20 项独立测试、根/后端/安全运行说明、AI 记录、协作日志与项目进度；没有原始附件、缓存、数据库、凭据、成员隐私、组员 B1-B7 新代码或前端任务。
+- 证据边界：保持 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程显式计划、预创建私有 workspace root、真实 A2 会话和既有 B1 公共接口；规则缺失时只批准 `partial/rules/70`，不外推完整作品。
+- 下一步：推送任务分支、核对远端哈希，再回填 GitHub 发布记录；不创建或合并 PR。

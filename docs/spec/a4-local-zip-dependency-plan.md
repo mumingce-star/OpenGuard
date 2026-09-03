@@ -129,7 +129,7 @@ A4-1 evidence 只能表述为：“本机受控测试环境下，本地 ZIP 经�
 ## 8. 实现验证与候选证据（2026-09-03）
 
 - 候选 evidence：`EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001`。
-- 当前裁决：`APPROVED-PENDING-ROOT-BINDING`；等待不可变实现提交哈希与远端分支核对后升级为 `APPROVED`。
+- 当前裁决：`APPROVED`；不可变实现、规格、实现测试与独立测试绑定提交 `fbed364f1939172bc6b442eea42c620906579c3f`。远端发布状态单独记入项目进度与共享日志，不改变本 evidence 的有界能力声明。
 - 实现侧：`tests/unit/test_a4_local_zip_pipeline.py` 共 29 项通过。
 - 独立侧：`tests/security/test_a4_local_zip_pipeline_independent.py` 共 20 项通过；与实现侧合计 49 项通过。
 - 完整集合：沙箱内 643 项通过，唯一真实回环端口项因 bind 权限受限；在获准的本机回环环境补跑该项 1 项通过，因此当前完整集合等价 644 项通过。
