@@ -60,4 +60,4 @@ FastAPI BackgroundTask 是单进程最小纵切，不是 durable worker queue。
 - 完整集合在沙箱为 `684 passed, 2 failed`，两项失败均为沙箱禁止 bind `127.0.0.1`；同两项在获准环境为 `2 passed`，故当前完整集合等价 686 项通过。
 - P0 Schema 导出等值、compileall、diff、受保护路径、目录权限、敏感信息、依赖台账与上传范围检查通过；无开放 P0/P1/P2 实现缺陷。
 - `python-multipart==0.0.32` 已按官方 PyPI 核验版本、Apache-2.0、Python 3.12 支持、Trusted Publishing 与 wheel SHA-256，并登记资源台账。
-- evidence 现为 `APPROVED-PENDING-ROOT-BINDING`；只批准 macOS/POSIX、CPython 3.12、SQLite、FastAPI 单进程存活期间的 ZIP HTTP→BackgroundTask→A4-1 纵切，不批准持久队列、崩溃恢复、许可证、AI、报告或完整作品。
+- evidence `EVD-A3-ZIP-BACKGROUND-SCAN-001` 已绑定不可变实现提交 `530e93055528761d9c9b08a99d348ab41d2c9c37`，状态为 `APPROVED`；只批准 macOS/POSIX、CPython 3.12、SQLite、FastAPI 单进程存活期间的 ZIP HTTP→BackgroundTask→A4-1 纵切，不批准持久队列、崩溃恢复、许可证、AI、报告或完整作品。

@@ -2744,3 +2744,11 @@
 - 证据裁决：`EVD-A3-ZIP-BACKGROUND-SCAN-001` 为 `APPROVED-PENDING-ROOT-BINDING`，仅覆盖 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、FastAPI 0.141.1、python-multipart 0.0.32、单进程存活期间的 HTTP ZIP→BackgroundTask→A4-1。不得外推持久队列、崩溃恢复、lease/retry/orphan、公开 Git、许可证、AI、报告、Linux/TrustedEgress、Bench 或完整作品。
 - 下一步：创建只含竞赛交付内容的不可变实现提交、回填哈希、推送功能分支并核对远端；不创建或合并 PR。
 - token：本次运行精确 token 数不可获得；本任务开工非硬估算 `14k-22k`，实现、独立验证与终审均在同一冻结范围内完整完成，未发生功能范围扩张。
+
+### [20260903-1750-Root-A3ZIP证据绑定] COMPLETE - A3-2 绑定不可变实现提交
+
+- 作者/角色/时间：Codex Root Coordinator；证据绑定与发布范围复核；2026-09-03 17:50（Asia/Shanghai）。分支 `feat/a3-zip-background-scan`。
+- 不可变绑定：`EVD-A3-ZIP-BACKGROUND-SCAN-001` 绑定实现、规格、20 项实现测试与 22 项独立测试提交 `530e93055528761d9c9b08a99d348ab41d2c9c37`；状态由 `APPROVED-PENDING-ROOT-BINDING` 升级为 `APPROVED`。
+- 提交范围：共 15 个竞赛交付文件，包含 A3-2 ZIP API/runtime、规格、实现与独立测试、精确依赖锁定和第三方登记，以及根/后端/安全运行说明、AI、协作和项目进度记录；没有原始附件、缓存、数据库、凭据、成员隐私、组员 B1-B7 新代码或前端任务。
+- 证据边界：保持 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、FastAPI 0.141.1、python-multipart 0.0.32 与单进程存活期间的 ZIP HTTP→BackgroundTask→A4-1；`partial/rules/70` 仍表示依赖结果可用、许可证规则待接入，不外推完整作品。
+- 下一步：推送任务分支并核对远端哈希，再回填 GitHub 发布记录；不创建或合并 PR，`main` 不改变。
