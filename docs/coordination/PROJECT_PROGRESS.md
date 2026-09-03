@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-03 12:40（Asia/Shanghai）
+更新时间：2026-09-03 16:15（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -10,7 +10,7 @@
 
 | 真人角色 | 负责范围 | 本轮处理 |
 |---|---|---|
-| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 仅推进其 A4-0 显式单进程 Pipeline Worker 纵切 |
+| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 仅推进其 A4-1 本地 ZIP 依赖 Pipeline 接线 |
 | 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 本轮不修改；既有 B1 分支归该角色复核/接续 |
 | 前端组员 | React/Vite 与 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 页面 | 本轮不修改 |
 
@@ -36,6 +36,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | A3-0 持久 ScanRun 注册表 | P0 | Sol→Terra→Luna→Terra→Luna→Sol→Root | 已完成 | 单机 POSIX SQLite canonical ScanRun、revision/CAS、跨实例/重启幂等、状态单向性、稳定分页、私有路径权限、损坏Schema与额外table/view/trigger失败关闭；两轮审计P1均已关闭；Terra32项、Luna45项、A3合计77项、全量501项通过；`EVD-A3-DURABLE-SCAN-REGISTRY-001` 已绑定 `d2b26b0` | A3仍缺FastAPI、OpenAPI、HTTP错误映射、ZIP/Git创建请求、worker与A4编排；不得外推多机容灾或exactly-once副作用 | 已推送 `feat/a3-durable-scan-registry`；实现 `d2b26b0`，证据 `0cadbbe`；待PR合并 |
 | A3-1 FastAPI Git API 纵切 | P0 | Root→Luna→Sol | 已完成 | FastAPI 六路由、Git queued 持久幂等、结果读取/过滤与统一脱敏错误；Luna 独立发现的404/405信封、控制字符、UTF-8字节上限三项P1已最小关闭；A3-1实现+独立48项、A3-0 77项、P0 46项、全量549项通过；真实Uvicorn 202/200并可重启读取；证据绑定 `aedf65c` | A3父任务仍缺ZIP multipart、安全Git物化、worker与A4编排；结果读取只消费已有终态ScanRun，不生成结果；本机证据不得外推Linux/TrustedEgress或完整扫描 | 已推送 `feat/a3-fastapi-api`；实现/独立证据 `aedf65c`，绑定 `68163de`；待PR合并 |
 | A4-0 显式单进程 Pipeline Worker | P0 | Sol→Terra→Luna→Root | 已完成 | 七阶段/固定进度、A3 CAS认领、Adapter聚合持久化、completed/partial/failed/cancelled与脱敏错误；Terra 21项、Luna独立25项，A4合计46项；Root定向169项、完整集合595项通过；`EVD-A4-PIPELINE-WORKER-001` 已绑定 `66fc2ae`；无开放P0/P1/P2 | A4父任务仍缺真实Adapter接线、API队列自动消费、重试/超时、lease/heartbeat、stale-running恢复与系统集成；stub结果不得外推真实扫描 | 已推送 `feat/a4-pipeline-worker`；实现证据 `66fc2ae`；待PR合并 |
+| A4-1 本地 ZIP 依赖 Pipeline 接线 | P0 | Sol→Terra→Root→Luna→Root | 进行中 | 本地 ZIP 经单次 A2 只读会话调用既有 B1 Python/JavaScript parser/mapper，持久化真实 P0 Component/Evidence、digest、producer与summary；规则未接线时诚实为partial；实现29项、Luna独立20项、A4-1合计49项、完整集合644项通过，无开放P0/P1/P2 | 待 Root 绑定不可变提交并推送 GitHub；不包含 HTTP ZIP、自动队列、许可证规则、AI或报告 | 本地验收完成；待提交与推送 `feat/a4-local-zip-pipeline` |
 
 ## 2. P0 工作包全景
 
@@ -52,7 +53,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 未开始 | Obligation/RiskFinding结构已具备 | 规则Schema、原文证据、正反未知冲突样例、人工核验状态 | 9月12日-20日 |
 | B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
 | A3 | FastAPI扫描API | 项目负责人 / Root | 进行中 | 6个端点契约已冻结；A3-0 SQLite注册表、A3-1 FastAPI/OpenAPI、Git JSON queued创建、状态/结果读取、统一错误及独立P1闭环完成；A4-0提供显式worker但尚未接入API后台消费 | 仍缺ZIP multipart创建、A2安全摄取接线和后台worker触发。当前HTTP仍只能创建并查询queued，不能宣称会自动扫描 | 9月21日-28日 |
-| A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4-0已完成显式七阶段plan、CAS claim、阶段进度、聚合持久化及terminal/partial/取消/冲突语义；Terra+Luna A4共46项，Root全量594+回环1项通过 | 接入真实ingestion/scanner/normalize/rules/AI/report Adapter；补后台消费、超时/重试、lease/heartbeat、stale-running恢复和端到端证据 | 9月21日-28日 |
+| A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4-0 worker 已完成；A4-1 已在本地完成真实 ZIP→A2→既有 B1 Python/JavaScript→P0/SQLite 接线，规则缺失时诚实 partial；A4-1实现+独立49项、完整集合644项通过 | 继续接入真实许可证规则、AI降级与报告 Adapter；补HTTP/后台消费、超时/重试、lease/heartbeat、stale-running恢复和端到端证据 | 9月21日-28日 |
 | A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 未开始 | AI边界与A1.1字段方案已确定 | Qwen3/Ollama锁版、结构化输出、证据引用、失败降级、消融 | 9月12日-28日 |
 | F0 | P0前端核心页面 | Terra/团队前端 | 未开始 | sample可作为共同数据 | New Scan、Progress、Dashboard、Risk Detail、Resource List、Report接真实API | 9月21日-28日 |
 | A6 | HTML/JSON/CSV与资源清单 | Terra/Luna | 未开始 | ScanRun与ReportLink结构已具备 | 报告模板、七字段资源清单映射、导出验证与脱敏 | 9月21日-28日 |

@@ -225,3 +225,24 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_pipeline_worker.py
 
 该能力只证明本机 SQLite、单进程、单次显式调用的 durable 编排。它不提供后台任务、重试、租约、
 心跳、超时、崩溃恢复、exactly-once 外部副作用或完整 Web 扫描流程。
+
+## A4-1 本地 ZIP 依赖计划
+
+`app.pipeline.build_local_zip_dependency_plan()` 是项目负责人集成层的显式一次性计划：调用方先建立
+一个本地 ZIP 对应的 queued `ScanRun`，再把该计划交给 `ScanPipelineWorker`。计划在同一个 A2-2
+只读会话内调用既有 Python 与 JavaScript parser/mapper，核对 ZIP 原始字节摘要，随后把 inventory
+root digest、真实 P0 `Component`/`Evidence`、producer 版本和 summary 持久化到 A3 SQLite。
+
+当前许可证规则尚未接线，所以有真实依赖证据的预期终态是 `partial/rules/70`，错误码为
+`rules_stage_not_connected`；这不是运行失败，也不能描述为完整许可证或合规扫描。AI 与 report 阶段
+不会执行。workspace root 必须是后端预先创建、仅当前用户可写的绝对 POSIX 目录；计划不接受调用方
+抬高 A2 安全限额，不联网、不执行 ZIP 中的代码、不安装依赖，也不暴露本机 ZIP 路径。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_local_zip_pipeline.py
+```
+
+该内部工厂尚未接入 A3 HTTP multipart 或后台队列。调用方仍需显式创建 queued 记录、构造计划并执行
+worker；公开 Git、安全网络摄取、许可证规则、AI、报告和 Web 端到端均不属于 A4-1。

@@ -233,3 +233,20 @@ PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_
 覆盖重点包括：合法 handler 跨阶段聚合持久化与 SQLite 重开、claim 和阶段进度的 durable prewrite、两个 registry/线程的单赢家 claim、所有 nonqueued 终态、plan 缺失/重复/错序/非法 stage/noncallable、recoverable aggregate 的 partial 门槛、异常路径/URL/secret 脱敏、非 `ScanRun` 返回、id/project 不可变、非取消 CAS 冲突、clock 异常/naive/非 UTC/倒退、registry get/replace 非冲突故障和 cancellation winner；handler 不被错误路径继续调用。
 
 本轮未发现新的 P0/P1/P2 实现缺陷，未修改 Terra backend 或 unit、冻结规格、P0/Schema/sample、A3/A2/B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party。证据边界仍限于本机 macOS/POSIX、CPython 3.12、单机 SQLite、显式注入的可信 stage adapter；不证明真实 Git/ZIP ingestion、扫描器、规则、AI、报告、后台队列、retry/lease/recovery/exactly-once、Linux isolation、TrustedEgress、Bench 或完整竞赛作品；A4 候选 evidence 仍需 Sol/Root 绑定不可变提交、运行 profile 和范围后裁决。
+
+### A4-1 本地 ZIP 依赖流水线独立安全复核
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_a4_local_zip_pipeline_independent.py
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_a4_local_zip_pipeline.py tests/security/test_a4_local_zip_pipeline_independent.py
+```
+
+本轮独立文件收集 20 项，覆盖冻结 `POS-A4ZIP-001..005`、`NEG-A4ZIP-001..010`，以及动态参数化的兼容性、单语言和不可用 ZIP 变体。测试由标准库动态 ZIP、手工构造的 queued P0 `ScanRun`、临时 SQLite registry 和真实 A2 `ingest_with_consumer()`/B1 parser-mapper/A4 worker 组成；不生成持久化 fixture，不复用实现侧 helper/expected，不执行目标项目代码、安装其依赖或联网。首轮夹具时间/目录前置错误已仅在独立测试文件内修正，未改变产品实现或契约。
+
+真实结果：Luna 独立 `20 passed`；A4-1 实现 unit + 独立 `49 passed`；`tests/unit` + `tests/security` 全量排除既有沙箱回环绑定限制为 `643 passed, 1 deselected`。未过滤全量唯一失败仍是既有 `test_real_uvicorn_loopback_persists_the_queued_scan` 的 `127.0.0.1` bind `PermissionError`，不是 A4-1 失败；保留该环境事实。Schema 导出等值、`compileall -q backend/app tests`、`git diff --check` 通过。
+
+覆盖结果包括：混合/单语言真实 P0 Component/Evidence、partial/单路未知失败、input/root/inventory digest、producer/tool_versions、summary 和 SQLite 重开；成功/拒绝 cleanup；不兼容 queued、不可用/坏 ZIP、安全拒绝、digest mismatch、双路失败、空 manifest、非法 mapper/P0 引用、冲突 ID、一次性 plan 复用，以及 rules partial 时不执行 AI/report。未发现新的 P0/P1/P2 实现缺陷。
+
+本轮仅新增本独立测试并追加本说明、AI 记录和共享日志；未修改 backend 实现、Root/Terra unit、冻结规格、P0/Schema/sample、A2/B1/A3/A4-0、PROJECT_PROGRESS、third_party 或前端。结论仅限本机 macOS/POSIX、CPython 3.12、预先存在且私有的 0700 workspace root、单机 SQLite、显式可信 stage adapter；A4-1 候选 evidence 仍待 Root/Sol 绑定不可变提交、运行 profile 和有界发布裁决，不外推许可证/合规、扫描器、AI、报告、HTTP 自动消费、Linux/TrustedEgress、Bench 或完整竞赛作品。

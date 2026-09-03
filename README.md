@@ -8,9 +8,9 @@
 
 ## 当前可运行状态（2026-09-03）
 
-现在已经可以独立跑通四层真实扫描底座纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**生命周期绑定只读会话 → Python/JavaScript manifest**，**声明与 npm lock v2/v3 → P0 `Component`/`Evidence`**，以及 **Python/JavaScript 两种稳定依赖 JSON CLI**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
+现在已经可以独立跑通五层真实扫描底座纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**生命周期绑定只读会话 → Python/JavaScript manifest**，**声明与 npm lock v2/v3 → P0 `Component`/`Evidence`**，**Python/JavaScript 两种稳定依赖 JSON CLI**，以及 **显式本地 ZIP Pipeline → durable P0 依赖聚合**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
 
-任务主线还已具备 SQLite durable `ScanRun` 注册表、六路由 FastAPI Git queued API，以及显式传入完整阶段 Adapter 后可执行的七阶段 A4-0 Pipeline Worker。当前 HTTP 创建与 worker 尚未自动接线，A4 的 Adapter 也仍是注入边界；因此可以分别演示“创建/查询 queued 任务”和“测试驱动 queued → terminal 编排”，不能宣称提交 URL 后已经自动完成真实许可证扫描。
+任务主线还已具备 SQLite durable `ScanRun` 注册表、六路由 FastAPI Git queued API，以及显式传入完整阶段 Adapter 后可执行的七阶段 A4-0 Pipeline Worker。A4-1 已把本地 ZIP、A2 与既有 Python/JavaScript 依赖解析公共接口接到该 worker：可真实持久化依赖组件、证据和摘要，并因许可证规则尚未接入而诚实终止为 `partial/rules/70`。当前 HTTP 创建与 worker 仍未自动接线，Git/许可证/AI/报告 Adapter 也未完成；不能宣称提交 URL 或 ZIP 后已经自动完成合规扫描。
 
 当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、AI 解释、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
@@ -23,10 +23,11 @@ PYTHONPATH=backend python -m app.cli --javascript-dependencies ./your-project.zi
 PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_javascript_manifest_p0_cli.py tests/security/test_b1_javascript_manifest_p0_cli_independent.py
 PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_p0_mapper_cli.py tests/security/test_b1_python_p0_mapper_cli_independent.py
 PYTHONPATH=backend python -m pytest -q tests/unit/test_b1_python_manifest_parser.py tests/security/test_b1_python_manifest_parser_independent.py
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_local_zip_pipeline.py tests/security/test_a4_local_zip_pipeline_independent.py
 PYTHONPATH=backend python -m pytest -q
 ```
 
-前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper 用法和退出码说明见 [backend/README.md](backend/README.md)。随后三条命令分别复现 JavaScript、Python mapper、Python parser 的实现侧与独立安全测试，最后一条复现当前 595 项自动测试（若执行环境禁止本机回环端口，A3 的真实 Uvicorn 单项需在允许监听 `127.0.0.1` 的受控环境补跑）。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
+前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper/Pipeline 用法和退出码说明见 [backend/README.md](backend/README.md)。随后四条命令分别复现 JavaScript、Python mapper、Python parser 和本地 ZIP Pipeline 的实现侧与独立安全测试，最后一条复现当前完整集合 644 项自动测试（沙箱若禁止本机回环端口，可先复现 643 项，再在允许监听 `127.0.0.1` 的受控环境补跑 A3 Uvicorn 单项）。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
 
 ## 竞赛交付定义
 

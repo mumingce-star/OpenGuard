@@ -2583,3 +2583,97 @@
 - 远端事实：`feat/a4-pipeline-worker` 已推送至 GitHub；首次发布 HEAD 与本地均为证据绑定提交 `b6311be24d847d573217fbefb1842a2cf40dfb24`，其中不可变实现/独立测试证据为 `66fc2ae7246f34905d39346feced43195a401f3d`。未创建或合并 PR，`main` 未改变。
 - 上传范围：A4 worker、冻结规格、21项实现测试、25项独立测试、根/后端/安全运行说明、AI记录、协作日志和项目进度；没有上传竞赛原始附件、缓存、数据库、凭据、成员隐私、组员 B1-B7 新代码或前端任务。
 - 核验：`git ls-remote` 的远端分支哈希与本地 HEAD 一致，tracking 工作区干净。下一步只需提交并二次推送本发布回填记录，使 GitHub 台账显示最终状态。
+
+### [20260903-1244-RootSol-A4本地ZIP真实接线] START - 项目负责人 A4-1 本地 ZIP 依赖流水线接线
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目统筹、架构契约与发布验收；2026-09-03 12:44（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`，基线 `ed91e34`。
+- 任务归属：技术执行书把输入接入、Pipeline、API 与系统集成归项目负责人；本轮只在用户负责的 A4 集成层调用既有 A2 安全 ZIP 会话和既有 B1 Python/JavaScript 公共解析接口，不修改扫描分析组员拥有的 B1-B7 内部实现、规则或 Bench，也不修改前端组员的 React/Vite 页面。
+- 任务目标：冻结并实现一个显式的一次性本地 ZIP 依赖计划，使 durable queued `ScanRun` 能经 A2 同一只读会话完成 Python/JavaScript 声明解析和 P0 映射，再由 A4-0 持久化真实 `Component/Evidence`。在许可证规则尚未接线时必须诚实终止为 `partial`，不得用空 Adapter 伪造 `completed`、AI 或报告。
+- 预计修改：新增 `docs/spec/a4-local-zip-dependency-plan.md`、`backend/app/pipeline/local_zip.py`、A4-1 实现/独立测试；最小更新 pipeline 导出、README、AI/安全/协作/进度证据。P0 models/Schema/sample、A2 ingestion、B1 scanners/mappers、A3 API/registry、A4-0 worker、前端和原始竞赛附件均为保护边界。
+- 验收门禁：有效 Python+JavaScript ZIP 产生可由 P0 重新载入的真实组件/证据，root/input/inventory digest 可追溯，工作区成功/失败均清理；输入摘要不符、安全拒绝、解析器全失败、单路失败/partial、非法来源和计划复用均有稳定脱敏语义；A4/A3/A2/B1/P0 定向、全量、Schema 等值、compileall、diff、受保护路径、敏感信息和上传清单通过后再绑定证据和推送。
+- 明确非目标：不新增 HTTP ZIP 路由、后台轮询、Git 网络输入、ScanCode/Syft/SPDX/许可证规则、AI Provider、报告生成、lease/retry/recovery、Linux/TrustedEgress、前端或组员功能；本轮不会宣称完整合规扫描。
+- 调度顺序：Sol/Root 冻结 A4-1 契约；Terra `high` 只实现获准文件；Luna `max` 只做独立验证；Root 最终复跑、整理、提交和发布。
+- token：本轮整体非硬估算 `14k-22k`；当前客户端未提供精确本轮 token 遥测。若接口不能在既有安全生命周期内成立，将停在可复现阻塞证据，不制造伪完成。
+
+### [20260903-1254-Sol-A4本地ZIP真实接线] COMPLETE - A4-1 安全生命周期与 partial 契约冻结
+
+- 作者/角色/时间：GPT-5.6 Sol / Root；架构、状态机与证据边界；2026-09-03 12:54（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`；未提交、未推送。
+- 产出：新增 `docs/spec/a4-local-zip-dependency-plan.md`，冻结一次性 `build_local_zip_dependency_plan(Path, Path, clock=...)`、queued 前置条件、随流 input digest、单次 A2 会话、双语言隔离、P0 合并、稳定错误和 `5 POS + 10 NEG`。
+- 关键裁决：A2 会话结束即清理，所以 B1 parser/mapper 必须物理上在 ingestion consumer 内执行，结果在 scan 阶段才发布；这只是调用组员已有公共接口，不修改或复制其内部实现。B1 mapper 已输出 P0，因此 normalize 只验证；许可证规则未接线时 rules 必须显式失败，使有真实依赖证据的任务终止为 `partial/rules/70`，禁止伪造 completed、AI 或报告。
+- 安全边界：固定 2 MiB 单文件/12 MiB 会话读取上限；输入摘要随实际流计算；任何 A2 完整性/cleanup 失败覆盖已捕获映射结果；持久错误不含本机路径、URL、secret、底层 reason 或 diagnostic 原文。P0/A2/B1/A3/A4-0/前端均不修改。
+- 验收：规格已对照 A2 `ingest_with_consumer` 生命周期、B1 两套 mapper DTO、P0 引用/summary validator、A3 root_digest 单向赋值和 A4-0 partial 门槛；Terra 需逐项实现并用真实动态 ZIP 验证，Luna 保留实现原样独立覆盖。当前只是冻结设计，无运行 evidence。
+- token：本 Sol 设计包含在 Root `14k-22k` 总估算内；无精确单模型遥测，不声称具体消耗。
+
+### [20260903-1300-Terra-A4LocalZipPipeline] START - 实现冻结 A4-1 本地 ZIP 依赖计划
+
+- 作者：GPT-5.6 Terra；分支 `feat/a4-local-zip-pipeline`；不提交、不推送。
+- 范围：仅新增 `backend/app/pipeline/local_zip.py` 与实现测试，最小更新 pipeline 导出、backend README、AI/协作记录；复用 A2/B1 公共接口，同一会话双路解析，rules 明确 partial。
+- 禁止修改 P0/A2/B1/A3/A4-0、Luna tests、progress、前端或 third_party；验收为 A4/A3/A2/B1/P0 回归、全量可行时、Schema、compileall、diff/范围检查。
+- token：本 Terra 子任务非硬估算 `8k-12k`，精确遥测不可得。
+
+### [20260903-1310-Terra-A4LocalZipPipeline] PARTIAL - A4-1 工厂骨架与最小契约探针
+
+- 实际修改：新增 `backend/app/pipeline/local_zip.py`，并从 `app.pipeline` 导出工厂；实现了一次性 plan 闭包、A2 单会话双路公共 parser/mapper 调用、随流 SHA-256、queued 前置检查、摘要/root 绑定、稳定 scan 合并及 rules 明确 recoverable failure。新增 `tests/unit/test_a4_local_zip_pipeline.py` 的 15 个冻结 ID 可检索与工厂参数拒绝探针。
+- 已验证：该新测试 `16 passed in 0.06s`，pipeline import 与 compileall 通过，`git diff --check` 通过。
+- 未完成/阻塞：尚未完成真实动态 ZIP 的 POS/NEG 全覆盖，未运行要求的 A4/A3/A2/B1/P0 与全量回归，README/AI 记录也尚未更新；因此不得将代码或上述最小测试视为 A4-1 evidence。下一步 Terra 应在不扩范围下补全实现侧真实 ZIP 测试、复现并修正接口细节后运行完整门禁；Luna 不应在此 PARTIAL 前启动独立验收。
+- 边界：未修改 P0/A2/B1/A3/A4-0、Luna tests、progress、前端或 third_party；未提交、未推送。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-12k`，未完成完整任务且未扩展范围。
+
+### [20260903-1320-Terra-A4LocalZipPipelineResume] START - 关闭 A4-1 生命周期与验收缺口
+
+- 范围不变：仅允许的 A4-1 pipeline、unit、README、AI/共享日志；修复 Root 指出的 consumer、close、流类型、双路状态、冲突去重与真实 ZIP 验收。
+- token：非硬估算 `8k-12k`；不提交、不推送。
+
+### [20260903-1330-Terra-A4LocalZipPipelineResume] PARTIAL - 修正明确生命周期缺口，真实 ZIP 验收仍待补
+
+- 已修正：A2 调用现显式传入 consumer，service 以 finally close；随流 wrapper 拒绝非 bytes；双路仍在同一 consumer 执行；scan 对相同 ID 逐字段相等去重、冲突失败关闭。
+- 验证：`compileall` 通过；A4-1 最小 unit + A4-0 unit `37 passed in 0.12s`。
+- 未完成：未能在本轮完成真实动态 ZIP + SQLite worker 的 5 POS/10 NEG 关键断言、README/AI记录和要求的全套回归。故不能交 Luna 或标记 COMPLETE，也没有 evidence/提交/推送。
+- 边界保持：未修改受保护 A2/B1/A3/A4-0/P0/Luna/progress/third_party/前端文件。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-12k`，范围未扩大但任务未完整完成。
+
+### [20260903-1334-Root-A4本地ZIP实现接管] START - 收口 Terra 两轮 PARTIAL 的同范围实现
+
+- 作者/角色/时间：Codex Root Coordinator；项目负责人主线集成、缺陷收口与统一验收；2026-09-03 13:34（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`；不扩大 Sol 冻结范围。
+- 接管原因：Terra 两轮均诚实以 PARTIAL 收工，已修正 consumer/close/stream/ID 冲突骨架，但尚无真实 ZIP→A2→B1→A4→SQLite 测试或完整回归；当前 `type(path) is Path` 还会在 POSIX 上拒绝合法 `PosixPath`。为避免同一对话反复停在半成品，Root 仅接管同一项目负责人 A4 集成任务的实现收口，不接管组员 B1-B7 或前端任务。
+- 允许修改保持不变：`backend/app/pipeline/local_zip.py`、`backend/app/pipeline/__init__.py`、`tests/unit/test_a4_local_zip_pipeline.py`、`backend/README.md`、AI/共享日志；后续 Root 才更新进度。P0/A2/B1/A3/A4-0、Luna tests、third_party 与前端仍为保护边界。
+- 收口验收：先用真实动态 Python+JavaScript ZIP、真实 A2 会话、真实 B1 mapper、A3 SQLite 与 A4 worker 跑通 happy/partial；再补固定失败与清理/脱敏/复用边界，完成分层与全量回归。Luna 只在 Root 实现侧全绿且 append COMPLETE 后启动。
+- token：Root 收口沿用本任务总估算 `14k-22k`，不新增功能范围；当前客户端无精确 token 遥测。
+
+### [20260903-1402-Root-A4本地ZIP实现接管] COMPLETE - A4-1 实现侧真实 ZIP 纵切全绿
+
+- 作者/角色/时间：Codex Root Coordinator；项目负责人主线集成与实现侧验收；2026-09-03 14:02（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`；未提交、未推送。
+- 完成内容：恢复中断期间暂时缺失的既有目标文件 `backend/app/pipeline/local_zip.py`，没有创建第二版本；修复 POSIX `Path` 接受、真实 consumer 传入、service 关闭、非 bytes 流拒绝、双语言隔离、相等去重/冲突关闭、root/input/inventory digest、producer、summary、fixed error、一次性 plan 和 unreachable AI/report。补齐现有实现测试文件为真实动态 ZIP→A2→B1→A4→A3 SQLite 验收。
+- 运行事实：A4-1 实现侧 `29 passed`；A4/A3/A2/B1/P0 保护集 `566 passed`；compileall 与 `git diff --check` 通过。首次真实测试为 `19 passed, 10 failed`，失败均暴露 workspace root 必须预先存在的既有 A2 安全前置；测试按真实接口预创建 0700 root 后原样行为全绿，未放宽产品安全边界或修改 A2。
+- 功能结果：混合 ZIP 可产生 `pypi` 与 `npm` 真实 P0 Component/Evidence，SQLite 重开保持，输入摘要与 inventory root 可追溯；单语言、parser partial/单路未知失败保留可用结果；摘要不符、坏 ZIP、双路失败、空 manifest、ID 冲突和 plan 复用均固定失败。规则未接线时最终严格为 `partial/rules/70`，没有 license/finding/AI/report 或 completed 伪结果。
+- 修改与边界：仅 A4-1 pipeline/export/unit、冻结规格、backend README、AI/共享日志；未修改 P0、A2、B1、A3、A4-0 worker、Luna 测试、PROJECT_PROGRESS、third_party、前端或原始附件。没有新增依赖，无需第三方台账变化。
+- 证据状态：实现侧候选已可交 Luna；尚未独立验证、全量发布门禁、不可变提交或 evidence 绑定，不能标记 A4-1 已完成或 GitHub 已上传。
+- token：本次运行精确 token 数不可获得；Root 沿用整体 `14k-22k` 非硬估算，未扩大功能范围，当前阶段完整收口。
+
+### [20260903-1557-Luna-A4LocalZipPipeline独立验证] START - A4-1 独立测试与定向门禁
+
+- 作者/角色/时间：GPT-5.6 Luna；测试验证、批量夹具与证据复核；2026-09-03 15:57（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`。
+- 只读前置已完成：完整阅读根 README、共享日志物理 EOF、`PROJECT_PROGRESS.md`、本交接文档与冻结规格 `docs/spec/a4-local-zip-dependency-plan.md`，并只读审查现有 `backend/app/pipeline/local_zip.py`、pipeline 导出、A4-1 unit 与 A4-0 worker。当前工作区既有 Root/Terra 未提交修改保持不动。
+- 本轮唯一目标：先原样运行现有 A4-1 unit，再新增独立 `tests/security/test_a4_local_zip_pipeline_independent.py`，以标准库动态 ZIP、真实 A2 只读会话、既有 B1 公共 parser/mapper、A4-0 worker 与 SQLite registry 覆盖冻结 `POS-A4ZIP-001..005`、`NEG-A4ZIP-001..010`；不复用实现侧 helper/expected，不修改实现、Root/Terra unit、冻结规格、P0/Schema/sample、A2/B1/A3/A4-0、PROJECT_PROGRESS、third_party 或前端。
+- 允许的附加记录：仅在测试完成后最小更新 `tests/security/README.md` 与 `docs/05-ai-assistance-log.md`，共享日志只追加本 START 与最终 COMPLETE/PARTIAL；不提交、不推送。发现缺陷保留原始复现并按 P1/P2 升级；仅全绿后运行 A4-1 unit+independent、保护集、尽可能全量、Schema、compileall、diff/敏感/受保护范围门禁。
+- token：本轮非硬估算 `5k-9k`；当前客户端未提供精确本轮 token 遥测。
+
+### [20260903-1606-Luna-A4LocalZipPipeline独立验证] COMPLETE - A4-1 独立验证全绿
+
+- 作者/角色/时间：GPT-5.6 Luna；测试验证、批量动态夹具、回归与材料记录；2026-09-03 16:06（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`；未提交、未推送。
+- 新增/更新：仅新增 `tests/security/test_a4_local_zip_pipeline_independent.py`，最小追加 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本共享日志记录。动态 ZIP、queued P0 `ScanRun`、SQLite registry 和预创建 0700 workspace root 均为测试运行时临时数据，无持久 fixture。未修改 backend、Root/Terra unit、冻结规格、P0/Schema/sample、A2/B1/A3/A4-0、PROJECT_PROGRESS、third_party 或前端。
+- 测试结果：现有 A4-1 unit 原样 `29 passed`；Luna A4-1 独立 `20 passed`；A4-1 unit+独立 `49 passed`；`tests/unit` + `tests/security` 排除既有沙箱回环绑定用例 `643 passed, 1 deselected`。未过滤全量为 `643 passed, 1 failed`，唯一失败是既有 `test_real_uvicorn_loopback_persists_the_queued_scan` 在当前沙箱 bind `127.0.0.1` 的 `PermissionError`，不属于 A4-1 实现失败；该环境限制保留并在安全说明中披露。
+- 覆盖与契约：独立测试覆盖冻结 `POS-A4ZIP-001..005`、`NEG-A4ZIP-001..010` 及参数化变体，验证真实 A2 单会话、B1 Python/JavaScript 双路隔离、P0 Component/Evidence、input/root/inventory digest、producer/tool_versions、summary、SQLite 重开、cleanup、固定错误/脱敏、部分/双路失败、空 manifest、非法 mapper/P0 引用、冲突 ID、一次性 plan，以及 rules `partial/rules/70` 时 AI/report 不执行。未改变冻结接口、Schema、错误码或评测口径。
+- 静态门禁：`schema_export_equal=True`、`PYTHONPATH=backend ... python -m compileall -q backend/app tests`、`git diff --check` 通过；受保护 tracked diff 为空；backend/tests/docs 下无 world-writable 目录；敏感模式只命中测试内故障注入字符串及其不落盘断言，未发现真实凭据或项目本机绝对路径。
+- 缺陷与证据：本轮未发现新的 P0/P1/P2 实现缺陷；首轮夹具时钟/目录前置错误已仅在独立测试内修正，不是产品缺陷。A4-1 候选 evidence 仍未绑定不可变提交，需 Root/Sol 复核运行 profile、发布范围和证据编号后裁决。当前结果不得外推许可证/合规、完整扫描器、AI、报告、HTTP 自动消费、Linux/TrustedEgress、Bench 或完整竞赛作品。
+- 下一步：Root 负责不可变提交、最终范围/上传检查与发布；Sol 负责候选 evidence 有界裁决；Terra 无需因本轮发现修复而修改实现。
+- token：本次运行精确 token 数不可获得；开工估算 `5k-9k`，任务在该范围内完成，未发生范围调整。
+
+### [20260903-1620-RootSol-A4本地ZIP终审] COMPLETE - A4-1 候选通过有界终审，待不可变提交绑定
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目统筹、实现差异、证据边界与发布审计；2026-09-03 16:20（Asia/Shanghai）。分支 `feat/a4-local-zip-pipeline`；本条记录时未提交、未推送。
+- 终审结论：实现保持在项目负责人 A4 集成层，复用而未修改 A2 安全 ZIP 会话与组员既有 B1 Python/JavaScript 公共接口；未触碰 B1-B7 内部、前端、P0/A2/A3/A4-0、third_party 或竞赛原始附件。一次性计划、同会话解析、真实 P0 合并、digest/producer/summary、稳定脱敏错误、cleanup 与 rules `partial/rules/70` 均符合冻结规格。
+- Root 复现：A4-1 实现侧 29 项、Luna 独立 20 项、合计 49 项通过；完整集合在沙箱为 643 项通过、1 项既有回环 bind 权限失败，获准的本机回环环境补跑该单项通过，故完整集合等价 644 项通过。P0 Schema 导出等值、compileall、diff、受保护路径、目录权限、敏感信息和上传范围检查通过；无开放 P0/P1/P2。
+- 证据裁决：候选 `EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001` 升为 `APPROVED-PENDING-ROOT-BINDING`，仅覆盖 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程显式计划、预创建私有 workspace root、真实 A2 会话和既有 B1 公共 parser/mapper。不得外推许可证、HTTP 自动消费、Git 网络输入、AI、报告、Linux/TrustedEgress、Bench 或完整参赛作品。
+- 下一步：创建只含竞赛交付文件的不可变实现提交，回填提交哈希，推送 `feat/a4-local-zip-pipeline` 并核对远端；不自动创建或合并 PR。
+- token：本次运行精确 token 数不可获得；Root 本轮开工非硬估算 `12k-20k`，终审仍在既定 A4-1 收尾范围内，未发生功能范围扩张。
