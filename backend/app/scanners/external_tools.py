@@ -179,6 +179,16 @@ def run_scancode_license_scan(tool: str, target: str, *, pass_fds: Sequence[int]
     )
 
 
+def run_syft_sbom_scan(tool: str, target: str, *, pass_fds: Sequence[int]) -> ToolExecution:
+    """Run fixed Syft JSON over a trusted proc-FD target."""
+    if not target.startswith("/proc/self/fd/"):
+        raise ValueError("Syft target must be a trusted proc descriptor")
+    return run_json_tool(
+        tool, ("scan", f"dir:{target}", "-o", "syft-json"), timeout_seconds=120,
+        max_output_bytes=_MAX_OUTPUT_BYTES, pass_fds=pass_fds,
+    )
+
+
 def parse_json_output(execution: ToolExecution) -> Mapping[str, Any] | None:
     """Decode one bounded tool output, returning ``None`` for invalid JSON."""
 

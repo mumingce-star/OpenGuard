@@ -648,3 +648,39 @@
 - 建议下一步及责任模型：Terra 在 Linux 运行 ZIP 端到端与失败/超时回归并接入 ScanRun partial；Luna 固化真实输出 fixture/独立安全测试；Sol 审核 B4 SPDX 候选标准化。
 - 关联的分支、提交、PR、Issue 或 evidence_id：`293c52b`；PR 候选 `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 12,000～20,000，本轮在该范围内完成；因平台 POSIX 限制将端到端 Linux 回归调整为明确待办。
+### [20260904-0900-Sol-任务8SyftZIP接入] START - 将 Syft 接入受控 ZIP 主流程并复现真实输出
+
+- 作者：GPT-5.6 Sol
+- 对话角色：后端主线实现 / 安全架构审计
+- 时间：2026-09-04 09:00（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；复用已审计的描述符安全边界，仅新增 Syft 路径。
+- 任务目标：接入固定 Syft SBOM 命令、将真实 JSON 映射为 P0 Component/Evidence，并以合成公开 fixture 回归。
+- 开始前已确认：已完整阅读 README、共享日志、PROJECT_PROGRESS 与 Sol 交接，检查分支、工作区和近期提交；B3 为进行中，无同文件在途修改。
+- 预计修改文件：`backend/app/scanners/`、`backend/app/cli.py`、测试/fixture、B2/B3规格、进度、AI记录与本日志。
+- 验收方法：Syft 1.51.0 真实 JSON、定向 pytest、compileall、diff 和敏感信息检查。
+- token 用量估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+### [20260904-0935-Sol-任务8SyftZIP接入收工] PARTIAL - 代码接入完成，真实输出工具阻塞
+
+- 作者：GPT-5.6 Sol
+- 对话角色：后端主线实现 / 安全架构审计
+- 时间：2026-09-04 09:35（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；未提交本轮未验收代码。
+- 任务目标和实际结果：已复用任务7的 sealed tree descriptor 边界，新增 Syft 固定 `scan dir:/proc/self/fd/<n> -o syft-json` 调用、路径去前缀映射、ZIP CLI `--syft-sbom` 与 P0 Component/Evidence 输出。现有外部工具适配回归 4/4、后端编译通过。
+- 修改或新增文件：`backend/app/scanners/external_tools.py`、`backend/app/scanners/syft_pipeline.py`、`backend/app/scanners/__init__.py`、`backend/app/cli.py`和本日志。
+- 命令与测试结果：`compileall backend` 通过；`tests/unit/test_b2_b3_external_tools.py` 为 4/4。此前 Syft 1.51.0 可执行文件已不在记录路径；从 Anchore 官方 release 重下载的操作未产生可执行文件，故无法运行真实 JSON 或新增端到端测试。
+- 接口、Schema、规则和重要决策：未改变 P0 Schema；Syft 仍仅映射存在相对位置证据的 artifact，不猜测许可证。完整 ZIP 子进程仍仅允许 POSIX descriptor 环境。
+- 已知风险、失败项和未完成内容：真实 Syft 输出、fixture/回归测试、Linux ZIP 端到端、文档/台账/进度更新及 GitHub 推送均未完成；当前未提交代码需要在工具可用后继续验证或回退。
+- 建议下一步及责任模型：CZ 允许重新提供可用 Syft 1.51.0 路径或网络下载完成后，由 Terra/Luna 运行真实 JSON 回归并补齐测试、资料和发布。
+- 关联的分支、提交、PR、Issue 或 evidence_id：无新提交；任务7基线 `925a90c`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 8,000～14,000，在范围内；因 Syft 二进制不可用缩小为可编译接入。
+### [20260904-1000-Sol-发布任务8部分实现] START - 提交并推送 Syft 部分实现
+
+- 作者：GPT-5.6 Sol
+- 对话角色：发布协调
+- 时间：2026-09-04 10:00（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；仅提交已核对的源代码与协作记录，明确排除 `.tools/`。
+- 任务目标：按用户指令将任务8当前部分实现上传 GitHub，同时保留真实工具回归未完成状态。
+- 开始前已确认：已完整阅读 README、共享日志、PROJECT_PROGRESS 与 Sol 交接，检查当前分支、状态和近期提交；无同文件在途记录。
+- 预计修改文件：本日志、`docs/coordination/PROJECT_PROGRESS.md`；Git 提交包括现有 Syft 源代码，排除临时工具目录。
+- 验收方法：待提交文件清单、`git diff --check`、定向 pytest/compileall 既有结果、敏感信息检查与远程推送确认。
+- token 用量估算：4,000～7,000；系统未提供本轮精确 token 遥测。

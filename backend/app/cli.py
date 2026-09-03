@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from app.ingestion import ReadOnlyScanSession
     from app.scanners import JavascriptP0MappingResult, PythonP0MappingResult
     from app.scanners import ScanCodePipelineResult
+    from app.scanners import SyftPipelineResult
 
 
 _SCHEMA = "openguard.zip-inventory"
@@ -210,6 +211,27 @@ def run_local_zip_scancode_licenses(
             service.close()
 
 
+def syft_sbom_payload(inventory: Inventory, result: SyftPipelineResult) -> dict[str, object]:
+    return {"schema": "openguard.syft-sbom", "version": "1", "root_digest": inventory.root_digest,
+            "tool_version": result.tool_version,
+            "components": [item.model_dump(mode="json") for item in result.mapping.components],
+            "evidence": [item.model_dump(mode="json") for item in result.mapping.evidence]}
+
+
+def run_local_zip_syft_sbom(archive_path: Path, workspace_root: Path, *, executable: str, tool_version: str, clock: Callable[[], datetime]):
+    from app.scanners import scan_syft_sealed_tree
+    try: archive_stream = archive_path.open("rb")
+    except OSError as error: raise _INPUT_ERROR from error
+    service: ZipIngestionService | None = None
+    try:
+        service = ZipIngestionService(workspace_root)
+        with archive_stream:
+            result = service.ingest_with_tree_consumer(archive_stream, lambda tree, inventory: scan_syft_sealed_tree(tree, inventory, executable=executable, tool_version=tool_version, observed_at=clock()))
+        return result.inventory, result.consumer_result
+    finally:
+        if service is not None: service.close()
+
+
 def run_local_zip_javascript_dependencies(
     archive_path: Path, workspace_root: Path, *, clock: Callable[[], datetime]
 ) -> tuple[Inventory, JavascriptP0MappingResult]:
@@ -266,7 +288,8 @@ def main(
     python_dependencies = len(args) == 2 and args[0] == "--python-dependencies"
     javascript_dependencies = len(args) == 2 and args[0] == "--javascript-dependencies"
     scancode_licenses = len(args) == 2 and args[0] == "--scancode-licenses"
-    if not python_dependencies and not javascript_dependencies and not scancode_licenses and len(args) != 1:
+    syft_sbom = len(args) == 2 and args[0] == "--syft-sbom"
+    if not python_dependencies and not javascript_dependencies and not scancode_licenses and not syft_sbom and len(args) != 1:
         _write_error(_USAGE_ERROR, errors)
         return 2
 
@@ -286,6 +309,11 @@ def main(
                 inventory, mapping = run_local_zip_scancode_licenses(
                     Path(args[1]), Path(directory), executable=executable, tool_version="32.5.0", clock=now
                 )
+            elif syft_sbom:
+                executable = os.environ.get("OPENGUARD_SYFT_BIN")
+                if not executable: raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+                now = clock or (lambda: datetime.now(timezone.utc))
+                inventory, mapping = run_local_zip_syft_sbom(Path(args[1]), Path(directory), executable=executable, tool_version="1.51.0", clock=now)
             else:
                 inventory = run_local_zip(Path(args[0]), Path(directory))
     except IngestionSecurityError as error:
@@ -298,7 +326,8 @@ def main(
     payload = (
         python_dependency_payload(inventory, mapping) if python_dependencies else
         javascript_dependency_payload(inventory, mapping) if javascript_dependencies else
-        scancode_license_payload(inventory, mapping) if scancode_licenses else inventory_payload(inventory)
+        scancode_license_payload(inventory, mapping) if scancode_licenses else
+        syft_sbom_payload(inventory, mapping) if syft_sbom else inventory_payload(inventory)
     )
     json.dump(payload, output, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     output.write("\n")
