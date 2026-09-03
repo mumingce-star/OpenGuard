@@ -2569,3 +2569,10 @@
 - 文档与状态：更新根/后端运行边界、安全测试说明、AI记录和进度台账；A4-0 标为子任务完成，A4 父任务仍为进行中。HTTP 仍只创建 queued，显式 worker 需要调用方提供 Adapter；真实 Git/ZIP、扫描器、规则、AI、报告、后台消费、lease/retry/recovery/exactly-once、Linux/TrustedEgress 和完整作品均未获证明。
 - evidence 裁决：候选 `EVD-A4-PIPELINE-WORKER-001` 升为 `APPROVED-PENDING-ROOT-BINDING`，仅覆盖 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程显式调用与可信注入 Adapter 的 durable Pipeline 编排。下一步创建不可变提交、回填提交哈希、推送任务分支并核对远端。
 - token：本次运行精确 token 数不可获得；Root 整体开工非硬估算 `12k-20k`，Sol/Terra/Luna/Root 在冻结 A4-0 单任务范围内完整完成，未发生功能范围扩张。
+
+### [20260903-1235-Root-A4Pipeline证据绑定] COMPLETE - A4-0 绑定不可变实现提交
+
+- 作者/角色/时间：Root；证据绑定与发布范围复核；2026-09-03 12:35（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`。
+- 不可变绑定：`EVD-A4-PIPELINE-WORKER-001` 绑定实现/规格/实现测试/独立测试/运行说明提交 `66fc2ae7246f34905d39346feced43195a401f3d`。该提交包含 11 个竞赛交付文件，没有原始附件、缓存、数据库、凭据、成员隐私或组员任务代码。
+- 运行 profile 与证据：macOS/POSIX、CPython 3.12.13、SQLite 3.53.1；A4实现+独立46项，Root A4+A3/P0定向169项，完整集合595项通过；Schema等值、compileall、diff、范围、敏感与权限门禁通过，保留一条第三方弃用warning。
+- 有界裁决：状态升级为 `APPROVED`，只批准显式 plan/可信 Adapter 的单进程 durable Pipeline 编排；A4父任务仍进行中，不证明真实扫描、HTTP自动消费、lease/retry/recovery、Linux/TrustedEgress或完整作品。下一步推送该任务分支并回填远端状态。
