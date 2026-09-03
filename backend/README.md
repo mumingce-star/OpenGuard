@@ -209,3 +209,19 @@ curl -X POST http://127.0.0.1:8000/api/v1/scans \
   -H 'Content-Type: application/json' \
   -d '{"source_type":"git","source":"https://github.com/example/OpenGuard","idempotency_key":"demo-001"}'
 ```
+
+## A4-0 显式单进程 Pipeline Worker
+
+`app.pipeline.ScanPipelineWorker` 仅由后端调用方显式传入完整七阶段 `PipelinePlan` 后执行；它不会
+启动线程、轮询数据库或自动消费 API 创建的 queued 任务。worker 以 A3 revision/CAS 认领 queued
+快照，按固定阶段持久化进度，并把已校验 Adapter 的完整 `ScanRun` 聚合写回 SQLite。Adapter 只是
+调用方注入的边界；其测试 stub 不代表真实 Git/ZIP 摄取、扫描、许可证、AI 或报告结果。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_pipeline_worker.py
+```
+
+该能力只证明本机 SQLite、单进程、单次显式调用的 durable 编排。它不提供后台任务、重试、租约、
+心跳、超时、崩溃恢复、exactly-once 外部副作用或完整 Web 扫描流程。

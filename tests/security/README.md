@@ -216,3 +216,20 @@ PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/t
 本轮结果：独立文件排除沙箱回环项为 `24 passed, 1 deselected`；A3-1 实现 unit + 独立测试为 `47 passed, 1 deselected`；A3-0 实现+独立 `77 passed`；P0 `46 passed`；全量排除回环项 `548 passed, 1 deselected`；Schema 等值专项 `1 passed`；`compileall`、`git diff --check`、尾随空白、敏感模式和 world-writable 检查通过。Root 提供的受控回环全量结果为 `549 passed`，其中真实 Uvicorn smoke 已通过；当前沙箱自身仍无法绑定临时回环端口，未将该环境限制记为产品失败。
 
 `EVD-A3-FASTAPI-GIT-API-001` 的三项 P1 已由 Luna 原始探针关闭，但最终发布仍需 Sol/Root 对修复后的不可变提交、运行 profile 和有界范围完成重审/绑定。本结果只证明本机 macOS/POSIX 的最小 FastAPI/SQLite 纵切，不外推真实 Git/ZIP、worker/A4、扫描器/AI/报告、Linux isolation、TrustedEgress、Bench 或完整竞赛作品。
+
+### A4-0 Pipeline Worker 独立安全复核
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_a4_pipeline_worker_independent.py
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/unit/test_a4_pipeline_worker.py tests/security/test_a4_pipeline_worker_independent.py
+```
+
+本轮独立文件共收集 25 项：冻结 `POS-A4-001..005` 与 `NEG-A4-001..010` 逐 ID 覆盖；同一语义的非队列状态、时钟和身份篡改才使用参数化变体。测试独立构造 queued `ScanRun`、确定性 idempotency fingerprint、完整七阶段 `PipelinePlan` 和临时 SQLite registry，不复用 Terra 测试 helper，不生成持久化 fixture，不执行目标仓库代码。
+
+真实结果：Luna 独立 `25 passed`；Terra A4 unit + Luna 合计 `46 passed`；A3/P0 聚焦（排除真实 Uvicorn 回环绑定受沙箱限制的用例）`170 passed, 1 deselected`；全量同样 `594 passed, 1 deselected`；Schema 等值专项 `1 passed`；`compileall -q backend/app tests`、`git diff --check`、Luna 范围尾随空白、敏感模式和 world-writable 检查通过。回环用例未在本沙箱重复执行，保留 Terra/Root 先前的受控回环结果，不把环境限制外推为产品缺陷。
+
+覆盖重点包括：合法 handler 跨阶段聚合持久化与 SQLite 重开、claim 和阶段进度的 durable prewrite、两个 registry/线程的单赢家 claim、所有 nonqueued 终态、plan 缺失/重复/错序/非法 stage/noncallable、recoverable aggregate 的 partial 门槛、异常路径/URL/secret 脱敏、非 `ScanRun` 返回、id/project 不可变、非取消 CAS 冲突、clock 异常/naive/非 UTC/倒退、registry get/replace 非冲突故障和 cancellation winner；handler 不被错误路径继续调用。
+
+本轮未发现新的 P0/P1/P2 实现缺陷，未修改 Terra backend 或 unit、冻结规格、P0/Schema/sample、A3/A2/B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party。证据边界仍限于本机 macOS/POSIX、CPython 3.12、单机 SQLite、显式注入的可信 stage adapter；不证明真实 Git/ZIP ingestion、扫描器、规则、AI、报告、后台队列、retry/lease/recovery/exactly-once、Linux isolation、TrustedEgress、Bench 或完整竞赛作品；A4 候选 evidence 仍需 Sol/Root 绑定不可变提交、运行 profile 和范围后裁决。

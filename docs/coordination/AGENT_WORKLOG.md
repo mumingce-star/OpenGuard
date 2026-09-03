@@ -2496,3 +2496,76 @@
 - 远端事实：`feat/a3-fastapi-api` 已从 `d90484e` 推送至证据绑定提交 `68163de`；其中不可变修复/独立测试提交为 `aedf65cef55f4683c3d82cb8e79b4d20d2fb1f71`。本轮不创建、不合并 PR，不改变 `main`。
 - 上传内容：API 404/405统一错误信封、URL控制字符/UTF-8字节上限修复、23项实现测试、25项Luna独立测试、安全测试说明、AI/协作日志、A3-1规格与项目进度。未上传原始附件、缓存/数据库、凭据、成员隐私、组员新增代码或前端。
 - 下一步：提交本远端回填记录并二次推送，随后比较本地 tracking 与远端 ref；下一工程任务仍应是项目负责人范围内的 A3-2 ZIP API 安全接线或 A4 最小 worker/Pipeline，不接管 B1-B7/前端。
+
+### [20260903-1201-RootSol-A4Pipeline契约] START - 冻结项目负责人 A4-0 最小 worker/Pipeline 纵切
+
+- 作者/角色/时间：Root / GPT-5.6 Sol；项目统筹、架构与状态机契约；2026-09-03 12:01（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`；Root 统一提交与推送。
+- 前置核验：已只读复核技术执行书中项目负责人 A4 `backend/app/pipeline/`、`ingestion -> scanners/parsers -> normalize -> rules -> AI -> report`、失败可定位阶段及允许 mock/stub Adapter 的要求，并核对 P0 v0.1.1、A3 SQLite revision/CAS、A3-1 queued API、系统架构、交付计划、模型路由、共享进度和当前 Git 状态。
+- 任务归属与目标：只推进用户负责的 A4-0 单进程显式 worker/Pipeline 骨架；冻结固定阶段、进度、单次 claim、Adapter 输出、结构化失败与 `partial` 门槛，再由 Terra `high` 实现、Luna `max` 独立复核、Sol/Root 终审。完成后，测试/调用方可把一个 durable queued `ScanRun` 驱动到 terminal；不自动消费 API 队列。
+- 预计修改：`docs/spec/a4-pipeline-worker.md`、`backend/app/pipeline/`、A4 实现/独立测试、相关 README、AI 记录、本日志与 `PROJECT_PROGRESS.md`。冻结 P0 models/Schema/sample，不修改 A2/B1-B7 扫描器、前端或原始竞赛附件。
+- 验收：POS/NEG 可检索测试、A4+A3+P0及全量 pytest、Schema 等值、compileall、`git diff --check`、受保护路径/敏感信息/权限/上传范围检查；按测试工厂完成 queued -> terminal 真实 SQLite 重开 smoke。若有 P0/P1，保留原始复现，先关闭再绑定 evidence。
+- 非目标：真实 Git/ZIP 物化接线、scanner/normalizer/rules/AI/report 业务内部、常驻线程/进程、租约/心跳/重试/超时/崩溃恢复、分布式 exactly-once、Linux/TrustedEgress、前端及组员 B1-B7。不得把 stub 绿灯外推为真实扫描结果。
+- token：本轮整体非硬估算 `12k-20k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。若独立复核暴露较大缺陷，将停在有界可验证里程碑而不扩大功能。
+
+### [20260903-1210-Sol-A4Pipeline契约] COMPLETE - A4-0 实现契约已冻结
+
+- 作者/角色/时间：GPT-5.6 Sol；架构、状态机与证据边界；2026-09-03 12:10（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`；未提交、未推送。
+- 产出：新增 `docs/spec/a4-pipeline-worker.md`，冻结七阶段及 5/15/35/55/70/85/95 进度、A3 CAS 认领、完整 `ScanRun` Adapter 边界、completed/partial/failed/cancelled 语义、脱敏错误、5 POS + 10 NEG 和有界 evidence 声明。
+- 关键裁决：A4-0 只接受显式完整 plan，未提供 production 默认 stub；只有 Adapter 显式 recoverable 且已有可用 public aggregate 才可 partial；未知异常或非法输出不得泄漏并必须形成 failed；竞争取消尊重 durable winner。P0 models/Schema/sample 与 A3 HTTP 契约保持不变。
+- 验证：规格内 15 个用例 ID 唯一可检索，`git diff --check` 通过；已对照 P0 `ScanRun/ScanError` validator、A3 revision/CAS transition 与技术执行书 A4/mock Adapter 原文。当前仅为设计完成，尚无 A4 业务代码或运行证明。
+- 边界与交接：Terra 只实现 `backend/app/pipeline/`、实现测试与必要 README/AI/日志，不得改规格、P0/A3、A2/B1-B7、前端或启动后台线程；完成后交 Luna 保留实现原样做独立测试。token 纳入 Root 本轮 `12k-20k` 总估算；无单模型精确遥测。
+
+### [20260903-1220-Terra-A4PipelineWorker] START - 实现冻结 A4-0 最小单进程 Pipeline Worker
+
+- 作者/角色/时间：GPT-5.6 Terra；项目负责人主线工程与系统集成；2026-09-03 12:20（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`；不提交、不推送。
+- 开始前确认：已依根 `AGENTS.md` 完整核对 README、共享日志、进度台账、Terra 交接、Git 分支/状态/最近提交，并读取 Sol `1210 COMPLETE` 的冻结 A4-0 规格、P0 `ScanRun`/`ScanError` 与 A3 SQLite registry。当前无其他模型修改 A4 实现或测试。
+- 允许范围：新增 `backend/app/pipeline/` 与 `tests/unit/test_a4_pipeline_worker.py`，必要更新 `backend/README.md`、`docs/05-ai-assistance-log.md` 和本追加日志。不得修改冻结规格、P0 models/Schema/sample、A3 API/registry、A2/B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party。
+- 验收计划：显式完整七阶段 plan、CAS claim、阶段/终态持久化、取消/冲突、recoverable partial 门槛、脱敏失败和 clock 校验；运行 A4 实现测试、A4+A3+P0 相关回归、可行时全量、compileall、`git diff --check`。不提供 production 默认 stub，不启动后台线程或自动消费 queued API。
+- token：本轮非硬估算 `6k-10k`；客户端无精确 token 遥测，收工如实报告。
+
+### [20260903-1245-Terra-A4PipelineWorker] COMPLETE - A4-0 实现侧最小 Worker 闭环
+
+- 作者/角色/时间：GPT-5.6 Terra；项目负责人主线工程与系统集成；2026-09-03 12:45（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`；未提交、未推送。
+- 实际交付：新增 `backend/app/pipeline/`，导出显式 `PipelinePlan`/`PipelineStep`、稳定脱敏 `PipelineError`、`PipelineStageFailure` 与 `ScanPipelineWorker`。Worker 只接受精确的七阶段计划；以 A3 revision/CAS 将 queued 认领为 `running/ingestion/5`，阶段前持久化固定进度，保留合法 Adapter 聚合，最终写入 completed/100；显式失败按 aggregate/recoverable 形成 partial 或 failed，竞争 cancelled winner 不覆盖，非取消冲突/持久层异常使用冻结错误码。
+- 实现测试：新增 `tests/unit/test_a4_pipeline_worker.py`，覆盖 5 POS + 10 NEG ID 可检索、完整 plan/reopen、阶段/进度/started_at、partial 门槛、取消赢家、非法 plan/scan_id/nonqueued、未知输出脱敏 failed 及非法 clock 保持 queued；本文件 `21 passed in 0.10s`。
+- 回归与静态：A4+A3+P0 `99 passed in 0.23s`；全量首次为 `569 passed, 1 failed`，唯一失败是当前沙箱拒绝绑定 `127.0.0.1` 的既有 A3-1 Uvicorn 回环测试；经受控回环复测该项 `1 passed, 24 deselected`。`schema_export_equal=True`、`compileall -q backend/app tests`、`git diff --check` 和本轮源码/测试/README 敏感模式检查通过；保留一条既有 Starlette 第三方弃用 warning。
+- 文件与边界：实际修改/新增为 `backend/app/pipeline/__init__.py`、`backend/app/pipeline/worker.py`、`tests/unit/test_a4_pipeline_worker.py`、`backend/README.md`、`docs/05-ai-assistance-log.md` 与本日志；未修改冻结规格、P0 models/Schema/sample、A3 API/registry、A2/B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party。没有默认 production stub、后台线程/轮询或 API 自动消费；未实现真实 Git/ZIP、scanner/rules/AI/report Adapter、重试/租约/恢复或 exactly-once。
+- 交接：Luna 应在不复用 Terra helper 的前提下保留实现原样，独立复验原始 5 POS + 10 NEG，尤其并发 claim、非法 Adapter 及 cancelled/conflict/registry-failure 分支；Sol/Root 随后复审有界 evidence。当前不批准发布 evidence。
+- token：本次运行精确 token 数不可获得；开工估算 `6k-10k`，任务在该单一范围内完整收工且未扩大功能范围；因无精确遥测，不编造实际 token 消耗。
+
+### [20260903-1214-Luna-A4Pipeline独立验证] START - A4-0 Pipeline Worker 独立安全验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据、夹具与材料形式检查；2026-09-03 12:14（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`；不提交、不推送。
+- 前置核验：已按 `AGENTS.md` 阅读 README、共享日志至 Terra `1245 COMPLETE`、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、A4-0 冻结规格、`backend/app/pipeline/` 全部实现和 `tests/unit/test_a4_pipeline_worker.py`；当前 EOF 为 Terra `1245 COMPLETE`。
+- 目标：不复用 Terra helper，独立构造 queued `ScanRun`、SQLite registry 和完整七阶段 plan，逐项覆盖 `POS-A4-001..005` 与 `NEG-A4-001..010`，重点验证持久聚合/重开、并发 claim、终态、plan/handler/clock 校验、partial 门槛、错误脱敏、不可变字段、CAS 冲突、registry 故障和取消赢家。
+- 修改边界：仅允许新增 `tests/security/test_a4_pipeline_worker_independent.py`，必要更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，并向本日志追加收工记录；不得修改 backend、Terra unit、冻结规格、P0/Schema/sample、A3/A2/B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party。
+- 验收顺序：先独立测试；失败则保留原始复现并按 P0/P1/P2 分级，不代修。全绿后运行 A4+独立、A3/P0、全量（回环项若受沙箱限制可 deselect 并记录）、Schema、compileall、diff/敏感/权限范围检查。
+- token：本轮非硬估算 `5k-9k`；客户端无精确本轮 token 遥测，收工时如实报告。
+
+### [20260903-1226-Luna-A4Pipeline独立验证] COMPLETE - A4-0 Pipeline Worker 独立安全验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据、夹具与材料形式检查；2026-09-03 12:26（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`；不提交、不推送。
+- 结果：独立测试共 25 项，逐 ID 覆盖 `POS-A4-001..005` 与 `NEG-A4-001..010`，结果 `25 passed`；A4 Terra unit + Luna 合计 `46 passed`。初次运行的全量失败均来自测试夹具遗漏 A3 要求的 fingerprint，已仅在独立测试中补齐确定性 SHA-256，未形成实现缺陷或修改 Terra 文件。
+- 覆盖：完整七阶段 handler 一次执行、跨阶段/终态/SQLite 重开聚合、claim 与阶段 prewrite 持久性、两个 registry/线程的单赢家、所有 nonqueued 终态、plan/handler 校验、partial 门槛、异常脱敏、非 `ScanRun`、id/project immutable、非取消 CAS 冲突、clock 边界、registry get/replace 故障和取消赢家；错误路径均验证不继续调用 handler。
+- 门禁：A3/P0 聚焦（排除真实 Uvicorn 回环绑定受沙箱限制的用例）`170 passed, 1 deselected`；全量 `594 passed, 1 deselected`；Schema 专项 `1 passed`；`compileall -q backend/app tests` 通过；`git diff --check`、Luna 范围尾随空白、敏感模式和 world-writable 检查通过。回环 deselect 原因已记录，未把沙箱限制当作产品缺陷。
+- 文件与边界：仅新增 `tests/security/test_a4_pipeline_worker_independent.py`，并追加 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 与本日志；未修改 `backend/app/pipeline/`、`tests/unit/test_a4_pipeline_worker.py`、其他 backend、冻结规格、P0/Schema/sample、A3/A2/B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party；无提交/推送。
+- 缺陷与证据：本轮未发现新的 P0/P1/P2 实现缺陷；没有新增 Bench 版本、第三方资源台账、L10 证据索引或 L11 报告/截图材料，未新增 evidence_id。证据仅限本机 macOS/POSIX、CPython 3.12、单机 SQLite、显式注入的可信 stage adapter；不外推真实 Git/ZIP ingestion、scanner/rules/AI/report、后台队列、retry/lease/recovery/exactly-once、Linux isolation、TrustedEgress、Bench 或完整竞赛作品。A4 候选 evidence 仍待 Sol/Root 绑定不可变提交、运行 profile、范围和报告追溯后裁决。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `5k-9k`，任务在该范围内完整收工，未发生范围调整；不编造实际 token 消耗。
+
+### [20260903-1229-Luna-A4Pipeline定向复核] COMPLETE - 保持冻结范围的现有门禁复跑
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与收工验证；2026-09-03 12:29（Asia/Shanghai）。保持 `feat/a4-pipeline-worker`，不提交、不推送，不扩展用例。
+- 结果：原有 A4 独立测试 `25 passed`；A4 Terra unit + Luna `46 passed`；A3/P0 定向门禁 `170 passed, 1 deselected`；Schema `1 passed`；`compileall -q backend/app tests` 与 `git diff --check` 通过。deselect 仍仅为沙箱无法绑定真实 Uvicorn 回环端口，未视为产品失败。
+- 缺陷分级：本次未复现新的 P1/P2，未修改实现；无 PARTIAL。既有 A4 证据边界、未完成能力和待 Sol/Root 绑定条件保持不变。
+- 文件与证据：仅复跑现有测试/门禁并追加本记录；未新增测试、fixture、Bench、第三方台账、L10/L11 材料或 evidence_id，未修改 Terra/backend、冻结规格、P0/Schema/sample、PROJECT_PROGRESS 或其他角色文件。
+- token：本次运行精确 token 数不可获得；本轮开工非硬估算 `1k-3k`，在范围内完成，未发生范围调整。
+
+### [20260903-1233-RootSol-A4Pipeline终审] AMENDMENT/COMPLETE - A4-0 候选通过 Root 终审，待不可变提交绑定
+
+- 作者/角色/时间：Root / GPT-5.6 Sol；实现差异、状态机、证据边界与发布审计；2026-09-03 12:33（Asia/Shanghai）。分支 `feat/a4-pipeline-worker`；本条记录时未提交、未推送。
+- 日志时间说明：Terra/Luna 条目中的显示时分由各对话自行记录，出现晚于当前宿主时钟或追加顺序不一致；历史不改写。事实顺序以本日志物理追加顺序 `Sol契约 -> Terra实现 -> Luna独立验证 -> Root终审` 为准，后续不以那些时分计算耗时。
+- 审计结论：实现与冻结规格一致，A3 CAS 首次 claim 后才执行 handler；七阶段、固定进度、完整 `ScanRun` Adapter 聚合、completed/partial/failed/cancelled、非取消冲突和持久层错误语义均有实现与独立覆盖。没有 production 默认 stub、线程/轮询、API 自动消费或对 A2/B1-B7/前端的越界修改；无开放 P0/P1/P2。
+- Root 复现：A4+注册表+P0 定向 `169 passed`；全量在沙箱排除既有真实回环项 `594 passed, 1 deselected`；获得本机回环授权后原单项 `1 passed`，故当前完整集合等价 `595 passed`。保留一条 Starlette/AnyIO 第三方弃用 warning；`schema_export_equal=True`、compileall、`git diff --check`、受保护路径零差异、world-writable 与上传清单检查通过。敏感扫描只命中 Luna 故障注入中的虚构 `token=secret`，测试断言确认其不落入 durable error。
+- 文档与状态：更新根/后端运行边界、安全测试说明、AI记录和进度台账；A4-0 标为子任务完成，A4 父任务仍为进行中。HTTP 仍只创建 queued，显式 worker 需要调用方提供 Adapter；真实 Git/ZIP、扫描器、规则、AI、报告、后台消费、lease/retry/recovery/exactly-once、Linux/TrustedEgress 和完整作品均未获证明。
+- evidence 裁决：候选 `EVD-A4-PIPELINE-WORKER-001` 升为 `APPROVED-PENDING-ROOT-BINDING`，仅覆盖 macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程显式调用与可信注入 Adapter 的 durable Pipeline 编排。下一步创建不可变提交、回填提交哈希、推送任务分支并核对远端。
+- token：本次运行精确 token 数不可获得；Root 整体开工非硬估算 `12k-20k`，Sol/Terra/Luna/Root 在冻结 A4-0 单任务范围内完整完成，未发生功能范围扩张。
