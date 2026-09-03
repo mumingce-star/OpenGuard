@@ -2489,3 +2489,10 @@
 - 运行 profile：macOS/POSIX、CPython 3.12.13、FastAPI 0.141.1、Uvicorn 0.52.4、Starlette 1.6.0、HTTPX2 2.12.0、SQLite 3.53.1；全量 `549 passed`，保留1条第三方弃用warning；Schema等值、compileall、diff、受保护路径与权限检查通过。
 - 证据边界：批准状态为本机有界 `APPROVED`，只证明最小FastAPI/SQLite Git queued API；不证明真实Git物化/联网、ZIP、worker/A4、扫描器、许可证/AI规则、报告生成、Linux/TrustedEgress、前端或完整竞赛作品。
 - 发布状态：绑定提交与本记录当前仍仅在本地；下一步推送 `feat/a3-fastapi-api`，核对远端ref后再追加发布回填，不提前声称GitHub已更新。
+
+### [20260903-1143-Root-A3FastAPI发布] COMPLETE - 修复与独立验证已推送 GitHub
+
+- 作者/角色/时间：Root；项目统筹与远端发布验收；2026-09-03 11:43（Asia/Shanghai）。
+- 远端事实：`feat/a3-fastapi-api` 已从 `d90484e` 推送至证据绑定提交 `68163de`；其中不可变修复/独立测试提交为 `aedf65cef55f4683c3d82cb8e79b4d20d2fb1f71`。本轮不创建、不合并 PR，不改变 `main`。
+- 上传内容：API 404/405统一错误信封、URL控制字符/UTF-8字节上限修复、23项实现测试、25项Luna独立测试、安全测试说明、AI/协作日志、A3-1规格与项目进度。未上传原始附件、缓存/数据库、凭据、成员隐私、组员新增代码或前端。
+- 下一步：提交本远端回填记录并二次推送，随后比较本地 tracking 与远端 ref；下一工程任务仍应是项目负责人范围内的 A3-2 ZIP API 安全接线或 A4 最小 worker/Pipeline，不接管 B1-B7/前端。
