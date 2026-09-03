@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-03 17:20（Asia/Shanghai）
+更新时间：2026-09-03 17:55（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -37,7 +37,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | A3-1 FastAPI Git API 纵切 | P0 | Root→Luna→Sol | 已完成 | FastAPI 六路由、Git queued 持久幂等、结果读取/过滤与统一脱敏错误；Luna 独立发现的404/405信封、控制字符、UTF-8字节上限三项P1已最小关闭；A3-1实现+独立48项、A3-0 77项、P0 46项、全量549项通过；真实Uvicorn 202/200并可重启读取；证据绑定 `aedf65c` | A3父任务仍缺ZIP multipart、安全Git物化、worker与A4编排；结果读取只消费已有终态ScanRun，不生成结果；本机证据不得外推Linux/TrustedEgress或完整扫描 | 已推送 `feat/a3-fastapi-api`；实现/独立证据 `aedf65c`，绑定 `68163de`；待PR合并 |
 | A4-0 显式单进程 Pipeline Worker | P0 | Sol→Terra→Luna→Root | 已完成 | 七阶段/固定进度、A3 CAS认领、Adapter聚合持久化、completed/partial/failed/cancelled与脱敏错误；Terra 21项、Luna独立25项，A4合计46项；Root定向169项、完整集合595项通过；`EVD-A4-PIPELINE-WORKER-001` 已绑定 `66fc2ae`；无开放P0/P1/P2 | A4父任务仍缺真实Adapter接线、API队列自动消费、重试/超时、lease/heartbeat、stale-running恢复与系统集成；stub结果不得外推真实扫描 | 已推送 `feat/a4-pipeline-worker`；实现证据 `66fc2ae`；待PR合并 |
 | A4-1 本地 ZIP 依赖 Pipeline 接线 | P0 | Sol→Terra→Root→Luna→Root | 已完成 | 本地 ZIP 经单次 A2 只读会话调用既有 B1 Python/JavaScript parser/mapper，持久化真实 P0 Component/Evidence、digest、producer与summary；规则未接线时诚实为partial；实现29项、Luna独立20项、A4-1合计49项、完整集合644项通过；`EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001` 已绑定 `fbed364`，无开放P0/P1/P2 | A4父任务继续接许可证规则、API/后台消费、AI与报告；A4-1不包含这些能力 | 已推送 `feat/a4-local-zip-pipeline`；待PR合并 |
-| A3-2 ZIP HTTP 与进程内后台扫描 | P0 | Sol/Root→Luna→Root | 进行中 | 同一 POST 路径支持 Git JSON 与 ZIP multipart；请求/上传限额、私有暂存、摘要/幂等、queued→BackgroundTask→A4-1、清理与 OpenAPI 已实现；实现20项、Luna独立22项、完整集合等价686项通过，无开放P0/P1/P2 | 待不可变证据绑定与 GitHub 推送；`partial/rules/70` 表示依赖结果可用、规则待接入 | 本地验收完成；分支 `feat/a3-zip-background-scan` 待提交推送 |
+| A3-2 ZIP HTTP 与进程内后台扫描 | P0 | Sol/Root→Luna→Root | 已完成 | 同一 POST 路径支持 Git JSON 与 ZIP multipart；请求/上传限额、私有暂存、摘要/幂等、queued→BackgroundTask→A4-1、清理与 OpenAPI 已实现；实现20项、Luna独立22项、完整集合等价686项通过；`EVD-A3-ZIP-BACKGROUND-SCAN-001` 已绑定 `530e930`，无开放P0/P1/P2 | `partial/rules/70` 表示依赖结果可用、规则待接入；A3父任务仍缺公开 Git 物化和持久队列/恢复 | 已推送 `feat/a3-zip-background-scan`；待PR合并 |
 
 ## 2. P0 工作包全景
 
@@ -53,7 +53,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | B4 | SPDX标准化 | Sol/Terra | 未开始 | LicenseExpression契约已具备 | SPDX数据版本、别名、复合表达式、LicenseRef及测试 | 9月4日-20日 |
 | B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 未开始 | Obligation/RiskFinding结构已具备 | 规则Schema、原文证据、正反未知冲突样例、人工核验状态 | 9月12日-20日 |
 | B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
-| A3 | FastAPI扫描API | 项目负责人 / Root | 进行中 | 6个端点契约、A3-0 SQLite、A3-1 Git JSON 与读取、A3-2 ZIP multipart→进程内 BackgroundTask→A4-1 已本地独立验证；ZIP 可产生可查询的真实依赖 partial | A3-2 待提交发布；A3父任务仍缺公开 Git 物化、持久队列、lease/retry/recovery、ZIP 进程重启恢复 | 9月21日-28日 |
+| A3 | FastAPI扫描API | 项目负责人 / Root | 进行中 | 6个端点契约、A3-0 SQLite、A3-1 Git JSON 与读取、A3-2 ZIP multipart→进程内 BackgroundTask→A4-1 均已发布并独立验证；ZIP 可产生可查询的真实依赖 partial | A3父任务仍缺公开 Git 物化、持久队列、lease/retry/recovery、ZIP 进程重启恢复 | 9月21日-28日 |
 | A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4-0 worker 与 A4-1 真实 ZIP 依赖接线已完成；A3-2 已在本地证明 HTTP ZIP 可触发进程内后台 A4-1 并产生可查询 partial；当前完整集合等价686项通过 | 继续接入真实许可证规则、AI降级与报告 Adapter；补持久后台消费、超时/重试、lease/heartbeat、stale-running恢复和端到端证据 | 9月21日-28日 |
 | A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 未开始 | AI边界与A1.1字段方案已确定 | Qwen3/Ollama锁版、结构化输出、证据引用、失败降级、消融 | 9月12日-28日 |
 | F0 | P0前端核心页面 | Terra/团队前端 | 未开始 | sample可作为共同数据 | New Scan、Progress、Dashboard、Risk Detail、Resource List、Report接真实API | 9月21日-28日 |
@@ -80,6 +80,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 2026-09-03 | A3-1 FastAPI Git API 纵切 | `feat/a3-fastapi-api` | `aedf65c`（独立复核/P1闭环实现；绑定 `68163de`） | FastAPI应用、六路由、Git queued 创建、状态/结果读取、统一错误、23项实现测试、25项Luna独立测试、规格/运行/AI/协作与进度说明 | 已推送；待PR合并 |
 | 2026-09-03 | A4-0 显式单进程 Pipeline Worker | `feat/a4-pipeline-worker` | `66fc2ae`（不可变实现/独立证据；首轮发布 `b6311be`） | Pipeline worker、冻结规格、21项实现测试、25项Luna独立测试、运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
 | 2026-09-03 | A4-1 本地 ZIP 依赖 Pipeline 接线 | `feat/a4-local-zip-pipeline` | `fbed364`（不可变实现/独立证据；绑定 `d79da6e`） | A4-1 pipeline/export、冻结规格、29项实现测试、20项Luna独立测试、运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
+| 2026-09-03 | A3-2 ZIP HTTP 与进程内后台扫描 | `feat/a3-zip-background-scan` | `530e930`（不可变实现/独立证据；绑定 `bca0a2c`） | ZIP multipart API/runtime、进程内后台 A4-1、20项实现测试、22项Luna独立测试、精确依赖锁定及运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
 
 ## 4. 目录健康检查
 
