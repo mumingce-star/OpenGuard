@@ -2404,3 +2404,10 @@
 - 运行事实：macOS/POSIX、CPython 3.12.13、FastAPI 0.141.1、Uvicorn 0.52.4、Starlette 1.6.0、HTTPX2 2.12.0、SQLite 3.53.1；A3-1 17、A3/P0联合140、全量518项通过，Schema等值与compileall通过，真实Uvicorn 202/200及重启读取通过。
 - 裁决边界：当前为本机实现验证事实，尚未经过独立模型复核，不升级为最终报告证据；不覆盖ZIP multipart、DNS/TrustedEgress、真实Git物化、worker/A4、扫描结果生成、Linux/容器、前端或完整竞赛作品。
 - 发布范围：只包含项目负责人 A3-1 源码、测试、规格、运行说明、依赖/AI/进度/协作台账；不包含原始PDF/DOCX、虚拟环境、临时SQLite、凭据、真实成员身份、组员B1-B7新增工作或前端代码。
+
+### [20260903-1115-Root-A3FastAPI发布] COMPLETE - A3-1 分支已推送 GitHub
+
+- 作者/角色/时间：Root；项目统筹与远端发布验收；2026-09-03 11:15（Asia/Shanghai）。
+- 远端事实：`feat/a3-fastapi-api` 已创建并推送到 `origin`；不可变实现提交 `b8d3b633387759abb1a0d57a68e780747fbbb801` 与本机证据绑定提交 `53c196f` 已上传。PR 创建入口为 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/a3-fastapi-api`；本轮不创建、不合并 PR，不改变 `main`。
+- 上传范围：仅项目负责人 A3-1 竞赛交付代码、测试、规格、运行/依赖/AI/协作/进度文档；不含原始附件、临时数据库、环境缓存、凭据、真实成员身份、扫描分析组员新增任务或前端组员代码。
+- 下一步：提交本远端状态回填并二次推送，核对本地 tracking 与远端 ref 一致。后续项目负责人任务应先做 A3-1 独立复核，再进入 A3-2 ZIP API 接线或 A4 最小 worker/Pipeline；不得用 queued API 冒充可完成扫描。
