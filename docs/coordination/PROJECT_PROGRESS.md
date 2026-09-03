@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-03 18:45（Asia/Shanghai）
+更新时间：2026-09-03 19:05（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -38,7 +38,8 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | A4-0 显式单进程 Pipeline Worker | P0 | Sol→Terra→Luna→Root | 已完成 | 七阶段/固定进度、A3 CAS认领、Adapter聚合持久化、completed/partial/failed/cancelled与脱敏错误；Terra 21项、Luna独立25项，A4合计46项；Root定向169项、完整集合595项通过；`EVD-A4-PIPELINE-WORKER-001` 已绑定 `66fc2ae`；无开放P0/P1/P2 | A4父任务仍缺真实Adapter接线、API队列自动消费、重试/超时、lease/heartbeat、stale-running恢复与系统集成；stub结果不得外推真实扫描 | 已推送 `feat/a4-pipeline-worker`；实现证据 `66fc2ae`；待PR合并 |
 | A4-1 本地 ZIP 依赖 Pipeline 接线 | P0 | Sol→Terra→Root→Luna→Root | 已完成 | 本地 ZIP 经单次 A2 只读会话调用既有 B1 Python/JavaScript parser/mapper，持久化真实 P0 Component/Evidence、digest、producer与summary；规则未接线时诚实为partial；实现29项、Luna独立20项、A4-1合计49项、完整集合644项通过；`EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001` 已绑定 `fbed364`，无开放P0/P1/P2 | A4父任务继续接许可证规则、API/后台消费、AI与报告；A4-1不包含这些能力 | 已推送 `feat/a4-local-zip-pipeline`；待PR合并 |
 | A3-2 ZIP HTTP 与进程内后台扫描 | P0 | Sol/Root→Luna→Root | 已完成 | 同一 POST 路径支持 Git JSON 与 ZIP multipart；请求/上传限额、私有暂存、摘要/幂等、queued→BackgroundTask→A4-1、清理与 OpenAPI 已实现；实现20项、Luna独立22项、完整集合等价686项通过；`EVD-A3-ZIP-BACKGROUND-SCAN-001` 已绑定 `530e930`，无开放P0/P1/P2 | `partial/rules/70` 表示依赖结果可用、规则待接入；A3父任务仍缺公开 Git 物化和持久队列/恢复 | 已推送 `feat/a3-zip-background-scan`；待PR合并 |
-| A8-1 P0团队集成基线与分支整理 | P0 | Root/Sol | 进行中 | `integration/p0` 已汇合项目负责人六层后端纵切、前端组员壳和扫描组员B2/B3 Adapter候选；后端688项非回环+2项真实回环通过，前端锁文件供应链检查和生产构建通过；Schema不变 | 待提交/推送集成入口，再删除仅项目负责人所有且已被完整包含的历史任务分支；不删除组员分支 | 本地集成通过，待推送 `integration/p0` |
+| A8-1a P0团队集成基线 | P0 | Root/Sol | 已完成 | `integration/p0` 已汇合项目负责人六层后端纵切、前端组员壳和扫描组员B2/B3 Adapter候选；后端688项非回环+2项真实回环通过，前端锁文件供应链检查和生产构建通过；Schema不变；`EVD-P0-TEAM-INTEGRATION-001` 绑定 `f486ead` | 前端仍为mock；B2/B3仍缺本机真实工具和主链接线；不外推完整产品 | 已推送 `integration/p0`；团队后续从此创建短分支 |
+| A8-1b 冗余远端分支清理 | P0治理 | Root | 阻塞 | 已证明13个旧项目负责人任务分支均被 `integration/p0` 完整包含且零独有提交；组员两分支明确排除 | 远端删除被安全审批拒绝，需用户明确批准下方13个具体分支；本轮没有删除任何分支 | 待用户确认；不影响 `integration/p0` 使用 |
 | F0-0 前端应用壳 | P0 | 前端组员→Root验证 | 进行中 | React/Vite/Tailwind应用壳、基础页面与动效已由组员提交；Root按锁文件安装并完成TypeScript+Vite生产构建 | 当前仍使用mock，未接真实API；页面功能与视觉验收归前端组员 | 来源 `feat/xzb-frontend`，已纳入本地集成候选 |
 
 ## 2. P0 工作包全景
@@ -83,6 +84,14 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 2026-09-03 | A4-0 显式单进程 Pipeline Worker | `feat/a4-pipeline-worker` | `66fc2ae`（不可变实现/独立证据；首轮发布 `b6311be`） | Pipeline worker、冻结规格、21项实现测试、25项Luna独立测试、运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
 | 2026-09-03 | A4-1 本地 ZIP 依赖 Pipeline 接线 | `feat/a4-local-zip-pipeline` | `fbed364`（不可变实现/独立证据；绑定 `d79da6e`） | A4-1 pipeline/export、冻结规格、29项实现测试、20项Luna独立测试、运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
 | 2026-09-03 | A3-2 ZIP HTTP 与进程内后台扫描 | `feat/a3-zip-background-scan` | `530e930`（不可变实现/独立证据；绑定 `bca0a2c`） | ZIP multipart API/runtime、进程内后台 A4-1、20项实现测试、22项Luna独立测试、精确依赖锁定及运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
+| 2026-09-03 | A8-1a P0团队集成基线 | `integration/p0` | `f486ead`（首次验收发布HEAD） | 项目负责人后端纵切、前端组员应用壳、扫描组员B2/B3 Adapter候选、集成测试与分支治理说明 | 已推送；作为团队当前开发入口 |
+
+## 3.1 当前远端分支入口
+
+- 团队日常入口：`integration/p0`；里程碑发布目标：`main`。
+- 组员在途分支：`feat/xzb-frontend`、`codex/p0-external-tools-sync`，均保留。
+- 待明确授权清理的项目负责人历史分支：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
+- 上述待清理分支的提交均已从 `integration/p0` 可达，删除分支引用不会删除集成线中的代码和证据；未获明确授权前保持现状。
 
 ## 4. 目录健康检查
 

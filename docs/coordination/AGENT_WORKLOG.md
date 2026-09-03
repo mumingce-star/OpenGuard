@@ -2788,3 +2788,13 @@
 - 分支清理门禁：13 个旧项目负责人远端任务分支均是当前集成线的严格祖先、相对 `integration/p0` 为零独有提交；`feat/xzb-frontend` 与 `codex/p0-external-tools-sync` 为组员分支且含独有提交，明确不删除。先提交/推送并核对集成远端，再执行旧分支引用清理。
 - evidence：候选 `EVD-P0-TEAM-INTEGRATION-001`，范围仅为当前 macOS/POSIX、CPython 3.12、本地前端生产构建和 JSON Adapter 单测；待不可变提交与远端绑定后批准，不外推完整端到端或参赛成品。
 - token：本次运行精确 token 数不可获得；开工估算 `16k-24k`，当前集成实现与验证仍在既定范围内，未发生功能范围扩张。
+
+### [20260903-1905-Root-P0集成发布与分支清理] PARTIAL - 集成入口已发布，远端清理待明确授权
+
+- 作者/角色/时间：Codex Root Coordinator；版本发布与分支治理；2026-09-03 19:05（Asia/Shanghai）。分支 `integration/p0`。
+- 已完成：集成验收提交 `f486eadf9c8e3b0a976b71e8ca7132af4d0ec03b` 已推送，且本地与 `origin/integration/p0` 哈希一致；`EVD-P0-TEAM-INTEGRATION-001` 升为 `APPROVED`，团队可立即把 `integration/p0` 作为唯一 P0 开发基线。
+- 清理尝试：在再次验证13个旧项目负责人远端分支均为集成线祖先后，请求删除这些引用；安全审批因用户尚未逐项明确授权该批远端删除而拒绝。命令未执行，没有任何远端或本地分支被删除，也未尝试绕过。
+- 保留分支：`main`、`integration/p0`、前端组员 `feat/xzb-frontend`、扫描组员 `codex/p0-external-tools-sync`；后两者含组员独有提交，无论后续用户是否批准清理都不在删除范围。
+- 待确认删除：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
+- 下一步：用户明确批准上述13个分支删除后，Root只删除这些远端引用、刷新分支清单并记录结果；随后从 `integration/p0` 创建一个 `feat/a5-ai-provider` 短分支，按技术执行书进入A5最小Provider与降级纵切。
+- token：本次运行精确 token 数不可获得；开工估算 `16k-24k`，团队集成与发布已在范围内完整完成，分支引用删除因审批要求缩小为待确认项；没有开始A5半成品。
