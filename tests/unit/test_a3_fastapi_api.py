@@ -177,6 +177,44 @@ def test_request_validation_uses_the_frozen_error_envelope(harness: ApiHarness) 
     assert "unexpected" not in response.text
 
 
+@pytest.mark.parametrize(
+    "source",
+    [
+        "https://git\nhub.com/example/repo",
+        "https://github.com/example/%0Arepo",
+    ],
+)
+def test_create_rejects_raw_and_decoded_control_characters(harness: ApiHarness, source: str) -> None:
+    response = harness.client.post("/api/v1/scans", json={"source_type": "git", "source": source})
+    _assert_error(response, status_code=422, code="invalid_source", reason="url_invalid")
+
+
+def test_create_enforces_source_limit_in_utf8_bytes(harness: ApiHarness) -> None:
+    source = "https://github.com/example/" + ("汉" * 700)
+    assert len(source) < 2048 < len(source.encode("utf-8"))
+    response = harness.client.post("/api/v1/scans", json={"source_type": "git", "source": source})
+    _assert_error(response, status_code=422, code="invalid_source", reason="url_invalid")
+
+
+@pytest.mark.parametrize(
+    "method,path,status_code,reason",
+    [
+        ("get", "/api/v1/route-that-does-not-exist", 404, "route_not_found"),
+        ("post", f"/api/v1/scans/{MISSING_SCAN_ID}", 405, "method_not_allowed"),
+        ("delete", "/api/v1/scans", 405, "method_not_allowed"),
+    ],
+)
+def test_unknown_routes_and_methods_use_the_frozen_error_envelope(
+    harness: ApiHarness,
+    method: str,
+    path: str,
+    status_code: int,
+    reason: str,
+) -> None:
+    response = getattr(harness.client, method)(path)
+    _assert_error(response, status_code=status_code, code="invalid_source", reason=reason)
+
+
 def test_status_reads_the_persisted_snapshot_and_missing_is_stable(harness: ApiHarness) -> None:
     scan_id = _create(harness)
     response = harness.client.get(f"/api/v1/scans/{scan_id}")

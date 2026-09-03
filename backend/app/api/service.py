@@ -7,6 +7,7 @@ import ipaddress
 import json
 import platform
 import sys
+import unicodedata
 from collections.abc import Callable
 from datetime import datetime, timezone
 from urllib.parse import unquote, urlsplit, urlunsplit
@@ -64,6 +65,13 @@ def canonicalize_public_git_url(value: str) -> str:
     """Validate the frozen public-HTTPS Git source boundary without networking."""
 
     try:
+        encoded_value = value.encode("utf-8")
+    except UnicodeEncodeError:
+        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
+    if len(encoded_value) > 2048 or any(unicodedata.category(character) == "Cc" for character in value):
+        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
+
+    try:
         parsed = urlsplit(value)
         port = parsed.port
     except ValueError:
@@ -89,6 +97,8 @@ def canonicalize_public_git_url(value: str) -> str:
     if lowered == "localhost" or lowered.endswith(".localhost"):
         _fail(status_code=422, code="invalid_source", message="Public repository URL is not allowed.", reason="host_not_public")
     decoded_segments = [unquote(segment) for segment in parsed.path.split("/")]
+    if any(unicodedata.category(character) == "Cc" for segment in decoded_segments for character in segment):
+        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
     if parsed.path in {"", "/"} or any(segment in {".", ".."} for segment in decoded_segments):
         _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="path_invalid")
     try:

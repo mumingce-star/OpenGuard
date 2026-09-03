@@ -13,6 +13,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, FastAPI, Query, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.models import (
     ErrorBody,
@@ -179,6 +180,27 @@ def create_app(
                 code="invalid_source",
                 message="Request parameters are invalid.",
                 reason="request_invalid",
+            ),
+        )
+
+    @app.exception_handler(StarletteHTTPException)
+    async def handle_http_error(request: Request, error: StarletteHTTPException) -> JSONResponse:
+        if error.status_code == 404:
+            message = "The requested route was not found."
+            reason = "route_not_found"
+        elif error.status_code == 405:
+            message = "The request method is not allowed."
+            reason = "method_not_allowed"
+        else:
+            message = "The request could not be completed."
+            reason = "http_error"
+        return _error_response(
+            request,
+            ApiError(
+                status_code=error.status_code,
+                code="invalid_source",
+                message=message,
+                reason=reason,
             ),
         )
 

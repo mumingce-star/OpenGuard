@@ -2411,3 +2411,73 @@
 - 远端事实：`feat/a3-fastapi-api` 已创建并推送到 `origin`；不可变实现提交 `b8d3b633387759abb1a0d57a68e780747fbbb801` 与本机证据绑定提交 `53c196f` 已上传。PR 创建入口为 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/a3-fastapi-api`；本轮不创建、不合并 PR，不改变 `main`。
 - 上传范围：仅项目负责人 A3-1 竞赛交付代码、测试、规格、运行/依赖/AI/协作/进度文档；不含原始附件、临时数据库、环境缓存、凭据、真实成员身份、扫描分析组员新增任务或前端组员代码。
 - 下一步：提交本远端状态回填并二次推送，核对本地 tracking 与远端 ref 一致。后续项目负责人任务应先做 A3-1 独立复核，再进入 A3-2 ZIP API 接线或 A4 最小 worker/Pipeline；不得用 queued API 冒充可完成扫描。
+
+### [20260903-1117-Sol-A3FastAPI复核] START - A3-1 冻结契约与边界只读审计
+
+- 作者/角色/时间：GPT-5.6 Sol；架构、公共契约与证据门禁；2026-09-03 11:17（Asia/Shanghai）。分支 `feat/a3-fastapi-api`；不提交、不推送。
+- 审计对象：不可变实现提交 `b8d3b633387759abb1a0d57a68e780747fbbb801`，以及后续仅文档绑定/发布提交；逐项核对 P0 v0.1.1 第7节、A3-1规格、API DTO/service/app、A3-0 registry 与现有17项实现测试。
+- 严格边界：只评审项目负责人 A3-1，不修改 backend、tests、P0/Schema/sample、PROJECT_PROGRESS 或 third_party；不进入组员B1-B7、前端、ZIP multipart、Git物化、worker/A4、AI或报告生成。若发现 P0/P1，只记录稳定复现与关闭条件，不代修。
+- 重点门禁：六路径/方法和 OpenAPI；POST 202 的 queued/幂等真实性；资源/风险/证据/报告投影；统一非2xx错误信封与 request_id；输入 canonicalization；默认数据目录与生命周期；不将本机局部绿灯外推为完整扫描。
+- token：本轮 Sol 子审计非硬估算 `3k-5k`；客户端无精确本轮 token 遥测，收工如实报告。
+
+### [20260903-1119-Luna-A3FastAPI独立复核] START - A3-1 FastAPI Git API 独立安全复核
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-03 11:19（Asia/Shanghai）。分支 `feat/a3-fastapi-api`；候选实现提交 `b8d3b633387759abb1a0d57a68e780747fbbb801`；不提交、不推送。
+- 前置核验：已按交接顺序读取 README、当前项目进度、LUNA/Sol/Terra 交接、P0 第7节、`docs/spec/a3-fastapi-api.md`、`backend/app/api` 全部实现、A3-0 registry、Terra `tests/unit/test_a3_fastapi_api.py`，并读取共享日志至 Sol `1117 START` 物理 EOF。
+- 目标：独立验证六条冻结路由、真实 queued 持久化/幂等、请求 canonicalization、ResourceView 映射/过滤、`scan_not_ready`/`report_not_ready`、统一错误信封与 request_id、未知路由/方法非 2xx 信封、OpenAPI 和真实 Uvicorn 边界。
+- 修改边界：仅允许新增 `tests/security/test_a3_fastapi_api_independent.py`，更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，并追加本日志；不得修改 backend、Terra/Root unit、冻结规格、PROJECT_PROGRESS、third_party、P0 Schema/sample；不进入 B1-B7、前端、ZIP multipart、Git clone、worker、A4、AI 或报告生成。
+- 验收方法：使用独立 expected、动态最小数据和真实 TestClient/Uvicorn 边界，不复用 Terra 私有 helper；发现缺陷保留最小失败测试、按稳定性升级 Terra/Sol，不代修、不放宽断言；全绿后再做允许范围内的 A3-1/A3-0/P0/全量/Schema/compileall/diff/敏感检查。
+- token：本轮非硬估算 `8k-14k`；客户端无精确本轮 token 遥测，收工时如实报告。
+
+### [20260903-1120-Sol-A3FastAPI复核] COMPLETE - 三项 A3-1 契约 P1 阻止最终证据批准
+
+- 作者/角色/时间：GPT-5.6 Sol；架构、公共契约与证据门禁；2026-09-03 11:20（Asia/Shanghai）。分支 `feat/a3-fastapi-api`；未修改 backend/tests/规格/progress/third_party，未提交、未推送。
+- `FINAL-A3API-001`：P0 v0.1.1 明确“所有非2xx”必须使用统一错误信封；当前未知 `/api/v1/unknown` 与错误方法 `PUT /api/v1/scans` 分别返回 FastAPI 默认 `404/405 {detail:...}`，未满足信封契约。
+- `FINAL-A3API-002`：`urlsplit()` 会静默移除 URL 中间的换行；只检查首尾空白使 `https://git\nhub.com/example/repo` 被规范化为 `https://github.com/example/repo` 并返回202。A2 `SEC-A2-001/002` 要求原始控制字符在网络前拒绝，不能静默修复后接受。
+- `FINAL-A3API-003`：A2 `SEC-A2-001` 的 URL 上限是2048 UTF-8 bytes，当前 Pydantic `max_length=2048` 只限制 Unicode code points；`https://github.com/example/` 后接700个汉字仍返回202，实际字节超过2048。
+- 其余审计：六条业务路径、queued真实落库、幂等、读取投影/过滤、已覆盖错误信封、私有数据目录与生命周期未发现新的 P0/P1；三项失败均在只读临时注册表稳定复现，不涉及Git联网、ZIP、worker、组员任务或前端。
+- 裁决：`EVD-A3-FASTAPI-GIT-API-001` 保持本机绑定但状态为 `BLOCKED-P1`，不得升级为最终报告证据。关闭条件：Terra/Root 在现有A3-1内加入 Starlette HTTPException 统一映射、原始/解码控制字符拒绝和 UTF-8 byte 上限，补实现回归；Luna按原始探针独立复测后再由Sol/Root重审。
+- token：本次 Sol 子审计精确 token 数不可获得；开工估算 `3k-5k`，只读审计在原范围内完整完成，未发生范围调整。
+
+### [20260903-1133-Luna-A3FastAPI独立复核] PARTIAL - A3-1 独立复核保留三组 P1，Uvicorn 边界通过
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-03 11:33（Asia/Shanghai）。分支 `feat/a3-fastapi-api`；候选实现提交 `b8d3b633387759abb1a0d57a68e780747fbbb801`；未提交、未推送。
+- 目标与范围：按 P0 v0.1.1 第7节和 A3-1 规格独立核对六条冻结路由、Git queued 持久化/幂等、请求 canonicalization、ResourceView/风险/证据/报告投影与过滤、`scan_not_ready`/`report_not_ready`、统一非2xx错误信封/request_id、未知路由/方法、OpenAPI 及真实 Uvicorn 边界；不进入 ZIP multipart、Git clone、worker/A4、B1-B7、前端、AI 或报告生成。
+- 修改文件：仅新增 `tests/security/test_a3_fastapi_api_independent.py`，更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，并追加本记录；未修改 backend、Terra/Root unit、冻结规格、PROJECT_PROGRESS、third_party 或 P0 Schema/sample。测试夹具自身的 `ProducerType.MANUAL` 误用已更正为领域枚举 `HUMAN`，不改变实现代码或契约。
+- 实际验证：独立文件共 `25 collected: 17 passed, 8 failed`。7 个失败是实现侧稳定 P1 断言：未知路由 404/错误方法 405 返回 FastAPI 默认 `{detail}` 而非统一信封；URL 中间 LF/CR/TAB 被 `urlsplit()` 静默处理后仍 202；700 个汉字使 URL UTF-8 bytes 超过 2048 仍 202。第 8 项仅为沙箱禁止绑定回环临时端口；在受控回环环境单独复跑真实 Uvicorn 为 `1 passed, 24 deselected`，验证 POST 202、GET queued、停止后 SQLite 重开及 0700/0600 权限。
+- 缺陷与证据裁决：保留 `FINAL-A3API-001`、`FINAL-A3API-002`、`FINAL-A3API-003` 原始失败测试和复现输入，分别升级 Terra（实现）与 Sol/Root（契约/证据重审）；`EVD-A3-FASTAPI-GIT-API-001` 保持 `BLOCKED-P1`，不升级为最终报告证据。关闭条件是统一 Starlette HTTPException 信封、拒绝原始/解码控制字符、按 UTF-8 bytes 执行 2048 上限、补实现回归，再由 Luna 原始探针复测并由 Sol/Root 重审。
+- 后续与门禁：本轮未运行 A3/P0/全量回归、Schema 等值、compileall 或发布材料收口；不得把 17 项局部绿灯或 Uvicorn smoke 外推为完整扫描/竞赛作品。token：本轮精确 token 数不可获得；开工非硬估算 `8k-14k`，任务在该估算范围内完成本轮审计但因 P1 保留为 PARTIAL，未发生范围调整。
+
+### [20260903-1135-Luna-A3FastAPI修复复测] START - Root 修复后的 A3-1 独立复测
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-03 11:35（Asia/Shanghai）。分支 `feat/a3-fastapi-api`；不提交、不推送。
+- 前置核验：已读取本记录物理 EOF 与当前 git diff；Root 允许的实现修改范围为 `backend/app/api/main.py`、`backend/app/api/service.py` 和 `tests/unit/test_a3_fastapi_api.py`，本轮不修改这些文件。
+- 目标：原样复跑 `tests/security/test_a3_fastapi_api_independent.py`，确认 `FINAL-A3API-001..003` 是否由 Root 修复关闭；随后按分层门禁运行 A3-1 实现+独立、A3-0、P0、全量、Schema、compileall、diff/敏感/权限范围检查。回环若需额外授权不再申请，以 Root 已验证的受控回环结果补充；不放宽或删除独立断言。
+- 修改边界：本轮仅允许更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，并向本日志追加 START/COMPLETE/PARTIAL；不得修改 backend、Root/Terra unit、规格、PROJECT_PROGRESS、third_party、P0 Schema/sample。
+- token：本轮非硬估算 `3k-5k`；客户端无精确本轮 token 遥测，收工时如实报告。
+
+### [20260903-1138-Luna-A3FastAPI修复复测] COMPLETE - 三项 A3-1 P1 原始独立探针关闭
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全证据与材料形式检查；2026-09-03 11:38（Asia/Shanghai）。分支 `feat/a3-fastapi-api`；未提交、未推送。
+- 关闭结论：`FINAL-A3API-001`（未知路由/方法统一非2xx信封）、`FINAL-A3API-002`（原始及解码控制字符拒绝）和 `FINAL-A3API-003`（2048 UTF-8 bytes 上限）均由上一轮保留的原始独立探针通过，三项 P1 关闭。未修改或放宽独立测试，未代修 backend。
+- 分层验证：独立测试排除当前沙箱回环项 `24 passed, 1 deselected`；A3-1 实现 unit + 独立 `47 passed, 1 deselected`；A3-0 实现+独立 `77 passed`；P0 `46 passed`；全量排除回环项 `548 passed, 1 deselected`；Schema 等值专项 `1 passed`；`compileall`、`git diff --check`、Luna 文件尾随空白、敏感模式、world-writable 和变更范围检查通过。回环项未再次申请授权，采用 Root 提供的受控全量 `549 passed`/真实 Uvicorn smoke 结果补充。
+- 修改文件：本轮仅更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md` 并追加本日志；`backend/app/api/main.py`、`backend/app/api/service.py` 和 `tests/unit/test_a3_fastapi_api.py` 的 Root 变更已只读核对、未触碰。工作区无本轮提交/推送。
+- 证据与后续：`EVD-A3-FASTAPI-GIT-API-001` 的三项 P1 已关闭，但修复后的不可变提交、运行 profile、有界范围和最终报告发布仍需 Sol/Root 重审与重新绑定；本轮不更新 PROJECT_PROGRESS，不外推真实 Git/ZIP、worker/A4、扫描器/AI/报告、Linux isolation、TrustedEgress、Bench 或完整竞赛作品。
+- token：本轮精确 token 数不可获得；开工非硬估算 `3k-5k`，本轮在估算范围内完成，未发生范围调整。
+
+### [20260903-1121-Root-A3FastAPI修复] START - 最小关闭三项独立复核 P1
+
+- 作者/角色/时间：Root；项目负责人主线实现与发布验收；2026-09-03 11:21（Asia/Shanghai）。本 START 因等待 Luna 独立测试写入而在其 COMPLETE 后追加，未改写历史记录。
+- 任务归属：仅处理用户负责的 A3-1 FastAPI API 纵切；不进入扫描分析组员 B1-B7、前端、ZIP multipart、Git 物化/联网、worker/A4、AI 或报告生成。
+- 目标与允许范围：仅在 `backend/app/api/main.py` 统一 Starlette 404/405 错误信封，在 `backend/app/api/service.py` 拒绝原始/解码控制字符并按 UTF-8 bytes 执行 2048 上限，在 `tests/unit/test_a3_fastapi_api.py` 补同范围回归；保留 Luna 独立测试原样。
+- token：Root 修复与收口非硬估算纳入本任务总估算 `8k-14k`；客户端无精确本轮 token 遥测，收工如实报告。
+
+### [20260903-1140-RootSol-A3FastAPI修复终审] COMPLETE - 三项 P1 关闭，候选 evidence 待不可变绑定
+
+- 作者/角色/时间：Root / GPT-5.6 Sol；主线实现、契约重审与证据门禁；2026-09-03 11:40（Asia/Shanghai）。分支 `feat/a3-fastapi-api`；本条记录时尚未提交、未推送。
+- 最小修复：Starlette 404/405 现返回冻结 `{error:{code,message,request_id,details}}` 信封且 header/body request ID 一致；Git source 在 `urlsplit` 前拒绝原始 Unicode control，在 percent decode 后拒绝路径 control，并以 UTF-8 编码字节数执行 2048 上限。未新增公共错误码、路由或产品功能。
+- 独立关闭：Luna 未修改/放宽原始 25 项独立测试，`FINAL-A3API-001..003` 均关闭；Luna 沙箱内为 `24 passed, 1 deselected`，Root 在受控回环环境运行完整独立项并完成全量 `549 passed`，真实 Uvicorn POST 202、GET queued、停止后 SQLite 重开有效。
+- 回归与静态门禁：A3-1 实现+独立 `48 passed`；A3-0 实现+独立 `77 passed`；P0 `46 passed`；全量 `549 passed`；`schema_export_equal=True`；compileall、`git diff --check`、受保护 P0/Schema/sample、A2/B1、前端路径零差异及 world-writable 检查通过。保留 1 条 Starlette TestClient/AnyIO 第三方弃用 warning，不隐藏。
+- Sol 裁决：三项开放 P1 已关闭，`EVD-A3-FASTAPI-GIT-API-001` 升为 `APPROVED-PENDING-ROOT-BINDING`；只批准本机 macOS/POSIX 的最小 FastAPI/SQLite Git queued API 纵切，不外推真实 Git/ZIP、worker/A4、扫描器/AI/报告、Linux isolation、TrustedEgress、Bench 或完整竞赛作品。
+- 发布边界：候选提交只包含 A3-1 API 修复、实现侧/独立测试及测试/AI/协作记录；不包含原始附件、缓存、数据库、凭据、成员隐私、组员新代码或前端。下一步由 Root 创建不可变实现提交、更新规格和进度绑定并推送 GitHub。
+- token：本次运行精确 token 数不可获得；开工总估算 `8k-14k`，修复、独立复测与终审在该任务范围内完整完成，未发生功能范围扩张。

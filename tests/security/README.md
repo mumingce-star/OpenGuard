@@ -187,3 +187,32 @@ PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/t
 按 Terra `2345 COMPLETE` 原始探针要求，在既有独立测试中加入 1 组 table/view/`AFTER INSERT` revision trigger 探针：探针选择 `1 passed`，Luna 全文件最终 `45 passed`。合法库分别注入额外用户表、view 及会把新行 revision 改为 999 的 trigger；每次重开均稳定返回 `registry_schema_unsupported`，移除对象后合法库可重开，原快照仍为 revision 1。未修改冻结 `8 POS + 16 NEG` ID 或放宽断言。
 
 联合复测：Terra A3 `32 passed`；A3 独立+Terra 合计 `77 passed`；P0 `46 passed`；全量 `501 passed`；`schema_export_equal=True`；compileall、`git diff --check` 和敏感检查通过。FINAL-A3-001 已由独立测试关闭，但 A3 candidate evidence 仍需 Sol/Root 做不可变提交绑定、范围声明和最终裁决；结果仅覆盖本机 macOS/POSIX 单机 registry，不外推 HTTP、worker、Pipeline、Linux isolation、TrustedEgress、集群容灾、Bench 或完整竞赛作品。
+
+### A3-1 FastAPI Git API 独立安全复核
+
+复现命令（项目根目录）：
+
+```bash
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_a3_fastapi_api_independent.py
+PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/test_a3_fastapi_api_independent.py -k real_uvicorn_loopback_persists_the_queued_scan
+```
+
+本轮独立文件共收集 25 项：六条冻结路由/OpenAPI、Git queued 持久化/幂等、请求 canonicalization、ResourceView/风险/证据/报告投影、未就绪状态、统一错误信封/request_id、未知路由/方法、脱敏异常和真实 Uvicorn 回环边界。全文件结果为 `17 passed`、`8 failed`；其中 7 项为稳定的实现契约失败，另 1 项是沙箱禁止绑定回环临时端口。单独在受控回环环境复跑真实 Uvicorn 为 `1 passed, 24 deselected`，验证了真实 POST 202、GET queued、停止后 SQLite 重开和 0700/0600 权限。
+
+稳定复现的 3 个 P1 组（失败断言原样保留在独立测试中，未修改 backend、未放宽断言）：
+
+| ID | 观察 | 影响 |
+|---|---|---|
+| `FINAL-A3API-001` | 未知路由返回 404 `{detail}`，错误方法返回 405 `{detail}` | P0 “所有非 2xx 使用统一错误信封”不成立 |
+| `FINAL-A3API-002` | URL 中间换行、CR、TAB 经 `urlsplit()` 处理后仍返回 202 | A2 `SEC-A2-001/002` 的原始控制字符拒绝门禁不成立 |
+| `FINAL-A3API-003` | 700 个汉字使 URL UTF-8 bytes 超过 2048，但仍返回 202 | A2 `SEC-A2-001` 的 UTF-8 字节上限未执行 |
+
+因此 `EVD-A3-FASTAPI-GIT-API-001` 仍为 `BLOCKED-P1`，本轮不批准 A3-1 最终 evidence，也未运行 A3/P0/全量回归或 Schema 等值收口。关闭条件是 Terra/Root 在 A3-1 内统一映射 Starlette HTTPException、拒绝原始/解码控制字符、按 UTF-8 bytes 执行 2048 上限并补实现回归；之后由 Luna 原始独立探针复测，再由 Sol/Root 重审。该结果只覆盖本机 macOS/POSIX 的最小 HTTP/SQLite 纵切，不外推 ZIP multipart、Git clone、worker/A4、扫描器/AI/报告、Linux isolation、TrustedEgress、Bench 或完整竞赛作品。
+
+#### A3-1 修复后独立复测
+
+按 Root 修复后的 `main.py`/`service.py` 原样复跑，不修改或删除上一节失败断言。`FINAL-A3API-001`（Starlette 404/405 统一信封）、`FINAL-A3API-002`（原始及解码控制字符）和 `FINAL-A3API-003`（2048 UTF-8 bytes）全部关闭。
+
+本轮结果：独立文件排除沙箱回环项为 `24 passed, 1 deselected`；A3-1 实现 unit + 独立测试为 `47 passed, 1 deselected`；A3-0 实现+独立 `77 passed`；P0 `46 passed`；全量排除回环项 `548 passed, 1 deselected`；Schema 等值专项 `1 passed`；`compileall`、`git diff --check`、尾随空白、敏感模式和 world-writable 检查通过。Root 提供的受控回环全量结果为 `549 passed`，其中真实 Uvicorn smoke 已通过；当前沙箱自身仍无法绑定临时回环端口，未将该环境限制记为产品失败。
+
+`EVD-A3-FASTAPI-GIT-API-001` 的三项 P1 已由 Luna 原始探针关闭，但最终发布仍需 Sol/Root 对修复后的不可变提交、运行 profile 和有界范围完成重审/绑定。本结果只证明本机 macOS/POSIX 的最小 FastAPI/SQLite 纵切，不外推真实 Git/ZIP、worker/A4、扫描器/AI/报告、Linux isolation、TrustedEgress、Bench 或完整竞赛作品。
