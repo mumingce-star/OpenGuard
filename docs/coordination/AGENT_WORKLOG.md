@@ -2759,3 +2759,13 @@
 - 远端事实：新分支 `feat/a3-zip-background-scan` 已推送至 GitHub，首次发布 HEAD 为证据绑定提交 `bca0a2c9ecbc55a9d46bd19615fbdbf251ee7f1f`，其中不可变实现/独立测试 evidence 为 `530e93055528761d9c9b08a99d348ab41d2c9c37`。未创建或合并 PR，`main` 未改变。
 - 上传范围：A3-2 ZIP API/runtime、冻结规格、20 项实现测试、22 项 Luna 独立测试、精确依赖锁定与第三方登记，以及根/后端/安全运行说明、AI、协作和项目进度；没有上传原始附件、缓存、数据库、凭据、成员隐私、组员 B1-B7 新代码或前端任务。
 - 发布状态：A3-2 子任务标记已完成；A3 父任务保持进行中，仍缺公开 Git 物化与持久队列/崩溃恢复。下一提交只回填本发布事实与进度，随后二次推送并核对最终远端哈希。
+
+### [20260903-1810-RootSol-P0集成与分支整理] START - 建立团队单一集成入口并清理冗余分支候选
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；版本管理、系统集成与边界审计；2026-09-03 18:10（Asia/Shanghai）。分支 `integration/p0`，基线 `dcebda7`。
+- 开工确认：已读取根 README、技术执行书 A1-A8/三人边界/M1-M5、PROJECT_PROGRESS、三份模型交接与共享日志状态；已刷新 GitHub 远端，发现新增组员分支 `feat/xzb-frontend` 与扫描组员集成分支 `codex/p0-external-tools-sync`，此前本地列表已过期。
+- 任务目标：以当前项目负责人最新后端纵切为基线，建立团队唯一的 `integration/p0` 入口，纳入组员已经提交的前端壳与 B2/B3 外部扫描器 Adapter，保留双方日志和所有不可变 evidence；通过后仅把“严格祖先、零独有提交、已有哈希记录”的旧项目负责人任务分支列入清理，不删除任何组员分支或 `main`。
+- 下一工程任务：集成门禁完成后，从 `integration/p0` 新建单一功能分支，按技术执行书 M2/A5 实现最小 AI Provider 与确定性降级纵切；输入只接受既有 `RiskFinding`/`Evidence`/license facts，不生成或替代组员 B4/B5 规则事实，不修改前端。
+- 预计修改：集成阶段只接入组员既有提交并最小解决共享文档冲突，更新协作/进度/Git说明；A5 阶段预计新增 `backend/app/ai/`、A5规格和项目负责人实现测试，由 Terra实现、Luna独立验证、Sol/Root终审。公共P0 Schema/API若无需变化则保持冻结。
+- 验收：后端完整测试、前端现有构建/测试、Schema等值、compileall、diff、敏感信息、目录和分支包含关系全部通过；旧分支只有在最终 `integration/p0` 可达且远端核对成功后才删除引用。`main` 仍只通过PR合并。
+- token：本轮非硬估算 `16k-24k`；客户端不提供精确本轮 token 遥测。若组员提交存在未解决契约冲突，先停在可复现集成阻塞，不通过覆盖组员成果或改公共模型来强行通过。
