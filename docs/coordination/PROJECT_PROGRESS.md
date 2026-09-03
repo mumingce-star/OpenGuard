@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-03 00:45（Asia/Shanghai）
+更新时间：2026-09-04 10:45（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -61,7 +61,7 @@
 | 2026-09-02 | B1-1 Python manifest 解析纵切 | `feat/b1-python-manifest-parser` | `7c0d365`（证据实现提交；绑定`bb83e6b`） | Python parser、依赖锁版/台账、40项实现测试、63项独立测试、规格/审计/运行说明、AI/协作与进度记录 | 已推送；待PR合并 |
 | 2026-09-02 | B1-2 Python P0映射与CLI纵切 | `feat/b1-p0-mapper-cli` | `daee8a8`（不可变实现提交；绑定提交`69ca38c`） | Python P0 mapper、新依赖CLI、45项实现测试、32项独立测试、规格/终审、运行说明、AI/协作与进度记录 | 已推送；待PR合并 |
 | 2026-09-02 | B1-3/B1-4 JavaScript manifest、P0与CLI | `feat/b1-js-manifest-p0-cli` | `80ee2a9`（不可变实现提交；绑定提交`708bc08`） | JS parser、P0 mapper、JS CLI、37项实现测试、32项独立测试、规格/缺陷闭环、运行说明与协作证据 | 已推送；待PR合并 |
-| 2026-09-04 | B2/B3 外部扫描器 JSON 适配与跨来源合并 | `codex/p0-external-tools-sync` | `e244588`、`293c52b`、`9c504f4` | 受限工具调用、ScanCode 密封 ZIP 接入、Syft 密封 ZIP 接入草案、跨来源合并与回归 | 待本轮推送；ScanCode Linux ZIP、Syft 真实工具/fixture 与 A4 集成未完成 |
+| 2026-09-04 | B2/B3 外部扫描器 JSON 适配与跨来源合并 | `codex/p0-external-tools-sync` | `e244588`、`293c52b`、`9c504f4`、`79d887c` | 受限工具调用、ScanCode 密封 ZIP 接入、Syft 密封 ZIP 接入草案、跨来源合并与回归 | 已推送；待 PR 合并。ScanCode Linux ZIP、Syft 真实工具/fixture 与 A4 集成未完成 |
 
 ## 4. 目录健康检查
 

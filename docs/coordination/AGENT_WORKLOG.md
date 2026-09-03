@@ -698,3 +698,31 @@
 - 建议下一步及责任模型：CZ 提供可用 Syft 或允许网络恢复后，Terra/Luna 完成真实回归并追加验收提交。
 - 关联的分支、提交、PR、Issue 或 evidence_id：`9c504f4`；PR `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
 - token 使用说明：本次运行精确 token 数不可获得；估算 4,000～7,000，范围内完成。
+
+### [20260904-1030-Sol-GitHub上传完整性核查] START - 核对远程同步与本机排除项
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 发布核查
+- 时间：2026-09-04 10:30（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；仅核查 GitHub 远程状态、未跟踪文件和项目进度台账，不修改产品逻辑。
+- 任务目标：确认当前任务分支是否已完整推送到 GitHub，识别仍留在本机且不应上传的内容，并明确 `main` 是否已合并。
+- 开始前已确认：已阅读 README、完整共享日志、PROJECT_PROGRESS、Sol 交接文档，并已检查分支、工作区和最近提交；日志未显示其他模型正在修改本轮审计文件。
+- 预计修改文件：`docs/coordination/AGENT_WORKLOG.md`，必要时更正 `docs/coordination/PROJECT_PROGRESS.md` 的发布状态。
+- 验收方法：`git fetch --prune` 后比较本地与上游 ahead/behind、检查未跟踪/忽略文件、核对远程分支与 `main` 的合并关系，并运行 `git diff --check`。
+- token 用量估算：3,000～5,000；系统未提供本轮精确 token 遥测。
+
+### [20260904-1045-Sol-GitHub上传完整性核查收工] COMPLETE - 当前功能分支已与远程同步
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 发布核查
+- 时间：2026-09-04 10:45（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`。
+- 任务目标和实际结果：已从 `origin` 执行 prune/fetch 并核验；本地 `HEAD` 与上游分支均为 `79d887cd9baf01eee3d82a562f2186ca2469f178`，ahead/behind 为 `0/0`。因此当前分支的所有已提交竞赛文件均已上传 GitHub。该分支尚未合入 `origin/main`（`main` 为 `476d954998be6ed943532791530f5d6234f4893f`），仍须通过 PR 合并。
+- 修改或新增文件：`docs/coordination/AGENT_WORKLOG.md`；更正 `docs/coordination/PROJECT_PROGRESS.md` 中 B2/B3 的“待推送”状态为“已推送；待 PR 合并”。未修改产品代码。
+- 命令与测试结果：`git fetch origin --prune` 成功；`git status --short --branch` 显示当前跟踪分支；`git rev-list --left-right --count HEAD...@{upstream}` 为 `0 0`；远程分支 SHA 与 HEAD 相同；`git merge-base --is-ancestor HEAD origin/main` 证明尚未合并；`git diff --check` 通过。
+- 上传范围与排除项：发现未跟踪 `.tools/syft-1.51.0/`（`syft.exe`、README、LICENSE、CHANGELOG）。它是本机工具目录，不属于作品源代码且未上传；当前 `.gitignore` 未显式忽略 `.tools/`，这是后续应修复的仓库卫生项，但本轮仅核查，未擅自改变忽略规则。
+- 接口、Schema、规则和重要决策：未改变接口、Schema、规则或风险语义；发布台账改为与远程事实一致。
+- 已知风险、失败项和未完成内容：GitHub 上存在当前分支及其他已推送功能分支，但各功能分支和本分支尚未全部进入 `main`；任务 8 仍缺 Syft 真实输出、fixture、Linux ZIP 端到端及 A4 集成，不能标记完整完成。
+- 建议下一步及责任模型：Root/CZ 创建并合并 `codex/p0-external-tools-sync` 的 PR；Terra/Luna 在 Linux 与可用 Syft 环境完成真实回归；Root 后续添加 `/.tools/` 忽略规则并单独审查。
+- 关联的分支、提交、PR、Issue 或 evidence_id：远程分支 `origin/codex/p0-external-tools-sync`；待合并 PR `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 3,000～5,000，本轮在该范围内完成，无范围调整。
