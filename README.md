@@ -14,6 +14,8 @@
 
 当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、AI 解释、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
+团队集成分支 `integration/p0` 还汇合了前端组员的 React/Vite 应用壳，以及扫描组员的 ScanCode/Syft 受限 JSON Adapter 候选。前端已通过锁文件安装和生产构建，但仍使用 mock；外部工具 Adapter 已通过本机 JSON 单测，但尚未接入当前 ZIP 主链或完成本机真实工具回归。两者均不得外推为完整 Web 或外部扫描器能力。
+
 使用 Python 3.12 环境，在项目根目录运行：
 
 ```bash
@@ -92,6 +94,7 @@ OpenGuard/
 - 贡献流程与 Pull Request 要求见 [CONTRIBUTING.md](CONTRIBUTING.md)；
 - 安全问题处理见 [SECURITY.md](SECURITY.md)；
 - 三人 GitHub 权限、分支保护和开放边界见 [docs/06-github-collaboration.md](docs/06-github-collaboration.md)；
+- P0 开发期统一以 `integration/p0` 为团队基线，每位成员同时只维护一个短任务分支；历史任务分支的证据由提交哈希和进度台账追踪，不再作为日常入口；
 - 第三方资源在首次引入时登记，不在提交前集中补录；
 - `main` 保持可运行，功能开发通过短分支和 Pull Request 合并。
 - 每个验收通过的任务点由 Root Coordinator 统一整理、提交并推送到 GitHub，只上传最终竞赛作品所需内容。

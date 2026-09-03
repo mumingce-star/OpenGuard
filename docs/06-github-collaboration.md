@@ -20,7 +20,8 @@ GitHub 仓库用于三名成员共享代码、通过 Pull Request 审查变更�
 ### General
 
 - 默认分支：`main`；
-- 功能开发使用分支和 Pull Request；
+- `integration/p0` 作为当前团队开发集成入口；成员从它创建一个短生命周期任务分支，并通过 Pull Request 合回 `integration/p0`；
+- `main` 只接收通过完整里程碑验收的 `integration/p0` Pull Request，不直接承接日常功能提交；
 - 合并方式保留 `Squash merging`，关闭不需要的合并方式以保持历史清晰；
 - 合并后自动删除 head branch；
 - Issues 开启，用于缺陷和任务追踪；
@@ -38,6 +39,8 @@ GitHub 仓库用于三名成员共享代码、通过 Pull Request 审查变更�
 - 禁止 force push；
 - 禁止删除 `main`；
 - 负责人也遵守规则，紧急修复需留下可核验记录。
+
+对 `integration/p0` 建立较轻量规则：禁止 force push和删除，要求 Pull Request、解决讨论，并在状态检查稳定后要求后端测试与前端构建通过。组员现有分支在本人完成迁移前保留；Root 只清理已经被 `integration/p0` 完整包含且没有独有提交的项目负责人历史任务分支。
 
 ### Security
 

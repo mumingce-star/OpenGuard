@@ -2777,3 +2777,14 @@
 - 冲突处理：AI日志和第三方台账保留当前主线全部内容，并追加经脱敏的组员实现来源；共享工作日志保留当前 append-only 全史，本记录绑定组员原始提交。未把组员 Windows 本机路径、环境安装流水或重复历史复制到团队公开集成线，原始审计仍可在来源提交核对。
 - 当前状态：仅完成代码汇合，尚未运行后端全量、B2/B3定向及前端构建，因此集成仍为 `PARTIAL`；不改变P0契约，不把外部工具候选写成真实主链已接通。
 - 下一步：解决 cherry-pick 索引、运行完整集成门禁；通过后提交并推送 `integration/p0`，再进行冗余项目负责人分支清理。
+
+### [20260903-1848-RootSol-P0集成验收] COMPLETE - 团队 P0 集成候选通过本机门禁
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；系统集成、边界与发布验收；2026-09-03 18:48（Asia/Shanghai）。分支 `integration/p0`；本条记录时待提交、待推送。
+- 实际结果：项目负责人截至 A3-2/A4-1 的后端纵切、前端组员应用壳、扫描组员 B2/B3 受限 JSON Adapter 已共存于单一集成候选；更新贡献与 GitHub 文档，规定 P0 日常只关注 `main`、`integration/p0` 和每人一个短任务分支。
+- 后端验证：B2/B3 新增实现测试 `4 passed`；完整非回环集合 `688 passed, 2 deselected`；获准环境原样运行两项真实 Uvicorn 回环为 `2 passed, 45 deselected`，故当前集合集成等价 `690 passed`。P0 Schema 与 `ScanRun.model_json_schema()` 等值，compileall 与 diff 通过；保留一条 Starlette/AnyIO 第三方弃用 warning。
+- 前端验证：`pnpm install --frozen-lockfile` 的 86 项供应链策略检查通过；首次构建因 bundled Node 未进入子进程 PATH 失败，未改代码或版本；补入权威 Node 路径后原样 `tsc --noEmit && vite build` 成功，22 modules transformed。`node_modules/` 与 `dist/` 均由前端 `.gitignore` 排除。
+- 责任与边界：本轮没有修改前端页面业务代码或扫描组员 Adapter 内部实现；只做项目负责人 A8 版本集成、冲突脱敏、测试和分支治理。前端仍为 mock，B2/B3 尚未接 ZIP 主链或在本机运行真实 ScanCode/Syft；B4/B5/B6、AI、报告和部署均未由本轮完成。
+- 分支清理门禁：13 个旧项目负责人远端任务分支均是当前集成线的严格祖先、相对 `integration/p0` 为零独有提交；`feat/xzb-frontend` 与 `codex/p0-external-tools-sync` 为组员分支且含独有提交，明确不删除。先提交/推送并核对集成远端，再执行旧分支引用清理。
+- evidence：候选 `EVD-P0-TEAM-INTEGRATION-001`，范围仅为当前 macOS/POSIX、CPython 3.12、本地前端生产构建和 JSON Adapter 单测；待不可变提交与远端绑定后批准，不外推完整端到端或参赛成品。
+- token：本次运行精确 token 数不可获得；开工估算 `16k-24k`，当前集成实现与验证仍在既定范围内，未发生功能范围扩张。

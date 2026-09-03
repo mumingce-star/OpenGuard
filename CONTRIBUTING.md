@@ -5,7 +5,8 @@
 ## 分支约定
 
 - `main`：始终保持可运行，只通过 Pull Request 合并；
-- `feature/<short-name>`：新功能；
+- `integration/p0`：当前 P0 团队集成入口；短分支从这里创建并通过 Pull Request 回到这里，里程碑验收后再由 `integration/p0` 向 `main` 提交 PR；
+- `feat/<short-name>`：新功能；
 - `fix/<short-name>`：缺陷修复；
 - `docs/<short-name>`：文档和材料；
 - `test/<short-name>`：测试、夹具和基准数据。
@@ -14,7 +15,7 @@
 
 ## 日常流程
 
-1. 从最新 `main` 创建短生命周期分支；
+1. P0 开发期从最新 `integration/p0` 创建短生命周期分支；里程碑发布才以 `main` 为目标；
 2. 开工前阅读 `AGENTS.md` 和完整共享工作日志，追加 `START` 记录；
 3. 每次提交只处理一个逻辑主题；
 4. 收工前追加 `COMPLETE`、`PARTIAL` 或 `BLOCKED` 报告；
@@ -23,6 +24,8 @@
 7. 至少由另一位成员审查；
 8. 所有必需检查通过后合并；
 9. 合并后删除远程功能分支。
+
+不要继续从历史 `feat/*` 任务分支串行派生新功能。旧任务分支的提交哈希和 evidence 继续保留在 Git 历史与进度台账中，团队日常只需要关注 `main`、`integration/p0` 和自己当前的一个短分支。
 
 ## 提交信息
 
