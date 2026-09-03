@@ -1,6 +1,6 @@
 # A3-1 FastAPI 最小 HTTP API 实现规格
 
-状态：`IMPLEMENTED-LOCAL-VERIFIED`
+状态：`INDEPENDENT-VERIFIED-LOCAL`
 
 本文件实现 `p0-domain-contract.md` 第 7 节的第一条可运行 HTTP 纵切，不建立第二套公共
 契约。公共领域契约仍为 `0.1.1`，持久状态唯一来源仍是 A3-0
@@ -62,6 +62,20 @@ FastAPI 在线程池执行，SQLite 操作不直接阻塞事件循环。未识�
 - 默认工厂创建 `0700` 数据目录与 `0600` SQLite 文件；
 - A3-1、A3-0、P0、全量、Schema 等值与真实 Uvicorn smoke 全部通过后才能绑定证据。
 
-候选证据 ID：`EVD-A3-FASTAPI-GIT-API-001`，绑定实现提交
-`b8d3b633387759abb1a0d57a68e780747fbbb801`。当前只批准为本机实现验证事实；在独立复核
-完成前不得升级为最终报告证据，也不得外推 ZIP、Git 物化、worker、Pipeline 或完整产品。
+证据 ID：`EVD-A3-FASTAPI-GIT-API-001`，当前绑定经独立复核与 P1 闭环后的实现提交
+`aedf65cef55f4683c3d82cb8e79b4d20d2fb1f71`。只批准为本机 macOS/POSIX 的最小
+FastAPI/SQLite Git queued API 纵切证据；不得外推 ZIP、Git 物化、worker、Pipeline、
+Linux isolation、TrustedEgress 或完整产品。
+
+## 6. 2026-09-03 独立复核闭环
+
+Luna 的原始独立测试发现并保留三项 P1：默认 Starlette 404/405 未使用统一错误信封、
+`urlsplit()` 会静默接受原始控制字符、以及 2048 上限误按 Unicode code points 而非 UTF-8
+bytes 执行。Root 仅在本纵切内完成最小修复，未新增路由、错误码或业务功能；Luna 未修改
+或放宽独立断言并原样复测，三项 P1 全部关闭。
+
+绑定门禁为：A3-1 实现与独立测试 `48 passed`，A3-0 实现与独立测试 `77 passed`，P0
+`46 passed`，全量 `549 passed`，Schema 等值、compileall、diff、受保护路径及权限检查
+通过。全量仍有 1 条 Starlette TestClient/AnyIO 第三方弃用 warning；该 warning 未被过滤，
+但不影响本纵切断言。真实 Uvicorn 仅绑定 `127.0.0.1` 临时端口，验证 POST 202、GET queued、
+停止后 SQLite 重开和 0700/0600 权限，不代表公网部署或扫描已执行。

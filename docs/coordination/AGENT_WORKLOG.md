@@ -2481,3 +2481,11 @@
 - Sol 裁决：三项开放 P1 已关闭，`EVD-A3-FASTAPI-GIT-API-001` 升为 `APPROVED-PENDING-ROOT-BINDING`；只批准本机 macOS/POSIX 的最小 FastAPI/SQLite Git queued API 纵切，不外推真实 Git/ZIP、worker/A4、扫描器/AI/报告、Linux isolation、TrustedEgress、Bench 或完整竞赛作品。
 - 发布边界：候选提交只包含 A3-1 API 修复、实现侧/独立测试及测试/AI/协作记录；不包含原始附件、缓存、数据库、凭据、成员隐私、组员新代码或前端。下一步由 Root 创建不可变实现提交、更新规格和进度绑定并推送 GitHub。
 - token：本次运行精确 token 数不可获得；开工总估算 `8k-14k`，修复、独立复测与终审在该任务范围内完整完成，未发生功能范围扩张。
+
+### [20260903-1141-Root-A3FastAPI证据绑定] COMPLETE - 独立复核闭环绑定不可变修复提交
+
+- 作者/角色/时间：Root；证据绑定与发布范围复核；2026-09-03 11:41（Asia/Shanghai）。分支 `feat/a3-fastapi-api`。
+- 不可变绑定：`EVD-A3-FASTAPI-GIT-API-001` 从原本被独立复核阻塞的 `b8d3b63` 重新绑定到修复及独立测试提交 `aedf65cef55f4683c3d82cb8e79b4d20d2fb1f71`；该提交包含三项 P1 的最小实现修复、23项实现测试、25项Luna独立测试及AI/安全/协作记录。
+- 运行 profile：macOS/POSIX、CPython 3.12.13、FastAPI 0.141.1、Uvicorn 0.52.4、Starlette 1.6.0、HTTPX2 2.12.0、SQLite 3.53.1；全量 `549 passed`，保留1条第三方弃用warning；Schema等值、compileall、diff、受保护路径与权限检查通过。
+- 证据边界：批准状态为本机有界 `APPROVED`，只证明最小FastAPI/SQLite Git queued API；不证明真实Git物化/联网、ZIP、worker/A4、扫描器、许可证/AI规则、报告生成、Linux/TrustedEgress、前端或完整竞赛作品。
+- 发布状态：绑定提交与本记录当前仍仅在本地；下一步推送 `feat/a3-fastapi-api`，核对远端ref后再追加发布回填，不提前声称GitHub已更新。
