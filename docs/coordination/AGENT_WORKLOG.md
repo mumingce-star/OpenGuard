@@ -2396,3 +2396,11 @@
 - 依赖：直接锁定 FastAPI 0.141.1、Uvicorn 0.52.4、HTTPX2 2.12.0，并在第三方台账登记官方来源、许可证、自研边界；HTTPX2仅用于测试。
 - 证据状态：`EVD-A3-FASTAPI-GIT-API-001` 当前仍为 `PENDING`；待本轮 Schema等值、diff/范围/敏感检查完成并创建不可变实现提交后再绑定，不提前批准。
 - token：本次运行精确 token 数不可获得；开工估算 `14k-22k`，功能实现与本机验收在原任务范围内完成，未发生功能范围扩张。
+
+### [20260903-1112-Root-A3FastAPI绑定] COMPLETE - A3-1 本机证据绑定不可变实现提交
+
+- 作者/角色/时间：Root；证据绑定与发布范围复核；2026-09-03 11:12（Asia/Shanghai）。分支 `feat/a3-fastapi-api`。
+- 不可变绑定：实现提交为 `b8d3b633387759abb1a0d57a68e780747fbbb801`；`EVD-A3-FASTAPI-GIT-API-001` 只绑定该提交和本轮本机运行 profile。后续代码变化必须重新验证。
+- 运行事实：macOS/POSIX、CPython 3.12.13、FastAPI 0.141.1、Uvicorn 0.52.4、Starlette 1.6.0、HTTPX2 2.12.0、SQLite 3.53.1；A3-1 17、A3/P0联合140、全量518项通过，Schema等值与compileall通过，真实Uvicorn 202/200及重启读取通过。
+- 裁决边界：当前为本机实现验证事实，尚未经过独立模型复核，不升级为最终报告证据；不覆盖ZIP multipart、DNS/TrustedEgress、真实Git物化、worker/A4、扫描结果生成、Linux/容器、前端或完整竞赛作品。
+- 发布范围：只包含项目负责人 A3-1 源码、测试、规格、运行说明、依赖/AI/进度/协作台账；不包含原始PDF/DOCX、虚拟环境、临时SQLite、凭据、真实成员身份、组员B1-B7新增工作或前端代码。

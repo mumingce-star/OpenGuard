@@ -1,6 +1,6 @@
 # A3-1 FastAPI 最小 HTTP API 实现规格
 
-状态：`IMPLEMENTED-PENDING-ROOT-VERIFICATION`
+状态：`IMPLEMENTED-LOCAL-VERIFIED`
 
 本文件实现 `p0-domain-contract.md` 第 7 节的第一条可运行 HTTP 纵切，不建立第二套公共
 契约。公共领域契约仍为 `0.1.1`，持久状态唯一来源仍是 A3-0
@@ -62,5 +62,6 @@ FastAPI 在线程池执行，SQLite 操作不直接阻塞事件循环。未识�
 - 默认工厂创建 `0700` 数据目录与 `0600` SQLite 文件；
 - A3-1、A3-0、P0、全量、Schema 等值与真实 Uvicorn smoke 全部通过后才能绑定证据。
 
-候选证据 ID：`EVD-A3-FASTAPI-GIT-API-001`。在 Root 完成不可变提交绑定前，其状态必须
-保持 `PENDING`。
+候选证据 ID：`EVD-A3-FASTAPI-GIT-API-001`，绑定实现提交
+`b8d3b633387759abb1a0d57a68e780747fbbb801`。当前只批准为本机实现验证事实；在独立复核
+完成前不得升级为最终报告证据，也不得外推 ZIP、Git 物化、worker、Pipeline 或完整产品。
