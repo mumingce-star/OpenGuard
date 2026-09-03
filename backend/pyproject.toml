@@ -4,12 +4,15 @@ version = "0.1.0"
 description = "OpenGuard P0 domain contract implementation"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+  "fastapi==0.141.1",
   "packaging==26.3",
   "pydantic==2.13.4",
+  "uvicorn==0.52.4",
 ]
 
 [project.optional-dependencies]
 dev = [
+  "httpx2==2.12.0",
   "jsonschema==4.26.0",
   "pytest==8.4.2",
 ]

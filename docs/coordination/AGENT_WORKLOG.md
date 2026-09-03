@@ -2375,3 +2375,24 @@
 - 远端事实：`feat/a3-durable-scan-registry` 已创建并推送到 `origin`；不可变实现提交 `d2b26b0897978d156a461abae97e163a6cb3564d` 与证据绑定提交 `0cadbbe` 均已上传。GitHub 给出的 PR 创建入口为 `https://github.com/mumingce-star/OpenGuard/pull/new/feat/a3-durable-scan-registry`；本轮按既有治理不创建、不合并 PR，不改变 `main`。
 - 上传范围：仅 A3-0 registry 源码、Terra/Luna 两组测试、冻结规格、运行说明、AI/协作日志与项目进度；不含原始 PDF/DOCX、缓存、虚拟环境、真实凭据、成员身份信息、扫描分析组员 B1-B7 新工作或前端组员代码。
 - 下一步：提交本远端回填记录并二次推送，随后用本地 tracking 状态与远端 ref 核对完全同步。后续工程应继续项目负责人拥有的 A3-1 FastAPI 最小只读/创建 API 纵切，不越入 B2-B7 或前端页面。
+
+### [20260903-1057-Root-A3FastAPI] START - 项目负责人 A3-1 最小 HTTP API 纵切
+
+- 作者/角色/时间：Root；项目统筹、主线实现与发布验收；2026-09-03 10:57（Asia/Shanghai）。分支 `feat/a3-fastapi-api`。
+- 任务归属确认：技术执行书把 FastAPI/API 契约、结果集成和后端联调归项目负责人（用户）；共享日志物理 EOF 也明确下一步为 A3-1。扫描分析组员的 B1-B7 与前端组员的 React/Vite 页面均不在本轮范围。
+- 本轮目标：在已批准 A3-0 SQLite 注册表之上实现最小 FastAPI 应用、OpenAPI 和冻结六类路由；先闭合 Git JSON 创建扫描及状态/资源/风险/证据/报告读取，使用统一脱敏错误信封并补充可复现 API 测试。
+- 严格非目标：不实现 ZIP multipart 摄取、Git 克隆/联网、worker、A4 Pipeline、扫描器/规则/AI、前端、认证/CORS、取消/列表扫描、健康检查或版本端点；上述能力不得由本轮局部 API 绿灯外推。ZIP 创建留给 A2 安全摄取与 A3/A4 集成后的独立纵切。
+- 允许修改：仅 `backend/app/api/`、API 所需直接依赖声明、A3-1 测试/规格/运行说明、第三方台账、AI 协作记录、项目进度和本追加日志；冻结 P0 领域模型/Schema/sample、A2/B1 实现与前端不得修改。
+- 验收门禁：FastAPI 生命周期与 OpenAPI 可见；六类路由路径和方法固定；Git 创建真实写入持久注册表且不伪造扫描完成；读取投影、过滤、稳定错误与幂等可复现；A3-1 定向、A3-0、P0、全量、Schema 等值、compileall、diff/范围/敏感信息检查通过后再提交并推送。
+- token：本轮非硬估算 `14k-22k`；客户端无精确本轮 token 遥测，收工时按全局规则如实报告。
+
+### [20260903-1109-Root-A3FastAPI] COMPLETE - A3-1 Git API 纵切实现与本机验收通过
+
+- 作者/角色/时间：Root；项目统筹、主线实现与发布验收；2026-09-03 11:09（Asia/Shanghai）。分支 `feat/a3-fastapi-api`。
+- 完成内容：新增 FastAPI 应用工厂与只读 DTO/服务层；OpenAPI 恰好暴露冻结六条业务路径；Git JSON 创建真实写入 A3-0 注册表为 `queued/queued/0`，支持持久幂等与冲突；状态、资源、风险、证据、报告均从同一 canonical ScanRun 投影，包含冻结过滤和统一脱敏错误信封。
+- 首轮缺陷闭环：实现测试首次 `16 passed, 1 failed`，失败为未识别异常已生成统一 500 body 但缺 `X-Request-ID` header；修复统一错误响应后 A3-1 `17 passed`。未为测试改动领域模型、注册表或样例。
+- 验证：A3-1 17项通过；A3-1+A3-0+P0 联合 `140 passed`；全量 `518 passed`；compileall通过。全量只有 Starlette TestClient 使用 AnyIO 已弃用类型别名的 1 条第三方 warning，无产品失败；未通过过滤隐藏。真实 Uvicorn 在回环地址成功启动，POST 返回202，GET返回200，正常关闭后重开 SQLite 仍读到同一 queued记录。
+- 边界：未修改冻结 P0 领域模型/Schema/sample、A2/B1实现或前端；未实现 ZIP multipart、Git clone/联网、worker、A4 Pipeline、扫描器/规则/AI、报告生成、认证/CORS、取消/列表、健康或版本端点。A3 总包继续为进行中。
+- 依赖：直接锁定 FastAPI 0.141.1、Uvicorn 0.52.4、HTTPX2 2.12.0，并在第三方台账登记官方来源、许可证、自研边界；HTTPX2仅用于测试。
+- 证据状态：`EVD-A3-FASTAPI-GIT-API-001` 当前仍为 `PENDING`；待本轮 Schema等值、diff/范围/敏感检查完成并创建不可变实现提交后再绑定，不提前批准。
+- token：本次运行精确 token 数不可获得；开工估算 `14k-22k`，功能实现与本机验收在原任务范围内完成，未发生功能范围扩张。

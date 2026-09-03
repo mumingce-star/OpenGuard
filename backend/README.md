@@ -187,3 +187,25 @@ PYTHONPATH=backend python -m app.cli ./demo.zip
 `entries`）；安全拒绝时 stdout 为空，stderr 仅输出稳定的 `code:reason`，退出码为 1。
 参数或输入文件不可用时同样不回显路径或原始异常，并以退出码 2 失败。临时 workspace
 仅用于本次进程，服务关闭后不会保留任务目录。
+
+## A3-1 FastAPI 最小 API
+
+在项目根目录安装 `backend/pyproject.toml` 的运行与 dev 依赖后启动：
+
+```bash
+PYTHONPATH=backend python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+浏览器打开 `http://127.0.0.1:8000/docs` 可查看冻结六类 P0 路由。默认运行数据写入
+Git 忽略的 `data/scans.db`；也可用 `OPENGUARD_DATA_DIR` 指定一个仅当前用户可访问的
+数据目录。当前 `POST /api/v1/scans` 只接受公开 HTTPS Git JSON，并真实持久化为 queued；
+尚无 worker，所以不会克隆仓库、执行扫描或伪造完成结果。ZIP multipart、Pipeline、扫描器、
+报告生成和前端均不属于 A3-1。
+
+最小创建示例：
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/scans \
+  -H 'Content-Type: application/json' \
+  -d '{"source_type":"git","source":"https://github.com/example/OpenGuard","idempotency_key":"demo-001"}'
+```

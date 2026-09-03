@@ -48,3 +48,15 @@ PYTHONPATH=backend python -m app.cli ./demo.zip
 实现侧测试覆盖成功 JSON 的稳定字段与排序、安全拒绝的 stderr/退出码、参数或文件错误
 脱敏，以及成功和失败后的 task workspace 清理。CLI 只演示本地 ZIP→inventory，不替代
 Git、依赖/许可证扫描、Web API 或完整 A2 系统门禁。
+
+## A3-1 FastAPI API 复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_fastapi_api.py
+```
+
+测试使用临时私有 SQLite 注册表和 FastAPI TestClient，不访问网络、不克隆 Git 仓库、
+不运行扫描器。它覆盖六条 OpenAPI 路径、Git JSON 创建、持久化与幂等、queued 状态、
+资源/风险/证据/报告读取与过滤、统一脱敏错误，以及默认数据目录权限。为验证读取投影，
+测试会把仓库内合成 P0 sample 通过 A3-0 的合法状态迁移写入临时注册表；这不是产品运行时
+伪造的扫描结果。
