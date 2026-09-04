@@ -3231,3 +3231,9 @@
 - 最终证据：专项 `10 passed`，A6/A4/A3/P0 联合 `177 passed`；沙箱完整集合 `845 passed/11 loopback bind denied`，受控环境原样 `856 passed`；唯一 warning 为既有 Starlette/anyio alias 弃用。Schema/P0 由联合与全量回归覆盖，compileall、diff、保护路径、敏感/路径、大文件/world-writable 和上传范围门禁通过。
 - 边界：未实现或模拟 B5，未修改 P0/Schema/sample、SQLite 状态机、scanners/rules、A5、前端、部署、公开 Git 或组员分支；没有新增依赖、路由或数据库迁移。下一步只创建 A6-2 不可变实现提交并推送当前分支，远端绑定另追加 amendment。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A6-2 在该范围对应的单轮工作包内完整完成，未发生范围扩张。
+
+### [20260904-2007-RootTerra-A6Pipeline报告发布] AMENDMENT/COMPLETE - GitHub 远端不可变实现已绑定
+
+- GitHub 发布事实：A6-2 实现、测试、规格和首轮治理提交 `eec66a6aa0458abdbadd912f17c6c9d54ce3a247` 已推送 `origin/feat/a6-pipeline-publish`；本地 `HEAD` 与 `git ls-remote` 返回同一完整对象，`EVD-A6-PIPELINE-PUBLISH-001` 绑定该实现。
+- 上传范围：17 个竞赛仓库文件，包括 Pipeline publisher、worker/ZIP/default factory 最小接线、API link/store 一致性、报告自引用投影、10 项专项测试、A6-2 规格及运行/AI/进度/协作记录；未上传生成报告、运行数据库、缓存、虚拟环境、原始附件、模型内容、凭据、本机真实路径或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A6-2 分支。
