@@ -860,3 +860,9 @@
 - 建议下一步及责任模型：Terra/Luna 在此 `.venv` 继续完成 B4/B6/B7 与跨平台回归；Root 在有可审查功能提交时整理 PR。
 - 关联的分支、提交、PR、Issue 或 evidence_id：工作分支 `codex/p0-external-tools-sync`；本轮仅协作/进度文档待提交，未创建 PR。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 3,000～6,000，已在该范围内完成。
+
+### [20260904-1540-Sol-Python312修复发布更正] AMENDMENT - 补记发布事实与用户 PATH 复核
+
+- 作者模型：GPT-5.6 Sol；时间：2026-09-04 15:40（Asia/Shanghai）。
+- 更正/补充：原收工记录中的“文档待提交”已完成。`docs/coordination/AGENT_WORKLOG.md` 与 `PROJECT_PROGRESS.md` 已以提交 `30de61c`（`docs: record Python 3.12 runtime repair`）推送到 `origin/codex/p0-external-tools-sync`，本地与上游工作区干净。
+- PATH 复核：当前用户持久 PATH 已包含 `Python312` 与 `Python312\\Scripts`（存在重复项但不影响功能）；本工具沙箱的进程 PATH 被隔离，不能用其 `python`/`cmd` 解析结果替代用户新开终端的行为。权威入口仍为已验证的 `py -3.12` 与项目 `.venv`。
