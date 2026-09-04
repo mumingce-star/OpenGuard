@@ -1,0 +1,101 @@
+{
+  "ruleset_version": "2026.09.0",
+  "rules": [
+    {
+      "id": "LIC-MIT-NOTICE",
+      "version": "1.0.0",
+      "license_ids": ["MIT"],
+      "severity": "low",
+      "title": "Review MIT notice retention",
+      "obligation": {
+        "action": "retain_license_notice",
+        "trigger": "Verified MIT-licensed material is included in a distribution",
+        "description": "Preserve the copyright and permission notice with the distributed material."
+      },
+      "remediation": {
+        "summary": "Confirm MIT notice handling before distribution",
+        "steps": ["Locate the verified license text", "Retain the required notice in distribution materials"]
+      }
+    },
+    {
+      "id": "LIC-APACHE-2.0-NOTICE",
+      "version": "1.0.0",
+      "license_ids": ["Apache-2.0"],
+      "severity": "medium",
+      "title": "Review Apache-2.0 notice and modification duties",
+      "obligation": {
+        "action": "retain_license_and_notice",
+        "trigger": "Verified Apache-2.0 material is redistributed or modified",
+        "description": "Review retention of the license and applicable NOTICE content, and document material modifications where required."
+      },
+      "remediation": {
+        "summary": "Review Apache-2.0 distribution materials",
+        "steps": ["Locate LICENSE and NOTICE evidence", "Review modification notices before distribution"]
+      }
+    },
+    {
+      "id": "LIC-BSD-3-CLAUSE-NOTICE",
+      "version": "1.0.0",
+      "license_ids": ["BSD-3-Clause"],
+      "severity": "low",
+      "title": "Review BSD-3-Clause notice retention",
+      "obligation": {
+        "action": "retain_bsd_notices",
+        "trigger": "Verified BSD-3-Clause material is redistributed",
+        "description": "Preserve the required copyright, conditions, and disclaimer notices in source or binary redistribution materials."
+      },
+      "remediation": {
+        "summary": "Confirm BSD notice handling",
+        "steps": ["Locate verified BSD license evidence", "Include required notices in the selected distribution form"]
+      }
+    },
+    {
+      "id": "LIC-GPL-3.0-ONLY-COPYLEFT",
+      "version": "1.0.0",
+      "license_ids": ["GPL-3.0-only"],
+      "severity": "high",
+      "title": "Review GPL-3.0-only copyleft obligations",
+      "obligation": {
+        "action": "perform_copyleft_distribution_review",
+        "trigger": "Verified GPL-3.0-only material may be conveyed or incorporated into a distributed work",
+        "description": "Obtain a human review of applicable corresponding-source, notice, and distribution obligations before conveyance."
+      },
+      "remediation": {
+        "summary": "Escalate GPL distribution review",
+        "steps": ["Confirm the intended distribution scenario", "Review the verified GPL text with an authorized reviewer"]
+      }
+    },
+    {
+      "id": "LIC-CC-BY-4.0-ATTRIBUTION",
+      "version": "1.0.0",
+      "license_ids": ["CC-BY-4.0"],
+      "severity": "medium",
+      "title": "Review CC-BY-4.0 attribution requirements",
+      "obligation": {
+        "action": "prepare_attribution",
+        "trigger": "Verified CC-BY-4.0 material is shared or adapted",
+        "description": "Review attribution, license-link, change-indication, and other applicable attribution details before sharing."
+      },
+      "remediation": {
+        "summary": "Prepare a reviewed CC-BY attribution record",
+        "steps": ["Collect creator and license evidence", "Review attribution and change disclosure for the intended use"]
+      }
+    },
+    {
+      "id": "LIC-CC-BY-NC-4.0-NONCOMMERCIAL",
+      "version": "1.0.0",
+      "license_ids": ["CC-BY-NC-4.0"],
+      "severity": "high",
+      "title": "Review CC-BY-NC-4.0 non-commercial restriction",
+      "obligation": {
+        "action": "review_noncommercial_scope",
+        "trigger": "Verified CC-BY-NC-4.0 material is proposed for sharing or adaptation",
+        "description": "Obtain a human review of whether the intended use and distribution fit the non-commercial condition and attribution terms."
+      },
+      "remediation": {
+        "summary": "Escalate non-commercial use review",
+        "steps": ["Document the intended use and distribution", "Review the verified license text with an authorized reviewer"]
+      }
+    }
+  ]
+}
