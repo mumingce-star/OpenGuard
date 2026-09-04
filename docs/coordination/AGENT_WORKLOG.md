@@ -193,3 +193,63 @@
 - 已知风险与未完成项：不同 Git 分支仍可能产生文本冲突；冲突处理必须保留双方完整记录。产品开发尚未开始。
 - 下一步与责任模型：项目协调者提交并发布本协作制度；后续具体任务由 Sol、Terra、Luna 按职责认领。
 - 关联提交/PR/Issue/evidence_id：本轮协作制度 Git 提交（本条所在提交）。
+
+### [20260903-1850-Sol-前端优化] START - 按前端负责人建议实施 P0 与 P1
+
+- 作者：GPT-5.6 Sol
+- 对话角色：用户明确授权的前端实现；跨职责由 Terra 后续复核
+- 时间：2026-09-03 18:50（Asia/Shanghai）
+- 分支或工作区：`feat/xzb-frontend`，开工时工作区干净
+- 任务目标：保留首页视觉，完成任务状态、导航、证据、筛选、报告、响应式及前端验证。
+- 开始前已确认：已读 README、完整共享日志、Sol 交接与架构资料；无在途冲突记录。正式竞赛 PDF 在交接指定位置未找到，本轮不变更竞赛口径。
+- 修改文件：frontend/src/**、frontend/tests/**、frontend/README.md、前端接口契约与优化总结、AI 辅助与第三方说明、协调记录。
+- 命令与测试：计划 TypeScript/Vite 构建、前端纯函数测试和浏览器多尺寸流程检查。
+- 接口、Schema、规则或决策：仅定义前端消费契约，不实现扫描、规则或 AI 后端；API 失败不回退演示。
+- 已知风险与未完成项：真实后端未就绪；P2 历史对比与覆盖率不伪造数据；不提交、不推送。
+- 下一步与责任模型：当前任务实施和验证，团队复核接口。
+- 关联提交/PR/Issue/evidence_id：基于本地 8700ae8，已有 PR #1 不自动更新。
+
+### [20260903-1944-Sol-前端优化收工] COMPLETE - 完成前端侧 P0 与 P1 优化和本地验收
+
+- 作者：GPT-5.6 Sol
+- 对话角色：用户明确授权的前端实现；Terra 负责后续跨职责复核，Luna 可复核测试/材料。
+- 时间：2026-09-03 19:44（Asia/Shanghai）
+- 分支或工作区：feat/xzb-frontend，基于 8700ae8；本轮未提交、未推送、未更新远端 PR。
+- 任务目标与实际结果：依用户提供的优化建议，保留首页粒子/光标；完成任务编号与状态、显式数据模式、输入预检、风险过滤/详情/状态独立、共享证据阅读器、资源清单、六章报告/导出、React Flow 图谱与投屏/移动端。
+- 修改或新增文件：frontend/src 的 pages/components/services/hooks/types/mocks/styles；frontend/tests；package/lock/workspace 配置；.env.example/.gitignore；README/API_CONTRACT/OPTIMIZATION_SUMMARY/THIRD_PARTY_UI；public/THIRD_PARTY_NOTICES.txt；AI 辅助记录、第三方台账、跨职责变更与本日志。
+- 命令与测试结果：pnpm install --frozen-lockfile 通过；pnpm test 的 16 项测试全部通过；pnpm build 的 TypeScript 与 Vite 生产构建通过；pnpm peers check 无警告；git diff --check 通过。隔离 Chrome 中 12 组浏览器流程全部通过且无未捕获页面错误，覆盖 1440×900、1280×720、390×844，CSV/JSON、打印样式、抽屉键盘/焦点、异常状态、接口拦截与重复提交、低动态/正常动效；已人工复核截图。
+- 验证中修复：筛选框辅助名称、重复 JSX 属性、204 无内容响应、部分失败阶段标记、缺失证据选择、粒子低动态归位及颜色采样、图谱连线方向与对比度。use-sync-external-store 1.6.0 覆盖旧 React 19 peer 警告；第三方实际运行时声明随静态构建保留。
+- 接口/Schema/规则与重要决策：仅拟定前端消费 DTO 与 API adapter，见 API_CONTRACT.md，尚待后端确认；不变更数据库/扫描器/规则。完整快照驱动统计；API 失败不切换 mock；人工处理不等于复扫通过；缺失许可/证据不补造。
+- 已知风险与未完成内容：真实后端联调、鉴权/上传安全与大小、创建请求响应丢失恢复、分页/大数据性能、SSE、取消、真实复扫、覆盖率及历史比较仍需团队实现/确认。本轮不是 OpenGuard-Bench、正式竞赛材料或完整 WCAG 认证；未验证真实投影硬件/屏幕阅读器。未宣称真实扫描或法律判断完成。
+- 下一步与责任模型：用户在本地 5174 预览并决定是否同步；Terra 核对接口、视觉和实现；Luna 复核测试/资源台账，后续仅在用户授权后提交到现有前端分支。
+- 关联提交/PR/Issue/evidence_id：原 PR #1 保持不变；本地 QA 截图目录 frontend-qa-20260903；详见 frontend/OPTIMIZATION_SUMMARY.md。
+
+### [20260903-2153-Sol-前端优化同步] START - 用户授权将优化同步团队仓库
+
+- 作者：GPT-5.6 Sol
+- 对话角色：前端交付与 GitHub 协作
+- 时间：2026-09-03 21:53（Asia/Shanghai）
+- 分支或工作区：feat/xzb-frontend；现有未提交内容为上一轮已验收前端优化。
+- 任务目标：复核待提交文件、安全与测试结果，提交并正常推送当前前端分支，更新现有 PR #1 的协作信息，不合并 main。
+- 开始前已确认：已重新读取仓库说明、完整共享日志、Sol 交接与协作/资源资料；无在途文件冲突。GitHub PR #1 为 open，head 为 8700ae8。
+- 修改文件：仅更新交付/同步记录；提交上一轮 frontend、AI 披露、第三方台账和协调文档。未经确认不包含其他目录修改。
+- 命令与测试：计划 fetch、差异和敏感信息检查、前端测试/构建、普通 push 与远端提交核对。
+- 接口、Schema、规则或决策：不新增产品功能，不变更后端或 main；API 仍待团队联调。
+- 已知风险与未完成项：可能需要 GitHub 登录；远端如有新提交先停止推送并核对，不强制覆盖。
+- 下一步与责任模型：本轮同步后由团队成员在 PR #1 审查。
+- 关联提交/PR/Issue/evidence_id：PR #1；上轮基线 8700ae8。
+
+### [20260903-2201-Sol-前端优化同步收工] COMPLETE - 优化代码已同步团队仓库
+
+- 作者：GPT-5.6 Sol
+- 对话角色：前端交付与 GitHub 协作
+- 时间：2026-09-03 22:01（Asia/Shanghai）
+- 分支或工作区：feat/xzb-frontend；main 未修改、未合并；其他成员分支未修改。
+- 任务目标与实际结果：按用户授权，将前端优化及配套文档共 37 个文件提交为 46f1640，并成功普通推送至 origin/feat/xzb-frontend。远端分支与 PR #1 的 head 均已核对一致。
+- 修改或新增文件：提交上一轮 frontend、AI 披露、第三方台账和协调文档；本轮仅补充同步状态、协作日志并清理类型声明末尾空行。
+- 命令与测试结果：fetch 后本地与远端原分支为 0/0；pnpm test 的 16 项通过；pnpm build 的 TypeScript/Vite 通过；暂存区敏感模式与本机路径检查无匹配；未提交 node_modules、dist、真实环境文件。修正空行后 git diff --cached --check 通过。12 组浏览器流程结果沿用同日已验证的功能版本，未声称本轮重新进行真实后端联调。
+- 协作结果：现有 PR #1 保持 open，未重复创建 PR；追加了优化清单、验证记录、运行步骤与后端联调边界评论：https://github.com/mumingce-star/OpenGuard/pull/1#issuecomment-5526939190 。
+- 接口、Schema、规则或决策：无新增产品语义变化；API_CONTRACT 仍是待团队确认的前端消费草案；真实扫描与后端能力不因上传而宣称完成。
+- 已知风险与未完成内容：团队审查和合并待成员处理；本轮不包含线上站点部署、真实后端联调或主分支合并。
+- 下一步与责任模型：团队成员通过 PR #1 审查，或 Fetch/Pull 后切换 feat/xzb-frontend 运行前端；Terra 对齐后端契约，Luna 可复核测试/台账。
+- 关联提交/PR/Issue/evidence_id：功能提交 46f164066aee6d3509c093b1def72930662e3918；PR https://github.com/mumingce-star/OpenGuard/pull/1 。本条收工记录通过后续独立文档提交同步。
