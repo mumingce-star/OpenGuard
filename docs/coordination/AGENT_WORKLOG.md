@@ -651,6 +651,33 @@
 - 建议下一步及责任模型：CZ/Root 修复 Python 3.12 后先运行 B5 定向 pytest；Sol/Terra 继续 B4 SPDX；Terra 接入 A4；Luna 为 B5 添加独立负例和 Bench case。
 - 关联的分支、提交、PR、Issue 或 evidence_id：待本轮提交至 `codex/p0-external-tools-sync`；PR `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 16,000～26,000，当前在该范围内完成可实现部分，运行环境阻塞使验收范围缩小。
+
+### [20260904-1430-Sol-B1至B7收尾] START - 全量核查与优先关闭可验证缺口
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 扫描与分析引擎
+- 时间：2026-09-04 14:30（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；工作区干净。
+- 任务目标：按用户要求核查并关闭 B1～B7 的所有可在当前分支与环境完成的缺口，优先恢复 Python 验收环境、验证 B1/B5，并推进 B4、B6、B7；Linux-only B2/B3 端到端门禁和 A4 依赖单独记录。
+- 开始前已确认：已阅读 README、完整共享日志、PROJECT_PROGRESS 和 Sol 交接；已确认 B1 是功能扩展而非已知回归缺陷，B2/B3 受 POSIX 门禁，B4/B6/B7 未完成，B5 已有未运行回归；无其他模型在途记录。
+- 预计修改文件：按实际缺口涉及 `backend/app/`、`rules/`、`benchmarks/`、`tests/`、规格与进度文档；不修改冻结 P0 Schema。
+- 验收方法：恢复 Python 3.12 后复跑 B1/B5 定向测试；实现后为每项添加 fixture/测试，运行 diff/敏感信息检查；无法满足的 Linux/外部授权条件以 BLOCKED/PARTIAL 记录。
+- token 用量估算：24,000～40,000；系统未提供本轮精确 token 遥测。
+
+### [20260904-1440-Sol-B1至B7收尾收工] PARTIAL - 已完成全量门禁核查，当前环境不能完成全部任务
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 扫描与分析引擎
+- 时间：2026-09-04 14:40（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`。
+- 任务目标和实际结果：已按 B1～B7 台账重新核对。B1 的已实现纵切有历史回归证据，但 Python lockfile/Yarn/pnpm/workspace/传递依赖仍是功能扩展；B2/B3 的 Linux ZIP 端到端、provenance 和 A4 未完成；B4、B6、B7 未实现；B5 已推送首批规则但未能运行 pytest。
+- 修改或新增文件：仅追加本工作日志；未修改产品逻辑，以避免在无可运行 Python 验收环境时堆积未经验证的 B4/B6/B7 代码。
+- 命令与测试结果：`python --version` 报 PATH 指向缺失的 `Python312/python.exe`；`py -3.12 --version` 报无可用运行时；`git diff --check` 通过。故无法运行 B1/B5 pytest 或安全地声称任何新实现通过。
+- 接口、Schema、规则和重要决策：未改变接口、Schema、规则或风险语义。完整 B1～B7 需要可运行 Python 3.12、Linux runner 和后续 A4 编排，不能由当前 Windows 环境替代。
+- 已知风险、失败项和未完成内容：Python 运行时损坏；B2/B3 POSIX 门禁；B4 SPDX、B6 AI 检测、B7 Bench 未开始；B5 仅有六条规则且测试未运行。用户要求的“全部解决”尚未达到完成条件。
+- 建议下一步及责任模型：CZ 先修复本机 Python 3.12 或提供可用解释器路径；随后 Root/Terra 执行 B1/B5 回归，Terra 在 Linux 完成 B2/B3/A4，Sol/Terra/Luna 分别推进 B4/B6/B7。
+- 关联的分支、提交、PR、Issue 或 evidence_id：当前 HEAD `f944603`；PR `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 24,000～40,000，因运行时和 Linux 环境门禁在实现前即阻塞，实际范围缩小为全量审计。
 ### [20260903-0055-Sol-任务6回归与任务1至5核查收工] COMPLETE - 回归已运行，任务状态已核查
 
 - 作者：GPT-5.6 Sol
