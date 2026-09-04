@@ -3113,3 +3113,25 @@
 - 治理回填：更新项目进度中的真人责任、本轮 A8-1c 状态、A5 GitHub 状态、发布记录和当前分支入口，并追加 AI 辅助记录；A5 业务实现和测试在本步骤保持冻结。
 - 发布计划：本条及治理文档提交后推送同一功能分支，PR #2 将自动更新；任务状态为“PR 创建完成、团队审核/合并待定”，不得外推为已进入 `integration/p0`。
 - token：本次确认后收尾的精确 token 数不可获得；非硬估算 `5k-8k`，在该范围内完成 PR 创建核验、治理回填和发布核对，未发生范围调整。
+
+### [20260904-1629-RootSol-VSCode实机演示] START - 在 VS Code 跑通当前可验证纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人可复现运行与演示核验；2026-09-04 16:29（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 目标：在用户已打开的 VS Code 仓库与集成终端中，实际演示 Python 3.12 环境、后端 FastAPI、最小动态 ZIP multipart→A4-1→SQLite→查询、真实 Ollama/Qwen3 A5 聚合探针，以及独立 mock 前端；保留清晰可重复命令与可见结果。
+- 边界：不修改业务代码、P0/Schema/sample、A2-A5、B1-B7 或前端实现，不执行或安装被扫描 ZIP 的代码/依赖；演示样例和运行数据只放仓库外临时目录；前端仍明确为 mock，A5 尚未接 ZIP Pipeline，不宣称完整许可证合规闭环。
+- 预计项目修改：只在演示结束后追加本日志，并按真实结果更新 AI/进度中的演示证据；本地进程、临时 ZIP/SQLite 和 VS Code 终端输出不提交。
+- 验收：VS Code 内显示正确分支与 Python 3.12；后端可启动，动态 ZIP 请求返回 202，终态为预期 `partial/rules/70` 且资源可查；A5 真实探针 generated/pending/稳定身份通过；前端可在 `127.0.0.1:5173` 打开并明确 mock；最后停止不需保留的进程、检查工作区和上传范围。
+- token：本轮非硬估算 `8k-12k`；精确 token 遥测若不可读则收工如实说明。
+
+### [20260904-1641-RootSol-VSCode实机演示] COMPLETE - 当前可验证纵切已在 VS Code 跑通
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人可复现运行与演示核验；2026-09-04 16:41（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 后端实机结果：VS Code 集成终端使用 CPython `3.12.14` 启动 Uvicorn/FastAPI，仅绑定 `127.0.0.1:8000`；项目首次拒绝默认 `0755` 数据目录，修正仓库外演示目录为 `0700` 后成功启动，SQLite 文件为 `0600`。未放宽项目权限门禁。
+- 动态 ZIP 纵切：自建 ZIP 仅含 `requirements.txt` 与 `package.json`，未执行其中代码或安装依赖；`POST /api/v1/scans` 返回 `202`，随后 `ScanRun` 持久化为 `partial/rules/70`、错误码 `rules_stage_not_connected`。结果包含 `react@19.2.0`、`fastapi@0.141.1`、`pydantic@2.13.4` 三个组件及三条 `verified` manifest evidence，输入摘要与 idempotency key 绑定。
+- 原始环境证据：沙箱客户端访问回环端口原样返回 `PermissionError: [Errno 1] Operation not permitted`；受控本机同一脚本运行成功。固定幂等键重建 ZIP 时返回 `409 idempotency_conflict`，确认后端按源摘要失败关闭；仅修正仓库外脚本以摘要派生演示幂等键，未修改产品实现或测试。
+- A5 真实模型：VS Code 终端以 `OLLAMA_NO_CLOUD=1`、`OLLAMA_NOHISTORY=1` 启动官方 Ollama `0.33.3`；锁定 `qwen3:4b-instruct-2507-q4_K_M@sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。聚合探针两轮 `2/2`，冷/热 `2923.336/2898.259 ms`；`all_pending`、`deterministic_facts_preserved`、`producer_bound`、`stable_identity` 均为 `true`。不保存或上传 prompt、完整 response、模型权重或缓存。
+- 前端可见性：首次因 VS Code `PATH` 缺少 Node 失败，只在仓库外临时启动脚本加入既有受信 Node 路径后，Vite `8.2.2` 于 `127.0.0.1:5173` 成功启动；Chrome 可见首页及工作台，页面明确显示 `MOCK MODE 本地演示数据 · 不依赖网络`。未修改前端组员代码，不宣称真实 API 联调。
+- 交付与边界：本轮没有新增业务功能；仅更新本进度、AI 辅助和 append-only 工作日志。仓库外临时脚本、ZIP、SQLite 与进程不提交。当前真实产品能力仍止于 ZIP→Python/JavaScript 直接依赖→SQLite→可查询 `partial`，A5 只能对已有 finding 独立运行；B5、A5-1c、A6 和前端真实接线仍未完成。
+- 进程收口：保留后端与前端开发服务器供用户继续检查；真实 AI 探针结束后停止 Ollama 服务以释放本机模型资源。用户可在对应 VS Code 终端按 `Ctrl+C` 停止剩余服务。
+- 发布计划：静态门禁通过后仅提交并推送上述三份治理文档到当前功能分支，自动更新 PR #2；不合并 PR，不修改 `integration/p0`、`main`、组员分支或组员负责代码。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `8k-12k`，在范围内完整完成 VS Code 后端、动态 ZIP、SQLite、真实 Qwen3、mock 前端与治理收口，未发生业务范围扩张。
