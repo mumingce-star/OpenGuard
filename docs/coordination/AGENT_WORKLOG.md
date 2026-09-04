@@ -2889,3 +2889,12 @@
 - 证据裁决：`EVD-A5-AI-PROVIDER-001` 为 `APPROVED-PENDING-ROOT-BINDING`，仅证明本机 CPython 3.12、显式注入 Provider 的结构化整改与确定性降级核心；不证明真实 Ollama/Qwen3、HTTP/network transport、模型版权/性能、A4 接线、许可证规则、报告、Bench、部署或完整作品。
 - 下一步：创建不可变实现提交并回填哈希、进度与 GitHub 状态后推送；不创建/合并 PR，不删除旧远端分支。A5 后续任务为 A5-1：锁定开放权重模型与 Ollama transport、真实超时和 A4 AI_ASSIST 接线，但必须等待 B5 提供真实 finding/license facts，不代做组员规则。
 - token：本次运行精确 token 数不可获得；开工总估算 `18k-26k`，A5-0 在该范围内完成，期间只增加对 Luna P1 的最小修复，没有扩张到 A5-1 或组员任务。
+
+### [20260904-1228-Root-A5Provider证据绑定与发布] COMPLETE - A5-0 已绑定并推送 GitHub 功能分支
+
+- 作者/角色/时间：Codex Root Coordinator；不可变证据绑定、远端刷新与发布；2026-09-04 12:28（Asia/Shanghai）。分支 `feat/a5-ai-provider`。
+- 不可变绑定：`EVD-A5-AI-PROVIDER-001` 绑定实现、规格、30 项 unit、16 项 Luna 独立测试和 P1 闭环提交 `2c824bf13522ce8a211a34f9c61af323141037f0`；该提交已首次推送至 `origin/feat/a5-ai-provider`。本记录与进度回填将作为后续治理提交再次推送。
+- 远端复核：推送前 `git fetch --prune origin` 发现组员 `codex/p0-external-tools-sync` 与 `feat/xzb-frontend` 均有新提交；本轮没有合并、改写或测试这些新提交，仍由对应组员负责。远端此前不存在同名 A5 分支。
+- 上传范围：A5 Provider 源码、冻结规格、实现/独立测试、根/后端/安全说明、AI 和 append-only 协作记录；没有上传临时依赖目录、cache、原始附件、P0/API/pipeline 改动、组员业务代码、真实凭据或个人绝对路径。`main` 与 `integration/p0` 均未改变，未创建或合并 PR，旧远端分支未删除。
+- 状态：A5-0 子任务完成；A5 父任务保持进行中，A5-1 仍缺真实 Qwen3/Ollama transport、超时/A4接线和消融。下一工程点在 B5 提供真实 finding 之前只应做 A5-1 transport 的独立配置/运行时准备，不能代做许可证规则。
+- token：本次运行精确 token 数不可获得；本轮总估算 `18k-26k` 内已完成断点复核、实现、独立验证、P1关闭、完整门禁、提交和首次推送，未发生功能范围扩张。
