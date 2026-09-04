@@ -3263,3 +3263,9 @@
 
 - 在完成记录后补充两项同范围加固：resolver 返回端点必须 family/IP 匹配且端口精确为 443；固定 Git 环境显式禁用 replace objects；默认应用的联网开关新增只允许 `0/1` 的回归。没有扩大产品功能或修改公共契约。
 - 最新证据取代上一条作为发布口径：A2 实现侧 `14 passed, 1 skipped`；沙箱原样 `859 passed, 9 failed, 2 skipped, 2 deselected`，9 项仍全部是既有 A5 回环 bind 权限限制；受控完整 `872 passed, 1 warning`。上一条计数作为加固前历史保留，不改写。
+
+### [20260904-2248-RootTerra-A2公开Git发布] AMENDMENT/COMPLETE - GitHub 远端不可变实现已绑定
+
+- GitHub 发布事实：A2-3a 实现、测试、规格和首轮治理提交 `f6aea1eb2db1475be489f9ce8afc517e10f3c0e2` 已推送 `origin/feat/a2-public-git-egress`；本地实现提交与 `git ls-remote` 返回同一完整对象，`EVD-A2-PUBLIC-GIT-EGRESS-001` 绑定该实现。
+- 上传范围：30 个竞赛仓库文件，包括 URL/address/DoH/TrustedEgress、Git runner/object 物化、API/Pipeline 接线、实现与真实公网测试、规格、资源台账和治理记录；未上传目标仓库对象/代码、运行数据库、缓存、虚拟环境、模型内容、凭据、本机私有路径或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A2-3a 分支。

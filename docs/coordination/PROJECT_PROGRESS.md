@@ -26,11 +26,11 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | A1.1 AI ProducerRef | P0 | Sol→Terra→Luna | 已完成 | `provider`、`model_id`、`prompt_schema_digest` 已完成契约、实现、Schema、sample和独立测试闭环 | 后续变更走 ADR 和回归门禁 | 已推送 `43493fb` |
 | 协作与发布治理 | P0 | Root | 已完成 | 进度表、目录规则、统一验收、每任务点GitHub推送和上传范围复核已固化 | 每个后续任务点持续执行 | 已推送 `43493fb` |
 | S0 竞赛规则与评分证据治理 | P0 | Sol→Root | 已完成 | 三份正式文件映射、官方100分评分追踪、提交清单、九章27项主张与非目标已形成 | 随竞赛通知变更复核；最终材料仍需按证据状态逐项冻结 | 已推送 `ffa9390` |
-| S2 条件性安全设计基线 | P0 | Sol→Terra→Luna | 已完成 | 20项安全控制、5项正向/36项负面设计；A2-3a 已在 macOS/POSIX profile 实现 TrustedEgress 并完成真实公开仓库纵切 | 条件性设计任务完成；Linux profile、完整攻击语料和部署级复验仍未关闭，不能声称 S2/A2 总门禁完成 | 已推送 `ffa9390`；A2-3a 待本分支发布 |
+| S2 条件性安全设计基线 | P0 | Sol→Terra→Luna | 已完成 | 20项安全控制、5项正向/36项负面设计；A2-3a 已在 macOS/POSIX profile 实现 TrustedEgress 并完成真实公开仓库纵切 | 条件性设计任务完成；Linux profile、完整攻击语料和部署级复验仍未关闭，不能声称 S2/A2 总门禁完成 | 已推送 `ffa9390`；A2-3a 已推送本分支 |
 | A2-0/A2-1 本地 ZIP 安全纵切 | P0 | Terra→Luna→Sol→Root | 已完成 | 服务端限额/POSIX能力探测、descriptor-safe流式解压、central/local header核验、稳定inventory/root digest与失败清理；独立36项、Terra 19项、P0 46项、全量101项通过；`EVD-A2-ZIP-IMPL-001` 已绑定 `53499ea` | Git/TrustedEgress/API 后由 A2-3a/A3 关闭；A2总包仍缺完整ZIP corpus、inventory并发完整性、cleanup隔离与 Linux profile，本地绿灯不得外推 | 已推送 `53499ea`；待PR合并 |
 | A2-1D 本地 ZIP CLI 演示 | P0 | Terra→Luna→Sol→Root | 已完成 | `python -m app.cli LOCAL_ZIP` 已实现稳定 JSON、0/1/2 退出语义、错误脱敏和临时清理；Terra 5项、Luna独立5项、当前全量111项通过；Sol终审与追踪更正闭环；`EVD-A2-ZIP-CLI-001` 绑定 `910f745` | 这不是完整Web、依赖/许可证扫描或A2总门禁；后续由A2/B1等任务继续 | 已推送 `feat/a2-zip-cli-demo`；待PR合并 |
 | A2-2 安全只读扫描会话 | P0 | Sol→Terra/Root→Luna→Sol→Root | 已完成 | 生命周期绑定 `ReadOnlyScanSession`、inventory 精确白名单、逐层 dirfd/no-follow identity seal、SHA-256 前后复验、2 MiB/16 MiB 默认配额、过期/线程/重入/异常/cleanup 失败关闭；Luna 独立46项、定向unit42项、全量175项、P0 46项通过；`EVD-A2-READONLY-SESSION-001` 已绑定 `1f03ce0` | 仅允许可信非执行性 parser；公开 Git 已在 A2-3a 复用该能力，完整ZIP corpus、cleanup worker/orphan、Linux profile 和 A2 总门禁仍未完成 | 已推送 `feat/a2-readonly-scan-session`；待PR合并 |
-| A2-3a 公开 Git/TrustedEgress 纵切 | P0 | Terra/Root | 已完成 | 公共 HTTPS URL/全地址公网门禁、固定 TLS DoH、逐连接 CONNECT 出口、Git no-checkout object 物化、revision/inventory/provenance、API→B1/A4→A6 接线；PyPA 真实仓库通过，受控完整 `872 passed`；`EVD-A2-PUBLIC-GIT-EGRESS-001` 候选 | 仅批准当前 macOS/POSIX profile；A2 总包仍缺完整攻击 corpus、cleanup orphan/quarantine、Linux namespace/seccomp/cgroup 与陌生机部署复验 | 待推送 `feat/a2-public-git-egress` |
+| A2-3a 公开 Git/TrustedEgress 纵切 | P0 | Terra/Root | 已完成 | 公共 HTTPS URL/全地址公网门禁、固定 TLS DoH、逐连接 CONNECT 出口、Git no-checkout object 物化、revision/inventory/provenance、API→B1/A4→A6 接线；PyPA 真实仓库通过，受控完整 `872 passed`；`EVD-A2-PUBLIC-GIT-EGRESS-001` 绑定 `f6aea1e` | 仅批准当前 macOS/POSIX profile；A2 总包仍缺完整攻击 corpus、cleanup orphan/quarantine、Linux namespace/seccomp/cgroup 与陌生机部署复验 | 已推送 `feat/a2-public-git-egress`；未创建/合并 PR |
 | B1-1 Python manifest 解析纵切 | P0 | Sol→Terra→Luna→Sol→Root | 已完成 | 仅通过只读会话发现/解析 `requirements*.txt`、`pyproject.toml`；PEP 508/440、字段/行级证据草稿、确定性去重/冲突/partial、URL与配额门禁；Terra 40项、Luna独立63项、全量278项、P0 46项通过；`EVD-B1-PYTHON-MANIFEST-001` 已绑定 `7c0d365` | B1-2 已另行闭环；JS/TS与lockfile仍未开始 | 已推送 `feat/b1-python-manifest-parser`；待PR合并 |
 | B1-2 Python P0映射与CLI纵切 | P0 | Sol→Terra→Luna→Sol→Root | 已完成 | 冻结DTO映射为P0 `Component/Evidence`；UUIDv5稳定ID、证据定位/哈希/时间、exact pin、direct/VCS、partial诊断、固定时钟与旧CLI兼容；Sol终审发现并关闭2项P1；Terra 45项、Luna独立32项、全量355项、P0 46项通过；`EVD-B1-PYTHON-P0-CLI-001` 已绑定 `daee8a8` | B1总包下一步进入 JS/TS manifest 与选定 lockfile；本纵切不代表许可证、依赖求解或完整报告 | 已推送 `feat/b1-p0-mapper-cli`；待PR合并 |
 | B1-3/B1-4 JavaScript manifest、P0与CLI | P0 | Sol/Root→Terra→Luna→Terra→Luna→Root | 已完成 | 支持根 `package.json` 四类直接依赖与 `package-lock.json` v2/v3 enrichment；严格JSON、稳定Evidence/UUID/purl/URL、partial与新CLI；Luna首次发现5项P1，连同Root 4类探针均已关闭；Terra 37项、Luna独立32项、JS合计69项、全量424项通过；`EVD-B1-JAVASCRIPT-P0-CLI-001` 已绑定 `80ee2a9` | B1仍缺选定Python lockfile、Yarn/pnpm/workspace/传递依赖；本纵切不代表许可证或安装事实 | 已推送 `feat/b1-js-manifest-p0-cli`；待PR合并 |
@@ -102,12 +102,12 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 2026-09-04 | A6-0 确定性报告导出核心 | `feat/a6-report-export-core` | `fda4ce6`（不可变实现/测试/证据） | A6 报告源码、12项专项测试、规格、复现说明、AI/协作/进度记录；不含 B5、前端、临时环境或产物文件 | 已推送；远端完整对象 `fda4ce6ba4361efaa3dcdba2a04aae6cf6067338` 已核对；未创建/合并 PR |
 | 2026-09-04 | A6-1 报告持久化与只读下载 | `feat/a6-report-delivery` | `9ce9535`（不可变实现/测试/证据） | 内容寻址私有存储、原子 metadata、ReportLink、同一路由只读下载、16项专项测试、规格与治理记录；不含生成报告文件、B5、Pipeline 或前端 | 已推送；远端完整对象 `9ce9535436372295eaf1598a9805ec415b79db86` 已核对；未创建/合并 PR |
 | 2026-09-04 | A6-2 Pipeline 终态报告发布 | `feat/a6-pipeline-publish` | `eec66a6`（不可变实现/测试/证据） | Pipeline publisher、worker/ZIP/default factory 接线、API 可见性一致性、10项专项测试、规格与治理记录；不含生成报告文件、B5、A5、前端或部署 | 已推送；远端完整对象 `eec66a6aa0458abdbadd912f17c6c9d54ce3a247` 已核对；未创建/合并 PR |
-| 2026-09-04 | A2-3a 公开 Git/TrustedEgress | `feat/a2-public-git-egress` | 待首次不可变提交 | URL/DNS/CONNECT/Git object 安全摄取、公共依赖 Pipeline、API/A6 接线、实现与真实公网测试、规格/资源/治理记录；不含目标仓库内容、B5、A5、前端或部署 | 本地验收完成，待推送；未创建/合并 PR |
+| 2026-09-04 | A2-3a 公开 Git/TrustedEgress | `feat/a2-public-git-egress` | `f6aea1e`（不可变实现/测试/证据） | URL/DNS/CONNECT/Git object 安全摄取、公共依赖 Pipeline、API/A6 接线、实现与真实公网测试、规格/资源/治理记录；不含目标仓库内容、B5、A5、前端或部署 | 已推送；远端完整对象 `f6aea1eb2db1475be489f9ce8afc517e10f3c0e2` 已核对；未创建/合并 PR |
 
 ## 3.1 当前远端分支入口
 
 - 团队日常入口：`integration/p0`；里程碑发布目标：`main`。
-- 项目负责人当前短分支：`feat/a2-public-git-egress`，基于已发布 A6-2 建立并待本轮推送；A5 的 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 仍提交到 `integration/p0`，完成审核并获明确合并决定后再纳入集成线。本轮不创建或合并 PR。
+- 项目负责人当前短分支：`feat/a2-public-git-egress`，已推送并绑定实现 `f6aea1e`；A5 的 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 仍提交到 `integration/p0`，完成审核并获明确合并决定后再纳入集成线。本轮未创建或合并 PR。
 - 组员在途分支：`feat/xzb-frontend`、`codex/p0-external-tools-sync`，均保留。
 - 待明确授权清理的项目负责人历史分支：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
 - 上述待清理分支的提交均已从 `integration/p0` 可达，删除分支引用不会删除集成线中的代码和证据；未获明确授权前保持现状。
@@ -119,5 +119,5 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 顶层目录 | 通过 | 使用既有工程目录，不新增含糊或重复目录 |
 | 临时环境/缓存 | 通过（Git层） | `.pytest_cache`、`__pycache__`、虚拟环境不纳入提交 |
 | 竞赛原始附件 | 通过 | 原始PDF/DOCX不复制进公开仓库，正式要求以脱敏规范文档表达 |
-| 敏感信息 | A2-3a 发布前复核中 | 不上传密钥、账号、本机绝对路径、学校/教师/成员隐私或目标仓库内容 |
+| 敏感信息 | A2-3a 发布前复核通过 | 不上传密钥、账号、本机绝对路径、学校/教师/成员隐私或目标仓库内容 |
 | 第三方资源 | 持续 | 首次真实引入时锁版本并更新 `third_party/` 与资源清单 |
