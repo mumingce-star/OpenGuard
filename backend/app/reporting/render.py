@@ -70,7 +70,11 @@ def _canonical_run(run: ScanRun) -> dict[str, Any]:
         payload["errors"],
         key=lambda item: (item["stage"], item["code"], item["message"], item.get("tool") or ""),
     )
-    payload["report_links"] = sorted(payload["report_links"], key=lambda item: (item["format"], item["href"]))
+    # Delivery links contain the digest of this report.  Embedding them would
+    # create a recursive hash, so reports always carry the analytical snapshot
+    # with delivery metadata projected out.  The canonical ScanRun/API remains
+    # authoritative for ReportLink values.
+    payload["report_links"] = []
     payload["provenance"]["tool_versions"] = sorted(
         payload["provenance"]["tool_versions"],
         key=lambda item: json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":")),

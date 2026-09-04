@@ -83,4 +83,17 @@ PYTHONPATH=backend python -m pytest -q \
 新增测试覆盖私有目录/文件权限、内容寻址与 metadata 原子提交、幂等、重启读取、长度/摘要、
 篡改/缺失/symlink 失败关闭、默认数据目录、P0 `ReportLink`、FastAPI 元数据和只读下载、安全响应头、
 稳定脱敏错误及方法边界。下载前后文件时间必须不变，证明 GET 不写入。测试用终态快照由固定 sample
-和内存构造的 `partial/rules/70` 产生；不会实现或伪造 B5，也不代表 Pipeline/前端已经接线。
+和内存构造的 `partial/rules/70` 产生；不会实现或伪造 B5。A6-2 已在后续专项中接入 Pipeline，
+前端仍未接线。
+
+## A6-2 Pipeline 报告发布复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_pipeline_publish.py
+```
+
+10 项测试以动态 ZIP、真实 A2/B1/A4、SQLite、FastAPI 和私有报告 store 覆盖：四格式链接与
+`partial/rules/70` 同一终态 revision 生效、报告正文不递归嵌入链接、重启下载、未登记产物不可见、
+发布失败脱敏降级、publisher 篡改隔离、store/registry 元数据不一致失败关闭、重复发布拒绝、默认
+factory 接线，以及“文件已写但终态 CAS 冲突”的 orphan 不可下载。它不实现 B5、A5 主链接线、
+前端或持久任务队列。

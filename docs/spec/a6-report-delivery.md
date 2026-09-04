@@ -1,7 +1,7 @@
 # A6-1 报告安全持久化与只读下载
 
-状态：P0 实现纵切
-范围：项目负责人 A6；不包含扫描分析组员 B5、Pipeline REPORT 或前端接线
+状态：P0 实现纵切；由 A6-2 Pipeline publisher 消费
+范围：项目负责人 A6；不包含扫描分析组员 B5 或前端接线
 
 ## 1. 目标
 
@@ -12,7 +12,7 @@ A6-1 把 A6-0 已验证的内存 `ReportArtifact` 变成可在后端重启后继
 3. `GET /api/v1/scans/{scan_id}/report?format=...` 默认返回该 `ReportLink`；
 4. 客户端只读请求 `ReportLink.href`，即同一路径加 `download=true`，取得经过摘要复核的附件字节。
 
-GET 不生成、覆盖或修复报告，也不改变 SQLite。未来 A6-2 由 Pipeline REPORT Adapter 显式调用 publisher；本纵切只提供经过测试的持久化和 HTTP 消费边界。
+GET 不生成、覆盖或修复报告，也不改变 SQLite。A6-2 已由 Pipeline 终态 publisher 显式调用本接口；本纵切继续提供经过测试的持久化和 HTTP 消费边界。
 
 ## 2. 存储契约
 
@@ -43,7 +43,7 @@ GET /api/v1/scans/{scan_id}/report?format=html&download=true
 - `Cache-Control: private, no-store`；
 - 限制脚本、外部资源、表单和基地址的 CSP。
 
-报告不存在或状态尚未就绪继续使用 `409 report_not_ready`；存储损坏、权限漂移或 I/O 失败统一映射为脱敏的 `500 internal_error / report_storage_failure`。不向响应写入物理路径、异常正文或损坏内容。
+状态尚未就绪或该格式没有登记 `ReportLink` 时使用 `409 report_not_ready`；一旦 SQLite 已登记链接，内容缺失、链接与 metadata 不一致、存储损坏、权限漂移或 I/O 失败统一映射为脱敏的 `500 internal_error / report_storage_failure`。不向响应写入物理路径、异常正文或损坏内容。store 中存在但未被 `ScanRun.report_links` 登记的内容不可通过 API 读取。
 
 ## 4. 阶段性结果与 B5 边界
 
@@ -73,4 +73,4 @@ PYTHONPATH=backend python -m pytest -q \
 
 ## 6. 下一纵切
 
-A6-2 仅负责在 Pipeline REPORT 阶段显式调用 publisher，并在终态发布前绑定返回的 `ReportLink`；随后才由前端组员接入真实下载。A6-2 必须解决报告快照与最终 `ScanRun.report_links` 的一致性，不得通过 GET 懒生成或放宽终态状态机。最终匿名化、10MB 技术报告 PDF 和作品材料审计仍由 S7/Luna 的材料门禁处理。
+A6-2 已在 Pipeline 首次终态 CAS 前显式调用 publisher，并绑定四种 `ReportLink`；报告正文投影掉 delivery links 以避免内容摘要自引用，API 中的最终 `ScanRun` 是链接权威来源。前端真实下载接线仍由前端组员完成。最终匿名化、10MB 技术报告 PDF 和作品材料审计仍由 S7/Luna 的材料门禁处理。

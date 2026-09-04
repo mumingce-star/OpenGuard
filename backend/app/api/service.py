@@ -333,7 +333,7 @@ class ScanApiService:
         if run.status not in _RESULT_STATUSES:
             _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="status_not_ready")
         if self._report_store is not None:
-            return self._stored_report(run.id, report_format).link
+            return self._stored_report(run, report_format).link
         for link in run.report_links:
             if link.format is report_format:
                 return link
@@ -345,9 +345,9 @@ class ScanApiService:
             _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="status_not_ready")
         if self._report_store is None:
             _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="not_generated")
-        return self._stored_report(run.id, report_format)
+        return self._stored_report(run, report_format)
 
-    def _stored_report(self, scan_id: str, report_format: ReportFormat) -> StoredReport:
+    def _stored_report(self, run: ScanRun, report_format: ReportFormat) -> StoredReport:
         store = self._report_store
         if store is None:
             _fail(
@@ -356,16 +356,27 @@ class ScanApiService:
                 message="Requested report is not ready.",
                 reason="not_generated",
             )
+        links = [link for link in run.report_links if link.format is report_format]
+        if not links:
+            _fail(
+                status_code=409,
+                code="report_not_ready",
+                message="Requested report is not ready.",
+                reason="not_generated",
+            )
+        if len(links) != 1:
+            _fail(
+                status_code=500,
+                code="internal_error",
+                message="The report could not be read.",
+                reason="report_storage_failure",
+            )
         try:
-            return store.get(scan_id, report_format)
-        except ReportStoreError as error:
-            if error.code == "report_store_not_found":
-                _fail(
-                    status_code=409,
-                    code="report_not_ready",
-                    message="Requested report is not ready.",
-                    reason="not_generated",
-                )
+            stored = store.get(run.id, report_format)
+            if stored.link != links[0]:
+                raise ReportStoreError("report_store_corrupt")
+            return stored
+        except ReportStoreError:
             _fail(
                 status_code=500,
                 code="internal_error",

@@ -34,7 +34,7 @@ from app.api.service import APPLICATION_VERSION, ApiError, ScanApiService
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
 from app.persistence import SQLiteScanRunRegistry
-from app.reporting import ReportArtifactStore
+from app.reporting import PipelineReportPublisher, ReportArtifactStore
 
 
 _ERROR_RESPONSES = {
@@ -416,12 +416,13 @@ def create_default_app() -> FastAPI:
         if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
             raise RuntimeError("OpenGuard runtime directory must be private")
     registry = SQLiteScanRunRegistry(data_dir / "scans.db")
+    report_store = ReportArtifactStore(report_root)
     runtime = ZipScanRuntime(
         registry,
         upload_root=upload_root,
         workspace_root=workspace_root,
+        report_publisher=PipelineReportPublisher(report_store),
     )
-    report_store = ReportArtifactStore(report_root)
     return create_app(registry, zip_runtime=runtime, report_store=report_store, close_registry=True)
 
 

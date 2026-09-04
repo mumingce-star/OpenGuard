@@ -348,8 +348,8 @@ artifact = render_report(run, ReportFormat.HTML)
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py
 ```
 
-A6-0 本身不写文件或提供 HTTP；已由下述 A6-1 接入持久化和只读下载。Pipeline REPORT Adapter、
-前端接线和最终匿名化验收仍属于 A6 后续纵切。
+A6-0 本身不写文件或提供 HTTP；已由下述 A6-1 接入持久化和只读下载，并由 A6-2 接入 Pipeline
+终态发布。前端接线和最终匿名化验收仍属于 A6 后续纵切。
 
 ## A6-1 报告安全持久化与只读下载
 
@@ -370,8 +370,9 @@ link = store.publish(terminal_scan_run, ReportFormat.HTML)
 
 `GET /api/v1/scans/{scan_id}/report?format=html` 返回 `ReportLink`；请求该 link 的相对 `href`
 会在同一路径用 `download=true` 只读下载经过摘要校验的附件。下载包含 attachment、digest/ETag、
-`nosniff`、`no-store` 和限制性 CSP。GET 不生成报告、不更新 SQLite；Pipeline REPORT Adapter 与
-前端接线仍属后续纵切。`partial/rules/70` 下载继续明确显示许可证规则尚未连接，不代表合规通过。
+`nosniff`、`no-store` 和限制性 CSP。GET 不生成报告、不更新 SQLite；A6-2 已将 publisher 接到
+Pipeline 首次终态提交边界，前端接线仍属后续纵切。`partial/rules/70` 下载继续明确显示许可证
+规则尚未连接，不代表合规通过。
 
 实现侧复现：
 
@@ -381,3 +382,32 @@ PYTHONPATH=backend python -m pytest -q \
   tests/unit/test_a6_report_delivery.py \
   tests/unit/test_a3_fastapi_api.py
 ```
+
+## A6-2 Pipeline 终态报告发布
+
+`app.reporting.PipelineReportPublisher` 会在 worker 首次写入 `completed` 或 `partial` 终态之前，
+显式发布 JSON、HTML、CSV 和资源清单四种格式，再把全部 `ReportLink` 放入同一份终态 `ScanRun`。
+默认 `ZipScanRuntime` 已使用同一个私有 `ReportArtifactStore` 完成接线。因此当前 ZIP HTTP 主链即使
+因 B5 未到位停在 `partial/rules/70`，也会自动产生可下载、可重启读取的诚实阶段性报告。
+
+SQLite 终态不可变，所以实现不会先落无链接终态再补写。报告文件先于一次终态 CAS 写入，但 API
+只承认 SQLite `ScanRun.report_links` 已登记且与 store metadata 精确一致的产物；发布中断或 CAS
+冲突留下的未登记文件不可见。报告正文投影掉 `report_links`，避免链接摘要引用自身形成递归哈希；
+最终 API `ScanRun` 是链接的权威来源。发布失败会保留已取得的确定性结果，以脱敏
+`report_publish_failed` 结束，不让任务永久卡在 running。
+
+实现侧复现：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a6_pipeline_publish.py \
+  tests/unit/test_a6_report_exports.py \
+  tests/unit/test_a6_report_delivery.py \
+  tests/unit/test_a4_pipeline_worker.py \
+  tests/unit/test_a4_local_zip_pipeline.py \
+  tests/unit/test_a3_zip_background_scan.py
+```
+
+本纵切不实现 B5 许可证规则、不调用 Qwen3、不接前端，也没有把进程内 BackgroundTask 扩展为
+持久队列。完整许可证内容仍须消费组员提供的真实 `LicenseExpression`、`Obligation` 与
+`RiskFinding`。

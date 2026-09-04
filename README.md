@@ -10,7 +10,7 @@
 
 现在已经可以独立跑通六层真实扫描底座纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**生命周期绑定只读会话 → Python/JavaScript manifest**，**声明与 npm lock v2/v3 → P0 `Component`/`Evidence`**，**Python/JavaScript 两种稳定依赖 JSON CLI**，**显式本地 ZIP Pipeline → durable P0 依赖聚合**，以及 **ZIP multipart HTTP 创建 → 进程内后台 A4-1 → 状态/资源/证据查询**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
 
-任务主线还已具备 SQLite durable `ScanRun` 注册表、六路由 FastAPI API，以及显式七阶段 A4-0 Pipeline Worker。A4-1 已把本地 ZIP、A2 与既有 Python/JavaScript 依赖解析公共接口接到该 worker；A3-2 进一步在同一个 `POST /api/v1/scans` 接入 ZIP multipart，并在受控单进程存活期间通过 BackgroundTask 自动执行。当前可真实持久化依赖组件、证据和摘要，并因许可证规则尚未接入而诚实终止为 `partial/rules/70`。这里的 `partial` 表示“阶段性结果可用，许可证分析待接入”，不是 ZIP 或依赖扫描失败；公开 Git 物化、许可证、AI、报告和持久 worker 仍未完成。
+任务主线还已具备 SQLite durable `ScanRun` 注册表、六路由 FastAPI API，以及显式七阶段 A4-0 Pipeline Worker。A4-1 已把本地 ZIP、A2 与既有 Python/JavaScript 依赖解析公共接口接到该 worker；A3-2 进一步在同一个 `POST /api/v1/scans` 接入 ZIP multipart，并在受控单进程存活期间通过 BackgroundTask 自动执行。当前可真实持久化依赖组件、证据和摘要，并因许可证规则尚未接入而诚实终止为 `partial/rules/70`。这里的 `partial` 表示“阶段性结果可用，许可证分析待接入”，不是 ZIP 或依赖扫描失败；公开 Git 物化、许可证、AI 和持久 worker 仍未完成。
 
 A5-0 还提供了可独立调用的 local/remote AI Provider 边界：给定已有 `RiskFinding`、`Evidence`
 和绑定的许可证事实，它能把严格 JSON 提升为待人工复核的 P0 `Remediation`；关闭、异常、超限、
@@ -21,12 +21,13 @@ Ollama `0.33.3` 与锁定 Qwen3 模型：manifest/blob 摘要一致，真实结�
 Pipeline，因此当前 Web 扫描仍不会自动产生 AI 建议。
 
 A6-0 已提供确定性报告导出核心：对一个已验证的 `completed` 或 `partial` `ScanRun`，可生成稳定
-JSON、竞赛七字段 UTF-8 CSV/资源清单和安全静态 HTML。A6-1 现可把这些产物以私有权限、内容
+JSON、竞赛七字段 UTF-8 CSV/资源清单和安全静态 HTML。A6-1 可把这些产物以私有权限、内容
 SHA-256 和原子 metadata 提交持久化，生成 P0 `ReportLink`，并通过冻结的报告 GET 路径只读下载。
-当前 `partial/rules/70` 仍只会得到明确标示的阶段性报告，不补写缺失的许可证、风险或 AI 建议。
-报告尚未接入 Pipeline 或前端；GET 不会现场生成报告，也不会修改 SQLite。
+A6-2 已把 publisher 接到 Pipeline 首次终态提交边界：ZIP HTTP 主链现在会把四种报告链接与
+`partial/rules/70` 在同一次 SQLite CAS 中公开，报告可在后端重启后继续下载。阶段性报告不会补写
+缺失的许可证、风险或 AI 建议；GET 不现场生成报告，也不修改 SQLite。前端仍未接真实下载。
 
-当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、AI 主链接线、Web、报告 Pipeline/前端接线和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、AI 主链接线、前端真实 API/下载接线和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
 团队集成分支 `integration/p0` 还汇合了前端组员的 React/Vite 应用壳，以及扫描组员的 ScanCode/Syft 受限 JSON Adapter 候选。前端已通过锁文件安装和生产构建，但仍使用 mock；外部工具 Adapter 已通过本机 JSON 单测，但尚未接入当前 ZIP 主链或完成本机真实工具回归。两者均不得外推为完整 Web 或外部扫描器能力。
 
@@ -43,12 +44,12 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_local_zip_pipeline.py 
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py tests/security/test_a3_zip_background_scan_independent.py -k 'not real_uvicorn'
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ai_provider.py tests/security/test_a5_ai_provider_independent.py
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ollama_transport.py tests/security/test_a5_ollama_transport_independent.py
-PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py tests/unit/test_a6_report_delivery.py tests/unit/test_a3_fastapi_api.py
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py tests/unit/test_a6_report_delivery.py tests/unit/test_a6_pipeline_publish.py tests/unit/test_a3_fastapi_api.py
 PYTHONPATH=backend python -m app.ai.runtime_probe ./your-scan-run-without-remediation.json --runs 3 --timeout-seconds 60
 PYTHONPATH=backend python -m pytest -q
 ```
 
-前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper/Pipeline/ZIP HTTP/A5/A6 用法和退出码说明见 [backend/README.md](backend/README.md)。随后命令分别复现 JavaScript、Python mapper、Python parser、本地 ZIP Pipeline、ZIP HTTP 后台纵切、A5 Provider、Ollama transport、A6 报告渲染/持久化/下载与真实模型聚合探针。当前 A6+A3 定向入口通过；完整集合以本分支最新验收记录为准。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。真实探针要求本机已按锁定版本启动 Ollama，输入是至少含一个未绑定 remediation 的合法 P0 `ScanRun`。
+前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper/Pipeline/ZIP HTTP/A5/A6 用法和退出码说明见 [backend/README.md](backend/README.md)。随后命令分别复现 JavaScript、Python mapper、Python parser、本地 ZIP Pipeline、ZIP HTTP 后台纵切、A5 Provider、Ollama transport、A6 报告渲染/持久化/Pipeline 发布/下载与真实模型聚合探针。A6-2 验收分支完整集合为 `856 passed, 1 warning`。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。真实探针要求本机已按锁定版本启动 Ollama，输入是至少含一个未绑定 remediation 的合法 P0 `ScanRun`。
 
 ## 竞赛交付定义
 

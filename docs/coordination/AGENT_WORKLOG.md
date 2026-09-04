@@ -2952,6 +2952,16 @@
 - 独立性与验收：硬编码并核对官方 `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M` 和完整 manifest digest；不导入实现侧 FakeOpener、常量或 expected helper。先独立测试；若 sandbox bind 抛 `PermissionError`，保留原始失败并 BLOCKED，不跳过、不改实现；全绿后再跑 A5 unit+独立、安全非回环、静态/范围门禁。
 - token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
 
+### [20260904-2005-RootTerra-A6Pipeline报告] COMPLETE - A6-2 终态发布纵切完成并通过全量回归
+
+- 实现完成：新增 `PipelineReportPublisher`，worker 在首次 `completed/partial` CAS 前发布 JSON、HTML、CSV、资源清单并只允许 publisher 增加完整且唯一的四种 `ReportLink`；默认 ZIP runtime 与 FastAPI 复用同一个私有 store。当前真实 ZIP HTTP 主链会以一次终态 revision 公开带四种 link 的 `partial/rules/70`。
+- 一致性与安全：报告正文投影掉 delivery links，避免 `content_hash` 自引用；API 只读取 SQLite 已登记且与 store metadata 精确一致的报告。发布中断、未登记 store 内容和终态 CAS 冲突不会暴露 orphan；已登记内容缺失或不一致按脱敏 `report_storage_failure` 失败关闭。发布失败保留已有确定性聚合并追加 `report_publish_failed`，不让任务卡在 running。
+- 测试证据：A6-2 专项 `10 passed, 1 warning`；A6/A4/A3/P0 联合 `177 passed, 1 warning`。沙箱完整集合原样为 `845 passed, 11 failed, 1 warning`，11 项全部是既有 A3/A5 回环 listener bind 的 `PermissionError: [Errno 1] Operation not permitted`；不改测试在受控环境原样复跑为 `856 passed, 1 warning`。warning 为既有 Starlette/anyio alias 弃用提示。
+- 静态与范围门禁：`compileall`、`git diff --check`、P0 Domain/Schema/sample/SQLite registry/scanners/rules/A5/frontend 零差异、大文件和 world-writable 检查通过；敏感扫描仅命中已有及新增测试中的合成 `/Users/private token=do-not-leak` 脱敏哨兵，不是真实路径或凭据。无新增第三方依赖、路由或数据库迁移。
+- 诚实边界：未实现或模拟组员 B5，未接 A5/Qwen3，未修改前端、部署或公开 Git 输入；阶段性报告明确缺少许可证/义务/风险/AI 事实，空 finding 不表示合规通过。进程内 BackgroundTask 仍不具备持久队列、lease、retry 或 crash recovery。
+- 发布计划：本条后仅提交 A6-2 源码、10 项专项测试、规格、运行说明和治理记录到 `feat/a6-pipeline-publish` 并推送；不创建/合并 PR，不修改 `integration/p0`、`main`、A5 PR #2 或组员分支。远端对象核对结果将在重新读取 EOF 后以 amendment 追加。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A6-2 实现、测试、说明和发布前验收在该单轮范围内完整完成，未发生范围扩张。
+
 ### [20260904-1836-RootTerra-A6报告持久化下载] COMPLETE - A6-1 实现与受控全量回归闭环
 
 - 实现结果：新增内容寻址 `ReportArtifactStore`，以私有 `0700` 目录、`0600` 普通文件、内容先行/metadata 后提交、文件与目录 `fsync` 和原子替换持久化 A6-0 产物；读取时重新核对 owner、精确权限、文件类型/inode/长度、metadata 形状与 SHA-256。发布返回 P0 `ReportLink`，重启后仍可读取；相同内容重复发布保留首次生成时间。
@@ -3203,3 +3213,21 @@
 - GitHub 发布事实：A6-1 实现、测试、规格和首轮治理提交 `9ce9535436372295eaf1598a9805ec415b79db86` 已推送 `origin/feat/a6-report-delivery`；`git ls-remote` 与本地 `HEAD` 返回同一完整对象，`EVD-A6-REPORT-DELIVERY-001` 绑定该实现。
 - 上传范围：12 个竞赛仓库文件，包括 A6-1 store/API 接线、16 项专项测试、规格、运行说明及治理记录；未上传生成报告、运行数据、临时环境、原始附件、模型内容、凭据或其他真人负责代码。
 - 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为纯治理提交继续推送同一分支。
+
+### [20260904-1953-RootTerra-A6Pipeline报告] START - A6-2 终态前报告发布与 partial 纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A6/A4 接线实现与发布验收；2026-09-04 19:53（Asia/Shanghai）。分支 `feat/a6-pipeline-publish`，基于已发布 A6-1 远端 HEAD `6de6671` 建立；开工前工作区干净。
+- 任务归属与目标：只推进用户负责的 A6-2，把 A6-1 publisher 接入 Pipeline 终态提交边界，使当前 ZIP 主链在 B5 缺失时仍以一次 CAS 持久化带四种 `ReportLink` 的诚实 `partial/rules/70`，并可通过既有 GET 下载阶段性报告。
+- 一致性决策：A3 SQLite 终态不可变，因此禁止“先写 partial、后补 link”。worker 只在构造 `completed/partial` 候选后、首次终态 CAS 前调用可选 terminal publisher；store 内容先提交但 API 以 `ScanRun.report_links` 为可见性门禁。崩溃或发布失败留下的未登记内容不可下载，成功时报告 link 与终态快照同一 revision 生效。
+- 预计修改：A6 Pipeline publisher、A4 worker 的向后兼容可选终态 hook、ZIP runtime/default factory 接线、API link/store 一致性校验、报告自引用投影；新增 A6-2 unit/集成测试与规格，最小更新根/后端/测试说明、AI 记录、进度台账并只追加本日志。
+- 严格边界：不实现/模拟 B5，不修改 P0 Domain/Schema/sample、SQLite schema/状态机、扫描组员 B1-B7、`rules/`、A5、前端、部署或公开 Git 输入；不新增路由/依赖。未配置 publisher 的现有 `ScanPipelineWorker` 和 `ZipScanRuntime` 行为保持兼容。
+- 验收：覆盖四格式终态绑定、`partial/rules/70` 报告真实性、API 可见性门禁、报告内容非递归快照、发布失败不使任务卡在 running、内容先写/终态 CAS 冲突不暴露、默认 ZIP HTTP 自动报告、幂等与重启下载；运行 A6/A4/A3/P0 定向及完整 unit/security、Schema/compileall/diff/保护路径/敏感/大文件/上传范围门禁。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-2006-RootTerra-A6Pipeline报告] AMENDMENT/COMPLETE - EOF 顺序更正与最终验收
+
+- 顺序更正：`[20260904-2005-RootTerra-A6Pipeline报告] COMPLETE` 因通用补丁锚点匹配到较早同文行而未物理落在当时 EOF；不删除、不搬动该历史记录。本 amendment 在重新读取尾部后追加到真实 EOF，并作为本轮最终完成记录。
+- 最终实现：A6-2 terminal publisher、worker/ZIP/default factory 接线、报告链接原子可见性与 API store/registry 一致性校验已完成；当前 ZIP HTTP 可自动形成四格式、可重启下载的诚实 `partial/rules/70` 报告。
+- 最终证据：专项 `10 passed`，A6/A4/A3/P0 联合 `177 passed`；沙箱完整集合 `845 passed/11 loopback bind denied`，受控环境原样 `856 passed`；唯一 warning 为既有 Starlette/anyio alias 弃用。Schema/P0 由联合与全量回归覆盖，compileall、diff、保护路径、敏感/路径、大文件/world-writable 和上传范围门禁通过。
+- 边界：未实现或模拟 B5，未修改 P0/Schema/sample、SQLite 状态机、scanners/rules、A5、前端、部署、公开 Git 或组员分支；没有新增依赖、路由或数据库迁移。下一步只创建 A6-2 不可变实现提交并推送当前分支，远端绑定另追加 amendment。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A6-2 在该范围对应的单轮工作包内完整完成，未发生范围扩张。

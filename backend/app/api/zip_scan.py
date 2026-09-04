@@ -19,6 +19,7 @@ from app.api.models import ScanCreateAccepted, ZipScanCreateFields
 from app.api.service import ApiError, ScanApiService
 from app.persistence import SQLiteScanRunRegistry
 from app.pipeline import ScanPipelineWorker, build_local_zip_dependency_plan
+from app.reporting import PipelineReportPublisher
 from app.security.limits import ZipSafetyLimits
 
 
@@ -83,14 +84,20 @@ class ZipScanRuntime:
         upload_root: Path,
         workspace_root: Path,
         clock: Callable[[], datetime] | None = None,
+        report_publisher: PipelineReportPublisher | None = None,
     ) -> None:
-        if not isinstance(registry, SQLiteScanRunRegistry) or (clock is not None and not callable(clock)):
+        if (
+            not isinstance(registry, SQLiteScanRunRegistry)
+            or (clock is not None and not callable(clock))
+            or (report_publisher is not None and type(report_publisher) is not PipelineReportPublisher)
+        ):
             raise ValueError("invalid zip runtime")
         self._registry = registry
         self._upload_root = _validate_private_root(upload_root)
         self._workspace_root = _validate_private_root(workspace_root)
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self._upload_max_bytes = ZipSafetyLimits().upload_max_bytes
+        self._report_publisher = report_publisher
 
     async def submit(
         self,
@@ -185,7 +192,12 @@ class ZipScanRuntime:
                 self._workspace_root,
                 clock=self._clock,
             )
-            ScanPipelineWorker(self._registry, clock=self._clock).run(scan_id, plan)
+            publisher = self._report_publisher
+            ScanPipelineWorker(
+                self._registry,
+                clock=self._clock,
+                terminal_publisher=publisher.publish if publisher is not None else None,
+            ).run(scan_id, plan)
         finally:
             self._remove(archive_path)
 

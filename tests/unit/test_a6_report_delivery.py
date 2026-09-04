@@ -71,6 +71,7 @@ def _persisted_terminal(
     registry: SQLiteScanRunRegistry,
     *,
     partial: bool = False,
+    report_store: ReportArtifactStore | None = None,
 ) -> ScanRun:
     ids = count(1)
     service = ScanApiService(
@@ -107,6 +108,9 @@ def _persisted_terminal(
             "report_links": [],
         }
     )
+    if report_store is not None:
+        link = report_store.publish(terminal, ReportFormat.HTML)
+        terminal = terminal.model_copy(update={"report_links": [link]})
     return registry.replace(terminal, expected_revision=running_stored.revision).run
 
 
@@ -283,7 +287,7 @@ def api_harness(tmp_path: Path) -> Iterator[tuple[TestClient, SQLiteScanRunRegis
     os.chmod(tmp_path, 0o700)
     registry = SQLiteScanRunRegistry(tmp_path / "scans.db")
     report_store = ReportArtifactStore(_private_directory(tmp_path / "reports"), clock=lambda: FIXED_TIME)
-    run = _persisted_terminal(registry, partial=True)
+    run = _persisted_terminal(registry, partial=True, report_store=report_store)
     report_store.publish(run, ReportFormat.HTML)
     app = create_app(registry, report_store=report_store)
     with TestClient(app, raise_server_exceptions=False) as client:
