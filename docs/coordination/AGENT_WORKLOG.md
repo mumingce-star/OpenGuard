@@ -3135,3 +3135,9 @@
 - 进程收口：保留后端与前端开发服务器供用户继续检查；真实 AI 探针结束后停止 Ollama 服务以释放本机模型资源。用户可在对应 VS Code 终端按 `Ctrl+C` 停止剩余服务。
 - 发布计划：静态门禁通过后仅提交并推送上述三份治理文档到当前功能分支，自动更新 PR #2；不合并 PR，不修改 `integration/p0`、`main`、组员分支或组员负责代码。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `8k-12k`，在范围内完整完成 VS Code 后端、动态 ZIP、SQLite、真实 Qwen3、mock 前端与治理收口，未发生业务范围扩张。
+
+### [20260904-1645-RootSol-VSCode实机演示发布] AMENDMENT/COMPLETE - 远端分支已接收演示证据
+
+- 发布事实：首个演示治理提交 `44c8cf19dbc14cbc42e0fabb5388463b8a5930ce` 已推送 `origin/feat/a5-ollama-transport`，`git ls-remote` 返回相同对象；本发布状态修正随后推送同一分支并自动更新 PR #2。
+- 上传范围仍只包含 `docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本 append-only 工作日志；未上传仓库外临时脚本、ZIP、SQLite、Ollama/模型、prompt/完整 response 或任何业务代码改动。
+- GitHub CLI 本机不可用，未为只读核验额外安装工具；以成功 push 和原生 `git ls-remote` 作为远端分支证据。未合并 PR，未修改 `integration/p0`、`main` 或组员分支。

@@ -44,7 +44,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | A8-1a P0团队集成基线 | P0 | Root/Sol | 已完成 | `integration/p0` 已汇合项目负责人六层后端纵切、前端组员壳和扫描组员B2/B3 Adapter候选；后端688项非回环+2项真实回环通过，前端锁文件供应链检查和生产构建通过；Schema不变；`EVD-P0-TEAM-INTEGRATION-001` 绑定 `f486ead` | 前端仍为mock；B2/B3仍缺本机真实工具和主链接线；不外推完整产品 | 已推送 `integration/p0`；团队后续从此创建短分支 |
 | A8-1b 冗余远端分支清理 | P0治理 | Root | 阻塞 | 已证明13个旧项目负责人任务分支均被 `integration/p0` 完整包含且零独有提交；组员两分支明确排除 | 远端删除被安全审批拒绝，需用户明确批准下方13个具体分支；本轮没有删除任何分支 | 待用户确认；不影响 `integration/p0` 使用 |
 | A8-1c A5 团队集成 PR | P0治理 | Root/Sol | 进行中 | 隔离 worktree 合并无冲突；沙箱原样 `807 passed, 11 failed, 1 warning` 的 11 项均为回环 bind 权限限制，受控环境原样 `818 passed, 1 warning`；P0 `46 passed`，Schema、compileall、diff、敏感/路径/大文件/上传范围门禁通过；PR #2 已创建且 GitHub 显示可自动合并 | 等待团队代码审核与明确合并决定；本任务不自动请求组员评审、不自动合并 | [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 已打开，base=`integration/p0`、head=`feat/a5-ollama-transport` |
-| A8-1d VS Code 本机复现演示 | P0治理 | Root/Sol | 已完成 | Python 3.12.14 启动 FastAPI；动态 ZIP POST `202`，SQLite 终态 `partial/rules/70`，得到 React/FastAPI/Pydantic 3 个组件和 3 条 verified evidence；Ollama/Qwen3 聚合探针 `2/2` 且全部校验通过；Vite 页面可见并明确 `MOCK MODE` | 演示只覆盖当前可验证纵切；A5 尚未接 Pipeline，前端尚未接真实 API，许可证规则仍依赖 B5 | 治理证据待随当前 PR 分支推送；临时脚本、ZIP、SQLite、prompt/response 不上传 |
+| A8-1d VS Code 本机复现演示 | P0治理 | Root/Sol | 已完成 | Python 3.12.14 启动 FastAPI；动态 ZIP POST `202`，SQLite 终态 `partial/rules/70`，得到 React/FastAPI/Pydantic 3 个组件和 3 条 verified evidence；Ollama/Qwen3 聚合探针 `2/2` 且全部校验通过；Vite 页面可见并明确 `MOCK MODE` | 演示只覆盖当前可验证纵切；A5 尚未接 Pipeline，前端尚未接真实 API，许可证规则仍依赖 B5 | 治理证据已推送当前 PR 分支；临时脚本、ZIP、SQLite、prompt/response 未上传 |
 | F0-0 前端应用壳 | P0 | 前端组员→Root验证 | 进行中 | React/Vite/Tailwind应用壳、基础页面与动效已由组员提交；Root按锁文件安装并完成TypeScript+Vite生产构建 | 当前仍使用mock，未接真实API；页面功能与视觉验收归前端组员 | 来源 `feat/xzb-frontend`，已纳入本地集成候选 |
 
 ## 2. P0 工作包全景
@@ -94,7 +94,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 2026-09-04 | A5-1a Qwen3/Ollama 本地 Transport | `feat/a5-ollama-transport` | `e4d8e2e`（不可变实现/独立证据） | 标准库 Ollama adapter、冻结规格、60项实现测试、17项Luna独立 TCP 测试、第三方资源锁定、运行/安全/AI/协作说明 | 已推送；待PR合并 |
 | 2026-09-04 | A5-1b Ollama/Qwen3 本机真实运行 | `feat/a5-ollama-transport` | `ca0c3ed`（不可变实现/真实运行证据）；`26ebdc8`（治理记录） | 聚合 runtime probe、5项unit、官方运行时/模型摘要与本机聚合实测记录；不含安装包、权重、prompt 或完整 response | 已推送；远端已核对；不创建/合并PR |
 | 2026-09-04 | A8-1c A5 团队集成 PR | `feat/a5-ollama-transport` → `integration/p0` | `ea2f45c`（创建 PR 时的远端 HEAD；后续治理提交自动进入同一 PR） | 已验收的 A5-0/A5-1a/A5-1b 实现、测试、规格与证据；不含 B4-B7、前端、安装包、模型权重或缓存 | [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 已打开、无冲突、可自动合并；待审核，未合并 |
-| 2026-09-04 | A8-1d VS Code 本机复现演示 | `feat/a5-ollama-transport` | 本轮治理提交 | 仅运行证据、AI 辅助记录和协作日志；不含仓库外启动脚本、运行数据库、ZIP、模型内容或业务代码改动 | 待推送后进入 PR #2；演示终态保持 `partial/rules/70` 与前端 mock 边界 |
+| 2026-09-04 | A8-1d VS Code 本机复现演示 | `feat/a5-ollama-transport` | `44c8cf1`（运行证据；本发布修正随后一并推送） | 仅运行证据、AI 辅助记录和协作日志；不含仓库外启动脚本、运行数据库、ZIP、模型内容或业务代码改动 | 已推送并进入 PR #2；演示终态保持 `partial/rules/70` 与前端 mock 边界 |
 
 ## 3.1 当前远端分支入口
 
