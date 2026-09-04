@@ -3197,3 +3197,9 @@
 - 最终证据：A6-1 `16 tests`、A3 API `23 tests`；A6+A3+P0 联合 `97 passed, 1 warning`，受控完整集 `846 passed, 1 warning`；沙箱 11 个回环权限失败已在前条完整保留。compileall、diff、保护路径、敏感/个人路径、大文件、world-writable 与上传范围门禁通过。
 - 发布边界：下一步仅创建 A6-1 不可变实现提交并推送 `feat/a6-report-delivery`；远端对象核对完成后继续只在 EOF 追加发布绑定，不合并 PR 或目标分支。
 - token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在该估算对应的单轮范围内完整交付且无范围调整；没有精确遥测，不能确认实际 token 数值。
+
+### [20260904-1844-RootTerra-A6报告持久化下载发布] AMENDMENT/COMPLETE - 远端不可变实现已绑定
+
+- GitHub 发布事实：A6-1 实现、测试、规格和首轮治理提交 `9ce9535436372295eaf1598a9805ec415b79db86` 已推送 `origin/feat/a6-report-delivery`；`git ls-remote` 与本地 `HEAD` 返回同一完整对象，`EVD-A6-REPORT-DELIVERY-001` 绑定该实现。
+- 上传范围：12 个竞赛仓库文件，包括 A6-1 store/API 接线、16 项专项测试、规格、运行说明及治理记录；未上传生成报告、运行数据、临时环境、原始附件、模型内容、凭据或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为纯治理提交继续推送同一分支。
