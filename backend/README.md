@@ -93,6 +93,44 @@ descriptor-relative `O_NOFOLLOW`、目录与文件 identity seal、SHA-256 复�
 异常和 cleanup 均按稳定错误失败关闭。该接口仅供可信、非执行性的进程内解析器使用；
 Python 私有属性和反射并不是安全沙箱，不得将任意第三方代码作为 consumer 执行。
 
+## A2-3a 公开 Git 与 TrustedEgress
+
+公开 Git 复用 A2-2 的只读 consumer，但输入必须先经过 `parse_public_git_url()`、固定
+TLS DoH 和任务级 `TrustedEgressProxy`。代理只接受目标 canonical host 的 `CONNECT :443`，
+逐连接检查全部 A/AAAA 都是公网地址并立即拨号已验证 IP；Git 不允许绕过该代理。Git 端固定
+禁凭据、交互、用户配置、环境代理、replace objects、hooks、LFS、重定向、submodule 和非
+HTTPS protocol，并以 `--no-checkout --depth=1 --single-branch --no-tags` 获取对象。
+
+物化阶段只接受 `100644`/`100755 blob`，经 `ls-tree -z` 检查后由 `cat-file --batch`
+流式写入 descriptor-safe tree；目标 executable bit 不恢复，symlink/gitlink/特殊 mode、路径
+冲突以及文件/字节/时间超限均失败关闭。revision、inventory digest、Git version/config digest
+进入现有 P0 provenance。公开连接明细仅是内部安全证据，不修改冻结 P0 Schema。
+
+默认应用必须由管理员显式开启真实摄取：
+
+```bash
+OPENGUARD_ENABLE_PUBLIC_GIT=1 \
+OPENGUARD_DATA_DIR=./data \
+PYTHONPATH=backend \
+python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+然后向既有路径提交 JSON：
+
+```json
+{
+  "source_type": "git",
+  "source": "https://github.com/pypa/sampleproject.git",
+  "idempotency_key": "public-git-demo-001"
+}
+```
+
+有受支持 manifest 的公开仓库当前会生成依赖和四格式报告，并诚实停在
+`partial/rules/70`；摄取安全失败会持久化为 `failed/ingestion/5`。未设置开关时继续保持
+A3-1 queued-only 兼容行为，不会静默联网。完整限制、测试和证据边界见
+`docs/spec/a2-public-git-trusted-egress.md`。Linux 隔离、持久任务恢复、私有仓库、B5 规则、
+A5 主链接线和前端仍未由本纵切完成。
+
 ## B1 Python manifest 解析器
 
 `app.scanners.parse_python_manifests` 是可信、非执行性的 A2-2 consumer：仅从

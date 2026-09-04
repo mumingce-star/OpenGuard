@@ -302,3 +302,28 @@ PYTHONPATH=backend python -m pytest -q tests/security/test_a5_ollama_transport_i
 原始 sandbox 运行的独立文件共收集 17 项：8 项不需要监听端口的 origin/身份检查通过，9 项需要真实 TCP 的用例在 fixture 绑定 `127.0.0.1:0` 时均原样收到 `PermissionError: [Errno 1] Operation not permitted`，结果为 `8 passed, 9 failed`。这些失败已保留，未被跳过、改写或归因于产品实现。
 
 Root 在受控回环环境对同一当前测试文件执行原样复跑，结果为 `17 passed in 4.70s`，实际覆盖 TCP 顺序、固定请求体、环境代理、A5 pending/degraded、socket timeout、版本/digest/non-JSON/超限 HTTP 失败、loopback origin 限制、服务停止和临时文件断言。受控复跑不调用真实 Ollama/Qwen3；候选 `EVD-A5-OLLAMA-TRANSPORT-001` 仍只证明有界协议 fixture 与 adapter 行为，不证明真实模型质量、许可证规则、A4 接线或完整竞赛作品。
+
+### A2-3a 公开 Git TrustedEgress 验收
+
+复现命令（第二条会访问操作者明确授权的公开仓库）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a2_public_git_ingestion.py
+OPENGUARD_RUN_LOOPBACK_TESTS=1 OPENGUARD_PUBLIC_GIT_TEST_URL=https://github.com/pypa/sampleproject.git PYTHONPATH=backend python -m pytest -q tests/security/test_a2_public_git_trusted_egress_integration.py
+```
+
+离线实现测试覆盖 URL 双重解码、DNS mixed/private fail-closed、DoH wire parser、固定 Git
+argv/env、no-checkout object 物化、symlink 拒绝、CONNECT validated-address/字节记账、API
+幂等、`failed/ingestion` 安全失败和现有 ZIP/A6 阶段性报告兼容。真实测试通过固定 TLS DoH、
+任务级 CONNECT 代理和公开 PyPA sampleproject，验证 revision/root digest、依赖、SQLite、
+`partial/rules/70`、四格式报告下载和 workspace cleanup。
+
+沙箱原样完整运行得到 `859 passed, 9 failed, 2 skipped, 2 deselected`；9 个失败都在既有 A5
+fixture 绑定 `127.0.0.1` 时收到 `PermissionError`，2 个真实 Uvicorn 用例被筛除。受控环境不改
+测试代码并显式启用回环/公开仓库后，完整结果为 `872 passed, 1 warning`。团队 OpenGuard
+仓库默认分支当时没有受支持的 manifest，故 A2 成功后停在 `failed/scan/35`；这项事实未被
+改写为公网纵切失败，也未被用来伪造许可证结果。
+
+候选 `EVD-A2-PUBLIC-GIT-EGRESS-001` 只批准本机 macOS/POSIX 的公开 HTTPS Git 纵切。
+Linux namespace/seccomp/cgroup、持久任务恢复、私有仓库、B5 规则、B2/B3/A5/前端主链接线和
+Bench 仍不在证据范围内。

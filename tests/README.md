@@ -49,6 +49,28 @@ PYTHONPATH=backend python -m app.cli ./demo.zip
 脱敏，以及成功和失败后的 task workspace 清理。CLI 只演示本地 ZIP→inventory，不替代
 Git、依赖/许可证扫描、Web API 或完整 A2 系统门禁。
 
+## A2-3a 公开 Git 与 TrustedEgress 复现
+
+离线实现门禁不访问公网，动态构造本地 Git object、DNS/CONNECT 受控替身、恶意 URL、
+symlink 与临时 SQLite/API：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a2_public_git_ingestion.py
+```
+
+真实网络纵切必须显式提供获准公开仓库，并需要允许测试绑定本机回环代理：
+
+```bash
+OPENGUARD_RUN_LOOPBACK_TESTS=1 \
+OPENGUARD_PUBLIC_GIT_TEST_URL=https://github.com/pypa/sampleproject.git \
+PYTHONPATH=backend \
+python -m pytest -q tests/security/test_a2_public_git_trusted_egress_integration.py
+```
+
+真实测试经过 HTTPS/TrustedEgress、无 checkout Git object 物化、A2-2/B1/A4、SQLite 和
+A6 报告下载，并断言 workspace 清空。没有显式环境变量时网络测试会跳过，不得把跳过写成
+公网证据。当前范围不覆盖 Linux 隔离、持久队列、B5、A5 主链或前端。
+
 ## A3-1 FastAPI API 复现
 
 ```bash

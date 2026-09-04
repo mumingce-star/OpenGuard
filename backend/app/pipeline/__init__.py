@@ -8,6 +8,7 @@ from .worker import (
     ScanPipelineWorker,
 )
 from .local_zip import build_local_zip_dependency_plan
+from .public_git import build_public_git_dependency_plan
 
 __all__ = [
     "PipelineError",
@@ -16,4 +17,5 @@ __all__ = [
     "PipelineStep",
     "ScanPipelineWorker",
     "build_local_zip_dependency_plan",
+    "build_public_git_dependency_plan",
 ]

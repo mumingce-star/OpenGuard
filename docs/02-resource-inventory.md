@@ -34,11 +34,18 @@
 | pytest | 单元与集成测试 | MIT | 必需 |
 | Playwright | 端到端测试 | Apache-2.0 | 推荐 |
 | Docker Compose | 一键部署 | 按发行版本核验 | 必需 |
+| Git `2.50.1 (Apple Git-155)` | A2-3a 公开 HTTPS 浅克隆与对象读取；当前仅本机 profile，最终 Linux 包版本/摘要待 A7 锁定 | GPL-2.0-only；[官方来源](https://git-scm.com/downloads)，随镜像分发时履行许可证与源码义务 | 必需 |
+| Cloudflare 1.1.1.1 DoH | A2-3a 固定 TLS DNS 解析；只查询仓库主机名，不发送路径/代码/凭据 | 外部服务条款/隐私适用；[官方 wireformat 文档](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-wireformat/)；最终部署前复核 | 当前 profile 必需 |
 
 A5-1a 把上述身份固化进 transport、文档和测试；A5-1b 在用户授权后完成本机安装、约 2.5GB
 权重下载和真实推理。3 次同一合法输入为 `3/3`，冷轮 4344.062 ms，热轮 2736.214/2723.574 ms；
 运行时报告模型加载约 3.175 GB、100% GPU、context 4096。该结果只代表当前机器和当前样例，
 不等于 Bench 质量评测。Ollama 二进制、模型权重、prompt 和完整 response 均不提交到仓库。
+
+A2-3a 当前使用系统 Git 和 Cloudflare 公共 DoH，不把二进制或第三方仓库内容复制进本仓库。
+受控测试仅保存公开仓库 URL 和聚合断言；目标对象、运行数据库与临时 workspace 在测试结束后
+删除。最终 Docker/Linux 发行前必须锁定 Git 包版本/摘要并再次审查公共 DNS 服务条款与替代
+profile，不能把当前 macOS 实测直接当作部署证据。
 
 ## 自主建设资源
 

@@ -3237,3 +3237,29 @@
 - GitHub 发布事实：A6-2 实现、测试、规格和首轮治理提交 `eec66a6aa0458abdbadd912f17c6c9d54ce3a247` 已推送 `origin/feat/a6-pipeline-publish`；本地 `HEAD` 与 `git ls-remote` 返回同一完整对象，`EVD-A6-PIPELINE-PUBLISH-001` 绑定该实现。
 - 上传范围：17 个竞赛仓库文件，包括 Pipeline publisher、worker/ZIP/default factory 最小接线、API link/store 一致性、报告自引用投影、10 项专项测试、A6-2 规格及运行/AI/进度/协作记录；未上传生成报告、运行数据库、缓存、虚拟环境、原始附件、模型内容、凭据、本机真实路径或其他真人负责代码。
 - 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A6-2 分支。
+
+### [20260904-2203-RootTerra-A2公开Git摄取] START - A2-3a TrustedEgress 与公开 Git 安全摄取纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A2 输入安全、主链接线与发布验收；2026-09-04 22:03（Asia/Shanghai）。分支 `feat/a2-public-git-egress`，基于已发布 A6-2 HEAD `ec57e57` 建立；开工前工作区干净。
+- 任务归属与目标：只推进项目负责人负责、且不依赖 B5 的 A2-3a：公开 HTTPS Git URL 规范化与全地址公网判定、任务级受控 CONNECT 出口、锁定 Git 无 checkout 浅克隆、Git object tree 安全物化、不可变 inventory/revision，以及现有 API→A4/B1→A6 阶段性报告纵切。
+- 必要前置：当前仓库尚无 A2-2 Git object materialization；它是公开 Git 安全摄取不可绕过的内部前置，因此仅在 A2-3a 内补齐 no-checkout、`ls-tree`/`cat-file` 和安全工作区，不扩展为独立产品功能。
+- 严格边界：不实现或模拟组员 B5，不修改 `backend/app/scanners/`、`backend/app/rules/`、`frontend/`、P0 Domain/Schema/sample、SQLite schema/状态机或组员分支；不支持私有仓库、OAuth、SSH、HTTP、重定向、submodule/symlink，也不执行、构建、安装或测试目标仓库。
+- 可信出口口径：不会用“先 DNS 检查、后让 Git 自行直连”冒充防重绑定；Git 只经本机任务级 CONNECT 代理，由代理逐连接解析全部 A/AAAA、任一非公网即失败、立即拨号已核验 IP、保留原 host 的端到端 TLS，并对上下行隧道字节实行共享硬上限。
+- 预计修改：A2 URL/address/egress/Git runner/materializer/runtime 与公共依赖 Pipeline 的最小实现；实现侧单元/集成/可选真实公网测试；A2-3a 规格、Git 依赖台账及根/后端/测试/AI/进度/本日志最小更新。只用标准库与系统 Git，不新增 Python 依赖或公共路由/字段。
+- 验收：先离线覆盖恶意 URL、mixed/private DNS、CONNECT host/方法、配额、固定 argv/env、symlink/gitlink/路径/数量/大小、revision/root digest、清理、异步失败语义和既有 ZIP/A6 回归；再对本团队公开小仓库做受控真实 HTTPS/TLS/TrustedEgress 纵切，最后跑完整 unit/security、Schema/compileall/diff/保护路径/敏感/大文件/上传范围门禁。
+- token：本轮非硬估算 `12k-18k`；若真实公网或全量回归暴露独立环境问题，只保留原始失败并缩小验收结论，不把未验证门禁写成完成。当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-2238-RootTerra-A2公开Git摄取] COMPLETE - A2-3a 有界实现与真实公网验收
+
+- 最终实现：公开 HTTPS URL 严格规范化、固定 TLS DoH、全 A/AAAA 公网判定、逐连接 CONNECT TrustedEgress、共享传输硬上限、固定 Git allowlist/no-checkout 浅克隆、`ls-tree` 类型/路径/配额检查、`cat-file --batch` descriptor-safe 物化、revision/inventory/provenance，以及 API→B1/A4→A6 四格式阶段性报告接线均已完成。默认应用仅在 `OPENGUARD_ENABLE_PUBLIC_GIT=1` 时启用真实联网，未设置时保留 queued-only 兼容行为。
+- 必要环境调整：本机 Clash/TUN 系统 DNS 把 `github.com` 返回为 benchmark Fake-IP `198.18.0.15`；公网策略按设计拒绝该地址。本轮没有放宽 denylist，而是增加固定 `cloudflare-dns.com` TLS DoH bootstrap，且已在第三方资源台账披露 DNS queryName/隐私边界。
+- 真实证据：团队 OpenGuard 默认分支完成 A2 摄取后因没有受支持 manifest 诚实停在 `failed/scan/35`；官方 PyPA sampleproject 完成 HTTPS/TrustedEgress→Git object→A2-2/B1→SQLite→`partial/rules/70`→四格式下载→workspace cleanup。该差异证明失败阶段未被伪装，而不是 A2 纵切失败。
+- 测试证据：A2 实现侧 `13 passed, 1 skipped`（跳过项需回环）；沙箱完整原样 `858 passed, 9 failed, 2 skipped, 2 deselected`，9 项均为既有 A5 fixture 回环 bind `PermissionError`，2 项真实 Uvicorn 被筛除；受控环境显式启用回环与公开仓库后完整 `871 passed, 1 warning`。唯一 warning 为既有 Starlette/AnyIO alias 弃用。
+- 静态与责任门禁：compileall、`git diff --check`、尾随空白、敏感模式、world-writable、目录与上传范围检查通过；相对基线 `ec57e57`，P0 Domain/Schema/sample、`backend/app/scanners/`、`backend/app/rules/`、`rules/`、`frontend/` 均零改动。未实现/模拟 B5、A5 主链、前端、部署、Linux 隔离或持久队列，未保存目标仓库内容、运行数据库、缓存、虚拟环境或测试 workspace。
+- 证据边界：候选 `EVD-A2-PUBLIC-GIT-EGRESS-001` 只批准当前 macOS/POSIX 公开 HTTPS Git profile；A2 总包仍需 Linux namespace/seccomp/cgroup、完整 Git/ZIP 攻击 corpus、cleanup orphan/quarantine 与陌生机复现。下一步只创建不可变提交并推送 `feat/a2-public-git-egress`，不创建或合并 PR。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `12k-18k`，A2-3a 在该范围对应的单轮工作包内完整交付。因 Fake-IP 环境新增固定 DoH 是 TrustedEgress 必要闭环，未扩大到其他产品模块。
+
+### [20260904-2243-RootTerra-A2公开Git摄取] AMENDMENT/COMPLETE - 最终端点与开关加固计数
+
+- 在完成记录后补充两项同范围加固：resolver 返回端点必须 family/IP 匹配且端口精确为 443；固定 Git 环境显式禁用 replace objects；默认应用的联网开关新增只允许 `0/1` 的回归。没有扩大产品功能或修改公共契约。
+- 最新证据取代上一条作为发布口径：A2 实现侧 `14 passed, 1 skipped`；沙箱原样 `859 passed, 9 failed, 2 skipped, 2 deselected`，9 项仍全部是既有 A5 回环 bind 权限限制；受控完整 `872 passed, 1 warning`。上一条计数作为加固前历史保留，不改写。

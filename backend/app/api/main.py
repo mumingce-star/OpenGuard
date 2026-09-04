@@ -31,6 +31,7 @@ from app.api.models import (
     ZipScanCreateFields,
 )
 from app.api.service import APPLICATION_VERSION, ApiError, ScanApiService
+from app.api.git_scan import GitScanRuntime
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
 from app.persistence import SQLiteScanRunRegistry
@@ -126,7 +127,10 @@ def _router() -> APIRouter:
                     message="Request parameters are invalid.",
                     reason="request_invalid",
                 ) from None
-            return service.create_git_scan(body)
+            runtime: GitScanRuntime | None = request.app.state.git_scan_runtime
+            if runtime is None:
+                return service.create_git_scan(body)
+            return runtime.submit(body, service, background_tasks)
 
         if media_type == "multipart/form-data":
             runtime: ZipScanRuntime | None = request.app.state.zip_scan_runtime
@@ -266,6 +270,7 @@ def create_app(
     registry: SQLiteScanRunRegistry,
     *,
     zip_runtime: ZipScanRuntime | None = None,
+    git_runtime: GitScanRuntime | None = None,
     report_store: ReportArtifactStore | None = None,
     close_registry: bool = False,
 ) -> FastAPI:
@@ -280,6 +285,7 @@ def create_app(
     app = FastAPI(title="OpenGuard API", version=APPLICATION_VERSION, lifespan=lifespan)
     app.state.scan_api_service = ScanApiService(registry, report_store=report_store)
     app.state.zip_scan_runtime = zip_runtime
+    app.state.git_scan_runtime = git_runtime
 
     @app.middleware("http")
     async def limit_zip_request_body(
@@ -423,7 +429,25 @@ def create_default_app() -> FastAPI:
         workspace_root=workspace_root,
         report_publisher=PipelineReportPublisher(report_store),
     )
-    return create_app(registry, zip_runtime=runtime, report_store=report_store, close_registry=True)
+    git_enabled = os.environ.get("OPENGUARD_ENABLE_PUBLIC_GIT", "0")
+    if git_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_PUBLIC_GIT")
+    git_runtime = (
+        GitScanRuntime(
+            registry,
+            workspace_root=workspace_root,
+            report_publisher=PipelineReportPublisher(report_store),
+        )
+        if git_enabled == "1"
+        else None
+    )
+    return create_app(
+        registry,
+        zip_runtime=runtime,
+        git_runtime=git_runtime,
+        report_store=report_store,
+        close_registry=True,
+    )
 
 
 __all__ = ["create_app", "create_default_app"]

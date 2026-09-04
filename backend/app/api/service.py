@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import hashlib
-import ipaddress
 import json
 import platform
 import sys
-import unicodedata
 from collections.abc import Callable
 from datetime import datetime, timezone
-from urllib.parse import unquote, urlsplit, urlunsplit
+from urllib.parse import unquote, urlsplit
 from uuid import UUID, uuid4
 
 from app.api.models import (
@@ -42,6 +40,8 @@ from app.domain.models import (
 )
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError
 from app.reporting import ReportArtifactStore, ReportStoreError, StoredReport
+from app.ingestion.url_policy import parse_public_git_url
+from app.security.errors import IngestionSecurityError
 
 
 APPLICATION_VERSION = "0.1.0"
@@ -65,49 +65,12 @@ def _fail(*, status_code: int, code: str, message: str, reason: str) -> None:
 
 def canonicalize_public_git_url(value: str) -> str:
     """Validate the frozen public-HTTPS Git source boundary without networking."""
-
     try:
-        encoded_value = value.encode("utf-8")
-    except UnicodeEncodeError:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    if len(encoded_value) > 2048 or any(unicodedata.category(character) == "Cc" for character in value):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-
-    try:
-        parsed = urlsplit(value)
-        port = parsed.port
-    except ValueError:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    hostname = parsed.hostname
-    if (
-        parsed.scheme != "https"
-        or hostname is None
-        or parsed.username is not None
-        or parsed.password is not None
-        or parsed.query
-        or parsed.fragment
-        or port not in {None, 443}
-    ):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    try:
-        ipaddress.ip_address(hostname)
-    except ValueError:
-        pass
-    else:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is not allowed.", reason="host_not_public")
-    lowered = hostname.rstrip(".").lower()
-    if lowered == "localhost" or lowered.endswith(".localhost"):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is not allowed.", reason="host_not_public")
-    decoded_segments = [unquote(segment) for segment in parsed.path.split("/")]
-    if any(unicodedata.category(character) == "Cc" for segment in decoded_segments for character in segment):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    if parsed.path in {"", "/"} or any(segment in {".", ".."} for segment in decoded_segments):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="path_invalid")
-    try:
-        ascii_host = lowered.encode("idna").decode("ascii")
-    except UnicodeError:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="host_invalid")
-    return urlunsplit(("https", ascii_host, parsed.path, "", ""))
+        return parse_public_git_url(value).canonical
+    except IngestionSecurityError as error:
+        message = "Public repository URL is not allowed." if error.reason == "host_not_public" else "Public repository URL is invalid."
+        _fail(status_code=422, code="invalid_source", message=message, reason=error.reason)
+    raise AssertionError("unreachable")
 
 
 def _project_name(source: str) -> str:
@@ -134,6 +97,10 @@ class ScanApiService:
         self._id_factory = id_factory or uuid4
 
     def create_git_scan(self, request: GitScanCreateRequest) -> ScanCreateAccepted:
+        accepted, _ = self.create_git_scan_record(request)
+        return accepted
+
+    def create_git_scan_record(self, request: GitScanCreateRequest) -> tuple[ScanCreateAccepted, bool]:
         source = canonicalize_public_git_url(request.source)
         created_at = self._clock()
         source_digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
@@ -189,11 +156,12 @@ class ScanApiService:
                     reason="idempotency_conflict",
                 )
             _fail(status_code=500, code="internal_error", message="The scan could not be created.", reason="registry_failure")
-        return ScanCreateAccepted(
+        accepted = ScanCreateAccepted(
             scan_id=stored.run.id,
             status=stored.run.status,
             status_url=f"/api/v1/scans/{stored.run.id}",
         )
+        return accepted, stored.run.id == run.id
 
     def create_zip_scan(
         self,
