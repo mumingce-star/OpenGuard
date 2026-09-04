@@ -3103,3 +3103,13 @@
 - 发布：准备提交 `1354863` 已推送 `origin/feat/a5-ollama-transport`；当前 GitHub 比较页已核对 base=`integration/p0`、compare=`feat/a5-ollama-transport` 且显示可合并。尚未创建或合并 PR，未改变 `integration/p0`、`main` 或组员分支。
 - 暂停原因：创建 PR 会以用户身份向 GitHub 发布标题和说明，属于外部代表性操作；按 UI 安全确认规则必须在提交前由用户明确确认。确认后只创建 PR，不点击合并，并回填 PR、进度、AI 与 COMPLETE 记录。
 - token：本次运行精确 token 数不可获得；开工估算 `12k-18k`，已在该范围内完成全部技术门禁和 PR 表单准备，未扩展到 B5/A5-1c/前端；任务仅剩用户确认后的公开 PR 创建与治理回填。
+
+### [20260904-1545-RootSol-A5团队集成候选] AMENDMENT/COMPLETE - PR #2 已创建并保持待审核
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 集成与发布终审；2026-09-04 15:45（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，目标 `integration/p0`。
+- 用户授权与公开操作：用户在 PR 表单准备完成后明确回复“确认”；随后创建 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2)，标题为 `feat: integrate deterministic A5 Ollama remediation pipeline`。未请求指定组员评审、未点击合并、未修改目标分支。
+- GitHub 可见终态：PR 状态 `Open`；base=`integration/p0`，head=`feat/a5-ollama-transport`；页面显示 `Ready to merge`、`No conflicts with base branch`、`Merging can be performed automatically`。创建时包含 10 个提交、19 个变更文件；checks 为 0，因此可合并仅表示 Git 图无冲突，不等于新增 CI 证据。
+- 内容与边界：PR 正文披露 A5-0/A5-1a/A5-1b、`818 passed, 1 warning` 受控完整回归、沙箱回环权限失败、三项 evidence、第三方资源、AI 辅助、安全/匿名和 A5-1c 等待 B5 的依赖；没有纳入 B4-B7、前端、安装包、模型权重、缓存、prompt、完整 response、临时脚本或凭据。
+- 治理回填：更新项目进度中的真人责任、本轮 A8-1c 状态、A5 GitHub 状态、发布记录和当前分支入口，并追加 AI 辅助记录；A5 业务实现和测试在本步骤保持冻结。
+- 发布计划：本条及治理文档提交后推送同一功能分支，PR #2 将自动更新；任务状态为“PR 创建完成、团队审核/合并待定”，不得外推为已进入 `integration/p0`。
+- token：本次确认后收尾的精确 token 数不可获得；非硬估算 `5k-8k`，在该范围内完成 PR 创建核验、治理回填和发布核对，未发生范围调整。
