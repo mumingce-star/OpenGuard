@@ -20,9 +20,9 @@ A5-1a 为 A5-0 `Provider` 提供一个真实的、可替换的 Ollama HTTP 实�
 
 | 资源 | 锁定身份 | 官方证据 | 许可证 | 当前状态 |
 |---|---|---|---|---|
-| Ollama | `v0.33.3` | `https://github.com/ollama/ollama/releases/tag/v0.33.3` | MIT；上游 `LICENSE` | 官方来源已核验；本机未安装 |
-| Qwen3 | `qwen3:4b-instruct-2507-q4_K_M` | `https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M` | Apache-2.0；模型页及 Qwen 模型仓库 | 官方来源已核验；权重未下载 |
-| Ollama manifest | `sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0` | 官方 registry manifest；模型 blob 为 `sha256:85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9` | 随对应模型 | manifest 已读取并计算摘要；本机未比对 |
+| Ollama | `v0.33.3` | `https://github.com/ollama/ollama/releases/tag/v0.33.3` | MIT；上游 `LICENSE` | A5-1b 已完成本机安装、签名/公证与运行版本核验 |
+| Qwen3 | `qwen3:4b-instruct-2507-q4_K_M` | `https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M` | Apache-2.0；模型页及 Qwen 模型仓库 | A5-1b 已下载到本机私有缓存并完成真实推理 |
+| Ollama manifest | `sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0` | 官方 registry manifest；模型 blob 为 `sha256:85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9` | 随对应模型 | A5-1b API tags、磁盘 manifest 原始字节与模型 blob 已独立重算一致 |
 | Qwen 原始模型卡 | `Qwen/Qwen3-4B-Instruct-2507` | `https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507` | Apache-2.0 | 上游模型卡与许可证已核验 |
 
 manifest 摘要的复现方式是对官方 registry 返回的原始 manifest 字节运行 SHA-256；代码不得只保存
@@ -88,3 +88,22 @@ Luna 必须独立启动一个有界回环 HTTP fixture，不复用实现侧 fake
 并在受控权限下原样复跑。只有定向测试、A5-0、P0、完整非回环回归、compileall、diff、敏感和
 范围门禁全绿后，才可批准 `EVD-A5-OLLAMA-TRANSPORT-001`。该 evidence 不证明真实模型质量、
 许可证规则正确、A4 接线、报告或完整参赛作品。
+
+## 6. A5-1b 本机真实运行记录
+
+2026-09-04 经用户授权后，只安装官方 `v0.33.3` macOS DMG。安装前核验：文件大小
+196424896 bytes、SHA-256 `cc21bd6a1486ddff3cdcbf00549f61d0a3e6e6893d6456a12d37c486161bcc43`；
+应用为 arm64/x86_64 universal，Developer ID Team 为 `3MU9H2V9Y9`，严格代码签名、Gatekeeper
+`Notarized Developer ID` 和 stapled ticket 均通过。校验必须在可访问 macOS 信任链的上下文执行；
+受限 sandbox 会把系统应用和 Ollama 同时误判为不受信任，该原始假阴性已保留，未绕过 Gatekeeper。
+
+服务仅绑定 `127.0.0.1:11434`，并以 `OLLAMA_NO_CLOUD=1`、`OLLAMA_NOHISTORY=1` 启动。
+API 版本为 `0.33.3`；tags digest 与磁盘 manifest 原始字节 SHA-256 均为锁定 manifest；
+2497280480-byte 模型 blob 重算 SHA-256 等于锁定 blob。`runtime_probe` 对同一合法 P0 输入运行
+3 次，聚合结果为 `3/3`，冷轮 4344.062 ms，热轮 2736.214/2723.574 ms；`generated`、
+`pending`、producer 绑定、finding 引用、确定性事实保持与 remediation 身份稳定均通过。
+`ollama ps` 报告 100% GPU、context 4096、加载大小/`size_vram` 3175339786 bytes。
+
+该记录只证明当前 Apple-silicon 机器、锁定模型和单一冻结样例可真实生成符合 A5 边界的候选整改；
+不证明多项目质量、许可证规则正确、法律结论、A4 主链接线、离线安装包、Linux/Docker、Bench、
+报告或完整作品。仓库不保存 Ollama 安装包、模型缓存、prompt 或完整模型 response。

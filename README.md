@@ -15,10 +15,12 @@
 A5-0 还提供了可独立调用的 local/remote AI Provider 边界：给定已有 `RiskFinding`、`Evidence`
 和绑定的许可证事实，它能把严格 JSON 提升为待人工复核的 P0 `Remediation`；关闭、异常、超限、
 身份/证据不匹配时保留确定性结果并稳定降级。A5-1a 已增加只访问字面量回环地址、禁用环境代理、
-核验固定运行时/模型/完整摘要并共享总超时的 Ollama HTTP transport。当前机器仍未安装 Ollama、
-未下载或运行 Qwen3，transport 也尚未接入 ZIP Pipeline，因此当前 Web 扫描不会自动产生 AI 建议。
+核验固定运行时/模型/完整摘要并共享总超时的 Ollama HTTP transport。A5-1b 已在本机验证官方
+Ollama `0.33.3` 与锁定 Qwen3 模型：manifest/blob 摘要一致，真实结构化推理 3/3 成功，冷轮约
+4.34 秒、热轮约 2.73 秒，候选整改保持 `pending` 且不改变确定性事实。transport 尚未接入 ZIP
+Pipeline，因此当前 Web 扫描仍不会自动产生 AI 建议。
 
-当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、真实 AI 运行与主链接线、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+当前还不是完整参赛成品：CLI 已能把 ZIP 中声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析，也不识别许可证或给出合规结论。公开 Git/本地目录输入、其他 lockfile、许可证规则、AI 主链接线、Web、报告导出和 Bench 仍需按进度台账继续实现。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
 团队集成分支 `integration/p0` 还汇合了前端组员的 React/Vite 应用壳，以及扫描组员的 ScanCode/Syft 受限 JSON Adapter 候选。前端已通过锁文件安装和生产构建，但仍使用 mock；外部工具 Adapter 已通过本机 JSON 单测，但尚未接入当前 ZIP 主链或完成本机真实工具回归。两者均不得外推为完整 Web 或外部扫描器能力。
 
@@ -35,10 +37,11 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_local_zip_pipeline.py 
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py tests/security/test_a3_zip_background_scan_independent.py -k 'not real_uvicorn'
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ai_provider.py tests/security/test_a5_ai_provider_independent.py
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ollama_transport.py tests/security/test_a5_ollama_transport_independent.py
+PYTHONPATH=backend python -m app.ai.runtime_probe ./your-scan-run-without-remediation.json --runs 3 --timeout-seconds 60
 PYTHONPATH=backend python -m pytest -q
 ```
 
-前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper/Pipeline/ZIP HTTP/A5 用法和退出码说明见 [backend/README.md](backend/README.md)。随后七条命令分别复现 JavaScript、Python mapper、Python parser、本地 ZIP Pipeline、ZIP HTTP 后台纵切、A5 Provider 和 Ollama transport 的实现侧与独立安全测试。当前完整集合排除两个受控 Uvicorn 回环项及单独执行的 Ollama TCP 文件为 `794 passed, 2 deselected`；A5 组合在受控回环环境为 `123 passed`。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
+前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper/Pipeline/ZIP HTTP/A5 用法和退出码说明见 [backend/README.md](backend/README.md)。随后命令分别复现 JavaScript、Python mapper、Python parser、本地 ZIP Pipeline、ZIP HTTP 后台纵切、A5 Provider、Ollama transport 与真实模型聚合探针。当前受控环境的完整 unit/security 集合为 `818 passed`；A5 组合为 `128 passed`，真实模型探针为 `3/3`。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。真实探针要求本机已按锁定版本启动 Ollama，输入是至少含一个未绑定 remediation 的合法 P0 `ScanRun`。
 
 ## 竞赛交付定义
 

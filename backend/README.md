@@ -226,6 +226,15 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_pipeline_worker.py
 该能力只证明本机 SQLite、单进程、单次显式调用的 durable 编排。它不提供后台任务、重试、租约、
 心跳、超时、崩溃恢复、exactly-once 外部副作用或完整 Web 扫描流程。
 
+## A5-1b 真实运行复现
+
+`python -m app.ai.runtime_probe SCAN_RUN.json --runs 2 --timeout-seconds 60` 只连接已运行的
+本机 Ollama loopback。输入必须是至少含一个尚未绑定 remediation 的合法 P0 `ScanRun`；不要修改
+冻结样例，可复制到仓库外的临时目录再清空样例 remediation。命令不会安装、下载或启动模型，
+不会打印 prompt、模型原文、异常或输入绝对路径；成功时只输出版本、锁定 model ID、成功率、
+聚合延迟和事实/来源/`pending`/稳定 ID 校验结果，失败只输出固定错误 JSON。正式实测应以
+`OLLAMA_NO_CLOUD=1 OLLAMA_NOHISTORY=1` 启动仅绑定 `127.0.0.1` 的 Ollama 服务。
+
 ## A4-1 本地 ZIP 依赖计划
 
 `app.pipeline.build_local_zip_dependency_plan()` 是项目负责人集成层的显式一次性计划：调用方先建立
