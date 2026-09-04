@@ -1,6 +1,6 @@
 # B5 许可证义务规则引擎
 
-状态：`IMPLEMENTED_PENDING_RUNTIME_VERIFICATION`
+状态：`IMPLEMENTED_LOCAL_RUNTIME_VERIFIED`
 
 ## 边界
 
@@ -11,7 +11,7 @@
 
 规则存放在 `rules/license-obligations.yaml`。文件采用 JSON 子集 YAML，避免引入
 可执行 YAML 标签、锚点、include 或插值能力；加载器严格拒绝未知字段。当前覆盖：
-MIT、Apache-2.0、BSD-3-Clause、GPL-3.0-only、CC-BY-4.0、CC-BY-NC-4.0。
+MIT、Apache-2.0、BSD-2-Clause、BSD-3-Clause、ISC、MPL-2.0、EPL-2.0、LGPL-2.1-only、GPL-2.0-only、GPL-3.0-only、AGPL-3.0-only、CC0-1.0、Unlicense、CC-BY-4.0、CC-BY-NC-4.0。
 
 ## 证据门禁
 

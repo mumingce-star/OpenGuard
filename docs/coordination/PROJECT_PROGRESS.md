@@ -69,6 +69,17 @@
 |---|---|---|
 | 顶层目录 | 通过 | 使用既有工程目录，不新增含糊或重复目录 |
 | 临时环境/缓存 | 通过（Git层） | `.pytest_cache`、`__pycache__`、虚拟环境不纳入提交 |
+
+## 5. 2026-09-05 B1–B7 本轮更新
+
+| 工作包 | 状态 | 本轮可复现证据 | 仍未关闭的门禁 |
+|---|---|---|---|
+| B1 | 进行中 | 原有 Python/JavaScript parser 与 mapper 定向 133 项通过；Windows 上 POSIX ZIP CLI 用例准确跳过 | Python lockfile、Yarn/pnpm/workspace、传递依赖与 Linux ZIP 链路 |
+| B2/B3 | 进行中 | ScanCode 32.5.0、Syft 1.51.0 版本可用；真实输出回归 5 项通过 | POSIX descriptor ZIP→工具端到端、运行 provenance 与 A4 接入 |
+| B4 | 进行中 | 显式别名/复合表达式标准化回归通过，未知值保持 pending | SPDX 官方数据版本台账、完整表达式语法及 A4 接入 |
+| B5 | 进行中 | 15 条 JSON-subset YAML 规则、证据门禁与定向回归通过 | 官方原文证据台账、人工复核和 A4 接入 |
+| B6 | 进行中 | 本地静态 HF/ModelScope/API 识别和 Evidence 定位回归通过 | AST 覆盖、误报评测、授权/许可证人工核验 |
+| B7 | 进行中 | 版本化合成 smoke cases 与 TP/FP/FN/Precision/Recall/F1 评测器回归通过 | 3–5 个独立复现 case、人工标注、公开仓库扩展、基线/消融 |
 | 竞赛原始附件 | 通过 | 原始PDF/DOCX不复制进公开仓库，正式要求以脱敏规范文档表达 |
 | 敏感信息 | 本轮推送复核通过 | 不上传密钥、账号、本机绝对路径、学校/教师/成员隐私 |
 | 第三方资源 | 持续 | 首次真实引入时锁版本并更新 `third_party/` 与资源清单 |

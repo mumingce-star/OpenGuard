@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 import zipfile
 from dataclasses import replace
 from datetime import datetime, timezone
@@ -152,6 +153,7 @@ def test_p1_mapper_rejects_forged_names_selectors_manifests_and_locators() -> No
             map_javascript_manifest_result(candidate, root_digest="0" * 64, observed_at=datetime(2026, 1, 2, tzinfo=timezone.utc))
 
 
+@pytest.mark.skipif(os.name != "posix", reason="sealed ZIP CLI requires POSIX descriptor capabilities")
 def test_real_zip_cli_fixed_clock_compatibility_and_cleanup(tmp_path: Path) -> None:
     archive = tmp_path / "javascript.zip"
     _archive(archive, {"package.json": '{"dependencies":{"react":"^18.2.0"}}', "package-lock.json": '{"lockfileVersion":2,"packages":{"":{"dependencies":{"react":"^18.2.0"}},"node_modules/react":{"version":"18.2.0"}}}'})

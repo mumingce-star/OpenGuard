@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 import zipfile
 from dataclasses import replace
 from datetime import datetime, timezone
@@ -180,6 +181,7 @@ def test_final_b1p0_002_rejects_tampered_canonical_dto_before_p0_construction() 
         map_python_manifest_result(replace(partial, diagnostics=(invalid_diagnostic,)), root_digest="0" * 64, observed_at=datetime(2026, 1, 2, tzinfo=timezone.utc))
 
 
+@pytest.mark.skipif(os.name != "posix", reason="sealed ZIP CLI requires POSIX descriptor capabilities")
 def test_old_cli_golden_is_unchanged(tmp_path: Path) -> None:
     archive = tmp_path / "old.zip"
     _archive(archive, {"z.txt": "z", "docs/readme.txt": "alpha"})
@@ -189,6 +191,7 @@ def test_old_cli_golden_is_unchanged(tmp_path: Path) -> None:
     assert json.loads(output.getvalue())["schema"] == "openguard.zip-inventory"
 
 
+@pytest.mark.skipif(os.name != "posix", reason="sealed ZIP CLI requires POSIX descriptor capabilities")
 def test_new_cli_real_zip_fixed_clock_partial_and_no_task_residual(tmp_path: Path) -> None:
     archive = tmp_path / "new.zip"
     workspace = tmp_path / "workspace"
@@ -203,6 +206,7 @@ def test_new_cli_real_zip_fixed_clock_partial_and_no_task_residual(tmp_path: Pat
     assert list(workspace.iterdir()) == []
 
 
+@pytest.mark.skipif(os.name != "posix", reason="sealed ZIP CLI requires POSIX descriptor capabilities")
 def test_new_cli_fixed_clock_is_byte_stable_and_old_mode_never_calls_clock(tmp_path: Path) -> None:
     archive = tmp_path / "complete.zip"
     _archive(archive, {"requirements.txt": "a==1\n"})

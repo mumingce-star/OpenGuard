@@ -1,0 +1,8 @@
+{
+  "version": "0.1.0",
+  "cases": [
+    {"id": "ai-model-url", "expected": ["model:huggingface:org/model"], "predicted": ["model:huggingface:org/model"]},
+    {"id": "api-reference", "expected": ["api:openai"], "predicted": ["api:openai"]},
+    {"id": "unknown-license", "expected": ["license:unknown"], "predicted": ["license:unknown", "license:mit"]}
+  ]
+}

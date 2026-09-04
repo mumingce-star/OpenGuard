@@ -866,3 +866,26 @@
 - 作者模型：GPT-5.6 Sol；时间：2026-09-04 15:40（Asia/Shanghai）。
 - 更正/补充：原收工记录中的“文档待提交”已完成。`docs/coordination/AGENT_WORKLOG.md` 与 `PROJECT_PROGRESS.md` 已以提交 `30de61c`（`docs: record Python 3.12 runtime repair`）推送到 `origin/codex/p0-external-tools-sync`，本地与上游工作区干净。
 - PATH 复核：当前用户持久 PATH 已包含 `Python312` 与 `Python312\\Scripts`（存在重复项但不影响功能）；本工具沙箱的进程 PATH 被隔离，不能用其 `python`/`cmd` 解析结果替代用户新开终端的行为。权威入口仍为已验证的 `py -3.12` 与项目 `.venv`。
+### [20260905-0910-Sol-B1至B7完善] START - 关闭可在本机验证的剩余工作包
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 架构与后端主线实现
+- 时间：2026-09-05 09:10（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；用户明确要求继续完善 B1–B7，因此将遵循现有 P0 契约补齐可验证缺口，不覆盖未提交用户修改。
+- 任务目标：审计 B1–B7，并实现当前 Windows/Python 3.12 环境可闭合的 B1 lockfile、B4 SPDX、B5 规则覆盖、B6 静态识别和 B7 最小可复现 Bench；B2/B3 的 Linux-only ZIP 门禁据实保留。
+- 开始前已确认：已完整读取 README、共享工作日志、PROJECT_PROGRESS、Sol 交接文档，检查分支、工作区与近期提交；未发现其他模型正在修改本轮目标文件。
+- 预计修改文件：`backend/app/`、`tests/`、`benchmarks/`、`rules/`、相关规格/台账与协作日志；跨 Terra/Luna 所有权文件由本次用户明确指令授权，并将登记变更请求。
+- 验收方法：新增单元/回归测试、`compileall`、P0 Schema 验证、B1–B7 定向 pytest、`git diff --check` 与敏感信息检查。
+- token 使用估算：18,000～30,000；系统未提供本轮精确 token 遥测。
+
+### [20260905-1000-Sol-B1至B7完善收工] PARTIAL - 关闭本机可验证缺口，保留跨平台门禁
+
+- 作者模型：GPT-5.6 Sol；对话角色：Root Coordinator / 架构与后端主线实现；时间：2026-09-05 10:00（Asia/Shanghai）。
+- 任务目标和实际结果：新增 B4 显式 SPDX 别名与全术语复合表达式标准化；B5 规则从 6 条扩展为 15 条；新增 B6 离线静态 AI 模型/数据集/API 识别及 Evidence；新增 B7 版本化合成 Bench 评测器。B1 既有 parser/mapper、B2 ScanCode 32.5.0 与 B3 Syft 1.51.0 回归保持可用。
+- 修改或新增文件：`backend/app/licenses/`、`backend/app/detectors/`、`benchmarks/`、`rules/license-obligations.yaml`、B4/B6/B7 测试和规格、B1 Windows capability skip 标注、变更请求、进度/AI/工作日志。
+- 命令与测试结果：B1–B7 定向 `pytest` 为 `138 passed, 6 skipped`；新增 B4/B5/B6/B7 聚焦为 `15 passed`；B2/B3 真实工具回归为 `5 passed`；`compileall`、JSON 规则解析和 `git diff --check` 通过。
+- 接口、Schema、规则和重要决策：P0 Schema 未变；B4 仅接受显式别名，未知项保持 pending；B5 始终产出合规提醒而非法律结论；B6 不联网、不执行代码，所有候选授权状态为 pending；B7 报告原始 TP/FP/FN，禁止把 smoke 集解释为性能结论。
+- 已知风险、失败项和未完成内容：全量 Windows pytest 为 `255 passed, 185 failed, 6 skipped`，失败均始于 A2 POSIX descriptor 安全能力门禁，不能将其改写成产品缺陷或全量绿灯。B1 Python lockfile/Yarn/pnpm/workspace，B2/B3 Linux ZIP 端到端/provenance/A4，B4 官方 SPDX 数据台账，B5 官方原文和人工复核，B6 AST/误报评测，B7 独立标注/基线与公开仓库规模化均未完成。
+- 建议下一步及责任模型：Terra 在 Linux 受控环境完成 A2/B2/B3/A4；Luna 建立可复现 Bench 标注、基线与误差分析；Sol 维护 SPDX/规则来源台账和最终审计。
+- 关联分支/提交/PR/evidence：`codex/p0-external-tools-sync`；本轮待 Root 提交、推送和 PR 审查。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 18,000～30,000，范围因新增 B4/B6/B7 实现而扩大但未改变任务边界。
