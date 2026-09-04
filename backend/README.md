@@ -226,6 +226,15 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_pipeline_worker.py
 该能力只证明本机 SQLite、单进程、单次显式调用的 durable 编排。它不提供后台任务、重试、租约、
 心跳、超时、崩溃恢复、exactly-once 外部副作用或完整 Web 扫描流程。
 
+## A5-1b 真实运行复现
+
+`python -m app.ai.runtime_probe SCAN_RUN.json --runs 2 --timeout-seconds 60` 只连接已运行的
+本机 Ollama loopback。输入必须是至少含一个尚未绑定 remediation 的合法 P0 `ScanRun`；不要修改
+冻结样例，可复制到仓库外的临时目录再清空样例 remediation。命令不会安装、下载或启动模型，
+不会打印 prompt、模型原文、异常或输入绝对路径；成功时只输出版本、锁定 model ID、成功率、
+聚合延迟和事实/来源/`pending`/稳定 ID 校验结果，失败只输出固定错误 JSON。正式实测应以
+`OLLAMA_NO_CLOUD=1 OLLAMA_NOHISTORY=1` 启动仅绑定 `127.0.0.1` 的 Ollama 服务。
+
 ## A4-1 本地 ZIP 依赖计划
 
 `app.pipeline.build_local_zip_dependency_plan()` 是项目负责人集成层的显式一次性计划：调用方先建立
@@ -275,4 +284,43 @@ JavaScript 依赖组件与证据已经可以查询，但许可证规则尚未接
 
 ```bash
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py
+```
+
+## A5-0 可注入 AI Provider 与确定性降级
+
+`app.ai.apply_ai_remediations()` 接受一个已验证的 P0 `ScanRun` 和调用方注入的 local/remote
+Provider。它只为尚未绑定整改的 `warning`、`review_required` 或 `unknown` finding 生成
+`pending` Remediation；请求只含该 finding、已引用 Evidence 以及资源已绑定的许可证事实。
+Provider 返回值必须是 64 KiB 以内的严格 JSON，并且只能引用请求中已有的 evidence ID。
+
+AI 关闭时不需要 Provider；模型不可用、抛错、响应截断、重复键、额外字段、身份或引用不匹配、
+敏感片段及绝对路径均稳定降级。降级只记录脱敏的 `ai_assist` 诊断和 AI provenance，不发布部分
+建议，也不改变组件、AI 资源、许可证、义务、规则结果或统计。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ai_provider.py
+```
+
+## A5-1a 本地 Qwen3/Ollama transport
+
+`app.ai.OllamaProvider` 已实现 A5-0 的标准库 HTTP Provider。它只接受字面量回环 IP，显式禁用
+环境代理，并在每次生成前通过 `GET /api/version` 和 `GET /api/tags` 核验固定的 Ollama
+`0.33.3`、模型 `qwen3:4b-instruct-2507-q4_K_M` 及完整 manifest SHA-256；之后才以
+`stream=false`、`think=false`、固定 options 和 JSON Schema 调用 `POST /api/generate`。三次请求
+共享一个总 deadline，任何连接、超时、HTTP、版本、模型、摘要或包装错误都只返回脱敏 transport
+错误，并由 A5-0 保留确定性结果、记录 `degraded`。
+
+本模块不会启动 Ollama、自动下载模型或读取凭据。当前开发机器尚未发现 Ollama，因此只能复现
+协议 adapter 与本地测试 server，不能声称真实 Qwen3 已运行。安装、权重拉取、实际 manifest
+比对、结构化输出质量/延迟实测属于 A5-1b；消费组员 B5 真实 finding 并接入 Pipeline 属于
+A5-1c。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a5_ai_provider.py \
+  tests/unit/test_a5_ollama_transport.py
 ```

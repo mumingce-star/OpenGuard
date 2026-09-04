@@ -266,3 +266,39 @@ PYTHONPATH=backend /private/tmp/openguard-a1-venv/bin/pytest -q tests/security/t
 真实结果：独立非回环 `21 passed`；获准受控环境中的真实 Uvicorn 回环探针 `1 passed, 21 deselected`；A3-2 实现 unit + 独立（非回环）`41 passed`。回环探针实际完成 ZIP `202`、终态 `partial/rules/70`、resources 查询及进程结束后的 SQLite 重开持久读取。`tests/unit` + `tests/security` 全量排除两个回环项为 `684 passed, 2 deselected`，保留一条 Starlette/AnyIO 弃用 warning；Schema、compileall、diff、权限和范围检查通过。
 
 本轮未发现新的 P0/P1/P2 实现缺陷。`partial/rules/70` 仅表示真实依赖资源/证据已可用、许可证规则待接入；本结果不证明持久队列、崩溃恢复、lease/retry、公开 Git、Linux/TrustedEgress、许可证、AI、报告、Bench 或完整竞赛作品。未修改 backend、实现侧 unit、冻结规格、P0/Schema/sample、A2/B1-B7、A3 registry、A4 worker/plan、PROJECT_PROGRESS、third_party、前端或原始附件；A3-2 候选 evidence `EVD-A3-ZIP-BACKGROUND-SCAN-001` 仍待 Root/Sol 绑定不可变提交和发布范围。
+
+### A5-0 AI Provider 与确定性降级独立安全复核
+
+复现命令（项目根目录；依赖安装在临时目录，不属于项目产物）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q --collect-only tests/security/test_a5_ai_provider_independent.py
+PYTHONPATH=backend python -m pytest -q tests/security/test_a5_ai_provider_independent.py
+```
+
+独立测试共收集 16 项，独立构造 P0 `ScanRun`、local/remote Provider、确定性 finding/evidence/license 事实和 canonical expected；覆盖合法 pending/stable evidence、disabled/skipped/no-call、严格 JSON/引用/敏感内容拒绝、Provider 属性/异常/timeout、64 KiB、整批第二项失败原子性、事实保持、metadata snapshot、stable remediation ID 与 repeated degradation。真实结果为 `15 passed, 1 failed`。
+
+唯一失败是 `test_invalid_p0_aggregate_fails_before_provider_execution`：测试在已构造的合法 `ScanRun` 上篡改 `summary.component_count`，冻结契约要求入口在 provider 执行前完整重验证并抛 `ai_invalid_argument`；当前实现接受了事后变异的 Pydantic 实例，实际调用 provider 1 次，随后以未包装的 `ValidationError` 从 `_degraded` 逸出（provider payload 2076 UTF-8 bytes）。这是 P1 原子性/错误契约缺口，失败断言原样保留，未修改 backend。
+
+因此 `EVD-A5-AI-PROVIDER-001` 保持 `BLOCKED-P1`；按门禁未运行 A5 unit+独立、全 security、P0 Schema/compileall 的扩大回归，也未批准 evidence。未证明真实 Ollama/Qwen3、HTTP/network transport、A4 接线、许可证规则、报告、Bench 或完整竞赛作品。
+
+#### A5-0 P1 修复后独立复测
+
+Root 仅在 `apply_ai_remediations` 入口增加传入 `ScanRun` 的完整 dump 重校验，将事后变异的 P0 聚合在 Provider 执行前统一映射为 `ai_invalid_argument`；本轮未修改独立断言或 backend。
+
+原样复跑结果：独立 A5 `16 passed`；A5 unit + 独立 `46 passed`；`tests/unit` + `tests/security` 排除既有 `real_uvicorn` 回环项 `734 passed, 2 deselected`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；P0 Schema 专项 `46 passed`；`compileall -q backend/app tests`、`git diff --check`、受保护路径、权限和敏感模式检查通过。此前唯一 P1 已关闭，未发现新增 P0/P1/P2。
+
+本轮独立证据仍限于本机 CPython 3.12、本地注入 Provider 和确定性 P0 边界；不证明真实 Ollama/Qwen3、HTTP/network transport、A4 接线、许可证规则、报告、Bench、公开部署或完整竞赛作品。候选 `EVD-A5-AI-PROVIDER-001` 仍需 Root/Sol 绑定不可变提交、运行 profile 和有界发布范围。
+
+### A5-1a Qwen3/Ollama 本地 Transport 独立安全复核
+
+复现命令（项目根目录；不安装、不下载、不调用 Ollama/Qwen）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q --collect-only tests/security/test_a5_ollama_transport_independent.py
+PYTHONPATH=backend python -m pytest -q tests/security/test_a5_ollama_transport_independent.py
+```
+
+原始 sandbox 运行的独立文件共收集 17 项：8 项不需要监听端口的 origin/身份检查通过，9 项需要真实 TCP 的用例在 fixture 绑定 `127.0.0.1:0` 时均原样收到 `PermissionError: [Errno 1] Operation not permitted`，结果为 `8 passed, 9 failed`。这些失败已保留，未被跳过、改写或归因于产品实现。
+
+Root 在受控回环环境对同一当前测试文件执行原样复跑，结果为 `17 passed in 4.70s`，实际覆盖 TCP 顺序、固定请求体、环境代理、A5 pending/degraded、socket timeout、版本/digest/non-JSON/超限 HTTP 失败、loopback origin 限制、服务停止和临时文件断言。受控复跑不调用真实 Ollama/Qwen3；候选 `EVD-A5-OLLAMA-TRANSPORT-001` 仍只证明有界协议 fixture 与 adapter 行为，不证明真实模型质量、许可证规则、A4 接线或完整竞赛作品。
