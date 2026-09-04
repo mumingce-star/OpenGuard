@@ -11,7 +11,7 @@ app/
 ├── knowledge/       # SPDX、OSI、许可证义务
 ├── risk/            # 确定性规则和证据链
 ├── ai/              # 结构化抽取、解释和整改建议
-├── reports/         # HTML、JSON、CSV、资源清单
+├── reporting/       # HTML、JSON、CSV、资源清单
 ├── persistence/     # SQLite 与迁移接口
 └── security/        # 限额、路径、防泄漏和清理
 ```
@@ -324,3 +324,28 @@ PYTHONPATH=backend python -m pytest -q \
   tests/unit/test_a5_ai_provider.py \
   tests/unit/test_a5_ollama_transport.py
 ```
+
+## A6-0 确定性报告导出核心
+
+`app.reporting.render_report()` 接受已验证、状态为 `completed` 或 `partial` 的 P0 `ScanRun`，
+在内存中生成 JSON、HTML、CSV 或 `resource_inventory` 报告。CSV/资源清单严格使用竞赛要求的
+七字段；HTML 对不可信值做实体转义并禁止脚本和外部资源；每个 `ReportArtifact` 都包含稳定
+文件名、媒体类型、原始字节和 SHA-256。
+
+```python
+from app.domain.models import ReportFormat, ScanRun
+from app.reporting import render_report
+
+run = ScanRun.model_validate_json(scan_run_bytes)
+artifact = render_report(run, ReportFormat.HTML)
+```
+
+本接口不会写文件、更新 SQLite、创建 `ReportLink` 或启动下载路由。`partial/rules/70` 只能生成
+明确标注“阶段性”的报告；缺失的许可证、规则风险和 AI 建议保持缺失，不会被推断成合规通过。
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py
+```
+
+Pipeline REPORT Adapter、持久化、FastAPI 下载、前端接线和最终匿名化验收属于 A6 后续纵切。

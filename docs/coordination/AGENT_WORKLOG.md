@@ -3141,3 +3141,24 @@
 - 发布事实：首个演示治理提交 `44c8cf19dbc14cbc42e0fabb5388463b8a5930ce` 已推送 `origin/feat/a5-ollama-transport`，`git ls-remote` 返回相同对象；本发布状态修正随后推送同一分支并自动更新 PR #2。
 - 上传范围仍只包含 `docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本 append-only 工作日志；未上传仓库外临时脚本、ZIP、SQLite、Ollama/模型、prompt/完整 response 或任何业务代码改动。
 - GitHub CLI 本机不可用，未为只读核验额外安装工具；以成功 push 和原生 `git ls-remote` 作为远端分支证据。未合并 PR，未修改 `integration/p0`、`main` 或组员分支。
+
+### [20260904-1749-RootTerra-A6报告核心] START - 构建不依赖 B5 的确定性报告导出纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A6 报告实现、边界与发布验收；2026-09-04 17:49（Asia/Shanghai）。分支 `feat/a6-report-export-core`，基于当前 A5 已发布 HEAD `1ad3700` 建立堆叠短分支，未修改 A5 分支本身。
+- 任务目标：只实现项目负责人拥有的 A6-0 报告导出核心，使已验证的终态 `ScanRun` 能稳定生成 UTF-8 JSON、竞赛七字段资源清单 CSV 和安全转义的静态 HTML；`partial/rules/70` 必须明确标示阶段性结果与未完成规则，不能伪造风险、AI 建议或完整合规结论。
+- 开始前已确认：技术执行书明确 A6/`backend/app/reporting/` 属于项目负责人，B5/`backend/app/rules/` 属于扫描分析组员；当前远端没有 B5 实现，且没有其他在途模型修改 reporting。公开 Git 网络获取因 `SEC-A2-004` TrustedEgress 前置尚未满足，本轮不以不安全直连实现替代。
+- 预计修改文件：新增 `backend/app/reporting/__init__.py`、`backend/app/reporting/render.py`、`tests/unit/test_a6_report_exports.py`、`docs/spec/a6-report-export-core.md`；最小更新根/后端运行说明、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 并仅追加本日志。不会修改 P0 Domain/Schema/sample、API、A2-A5、B1-B7、规则、前端或原始竞赛材料。
+- 验收方法：覆盖 JSON 可重验、七字段 CSV、HTML 转义、partial 诚实披露、稳定排序、无运行时间注入、非终态拒绝和输入不变；运行 A6 定向、P0/Schema、完整 unit/security（回环环境限制单独披露）、`compileall`、`git diff --check`、敏感信息/绝对路径/大文件/上传范围检查。
+- 接口、Schema 与依赖：不改变冻结 P0 Schema 或 HTTP API；A6-0 仅新增内部 Python 导出接口。只使用 Python 标准库，不新增第三方依赖，也不接线前端或 B5。
+- token：本轮非硬估算 `8k-14k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1759-RootTerra-A6报告核心] COMPLETE - A6-0 已独立于 B5 完成并通过全量回归
+
+- 实现结果：新增 `app.reporting.render_report()` 与不可变 `ReportArtifact`，只消费已验证的 `completed`/`partial` P0 `ScanRun`；生成稳定 JSON、HTML、CSV 和 `resource_inventory`，携带媒体类型、稳定文件名及内容 SHA-256。CSV/资源清单严格为竞赛七字段，HTML 静态转义并声明 CSP，CSV 中潜在公式前缀和控制字符被规范化。
+- 诚实边界：`partial/rules/70` 可以生成明确的阶段性报告，保留 `rules_stage_not_connected`，没有 finding 时明确“不等于合规通过”；未知许可证、义务、使用方式、团队改动均保持待核验/待补充。未实现或伪造扫描组员 B5，未调用 Qwen3，未修改 P0/Schema/sample、API、SQLite、Pipeline、A2-A5、B1-B7、`rules/` 或 `frontend/`。
+- 测试与证据：A6 专项 `12 passed`；A6+P0 权威入口 `58 passed`，其中 P0 测试包含存储 Schema 与 `ScanRun.model_json_schema()` 等值断言；CPython 3.12.14 受控完整集合 `830 passed, 1 warning`。样例内存产物实际生成 HTML `3145` bytes、JSON `8065` bytes、CSV/资源清单各 `613` bytes，四种产物均返回 SHA-256。
+- 环境与失败保留：首个旧临时 venv 已不存在，改用官方工作区 Python 3.12 和仓库外临时依赖；一次误调用不存在的 `tests/unit/test_p0_schema_export.py` 得到 pytest 路径错误，随后按权威 P0 入口复核。沙箱全量原样为 `819 passed, 11 failed`，11 项均在既有回环测试 bind 处被拒；受控首次为 `828 passed, 2 failed`，两项因测试子进程未继承 target 依赖而退出；建立仓库外临时 venv 并继承精确依赖后，两项先 `2 passed`，完整集合原样 `830 passed`。未修改测试规避失败。
+- 静态与发布门禁：compileall、`git diff --check`、P0/Schema/sample/API/Pipeline/AI/scanner/rules/frontend 零差异、本轮源码/测试/说明敏感凭据扫描、可发布本机绝对路径、大于 1 MiB 文件和 world-writable 检查通过；未新增第三方依赖。临时 venv/依赖/缓存均在 `/private/tmp`，不会上传。
+- 产品状态：A6-0 内存核心已完成，但 A6 父任务仍为进行中；尚未持久化产物、生成 `ReportLink`、提供 FastAPI 下载或接入 Pipeline/前端。下一项目负责人任务可做 A6-1 报告持久化与只读下载纵切，并继续对 partial 诚实展示；B5 到位后只消费其真实许可证/风险事实。
+- 发布计划：本条后创建不可变实现提交并推送 `feat/a6-report-export-core`；不创建或合并 PR，不修改 `integration/p0`、`main` 或组员分支。远端发布事实另以 EOF amendment 追加。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `8k-14k`，A6-0 的实现、测试、说明、全量回归和发布前门禁在同一任务范围内完整完成；范围未扩张到 B5、前端或其他真人任务。

@@ -60,3 +60,13 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_fastapi_api.py
 资源/风险/证据/报告读取与过滤、统一脱敏错误，以及默认数据目录权限。为验证读取投影，
 测试会把仓库内合成 P0 sample 通过 A3-0 的合法状态迁移写入临时注册表；这不是产品运行时
 伪造的扫描结果。
+
+## A6-0 报告导出核心复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py
+```
+
+该测试覆盖稳定 JSON、七字段 CSV/资源清单、HTML 转义与 CSP、CSV 公式注入防护、
+`partial/rules/70` 的诚实披露、非终态拒绝和输入对象不变。它不证明报告已接入 Pipeline、
+持久化、HTTP 下载或前端，也不替代 B5 许可证规则。
