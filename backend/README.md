@@ -348,4 +348,36 @@ artifact = render_report(run, ReportFormat.HTML)
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py
 ```
 
-Pipeline REPORT Adapter、持久化、FastAPI 下载、前端接线和最终匿名化验收属于 A6 后续纵切。
+A6-0 本身不写文件或提供 HTTP；已由下述 A6-1 接入持久化和只读下载。Pipeline REPORT Adapter、
+前端接线和最终匿名化验收仍属于 A6 后续纵切。
+
+## A6-1 报告安全持久化与只读下载
+
+`app.reporting.ReportArtifactStore` 把 A6-0 内存产物发布到后端私有报告目录，并返回 P0
+`ReportLink`。默认应用创建 `data/reports` 为 `0700`；扫描子目录同为 `0700`，内容和 metadata
+文件为 `0600`。内容以 SHA-256 寻址并先于 metadata 原子落盘，读取时重新验证类型、owner、权限、
+inode、长度和摘要；损坏或替换不会返回部分字节。
+
+publisher 是显式内部接口，不由 GET 触发：
+
+```python
+from app.domain.models import ReportFormat
+from app.reporting import ReportArtifactStore
+
+store = ReportArtifactStore(private_report_root)
+link = store.publish(terminal_scan_run, ReportFormat.HTML)
+```
+
+`GET /api/v1/scans/{scan_id}/report?format=html` 返回 `ReportLink`；请求该 link 的相对 `href`
+会在同一路径用 `download=true` 只读下载经过摘要校验的附件。下载包含 attachment、digest/ETag、
+`nosniff`、`no-store` 和限制性 CSP。GET 不生成报告、不更新 SQLite；Pipeline REPORT Adapter 与
+前端接线仍属后续纵切。`partial/rules/70` 下载继续明确显示许可证规则尚未连接，不代表合规通过。
+
+实现侧复现：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a6_report_exports.py \
+  tests/unit/test_a6_report_delivery.py \
+  tests/unit/test_a3_fastapi_api.py
+```

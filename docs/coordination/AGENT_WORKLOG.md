@@ -2952,6 +2952,17 @@
 - 独立性与验收：硬编码并核对官方 `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M` 和完整 manifest digest；不导入实现侧 FakeOpener、常量或 expected helper。先独立测试；若 sandbox bind 抛 `PermissionError`，保留原始失败并 BLOCKED，不跳过、不改实现；全绿后再跑 A5 unit+独立、安全非回环、静态/范围门禁。
 - token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
 
+### [20260904-1836-RootTerra-A6报告持久化下载] COMPLETE - A6-1 实现与受控全量回归闭环
+
+- 实现结果：新增内容寻址 `ReportArtifactStore`，以私有 `0700` 目录、`0600` 普通文件、内容先行/metadata 后提交、文件与目录 `fsync` 和原子替换持久化 A6-0 产物；读取时重新核对 owner、精确权限、文件类型/inode/长度、metadata 形状与 SHA-256。发布返回 P0 `ReportLink`，重启后仍可读取；相同内容重复发布保留首次生成时间。
+- API 结果：未新增第七条业务路由。冻结的报告 GET 默认从 store 返回 link，其相对 `href` 以同一路径 `download=true` 只读返回附件，包含 `Content-Digest`、SHA-256 `ETag`、attachment、`nosniff`、`private, no-store` 与限制性 CSP；GET 不渲染、不写 SQLite、不修复损坏报告。不存在映射既有 `409 report_not_ready`，损坏统一脱敏为 `500 internal_error / report_storage_failure`。
+- 诚实边界：`partial/rules/70` 下载仍显示“阶段性报告”和“并不等于通过许可证合规核验”。未实现或模拟 B5，未修改 P0 Domain/Schema/sample、SQLite registry、Pipeline、A2-A5、扫描组员 B1-B7、`rules/` 或前端；A6-2 才负责显式 Pipeline 发布与最终 `ScanRun.report_links` 一致性。
+- 测试与证据：A6-1 恰为 `16 tests`，A3 冻结 API 恰为 `23 tests`；A6+A3+P0 联合 `97 passed, 1 warning`。沙箱原样完整集为 `835 passed, 11 failed, 1 warning`，11 项全部在既有 A3/A5 回环 bind 处因 `PermissionError: [Errno 1] Operation not permitted` 失败；不改测试在受控环境原样复跑为 `846 passed, 1 warning`。唯一 warning 为既有 Starlette/anyio alias 弃用提示。
+- 审计收口：最终审计发现实现会拒绝 group/other 权限，却可能放过 owner execute 位；已按既有 `0700/0600` 契约最小收紧为精确 mode 校验，并由专项测试覆盖。`compileall`、`git diff --check`、P0/Schema/sample/SQLite/Pipeline/AI/scanner/rules/frontend 零差异、敏感凭据/个人路径/大文件/world-writable/上传范围检查通过；测试中的 `/Users/private token=do-not-leak` 是验证错误脱敏的合成哨兵，不是凭据。
+- 产品状态：当前能够对显式提供的终态 `ScanRun` 生成四格式报告、私有持久化、重启读取、返回 link 并经 HTTP 下载；ZIP 主链仍止于 `partial/rules/70`，尚不会自动进入 REPORT 阶段。完整许可证/义务/风险内容继续依赖组员 B5，前端真实下载接线继续归前端组员。
+- 发布计划：本条后只提交 A6-1 源码、16 项专项测试、规格、运行说明和治理记录到 `feat/a6-report-delivery` 并推送；不创建/合并 PR，不修改 `integration/p0`、`main`、A5 PR #2 或组员分支。远端不可变对象核对结果另以 EOF amendment 追加。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，任务在该估算对应的单轮范围内完整交付，未发生范围调整，也未扩张到 B5、Pipeline 或前端；由于没有精确遥测，不能核验实际消耗是否落在该数值区间。
+
 ### [20260904-1256-Luna-A5OllamaTransport] BLOCKED - sandbox 回环绑定阻塞真实 TCP 独立证据
 
 - 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:56（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
@@ -3168,3 +3179,21 @@
 - GitHub 发布事实：不可变实现、测试和首轮治理提交 `fda4ce6ba4361efaa3dcdba2a04aae6cf6067338` 已推送 `origin/feat/a6-report-export-core`；`git ls-remote` 与本地 `HEAD` 返回同一完整对象。
 - 上传范围：仅 10 个竞赛仓库文件——A6 源码 2 个、专项测试 1 个、A6 规格 1 个，以及根/后端/测试说明、AI 辅助记录、项目进度和本 append-only 日志。未上传 `/private/tmp` 环境、缓存、生成报告、模型内容、原始附件、凭据、本机路径或其他真人负责代码。
 - 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2 或两个组员分支。本 amendment 和发布状态修正将作为第二个纯治理提交推送到同一 A6 分支。
+
+### [20260904-1822-RootTerra-A6报告持久化下载] START - A6-1 安全持久化与只读下载纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A6 报告实现与发布验收；2026-09-04 18:22（Asia/Shanghai）。分支 `feat/a6-report-delivery`，基于已发布 A6-0 HEAD `682c9ed` 建立堆叠短分支，未修改 A6-0 分支本身。
+- 任务目标：只完成项目负责人 A6-1：把 A6-0 内存报告安全、原子地持久化为私有文件，生成可校验 `ReportLink`，并在冻结的 `/api/v1/scans/{scan_id}/report?format=...` 路径上提供只读元数据与下载；现有 `partial/rules/70` 继续输出诚实阶段性报告。
+- 开始前已确认：已复核正式竞赛通知、附件1/附件2、根/模块 README、架构/资源/计划、P0/A3/A6 规格、Sol/Terra 交接、项目进度和共享日志；A6-0 已完成且当前无其他任务修改 reporting。B5 许可证规则、组员 B1-B7、前端、Pipeline REPORT、A5 接线和公网 Git 均不属于本轮。
+- 预计修改文件：新增 `backend/app/reporting/store.py` 与 A6-1 专项测试/规格；最小修改 reporting 导出、FastAPI factory/service/路由和运行说明；更新 AI 辅助记录、项目进度并只追加本日志。不会修改 P0 Domain/Schema/sample、SQLite scan registry schema/状态机、A2-A5、B1-B7、`rules/` 或 `frontend/`。
+- 验收方法：覆盖私有目录/普通文件/权限、原子写入、摘要与 sidecar 一致、重启后读取、损坏/替换/缺失失败关闭、相同内容幂等、元数据与下载、HEAD/POST 不放开、Content-Disposition/CSP/nosniff/cache 头、partial 披露和错误脱敏；运行 A6/A3/P0 定向及全量回归、Schema、compileall、diff、敏感信息/绝对路径/大文件/上传范围门禁。
+- 接口、Schema 与依赖：不新增业务路径，继续使用冻结六路由；同一 GET 默认返回 `ReportLink`，仅其 `download=true` href 返回报告字节。A6-1 内部 publisher 供未来 Pipeline REPORT 调用，本轮不自动生成、不把 GET 变成写操作。只使用 Python 标准库和既有 FastAPI/Pydantic。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1840-RootTerra-A6报告持久化下载] AMENDMENT/COMPLETE - EOF 顺序更正与最终验收
+
+- 顺序更正：`[20260904-1836-RootTerra-A6报告持久化下载] COMPLETE` 因补丁锚点匹配到较早同文行而未物理落在当时 EOF；不删除、不搬动该历史记录。本 amendment 在重新读取尾部后追加到真实 EOF，并作为本轮最终完成记录。
+- 最终实现：A6-1 内容寻址私有存储、原子 metadata 提交、P0 `ReportLink` 和冻结报告 GET 的只读下载均已完成；权限审计后将目录/文件复核收紧为精确 `0700/0600`。没有实现 B5、Pipeline REPORT、前端或其他真人任务。
+- 最终证据：A6-1 `16 tests`、A3 API `23 tests`；A6+A3+P0 联合 `97 passed, 1 warning`，受控完整集 `846 passed, 1 warning`；沙箱 11 个回环权限失败已在前条完整保留。compileall、diff、保护路径、敏感/个人路径、大文件、world-writable 与上传范围门禁通过。
+- 发布边界：下一步仅创建 A6-1 不可变实现提交并推送 `feat/a6-report-delivery`；远端对象核对完成后继续只在 EOF 追加发布绑定，不合并 PR 或目标分支。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在该估算对应的单轮范围内完整交付且无范围调整；没有精确遥测，不能确认实际 token 数值。

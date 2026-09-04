@@ -70,3 +70,17 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py
 该测试覆盖稳定 JSON、七字段 CSV/资源清单、HTML 转义与 CSP、CSV 公式注入防护、
 `partial/rules/70` 的诚实披露、非终态拒绝和输入对象不变。它不证明报告已接入 Pipeline、
 持久化、HTTP 下载或前端，也不替代 B5 许可证规则。
+
+## A6-1 报告持久化与下载复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a6_report_exports.py \
+  tests/unit/test_a6_report_delivery.py \
+  tests/unit/test_a3_fastapi_api.py
+```
+
+新增测试覆盖私有目录/文件权限、内容寻址与 metadata 原子提交、幂等、重启读取、长度/摘要、
+篡改/缺失/symlink 失败关闭、默认数据目录、P0 `ReportLink`、FastAPI 元数据和只读下载、安全响应头、
+稳定脱敏错误及方法边界。下载前后文件时间必须不变，证明 GET 不写入。测试用终态快照由固定 sample
+和内存构造的 `partial/rules/70` 产生；不会实现或伪造 B5，也不代表 Pipeline/前端已经接线。

@@ -41,6 +41,7 @@ from app.domain.models import (
     SourceType,
 )
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError
+from app.reporting import ReportArtifactStore, ReportStoreError, StoredReport
 
 
 APPLICATION_VERSION = "0.1.0"
@@ -123,10 +124,12 @@ class ScanApiService:
         self,
         registry: SQLiteScanRunRegistry,
         *,
+        report_store: ReportArtifactStore | None = None,
         clock: Callable[[], datetime] | None = None,
         id_factory: Callable[[], UUID] | None = None,
     ) -> None:
         self._registry = registry
+        self._report_store = report_store
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self._id_factory = id_factory or uuid4
 
@@ -329,10 +332,46 @@ class ScanApiService:
         run = self._get_run(scan_id)
         if run.status not in _RESULT_STATUSES:
             _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="status_not_ready")
+        if self._report_store is not None:
+            return self._stored_report(run.id, report_format).link
         for link in run.report_links:
             if link.format is report_format:
                 return link
         _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="not_generated")
+
+    def download_report(self, scan_id: str, report_format: ReportFormat) -> StoredReport:
+        run = self._get_run(scan_id)
+        if run.status not in _RESULT_STATUSES:
+            _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="status_not_ready")
+        if self._report_store is None:
+            _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="not_generated")
+        return self._stored_report(run.id, report_format)
+
+    def _stored_report(self, scan_id: str, report_format: ReportFormat) -> StoredReport:
+        store = self._report_store
+        if store is None:
+            _fail(
+                status_code=409,
+                code="report_not_ready",
+                message="Requested report is not ready.",
+                reason="not_generated",
+            )
+        try:
+            return store.get(scan_id, report_format)
+        except ReportStoreError as error:
+            if error.code == "report_store_not_found":
+                _fail(
+                    status_code=409,
+                    code="report_not_ready",
+                    message="Requested report is not ready.",
+                    reason="not_generated",
+                )
+            _fail(
+                status_code=500,
+                code="internal_error",
+                message="The report could not be read.",
+                reason="report_storage_failure",
+            )
 
     def _get_run(self, scan_id: str) -> ScanRun:
         try:

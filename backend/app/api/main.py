@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import stat
+from base64 import b64encode
 from contextlib import asynccontextmanager
 from pathlib import Path
 from collections.abc import Awaitable, Callable
@@ -33,6 +34,7 @@ from app.api.service import APPLICATION_VERSION, ApiError, ScanApiService
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
 from app.persistence import SQLiteScanRunRegistry
+from app.reporting import ReportArtifactStore
 
 
 _ERROR_RESPONSES = {
@@ -238,7 +240,23 @@ def _router() -> APIRouter:
         scan_id: str,
         service: Annotated[ScanApiService, Depends(_service)],
         report_format: Annotated[ReportFormat, Query(alias="format")],
-    ) -> ReportLink:
+        download: Annotated[bool, Query()] = False,
+    ) -> ReportLink | Response:
+        if download:
+            stored = service.download_report(scan_id, report_format)
+            digest = b64encode(bytes.fromhex(stored.link.content_hash.value)).decode("ascii")
+            return Response(
+                content=stored.content,
+                media_type=stored.media_type,
+                headers={
+                    "Cache-Control": "private, no-store",
+                    "Content-Disposition": f'attachment; filename="{stored.filename}"',
+                    "Content-Digest": f"sha-256=:{digest}:",
+                    "Content-Security-Policy": "sandbox; default-src 'none'; base-uri 'none'; form-action 'none'",
+                    "ETag": f'"sha256:{stored.link.content_hash.value}"',
+                    "X-Content-Type-Options": "nosniff",
+                },
+            )
         return service.report(scan_id, report_format)
 
     return router
@@ -248,6 +266,7 @@ def create_app(
     registry: SQLiteScanRunRegistry,
     *,
     zip_runtime: ZipScanRuntime | None = None,
+    report_store: ReportArtifactStore | None = None,
     close_registry: bool = False,
 ) -> FastAPI:
     @asynccontextmanager
@@ -259,7 +278,7 @@ def create_app(
                 registry.close()
 
     app = FastAPI(title="OpenGuard API", version=APPLICATION_VERSION, lifespan=lifespan)
-    app.state.scan_api_service = ScanApiService(registry)
+    app.state.scan_api_service = ScanApiService(registry, report_store=report_store)
     app.state.zip_scan_runtime = zip_runtime
 
     @app.middleware("http")
@@ -387,21 +406,23 @@ def create_default_app() -> FastAPI:
         raise RuntimeError("OpenGuard data directory must be private")
     upload_root = data_dir / "uploads"
     workspace_root = data_dir / "workspaces"
-    for root in (upload_root, workspace_root):
+    report_root = data_dir / "reports"
+    for root in (upload_root, workspace_root, report_root):
         try:
             root.mkdir(mode=0o700, exist_ok=True)
             info = root.lstat()
         except OSError as error:
-            raise RuntimeError("OpenGuard ZIP runtime directory is unavailable") from error
+            raise RuntimeError("OpenGuard runtime directory is unavailable") from error
         if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
-            raise RuntimeError("OpenGuard ZIP runtime directory must be private")
+            raise RuntimeError("OpenGuard runtime directory must be private")
     registry = SQLiteScanRunRegistry(data_dir / "scans.db")
     runtime = ZipScanRuntime(
         registry,
         upload_root=upload_root,
         workspace_root=workspace_root,
     )
-    return create_app(registry, zip_runtime=runtime, close_registry=True)
+    report_store = ReportArtifactStore(report_root)
+    return create_app(registry, zip_runtime=runtime, report_store=report_store, close_registry=True)
 
 
 __all__ = ["create_app", "create_default_app"]
