@@ -3162,3 +3162,9 @@
 - 产品状态：A6-0 内存核心已完成，但 A6 父任务仍为进行中；尚未持久化产物、生成 `ReportLink`、提供 FastAPI 下载或接入 Pipeline/前端。下一项目负责人任务可做 A6-1 报告持久化与只读下载纵切，并继续对 partial 诚实展示；B5 到位后只消费其真实许可证/风险事实。
 - 发布计划：本条后创建不可变实现提交并推送 `feat/a6-report-export-core`；不创建或合并 PR，不修改 `integration/p0`、`main` 或组员分支。远端发布事实另以 EOF amendment 追加。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `8k-14k`，A6-0 的实现、测试、说明、全量回归和发布前门禁在同一任务范围内完整完成；范围未扩张到 B5、前端或其他真人任务。
+
+### [20260904-1802-RootTerra-A6报告核心发布] AMENDMENT/COMPLETE - A6-0 已发布到独立远端分支
+
+- GitHub 发布事实：不可变实现、测试和首轮治理提交 `fda4ce6ba4361efaa3dcdba2a04aae6cf6067338` 已推送 `origin/feat/a6-report-export-core`；`git ls-remote` 与本地 `HEAD` 返回同一完整对象。
+- 上传范围：仅 10 个竞赛仓库文件——A6 源码 2 个、专项测试 1 个、A6 规格 1 个，以及根/后端/测试说明、AI 辅助记录、项目进度和本 append-only 日志。未上传 `/private/tmp` 环境、缓存、生成报告、模型内容、原始附件、凭据、本机路径或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2 或两个组员分支。本 amendment 和发布状态修正将作为第二个纯治理提交推送到同一 A6 分支。
