@@ -276,3 +276,21 @@ JavaScript 依赖组件与证据已经可以查询，但许可证规则尚未接
 ```bash
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py
 ```
+
+## A5-0 可注入 AI Provider 与确定性降级
+
+`app.ai.apply_ai_remediations()` 接受一个已验证的 P0 `ScanRun` 和调用方注入的 local/remote
+Provider。它只为尚未绑定整改的 `warning`、`review_required` 或 `unknown` finding 生成
+`pending` Remediation；请求只含该 finding、已引用 Evidence 以及资源已绑定的许可证事实。
+Provider 返回值必须是 64 KiB 以内的严格 JSON，并且只能引用请求中已有的 evidence ID。
+
+AI 关闭时不需要 Provider；模型不可用、抛错、响应截断、重复键、额外字段、身份或引用不匹配、
+敏感片段及绝对路径均稳定降级。降级只记录脱敏的 `ai_assist` 诊断和 AI provenance，不发布部分
+建议，也不改变组件、AI 资源、许可证、义务、规则结果或统计。A5-0 没有网络和真实模型客户端；
+Qwen3/Ollama transport、A4 接线与消融实验属于后续 A5-1。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ai_provider.py
+```

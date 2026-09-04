@@ -2798,3 +2798,94 @@
 - 待确认删除：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
 - 下一步：用户明确批准上述13个分支删除后，Root只删除这些远端引用、刷新分支清单并记录结果；随后从 `integration/p0` 创建一个 `feat/a5-ai-provider` 短分支，按技术执行书进入A5最小Provider与降级纵切。
 - token：本次运行精确 token 数不可获得；开工估算 `16k-24k`，团队集成与发布已在范围内完整完成，分支引用删除因审批要求缩小为待确认项；没有开始A5半成品。
+
+### [20260904-1057-RootSol-A5Provider契约与断点续作] START - 从 A5-0 未开始位置建立最小 AI Provider 纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；状态复核、AI 边界契约与发布门禁；2026-09-04 10:57（Asia/Shanghai）。分支 `feat/a5-ai-provider`，基线 `30965d1`。
+- 断点复核：`integration/p0` 本地工作树干净，既有 A1-A4、组员前端壳和 B2/B3 Adapter 均保留；仓库不存在 `backend/app/ai/`、A5 规格或 A5 测试，因此本轮不会重复生成或覆盖已有实现。远端 `git fetch --prune origin` 因当前受限网络无法解析 GitHub，推送前须在受控联网环境再次刷新和核对。
+- 本轮范围：只完成项目负责人 A5-0——冻结可替换 Local/Remote Provider 边界、严格结构化整改输出、已有 evidence 引用约束、确定性事实优先、AI 关闭/异常/无效输出的稳定降级；不实现真实 Ollama 网络传输，不接入组员 B4/B5 许可证规则或 B6 AI 资源检测，不修改前端、公共 P0 Schema 或 API。
+- 模型分工：Sol 冻结规格；Terra 只实现 `backend/app/ai/` 与实现侧测试；Luna 只新增独立可靠性/安全测试；Root 最终复核、更新证据与推送。本轮不删除此前列出的 13 个旧远端分支，因为仍缺用户对精确列表的明确删除授权。
+- 验收：有效建议只能引用本次输入证据，生成的 `Remediation` 必须为 AI producer 且保持 `pending`；模型不能改写 resource/license/rule/outcome/severity 等事实；关闭、超时、不可用、异常 JSON、重复键、超限、未知引用或身份不匹配均不得伪造建议，并保留原确定性结果。先通过 A5 定向测试，再运行完整后端回归、Schema 等值、compileall、diff 与敏感信息门禁。
+- token：本轮非硬估算 `18k-26k`；客户端不提供精确本轮 token 遥测。如实现审计发现需要改公共契约或进入组员任务，将停止并记录变更请求，不扩大本轮范围。
+
+### [20260904-1110-Terra-A5Provider] START - 实现冻结 A5-0 可注入 Provider 与降级
+
+- 作者：GPT-5.6 Terra；分支 `feat/a5-ai-provider`；仅新增 `backend/app/ai/`、实现侧测试及必要 README/AI/日志；不提交、不推送。
+- 验收：严格 JSON/引用/敏感校验、pending remediation 原子提升、disabled/skipped/degraded；不实现 HTTP/Ollama 或修改 P0/API/pipeline/组员模块。
+- token：非硬估算 `8k-12k`，精确遥测不可得。
+
+### [20260904-1140-Terra-A5Provider] PARTIAL - A5-0 核心边界已实现，验收覆盖待补
+
+- 实际修改：新增 `backend/app/ai/__init__.py`、`provider.py` 与 `tests/unit/test_a5_ai_provider.py`。实现 local/remote 注入 Provider 校验、canonical 输入、重复键/非有限/大小/额外字段/引用/敏感路径内容拒绝、pending `Remediation` UUIDv5 提升、disabled/skipped/generated/degraded 与整批失败不发布部分建议。
+- 验证：A5 最小实现测试 `2 passed`，`compileall -q backend/app tests` 与 `git diff --check` 通过。
+- 未完成：规格要求的完整定向边界（重复 key、超限、批次原子性、全部降级分支、事实逐值不变）及后端全量/P0回归、README/AI记录尚未完成；因此不可交 Luna、不形成 evidence、不提交或推送。后续 Terra 应在同一允许文件中补全实现测试与回归，不扩大到真实传输或公共模型。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-12k`，范围未扩大但未完整收工。
+
+### [20260904-1200-Terra-A5ProviderResume] START - 补齐 A5-0 快照、原子性与降级边界
+
+- 范围不变：仅 A5 provider、实现测试、README/AI/追加日志；不提交、不推送；估算 `6k-10k`。
+
+### [20260904-1225-Terra-A5ProviderResume] PARTIAL - 修复快照与分类缺口，完整验收待补
+
+- 修复：canonical payload 现加入 finding resource 绑定的 LicenseExpression 与其 Evidence；Provider 属性访问异常转换 `ai_invalid_argument`，ProducerRef 被快照化；拒绝 bool/NaN/Infinity timeout；generate 异常稳定为 `ai_provider_unavailable`，decode/validation 为 `ai_response_invalid`，不会被前一批 response 状态误分类。
+- 验证：现有 A5 unit `2 passed`、AI compileall 与 `git diff --check` 通过。
+- 未完成：尚未补全用户要求的完整 A5 unit 矩阵、README/AI记录、P0/全 unit 回归，因此仍不可交 Luna、不可声明 COMPLETE/evidence、未提交或推送。
+- token：本次运行精确 token 数不可获得；估算 `6k-10k`，范围未扩大但任务未完成。
+
+### [20260904-1132-Root-A5Provider实现收口] COMPLETE - A5-0 实现侧可交独立验证
+
+- Root 处置：保留 Terra 已验证方向，在同一冻结范围重构 `backend/app/ai/provider.py` 和实现测试，补齐许可证事实/evidence 允许集、Provider 元数据快照、generate/response 错误分流、原子批处理、事实逐值保持、稳定 pending Remediation 与幂等降级诊断；未引入新依赖或真实 transport。
+- 实现验收：local/remote、生成/跳过/关闭/降级、稳定 ID/provenance、license evidence、Provider 第二项失败不发布第一项、重复键/非有限/额外字段/错 finding/未知 evidence/空白/超长/绝对路径/credential/64 KiB、非法 timeout/provider 与身份快照均有实现侧断言。
+- 运行结果：A5 + P0 `75 passed`；完整 `tests/unit` 为 `368 passed`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；`compileall -q backend/app tests` 与 `git diff --check` 通过。
+- 边界：只新增 A5 package/spec/unit 并最小更新 backend README、AI/协作记录；没有修改 P0/Schema/sample/API/pipeline、组员 B1-B7、前端、依赖锁或 PROJECT_PROGRESS。当前只批准交 Luna 独立验证，不形成最终 evidence，不提交或推送。
+- token：本次运行精确 token 数不可获得；Root 收口包含在本任务 `18k-26k` 总估算中，未发生范围扩张。
+
+### [20260904-1136-Luna-A5Provider独立验证] START - A5-0 AI Provider 与确定性降级独立验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 11:36（Asia/Shanghai）。分支 `feat/a5-ai-provider`；当前 HEAD `30965d1`；不提交、不推送。
+- 前置核验：已完整阅读 `AGENTS.md`、根 `README.md`、共享工作日志、`PROJECT_PROGRESS.md`、`docs/handoffs/LUNA_HANDOFF.md`、冻结 `docs/spec/a5-ai-provider.md` 及当前 `backend/app/ai/`；已核对 Root `20260904-1132` COMPLETE 和 Terra 两轮 PARTIAL 历史，不采信实现侧 expected。
+- 本轮唯一目标：仅新增 `tests/security/test_a5_ai_provider_independent.py`，独立构造 P0 `ScanRun`、Provider、finding/evidence/license 事实和 canonical expected，覆盖 local/remote、pending/stable evidence、disabled/skipped/generated/degraded、整批原子性、事实逐值保持及稳定 ID/provenance。
+- 负面范围：重复 key、额外字段、错 finding、未知/重复 evidence、非 finite/截断/非字符串/64 KiB 响应、credential/Unix/Windows/UNC 路径、Provider 属性/异常、timeout、批次第二项失败、metadata 变异、repeated degradation；另核验 canonical payload 不含未绑定资源/许可证、原始异常不泄露。
+- 允许修改：仅上述独立测试，最小更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，以及本共享日志；禁止修改 backend、tests/unit、P0/Schema/sample/API/pipeline、B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party；不生成持久 fixture。
+- 验收顺序：先运行独立 A5 测试；若发现 P0/P1，保留原样失败并以 BLOCKED 结束，不修实现、不放宽断言。全绿后运行 A5 unit+独立、全 security（排除既有回环限制）、P0 Schema 等值、compileall、diff、敏感信息与范围门禁；仅报告可证明的本地注入 Provider 边界，不外推 Ollama/Qwen3、网络 transport、许可证规则、报告或完整产品。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告是否在范围内完成及是否调整。
+
+### [20260904-1216-Luna-A5Provider独立验证] BLOCKED - A5-0 P1 原子性/错误契约缺口
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 12:16（Asia/Shanghai）。分支 `feat/a5-ai-provider`；HEAD 仍为 `30965d1`；不提交、不推送。
+- 测试证据：独立文件收集 16 项，首轮测试自身的 helper 错误与 remediation 列表顺序假设仅在独立测试内修正；最终 `15 passed, 1 failed`。通过项覆盖 local/remote、pending/stable evidence、disabled/skipped/no-call、严格响应/引用/敏感/路径、Provider 属性/异常/timeout、64 KiB、批次原子性、事实保持、metadata snapshot、stable ID 与 repeated degradation。
+- P1 复现：`test_invalid_p0_aggregate_fails_before_provider_execution` 先从合法 P0 `ScanRun` 构造后篡改 `summary.component_count`。冻结契约要求入口完整 revalidate，抛 `ai_invalid_argument` 且 provider 不得执行；当前实现实际调用 provider 1 次（canonical payload 2076 UTF-8 bytes），随后从 `_degraded` 逸出未包装的 Pydantic `ValidationError`，没有在模型执行前失败关闭。
+- 处置：失败断言原样保留；未修改 backend、tests/unit、P0/Schema/sample/API/pipeline、组员 B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party；仅修改本独立测试自身夹具/断言，并追加安全 README、AI 使用记录和本记录。按 P1 规则停止 A5 unit+独立、全 security、Schema/compileall 扩大回归，不批准 `EVD-A5-AI-PROVIDER-001`，升级 Terra 修复、Luna 原始复测、Sol/Root 重审与不可变绑定。
+- 证据边界：本轮不证明真实 Ollama/Qwen3、HTTP/network transport、A4 接线、许可证规则、报告、Bench、公开部署或完整竞赛作品；未把 15 个通过项外推为 A5 完成。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在该估算范围内完成本轮独立验证与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1218-Root-A5P1修复] START - 关闭 Provider 调用前 P0 重校验缺口
+
+- 范围：仅在 A5 入口对传入 `ScanRun` 的完整 dump 做 P0 重校验，并补一条实现侧回归；非法或事后篡改聚合统一在 Provider 调用前抛 `ai_invalid_argument`。不修改 P0 模型、Luna 原测试、API/pipeline、组员模块或前端。
+- 验收：Luna 原始失败由 `15 passed, 1 failed` 变为全绿；随后运行 A5 unit+independent、P0、完整非回环与静态门禁。token 沿用本任务 `18k-26k` 总估算，精确遥测不可得。
+
+### [20260904-1217-Luna-A5Provider复测] AMENDMENT/START - Root 修复后的 A5-0 P1 原样复测
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 12:17（Asia/Shanghai）。按 Root 修复交接继续复测；不提交、不推送。
+- 修复输入：Root 仅在 `apply_ai_remediations` 入口增加 `ScanRun.model_validate(run.model_dump(mode='python'))` 的 `ai_invalid_argument` 失败关闭并补一条 unit；本轮不修改 backend、tests/unit、独立断言或其他模块。
+- 验收顺序：先原样运行 `tests/security/test_a5_ai_provider_independent.py`；若 16 项全绿，再运行 A5 unit+独立、全 security 排除 `real_uvicorn`、Schema 等值、compileall、diff、敏感与范围门禁；若仍失败，保留失败并 BLOCKED。
+- token：本轮非硬估算 `8k-14k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1220-Luna-A5Provider复测] COMPLETE - A5-0 P1 修复独立复核与门禁收口
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 12:20（Asia/Shanghai）。分支 `feat/a5-ai-provider`；不提交、不推送。
+- 原样复测：`tests/security/test_a5_ai_provider_independent.py` 为 `16 passed`；此前 `test_invalid_p0_aggregate_fails_before_provider_execution` 已确认事后篡改 P0 在 Provider 执行前返回 `ai_invalid_argument`，原 P1 关闭。
+- 联合门禁：A5 unit + 独立 `46 passed`；`tests/unit` + `tests/security -k 'not real_uvicorn'` 为 `734 passed, 2 deselected`；P0 Schema 专项 `46 passed`；`compileall -q backend/app tests`、`git diff --check`、受保护路径、world-writable 与敏感模式检查通过；仅保留 1 条 Starlette/AnyIO 第三方弃用 warning。
+- 处置与边界：本轮未修改 backend、tests/unit、独立断言、P0/Schema/sample/API/pipeline、B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party；Root/Terra 既有工作区变更未越权清理。候选 `EVD-A5-AI-PROVIDER-001` 仅完成独立验证，仍待 Root/Sol 绑定不可变提交、运行 profile 与有界发布范围。
+- 证据边界：结果限于本机 CPython 3.12、本地注入 Provider 与确定性 P0 边界；不证明真实 Ollama/Qwen3、HTTP/network transport、A4 接线、许可证规则、报告、Bench、公开部署或完整竞赛作品。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-14k`，在该范围内完成本轮复测与门禁收口，未发生范围调整。
+
+### [20260904-1224-RootSol-A5Provider终审] COMPLETE - A5-0 候选通过有界终审，待不可变提交绑定
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 架构、安全、证据与发布终审；2026-09-04 12:24（Asia/Shanghai）。分支 `feat/a5-ai-provider`；本条记录时未提交、未推送。
+- 完成内容：冻结 `docs/spec/a5-ai-provider.md` v1；新增可注入 local/remote Provider、canonical finding/evidence/license 输入、64 KiB 严格 JSON、重复键/非有限/额外字段/身份/引用/敏感路径门禁、pending P0 Remediation、UUIDv5 稳定身份、Provider 元数据快照和 generated/skipped/disabled/degraded 原子语义。入口重新验证事后可变 P0，Luna 发现的 Provider 调用前 P1 已关闭。
+- 验证：实现侧 30 项、Luna 独立 16 项，A5 合计 46 项；Root 复跑 `tests` 排除两个既有真实 Uvicorn 回环项为 `734 passed, 2 deselected`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；`schema_export_equal=True`、compileall 与 `git diff --check` 通过。
+- 范围与上传检查：仅 A5 package、spec、unit/independent tests、根/后端/安全说明、AI/共享日志；未修改 P0/Schema/sample/API/pipeline、依赖锁、组员 B1-B7、前端、PROJECT_PROGRESS 或原始附件。测试中的 synthetic credential/path 只用于负面泄漏断言；新增公开文件不含真实密钥或本机个人绝对路径。
+- 证据裁决：`EVD-A5-AI-PROVIDER-001` 为 `APPROVED-PENDING-ROOT-BINDING`，仅证明本机 CPython 3.12、显式注入 Provider 的结构化整改与确定性降级核心；不证明真实 Ollama/Qwen3、HTTP/network transport、模型版权/性能、A4 接线、许可证规则、报告、Bench、部署或完整作品。
+- 下一步：创建不可变实现提交并回填哈希、进度与 GitHub 状态后推送；不创建/合并 PR，不删除旧远端分支。A5 后续任务为 A5-1：锁定开放权重模型与 Ollama transport、真实超时和 A4 AI_ASSIST 接线，但必须等待 B5 提供真实 finding/license facts，不代做组员规则。
+- token：本次运行精确 token 数不可获得；开工总估算 `18k-26k`，A5-0 在该范围内完成，期间只增加对 Luna P1 的最小修复，没有扩张到 A5-1 或组员任务。
