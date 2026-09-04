@@ -2995,3 +2995,14 @@
 - 范围与边界：未修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`；未安装、下载或请求真实 Ollama/Qwen3；`third_party/README.md` 已准确，未重复登记。结果只证明当前有界协议 fixture 与 Ollama adapter 的受控本地行为，不证明真实模型质量、许可证规则、A4 接线、报告、Bench、公开部署或完整竞赛作品。
 - 证据状态：原始 sandbox 失败与受控通过均保留；`EVD-A5-OLLAMA-TRANSPORT-001` 可交 Root/Sol 复核不可变提交、运行 profile 和有界范围，Luna 本轮不自行批准发布。
 - token：本次运行精确 token 数不可获得；本轮开工估算 `4k-7k`，在估算范围内完成数量更正、AI记录与共享日志收口，未发生范围调整。
+
+### [20260904-1307-RootSol-A5OllamaTransport终审发布] COMPLETE - A5-1a 已绑定并推送 GitHub 功能分支
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 架构、安全、证据与发布终审；2026-09-04 13:07（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 完成内容：以 Ollama/Qwen 官方一手来源锁定 Ollama `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M`、完整 manifest SHA-256 与模型 blob 摘要；冻结 transport v1；新增标准库 `OllamaProvider`，只允许字面量回环 HTTP、显式禁用环境代理，按 version→tags→generate 三步核验身份并共享总 deadline，对 HTTP/JSON/大小/身份错误统一脱敏失败，由 A5-0 保持确定性结果并降级。
+- 模型协作：Terra 的多轮 PARTIAL 骨架及环境判断完整保留，Root 使用既有 bundled Python 3.12 runtime 在原范围完成可维护实现和 60 项 unit；Luna 独立构造 17 项真实 TCP/非网络探针。sandbox 原始 `8 passed, 9 failed` 均为回环 bind 权限限制，受控环境原样复跑为 `17 passed in 4.70s`，没有跳过或放宽断言。
+- 验证：A5 Provider、transport、两组独立测试组合 `123 passed`；完整 unit/security 排除两个既有真实 Uvicorn 项及单独受控的 Ollama TCP 文件为 `794 passed, 2 deselected`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；`schema_export_equal=True`、`compileall -q backend/app tests`、`git diff --check`、受保护路径零差异和 world-writable 检查通过。
+- 修改与上传：实现提交 `e4d8e2ed338bf7de881a41825f59efbd4130ed6a` 已推送 `origin/feat/a5-ollama-transport`；上传范围为 A5 transport/export、冻结规格、60 项 unit、17 项 Luna 独立测试、根/后端/安全说明、资源/第三方/AI/协作记录。发布前将未提交报告中的本机 runtime 路径改为通用表述；未上传缓存、虚拟环境、原始附件、权重、二进制、真实凭据或新增个人绝对路径。
+- 边界与证据裁决：`EVD-A5-OLLAMA-TRANSPORT-001` 绑定上述不可变实现提交并批准；它只证明本机 CPython 3.12 下 adapter 与有界 HTTP fixture 的协议、安全、超时及降级行为。不证明真实 Ollama/Qwen3 已安装运行、模型质量/许可证规则正确、A4 已接线、报告/Bench/部署完成或作品已经可提交。
+- 未完成与下一步：A5-1b 需用户明确批准后才安装 Ollama、下载约 2.5GB 锁定权重并做本机摘要、结构化输出成功率、延迟和资源实测；A5-1c 必须等待扫描分析组员 B5 提供真实 finding/license facts 后再接 A4 AI_ASSIST，不代做组员许可证规则。未创建或合并 PR，`main`、`integration/p0` 和组员分支未改变，旧远端分支未删除。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `18k-26k`，A5-1a 的资源核验、实现、两侧测试、独立受控复跑、完整门禁、不可变提交、首次推送及治理回填均在本轮完整交付；范围没有扩张到安装/权重/A4/B5。
