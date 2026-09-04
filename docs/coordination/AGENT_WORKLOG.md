@@ -3064,3 +3064,22 @@
 - 上传范围：A5-1b 聚合运行探针、5 项 unit、运行说明、A5 规格、资源/第三方台账、聚合实测结果和 AI/进度/协作证据；未上传安装包、应用、模型权重、模型缓存、prompt、完整 response、临时独立脚本、密钥或个人绝对路径。
 - 分支边界：未创建或合并 PR，未修改 `main`、`integration/p0`、扫描组员分支或前端组员分支；A5-1c 依赖 B5，仍未开始。
 - token：本条仅补远端发布事实；精确 token 遥测不可获得，计入 A5-1b 开工估算 `22k-32k`，无范围调整。
+
+### [20260904-1450-RootSol-组员远端产物审计] START - 只读核查组员 GitHub 新增代码与资料
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；团队集成只读审计；2026-09-04 14:50（Asia/Shanghai）。当前分支 `feat/a5-ollama-transport`。
+- 目标：同步 GitHub 远端引用，按提交作者、分支、相对 `integration/p0` 的独有提交和文件差异识别两位组员新增内容；判断对当前 P0 主线、A5-1c 依赖、报告/演示和后续集成是否有用，并列出需验证、不可直接接入或重复的部分。
+- 边界：本轮不修改、合并、cherry-pick、rebase 或运行组员业务代码，不改 P0/Schema/sample、A2-A5、B1-B7、frontend、第三方台账或进度状态；除本 append-only 审计记录外不改项目文件。若需要测试或集成，作为下一任务另行授权和冻结范围。
+- 验收：远端 heads 与作者映射明确；每个组员分支的独有提交、文件类型、与当前/集成线重叠关系及可用性有证据；敏感/大文件/错误目录做只读检查；输出“可直接候选、需验证、暂不用、阻塞依赖”四类结论。
+- token：本轮非硬估算 `8k-14k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1518-RootSol-组员远端产物审计] COMPLETE - 已分级组员上传内容，未接入未验证代码
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；团队集成只读审计；2026-09-04 15:18（Asia/Shanghai）。当前分支 `feat/a5-ollama-transport`。
+- 远端事实：前端组员分支 `origin/feat/xzb-frontend` 指向 `83e89281e941801e1a62f0661d3def6de77f9a8b`，相对 `integration/p0` 有 3 个提交，其中初始 shell 已 patch-equivalent 集成，新增内容为模块化页面、证据阅读器、关系图、报告页、API 草案、测试和第三方说明；开放 PR #1 仍以旧 `main` 为基线且标题/正文仅描述 shell，与当前扩大后的提交范围不一致。扫描组员分支 `origin/codex/p0-external-tools-sync` 指向 `d8198bbc715188c8c7f9d82e727866d7c7faba2e`，初始 JSON adapter/test/spec 的文件内容已存在当前集成线，新增候选主要为 ScanCode 与 Syft 的密封 ZIP 子进程管线及资料；该分支没有 PR。
+- 可用性裁决：前端视觉与交互资产、事实/规则/AI 分层、PARTIAL/FAILED 状态、证据查看和报告演示具有高复用价值，但其 `/scans`、`/repositories/validate`、风险 PATCH、camelCase/完整 Scan snapshot 契约与当前 `/api/v1`、snake_case、`ScanCreateAccepted`/分页端点不兼容，不能直接连当前后端。ScanCode 管线是可评审候选；Syft 明确仍为 PARTIAL；两者都没有 B5 许可证规则，因此不解除 A5-1c 对真实 finding/license facts 的依赖。
+- 独立检查：两分支相对 `integration/p0` 的补丁均通过 `git diff --check`；未发现私钥、token、常见秘密、个人绝对路径、大型模型/压缩包/二进制上传。隔离副本执行外部工具相关单元测试为 `5 passed, 1 skipped`，跳过项需要真实 ScanCode binary，未把它记为真实工具验收。前端依赖因沙箱无法访问包注册表而未能独立安装，GitHub 两个 head 均无 status/check run，因此组员所列前端测试暂不算独立证据。
+- 风险与集成门禁：PR #1 应先改以 `integration/p0` 为基线并更新 scope；前端需冻结/适配当前 P0 DTO 后再选取提交。ScanCode/Syft 的 `/proc/self/fd` 路径是 Linux 方案，当前 macOS 无法直接演示；外部进程仍需真实二进制/版本/摘要、进程组超时清理、流式输出上限和受限 Linux 运行配置的独立验证。组员历史进度/工作日志不可整份覆盖当前治理文件。
+- 处置边界：未 merge、cherry-pick、rebase、修改或运行组员业务分支，未修改 P0/Schema/sample、A2-A5、B1-B7、frontend 或 `PROJECT_PROGRESS.md`；本轮只追加审计日志。功能进度未因审计而前移，下一集成任务应拆成“前端 P0 契约适配”与“ScanCode Linux 真工具安全门禁”两个独立工作包，由相应责任角色处理。
+- 发布计划：仅发布本 append-only 审计记录到现有 A5 功能分支，不把组员代码带入该分支，不改 `main`、`integration/p0` 或组员分支。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-14k`，在该范围内完成远端同步、提交/文件/PR/CI/敏感与大文件检查、隔离测试和分级裁决，范围未扩展到代码集成。
