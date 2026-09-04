@@ -609,6 +609,21 @@
 - 预计修改文件：`docs/coordination/AGENT_WORKLOG.md`，以及仅在验收结论变化时更新 `docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`。
 - 验收方法：使用 Python 3.12 的 `PYTHONPATH=backend` 运行任务 6 定向 pytest；运行任务 1～5 对应测试集及全量 pytest（依赖齐备后）；检查 Schema/样例/实现和 GitHub 分支状态。
 - token 用量估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+
+### [20260904-1200-Sol-任务8真实回归收工] PARTIAL - 已补齐真实 Syft fixture 与回归代码，Python 环境阻塞自动验收
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 后端验收
+- 时间：2026-09-04 12:00（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；`.tools/` 现已由 Git 忽略规则排除。
+- 任务目标和实际结果：新增公开 npm `package-lock.json` fixture 和 Syft 1.51.0 opt-in 回归，验证真实 SBOM 可识别 `pkg:npm/is-number@7.0.0`；新增固定离线更新检查开关，避免 Syft 在本地扫描前请求版本信息；直接目录模式正确规范化 Windows 根相对反斜杠，生产 ZIP 描述符模式仍不放宽。
+- 修改或新增文件：`.gitignore`、`backend/app/scanners/external_tools.py`、`backend/app/scanners/syft_pipeline.py`、`tests/fixtures/syft-real/package.json`、`tests/fixtures/syft-real/package-lock.json`、`tests/unit/test_b3_syft_real_output.py`、B2/B3 规格、进度表、AI 记录与本日志。
+- 命令与测试结果：`syft.exe version` 为 1.51.0；对公开 fixture 的真实 `syft-json` 输出包含 `pkg:npm/is-number@7.0.0` 和 fixture 根组件；`git diff --check`、敏感模式检查及 `git check-ignore -v .tools/syft-1.51.0/syft.exe` 通过。`python -m pytest -q tests/unit/test_b2_b3_external_tools.py tests/unit/test_b3_syft_real_output.py` 未启动，原因是 PATH 指向的 Python 3.12 可执行文件缺失；两次 `winget install Python.Python.3.12` 下载尝试均未形成可用安装。
+- 接口、Schema、规则和重要决策：未改变 P0 Schema 或风险语义；`run_json_tool` 新增仅布尔型 `disable_update_check`，由固定 Syft 调用使用，未接受调用方任意环境变量；A2-2 的生产 descriptor 信任边界保持不变。
+- 已知风险、失败项和未完成内容：不能将新增 pytest 声称为已通过；Windows 不支持可信 `/proc/self/fd` ZIP 扫描，仍缺 Linux ZIP→descriptor→Syft 端到端、超时/错误注入、运行 provenance 与 A4 ScanRun 集成。B4～B7、A3～A7 等其余 P0 工作包仍未开始，不能以本轮为“全部完成”。
+- 建议下一步及责任模型：CZ/Root 修复可用 Python 3.12 后先运行新增定向 pytest；Terra 在受控 Linux runner 完成端到端与 A4；Sol/Terra 按台账继续 B4 SPDX 与 B5 规则。
+- 关联的分支、提交、PR、Issue 或 evidence_id：待本轮验收后提交至 `codex/p0-external-tools-sync`；PR `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 8,000～14,000，因 Python 安装阻塞未能完成完整验收，实际工作范围缩小为可验证的 Syft 真实输出和回归实现。
 ### [20260903-0055-Sol-任务6回归与任务1至5核查收工] COMPLETE - 回归已运行，任务状态已核查
 
 - 作者：GPT-5.6 Sol
@@ -753,3 +768,15 @@
 - 建议下一步及责任模型：CZ/Root 审阅并合并当前分支 PR，或指定要检出的远程分支；Terra/Luna 继续完成任务 8 的真实工具回归。
 - 关联的分支、提交、PR、Issue 或 evidence_id：`codex/p0-external-tools-sync`，`d8198bb`；PR `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync`。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 2,000～4,000，本轮在该范围内完成，无范围调整。
+
+### [20260904-1130-Sol-任务8真实回归] START - 完善 Syft 真实输出、fixture 与回归
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 后端验收
+- 时间：2026-09-04 11:30（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；保留未跟踪 `.tools/` 本机工具目录，不纳入 Git。
+- 任务目标：优先关闭当前分支任务 8 中可在本机完成的 Syft 真实输出、公开 fixture 与 JSON→P0 回归；同时明确 Windows 无法替代的 POSIX ZIP 端到端门禁。
+- 开始前已确认：已阅读 README、完整共享日志、PROJECT_PROGRESS 与 Sol 交接，检查分支、状态和最近提交；B3 为进行中，未发现其他模型正在修改 Syft pipeline 或其测试。
+- 预计修改文件：`tests/fixtures/`、`tests/unit/`、必要的 `backend/app/scanners/`、B2/B3 规格、进度、AI 记录与本日志。
+- 验收方法：验证本机 Syft 可执行文件、从公开合成 fixture 生成真实 SBOM、运行定向 pytest/compileall/diff/sensitive-file 检查；不将 Windows 结果误称为 POSIX ZIP 端到端。
+- token 用量估算：8,000～14,000；系统未提供本轮精确 token 遥测。

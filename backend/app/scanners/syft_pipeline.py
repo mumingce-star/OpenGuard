@@ -14,14 +14,34 @@ class SyftPipelineResult:
     tool_version: str
 
 def _relative_locations(payload: Mapping[str, Any], target: str) -> dict[str, Any]:
-    output = dict(payload); artifacts: list[object] = []; prefix = target.rstrip("/") + "/"
+    """Canonicalize Syft location paths into the trusted-root path space.
+
+    The production caller always provides a POSIX ``/proc/self/fd/<n>``
+    target.  Syft's direct Windows directory mode is also supported for the
+    opt-in real-output regression: it reports root-relative paths with a
+    leading backslash.  That fallback is deliberately unavailable to the
+    production descriptor target, so it cannot widen the ZIP scanner's trust
+    boundary.
+    """
+
+    output = dict(payload)
+    artifacts: list[object] = []
+    normalized_target = target.replace("\\", "/").rstrip("/")
+    prefix = normalized_target + "/"
+    direct_directory_mode = not normalized_target.startswith("/proc/self/fd/")
     for artifact in payload.get("artifacts", []):
         if not isinstance(artifact, Mapping): continue
         copy = dict(artifact); locations: list[object] = []
         for location in artifact.get("locations", []):
             if isinstance(location, Mapping):
-                item = dict(location); path = item.get("path")
-                if isinstance(path, str) and path.startswith(prefix): item["path"] = path[len(prefix):]
+                item = dict(location)
+                path = item.get("path")
+                if isinstance(path, str):
+                    normalized_path = path.replace("\\", "/")
+                    if normalized_path.startswith(prefix):
+                        item["path"] = normalized_path[len(prefix):]
+                    elif direct_directory_mode and normalized_path.startswith("/"):
+                        item["path"] = normalized_path.lstrip("/")
                 locations.append(item)
         copy["locations"] = locations; artifacts.append(copy)
     output["artifacts"] = artifacts

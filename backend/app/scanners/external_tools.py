@@ -115,6 +115,7 @@ def run_json_tool(
     timeout_seconds: int = 120,
     max_output_bytes: int = _MAX_OUTPUT_BYTES,
     pass_fds: Sequence[int] = (),
+    disable_update_check: bool = False,
 ) -> ToolExecution:
     """Run a preconstructed tool command without a shell or leaked diagnostics.
 
@@ -125,6 +126,7 @@ def run_json_tool(
 
     if (
         not tool or timeout_seconds <= 0 or max_output_bytes <= 0 or max_output_bytes > _MAX_OUTPUT_BYTES
+        or type(disable_update_check) is not bool
         or any(type(fd) is not int or fd < 0 for fd in pass_fds)
     ):
         raise ValueError("invalid external tool limits")
@@ -134,6 +136,16 @@ def run_json_tool(
     if pass_fds:
         options["pass_fds"] = tuple(pass_fds)
     try:
+        environment = {
+            key: os.environ[key]
+            for key in ("PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "HOME", "TMPDIR", "TEMP", "TMP")
+            if key in os.environ
+        }
+        if disable_update_check:
+            # Syft otherwise attempts a release-version HTTP request before a
+            # local scan.  This fixed flag keeps the scanner offline without
+            # forwarding caller-controlled environment variables.
+            environment["SYFT_CHECK_FOR_APP_UPDATE"] = "false"
         completed = subprocess.run(
             [tool, *arguments],
             stdin=subprocess.DEVNULL,
@@ -145,11 +157,7 @@ def run_json_tool(
             close_fds=True,
             # Do not forward process credentials.  These are the minimum
             # platform variables required to locate an already-installed tool.
-            env={
-                key: os.environ[key]
-                for key in ("PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "HOME", "TMPDIR", "TEMP", "TMP")
-                if key in os.environ
-            },
+            env=environment,
             **options,
         )
     except FileNotFoundError:
@@ -185,7 +193,7 @@ def run_syft_sbom_scan(tool: str, target: str, *, pass_fds: Sequence[int]) -> To
         raise ValueError("Syft target must be a trusted proc descriptor")
     return run_json_tool(
         tool, ("scan", f"dir:{target}", "-o", "syft-json"), timeout_seconds=120,
-        max_output_bytes=_MAX_OUTPUT_BYTES, pass_fds=pass_fds,
+        max_output_bytes=_MAX_OUTPUT_BYTES, pass_fds=pass_fds, disable_update_check=True,
     )
 
 

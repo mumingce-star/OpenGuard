@@ -38,6 +38,7 @@ build/
 coverage/
 
 # Local data and runtime artifacts
+/.tools/
 *.db
 *.db-shm
 *.db-wal
