@@ -3057,3 +3057,10 @@
 - 证据边界与下一步：`EVD-A5-OLLAMA-REAL-RUN-001` 只批准当前 Apple-silicon、锁定运行时/模型和单一样例的真实 A5 输出边界；不证明许可证规则正确、法律结论、多项目质量、A4 已接线、报告/Bench/部署或作品完整。A5-1c 等待扫描分析组员 B5 提供真实 finding/license facts 后再由项目负责人接 A4 AI_ASSIST，不代做 B5。
 - 发布状态：实现已本地提交，治理记录待提交后推送同一功能分支；不创建或合并 PR，不修改 `main`、`integration/p0` 或组员分支。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `22k-32k`，A5-1b 的官方安装核验、锁定模型下载/摘要、两套真实三轮复验、资源测量、复现工具、全量门禁和不可变实现绑定均在本轮完整完成；范围未扩张到 A4/B5/前端/部署。
+
+### [20260904-1444-Root-A5真实模型运行发布] AMENDMENT/COMPLETE - A5-1b 已推送并核对远端
+
+- 发布：不可变实现 `ca0c3eda8c5f062b0cb18d2d8bc0a12caac22579` 与首轮治理 `26ebdc8c783adb2cd6e344f02164bd2abee422e1` 已推送 `origin/feat/a5-ollama-transport`；只读 `git ls-remote` 已确认远端分支指向 `26ebdc8c783adb2cd6e344f02164bd2abee422e1`。
+- 上传范围：A5-1b 聚合运行探针、5 项 unit、运行说明、A5 规格、资源/第三方台账、聚合实测结果和 AI/进度/协作证据；未上传安装包、应用、模型权重、模型缓存、prompt、完整 response、临时独立脚本、密钥或个人绝对路径。
+- 分支边界：未创建或合并 PR，未修改 `main`、`integration/p0`、扫描组员分支或前端组员分支；A5-1c 依赖 B5，仍未开始。
+- token：本条仅补远端发布事实；精确 token 遥测不可获得，计入 A5-1b 开工估算 `22k-32k`，无范围调整。
