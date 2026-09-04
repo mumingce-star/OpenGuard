@@ -3093,3 +3093,13 @@
 - 验收：隔离合并无冲突；A5 定向、P0、完整 unit/security、Schema 导出、`compileall`、`git diff --check`、敏感信息/绝对路径/大文件/上传范围门禁通过；推送治理提交后创建目标为 `integration/p0` 的 PR，并核对 head/base/可合并状态。
 - 边界：不改 P0/Schema/sample、A2-A4、B1-B7、frontend、规则或组员分支；不上传 Ollama 安装包、模型权重、缓存、prompt、完整 response、临时 worktree 或凭据；不点击合并。
 - token：本轮非硬估算 `12k-18k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1521-RootSol-A5团队集成候选] PARTIAL - A5 集成门禁全绿，等待用户确认公开创建 PR
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 集成与发布终审；2026-09-04 15:21（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，目标 `integration/p0`。
+- 实际结果：在仓库外隔离 worktree 从远端集成基线 `30965d19c29dbc63218a927f56a619aa888bd360` 合并 A5 功能分支，无冲突；合并差异只含已冻结 A5 实现、测试、规格及对应运行/证据/治理资料，不含 B4-B7、frontend 或组员分支代码。
+- 测试与门禁：沙箱原样完整集为 `807 passed, 11 failed, 1 warning`，11 项全部在回环 bind 处得到 `PermissionError: [Errno 1] Operation not permitted`；受控环境不改测试原样复跑为 `818 passed, 1 warning`。P0 `46 passed`，Schema 导出一致由该组测试覆盖；`compileall` 通过，敏感模式、个人绝对路径、超过 5 MiB 的仓库文件与待上传范围检查无命中。
+- 发现与修正：首次对完整 PR diff 执行 `git diff --check` 发现 `docs/spec/a5-ai-provider.md` 两个 Markdown 行尾双空格；只删除不可见空格，未改变规格语义、接口或代码。更正此前门禁记录：历史提交单独工作区 diff 干净不等于相对集成线完整 PR diff 干净；本轮最终候选已通过。
+- 发布：准备提交 `1354863` 已推送 `origin/feat/a5-ollama-transport`；当前 GitHub 比较页已核对 base=`integration/p0`、compare=`feat/a5-ollama-transport` 且显示可合并。尚未创建或合并 PR，未改变 `integration/p0`、`main` 或组员分支。
+- 暂停原因：创建 PR 会以用户身份向 GitHub 发布标题和说明，属于外部代表性操作；按 UI 安全确认规则必须在提交前由用户明确确认。确认后只创建 PR，不点击合并，并回填 PR、进度、AI 与 COMPLETE 记录。
+- token：本次运行精确 token 数不可获得；开工估算 `12k-18k`，已在该范围内完成全部技术门禁和 PR 表单准备，未扩展到 B5/A5-1c/前端；任务仅剩用户确认后的公开 PR 创建与治理回填。
