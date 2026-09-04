@@ -2898,3 +2898,100 @@
 - 上传范围：A5 Provider 源码、冻结规格、实现/独立测试、根/后端/安全说明、AI 和 append-only 协作记录；没有上传临时依赖目录、cache、原始附件、P0/API/pipeline 改动、组员业务代码、真实凭据或个人绝对路径。`main` 与 `integration/p0` 均未改变，未创建或合并 PR，旧远端分支未删除。
 - 状态：A5-0 子任务完成；A5 父任务保持进行中，A5-1 仍缺真实 Qwen3/Ollama transport、超时/A4接线和消融。下一工程点在 B5 提供真实 finding 之前只应做 A5-1 transport 的独立配置/运行时准备，不能代做许可证规则。
 - token：本次运行精确 token 数不可获得；本轮总估算 `18k-26k` 内已完成断点复核、实现、独立验证、P1关闭、完整门禁、提交和首次推送，未发生功能范围扩张。
+
+### [20260904-1229-RootSol-A5OllamaTransport] START - A5-1a Qwen3/Ollama 资源与本地 transport
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 架构、实现编排与发布终审；2026-09-04 12:29（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，基线 `ee700d9`。
+- 任务目标：核验并锁定 Qwen3/Ollama 的官方来源、版本/模型候选和许可边界，冻结真实本地 transport 契约，实现只访问回环地址的 Ollama HTTP adapter、严格响应封装、真实超时与稳定降级，并交 Luna 独立验证。
+- 允许修改：`docs/spec/a5-ollama-transport.md`、`backend/app/ai/`、A5 定向 unit/security tests、根/后端/安全 README、`docs/02-resource-inventory.md`、`docs/05-ai-assistance-log.md`、`PROJECT_PROGRESS.md` 和本 append-only 日志；不修改 P0/Schema/sample、A2/A3/A4、组员 B1-B7、前端或竞赛原始附件。
+- 边界：本轮不安装 Ollama、不下载 Qwen3 权重、不声明真实模型已运行，不接 A4 主链，也不补 B5 许可证规则或虚构 finding；本机 PATH、常见安装路径均未发现 Ollama，实际模型推理保留到 A5-1b。
+- 验收：仅采用 Ollama/Qwen 官方一手来源；adapter 请求体/回环限制/禁代理/超时/HTTP 与 JSON 错误/大小上限有实现测试；Luna 使用独立本地有界 HTTP fixture 复核；随后执行 A5、P0、完整非回环回归、compileall、diff、敏感信息和范围门禁，Root 绑定不可变提交并推送功能分支。
+- 模型分工：Sol 冻结资源与 transport 契约；Terra 实现 adapter；Luna 以 `xhigh` 独立构造 HTTP 可靠性与安全测试；Root 统一验收、提交和推送，三个角色均不得修改真人组员任务。
+- token：本轮非硬估算 `18k-26k`；如果真实回环测试受 sandbox 限制，保留原始失败并仅请求受控回环复跑，不修改测试绕过。
+
+### [20260904-1240-Terra-A5OllamaTransport] START - 实现冻结 loopback Ollama transport
+
+- 作者：GPT-5.6 Terra；仅 `backend/app/ai/ollama.py`、导出与实现侧 unit/必要运行记录；不安装/下载/真实请求、不提交推送。
+- 验收：标准库 HTTP、严格回环 origin/禁代理/总 deadline/三步包装校验及脱敏失败；token 非硬估算 `8k-14k`。
+
+### [20260904-1250-Terra-A5OllamaTransport] PARTIAL - transport 骨架完成，测试环境缺失
+
+- 修改：新增 `backend/app/ai/ollama.py`，导出 `OllamaProvider`/稳定 transport error；实现显式空代理 opener、字面量 loopback origin、固定 Ollama/Qwen/digest、GET version/tags 后 POST generate、总 deadline、大小/content-type/JSON/wrapper 检查。
+- 阻塞：既有定向环境 `/private/tmp/openguard-a1-venv/bin/python` 当前不存在，无法运行 compileall、unit 或 diff 后验收；尚未新增自建 fake-opener unit、README/AI记录，故不能交 Luna 或形成 evidence。
+- 边界：未安装/下载/请求真实模型，未修改 P0/A2-A4/B1-B7/frontend/progress/规格；未提交、未推送。
+- token：本次运行精确 token 数不可获得；估算 `8k-14k`，范围未扩大但任务未完成。
+
+### [20260904-1300-Terra-A5OllamaTransport] AMENDMENT/START - 修正 transport 契约与补齐 fake-opener 测试
+
+- 环境更正：旧 venv 不存在，当前只发现系统 Python 3.9；不会修改项目 Python 约束。继续以静态/可用解释器核验并如实记录。
+- 范围：原 A5-1a 允许文件；重写可读实现、补自建 fake-opener unit；估算 `8k-14k`，不提交推送。
+
+### [20260904-1315-Terra-A5OllamaTransport] PARTIAL - 审计实现修正，测试运行时仍缺失
+
+- 修正：`ipaddress.ip_address(...).is_loopback` 校验字面量 IP；完整 64-hex digest 明确写入 `MODEL_ID`；严格 MIME `application/json`（允许参数）；不再以 getattr 默认表达式提前调用 `getcode`；输出 Schema 加入 A5-0 长度/数组约束；系统提示声明不可信输入、禁止嵌入指令和新增事实/法律结论；版本/tags/generate 仍共享总 deadline 且 ProxyHandler 空映射禁代理。
+- 未完成：当前仅发现系统 Python 3.9，且旧 3.12 venv 不存在；尚未新增或运行要求的 20+ fake-opener unit、A5/P0 回归、README/AI记录，故不可交 Luna、不可形成 evidence。
+- 边界：未安装/下载/运行真实 Ollama，未改 P0/A2-A4/B1-B7/frontend/progress/规格，未提交推送。
+- token：本次运行精确 token 数不可获得；估算 `8k-14k`，范围未扩大但任务未完成。
+
+### [20260904-1330-Terra-A5OllamaTransportFinal] START - 使用 bundled Python 3.12 收口 A5-1a
+
+- 使用 Codex bundled Python 3.12 runtime；仅改 A5 transport/unit/README/AI/日志；估算 `6k-10k`，不提交推送。
+
+### [20260904-1340-Terra-A5OllamaTransportFinal] PARTIAL - 静态契约修正完成，pytest 依赖缺失
+
+- 修正：origin 的非法 port 失败关闭；注入 opener/clock 校验；UTF-8 canonical digest；JSON root 强制 object；tags models 强制 list；generate response 非空且不超过 64 KiB。新增基础 unit target。
+- 阻塞：bundled Python 3.12 不含 `pytest`，无法执行要求的 fake-opener 矩阵、A5-0 回归和完整编译/门禁；当前未达 20+ case，README/AI记录未更新，不能交 Luna 或形成 evidence。
+- token：精确 token 数不可获得；估算 `6k-10k`，范围未扩大、未提交推送，任务未完成。
+
+### [20260904-1248-Luna-A5OllamaTransport] START - A5-1a 本地 Ollama Transport 独立验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:48（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；HEAD `ee700d9`；不提交、不推送。
+- 前置核验：已完整阅读 `AGENTS.md`、根 README、共享工作日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、A5-0 规格、A5-1a 规格、当前 `backend/app/ai/`、实现侧 unit 与 `third_party/README.md`；Root/Terra 当前均已记录 A5-1a 在途，未发现同一独立测试文件冲突。
+- 本轮目标：仅新增 `tests/security/test_a5_ollama_transport_independent.py`；独立启动有界 `ThreadingHTTPServer`，验证真实 TCP GET `/api/version` → GET `/api/tags` → POST `/api/generate`、请求字段、loopback/禁代理、锁定版本/模型/完整 manifest digest、A5 pending/degraded、真实 socket timeout、HTTP 错误、停止与无持久临时文件。
+- 允许修改：最小追加 `tests/security/README.md`、`third_party/README.md`、`docs/05-ai-assistance-log.md` 与本日志；禁止修改 backend、unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend、`PROJECT_PROGRESS.md`；不安装/下载/调用 Ollama/Qwen，不产生持久 fixture。
+- 独立性与验收：硬编码并核对官方 `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M` 和完整 manifest digest；不导入实现侧 FakeOpener、常量或 expected helper。先独立测试；若 sandbox bind 抛 `PermissionError`，保留原始失败并 BLOCKED，不跳过、不改实现；全绿后再跑 A5 unit+独立、安全非回环、静态/范围门禁。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1256-Luna-A5OllamaTransport] BLOCKED - sandbox 回环绑定阻塞真实 TCP 独立证据
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:56（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 实际修改：仅新增 `tests/security/test_a5_ollama_transport_independent.py`，追加 `tests/security/README.md`、`third_party/README.md`、`docs/05-ai-assistance-log.md` 与本日志；未修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`。第三方仅登记 Ollama 0.33.3、Qwen3 锁定候选及 manifest/blob digest，明确未安装、未下载、未运行、未比对。
+- 测试结果：独立文件收集 20 项；12 项不需监听端口的 loopback origin/身份检查通过，8 项真实 TCP 用例失败。每项均在自建 `ThreadingHTTPServer` 绑定 `("127.0.0.1", 0)` 处原样收到 `PermissionError: [Errno 1] Operation not permitted`；未跳过、未修改断言、未调用 Ollama/Qwen。
+- 未完成门禁：因 sandbox 禁止回环监听，无法取得真实 GET `/api/version` → GET `/api/tags` → POST `/api/generate` 顺序、固定请求字段、环境代理直连、A5 pending/degraded、真实 socket timeout、HTTP 失败脱敏和 shutdown/临时物证据；按规则停止 A5 unit/独立、全 security、Schema、compileall 与扩大静态回归。
+- 证据与下一步：`EVD-A5-OLLAMA-TRANSPORT-001` 保持 `BLOCKED-ENV`，不是产品 P1 结论。Root 应在受控回环环境用同一命令和原始测试复跑；若通过，再由 Root/Sol 复核不可变提交、运行 profile、第三方授权和有限证据范围。当前不批准真实 transport evidence。
+- 证据边界：本轮只证明非网络配置/身份负面分支和测试可收集性；不证明 Ollama API 实际可用、模型性能、许可证正确性、A4 接线、报告、Bench、公开部署或完整竞赛作品。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在该范围内完成测试构造、原样执行与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1254-Luna-A5OllamaTransport-独立复验续跑] START - 执行 A5-1a 真实 TCP 独立验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:54（Asia/Shanghai）。
+- 分支或工作区：`feat/a5-ollama-transport`；沿用 Terra/Root 未提交改动；本轮不提交、不推送。
+- 任务目标：在上一条 A5-1a Luna START 的同一冻结范围内继续执行独立测试，使用自建有界 `ThreadingHTTPServer`，核验真实 HTTP 顺序、请求字段、锁定版本/模型/digest、A5 pending/degraded、真实 socket timeout、HTTP/JSON/大小错误、代理环境隔离、shutdown 与临时物状态。
+- 开始前已确认：仅允许新增 `tests/security/test_a5_ollama_transport_independent.py`，以及最小更新 `tests/security/README.md`、`third_party/README.md`、`docs/05-ai-assistance-log.md` 和本共享日志；禁止修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend、`PROJECT_PROGRESS.md`；不安装、下载或请求真实 Ollama/Qwen3。
+- 验收顺序：先运行该独立文件；若回环绑定触发 `PermissionError`，保留原始失败并以 `BLOCKED` 结束，不跳过或弱化断言；全绿后再运行 A5 unit+独立、安全非回环、静态/范围门禁。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1257-Luna-A5OllamaTransport] AMENDMENT/BLOCKED - 更正真实 EOF 并保留 sandbox 回环失败
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:57（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- EOF 更正：前一条 BLOCKED 记录因重复 token 锚点被追加在较早历史段之前；本条不删除、不移动、不改写任何记录，作为当前物理 EOF 的权威状态补充。
+- 实际结果：独立文件收集 20 项；12 项 loopback origin/身份负面检查通过，8 项真实 TCP 用例均在自建 `ThreadingHTTPServer` 绑定 `("127.0.0.1", 0)` 处原样失败为 `PermissionError: [Errno 1] Operation not permitted`。未跳过、未调用 Ollama/Qwen、未运行 unit/全 security/Schema/compileall 扩大门禁。
+- 处置与边界：允许的独立测试、安全 README、第三方候选台账、AI 记录和日志已更新；未修改 backend、unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`。`EVD-A5-OLLAMA-TRANSPORT-001` 保持 `BLOCKED-ENV`，由 Root 在受控回环环境原样复跑后再决定是否关闭。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在范围内完成原样执行与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1258-Luna-A5OllamaTransport-独立复验续跑] BLOCKED - 真实 TCP 仍受 sandbox 回环绑定限制
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:58（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 实际结果：本续跑使用自建有界 `ThreadingHTTPServer`，独立文件收集 `17` 项；8 项不需监听端口的字面量 origin/身份检查通过，9 项真实 TCP 用例均在 `socket.bind(("127.0.0.1", 0))` 原样失败为 `PermissionError: [Errno 1] Operation not permitted`。由于 bind 未成功，未启动 server 线程、无 timeout 线程残留、未调用 Ollama/Qwen，也未跳过或弱化断言。
+- 未完成门禁：未取得真实 GET `/api/version` → GET `/api/tags` → POST `/api/generate`、请求字段、代理直连、A5 pending/degraded、真实 socket timeout、HTTP 错误脱敏和 shutdown 的回环证据；按冻结规则停止扩大 A5/unit/security/Schema/compileall 回归。
+- 处置：与物理 EOF 上已有的 A5-1a `BLOCKED-ENV` 记录一致；由 Root 在受控回环环境用当前原始独立文件复跑，保留本原始 PermissionError。未修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`。
+- token：本次运行精确 token 数不可获得；本续跑开工估算 `10k-16k`，在估算范围内完成原样执行与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1303-Luna-A5OllamaTransport-受控复跑收口] AMENDMENT/COMPLETE - A5-1a 独立验证受控复跑通过
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 13:03（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 更正与保留：此前共享日志中 `20 collected: 12 passed, 8 failed` 属于过时数量，保留其历史文本不改写；当前原始最终版本为 `17 collected`，sandbox 中 `8 passed`，另 `9` 项在真实 TCP fixture 的 `socket.bind(("127.0.0.1", 0))` 原样失败为 `PermissionError: [Errno 1] Operation not permitted`。
+- 受控复跑：Root 在受控回环环境用同一当前独立测试文件原样执行，结果 `17 passed in 4.70s`。该复跑覆盖真实 GET `/api/version` → GET `/api/tags` → POST `/api/generate`、请求字段、代理环境、A5 pending/degraded、真实 socket timeout、HTTP identity/content/size 失败脱敏、loopback 限制、server shutdown 与无持久 fixture 文件。
+- 范围与边界：未修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`；未安装、下载或请求真实 Ollama/Qwen3；`third_party/README.md` 已准确，未重复登记。结果只证明当前有界协议 fixture 与 Ollama adapter 的受控本地行为，不证明真实模型质量、许可证规则、A4 接线、报告、Bench、公开部署或完整竞赛作品。
+- 证据状态：原始 sandbox 失败与受控通过均保留；`EVD-A5-OLLAMA-TRANSPORT-001` 可交 Root/Sol 复核不可变提交、运行 profile 和有界范围，Luna 本轮不自行批准发布。
+- token：本次运行精确 token 数不可获得；本轮开工估算 `4k-7k`，在估算范围内完成数量更正、AI记录与共享日志收口，未发生范围调整。

@@ -24,8 +24,8 @@
 | SQLAlchemy | 数据访问 | MIT | 推荐 |
 | Jinja2 | HTML 报告模板 | BSD-3-Clause | 必需 |
 | RapidFuzz | 名称和文本匹配 | MIT | 可选 |
-| Qwen3 小参数模型 | 本地条款抽取与解释 | Apache-2.0，按具体权重仓库复核 | 必需 |
-| Ollama | 本地模型服务 | MIT | 推荐 |
+| Qwen3-4B-Instruct-2507 Q4_K_M | 本地整改解释；锁定 Ollama tag `qwen3:4b-instruct-2507-q4_K_M`、manifest `sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0` | Apache-2.0；[Qwen 模型卡](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507)、[Ollama 模型页](https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M)；已核验官方元数据，尚未下载/运行 | 必需 |
+| Ollama v0.33.3 | 本机回环模型服务；[固定 release](https://github.com/ollama/ollama/releases/tag/v0.33.3) | MIT；上游 LICENSE 已核验；尚未安装/运行 | 推荐 |
 | React | 前端框架 | MIT | 必需 |
 | TypeScript | 前端语言 | Apache-2.0 | 必需 |
 | Vite | 构建工具 | MIT | 必需 |
@@ -34,6 +34,10 @@
 | pytest | 单元与集成测试 | MIT | 必需 |
 | Playwright | 端到端测试 | Apache-2.0 | 推荐 |
 | Docker Compose | 一键部署 | 按发行版本核验 | 必需 |
+
+A5-1a 只把上述身份固化进 transport、文档和测试，不把 Ollama 二进制或 Qwen 权重提交到仓库。
+模型页约 2.5GB 的体积只用于候选选型说明；能否在队长设备上满足延迟和结构化输出要求，必须在
+A5-1b 获得安装/下载授权后实测，不能由协议测试代替。
 
 ## 自主建设资源
 

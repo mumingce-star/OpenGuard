@@ -289,3 +289,16 @@ Root 仅在 `apply_ai_remediations` 入口增加传入 `ScanRun` 的完整 dump 
 原样复跑结果：独立 A5 `16 passed`；A5 unit + 独立 `46 passed`；`tests/unit` + `tests/security` 排除既有 `real_uvicorn` 回环项 `734 passed, 2 deselected`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；P0 Schema 专项 `46 passed`；`compileall -q backend/app tests`、`git diff --check`、受保护路径、权限和敏感模式检查通过。此前唯一 P1 已关闭，未发现新增 P0/P1/P2。
 
 本轮独立证据仍限于本机 CPython 3.12、本地注入 Provider 和确定性 P0 边界；不证明真实 Ollama/Qwen3、HTTP/network transport、A4 接线、许可证规则、报告、Bench、公开部署或完整竞赛作品。候选 `EVD-A5-AI-PROVIDER-001` 仍需 Root/Sol 绑定不可变提交、运行 profile 和有界发布范围。
+
+### A5-1a Qwen3/Ollama 本地 Transport 独立安全复核
+
+复现命令（项目根目录；不安装、不下载、不调用 Ollama/Qwen）：
+
+```bash
+PYTHONPATH=backend python -m pytest -q --collect-only tests/security/test_a5_ollama_transport_independent.py
+PYTHONPATH=backend python -m pytest -q tests/security/test_a5_ollama_transport_independent.py
+```
+
+原始 sandbox 运行的独立文件共收集 17 项：8 项不需要监听端口的 origin/身份检查通过，9 项需要真实 TCP 的用例在 fixture 绑定 `127.0.0.1:0` 时均原样收到 `PermissionError: [Errno 1] Operation not permitted`，结果为 `8 passed, 9 failed`。这些失败已保留，未被跳过、改写或归因于产品实现。
+
+Root 在受控回环环境对同一当前测试文件执行原样复跑，结果为 `17 passed in 4.70s`，实际覆盖 TCP 顺序、固定请求体、环境代理、A5 pending/degraded、socket timeout、版本/digest/non-JSON/超限 HTTP 失败、loopback origin 限制、服务停止和临时文件断言。受控复跑不调用真实 Ollama/Qwen3；候选 `EVD-A5-OLLAMA-TRANSPORT-001` 仍只证明有界协议 fixture 与 adapter 行为，不证明真实模型质量、许可证规则、A4 接线或完整竞赛作品。

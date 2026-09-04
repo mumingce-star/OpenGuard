@@ -286,11 +286,32 @@ Provider 返回值必须是 64 KiB 以内的严格 JSON，并且只能引用请�
 
 AI 关闭时不需要 Provider；模型不可用、抛错、响应截断、重复键、额外字段、身份或引用不匹配、
 敏感片段及绝对路径均稳定降级。降级只记录脱敏的 `ai_assist` 诊断和 AI provenance，不发布部分
-建议，也不改变组件、AI 资源、许可证、义务、规则结果或统计。A5-0 没有网络和真实模型客户端；
-Qwen3/Ollama transport、A4 接线与消融实验属于后续 A5-1。
+建议，也不改变组件、AI 资源、许可证、义务、规则结果或统计。
 
 实现侧回归：
 
 ```bash
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ai_provider.py
+```
+
+## A5-1a 本地 Qwen3/Ollama transport
+
+`app.ai.OllamaProvider` 已实现 A5-0 的标准库 HTTP Provider。它只接受字面量回环 IP，显式禁用
+环境代理，并在每次生成前通过 `GET /api/version` 和 `GET /api/tags` 核验固定的 Ollama
+`0.33.3`、模型 `qwen3:4b-instruct-2507-q4_K_M` 及完整 manifest SHA-256；之后才以
+`stream=false`、`think=false`、固定 options 和 JSON Schema 调用 `POST /api/generate`。三次请求
+共享一个总 deadline，任何连接、超时、HTTP、版本、模型、摘要或包装错误都只返回脱敏 transport
+错误，并由 A5-0 保留确定性结果、记录 `degraded`。
+
+本模块不会启动 Ollama、自动下载模型或读取凭据。当前开发机器尚未发现 Ollama，因此只能复现
+协议 adapter 与本地测试 server，不能声称真实 Qwen3 已运行。安装、权重拉取、实际 manifest
+比对、结构化输出质量/延迟实测属于 A5-1b；消费组员 B5 真实 finding 并接入 Pipeline 属于
+A5-1c。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a5_ai_provider.py \
+  tests/unit/test_a5_ollama_transport.py
 ```
