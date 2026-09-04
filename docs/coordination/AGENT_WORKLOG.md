@@ -834,3 +834,29 @@
 - 预计修改文件：`tests/fixtures/`、`tests/unit/`、必要的 `backend/app/scanners/`、B2/B3 规格、进度、AI 记录与本日志。
 - 验收方法：验证本机 Syft 可执行文件、从公开合成 fixture 生成真实 SBOM、运行定向 pytest/compileall/diff/sensitive-file 检查；不将 Windows 结果误称为 POSIX ZIP 端到端。
 - token 用量估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+### [20260904-1510-Sol-Python312修复] START - 恢复项目 Python 3.12 运行时
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 后端运行时修复
+- 时间：2026-09-04 15:10（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；不修改产品代码，不纳入 `.tools/` 或本机环境目录。
+- 任务目标：定位并恢复当前用户的 Python 3.12，使项目可用 `py -3.12` 创建隔离环境并运行 pytest。
+- 开始前已确认：已完整阅读 README、共享日志、PROJECT_PROGRESS 和 Sol 交接文档，并检查当前分支、工作区和近期提交；当前未见其他模型修改本轮涉及的协作文档。
+- 预计修改文件：仅追加共享日志；Python 运行时与 `.venv/` 属本机环境且应被 Git 忽略。
+- 验收方法：验证 `py -3.12 --version`、隔离环境的 `python --version`、pytest 及 B5 定向测试；复核 Git 状态。
+- token 使用估算：3,000～6,000；系统未提供本轮精确 token 遥测。
+
+### [20260904-1530-Sol-Python312修复收工] COMPLETE - Python 3.12 与项目测试环境已恢复
+
+- 作者模型：GPT-5.6 Sol
+- 对话角色：Root Coordinator / 后端运行时修复
+- 时间：2026-09-04 15:30（Asia/Shanghai）
+- 分支或工作区：`codex/p0-external-tools-sync`；未修改产品源代码。
+- 任务目标和实际结果：确认当前用户安装的 `C:\Users\cz180\AppData\Local\Programs\Python\Python312\python.exe` 可用，`py -3.12` 与直启均为 Python 3.12.10；创建已忽略的项目 `.venv`，安装锁定开发依赖并恢复 pytest 8.4.2。B5 定向回归通过 10/10。
+- 修改或新增文件：追加本共享日志；更新 `docs/coordination/PROJECT_PROGRESS.md` 的 B5 运行回归事实。`.venv/` 仅为本机环境，未纳入 Git。
+- 命令与测试结果：`py -3.12 --version`、解释器与 pip 版本检查通过；`.venv\\Scripts\\python.exe -m pip install -e 'backend[dev]'` 成功；`pytest --version` 为 8.4.2；`PYTHONPATH=backend pytest -q tests/unit/test_b5_license_rule_engine.py` 为 10 passed；`git diff --check` 通过。
+- 接口、Schema、规则和重要决策：未改动接口/Schema/规则；项目命令应使用 `py -3.12` 或 `.venv\\Scripts\\python.exe`。Windows 的 `python` App Execution Alias 仍是商店占位符，不能作为项目入口。
+- 已知风险、失败项和未完成内容：这只恢复运行时，B4、B6、B7 及 B5 的许可证覆盖、证据台账和 A4 集成仍按进度表进行中；尚未运行全量跨平台回归。
+- 建议下一步及责任模型：Terra/Luna 在此 `.venv` 继续完成 B4/B6/B7 与跨平台回归；Root 在有可审查功能提交时整理 PR。
+- 关联的分支、提交、PR、Issue 或 evidence_id：工作分支 `codex/p0-external-tools-sync`；本轮仅协作/进度文档待提交，未创建 PR。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 3,000～6,000，已在该范围内完成。

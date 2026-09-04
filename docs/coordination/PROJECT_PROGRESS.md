@@ -36,7 +36,7 @@
 | B2 | ScanCode适配器 | Terra | 进行中 | 安全 JSON 适配、描述符受控 ZIP 接入、许可证证据候选映射；2026-09-03 定向 5通过/1 Linux跳过，ScanCode 32.5.0 最小 MIT fixture 真实 JSON→Evidence 已验证 | 在 Linux 受控环境运行完整 ZIP→ScanCode 集成回归、固定运行 provenance；B4 规范化候选 SPDX | 9月4日-11日 |
 | B3 | Syft适配器 | Terra | 进行中 | 安全 JSON 适配、SBOM Component/Evidence 映射、跨来源合并、密封 ZIP 调用代码；新增 Syft 1.51.0 公开 npm fixture 的真实 JSON→P0 opt-in 回归 | 在受控 Linux 环境复跑 ZIP→descriptor→Syft，固定运行 provenance/二进制校验，并接入 A4 编排入口 | 9月4日-11日 |
 | B4 | SPDX标准化 | Sol/Terra | 未开始 | LicenseExpression契约已具备 | SPDX数据版本、别名、复合表达式、LicenseRef及测试 | 9月4日-20日 |
-| B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 进行中 | YAML 数据驱动 B5 引擎已覆盖 MIT、Apache-2.0、BSD-3-Clause、GPL-3.0-only、CC-BY-4.0、CC-BY-NC-4.0；有逐规则 fixture、证据门禁、稳定 Obligation/RiskFinding/Remediation 输出 | 修复 Python 后运行回归；补齐其余常见许可证、官方原文证据台账、复合 SPDX（B4）和 A4 集成 | 9月12日-20日 |
+| B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 进行中 | YAML 数据驱动 B5 引擎已覆盖 MIT、Apache-2.0、BSD-3-Clause、GPL-3.0-only、CC-BY-4.0、CC-BY-NC-4.0；有逐规则 fixture、证据门禁、稳定 Obligation/RiskFinding/Remediation 输出；2026-09-04 在恢复的 Python 3.12 `.venv` 中定向 pytest 10/10 通过 | 补齐其余常见许可证、官方原文证据台账、复合 SPDX（B4）和 A4 集成 | 9月12日-20日 |
 | B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
 | A3 | FastAPI扫描API | Terra | 未开始 | 6个端点契约已冻结；Root决定 durable task registry 归入 A3 前置 | 持久任务注册表、跨worker/重启幂等、OpenAPI、统一错误、状态与资源/风险/证据/报告接口 | 9月21日-28日 |
 | A4 | Pipeline编排 | Terra | 未开始 | ScanRun状态机已具备 | ingestion→scan→normalize→rules→AI→report，阶段错误与partial | 9月21日-28日 |
