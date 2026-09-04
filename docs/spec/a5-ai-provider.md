@@ -1,7 +1,7 @@
 # A5-0 AI Provider 与确定性降级规格
 
-状态：冻结 v1（Sol，2026-09-04）  
-范围：项目负责人 A5/S4 的最小可执行纵切  
+状态：冻结 v1（Sol，2026-09-04）
+范围：项目负责人 A5/S4 的最小可执行纵切
 依赖：P0 contract `0.1.1`、既有 `RiskFinding` / `Evidence` / `LicenseExpression` / `Remediation` / `ScanRun`
 
 ## 1. 目标与非目标

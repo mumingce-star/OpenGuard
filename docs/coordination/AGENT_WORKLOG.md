@@ -3083,3 +3083,13 @@
 - 处置边界：未 merge、cherry-pick、rebase、修改或运行组员业务分支，未修改 P0/Schema/sample、A2-A5、B1-B7、frontend 或 `PROJECT_PROGRESS.md`；本轮只追加审计日志。功能进度未因审计而前移，下一集成任务应拆成“前端 P0 契约适配”与“ScanCode Linux 真工具安全门禁”两个独立工作包，由相应责任角色处理。
 - 发布计划：仅发布本 append-only 审计记录到现有 A5 功能分支，不把组员代码带入该分支，不改 `main`、`integration/p0` 或组员分支。
 - token：本次运行精确 token 数不可获得；开工估算 `8k-14k`，在该范围内完成远端同步、提交/文件/PR/CI/敏感与大文件检查、隔离测试和分级裁决，范围未扩展到代码集成。
+
+### [20260904-1520-RootSol-A5团队集成候选] START - A8-1c A5 功能分支进入 integration/p0 的 PR 门禁
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 集成与发布终审；2026-09-04 15:20（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，远端集成基线 `30965d19c29dbc63218a927f56a619aa888bd360`。
+- 任务目标：只把已经完成独立验收的 A5-0、A5-1a、A5-1b 及其证据作为候选提交给 `integration/p0`；先在隔离 worktree 验证真实合并结果，再创建以 `integration/p0` 为 base 的 PR，不直接合并。
+- 已确认：当前功能分支相对集成线为 `0 behind / 8 ahead`，merge-base 即当前 `origin/integration/p0`；远端已同步且工作区干净，没有其他模型在途修改同一范围。组员 B4-B7 和前端分支保持独立，不纳入本任务。
+- 预计修改：仅更新 `docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 并向本日志追加治理记录；A5 已冻结实现与测试不再改动。若验证发现实现问题则停止创建 PR，以 `PARTIAL/BLOCKED` 收口。
+- 验收：隔离合并无冲突；A5 定向、P0、完整 unit/security、Schema 导出、`compileall`、`git diff --check`、敏感信息/绝对路径/大文件/上传范围门禁通过；推送治理提交后创建目标为 `integration/p0` 的 PR，并核对 head/base/可合并状态。
+- 边界：不改 P0/Schema/sample、A2-A4、B1-B7、frontend、规则或组员分支；不上传 Ollama 安装包、模型权重、缓存、prompt、完整 response、临时 worktree 或凭据；不点击合并。
+- token：本轮非硬估算 `12k-18k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
