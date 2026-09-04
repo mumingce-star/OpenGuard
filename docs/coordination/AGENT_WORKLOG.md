@@ -3006,3 +3006,54 @@
 - 边界与证据裁决：`EVD-A5-OLLAMA-TRANSPORT-001` 绑定上述不可变实现提交并批准；它只证明本机 CPython 3.12 下 adapter 与有界 HTTP fixture 的协议、安全、超时及降级行为。不证明真实 Ollama/Qwen3 已安装运行、模型质量/许可证规则正确、A4 已接线、报告/Bench/部署完成或作品已经可提交。
 - 未完成与下一步：A5-1b 需用户明确批准后才安装 Ollama、下载约 2.5GB 锁定权重并做本机摘要、结构化输出成功率、延迟和资源实测；A5-1c 必须等待扫描分析组员 B5 提供真实 finding/license facts 后再接 A4 AI_ASSIST，不代做组员许可证规则。未创建或合并 PR，`main`、`integration/p0` 和组员分支未改变，旧远端分支未删除。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `18k-26k`，A5-1a 的资源核验、实现、两侧测试、独立受控复跑、完整门禁、不可变提交、首次推送及治理回填均在本轮完整交付；范围没有扩张到安装/权重/A4/B5。
+
+### [20260904-1358-RootSol-A5真实模型运行] START - A5-1b Ollama/Qwen3 本机安装与真实推理证据
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 运行时安全、模型证据与发布终审；2026-09-04 13:58（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，基线 `46c301f`。
+- 用户授权解释：用户在上一轮被明确告知下一步会安装官方 Ollama `0.33.3` 并下载约 2.5GB 锁定权重，本轮回复“好的，现在按照要求进行下一步”；据此仅授权该 A5-1b 安装、下载与本机验证，不扩张到云服务、其他模型、B5规则、A4接线或发布部署。
+- 任务目标：从官方一手来源解析 Apple-silicon 安装资产及完整性信息；下载到私有临时目录，先核验架构、SHA-256、Developer ID 签名、Gatekeeper 与实际版本，再安装/启动；拉取精确模型 tag，核对本机 manifest/digest，并用现有 A5 Provider 运行真实结构化输出、超时/降级和有界延迟/资源测量。
+- 安全边界：若资产来源、签名、架构、版本、manifest 或锁定摘要不一致立即停止；不绕过 Gatekeeper、不用 `latest`、不提交 Ollama 二进制或 Qwen 权重、不记录 prompt/response 中的敏感数据、不修改 P0/Schema/sample、A2-A4、组员 B1-B7、frontend 或原始竞赛附件。系统安装和模型缓存属于用户机器状态，项目仓库只记录可公开的命令、版本、摘要、聚合结果和证据边界。
+- 允许项目改动：仅 A5 真实运行复现工具/测试、`docs/spec/a5-ollama-transport.md` 的附录或专用验证记录、根/后端/安全运行说明、资源/第三方/AI/进度/共享日志；是否新增文件以实际复现需要为准，不重复既有文件。Terra 只负责最小运行工具候选，Luna 只负责独立复测与资源台账，均不提交推送。
+- 验收：安装后 `ollama --version` 精确匹配；本机 tags/manifest 与锁定 tag 和完整摘要一致；真实 Provider 至少完成合法生成和受控不可用降级；保存不含完整模型输出的重复运行成功率、首轮/热轮延迟、峰值或稳定内存观察；运行 A5、P0、完整非回环、Schema、compileall、diff、隐私/范围门禁后由 Root 绑定不可变提交并推送功能分支。
+- token：本轮非硬估算 `22k-32k`；若下载耗时或外部签名/版本不满足，不扩大范围，保留已验证事实并以 `PARTIAL/BLOCKED` 收口。
+
+### [20260904-1410-Terra-A5RuntimeProbe] START - 新增 A5-1b 最小真实运行复现工具
+
+- 作者：GPT-5.6 Terra；仅 runtime probe、unit、README/AI/日志；默认 loopback provider，不安装/下载/启动或提交推送；估算 `8k-12k`。
+
+### [20260904-1430-Terra-A5RuntimeProbe] PARTIAL - 复现 CLI 与 fake Provider 测试已新增
+
+- 新增 `runtime_probe.py` 与 unit：显式 JSON ScanRun、1..3 次 loopback Provider 调用、pending remediation/稳定身份与确定性事实保持检查，稳定聚合 stdout；失败固定 `ai_runtime_probe_failed`。
+- 未完成：当前未运行定向 pytest/compileall/diff，且 AI记录未更新；不能声明真实模型运行或交付 evidence。未安装、下载、启动或请求 Ollama/Qwen3，未提交推送。
+- token：精确 token 数不可获得；估算 `8k-12k`，范围未扩大但未完整验收。
+
+### [20260904-独立验收-Luna-A5-1b-START] START - A5-1b 独立真实运行复验
+
+- 作者/角色/时间：GPT-5.6 Luna；A5 独立验收、运行态/摘要核验与证据边界；2026-09-04（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 本轮范围：仅核对 Ollama `0.33.3`、锁定 Qwen3 tag、API version/tags digest、磁盘 manifest/blob 摘要、`ollama ps` 聚合运行态，并绕过 `runtime_probe.run_probe`，以独立内存样例经 `OllamaProvider` 与 `apply_ai_remediations` 连续运行 3 次。
+- 禁止范围：不修改 backend、实现侧 unit、P0/Schema/sample、A2-A4、B1-B7、frontend；不记录完整 prompt/model response、绝对临时路径或异常秘密；仅允许追加本日志与 `docs/05-ai-assistance-log.md`。
+- 验收重点：generated、pending、`generated_by`、finding 绑定、除允许字段外的 P0 不变、三轮 remediation 身份稳定、聚合成功率、冷/热延迟、处理器/context/loaded size；若回环 `PermissionError` 原样保留并立即以 `BLOCKED` 报 Root。
+- token：本轮非硬估算 `6k-9k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-独立验收-Luna-A5-1b-BLOCKED] BLOCKED - sandbox 禁止连接已运行的回环服务
+
+- 作者/角色/时间：GPT-5.6 Luna；A5 独立验收与证据边界；2026-09-04（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 原始阻塞：独立使用无代理 Python 标准库请求 `http://127.0.0.1:11434/api/version`，sandbox 原样返回 `PermissionError: [Errno 1] Operation not permitted`；同一环境的 `ollama` CLI 不在 PATH。已立即向 Root 报告，未把环境失败归因于产品。
+- 停止范围：未调用 `runtime_probe.run_probe`、`OllamaProvider` 或 Qwen3；未继续读取 API version/tags、磁盘 manifest/blob、`ollama ps`，未执行三轮 `apply_ai_remediations`，因此没有生成率、延迟、资源或 remediation 证据。
+- 修改边界：仅追加本日志与 `docs/05-ai-assistance-log.md`；未修改 backend、实现侧 unit、P0/Schema/sample、A2-A4、B1-B7、frontend 或其他项目文档；未打印/写入 prompt、完整模型 response、绝对临时路径或异常秘密。
+- 处置与证据：`EVD-A5-OLLAMA-REAL-RUN-001` 暂记 `BLOCKED-ENV`，Root 应在已验证服务所在的受控环境原样完成独立 version/tags/disk hash/ps 与三轮 Provider 验收；本条不证明真实 Ollama/Qwen3 不可用，也不证明 A4 接线、B5 规则或完整作品可提交。
+- token：本次运行精确 token 数不可获得；开工估算 `6k-9k`，在范围内完成阻塞复现、Root 通报与日志收口，未发生范围调整。
+
+### [20260904-1438-RootSol-A5真实模型运行收口] AMENDMENT/COMPLETE - A5-1b 已独立复验并绑定不可变实现
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 运行时安全、证据裁决与发布；2026-09-04 14:38（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 对 Luna 阻塞的处置：保留上条 sandbox `PermissionError` 原文，不改写为产品失败。Luna 随后只在 `/private/tmp` 生成一次性独立脚本，SHA-256 为 `675c64de5620c6fd4fcc6714eb3cca30a08835d247f093934b0b53933c59462f`；脚本不导入 `runtime_probe`，由 Root 在受控回环环境原样执行，结果 `success_rate=3/3 cold_ms=3877 hot_ms=2768`。
+- 官方运行时与完整性：精确官方 DMG 大小 `196424896` bytes、SHA-256 `cc21bd6a1486ddff3cdcbf00549f61d0a3e6e6893d6456a12d37c486161bcc43`；安装前后严格 codesign、Developer ID Team `3MU9H2V9Y9`、Gatekeeper `Notarized Developer ID`、stapled notarization、universal arm64/x86_64 与运行版本 `0.33.3` 均通过。受限 sandbox 曾同时误报系统 Calculator 与 Ollama 签名无效，受控信任链复核转绿，未绕过 Gatekeeper。
+- 模型身份与运行：锁定 `qwen3:4b-instruct-2507-q4_K_M`；API tags、磁盘 manifest 原始字节 SHA-256 均为 `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`，`2497280480`-byte 模型 blob 重算 SHA-256 为 `85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9`。服务仅绑定 loopback，并以 `OLLAMA_NO_CLOUD=1`、`OLLAMA_NOHISTORY=1` 启动。
+- 项目探针结果：真实三轮 `3/3`；冷轮 `4344.062 ms`，热轮 `2736.214/2723.574 ms`，中位数 `2736.214 ms`；generated、pending、producer、finding 引用、确定性事实保持与 remediation 身份稳定全部通过。`ollama ps`/API 报告加载大小与 `size_vram` `3175339786` bytes、100% GPU、context 4096；只作为当前设备与样例记录，不外推为峰值系统内存或 Bench。
+- Terra/Root 实现收口：保留 Terra 的 PARTIAL 历史；Root 复核并最小修正 runtime probe 的多 finding、完整事实保持、稳定身份、参数界限和脱敏输出，新增 5 项 unit。实现证据已绑定不可变提交 `ca0c3eda8c5f062b0cb18d2d8bc0a12caac22579`。
+- 门禁：runtime probe `5 passed`；A5 受控专项 `128 passed`；完整 unit/security 受控环境 `818 passed, 1 warning`；P0 `46 passed`；`compileall -q backend/app tests`、`git diff --check` 与上传/敏感范围复核通过。沙箱完整集原始 `807 passed, 11 failed` 均为回环 bind `PermissionError`，受控环境原样全绿；第三方 Starlette/AnyIO 弃用 warning 保留。
+- 修改与边界：仓库新增 `backend/app/ai/runtime_probe.py`、`tests/unit/test_a5_ollama_runtime_probe.py`，更新根/后端运行说明、A5 规格、资源与第三方台账、AI/进度/协作记录；不上传 DMG、Ollama 应用、模型权重、本机缓存、prompt、完整 response、临时脚本、私钥或个人绝对路径。未修改 P0/Schema/sample、A2-A4、扫描组员 B1-B7、前端或竞赛原始附件。
+- 证据边界与下一步：`EVD-A5-OLLAMA-REAL-RUN-001` 只批准当前 Apple-silicon、锁定运行时/模型和单一样例的真实 A5 输出边界；不证明许可证规则正确、法律结论、多项目质量、A4 已接线、报告/Bench/部署或作品完整。A5-1c 等待扫描分析组员 B5 提供真实 finding/license facts 后再由项目负责人接 A4 AI_ASSIST，不代做 B5。
+- 发布状态：实现已本地提交，治理记录待提交后推送同一功能分支；不创建或合并 PR，不修改 `main`、`integration/p0` 或组员分支。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `22k-32k`，A5-1b 的官方安装核验、锁定模型下载/摘要、两套真实三轮复验、资源测量、复现工具、全量门禁和不可变实现绑定均在本轮完整完成；范围未扩张到 A4/B5/前端/部署。
