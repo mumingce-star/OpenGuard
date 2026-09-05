@@ -3764,3 +3764,10 @@
 - 修改范围：detectors两文件、pipeline/ai_assets与local_zip/dependency_plan、既有deploy/smoke、既有localZIP unit、新detector unit和独立security、README/backend/deploy/spec/资源/AI/进度/工作日志。无样例权重、私人配置、生成报告或临时文件进入仓库。
 - 下一任务按执行书真实公开项目完整链，先核对现有Git与A5部署差距，只修阻断；P0剩余与用户A1–A8状态见进度13节。开工10k–18k非硬估算，本次运行精确 token 数不可获得，任务点技术完成、实际区间无法确认，未扩大产品范围。待Root敏感清单及GitHub绑定后COMPLETE。
 - EOF anchor：OPENGUARD-AI-ASSET-ZIP-TECH-20260905
+
+### [20260905-RootAstra-AIAssetZIP发布] COMPLETE
+
+- GPT-6 Astra / Root：实现2ccb75cbd09e7950aa0a98656daea6014dc0e3f9已推送feat/a4-ai-asset-report，git ls-remote完整哈希一致；EVD-A4-AI-ASSET-ZIP-001绑定此实现。17文件清单、敏感模式、保护目录、append-only与staged diff通过，未合并/Release。
+- 任务点完成：82实现、9独立、1146全量passed/3skip；真实HTTP、Chrome模型详情/风险/行号/报告及API重建四SHA恢复。仅补充三份治理发布记录，不改变已验收代码；模型授权、完整B6、真实项目总验收与P0父任务仍按上条限制。
+- 开工10k–18k非硬估算，本次运行精确 token 数不可获得，完整交付且无功能范围扩大，实际区间不可确认。下一任务真实公开项目完整链，复用已有Git/A5，只修阻断。
+- EOF anchor：OPENGUARD-AI-ASSET-ZIP-PUBLISHED-20260905
