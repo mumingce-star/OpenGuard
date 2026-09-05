@@ -3554,3 +3554,15 @@
 - 下一步：本轮发布后实施A3/A4-3a-I2。报名资格由Owner确认；完整作品与获奖竞争力门禁按PROJECT_PROGRESS保留，不编造完成率。
 - token：开工非硬估算18k–30k；本次运行精确 token 数不可获得，无法确认实际消耗在估算区间。功能范围未扩大，审查增加了缺陷修复和独立故障验证；本轮I1技术验收已完整完成，发布待执行。
 - EOF anchor：OPENGUARD-DZI1-ROOT-ACCEPTED-20260905-1710
+
+
+### [20260905-1713-RootAstra-DurableZIPI1发布] AMENDMENT/COMPLETE - I1验收与GitHub发布闭环
+
+- 作者：GPT-6 Astra / Root；实际时间2026-09-05 17:13（Asia/Shanghai）。
+- 发布证据：实现提交`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`已推送`origin/feat/a3-durable-zip-storage`，git ls-remote返回相同完整对象；EVD-A3-DURABLE-ZIP-STORAGE-001绑定此不可变实现。随后同分支仅回填规格/进度/AI与本日志的发布状态。
+- 最终验收：Terra unit16、Luna独立29、Root受控全量952 passed,3 skipped,1 warning；原跨线程P1经业务最小修复后原202断言通过，fsync注入定位误标已按真实inode更正；原始失败和AMENDMENT保留。OpenAPI精确等值、Schema/sample、compileall、前端TypeScript/Vite构建、精确12文件白名单、新增文本敏感检查、文件大小和append-only完整前缀全部通过。
+- 上传范围：backend README、api三文件、persistence导出及新store、unit与独立测试、同一规格、PROJECT_PROGRESS、AI日志和本工作日志。无运行ZIP/数据库/报告/模型/权重/缓存/个人路径或新第三方依赖；受保护代码与组员分支未改。
+- 状态：A3/A4-3a-I1完成并发布；A3/A4父包仍进行中，I2未开始。生产durable开关保持默认0；只批准内部注入的存储协议，不宣称自动消费/重启恢复或完整Web。没有创建/合并PR、删除分支、改Git身份或发Release。
+- 下一任务：I2生命周期锁、dispatcher、queued恢复和running诚实收敛；普通输入许可证事实、前端接线、部署、安全/Bench与提交材料依赖继续按进度台账执行。报名/权属由Owner确认，获奖竞争力仍须真实案例/基线消融/误差分析/稳定演示。
+- token：开工非硬估算18k–30k；本次运行精确 token 数不可获得，不能确认实际消耗落在估算区间。I1已完整交付，功能范围未扩至I2；多轮审查和补测增加了验证工作。
+- EOF anchor：OPENGUARD-DZI1-PUBLISHED-20260905-1713

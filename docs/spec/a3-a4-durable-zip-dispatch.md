@@ -1,7 +1,7 @@
 # A3/A4-3a ZIP 持久派发与中断收敛
 
 规格门禁：`A3/A4-3a-S`；状态：`FROZEN-FOR-IMPLEMENTATION`（2026-09-05 三角色复审通过）。
-实现包：`A3/A4-3a-I1` 已通过实现、独立与Root全量验收，待发布绑定；`I2` 尚未开始。
+实现包：`A3/A4-3a-I1` 已通过实现、独立与Root全量验收，并发布绑定`272f5cf`；`I2` 尚未开始。
 原规格批准与实现证据分开，I1证据和边界见第12节。
 规格冻结时的代码基线：`1ba14aff6894aabdd25f4491688df5d7b852e95a`。
 责任：项目负责人 A 线；Root 统筹，Sol 架构审查，Terra 实现，Luna 独立验证。
@@ -271,7 +271,7 @@ Root 另核查DZ编号唯一性，未因工具重叠展示删除有效条目。
 
 ## 12. I1 实现与验收记录（2026-09-05）
 
-证据ID：`EVD-A3-DURABLE-ZIP-STORAGE-001`；实现提交待Root发布绑定。
+证据ID：`EVD-A3-DURABLE-ZIP-STORAGE-001`；实现提交：`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`；已推送`feat/a3-durable-zip-storage`并以远端完整哈希核对。
 
 I1新增私有descriptor存储及输入生命周期，内部拆分ZIP candidate构造/提交，复用原registry与
 幂等fingerprint。真实HTTP注入入口在multipart首字节前预留配额；无await临界区覆盖文件创建与

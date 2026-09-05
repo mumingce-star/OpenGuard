@@ -136,3 +136,5 @@
 
 
 | 2026-09-05 | GPT-6 Astra / Root；GPT-5.6 Terra、Luna | A3/A4-3a-I1 ZIP持久输入与派发记录 | 复用冻结规格/现有A3/A4/A5/A6；Terra实现、Luna独立动态ZIP/手写multipart/OS线程及进程验证，Root审查与最终回归 | 原并发P1与fsync测试定位问题均保留失败/AMENDMENT并闭环；不改P0/六API/registry/组员代码，不引入依赖或调用模型；生产durable仍关闭 | unit16、独立29、受控全量952 passed,3 skipped；沙箱11回环权限失败原样保留；OpenAPI/Schema/编译/前端构建通过；不是I2恢复或完整Web证据 | 是（Root技术验收通过，待不可变提交与推送绑定） |
+
+| 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：I1不可变实现与发布绑定 | `272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`已推送feat/a3-durable-zip-storage，远端完整对象核对一致；EVD-A3-DURABLE-ZIP-STORAGE-001绑定该提交 | 精确12个竞赛源文件/测试/文档；原P1和测试定位修正保留历史，未自动合并或发布Release，未调用真实模型或公网扫描 | unit16、独立29、受控全量952 passed,3 skipped，OpenAPI/Schema/编译/前端构建及公开范围/append-only检查通过 | 是（I1已验收并推送；I2未实现） |
