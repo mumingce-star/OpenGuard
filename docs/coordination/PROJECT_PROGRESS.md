@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-05 15:31（Asia/Shanghai）
+更新时间：2026-09-05 15:34（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -22,10 +22,9 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 `A3/A4-3a-I1/I2` 代码与运行证据均未开始。主控代码基线仍为 `1ba14af`，
 受控全量 `907 passed, 3 skipped` 为该代码的既有验证，本轮只复跑 P0 `46 passed`。
 
-
 | 任务点 | P级 | 主责模型 | 状态 | 已完成/当前证据 | 未完成/下一步 | GitHub状态 |
 |---|---|---|---|---|---|---|
-| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 进行中 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 仅待文档提交/推送闭环；实现I1/I2未开始，Git恢复/lease/heartbeat/业务retry仍待后续 | `docs/a3-a4-durable-zip-spec` 本地文档候选；不创建/合并PR |
+| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 已完成 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 规格已发布；实现I1/I2未开始，Git恢复/lease/heartbeat/业务retry仍待后续 | `docs/a3-a4-durable-zip-spec` 已推送，规格提交 `f9a59fa`；未创建/合并PR |
 | S1a/A1 P0领域契约 | P0 | Sol | 已完成 | 契约 v0.1.1、唯一公共模型、6个API、风险四态、证据与provenance；历史提交 `02c3d46` | 后续仅通过变更流程新增 ADR，不再并行维护第二套模型 | 已推送 `feat/p0-domain-contract` |
 | A1 领域模型实现 | P0 | Terra | 已完成 | Pydantic模型、Draft 2020-12 Schema、sample和 AI producer 条件字段；历史提交 `b2fd061` | 进入 A2 前保持兼容性回归 | 已推送 `feat/p0-domain-contract` |
 | L-A1 独立边界审计 | P0 | Luna | 已完成 | 46项测试全部通过；覆盖路径脱敏、partial语义及 AI producer 正反边界 | 进入 A2 后扩展输入安全测试 | 已推送 `feat/p0-domain-contract` |
@@ -140,7 +139,7 @@ Sol完成架构审查，Terra确认可实现性，Luna批准15项独立oracle；
 
 | 范围 | 状态 | 责任 | 下一项可验证门禁 |
 |---|---|---|---|
-| 本轮规格门禁 | 审查通过，文档发布闭环中 | Root/Sol/Terra/Luna | 四文件范围、append-only、P0回归、文档提交与远端核对 |
+| 本轮规格门禁 | 已完成 | Root/Sol/Terra/Luna | 四文件范围、append-only、P0回归、DZ唯一ID通过；规格提交f9a59fa与远端完整对象一致 |
 | I1 descriptor与输入生命周期 | 未开始 | Terra→Luna→Root | prepared/ready、实际ZIP、幂等、fsync/崩溃窗口、保留输入与配额；默认关闭 |
 | I2 dispatcher与恢复接线 | 未开始 | Terra→Luna→Sol→Root | 真正多进程锁、kill/restart、queued消费、running不重放、DZ-01..15和完整回归 |
 | Git恢复、lease/heartbeat与业务retry | 未开始 | 项目负责人A线 | 另立窄规格；本轮不承诺任意阶段续跑或exactly-once |
@@ -153,3 +152,7 @@ Sol完成架构审查，Terra确认可实现性，Luna批准15项独立oracle；
 报名/参赛资格门禁：Owner落实平台、缴费、主体和权属确认。完整作品门禁：上游许可证事实、
 前端契约对齐与真实Web链、部署/陌生机、安全与Bench、报告视频/资源表/匿名及Release。
 获奖竞争力门禁：真实案例、基线/消融、误差分析和稳定演示。不得由规格或P0回归推出完成率。
+
+文档发布证据：规格提交 `f9a59fa3eb722c2eb1eb0ec939bda5efe8587b78` 已推送并以
+`git ls-remote` 核对一致；本次只上传上述四个文档，随后同分支回填发布记录。
+未创建/合并PR，未修改main、integration/p0或组员分支。该提交不是持久worker实现证据。

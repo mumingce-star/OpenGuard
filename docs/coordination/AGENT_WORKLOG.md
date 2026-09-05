@@ -3415,3 +3415,16 @@
 - 下一步：文档发布后按同规格先I1持久输入/登记，再I2后台消费与中断收敛；保留Git恢复/lease/heartbeat/业务retry/cleanup父包缺口。
 - token：本次运行精确 token 数不可获得；初估12k–20k，长日志核验阅读高于预估，无法确认实际区间；范围收窄为ZIP规格，未扩大编码。
 - EOF anchor：OPENGUARD-DZ-SPEC-REVIEW-20260905-1531
+
+
+### [20260905-1534-RootAstra-DurableZIP规格发布] AMENDMENT/COMPLETE - 文档规格门禁发布闭环
+
+- 作者：GPT-6 Astra / Codex Root；时间2026-09-05 15:34（Asia/Shanghai）。
+- 发布事实：规格与首轮治理提交 `f9a59fa3eb722c2eb1eb0ec939bda5efe8587b78` 已推送 `origin/docs/a3-a4-durable-zip-spec`，git ls-remote已返回完全相同对象。该SHA绑定设计产物，不是运行evidence。
+- 上传范围：仅新规格、PROJECT_PROGRESS、AI辅助记录和本append-only日志四个文件；无业务代码、测试、模型、运行输入、数据库、缓存、个人路径或第三方资源。
+- 最终门禁：三角色最终APPROVE；P0 46 passed；15个DZ编号顺序/唯一性通过；P0 Schema等值；与基线比对两份日志完整前缀不变；精确四文件白名单、新增文本路径/凭据扫描及staged diff检查通过。
+- 状态：A3/A4-3a-S规格任务完成；I1/I2实现未开始；本轮无持久worker动态运行证据。没有创建/合并PR，没有修改main/integration/组员分支或Git身份。
+- 下一任务：按同一规格实施A3/A4-3a-I1私有descriptor与持久输入生命周期，由Terra实现、Luna独立验证、Root验收；不重造既有A3/A4/A5/A6。Git恢复、lease/heartbeat、业务retry、完整cleanup仍属后续工作。
+- 项目可运行边界：既有依赖扫描与阶段性报告保持不变，普通输入partial/rules/70，主控前端mock；完整Web/许可证事实/部署/Bench/材料与Release尚未闭环。报名平台/缴费/权属由Owner落实，与技术完整作品门禁分开。
+- token：本次运行精确 token 数不可获得；开工估算12k–20k，因569KB历史日志补读及多模型复审阅读规模高于预估，无法确认实际消耗落在区间内。本轮单轮完整交付规格及发布；父任务已明确拆成ZIP-I1/I2，未扩为编码。
+- EOF anchor：OPENGUARD-DZ-SPEC-PUBLISHED-20260905-1534

@@ -131,3 +131,5 @@
 | 2026-09-05 | GPT-6 Astra / Codex Root | AMENDMENT：发布 A5-1c 并绑定远端不可变证据 | 将 15 个竞赛交付文件以实现提交 `3237ab0` 推送 `feat/a5-pipeline-integration`，远端完整对象与本地一致 | 未创建或合并 PR，未修改 `integration/p0`、`main`、组员分支、前端或部署；未上传模型/缓存/数据库/prompt/完整 response | `EVD-A5-PIPELINE-INTEGRATION-001` 绑定 `3237ab0e8634ba5f0c62535100ef97785bd611a6`；发布前受控完整 `907 passed, 3 skipped` | 是（已绑定并推送） |
 
 | 2026-09-05 | GPT-6 Astra / Root；GPT-5.6 Sol、Terra、Luna | A3/A4-3a-S ZIP持久派发规格门禁；输入为既有代码、契约、完整历史日志与进度 | Root写唯一规格；Sol架构与历史复核、Terra可实现性、Luna独立15项oracle；均只读交付由Root统一记录 | 不新增业务代码、测试、公共Schema、模型或第三方依赖；关闭running links可见性与配额预留风险；保留profile/幂等、legacy边界；只批准规格，未获得用户最终产品发布许可 | 三角色最终APPROVE，本轮P0 46 passed；文档ID/引用/保护路径/append-only/diff/敏感门禁；动态恢复测试未执行，代码实现I1/I2未开始 | 是（设计文档，待Root文档分支发布；不是运行效果证据） |
+
+| 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：ZIP持久派发规格发布证据 | 规格提交f9a59fa3eb722c2eb1eb0ec939bda5efe8587b78已推送docs/a3-a4-durable-zip-spec，远端完整对象已只读核对 | 仅四个规格/治理文件；不修改产品代码、不创建或合并PR；三角色只读意见经Root逐条取舍与修订，未代替Owner最终作品审查 | P0 46 passed、15个独立门禁ID、Schema等值、append-only前缀、四文件保护范围、diff与新增敏感内容检查通过；持久worker动态测试未执行 | 是（已发布设计规格，代码实现未开始） |
