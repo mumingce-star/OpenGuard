@@ -3292,3 +3292,9 @@
 - 修改范围：18 个竞赛仓库文件，包括 7 个原样 B5 文件、A4 适配器/导出/计划、8 项 A4-2 测试与 1 项既有 A4 未来阶段断言更新，以及根/后端说明、A4-2 规格、AI/进度/协作记录；不含缓存、虚拟环境、运行数据库、模型内容、凭据或本机临时物。
 - 下一任务：项目负责人 A5-1c，把既有 A5 Provider/Ollama transport 接入 AI_ASSIST，只消费 B5 尚未绑定整改的 finding，并覆盖 enabled/disabled/degraded 消融；真实 ZIP/Git 全链仍需扫描组员把许可证事实生产接入主线。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `8k-14k`，A4-2 在该单轮工作包内完整完成，未发生范围扩张。
+
+### [20260905-1220-RootAstra-A4B5规则发布] AMENDMENT/COMPLETE - GitHub 不可变实现已绑定
+
+- GitHub 发布事实：A4-2 实现、测试、规格和首轮治理提交 `4752f2b11252870c1b33306583390321c8d24397` 已推送 `origin/feat/a4-b5-rule-integration`；本地 HEAD 与 `git ls-remote` 返回同一完整对象，`EVD-A4-B5-RULE-INTEGRATION-001` 绑定该实现。
+- 上传范围：18 个竞赛仓库文件，包括 7 个与组员远端 blob 完全相同的 B5 文件、项目负责人 A4 薄适配器/计划接线、8 项 A4-2 测试、1 项既有 A4 未来阶段断言更新，以及运行/规格/AI/进度/协作说明；未上传 B4/B6/B7、前端、部署、运行数据库、缓存、虚拟环境、模型内容、凭据或本机临时物。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A4-2 分支。
