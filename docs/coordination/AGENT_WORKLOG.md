@@ -3682,3 +3682,25 @@
 - 可演示与仅用户A1–A8状态、P0剩余三主包和下一步最小部署见进度第10节；本机Web不是Compose/陌生机或完整工具/AI资产验收。保留本机服务供用户查看，不提交运行数据。
 - 本次运行精确 token 数不可获得；开工12k–22k非硬估算，本轮Web完整完成，实际区间不可确认，无功能扩张。
 - EOF anchor：OPENGUARD-A7-WEB-COMPLETE-20260905-2044
+
+### [20260905-RootAstra-MinimalCompose] START - 最小Compose与扫描工具环境
+
+- 作者GPT-6 Astra / Root；基线a1a710f，分支feat/a7-minimal-compose，工作区干净。已fetch：组员扫描f8bedfd、前端83e8928未变化；deploy只有占位README，无重复Dockerfile/Compose。阅读当前README、进度、Terra交接和扫描规格；历史日志全读调用被输出截断，沿用前轮已核实历史并复核近期记录，不声称本轮完整复读全部历史。
+- 用户授权最小Compose与扫描工具运行环境，Web必须Chrome插件；已连接type=extension的Chrome并打开真实现有Web。当前PATH/常见安装位置/socket未找到Docker引擎，已询问用户安装Docker Desktop或使用已有环境，环境选择待答，不擅自安装桌面软件。
+- 范围：deploy最小web/api及按需scanner工具镜像、根.dockerignore、必要运行验收脚本；更新既有README、third_party、AI/进度/共享记录。不改公共API/Schema、队列、B线引擎或新增P1/P2；scanner环境就绪与A4事实接入分别判定，不以工具version冒充Web已调用工具。
+- 验收：官方现有锁版/安装包摘要、Compose解析/镜像构建、容器真实ZIP和报告持久性、非root/卷权限/同源代理、固定工具真实输出，Chrome插件上传/结果/下载。保留失败，环境未完成如实标记；Root统一提交推送，不合并main/integration、不Release。
+- token非硬估算12k–22k，本次精确遥测不可读取；本轮限最小部署，不引入新的服务治理或UI。
+- EOF anchor：OPENGUARD-A7-COMPOSE-START-20260905
+
+### [20260905-2135-RootAstra-MinimalCompose] PARTIAL - 部署与工具完成，Chrome保存确认未完成
+
+- GPT-6 Astra / Root统一实现与验收；只读审查子任务复核非root/data/规则路径/tmp/扫描器缓存，未写文件。现有backend/frontend/Schema/规则/tests和组员分支不变。新增.dockerignore、deploy三Dockerfile/compose/nginx与两个标准库验收脚本；更新既有运行/资源/AI/进度记录，无新规格或包装报告。
+- 经用户选择安装官方Docker Desktop4.89.0 arm64，官方DMG SHA匹配，hdiutil完整校验通过。沙箱codesign/spctl内部错误原始结果保留；系统上下文原包codesign和Gatekeeper Notarized Developer ID通过，Team9BNSXJN65R；安装后再次codesign通过。初次应用句柄超时后按实际bundle定位Docker Desktop欢迎页，仅跳过可选登录，未操作许可/密码；Engine29.7.2/Compose5.5.0图形与CLI运行确认。
+- 构建失败修复：初稿COPY不存在的NOTICE导致cache-key失败，去掉错误引用后重建；Docker credential helper PATH缺失改用应用自带bin目录；引擎初启info500后Engine running确认恢复。源码核对修正烟测草稿licenses字段及ReportLink直接对象/导出JSON不含links，未修改业务契约迁就测试。ScanCode默认home缓存不可写由只读审查识别，改SCANCODE_CACHE/TEMP到tmp，无放宽只读或capability。
+- 验证：所有Compose profile config通过；api/web/scanner真实构建通过，基础镜像manifest固定；api/web健康、API10001 UID/data0700、只读/cap_drop ALL及唯一回环8080端口通过，pip check无broken requirement（只读pip缓存warning不影响检查）。真实HTTP9项全部通过，force-recreate API后原扫描及四格式字节SHA一致。无新增后端逻辑，未重复历史1025全量。
+- 工具：官方ScanCode32.5.0 py3.12 linux包SHA638adcd0…f027及Syft1.51.0 amd64包SHA2a2e837a…bc7f在构建内完整校验。断网、只读、非root amd64容器真实检测MIT/LICENSE和pkg:npm/is-number@7.0.0/lock来源；不运行目标代码、不安装目标依赖；输出SHA在仓库外日志，不把工具原始输出冒充A4绑定结果。
+- Chrome：使用type=extension插件，真实上传ZIP后queued→completed、2资源/2待核验提示及报告，重建API后刷新恢复原ID，页面截图已检查并保留Chrome页。点击JSON后download事件10秒超时；下载管理页被浏览器URL策略拒绝，未绕过，未通过其他浏览器替代。故浏览器保存确认保持未完成；HTTP四格式下载和内容摘要独立通过。本PARTIAL仅保留该验收缺口，最小Compose/真实工具环境已完成。
+- 当前仅本机部署ZIP，AI/Git0；A4工具/AI资产完整主链及陌生机P0仍未完成。仅用户A1–A8、剩余三包与条件16–28有效工程小时估算见进度第11节，下一任务工具接现有ZIP Pipeline；报名资格、完整材料、竞争力另列。
+- Root最终核对diff/保护路径/append-only/新增敏感内容/文件范围后提交推送feat/a7-minimal-compose；不合并main/integration、不Release、不上传安装包/镜像/运行数据。发布结果后续追加绑定。
+- 本次运行精确 token 数不可获得；开工12k–22k非硬估算，部署与工具环境完成，Chrome保存确认未完成，实际消耗区间不可确认；无功能范围扩张。
+- EOF anchor：OPENGUARD-A7-COMPOSE-ACCEPTED-20260905-2135

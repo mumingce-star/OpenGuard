@@ -19,3 +19,11 @@
 | Qwen3 Ollama manifest | 模型 manifest/blob 身份 | `sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`；blob `sha256:85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9` | 官方 registry manifest；模型页 https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M | 随对应 Qwen3 模型 | 完整 digest pinning 与每次 Provider 调用前的 tags 比对；模型 blob 只保留在本机缓存 | 保留摘要来源与校验记录；不得据摘要推断许可证规则正确或模型质量普适 | OpenGuard 自研 digest 比对和 ProducerRef/config_digest 绑定；不生成或托管模型 blob | 已核验（2026-09-04；磁盘 manifest 原始字节 SHA-256 与 API tags 均等于锁定值；2497280480-byte blob 重算 SHA-256 一致） | 仅记录摘要和官方链接，不公开 blob |
 
 所有依赖、模型、数据、框架、组件、工具、素材和第三方服务在首次引入时登记，不在提交前集中补录。
+
+## 2026-09-05 最小部署实际引入
+
+- ScanCode 32.5.0、Syft 1.51.0沿用上述已有资源，状态补充为：官方Linux发行包摘要校验及断网容器真实MIT/npm样例通过，Web Pipeline事实接线仍未完成。来源、完整摘要与命令见[部署说明](../deploy/README.md)，镜像保留随包LICENSE/NOTICE，不上传安装包或生成结果。
+- Python官方`3.12-slim-bookworm`镜像（运行3.12.14）、Node官方`24-bookworm-slim`构建镜像和nginx官方`stable-alpine`（运行1.30.4）首次用于部署；各manifest完整digest固定在Dockerfile。来源为[Docker Official Images](https://github.com/docker-library/official-images)、[Python镜像](https://hub.docker.com/_/python)、[Node镜像](https://hub.docker.com/_/node)、[nginx镜像](https://hub.docker.com/_/nginx)。Python受PSF条款、Node主体MIT及随包组件条款、Debian/Alpine系统包各自条款约束，不将整个镜像统称Apache-2.0；只发布构建说明，不发布镜像。完整镜像再分发资源审计仍归最终交付。
+- nginx 1.30.4：[上游BSD-2-Clause许可证](https://github.com/nginx/nginx/blob/release-1.30.4/LICENSE)；只用于静态Web与API反向代理，OpenGuard自行编写配置，未改nginx源码；保留版权、条款和免责声明，镜像保留上游随包文件。
+- pnpm 10.30.0只用于构建，沿用前端锁文件；[官方来源](https://github.com/pnpm/pnpm/tree/v10.30.0)，MIT及随包第三方条款。未加入运行时或修改前端依赖/锁文件，构建阶段不进入最终Web镜像。
+- Docker Desktop 4.89.0仅为经用户明确授权安装的本机部署工具；[官方Mac来源](https://docs.docker.com/desktop/setup/install/mac-install/)，适用Docker Subscription Service Agreement，不作为OpenGuard代码或镜像再分发。官方arm64构建238018，DMG SHA-256 `d333f7c8d42f746429ab1f32ad3284efec887e2a08c03b2ed373a7091373e392`与官方checksums一致，Developer ID Team `9BNSXJN65R`、arm64、codesign和Gatekeeper公证通过；Engine29.7.2/Compose5.5.0实跑。

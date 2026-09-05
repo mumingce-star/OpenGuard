@@ -60,7 +60,9 @@ PYTHONPATH=backend python -m pytest -q
 
 ## 简单 Web 本机运行
 
-先在项目根目录启动已有后端（Python 3.12环境）：
+推荐使用已实跑的最小 Compose：在仓库根目录执行 `docker compose -f deploy/compose.yaml up -d --build --wait`，在 Chrome 打开 <http://127.0.0.1:8080/app/new-scan>。当前容器支持 ZIP→资源/待核验风险→四格式报告，重建 API 后报告仍可读取。ScanCode/Syft 的断网工具容器也已实跑，但尚未接入 Web Pipeline。安装、工具检查、持久化与已知限制见[部署说明](deploy/README.md)。
+
+需要开发模式时，先在项目根目录启动已有后端（Python 3.12环境）：
 
 ```bash
 PYTHONPATH=backend OPENGUARD_ENABLE_DURABLE_ZIP=1 python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000

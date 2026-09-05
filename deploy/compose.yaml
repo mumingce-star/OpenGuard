@@ -1,0 +1,68 @@
+name: openguard
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.api
+    environment:
+      OPENGUARD_DATA_DIR: /var/lib/openguard
+      OPENGUARD_ENABLE_DURABLE_ZIP: "1"
+      OPENGUARD_ENABLE_AI: "0"
+      OPENGUARD_ENABLE_PUBLIC_GIT: "0"
+    volumes:
+      - data:/var/lib/openguard
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777,noexec,nosuid,nodev
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    pids_limit: 128
+    mem_limit: 1g
+    stop_grace_period: 30s
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/openapi.json', timeout=3).close()"]
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 6
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.web
+    ports:
+      - "127.0.0.1:${OPENGUARD_WEB_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777,noexec,nosuid,nodev
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 256m
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, "http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  scanner:
+    profiles: [tools]
+    platform: linux/amd64
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.scanner
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp:size=512m,mode=1777,noexec,nosuid,nodev
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    init: true
+    pids_limit: 128
+    mem_limit: 4g
+    cpus: 2
+    command: [python, /opt/openguard/tool-smoke.py]
+volumes:
+  data:

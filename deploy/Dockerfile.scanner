@@ -1,0 +1,25 @@
+# ScanCode's official 32.5.0 Linux distribution contains x86_64 wheels.
+# Compose fixes this image to linux/amd64, including on Apple silicon.
+FROM python:3.12-slim-bookworm@sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 SYFT_CHECK_FOR_APP_UPDATE=false
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl bzip2 xz-utils zlib1g libxml2 libxslt1.1 libgomp1 libsqlite3-0 libgcrypt20 libpopt0 libzstd1 \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /opt/scancode
+RUN curl -fsSL https://github.com/aboutcode-org/scancode-toolkit/releases/download/v32.5.0/scancode-toolkit-v32.5.0_py3.12-linux.tar.gz -o /tmp/scancode.tar.gz \
+    && echo '638adcd0af576d1f4d5b64dde228724b3ca4fdee2c4de20d88e4356be353f027  /tmp/scancode.tar.gz' | sha256sum -c - \
+    && tar -xzf /tmp/scancode.tar.gz --strip-components=1 -C /opt/scancode \
+    && rm /tmp/scancode.tar.gz \
+    && ./configure \
+    && ./venv/bin/scancode-reindex-licenses
+RUN curl -fsSL https://github.com/anchore/syft/releases/download/v1.51.0/syft_1.51.0_linux_amd64.tar.gz -o /tmp/syft.tar.gz \
+    && echo '2a2e837a2c8d59ec9af5472ee22d3b04ee463c4e44476ecf993fd1e5ab6ebc7f  /tmp/syft.tar.gz' | sha256sum -c - \
+    && mkdir -p /opt/syft \
+    && tar -xzf /tmp/syft.tar.gz -C /opt/syft \
+    && rm /tmp/syft.tar.gz
+ENV PATH=/opt/scancode/venv/bin:/opt/syft:$PATH SCANCODE_CACHE=/tmp/scancode-cache SCANCODE_TEMP=/tmp
+RUN groupadd --gid 10001 openguard && useradd --uid 10001 --gid 10001 --no-create-home openguard
+COPY deploy/tool-smoke.py /opt/openguard/tool-smoke.py
+USER 10001:10001
+WORKDIR /tmp
+CMD ["python", "/opt/openguard/tool-smoke.py"]
