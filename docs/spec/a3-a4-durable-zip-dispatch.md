@@ -1,7 +1,7 @@
 # A3/A4-3a ZIP 持久派发与中断收敛
 
 规格门禁：`A3/A4-3a-S`；状态：`FROZEN-FOR-IMPLEMENTATION`（2026-09-05 三角色复审通过）。
-实现包：`A3/A4-3a-I1` 已通过实现、独立与Root全量验收，并发布绑定`272f5cf`；`I2` 尚未开始。
+实现包：`A3/A4-3a-I1` 已通过实现、独立与Root全量验收，并发布绑定`272f5cf`；`I2` 已通过实现、独立与Root全量验收；发布绑定见第13节。
 原规格批准与实现证据分开，I1证据和边界见第12节。
 规格冻结时的代码基线：`1ba14aff6894aabdd25f4491688df5d7b852e95a`。
 责任：项目负责人 A 线；Root 统筹，Sol 架构审查，Terra 实现，Luna 独立验证。
@@ -298,3 +298,30 @@ Starlette/AnyIO弃用提示。复现命令见backend/README.md及上述两份测
 本节只批准DZ矩阵中I1存储/协议子集；不将DZ-01..15整体标为完成。I2生命周期flock、自动消费、
 queued恢复、running收敛、handler不重放和报告恢复可见性仍待实现与独立验证。
 Git恢复、lease/heartbeat、业务retry和完整orphan清理仍留后续工作包。
+
+## 13. I2 实现与验收记录（2026-09-05）
+
+基线：`2368d91120a72e7bb474ddacfcb72743b9aa02b1`；分支：`feat/a3-zip-dispatcher-recovery`。
+证据ID：`EVD-A3-DURABLE-ZIP-DISPATCH-001`；技术验收通过，待不可变实现提交与远端绑定。
+本轮仅实施第10节I2，复用I1存储、registry v1、原worker与A4/A5/A6；无新增公共API、数据库对象或第三方依赖。
+生产开关默认0保持旧路径；精确1现在启用单机ZIP dispatcher。I1 unit中“因I2未实现而拒绝1”的阶段性断言迁移为真实生命周期正向验收，默认0和非法值门禁保留；既有独立函数/类AST未变。
+
+固定私有flock覆盖完整生命周期；startup恢复与单线程周期派发分离，shutdown等待worker结束、关闭registry后释放锁。queued恢复复用唯一worker；已有managed running保留事实收敛partial/failed，不重放handler、AI或publisher。不确定CAS隔离、未知I/O停止接单、终态只补健康清理。Git恢复、多机、lease/heartbeat、业务retry不在本包。
+
+| 独立门禁 | 实际证据 |
+|---|---|
+| DZ01–03 | 真实dispatcher持锁/ready消费/terminal清理；prepared恢复；descriptor摘要错绑保持queued且不dispatch |
+| DZ04–05 | 无notify周期恢复；四格式HTTP下载；重复multipart单run并保留原profile |
+| DZ06–07 | 第二dispatcher锁互斥；真实dispatcher后的fork子不延长父锁；OS barrier下claim/cancel/terminal赢家；无descriptor的ZIP/Git逐值不变 |
+| DZ08 | 四个真实kill窗口：claim CAS后、handler返回前、stage CAS后、handler返回但下次CAS前；新进程精确核对事实与零重放；异常running links阻断 |
+| DZ09–10 | 既有A5公开apply_ai_remediations路径+fsync调用计数重启仍1；publisher/terminal CAS前后kill、orphan不可见、链接保留与四格式真实GET |
+| DZ11–12 | missing/digest/perms/symlink输入零handler；原timeout、disabled和不兼容provider；腐坏descriptor仅诊断 |
+| DZ13 | queued/running恢复三次busy及冷却；未知claim I/O隔离不重试。修复前第三至第四CAS约0.076秒，修复后第三至成功CAS为1.008917秒，满足至少1秒 |
+| DZ14–15 | ZIP删除后descriptor未删kill/restart只补cleanup并保留unknown；默认0/schema兼容；真实create_default_app、Uvicorn、multipart POST/GET链路 |
+
+验收结果：Terra unit **28 passed**；Luna独立 **70 passed,2 warnings**；Root受控完整 **1005 passed,3 skipped,2 warnings（51.04秒）**。开工I1基线45项通过。Root核对OpenAPI与开工快照完全相同，Schema等值、sample有效、编译、冻结目录、原独立AST和append-only前缀通过。
+独立首轮5失败/23通过涉及错误终态预期、事件重复等待与观察时机；按冻结语义修正fixture/oracle，未弱化产品断言。后续真实running恢复busy缺陷单独保留原始失败，Terra增加周期前冷却后独立及全量通过。沙箱loopback PermissionError保留，受控环境原用例通过。
+三个skip是既有可选真实模型/公网门禁；本轮不新增真实模型或公网证据。两个warning分别为Starlette/AnyIO弃用和刻意fork测试的Python多线程fork提示；不证明一般fork安全或硬件断电恢复。
+
+可演示：durable ZIP真实HTTP queued恢复后依赖纵切与阶段报告；普通输入仍为partial/rules/70。中断running仅事实收敛，可能没有报告。不能外推完整许可证链、真实Web、部署、A6全量交付或竞赛成品。
+下一任务回到原始V1.0第15节P0 DoD：A4消费组员真实scanner/SPDX/AI资产公共输出。不得自动扩展Git恢复、lease或业务retry；产品P1/P2不进入本轮。

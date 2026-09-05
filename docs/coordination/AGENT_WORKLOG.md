@@ -3566,3 +3566,43 @@
 - 下一任务：I2生命周期锁、dispatcher、queued恢复和running诚实收敛；普通输入许可证事实、前端接线、部署、安全/Bench与提交材料依赖继续按进度台账执行。报名/权属由Owner确认，获奖竞争力仍须真实案例/基线消融/误差分析/稳定演示。
 - token：开工非硬估算18k–30k；本次运行精确 token 数不可获得，不能确认实际消耗落在估算区间。I1已完整交付，功能范围未扩至I2；多轮审查和补测增加了验证工作。
 - EOF anchor：OPENGUARD-DZI1-PUBLISHED-20260905-1713
+
+
+### [20260905-1801-RootAstra-DurableZIPI2] START - P0生命周期派发与恢复
+
+- 作者：GPT-6 Astra / Root；时间：2026-09-05 18:01（Asia/Shanghai）。分支feat/a3-zip-dispatcher-recovery，基线2368d91120a72e7bb474ddacfcb72743b9aa02b1；开工工作区干净，无既有zip_dispatcher.py，无重复实现。
+- 前置核验：Root读README、进度、Sol交接、原始V1.0执行书P0/三人分工/最终DoD与冻结I2规格、I1/API/registry/worker关键实现；完整历史日志复读委派既有Terra与Luna任务，Terra已确认覆盖完整并核对末锚OPENGUARD-DZI1-PUBLISHED-20260905-1713。Root不声称独自重读全部历史正文。
+- 用户要求：仅推进本人A线P0，收工表只展示A1-A8；每次先核对状态避免重复文件，允许消费组员GitHub候选但先验证，报告P0剩余门禁和条件工期。原始执行书明确P1资源图谱/批量Bench/历史扫描等不计入P0；不得以旧台账更大竞赛目标扩张本轮。
+- 本轮实现：固定私有flock生命周期、单ZIP线程周期发现ready、prepared/queued恢复、interrupted-running保持事实后partial/failed、零handler重放、A6可见性和健康清理；不增加Git恢复/lease/heartbeat/业务retry/多worker/组员模块/前端/部署。running不得回queued。
+- 角色白名单：Terra新增backend/app/pipeline/zip_dispatcher.py，最小修改backend/app/persistence/zip_dispatch.py、backend/app/api/main.py、tests/unit/test_a3_durable_zip_dispatch.py、backend/README.md；Luna只扩展既有tests/security/test_a3_durable_zip_dispatch_independent.py；Root维护既有spec/PROJECT_PROGRESS/AI日志/本日志与必要根README运行状态。Root独占共享日志和治理文档，代记角色交付。
+- 兼容边界：P0 v0.1.1/Schema/sample/六API/ErrorEnvelope/registry v1/原worker/A2/B线/A5/A6/Git/前端/deploy不变；仅迁移unit中I2未实现故精确1拒绝启动的时效性断言至真实I2生命周期验收，默认0和非法值保护保持，独立旧断言不放宽。
+- 验收：开工I1 unit+独立45 passed,1既有warning；新DZ-01..15真实OS进程/事件kill/restart、SQLite忙锁、Provider调用计数和四格式真实GET，原始失败保留；实现→独立→Root全量、Schema/OpenAPI基线等值、编译/范围/敏感/append-only/diff检查，Root提交推送再绑定证据。
+- GitHub只读核对：扫描组员f8bedfd、前端83e8928；前端拟定API与冻结六API仍有差异，不直接纳入本I2提交，不改写组员分支。
+- token：整体开工非硬估算20k–35k；精确本轮遥测不可读取，最终如实说明范围与交付状态，不以账户用量推算消耗。
+- EOF anchor：OPENGUARD-DZI2-ROOT-START-20260905-1801
+
+
+### [20260905-1838-RootAstra-DurableZIPI2实现复核] PARTIAL - 实现侧交付，独立验收进行中
+
+- 作者：GPT-6 Astra / Root，代记既有GPT-5.6 Terra实现任务交付；2026-09-05 18:38（Asia/Shanghai）。Root独占治理文件，Terra已停止写入，Luna仅扩展既有独立测试文件。
+- Terra五文件实现：新增pipeline/zip_dispatcher.py；最小修改api/main.py、persistence/zip_dispatch.py、既有unit和backend/README.md。单机私有flock、fork child只close、默认0兼容、精确1生命周期接线、单线程ready周期发现、prepared/queued与startup running收敛、终态健康清理；未修改冻结worker/registry/P0/Schema/API结构或组员代码。
+- Root草稿审查关闭：忙重查移入唯一worker.run的窄registry代理；启动不执行handler、先处理既有running、busy集合可后续重查；使用同一store互斥；保留acceptance timeout；错绑/异常links保留；CAS冲突重读赢家、不确定ID当前进程隔离；worker结束、registry关闭后才释放锁；dispatcher fatal不继续接单。草稿不作为已验收结果。
+- Terra实现侧交付：专项27 passed、关联unit348 passed，均1项既有Starlette/AnyIO弃用warning；未运行Luna独立集合或Root全量。
+- Root后续具体问题：input_path_for_dispatch遇dispatch_store_io_failed曾被吞掉并允许下一周期反复尝试。Terra最小修复为dispatch_input_storage_failure固定诊断并fatal停止，保留queued及输入，下一multipart首字节前拒绝；新增默认工厂HTTP定向用例后专项28 passed,1 warning。关联旧结果保留，最终全量待Root重验。
+- Luna测试初稿审计：seed running不能代替真实worker kill，publisher异常不能代替terminal CAS前kill，Provider直接调用不能代替A5路径，SQLite锁事件需观测真实三次CAS。Root要求按冻结DZ矩阵补证，不放宽oracle。此阶段属于测试证据完善，不把fixture编排问题记为实现缺陷。
+- Root已对原独立定义作AST比较：既有函数/类无改动；新增I2测试尚未获得最终独立/全量验收，不宣称DZ-01..15完成，不推送未验收代码。
+- 状态：I2仍进行中；本轮无产品P1/P2扩展。下一步Luna独立真实进程证据与Root全量、治理、发布绑定。
+- token：Root开工非硬估算20k–35k；Terra实现估算14k–24k、定向修复3k–5k；本次运行精确 token 数不可获得，实际是否落在估算区间不可确认，功能范围未扩大。
+- EOF anchor：OPENGUARD-DZI2-IMPLEMENTATION-REVIEW-20260905-1838
+
+
+### [20260905-1930-RootAstra-DurableZIPI2验收] PARTIAL - 技术完成，待发布绑定
+
+- Root代记Terra最终实现与Luna独立交付；两者已停止写入。DZ01–15具体证据见既有规格第13节，真实OS锁/fork/CAS/kill/HTTP而非编号或stub替代。
+- 原始fixture/oracle失败与真实running恢复busy缺陷分别保留。修复前第三至第四CAS约0.076秒，周期前冷却修复后1.008917秒；独立断言至少1秒通过，无业务重试或产品P1/P2扩展。
+- Terra专项28 passed；Luna独立70 passed,2 warnings；Root受控完整1005 passed,3 skipped,2 warnings（51.04秒）。skip为既有可选公网/真实模型；warning为Starlette/AnyIO及刻意fork测试提示，不外推一般fork安全。沙箱loopback失败保留为环境事实。
+- Root兼容核验：OpenAPI开工快照精确等值、Schema/sample、编译、保护目录、既有独立AST和原日志前缀通过。全量之后仅修改治理/运行文档，无产品或测试变更。
+- 可演示边界与仅用户A1–A8表、P0剩余5包及条件工期见PROJECT_PROGRESS第7节；下一任务回到A4真实分析事实接线，不自动开展Git恢复/lease/retry。
+- 本次运行精确 token 数不可获得；开工20k–35k非硬估算，I2功能完整完成，实际区间不可确认，验证补证未扩大功能范围。
+- EVD-A3-DURABLE-ZIP-DISPATCH-001技术批准，待精确文件审计、不可变提交与远端核对；不自动合并或Release。
+- EOF anchor：OPENGUARD-DZI2-ROOT-ACCEPTED-20260905-1930

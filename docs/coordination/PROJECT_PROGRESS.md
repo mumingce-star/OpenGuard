@@ -1,16 +1,22 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-05 17:13（Asia/Shanghai）
+更新时间：2026-09-05 19:30（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
-优先级口径：本台账当前展示的是截至提交日必须闭合的 **P0 竞赛主线**，尚未建立产品功能的 P1/P2 增强路线表。共享日志中出现的 P1/P2 通常表示缺陷严重度（P1 阻止任务证据批准，P2 为非阻断债务），不能与产品路线优先级混用。
+优先级口径：以《OpenGuard AI 详细项目规划与 Codex 交接执行书 V1.0》第3节和第15节为P0边界与最终DoD。产品P1包括Resource Graph、Model/Dataset Card增强、LICENSE/NOTICE草稿、整改任务、批量Bench、历史扫描和更丰富报告；P2为更多生态、完整兼容矩阵、自动PR、私有仓库和高级协作。本轮及后续默认不实施P1/P2。下方历史全景包含完整竞赛目标，不能全部反推为P0硬门禁。共享日志中的缺陷严重度P1/P2与产品路线优先级不同。
+
+### 项目负责人P0收工口径
+
+每次收工仅展示用户负责的A1-A8，区分本轮/累计完成、进行中、未开始、阻塞、验证证据、责任角色和发布状态。组员模块只列作这些任务的输入依赖，不算作用户尚未完成的独立工作包。
+P0结束依据：公开Git/ZIP、真实ScanCode/Syft、模型/数据/API带Evidence样例、首批许可证规则及可追溯风险、AI结构化降级、核心前端真实API、HTML/JSON/CSV、首批golden cases与指标、Compose陌生机复现、第三方与AI使用记录。完整竞赛材料及获奖竞争力证据另列。
+I2已获明确授权；Git恢复、lease/heartbeat和业务retry不自动成为下一任务。I2通过后先回到上述DoD的真实分析模块接线与Web/部署闭环，不扩张队列架构。
 
 ## 0. 真人责任边界（模型角色不能替代真人主责）
 
 | 真人角色 | 负责范围 | 本轮处理 |
 |---|---|---|
-| 项目负责人（用户） | A1领域、A2输入、A3 API/注册表、A4 Pipeline、A5 AI、A6报告、A7部署、A8集成与材料 | 本轮推进A3/A4-3a-I1，Terra实现、Luna独立验证、Root审查与发布；不代做B线、前端或部署 |
+| 项目负责人（用户） | A1领域、A2输入、A3 API/注册表、A4 Pipeline、A5 AI、A6报告、A7部署、A8集成与材料 | 本轮完成A3/A4-3a-I2，Terra实现、Luna独立验证、Root审查与发布；不代做B线、前端或部署 |
 | 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 远端 `codex/p0-external-tools-sync` 仍为 `f8bedfd`；本轮只读取当前分支已原样引入的 B5 公共输出，不改写组员引擎、规则、扫描器、测试或分支 |
 | 前端组员 | React/Vite 与 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 页面 | 本轮未修改；远端前端分支新提交保持组员在途状态 |
 
@@ -18,14 +24,14 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 
 ## 1. 当前任务点
 
-`A3/A4-3a-S`规格已发布；本轮`A3/A4-3a-I1`代码、独立验证和Root全量验收通过，
-已推送实现`272f5cf`并绑定证据。I2未开始，生产durable开关仍不可启用。最终完整回归`952 passed,3 skipped`；
-I1只证明私有输入、descriptor、幂等/配额/清理协议，不代表自动派发或重启恢复。
+`A3/A4-3a-S`规格与`A3/A4-3a-I1`已发布，实现`272f5cf`、发布记录`2368d91`。
+当前I2技术验收通过：unit28、独立70、Root完整1005 passed/3 skipped；生产精确开关1可启用单机ZIP派发与恢复，默认0保持兼容。发布绑定见第7节。
+紧接任务为A4真实扫描器/许可证/AI资产事实接线；不扩展产品P1/P2。
 
 | 任务点 | P级 | 主责模型 | 状态 | 已完成/当前证据 | 未完成/下一步 | GitHub状态 |
 |---|---|---|---|---|---|---|
-| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 已完成 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 规格已发布；I1已验收发布，I2未开始，Git恢复/lease/heartbeat/业务retry仍待后续 | `docs/a3-a4-durable-zip-spec` 已推送，规格提交 `f9a59fa`；未创建/合并PR |
-| A3/A4-3a-I1 ZIP持久存储协议 | P0 | Terra→Luna→Root | 已完成 | 实现16项、独立29项、原并发P1闭合、受控全量952 passed,3 skipped；EVD-A3-DURABLE-ZIP-STORAGE-001绑定272f5cf | I2锁/dispatcher/恢复未实现，生产durable仍关闭 | `feat/a3-durable-zip-storage` 已推送，远端完整对象已核对；未创建/合并PR |
+| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 已完成 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 规格已发布；I1/I2已验收；Git恢复/lease/heartbeat/业务retry不自动列入P0 | `docs/a3-a4-durable-zip-spec` 已推送，规格提交 `f9a59fa`；未创建/合并PR |
+| A3/A4-3a-I1 ZIP持久存储协议 | P0 | Terra→Luna→Root | 已完成 | 实现16项、独立29项、原并发P1闭合、受控全量952 passed,3 skipped；EVD-A3-DURABLE-ZIP-STORAGE-001绑定272f5cf | I2已另行验收，默认0、精确1启用单机ZIP派发 | `feat/a3-durable-zip-storage` 已推送，远端完整对象已核对；未创建/合并PR |
 | S1a/A1 P0领域契约 | P0 | Sol | 已完成 | 契约 v0.1.1、唯一公共模型、6个API、风险四态、证据与provenance；历史提交 `02c3d46` | 后续仅通过变更流程新增 ADR，不再并行维护第二套模型 | 已推送 `feat/p0-domain-contract` |
 | A1 领域模型实现 | P0 | Terra | 已完成 | Pydantic模型、Draft 2020-12 Schema、sample和 AI producer 条件字段；历史提交 `b2fd061` | 进入 A2 前保持兼容性回归 | 已推送 `feat/p0-domain-contract` |
 | L-A1 独立边界审计 | P0 | Luna | 已完成 | 46项测试全部通过；覆盖路径脱敏、partial语义及 AI producer 正反边界 | 进入 A2 后扩展输入安全测试 | 已推送 `feat/p0-domain-contract` |
@@ -117,7 +123,7 @@ I1只证明私有输入、descriptor、幂等/配额/清理协议，不代表自
 ## 3.1 当前远端分支入口
 
 - 团队日常入口：`integration/p0`；里程碑发布目标：`main`。
-- 项目负责人当前短分支：`feat/a3-durable-zip-storage`，基于规格发布`16cd7d4`；I1实现`272f5cf`已推送，远端完整哈希已核对。既有PR、main/integration及组员分支均未自动修改或合并。
+- 项目负责人当前短分支：`feat/a3-zip-dispatcher-recovery`，基线`2368d91`；I2发布记录见第7节。既有PR、main/integration及组员分支均未自动修改或合并。
 - 组员在途分支：`feat/xzb-frontend`、`codex/p0-external-tools-sync`，均保留。
 - 待明确授权清理的项目负责人历史分支：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
 - 上述待清理分支的提交均已从 `integration/p0` 可达，删除分支引用不会删除集成线中的代码和证据；未获明确授权前保持现状。
@@ -136,15 +142,15 @@ I1只证明私有输入、descriptor、幂等/配额/清理协议，不代表自
 
 唯一规格：[ZIP持久派发与中断收敛](../spec/a3-a4-durable-zip-dispatch.md)。
 Sol完成架构审查，Terra确认可实现性，Luna批准15项独立oracle；Root关闭报告links可见性和配额预留歧义。
-I1现已通过存储协议实现与独立验收，运行证据见规格第12节；I2自动派发/恢复未实现。
+I1存储和I2自动派发/恢复已分别验收，运行证据见规格第12–13节。
 未新增依赖或改变公共契约；本轮新增I1实现与独立测试，已有保护测试未放宽。
 
 | 范围 | 状态 | 责任 | 下一项可验证门禁 |
 |---|---|---|---|
 | 本轮规格门禁 | 已完成 | Root/Sol/Terra/Luna | 四文件范围、append-only、P0回归、DZ唯一ID通过；规格提交f9a59fa与远端完整对象一致 |
 | I1 descriptor与输入生命周期 | 已完成 | Terra→Luna→Root | 实现16项、独立29项、受控全量952 passed,3 skipped；已推送272f5cf并绑定证据 |
-| I2 dispatcher与恢复接线 | 未开始 | Terra→Luna→Sol→Root | 真正多进程锁、kill/restart、queued消费、running不重放、DZ-01..15和完整回归 |
-| Git恢复、lease/heartbeat与业务retry | 未开始 | 项目负责人A线 | 另立窄规格；本轮不承诺任意阶段续跑或exactly-once |
+| I2 dispatcher与恢复接线 | 已完成 | Terra→Luna→Root | 真实锁/kill/restart/零重放，独立70、完整1005 passed/3 skipped |
+| Git恢复、lease/heartbeat与业务retry | 未开始 | 项目负责人A线 | 不自动排入P0；本轮不承诺任意阶段续跑或exactly-once |
 | 前端与B线候选接入 | 进行中 | 各组员→Root集成 | 组员分支已有候选；前端拟定接口须适配冻结六API，B4/B6/B7不得重复生成 |
 
 现有可演示能力仍为安全ZIP/公开Git依赖纵切、持久查询与阶段性报告；普通输入仍为
@@ -172,3 +178,26 @@ I1现已通过存储协议实现与独立验收，运行证据见规格第12节�
 - 发布：实现`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`已推送功能分支，远端完整哈希核对一致，EVD已绑定；本轮共12项文件，不修改main、不创建或合并PR、不发布Release。
 
 I1不可变实现证据：`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`；功能分支已发布，随后仅回填本轮发布治理记录。
+
+## 7. I2 最终验收与项目负责人P0状态
+
+本轮I2技术验收通过，发布绑定待回填。EVD-A3-DURABLE-ZIP-DISPATCH-001；unit28、独立70、受控完整1005 passed/3 skipped。OpenAPI/Schema/sample、编译及保护范围通过。Root承担本轮架构终审，未唤醒已停用Sol任务；Terra实现、Luna独立验证均已停止写入。
+下表仅计用户本人A1–A8，组员代码作为集成输入，不重复计作用户实现责任。
+
+| 用户任务 | 累计状态 | 本轮完成 / 累计完成 | 未完成、依赖或阻塞 | 责任角色 | 证据与发布 |
+|---|---|---|---|---|---|
+| A1 领域契约 | 已完成 | 本轮兼容复核；模型/Schema/六API已冻结 | 后续保持兼容 | 用户 / Root | OpenAPI精确等值、Schema/sample；既有提交已推送 |
+| A2 安全输入 | 进行中 | 既有ZIP/公开Git安全纵切 | 目标部署安全、完整攻击语料及清理隔离复验 | 用户 / Terra→Luna→Root | 既有真实输入证据；已推送 |
+| A3 API/注册表 | 进行中 | 本轮生命周期锁、queued恢复；已有六API/SQLite幂等 | 核心Web与目标环境总验收 | 用户 / Terra→Luna→Root | I2独立70；本轮发布绑定见下 |
+| A4 Pipeline | 进行中 | 本轮dispatcher及running零重放收敛；已有规则/AI/报告接线 | 真实scanner/SPDX/AI资产事实集成，依赖组员候选验证 | 用户 / Root集成 | 完整1005 passed/3 skipped；真实输入仍partial/rules/70 |
+| A5 AI辅助 | 已完成（子系统） | 既有Provider/Ollama/降级与Pipeline接线 | 全产品真实案例效果随P0总验收，不能由隔离测试外推 | 用户 / Root | 历史真实模型证据已发布；本轮仅隔离Provider计数 |
+| A6 报告 | 进行中 | 既有四格式导出、持久化与安全下载；本轮恢复可见性验证 | 真实许可证内容、Web下载和最终匿名验收 | 用户 / Root集成 | 四格式真实GET/摘要验证；实现已推送 |
+| A7 集成部署 | 进行中 | 已有集成基线和本机演示 | 真实Web适配、Compose/陌生机验收未开始；依赖前端候选契约对齐 | 用户 / Root集成 | 当前主控仍mock；最终部署未发布 |
+| A8 协调验收/材料 | 进行中 | 本轮独立证据、P0范围纠偏与进度治理 | 首批golden指标、资源/版本记录冻结与完整材料；最终Release未开始 | 用户 / Root | 既有记录已推送，本轮发布绑定见下 |
+
+当前可独立演示：安全ZIP/公开Git依赖纵切与阶段报告；显式durable ZIP可重启消费queued，中断running只收敛事实而不重放。缺少真实资源→许可证风险→AI→Web完整链和陌生机部署，不称完整P0成品。本轮无开放阻断I2的缺陷；剩余依赖是候选模块与目标环境验收。
+
+P0剩余5个验收工作包：①A4真实scanner/SPDX/AI资产事实接线；②A7核心页面真实六API与报告下载；③A2/A7部署安全、Compose及陌生机；④A8首批golden cases、可计算指标与真实全链演示；⑤A8资源/版本/许可证/AI记录及P0冻结。预计约30–50有效工程/验证小时；在候选可用、环境顺利且每天4–6小时投入下约7–14个工作日，非测量承诺，出现上游或环境阻塞需重估。下一轮仅先做①的可验收窄切片。
+报名/参赛仍需Owner核实平台资格与权属；完整作品还需上述P0、报告/视频/资源表/匿名与Release；竞争力还需真实案例、基线/消融、误差分析和稳定演示。此处不授权实施产品P1批量Bench等扩展。
+
+本次运行精确 token 数不可获得；开工非硬估算20k–35k，I2功能范围完整完成，实际是否在区间内不可确认；验证补证未扩大产品范围。

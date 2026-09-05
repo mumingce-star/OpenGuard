@@ -6,6 +6,7 @@ import io
 import json
 import os
 import stat
+import time
 import zipfile
 import hashlib
 from pathlib import Path
@@ -27,6 +28,8 @@ from app.persistence import (
     ZipExecutionProfile,
 )
 from app.persistence import SQLiteScanRunRegistry
+from app.persistence import ScanRegistryError
+from app.pipeline.zip_dispatcher import ZipDispatcher, ZipDispatcherError
 
 
 def _private(path: Path) -> Path:
@@ -401,14 +404,306 @@ def test_i1_terminal_cleanup_accepts_a_healthy_cancelled_prepared_descriptor(tmp
     registry.close()
 
 
-def test_i1_default_factory_rejects_durable_configuration_until_i2(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_i2_default_factory_keeps_legacy_default_and_runs_durable_zip_lifecycle(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     data_dir = tmp_path / "data"
     monkeypatch.setenv("OPENGUARD_DATA_DIR", str(data_dir))
-    monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "1")
+    monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "0")
+    legacy = create_default_app()
+    assert legacy.state.zip_scan_runtime._dispatch_store is None
+    legacy.state.scan_api_service._registry.close()
 
-    with pytest.raises(RuntimeError, match="requires the unimplemented I2"):
-        create_default_app()
-    assert not data_dir.exists()
+    monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "1")
+    durable = create_default_app()
+    assert durable.state.zip_scan_runtime._dispatch_store is not None
+    with TestClient(durable, raise_server_exceptions=False) as client:
+        accepted = _post(client, _archive(), key="i2-factory-001")
+        assert accepted.status_code == 202
+        scan_id = accepted.json()["scan_id"]
+        deadline = time.monotonic() + 5
+        response = client.get(f"/api/v1/scans/{scan_id}")
+        while response.json()["status"] not in {"partial", "failed", "completed"} and time.monotonic() < deadline:
+            time.sleep(0.05)
+            response = client.get(f"/api/v1/scans/{scan_id}")
+        assert response.json()["status"] == "partial"
+        assert response.json()["stage"] == "rules"
+        assert response.json()["errors"][-1]["code"] == "rules_stage_not_connected"
+
     monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "invalid")
     with pytest.raises(RuntimeError, match="invalid OPENGUARD_ENABLE_DURABLE_ZIP"):
         create_default_app()
+
+
+def test_i2_lifecycle_lock_rejects_a_second_durable_application(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    data_dir = tmp_path / "data"
+    monkeypatch.setenv("OPENGUARD_DATA_DIR", str(data_dir))
+    monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "1")
+    first = create_default_app()
+    second = create_default_app()
+
+    with TestClient(first):
+        with pytest.raises(ZipDispatcherError, match="dispatch_lock_unavailable"):
+            with TestClient(second):
+                pass
+
+
+def test_i2_fatal_dispatcher_rejects_a_durable_multipart_before_capacity_reservation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    data_dir = tmp_path / "data"
+    monkeypatch.setenv("OPENGUARD_DATA_DIR", str(data_dir))
+    monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "1")
+    app = create_default_app()
+
+    with TestClient(app, raise_server_exceptions=False) as client:
+        dispatcher = app.state.zip_dispatcher
+        dispatcher._stop_fatal("dispatch_storage_failure")
+        response = _post(client, _archive(), key="i2-fatal-before-body")
+
+    assert response.status_code == 500
+    assert response.json()["error"]["code"] == "internal_error"
+    assert response.json()["error"]["details"] == {"reason": "dispatch_storage_failure"}
+    assert not list((data_dir / "uploads").glob("openguard-upload-*.zip"))
+
+
+def test_i2_input_storage_fault_stops_dispatch_and_refuses_the_next_upload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    data_dir = tmp_path / "data"
+    monkeypatch.setenv("OPENGUARD_DATA_DIR", str(data_dir))
+    monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "1")
+    app = create_default_app()
+    calls = 0
+
+    with TestClient(app, raise_server_exceptions=False) as client:
+        store = app.state.zip_scan_runtime._dispatch_store
+
+        def fail_input(_: ZipDispatchDescriptor) -> Path:
+            nonlocal calls
+            calls += 1
+            raise ZipDispatchError("dispatch_store_io_failed")
+
+        monkeypatch.setattr(store, "input_path_for_dispatch", fail_input)
+        first = _post(client, _archive(), key="i2-storage-fault-first")
+        assert first.status_code == 202
+        scan_id = first.json()["scan_id"]
+        deadline = time.monotonic() + 5
+        while app.state.zip_dispatcher.fatal_diagnostic is None and time.monotonic() < deadline:
+            time.sleep(0.025)
+        second = _post(client, _archive(), key="i2-storage-fault-second")
+        stored = app.state.scan_api_service._registry.get(scan_id)
+
+    assert calls == 1
+    assert app.state.zip_dispatcher.fatal_diagnostic == "dispatch_storage_failure"
+    assert app.state.zip_dispatcher.diagnostic_for(scan_id) == "dispatch_input_storage_failure"
+    assert stored.run.status is ScanStatus.QUEUED
+    assert second.status_code == 500
+    assert second.json()["error"]["details"] == {"reason": "dispatch_storage_failure"}
+
+
+def _ready_dispatcher_case(tmp_path: Path, *, content: bytes = b"zip-bytes"):
+    registry, store, archive, descriptor, queued = _prepared_without_registry(tmp_path, content)
+    registry.create(queued)
+    store.promote(descriptor)
+    workspace_root = _private(tmp_path / "workspaces")
+    dispatcher = ZipDispatcher(
+        registry,
+        store,
+        data_dir=tmp_path,
+        workspace_root=workspace_root,
+    )
+    return registry, store, archive, descriptor, queued, dispatcher
+
+
+def _wait_terminal(registry: SQLiteScanRunRegistry, scan_id: str):
+    deadline = time.monotonic() + 5
+    stored = registry.get(scan_id)
+    while stored.run.status.value not in {"partial", "failed", "completed", "cancelled"} and time.monotonic() < deadline:
+        time.sleep(0.025)
+        stored = registry.get(scan_id)
+    return stored
+
+
+def _stop_dispatcher(dispatcher: ZipDispatcher, registry: SQLiteScanRunRegistry) -> None:
+    dispatcher.stop_and_join()
+    registry.close()
+    dispatcher.release_lifecycle_lock()
+
+
+def test_i2_replays_only_a_queued_ready_descriptor_after_startup(tmp_path: Path) -> None:
+    registry, store, archive, descriptor, queued, dispatcher = _ready_dispatcher_case(tmp_path, content=_archive())
+    try:
+        dispatcher.start()
+        terminal = _wait_terminal(registry, queued.id)
+        assert terminal.run.status is ScanStatus.PARTIAL
+        assert terminal.run.errors[-1].code == "rules_stage_not_connected"
+        assert store.read(queued.id, state="ready") is None
+        assert not archive.exists()
+    finally:
+        _stop_dispatcher(dispatcher, registry)
+
+
+def test_i2_missing_bound_input_converges_queued_without_a_handler(tmp_path: Path) -> None:
+    registry, store, archive, descriptor, queued, dispatcher = _ready_dispatcher_case(tmp_path)
+    archive.unlink()
+    try:
+        dispatcher.start()
+        terminal = _wait_terminal(registry, queued.id)
+        assert terminal.run.status is ScanStatus.FAILED
+        assert terminal.run.stage is ScanStage.INGESTION
+        assert terminal.run.errors[-1].code == "dispatch_input_unavailable"
+        assert store.read(queued.id, state="ready") is None
+    finally:
+        _stop_dispatcher(dispatcher, registry)
+
+
+def test_i2_startup_running_is_honestly_terminalized_without_replay(tmp_path: Path) -> None:
+    registry, store, _, descriptor, queued, dispatcher = _ready_dispatcher_case(tmp_path)
+    initial = registry.get(queued.id)
+    payload = queued.model_dump(mode="python")
+    payload.update(
+        status=ScanStatus.RUNNING,
+        stage=ScanStage.INGESTION,
+        progress=5,
+        started_at=queued.created_at,
+    )
+    registry.replace(ScanRun.model_validate(payload), expected_revision=initial.revision)
+    try:
+        dispatcher.start()
+        terminal = _wait_terminal(registry, queued.id)
+        assert terminal.run.status is ScanStatus.FAILED
+        assert terminal.run.errors[-1].code == "worker_interrupted"
+        assert terminal.run.started_at == queued.created_at
+        assert store.read(descriptor.scan_id, state="ready") is None
+    finally:
+        _stop_dispatcher(dispatcher, registry)
+
+
+def test_i2_startup_busy_recovery_is_deferred_to_the_dispatcher_cycle(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    registry, _, _, _, queued, dispatcher = _ready_dispatcher_case(tmp_path)
+    initial = registry.get(queued.id)
+    payload = queued.model_dump(mode="python")
+    payload.update(
+        status=ScanStatus.RUNNING,
+        stage=ScanStage.INGESTION,
+        progress=5,
+        started_at=queued.created_at,
+    )
+    registry.replace(ScanRun.model_validate(payload), expected_revision=initial.revision)
+    original = registry.replace
+    attempts = 0
+    timestamps: list[float] = []
+
+    def busy_before_recovery(run: ScanRun, *, expected_revision: int):
+        nonlocal attempts
+        if run.status in {ScanStatus.FAILED, ScanStatus.PARTIAL} and attempts < 3:
+            attempts += 1
+            timestamps.append(time.monotonic())
+            raise ScanRegistryError("registry_busy")
+        if run.status in {ScanStatus.FAILED, ScanStatus.PARTIAL}:
+            timestamps.append(time.monotonic())
+        return original(run, expected_revision=expected_revision)
+
+    monkeypatch.setattr(registry, "replace", busy_before_recovery)
+    try:
+        dispatcher.start()
+        dispatcher.notify()
+        terminal = _wait_terminal(registry, queued.id)
+        assert attempts == 3
+        assert timestamps[3] - timestamps[2] >= 0.9
+        assert terminal.run.errors[-1].code == "worker_interrupted"
+    finally:
+        _stop_dispatcher(dispatcher, registry)
+
+
+def test_i2_uncertain_claim_conflict_isolated_without_a_second_worker_call(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    registry, _, _, _, queued, dispatcher = _ready_dispatcher_case(tmp_path, content=_archive())
+    original = registry.replace
+    claim_attempts = 0
+
+    def conflict_the_only_claim(run: ScanRun, *, expected_revision: int):
+        nonlocal claim_attempts
+        if run.status is ScanStatus.RUNNING and run.stage is ScanStage.INGESTION and run.progress == 5:
+            claim_attempts += 1
+            raise ScanRegistryError("registry_revision_conflict")
+        return original(run, expected_revision=expected_revision)
+
+    monkeypatch.setattr(registry, "replace", conflict_the_only_claim)
+    try:
+        dispatcher.start()
+        time.sleep(1.2)
+        assert claim_attempts == 1
+        assert registry.get(queued.id).run.status is ScanStatus.QUEUED
+        assert queued.id in dispatcher._uncertain_running
+    finally:
+        _stop_dispatcher(dispatcher, registry)
+
+
+def test_i2_profile_timeout_is_preserved_from_acceptance_not_current_default(tmp_path: Path) -> None:
+    registry, store, _, _, queued = _prepared_without_registry(tmp_path)
+    profile = ZipExecutionProfile.from_provider(ai_requested=True, provider=OllamaProvider(), ai_timeout_seconds=2.5)
+    descriptor = ZipDispatchDescriptor.from_run(queued, profile)
+    dispatcher = ZipDispatcher(
+        registry,
+        store,
+        data_dir=tmp_path,
+        workspace_root=_private(tmp_path / "workspaces"),
+        ai_provider=OllamaProvider(),
+        ai_enabled=True,
+        ai_timeout_seconds=10.0,
+    )
+    assert dispatcher._profile_failure(descriptor) is None
+    registry.close()
+
+
+def test_i2_fork_child_closes_the_inherited_fd_without_unlocking(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    registry, store, _, _, _ = _prepared_without_registry(tmp_path)
+    dispatcher = ZipDispatcher(registry, store, data_dir=tmp_path, workspace_root=_private(tmp_path / "workspaces"))
+    closed: list[int] = []
+    dispatcher._lock_fd = 321
+    monkeypatch.setattr("app.pipeline.zip_dispatcher.os.close", closed.append)
+    monkeypatch.setattr("app.pipeline.zip_dispatcher.fcntl.flock", lambda *_: pytest.fail("child must not unlock"))
+
+    dispatcher._after_fork_child()
+
+    assert closed == [321]
+    assert dispatcher.has_lifecycle_lock is False
+    assert dispatcher._forked_child_pid == os.getpid()
+    registry.close()
+
+
+def test_i2_global_store_failure_stops_the_dispatcher_with_a_fixed_diagnostic(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    registry, store, _, _, _ = _prepared_without_registry(tmp_path)
+    dispatcher = ZipDispatcher(registry, store, data_dir=tmp_path, workspace_root=_private(tmp_path / "workspaces"))
+    monkeypatch.setattr(store, "scan_ids", lambda **_: (_ for _ in ()).throw(ZipDispatchError("dispatch_store_io_failed")))
+
+    dispatcher._run()
+
+    assert dispatcher.fatal_diagnostic == "dispatch_cycle_stopped"
+    registry.close()
+
+
+def test_i2_recovery_store_preserves_bound_work_when_an_unrelated_upload_is_suspicious(tmp_path: Path) -> None:
+    registry, store, archive, descriptor, queued = _prepared_without_registry(tmp_path)
+    registry.create(queued)
+    store.promote(descriptor)
+    suspicious = archive.parent / "unrecognized-input"
+    suspicious.write_bytes(b"do-not-delete")
+    os.chmod(suspicious, 0o600)
+
+    with pytest.raises(ZipDispatchError, match="dispatch_store_corrupt"):
+        ZipDispatchStore(store.dispatch_root, store.upload_root)
+    recovery = ZipDispatchStore(store.dispatch_root, store.upload_root, recovery_mode=True)
+
+    assert recovery.read(descriptor.scan_id, state="ready") == descriptor
+    with pytest.raises(ZipDispatchError, match="dispatch_store_corrupt"):
+        recovery.reserve_upload()
+    assert suspicious.exists()
+    registry.close()

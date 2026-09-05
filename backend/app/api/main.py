@@ -35,7 +35,8 @@ from app.api.service import APPLICATION_VERSION, ApiError, ScanApiService
 from app.api.git_scan import GitScanRuntime
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
-from app.persistence import SQLiteScanRunRegistry
+from app.persistence import SQLiteScanRunRegistry, ZipDispatchStore
+from app.pipeline.zip_dispatcher import ZipDispatcher
 from app.reporting import PipelineReportPublisher, ReportArtifactStore
 
 
@@ -141,6 +142,14 @@ def _router() -> APIRouter:
                     code="internal_error",
                     message="ZIP scanning is unavailable.",
                     reason="zip_runtime_unavailable",
+                )
+            dispatcher: ZipDispatcher | None = request.app.state.zip_dispatcher
+            if dispatcher is not None and not dispatcher.is_accepting:
+                raise ApiError(
+                    status_code=500,
+                    code="internal_error",
+                    message="ZIP scanning is unavailable.",
+                    reason="dispatch_storage_failure",
                 )
             reservation = runtime.reserve_upload_capacity()
             try:
@@ -277,19 +286,50 @@ def create_app(
     git_runtime: GitScanRuntime | None = None,
     report_store: ReportArtifactStore | None = None,
     close_registry: bool = False,
+    zip_dispatcher: ZipDispatcher | None = None,
 ) -> FastAPI:
+    if zip_dispatcher is not None:
+        # Durable lifecycle ownership is deliberately all-or-nothing.  An
+        # injected dispatcher must use exactly this registry and runtime store,
+        # and this lifespan must close the registry before it can release the
+        # flock.  That prevents a caller from accidentally pairing a lock for
+        # one data root with a worker using another.
+        if (
+            not close_registry
+            or zip_runtime is None
+            or zip_runtime._registry is not registry
+            or type(zip_runtime._dispatch_store) is not ZipDispatchStore
+            or not zip_dispatcher.is_bound_to(
+                registry,
+                zip_runtime._dispatch_store,
+                ai_provider=zip_runtime._ai_provider,
+                ai_enabled=zip_runtime._ai_enabled,
+                ai_timeout_seconds=zip_runtime._ai_timeout_seconds,
+            )
+        ):
+            raise ValueError("zip dispatcher must own the matching ZIP runtime and registry lifecycle")
+
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        dispatcher_started = False
         try:
+            if zip_dispatcher is not None:
+                zip_dispatcher.start()
+                dispatcher_started = True
             yield
         finally:
+            if dispatcher_started:
+                zip_dispatcher.stop_and_join()
             if close_registry:
                 registry.close()
+            if zip_dispatcher is not None and zip_dispatcher.has_lifecycle_lock:
+                zip_dispatcher.release_lifecycle_lock()
 
     app = FastAPI(title="OpenGuard API", version=APPLICATION_VERSION, lifespan=lifespan)
     app.state.scan_api_service = ScanApiService(registry, report_store=report_store)
     app.state.zip_scan_runtime = zip_runtime
     app.state.git_scan_runtime = git_runtime
+    app.state.zip_dispatcher = zip_dispatcher
 
     @app.middleware("http")
     async def limit_zip_request_body(
@@ -406,8 +446,6 @@ def create_default_app() -> FastAPI:
     durable_zip_enabled = os.environ.get("OPENGUARD_ENABLE_DURABLE_ZIP", "0")
     if durable_zip_enabled not in {"0", "1"}:
         raise RuntimeError("invalid OPENGUARD_ENABLE_DURABLE_ZIP")
-    if durable_zip_enabled == "1":
-        raise RuntimeError("OPENGUARD_ENABLE_DURABLE_ZIP requires the unimplemented I2 lifecycle lock and dispatcher")
     configured = os.environ.get("OPENGUARD_DATA_DIR", "data")
     if not configured or "\x00" in configured:
         raise RuntimeError("invalid OPENGUARD_DATA_DIR")
@@ -422,7 +460,11 @@ def create_default_app() -> FastAPI:
     upload_root = data_dir / "uploads"
     workspace_root = data_dir / "workspaces"
     report_root = data_dir / "reports"
-    for root in (upload_root, workspace_root, report_root):
+    dispatch_root = data_dir / "dispatch"
+    roots = (upload_root, workspace_root, report_root)
+    if durable_zip_enabled == "1":
+        roots = (*roots, dispatch_root)
+    for root in roots:
         try:
             root.mkdir(mode=0o700, exist_ok=True)
             info = root.lstat()
@@ -436,6 +478,11 @@ def create_default_app() -> FastAPI:
     registry = SQLiteScanRunRegistry(data_dir / "scans.db")
     report_store = ReportArtifactStore(report_root)
     ai_provider = OllamaProvider() if ai_enabled == "1" else None
+    dispatch_store = (
+        ZipDispatchStore(dispatch_root, upload_root, recovery_mode=True)
+        if durable_zip_enabled == "1"
+        else None
+    )
     runtime = ZipScanRuntime(
         registry,
         upload_root=upload_root,
@@ -443,6 +490,7 @@ def create_default_app() -> FastAPI:
         report_publisher=PipelineReportPublisher(report_store),
         ai_provider=ai_provider,
         ai_enabled=ai_enabled == "1",
+        dispatch_store=dispatch_store,
     )
     git_enabled = os.environ.get("OPENGUARD_ENABLE_PUBLIC_GIT", "0")
     if git_enabled not in {"0", "1"}:
@@ -458,12 +506,26 @@ def create_default_app() -> FastAPI:
         if git_enabled == "1"
         else None
     )
+    dispatcher = (
+        ZipDispatcher(
+            registry,
+            dispatch_store,
+            data_dir=data_dir,
+            workspace_root=workspace_root,
+            report_publisher=PipelineReportPublisher(report_store),
+            ai_provider=ai_provider,
+            ai_enabled=ai_enabled == "1",
+        )
+        if dispatch_store is not None
+        else None
+    )
     return create_app(
         registry,
         zip_runtime=runtime,
         git_runtime=git_runtime,
         report_store=report_store,
         close_registry=True,
+        zip_dispatcher=dispatcher,
     )
 
 

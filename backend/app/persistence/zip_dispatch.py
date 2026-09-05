@@ -383,8 +383,9 @@ class ZipDispatchStore:
         upload_root: Path,
         *,
         event_hook: Callable[[str], None] | None = None,
+        recovery_mode: bool = False,
     ) -> None:
-        if event_hook is not None and not callable(event_hook):
+        if event_hook is not None and not callable(event_hook) or type(recovery_mode) is not bool:
             _fail("dispatch_store_invalid_argument")
         self._dispatch_root = _validate_private_directory(dispatch_root, code="dispatch_store_path_invalid")
         self._upload_root = _validate_private_directory(upload_root, code="dispatch_store_path_invalid")
@@ -393,11 +394,29 @@ class ZipDispatchStore:
         self._reservations: set[str] = set()
         self._reservation_inputs: dict[str, str] = {}
         self._prepared_owners: dict[str, str] = {}
-        self._persistent = self._discover_persistent_inputs()
+        self._recovery_mode = recovery_mode
+        self._persistent: dict[str, _PersistentInput] = {}
+        # I1's default construction remains fail-closed.  I2 can instead
+        # start in a deliberately restricted recovery mode: an unrelated
+        # suspicious upload still blocks new accepts, but it cannot prevent a
+        # separately, cryptographically bound descriptor from reaching its
+        # required queued-failure convergence.
+        try:
+            self._persistent = self._discover_persistent_inputs()
+        except ZipDispatchError as error:
+            if not recovery_mode or error.code not in {
+                "dispatch_store_corrupt",
+                "dispatch_capacity_exceeded",
+            }:
+                raise
 
     @property
     def upload_root(self) -> Path:
         return self._upload_root
+
+    @property
+    def dispatch_root(self) -> Path:
+        return self._dispatch_root
 
     @contextmanager
     def operation(self):
@@ -473,7 +492,11 @@ class ZipDispatchStore:
             try:
                 info = path.lstat()
             except OSError:
-                _fail("dispatch_store_io_failed")
+                # An entry we cannot inspect is itself suspicious capacity
+                # state, not authority to erase or ignore it.  Recovery mode
+                # may still service separately bound descriptors while new
+                # accepts remain fail-closed on the next capacity rescan.
+                _fail("dispatch_store_corrupt")
             if path.name in active_names:
                 continue
             if not self._validated_private_file(info) or _UPLOAD_NAME.fullmatch(path.name) is None:
@@ -730,6 +753,60 @@ class ZipDispatchStore:
             if descriptor.scan_id != valid_id:
                 _fail("dispatch_store_corrupt")
             return descriptor
+
+    def scan_ids(self, *, state: str) -> tuple[str, ...]:
+        """Return only syntactically addressable descriptors without cleanup.
+
+        Invalid or unfamiliar directory entries are intentionally not guessed
+        at, deleted, or made dispatchable.  The caller still has to use
+        :meth:`read` for the private-file and canonical-JSON validation.
+        """
+
+        if state not in {"prepared", "ready"}:
+            _fail("dispatch_store_invalid_argument")
+        suffix = f".{state}.json"
+        with self._lock:
+            _validate_private_directory(self._dispatch_root, code="dispatch_store_path_invalid")
+            try:
+                names = [path.name for path in self._dispatch_root.iterdir()]
+            except OSError:
+                _fail("dispatch_store_io_failed")
+            identifiers: list[str] = []
+            for name in names:
+                if not name.endswith(suffix):
+                    continue
+                candidate = name[: -len(suffix)]
+                try:
+                    identifiers.append(_validate_scan_id(candidate))
+                except ZipDispatchError:
+                    # Unknown files are not this task's cleanup authority.
+                    continue
+            return tuple(sorted(set(identifiers)))
+
+    def input_path_for_dispatch(self, descriptor: ZipDispatchDescriptor) -> Path:
+        """Revalidate the exact descriptor-owned ZIP immediately before use."""
+
+        if type(descriptor) is not ZipDispatchDescriptor:
+            _fail("dispatch_store_invalid_argument")
+        with self._lock:
+            path = self._upload_root / descriptor.upload_name
+            try:
+                info = path.lstat()
+            except FileNotFoundError:
+                _fail("dispatch_input_unavailable")
+            except OSError:
+                _fail("dispatch_store_io_failed")
+            if not self._validated_private_file(info) or info.st_size < 1:
+                _fail("dispatch_input_invalid")
+            try:
+                size_bytes, actual_digest = self._archive_facts(path, descriptor.upload_name)
+            except ZipDispatchError as error:
+                if error.code == "dispatch_store_corrupt":
+                    _fail("dispatch_input_invalid")
+                raise
+            if size_bytes < 1 or actual_digest != descriptor.input_sha256:
+                _fail("dispatch_input_invalid")
+            return path
 
     def promote(self, descriptor: ZipDispatchDescriptor) -> None:
         """Atomically move the exact prepared descriptor into I2-visible ``ready``."""

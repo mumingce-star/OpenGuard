@@ -345,7 +345,7 @@ ZIP/Pipeline 失败。资源可通过
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py
 ```
 
-## A3/A4-3a-I1 ZIP 持久派发准备
+## A3/A4-3a ZIP 持久输入与单机派发
 
 I1 新增 `app.persistence.ZipDispatchStore`，只负责私有 `uploads/` 输入、8 KiB 严格
 descriptor v1、`prepared → ready` 的文件/目录 fsync 与原子改名、原始 ZIP fingerprint 幂等、
@@ -353,12 +353,34 @@ descriptor v1、`prepared → ready` 的文件/目录 fsync 与原子改名、�
 `512 MiB` 容量预留。descriptor 仅记录服务端随机上传名、输入 SHA-256、冻结的 queued-run
 identity 投影和五字段锁定 Ollama identity；不保存绝对路径、prompt、响应或 config digest。
 
-默认生产工厂完全保留 A3-2 的 BackgroundTask 路径。`OPENGUARD_ENABLE_DURABLE_ZIP=0` 为默认值；
-精确 `1` 会明确拒绝启动，因为 I2 的生命周期 `flock`、单消费者 dispatcher、queued/running 恢复
-和自动消费尚未实现，不能把已写入的 ready descriptor 当作会自动扫描。非法开关值同样拒绝启动。
-I1 的 durable 行为只能经测试/集成时显式注入 `ZipDispatchStore`，并会在 202 后保留 queued run、
-ZIP 和 ready descriptor 供 I2 消费；它不会启动 worker、重放 handler、恢复 running、生成报告或清理
-未知残留。
+默认生产工厂保留 `OPENGUARD_ENABLE_DURABLE_ZIP=0` 的 A3-2 BackgroundTask 路径；只有精确
+`1` 启用 I2。durable 模式在接受 multipart 首字节、恢复任务和启动消费者前取得同一私有 POSIX
+数据目录内固定 0600 `flock`，并且一个 FastAPI 生命周期只有一个 ZIP dispatcher 线程。启动先
+收敛已存在的 descriptor-bound `running`，再修复 `prepared`，最后周期扫描 `ready`；新 queued ZIP
+会复用既有 A4 worker 与 A6 publisher。锁竞争、启动失败或 dispatcher 已停止时，该实例不会继续
+接受 durable ZIP 请求。
+
+已进入 `running` 的任务不会重放 handler：无分析聚合时收敛为 `failed`，已有组件/AI资产/证据/finding
+时收敛为 `partial`，均追加 `worker_interrupted`。含 `report_links` 的 interrupted run 保持原状态供
+人工核查。输入缺失/无效或 acceptance profile 不兼容会在 handler 前按既有 CAS 诚实失败；AI timeout
+使用接收时 profile，之后管理员默认值变化不会改写旧任务。未知 descriptor、可疑 upload、清理失败和
+registry 不确定都不擅自删除或重放；可疑 upload 同时会阻止新接收。
+
+durable 与 legacy 不能同时服务同一数据目录；首版仍只支持单机本地 POSIX、一个 cooperative 实例。
+它不提供 Git 恢复、lease/heartbeat、多 worker、业务 retry、外部副作用 exactly-once 或 orphan GC。
+非法开关值仍拒绝启动。纯 I1 显式注入 `ZipDispatchStore` 而未注入 dispatcher 的测试应用保持原有
+queued/ready 留存行为。
+
+仅在停止使用同一数据目录的其他实例后启用；不要使用多worker或reload模式：
+
+```bash
+PYTHONPATH=backend OPENGUARD_DATA_DIR=./data OPENGUARD_ENABLE_DURABLE_ZIP=1 \
+  python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+正常关闭会等待正在执行的ZIP worker结束，随后关闭registry并释放锁；不会因等待超时而放任
+线程继续写入并提前释放锁。若强制结束进程，新进程只恢复queued或收敛interrupted running，
+不会从中断阶段续跑，也不会为恢复结果补生成报告。进程kill验收不等于硬件断电持久性保证。
 
 受限 cleanup 只接受已健康读取的 terminal registry 快照，或调用方已证明 registry 中不存在该
 prepared run；会先验证 descriptor、输入 basename、身份与实际 SHA-256，按 ZIP→目录 fsync→descriptor
