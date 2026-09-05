@@ -889,3 +889,23 @@
 - 建议下一步及责任模型：Terra 在 Linux 受控环境完成 A2/B2/B3/A4；Luna 建立可复现 Bench 标注、基线与误差分析；Sol 维护 SPDX/规则来源台账和最终审计。
 - 关联分支/提交/PR/evidence：`codex/p0-external-tools-sync`；本轮待 Root 提交、推送和 PR 审查。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 18,000～30,000，范围因新增 B4/B6/B7 实现而扩大但未改变任务边界。
+### [20260906-0910-Sol-真实样例与评测证据] START - 落实扫描组交付要求
+
+- 作者模型：GPT-5.6 Sol；对话角色：Root Coordinator / 集成验收。
+- 时间：2026-09-06 09:10（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
+- 任务目标：提供 3–5 个可复现小型样例、人工预期/未知项、真实扫描输出、工具版本与运行命令，并将实际扫描结果送入现有 Bench 评测器；保留 `feat/a4-ai-asset-report` 的现有修复，不重写扫描器。
+- 开始前已确认：已阅读 README、完整共享日志、进度台账和 Sol 交接，已检查当前分支、工作区和近期提交；未发现本轮冲突修改。
+- 预计修改文件：`benchmarks/`、测试、运行说明、进度/AI/工作日志；不修改 P0 Schema 或模型权重/部署。
+- 验收方法：固定样例、实际 detector 输出 JSON、评测器读取该输出、定向 pytest、差异与敏感信息检查。
+- token 使用估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+
+### [20260906-1025-Sol-真实样例与评测证据收工] COMPLETE - 已提交可复现样例、实际输出和评测链路
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-06 10:25（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
+- 目标与结果：完成扫描组所需的首批 3–5 个可复现样例、人工预期/证据位置、真实扫描输出、工具版本和可运行命令。实际交付 5 个源代码样例（HF 模型、HF 数据集、OpenAI API、ModelScope 模型、负样例），并将真实 scanner JSON 接入 Bench 评测器；没有重写扫描器或扩展 P1/P2。
+- 修改/新增文件：`backend/app/detectors/static_assets.py`、`benchmarks/run_static_assets.py`、`benchmarks/cases/static-ai-assets-v1.json`、`benchmarks/results/static-ai-assets-v1.actual.json`、`benchmarks/evaluate.py`、`benchmarks/static-ai-assets-evidence.md`、`benchmarks/README.md`、`tests/unit/test_benchmark_actual_static_assets.py`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志。
+- 命令与验证：已恢复 Python `3.12.10`，安装 `backend[dev]`；生成实际 JSON（SHA-256 `b39265e6c99b465fd0a82fcf5ad9b53a43516326f7616d93babd850aae00b99a`）；`pytest` 目标集为 `9 passed, 1 skipped`（B6/B7、B2/B3）；`compileall backend benchmarks` 与 `git diff --check` 通过；已验证 ScanCode `32.5.0`、Syft `1.51.0`。
+- 接口、Schema、规则和决策：新增 `evaluate_scan_result(path)` 与 `write_result(case_path, result_path)`；不改变 P0 Schema。修复 HF `datasets/...` URL 被同时识别为模型的重复候选，保留数据集识别、确定性 evidence 与内容 SHA；许可证和授权仍明确为 `unknown`/`pending`。
+- 已知风险和未完成项：样例是公开、虚构、合成的 source-only case，评分不能代表生产准确率；仍缺 3–5 个独立项目/固定公开提交、双人标注与误报基线；Windows 未验证 POSIX descriptor ZIP 到 ScanCode/Syft 的端到端链路，也未完成 A4 接入。
+- 下一步与责任：Luna 建立独立项目/固定提交和双人标注台账；Terra 在受控 Linux 完成 ZIP→工具→A4；Root 审核、提交、推送和创建 PR。关联 evidence：`benchmarks/results/static-ai-assets-v1.actual.json`；提交/PR：待 Root 本轮验收后创建。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 8,000～14,000，本轮因恢复 Python 环境并增加实际回归而使用范围扩大，但未改变任务边界。

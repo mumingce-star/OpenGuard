@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "observed_at": "2026-09-06T00:00:00Z",
+  "cases": [
+    {"id": "model-huggingface", "files": {"src/model.py": "MODEL = 'https://huggingface.co/acme/demo-model'\n"}, "expected": ["model:huggingface:acme/demo-model"]},
+    {"id": "dataset-huggingface", "files": {"src/data.py": "DATASET = 'https://huggingface.co/datasets/acme/demo-dataset'\n"}, "expected": ["dataset:huggingface:acme/demo-dataset"]},
+    {"id": "api-openai", "files": {"src/client.py": "result = openai.responses.create()\n"}, "expected": ["api:openai:openai"]},
+    {"id": "model-modelscope", "files": {"config/resources.py": "MODEL = 'https://modelscope.cn/models/acme/demo-model'\n"}, "expected": ["model:modelscope:acme/demo-model"]},
+    {"id": "negative-generic-url", "files": {"docs/readme.md": "Visit https://example.org/docs for ordinary documentation.\n"}, "expected": []}
+  ]
+}

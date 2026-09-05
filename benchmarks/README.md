@@ -1,5 +1,8 @@
 # OpenGuard-Bench
 
+First reproducible P0 batch and generated scanner evidence:
+[static AI asset evidence](static-ai-assets-evidence.md).
+
 评测任务：
 
 1. 代码组件识别；

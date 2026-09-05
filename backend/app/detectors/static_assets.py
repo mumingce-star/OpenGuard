@@ -16,7 +16,9 @@ from app.domain.models import (
 _NAMESPACE = uuid.UUID("e6047e12-66d2-5ebb-b78a-756e0ee05601")
 _PRODUCER = ProducerRef(type=ProducerType.PARSER, name="openguard-static-ai-detector", version="0.1.0")
 _PATTERNS = (
-    (AIAssetType.MODEL, "huggingface", re.compile(r"https?://huggingface\.co/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
+    # ``datasets/<owner>`` is also two path components; exclude it so a
+    # dataset URL does not become a duplicate, incorrect model finding.
+    (AIAssetType.MODEL, "huggingface", re.compile(r"https?://huggingface\.co/((?!(?:datasets|spaces)/)[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
     (AIAssetType.MODEL, "modelscope", re.compile(r"https?://modelscope\.cn/models/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
     (AIAssetType.DATASET, "huggingface", re.compile(r"https?://huggingface\.co/datasets/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
     (AIAssetType.API, "openai", re.compile(r"\b(?:openai|OpenAI)\.(?:ChatCompletion|responses|chat\.completions)\b")),

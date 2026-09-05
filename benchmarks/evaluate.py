@@ -78,3 +78,17 @@ def evaluate_file(path: str | Path) -> dict[str, Any]:
         raise ValueError("benchmark cases must be a list")
     result = evaluate_cases(payload["cases"])
     return {"version": payload["version"], **result}
+
+
+def evaluate_scan_result(path: str | Path) -> dict[str, Any]:
+    """Evaluate a real scanner-result artifact containing expected/predicted labels."""
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("invalid scanner result JSON") from error
+    if not isinstance(payload, Mapping) or not isinstance(payload.get("version"), str) or not isinstance(payload.get("cases"), list):
+        raise ValueError("invalid scanner result JSON")
+    cases = [{"id": item.get("id"), "expected": item.get("expected"), "predicted": item.get("predicted")} for item in payload["cases"] if isinstance(item, Mapping)]
+    if len(cases) != len(payload["cases"]):
+        raise ValueError("invalid scanner result JSON")
+    return {"version": payload["version"], **evaluate_cases(cases)}
