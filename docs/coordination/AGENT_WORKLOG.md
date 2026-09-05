@@ -3704,3 +3704,9 @@
 - Root最终核对diff/保护路径/append-only/新增敏感内容/文件范围后提交推送feat/a7-minimal-compose；不合并main/integration、不Release、不上传安装包/镜像/运行数据。发布结果后续追加绑定。
 - 本次运行精确 token 数不可获得；开工12k–22k非硬估算，部署与工具环境完成，Chrome保存确认未完成，实际消耗区间不可确认；无功能范围扩张。
 - EOF anchor：OPENGUARD-A7-COMPOSE-ACCEPTED-20260905-2135
+
+### [20260905-RootAstra-MinimalCompose发布] PARTIAL - 发布绑定
+
+- 实现提交`a231d7273cf2e31da3b3d08bbcb3af5075a426a7`已推送`feat/a7-minimal-compose`，git ls-remote完整哈希与本地一致。精确14文件、diff/体积/新增敏感与私有路径/历史前缀核验通过。未合并main/integration、未Release。
+- 本条及进度追加仅绑定发布证据，不改变已实跑配置或业务。最小部署、工具环境与Chrome页面已完成；Chrome下载保存确认仍未完成，保留前条PARTIAL的诚实边界。下轮紧接A4工具事实绑定，不重复构建框架。
+- EOF anchor：OPENGUARD-A7-COMPOSE-PUBLISHED-20260905
