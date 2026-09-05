@@ -466,3 +466,58 @@ def test_large_valid_locks_preserve_shared_read_budget_and_legacy_partial(tmp_pa
     assert not result.run.licenses
     assert [item.code for item in result.run.errors] == ["rules_stage_not_connected"]
     registry.close()
+
+
+def test_external_facts_keep_manifest_identity_and_do_not_inherit_root_license(tmp_path, monkeypatch):
+    from app.domain.models import Evidence, ProducerRef, HashValue
+    from app.pipeline.external_scans import ExternalScanFacts
+    from app.scanners.external_tools import map_syft_output
+    files = {"LICENSE": "MIT License", "package.json": json.dumps({"name": "fixture", "version": "1.0.0", "dependencies": {"declared": "1.0.0", "unknown": "2.0.0"}}), "package-lock.json": json.dumps({
+        "lockfileVersion": 3, "packages": {"": {"name": "fixture", "version": "1.0.0"},
+        "node_modules/declared": {"version": "1.0.0", "license": "MIT"},
+        "node_modules/unknown": {"version": "2.0.0"}}})}
+    archive = _archive(tmp_path, files)
+    seen = []
+    def collect(tree, inventory, clock):
+        seen.append(tree)
+        producer = ProducerRef(type="scanner", name="scancode", version="32.5.0")
+        license_evidence = Evidence(id="evd_123e4567-e89b-12d3-a456-000000000099",
+            kind="license_text", locator="LICENSE", excerpt="mit", detected_by="scancode",
+            content_hash=HashValue(algorithm="sha256", value=hashlib.sha256(files["LICENSE"].encode()).hexdigest()),
+            producer=producer, observed_at=clock(), verification_status="pending")
+        syft = map_syft_output({"artifacts": [{"name": "declared", "version": "1.0.0",
+            "purl": "pkg:npm/declared@1.0.0", "locations": [{"path": "package-lock.json"}]}]},
+            root_digest=inventory.root_digest, observed_at=clock(), tool_version="1.51.0")
+        return ExternalScanFacts(list(syft.components), [license_evidence, *syft.evidence], [producer])
+    monkeypatch.setattr(local_zip, "collect_external_scans", collect)
+    workspace = tmp_path / "external-work"; workspace.mkdir(mode=0o700)
+    plan = build_local_zip_dependency_plan(archive, workspace, clock=lambda: NOW, external_scanners=True)
+    registry, result = _run(tmp_path, archive, _queued(archive, 500), plan=plan)
+    run = registry.get(result.run.id).run if hasattr(result, "run") else registry.get(_queued(archive, 500).id).run
+    assert run.status == ScanStatus.COMPLETED
+    licenses = {item.id: item.expression for item in run.licenses}
+    by_name = {item.name: item for item in run.components}
+    assert len(run.components) == 2
+    assert licenses[by_name["declared"].license_expression_id] == "MIT"
+    assert licenses[by_name["unknown"].license_expression_id] == "NOASSERTION"
+    assert "syft" in by_name["declared"].detected_by
+    assert any(item.locator == "LICENSE" for item in run.evidence)
+    assert not seen[0]._active
+    assert not list(workspace.iterdir())
+
+
+def test_external_failure_is_partial_with_existing_facts(tmp_path, monkeypatch):
+    from app.domain.models import ScanError
+    from app.pipeline.external_scans import ExternalScanFacts
+    archive = _archive(tmp_path, {"requirements.txt": "requests==2.32.3\n"})
+    monkeypatch.setattr(local_zip, "collect_external_scans", lambda *args: ExternalScanFacts(errors=[
+        ScanError(code="scancode_scan_incomplete", stage="scan", message="Scan incomplete.", recoverable=True)]))
+    workspace = tmp_path / "external-failure"; workspace.mkdir(mode=0o700)
+    queued = _queued(archive, 501)
+    registry, result = _run(tmp_path, archive, queued, plan=build_local_zip_dependency_plan(
+        archive, workspace, clock=lambda: NOW, external_scanners=True))
+    run = registry.get(queued.id).run
+    assert run.status == ScanStatus.PARTIAL
+    assert run.components and run.findings
+    assert {error.code for error in run.errors} >= {"scancode_scan_incomplete", "external_scan_incomplete"}
+    assert all(item.expression == "NOASSERTION" for item in run.licenses)

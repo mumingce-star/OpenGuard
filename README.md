@@ -32,7 +32,7 @@ A6-2 已把 publisher 接到 Pipeline 首次终态提交边界：ZIP HTTP 主链
 
 当前还不是完整参赛成品：ZIP 与公开 Git 已能把声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析；B5 现在能对 ZIP 中明确 npm 许可证声明输出待核验提示；真实 ScanCode/Syft、完整资源许可证归属与已核验义务仍需后续验收。本地目录输入、其他 lockfile、目标部署安全与陌生机复验、首批golden cases指标仍需按P0进度台账验收。现有核心Web页面已接真实API和报告。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
-团队集成分支 `integration/p0` 还汇合了前端组员的 React/Vite 应用壳，以及扫描组员的 ScanCode/Syft 受限 JSON Adapter 候选。本轮功能分支进一步复用组员核心页面，完成真实ZIP→进度→资源/风险/Evidence→四格式下载及刷新恢复，默认API，演示需主动选择。外部工具 Adapter 尚未接入当前 ZIP 主链或完成本机真实工具回归；功能分支未自动合并团队集成线。
+团队集成分支 `integration/p0` 汇合了前端组员的 React/Vite 应用壳和扫描组员的 ScanCode/Syft Adapter。本功能分支复用核心页面与适配器，已完成真实 ZIP→ScanCode/Syft→资源/待核验风险/Evidence→四格式报告及刷新恢复，默认 API，演示需主动选择；未自动合并团队集成线。
 
 使用 Python 3.12 环境，在项目根目录运行：
 
@@ -60,7 +60,7 @@ PYTHONPATH=backend python -m pytest -q
 
 ## 简单 Web 本机运行
 
-推荐使用已实跑的最小 Compose：在仓库根目录执行 `docker compose -f deploy/compose.yaml up -d --build --wait`，在 Chrome 打开 <http://127.0.0.1:8080/app/new-scan>。当前容器支持 ZIP→资源/待核验风险→四格式报告，重建 API 后报告仍可读取。ScanCode/Syft 的断网工具容器也已实跑，但尚未接入 Web Pipeline。安装、工具检查、持久化与已知限制见[部署说明](deploy/README.md)。
+推荐使用已实跑的最小 Compose：在仓库根目录执行 `docker compose -f deploy/compose.yaml up -d --build --wait`，在 Chrome 打开 <http://127.0.0.1:8080/app/new-scan>。当前容器支持 ZIP→真实 ScanCode/Syft→资源/待核验风险→四格式报告，重建 API 后报告仍可读取。根 LICENSE 不自动继承给依赖，工具失败保留 partial。安装、工具检查、持久化与已知限制见[部署说明](deploy/README.md)。
 
 需要开发模式时，先在项目根目录启动已有后端（Python 3.12环境）：
 

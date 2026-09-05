@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 import threading
 import zipfile
+import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import BinaryIO, Callable, TypeVar
 
@@ -27,6 +29,34 @@ _CHUNK_SIZE = 64 * 1024
 _ARCHIVE_PARTS = ("input.zip",)
 _TREE_PARTS = ("tree",)
 T = TypeVar("T")
+
+
+@dataclass
+class TrustedTreeScan:
+    """Code-owned scanner descriptor, separate from the parser capability.
+
+    Adapted from the team's f8bedfd candidate. The caller owns and expires
+    this descriptor inside the existing A2 integrity/cleanup lifecycle.
+    """
+
+    _directory_fd: int
+    _active: bool = True
+    _thread: int = field(default_factory=threading.get_ident)
+
+    def proc_target(self) -> str:
+        if not self._active or threading.get_ident() != self._thread or sys.platform != "linux":
+            raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+        return f"/proc/self/fd/{self._directory_fd}"
+
+    @property
+    def inherited_fds(self) -> tuple[int, ...]:
+        self.proc_target()
+        return (self._directory_fd,)
+
+    def close(self) -> None:
+        if self._active:
+            self._active = False
+            os.close(self._directory_fd)
 
 
 class ZipIngestionService:
@@ -79,6 +109,7 @@ class ZipIngestionService:
         consumer: Callable[[ReadOnlyScanSession], T],
         *,
         read_limits: ScanReadLimits | None = None,
+        tree_consumer: Callable[[TrustedTreeScan, Inventory], object] | None = None,
     ) -> ScanSessionResult[T]:
         """Run one trusted synchronous consumer before the task tree is removed."""
         if getattr(self._consumer_local, "active", False):
@@ -112,6 +143,17 @@ class ZipIngestionService:
             self._consumer_local.active = True
             try:
                 result = consumer(session)
+                if tree_consumer is not None:
+                    validate()
+                    tree = TrustedTreeScan(workspace.open_directory(_TREE_PARTS))
+                    try:
+                        tree_consumer(tree, inventory)
+                    finally:
+                        try:
+                            tree.close()
+                        except OSError:
+                            self._poison()
+                            raise IngestionSecurityError("scanner_failed", "scan_file_read_failed") from None
             except BaseException as error:
                 primary = error
             finally:

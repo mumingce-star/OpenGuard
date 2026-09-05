@@ -3710,3 +3710,29 @@
 - 实现提交`a231d7273cf2e31da3b3d08bbcb3af5075a426a7`已推送`feat/a7-minimal-compose`，git ls-remote完整哈希与本地一致。精确14文件、diff/体积/新增敏感与私有路径/历史前缀核验通过。未合并main/integration、未Release。
 - 本条及进度追加仅绑定发布证据，不改变已实跑配置或业务。最小部署、工具环境与Chrome页面已完成；Chrome下载保存确认仍未完成，保留前条PARTIAL的诚实边界。下轮紧接A4工具事实绑定，不重复构建框架。
 - EOF anchor：OPENGUARD-A7-COMPOSE-PUBLISHED-20260905
+
+### [20260905-RootAstra-RealZIPScanners] START - 外部工具接现有ZIP主链
+
+- GPT-6 Astra / Root，基线2dc451d，分支feat/a4-real-zip-scanners，开工干净，fetch扫描组员f8bedfd未变。沿用本对话已读README/交接与历史进度，并核对新增日志；不重复声明完整复读超长历史。Docker/Compose与工具已于上轮实跑，用户已自行完成Docker登录。
+- 仅P0：复用组员fixed argv及adapter、当前A2生命周期和A4/B5/A6，真实ScanCode/Syft输出进入ZIP资源/证据/provenance/现有报告。根LICENSE只作文件候选，组件归属继续用已有精确npm声明；无归属保持NOASSERTION/pending，不猜测授权。无新API/队列/图谱/AI资产功能。
+- 只读审查确认：候选A2树入口异常时未总做封印复验，不直接替换；工具locator/SHA需核对inventory；原stdout先全读后限额需修成运行时有界。Root负责A2最小独立scanner回调、A4聚合/部署与真实HTTP/Chrome；受限实现子任务仅external_tools.py及其现有unit。Root独占治理日志，不同时写同一源码。
+- 预计文件：ingestion/zip_stream.py及导出、scanners/external_tools.py和两个组员pipeline、A4薄external_scans模块/local_zip/dependency_plan、已有部署Dockerfile/compose/smoke、相关unit/security与既有spec/README/资源/AI/进度日志。保护公共P0/Schema/worker/registry与B5规则语义；默认宿主机开关0，Compose明确启用固定工具。
+- 验收：实现unit→独立动态ZIP/路径/hash/超时/缺工具/不继承根LICENSE→相关与全量回归→真实容器HTTP及Chrome插件；完整SHA/固定版本/partial不冒充completed、报告重建可读、冻结契约与敏感/范围/append-only。Root统一GitHub功能分支上传，不合并或Release。
+- token非硬估算12k–22k；精确本轮遥测不可读取，按实际闭环与限制收工。
+- EOF anchor：OPENGUARD-A4-REAL-SCANNERS-START-20260905
+
+### [20260905-RootAstra-RealZIPProfile] AMENDMENT
+
+- 为使已接受的 ZIP 在恢复时仍按同一工具开关执行，最小扩展内部 ZipExecutionProfile 的可选 external_scanners 布尔值；旧描述符默认 false 且 false 序列化保留原四键。仅贯通现有 runtime/dispatcher/config，不增加队列、lease、heartbeat 或业务重试，不改变公开请求/响应。受限执行器子任务已结束，现转为独占该四文件与既有 durable 测试；部署审查子任务独占三个 Docker/Compose 文件并已停止编辑。Root继续 A2/A4 与验收。
+
+### [20260905-2245-RootAstra-RealZIPScanners] PARTIAL（技术验收通过，发布待完成）
+
+- GPT-6 Astra / Root；基线2dc451d，分支feat/a4-real-zip-scanners。复用组员f8bedfd两个pipeline，A2同树可信fd生命周期、实时stdout上限/进程回收、A4组件精确合并及文件候选、版本与inventory SHA绑定；默认工具开关0，Compose固定1；内部接受profile旧四键保持，公开契约/worker/规则未改。无P1/P2、新依赖、新队列或图谱。
+- 文件范围：A2 ingestion、scanners执行器/两个pipeline、A4薄聚合与接线、现有API/runtime/dispatch profile；复用Dockerfile.scanner多阶段API并删除重复Dockerfile.api；Compose/smoke和已有README/spec/第三方/AI/进度日志；既有三unit文件和一份独立安全测试。所有子任务已停写，Root独占治理和发布。
+- 原始失败保留：初次Docker未运行，启动已有Desktop后成功；实现fixture缺package.json，补齐输入保持解析规则；ScanCode真实三行版本与原假设不同、proc目标返回空树，修正首行校验和受控cwd扫描并新增完整覆盖门禁；Syft实际根相对路径需source精确绑定后再查inventory；HTTP脚本错误使用manifest枚举，按冻结manifest_parser纠正。未放宽安全断言。
+- 验证：实现localZIP+工具先75 passed（runner补cwd后28项）；profile/API87 passed；独立安全最终36 passed。完整命令PYTHONPATH=backend python -m pytest -q tests/unit tests/security：1103 passed、3 skipped、2既有warning，59.12秒；skip不算完成。OpenAPI与HEAD等值、P0导出Schema等值、编译、保护路径、append-only及diff检查通过。
+- 真实Docker API/Web健康。HTTP样例scn_3c626132-f98c-4bea-952c-c90c38ad4215：3资源、3待核验提示，两个工具真实版本/所有工具Evidence来源SHA/四格式摘要/缺声明/穿越失败/404通过；API重建后原四格式字节SHA一致。临时日志与ZIP仅存本机临时目录，不提交。
+- Chrome extension真实提交scn_1f412415-f8c2-471a-adfe-17ae9a540bfc，页面7阶段完成、3资源3提示、报告附录scancode/LICENSE及syft/package-lock证据、API重建后刷新仍在；未借内置浏览器代验。原Chrome文件保存确认未完成，本轮不重试被禁止的下载管理页、不冒充保存成功。
+- 能力限制：根LICENSE候选pending不继承，未知依赖NOASSERTION；模型资产仍未接线，Compose AI/Git关闭；API使用现有网络（只有独立probe断网），不外推完整隔离或陌生机安全。完整P0/golden/材料尚未完成。下一任务最小AI资产事实→现有报告，由Root核查再复用组员代码。
+- 开工12k–22k非硬估算；本次运行精确 token 数不可获得，技术范围已完成，实际是否在区间不可确认；仅增加必要内部profile布尔值，无功能越界。待Root最终只读审查、敏感/清单检查及GitHub分支完整哈希绑定后追加COMPLETE。
+- EOF anchor：OPENGUARD-A4-REAL-SCANNERS-TECH-20260905

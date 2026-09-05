@@ -136,3 +136,7 @@ A4-1 evidence 只能表述为：“本机受控测试环境下，本地 ZIP 经�
 - 静态门禁：P0 Schema 导出等值、compileall、diff、受保护路径、目录权限、敏感信息与上传范围检查通过；没有开放 P0/P1/P2 实现缺陷。
 - 运行 profile：macOS/POSIX、CPython 3.12.13、SQLite 3.53.1、单进程显式调用、预创建私有 workspace root、真实 A2 只读会话与既有 B1 Python/JavaScript 公共 parser/mapper。
 - 证据边界：只证明本地 ZIP 声明依赖接线、P0 持久化和 rules 缺失时的诚实 partial；不证明许可证合规、HTTP 自动消费、Git 网络输入、AI、报告、Linux 隔离或完整作品。
+
+## 可选真实工具接线（2026-09-05）
+
+external_scanners=False 保留既有计划。启用时，同一次 ingest_with_consumer 的可信 tree_consumer 在 parser 返回后、封印复验和清理前执行；能力仅同步有效，所有子进程退出后再清理。薄 external_scans 聚合复用组员两个 pipeline 与 B4，不改 worker、公共 Schema 或 B5。详见[工具边界](b2-b3-external-tool-adapters.md)与[部署验收](../../deploy/README.md)。

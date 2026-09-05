@@ -22,6 +22,7 @@ from app.domain.models import (
 from app.ai import Provider, apply_ai_remediations
 from app.ingestion import ReadOnlyScanSession, ScanReadLimits
 from app.pipeline.worker import PipelineError, PipelinePlan, PipelineStageFailure, PipelineStep
+from app.pipeline.external_scans import ExternalScanFacts, merge_external_components, apply_external_licenses
 from app.pipeline.license_rules import apply_license_rules
 from app.pipeline.manifest_licenses import ManifestLicenseBinding, apply_manifest_licenses
 from app.scanners import (
@@ -56,6 +57,7 @@ class DependencyConsumerResult:
 class DependencyPlanState:
     consumer_result: DependencyConsumerResult | None = None
     root_digest: str | None = None
+    external: ExternalScanFacts | None = None
     ingestion_producers: list[ProducerRef] = field(default_factory=list)
 
 
@@ -178,12 +180,15 @@ def build_dependency_plan(
             fail("dependency_scan_failed", "Dependency scanning failed.")
         components = _deduplicate([item for mapping in mappings for item in mapping.components])
         evidence = _deduplicate([item for mapping in mappings for item in mapping.evidence])
+        if state.external is not None:
+            components = merge_external_components(components, state.external.components)
+            evidence = _deduplicate(evidence + state.external.evidence)
         components.sort(key=lambda item: (item.ecosystem.encode(), item.name.encode(), (item.version or "").encode(), item.id))
         evidence.sort(key=lambda item: (item.locator.encode(), item.id))
         if not components or not evidence:
             fail("dependency_manifest_not_found", "No dependency manifest was found.")
 
-        errors: list[ScanError] = []
+        errors: list[ScanError] = list(state.external.errors) if state.external else []
         for lane in state.consumer_result.lanes:
             mapping = lane.mapping
             title = "Python" if lane.name == "python" else "JavaScript"
@@ -212,6 +217,8 @@ def build_dependency_plan(
 
         producers = {_producer_key(item.producer): item.producer for item in evidence}
         producers.update({_producer_key(item): item for item in state.ingestion_producers})
+        if state.external is not None:
+            producers.update({_producer_key(item): item for item in state.external.producers})
         provenance = RunProvenance.model_validate(
             {**run.provenance.model_dump(mode="python"), "tool_versions": [producers[key] for key in sorted(producers)]}
         )
@@ -224,7 +231,8 @@ def build_dependency_plan(
         return replace_run(run, components=components, evidence=evidence, errors=errors, summary=summary, provenance=provenance)
 
     def normalize(run: ScanRun) -> ScanRun:
-        return apply_manifest_licenses(run, state.consumer_result.manifest_licenses if state.consumer_result else ())
+        normalized = apply_manifest_licenses(run, state.consumer_result.manifest_licenses if state.consumer_result else ())
+        return apply_external_licenses(normalized, state.external) if state.external is not None else normalized
 
     def rules(run: ScanRun) -> ScanRun:
         if not run.licenses:
@@ -240,6 +248,8 @@ def build_dependency_plan(
         ).run
 
     def report(run: ScanRun) -> ScanRun:
+        if state.external is not None and state.external.errors:
+            fail("external_scan_incomplete", "External scanning was incomplete.", recoverable=True)
         return ScanRun.model_validate(run.model_dump(mode="python"))
 
     return PipelinePlan(

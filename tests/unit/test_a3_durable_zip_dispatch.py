@@ -56,7 +56,7 @@ def _post(client: TestClient, content: bytes, *, key: str | None = None):
     )
 
 
-def _prepared_without_registry(tmp_path: Path, content: bytes = b"prepared-bytes"):
+def _prepared_without_registry(tmp_path: Path, content: bytes = b"prepared-bytes", *, external_scanners: bool = False):
     os.chmod(tmp_path, 0o700)
     upload_root = _private(tmp_path / "uploads")
     dispatch_root = _private(tmp_path / "dispatch")
@@ -77,7 +77,9 @@ def _prepared_without_registry(tmp_path: Path, content: bytes = b"prepared-bytes
     descriptor = store.prepare(
         archive,
         candidate.run,
-        ZipExecutionProfile.from_provider(ai_requested=False, provider=None, ai_timeout_seconds=10.0),
+        ZipExecutionProfile.from_provider(
+            ai_requested=False, provider=None, ai_timeout_seconds=10.0, external_scanners=external_scanners,
+        ),
         reservation,
     )
     return registry, store, archive, descriptor, candidate.run
@@ -707,3 +709,150 @@ def test_i2_recovery_store_preserves_bound_work_when_an_unrelated_upload_is_susp
         recovery.reserve_upload()
     assert suspicious.exists()
     registry.close()
+
+
+def test_external_profile_old_payload_stays_four_keys_and_true_roundtrips() -> None:
+    legacy = {
+        "plan_version": "local-zip-dependencies/v1",
+        "ai_requested": False, "ai_identity": None, "ai_timeout_seconds": 10.0,
+    }
+    # The schema constant is already frozen by the original I1 payload test.
+    from app.persistence.zip_dispatch import ZIP_DISPATCH_PLAN_VERSION
+    legacy["plan_version"] = ZIP_DISPATCH_PLAN_VERSION
+    profile = ZipExecutionProfile.from_payload(legacy)
+    assert profile.external_scanners is False
+    assert profile.as_payload() == legacy
+    enabled = ZipExecutionProfile.from_provider(
+        ai_requested=False, provider=None, ai_timeout_seconds=10.0, external_scanners=True,
+    )
+    assert enabled.as_payload() == {**legacy, "external_scanners": True}
+    assert ZipExecutionProfile.from_payload(enabled.as_payload()) == enabled
+    for invalid in (0, 1, "true", None):
+        with pytest.raises(ZipDispatchError, match="dispatch_descriptor_invalid"):
+            ZipExecutionProfile.from_payload({**legacy, "external_scanners": invalid})
+
+
+@pytest.mark.parametrize("value", ["", "true", "false", "2", "01", " 1"])
+def test_external_factory_flag_requires_exact_zero_or_one(tmp_path, monkeypatch, value) -> None:
+    monkeypatch.setenv("OPENGUARD_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("OPENGUARD_ENABLE_EXTERNAL_SCANNERS", value)
+    with pytest.raises(RuntimeError, match="invalid OPENGUARD_ENABLE_EXTERNAL_SCANNERS"):
+        create_default_app()
+    assert not (tmp_path / "data").exists()
+
+
+@pytest.mark.parametrize("flag", [None, "0", "1"])
+def test_external_factory_config_reaches_both_runtime_and_dispatcher(tmp_path, monkeypatch, flag) -> None:
+    monkeypatch.setenv("OPENGUARD_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("OPENGUARD_ENABLE_DURABLE_ZIP", "1")
+    if flag is None:
+        monkeypatch.delenv("OPENGUARD_ENABLE_EXTERNAL_SCANNERS", raising=False)
+    else:
+        monkeypatch.setenv("OPENGUARD_ENABLE_EXTERNAL_SCANNERS", flag)
+    app = create_default_app()
+    try:
+        assert app.state.zip_scan_runtime._external_scanners is (flag == "1")
+        assert app.state.zip_dispatcher._external_scanners is (flag == "1")
+    finally:
+        app.state.scan_api_service._registry.close()
+
+
+def test_external_acceptance_persists_true_without_running_tools(tmp_path) -> None:
+    os.chmod(tmp_path, 0o700)
+    upload = _private(tmp_path / "uploads")
+    store = ZipDispatchStore(_private(tmp_path / "dispatch"), upload)
+    registry = SQLiteScanRunRegistry(tmp_path / "scans.sqlite")
+    runtime = ZipScanRuntime(
+        registry, upload_root=upload, workspace_root=_private(tmp_path / "workspaces"),
+        dispatch_store=store, external_scanners=True,
+    )
+    try:
+        with TestClient(create_app(registry, zip_runtime=runtime)) as client:
+            response = _post(client, _archive())
+        assert response.status_code == 202
+        descriptor = store.read(response.json()["scan_id"], state="ready")
+        assert descriptor.execution_profile.external_scanners is True
+        assert descriptor.as_payload()["execution_profile"]["external_scanners"] is True
+    finally:
+        registry.close()
+
+
+@pytest.mark.parametrize("accepted,current", [(False, True), (True, True), (True, False)])
+def test_external_recovery_uses_accepted_profile_and_fails_closed_when_disabled(
+    tmp_path, monkeypatch, accepted, current,
+) -> None:
+    registry, store, _, descriptor, queued = _prepared_without_registry(
+        tmp_path, _archive(), external_scanners=accepted,
+    )
+    registry.create(queued)
+    store.promote(descriptor)
+    recovered = ZipDispatchStore(store.dispatch_root, store.upload_root, recovery_mode=True)
+    observed = []
+    from app.pipeline import zip_dispatcher as dispatch_module
+    real_builder = dispatch_module.build_local_zip_dependency_plan
+
+    def capture_builder(*args, **kwargs):
+        observed.append(kwargs.pop("external_scanners"))
+        # This test isolates accepted-profile selection; the real external
+        # scanner integration is tested at the pipeline boundary separately.
+        return real_builder(*args, **kwargs)
+
+    monkeypatch.setattr(dispatch_module, "build_local_zip_dependency_plan", capture_builder)
+    dispatcher = ZipDispatcher(
+        registry, recovered, data_dir=tmp_path, workspace_root=_private(tmp_path / "workspaces"),
+        external_scanners=current,
+    )
+    try:
+        dispatcher.start()
+        terminal = _wait_terminal(registry, queued.id)
+        assert terminal.run.status in {ScanStatus.PARTIAL, ScanStatus.FAILED}
+        if accepted and not current:
+            assert observed == []
+            assert terminal.run.errors[-1].code == "dispatch_profile_disabled"
+        else:
+            assert observed == [accepted]
+            assert terminal.run.status is ScanStatus.PARTIAL
+            assert terminal.run.errors[-1].code == "rules_stage_not_connected"
+    finally:
+        _stop_dispatcher(dispatcher, registry)
+
+
+def test_external_runtime_dispatcher_binding_rejects_different_flags(tmp_path) -> None:
+    registry, store, _, _, _ = _prepared_without_registry(tmp_path)
+    workspace = _private(tmp_path / "workspaces")
+    runtime = ZipScanRuntime(
+        registry, upload_root=store.upload_root, workspace_root=workspace,
+        dispatch_store=store, external_scanners=True,
+    )
+    dispatcher = ZipDispatcher(registry, store, data_dir=tmp_path, workspace_root=workspace)
+    try:
+        with pytest.raises(ValueError, match="matching ZIP runtime"):
+            create_app(registry, zip_runtime=runtime, zip_dispatcher=dispatcher, close_registry=True)
+    finally:
+        registry.close()
+
+
+def test_external_background_runtime_forwards_flag_to_plan(tmp_path, monkeypatch) -> None:
+    os.chmod(tmp_path, 0o700)
+    registry = SQLiteScanRunRegistry(tmp_path / "scans.sqlite")
+    runtime = ZipScanRuntime(
+        registry, upload_root=_private(tmp_path / "uploads"),
+        workspace_root=_private(tmp_path / "workspaces"), external_scanners=True,
+    )
+    from app.api import zip_scan as zip_module
+    real_builder = zip_module.build_local_zip_dependency_plan
+    observed = []
+
+    def capture_builder(*args, **kwargs):
+        observed.append(kwargs.pop("external_scanners"))
+        return real_builder(*args, **kwargs)
+
+    monkeypatch.setattr(zip_module, "build_local_zip_dependency_plan", capture_builder)
+    try:
+        with TestClient(create_app(registry, zip_runtime=runtime)) as client:
+            response = _post(client, _archive())
+        assert response.status_code == 202
+        assert observed == [True]
+        assert registry.get(response.json()["scan_id"]).run.status is ScanStatus.PARTIAL
+    finally:
+        registry.close()

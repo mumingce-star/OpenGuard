@@ -2,16 +2,19 @@
 
 The adapters never execute project code.  They accept tool JSON as data and
 provide an optional subprocess wrapper which uses an argument vector (never a
-shell), a timeout, and a bounded captured output.  Passing a materialized
-directory to a third-party tool is deliberately left to a future trusted
-pipeline boundary; ``ReadOnlyScanSession`` must remain a parser-only
-capability.
+shell), a timeout, and bounded captured output. The ZIP pipeline supplies
+a sealed directory descriptor to the fixed wrappers; ``ReadOnlyScanSession``
+remains a parser-only capability.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import re
+import selectors
+import signal
+import time
 import subprocess
 import uuid
 from dataclasses import dataclass
@@ -108,50 +111,142 @@ def _producer(name: str, version: str, root_digest: str) -> ProducerRef:
     )
 
 
+def _stop_process_group(process: subprocess.Popen[bytes]) -> None:
+    """Stop inherited workers too, even when their group leader has exited."""
+
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
+    try:
+        process.wait(timeout=0.2)
+    except subprocess.TimeoutExpired:
+        pass
+    finally:
+        # The leader can exit before a worker; never use poll() to decide
+        # whether the remaining process group still needs termination.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.wait()
+
+
 def run_json_tool(
     tool: str,
     arguments: Sequence[str],
     *,
     timeout_seconds: int = 120,
     max_output_bytes: int = _MAX_OUTPUT_BYTES,
+    pass_fds: Sequence[int] = (),
+    disable_update_check: bool = False,
+    scancode_runtime: bool = False,
+    working_directory: str | None = None,
 ) -> ToolExecution:
-    """Run a preconstructed tool command without a shell or leaked diagnostics.
+    """Capture incrementally under a byte/deadline budget, without a shell.
 
-    This low-level helper intentionally does not accept a project path.  A
-    trusted orchestrator must construct a fixed ScanCode/Syft invocation after
-    enforcing its own filesystem isolation policy.
+    The trusted orchestrator supplies a fixed invocation after filesystem
+    isolation. POSIX process groups include workers in failure cleanup.
     """
 
-    if not tool or timeout_seconds <= 0 or max_output_bytes <= 0 or max_output_bytes > _MAX_OUTPUT_BYTES:
+    if (
+        not tool or timeout_seconds <= 0 or max_output_bytes <= 0 or max_output_bytes > _MAX_OUTPUT_BYTES
+        or type(disable_update_check) is not bool or type(scancode_runtime) is not bool
+        or (working_directory is not None and type(working_directory) is not str)
+        or any(type(fd) is not int or fd < 0 for fd in pass_fds)
+    ):
         raise ValueError("invalid external tool limits")
+    if os.name != "posix":
+        return ToolExecution(tool, "unavailable", None, "external_scanner_unavailable")
+    environment = {
+        key: os.environ[key]
+        for key in ("PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "HOME", "TMPDIR", "TEMP", "TMP")
+        if key in os.environ
+    }
+    if disable_update_check:
+        environment["SYFT_CHECK_FOR_APP_UPDATE"] = "false"
+    if scancode_runtime:
+        # Fixed writable locations for the read-only scanner image. No
+        # caller-provided ScanCode configuration or credentials are forwarded.
+        environment["SCANCODE_CACHE"] = "/tmp/scancode-cache"
+        environment["SCANCODE_TEMP"] = "/tmp"
+    process = None
     try:
-        completed = subprocess.run(
-            [tool, *arguments],
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            timeout=timeout_seconds,
-            check=False,
-            shell=False,
-            # Do not forward process credentials.  These are the minimum
-            # platform variables required to locate an already-installed tool.
-            env={
-                key: os.environ[key]
-                for key in ("PATH", "PATHEXT", "SYSTEMROOT", "WINDIR", "HOME", "TMPDIR", "TEMP", "TMP")
-                if key in os.environ
-            },
+        deadline = time.monotonic() + timeout_seconds
+        process = subprocess.Popen(
+            [tool, *arguments], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL, shell=False, close_fds=True,
+            start_new_session=True, pass_fds=tuple(pass_fds), env=environment, cwd=working_directory,
         )
+        assert process.stdout is not None
+        output = bytearray()
+        with selectors.DefaultSelector() as selector:
+            os.set_blocking(process.stdout.fileno(), False)
+            selector.register(process.stdout, selectors.EVENT_READ)
+            while True:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    return ToolExecution(tool, "timeout", None, "scanner_timeout")
+                if not selector.select(remaining):
+                    return ToolExecution(tool, "timeout", None, "scanner_timeout")
+                try:
+                    # At most one byte beyond the budget is ever read; it is
+                    # discarded and never appended to the bounded accumulator.
+                    chunk = os.read(process.stdout.fileno(), min(65536, max_output_bytes - len(output) + 1))
+                except BlockingIOError:
+                    continue
+                if not chunk:
+                    break
+                if len(output) + len(chunk) > max_output_bytes:
+                    return ToolExecution(tool, "failed", None, "tool_output_limit_exceeded")
+                output.extend(chunk)
+        process.wait(timeout=max(0, deadline - time.monotonic()))
+        if process.returncode != 0:
+            return ToolExecution(tool, "failed", None, "scanner_failed")
+        return ToolExecution(tool, "complete", bytes(output))
     except FileNotFoundError:
         return ToolExecution(tool, "unavailable", None, "tool_unavailable")
     except subprocess.TimeoutExpired:
         return ToolExecution(tool, "timeout", None, "scanner_timeout")
     except OSError:
         return ToolExecution(tool, "failed", None, "scanner_failed")
-    if len(completed.stdout) > max_output_bytes:
-        return ToolExecution(tool, "failed", None, "tool_output_limit_exceeded")
-    if completed.returncode != 0:
-        return ToolExecution(tool, "failed", None, "scanner_failed")
-    return ToolExecution(tool, "complete", completed.stdout)
+    finally:
+        if process is not None:
+            _stop_process_group(process)
+            if process.stdout is not None:
+                process.stdout.close()
+
+
+def _validate_proc_target(target: str, pass_fds: Sequence[int]) -> None:
+    match = re.fullmatch(r"/proc/self/fd/(0|[1-9][0-9]*)", target)
+    if (
+        match is None or len(pass_fds) != 1 or type(pass_fds[0]) is not int
+        or pass_fds[0] != int(match[1])
+    ):
+        raise ValueError("scanner target must match its sole inherited proc descriptor")
+
+
+def run_scancode_license_scan(tool: str, target: str, *, pass_fds: Sequence[int]) -> ToolExecution:
+    """Run fixed license-only ScanCode JSON over a trusted proc-FD target."""
+
+    _validate_proc_target(target, pass_fds)
+    # Resolve the trusted directory in the child before launching ScanCode;
+    # scanning the proc symlink itself does not reliably traverse its files.
+    return run_json_tool(
+        tool, ("--processes", "1", "--license", "--strip-root", "--json", "-", "."),
+        timeout_seconds=120, max_output_bytes=_MAX_OUTPUT_BYTES,
+        pass_fds=pass_fds, scancode_runtime=True, working_directory=target,
+    )
+
+
+def run_syft_sbom_scan(tool: str, target: str, *, pass_fds: Sequence[int]) -> ToolExecution:
+    """Run fixed Syft JSON over a trusted proc-FD target."""
+
+    _validate_proc_target(target, pass_fds)
+    return run_json_tool(
+        tool, ("scan", f"dir:{target}", "-o", "syft-json"), timeout_seconds=120,
+        max_output_bytes=_MAX_OUTPUT_BYTES, pass_fds=pass_fds, disable_update_check=True,
+    )
 
 
 def parse_json_output(execution: ToolExecution) -> Mapping[str, Any] | None:

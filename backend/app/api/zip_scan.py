@@ -96,6 +96,7 @@ class ZipScanRuntime:
         report_publisher: PipelineReportPublisher | None = None,
         ai_provider: Provider | None = None,
         ai_enabled: bool = False,
+        external_scanners: bool = False,
         ai_timeout_seconds: float = 10.0,
         dispatch_store: ZipDispatchStore | None = None,
     ) -> None:
@@ -104,6 +105,7 @@ class ZipScanRuntime:
             or (clock is not None and not callable(clock))
             or (report_publisher is not None and type(report_publisher) is not PipelineReportPublisher)
             or type(ai_enabled) is not bool
+            or type(external_scanners) is not bool
             or type(ai_timeout_seconds) not in {int, float}
             or isinstance(ai_timeout_seconds, bool)
             or not math.isfinite(ai_timeout_seconds)
@@ -120,6 +122,7 @@ class ZipScanRuntime:
         self._report_publisher = report_publisher
         self._ai_provider = ai_provider
         self._ai_enabled = ai_enabled
+        self._external_scanners = external_scanners
         self._ai_timeout_seconds = float(ai_timeout_seconds)
         self._dispatch_store = dispatch_store
         if dispatch_store is not None and dispatch_store.upload_root != self._upload_root:
@@ -207,6 +210,7 @@ class ZipScanRuntime:
                 ai_requested=self._ai_enabled,
                 provider=self._ai_provider,
                 ai_timeout_seconds=self._ai_timeout_seconds,
+                external_scanners=self._external_scanners,
             )
         except ZipDispatchError:
             # No descriptor exists at this point, so this owned staging file is
@@ -368,6 +372,7 @@ class ZipScanRuntime:
                 ai_provider=self._ai_provider,
                 ai_enabled=self._ai_enabled,
                 ai_timeout_seconds=self._ai_timeout_seconds,
+                external_scanners=self._external_scanners,
             )
             publisher = self._report_publisher
             ScanPipelineWorker(

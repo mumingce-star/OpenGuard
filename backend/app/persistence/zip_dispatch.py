@@ -195,10 +195,12 @@ class ZipExecutionProfile:
     ai_identity: dict[str, object] | None
     ai_timeout_seconds: float
     plan_version: str = ZIP_DISPATCH_PLAN_VERSION
+    external_scanners: bool = False
 
     def __post_init__(self) -> None:
         if (
             type(self.ai_requested) is not bool
+            or type(self.external_scanners) is not bool
             or type(self.plan_version) is not str
             or self.plan_version != ZIP_DISPATCH_PLAN_VERSION
             or type(self.ai_timeout_seconds) not in {int, float}
@@ -236,11 +238,12 @@ class ZipExecutionProfile:
         ai_requested: bool,
         provider: object | None,
         ai_timeout_seconds: float,
+        external_scanners: bool = False,
     ) -> "ZipExecutionProfile":
         if type(ai_requested) is not bool:
             _fail("dispatch_descriptor_invalid")
         if not ai_requested:
-            return cls(False, None, ai_timeout_seconds)
+            return cls(False, None, ai_timeout_seconds, external_scanners=external_scanners)
         try:
             producer = ProducerRef.model_validate(provider.producer.model_dump(mode="python"))  # type: ignore[union-attr]
         except Exception:
@@ -263,25 +266,30 @@ class ZipExecutionProfile:
                 "prompt_schema_digest": producer.prompt_schema_digest.value,
             },
             ai_timeout_seconds,
+            external_scanners=external_scanners,
         )
 
     def as_payload(self) -> dict[str, object]:
-        return {
+        payload: dict[str, object] = {
             "plan_version": self.plan_version,
             "ai_requested": self.ai_requested,
             "ai_identity": self.ai_identity,
             "ai_timeout_seconds": self.ai_timeout_seconds,
         }
+        if self.external_scanners:
+            payload["external_scanners"] = True
+        return payload
 
     @classmethod
     def from_payload(cls, value: object) -> "ZipExecutionProfile":
-        if type(value) is not dict or set(value) != _PROFILE_KEYS:
+        if type(value) is not dict or set(value) not in (_PROFILE_KEYS, _PROFILE_KEYS | {"external_scanners"}):
             _fail("dispatch_descriptor_invalid")
         return cls(
             ai_requested=value["ai_requested"],
             ai_identity=value["ai_identity"],
             ai_timeout_seconds=value["ai_timeout_seconds"],
             plan_version=value["plan_version"],
+            external_scanners=value.get("external_scanners", False),
         )
 
 

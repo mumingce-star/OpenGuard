@@ -141,6 +141,7 @@ class ZipDispatcher:
         report_publisher: PipelineReportPublisher | None = None,
         ai_provider: Provider | None = None,
         ai_enabled: bool = False,
+        external_scanners: bool = False,
         ai_timeout_seconds: float = 10.0,
     ) -> None:
         if (
@@ -151,6 +152,7 @@ class ZipDispatcher:
             or (clock is not None and not callable(clock))
             or (report_publisher is not None and type(report_publisher) is not PipelineReportPublisher)
             or type(ai_enabled) is not bool
+            or type(external_scanners) is not bool
             or (ai_enabled and ai_provider is None)
             or type(ai_timeout_seconds) not in {int, float}
             or isinstance(ai_timeout_seconds, bool)
@@ -165,6 +167,7 @@ class ZipDispatcher:
         self._report_publisher = report_publisher
         self._ai_provider = ai_provider
         self._ai_enabled = ai_enabled
+        self._external_scanners = external_scanners
         self._ai_timeout_seconds = float(ai_timeout_seconds)
         self._state_lock = threading.Lock()
         self._stop = threading.Event()
@@ -281,6 +284,7 @@ class ZipDispatcher:
         ai_provider: Provider | None,
         ai_enabled: bool,
         ai_timeout_seconds: float,
+        external_scanners: bool = False,
     ) -> bool:
         """Expose only the object/root identity check needed by ``create_app``."""
 
@@ -291,6 +295,7 @@ class ZipDispatcher:
             and store.dispatch_root == self._data_dir / "dispatch"
             and self._ai_provider is ai_provider
             and self._ai_enabled is ai_enabled
+            and self._external_scanners is external_scanners
             and self._ai_timeout_seconds == float(ai_timeout_seconds)
         )
 
@@ -563,6 +568,8 @@ class ZipDispatcher:
 
     def _profile_failure(self, descriptor: ZipDispatchDescriptor) -> str | None:
         profile = descriptor.execution_profile
+        if profile.external_scanners and not self._external_scanners:
+            return "dispatch_profile_disabled"
         if not profile.ai_requested:
             return None
         if not self._ai_enabled:
@@ -624,6 +631,7 @@ class ZipDispatcher:
                 ai_provider=self._ai_provider if descriptor.execution_profile.ai_requested else None,
                 ai_enabled=descriptor.execution_profile.ai_requested,
                 ai_timeout_seconds=descriptor.execution_profile.ai_timeout_seconds,
+                external_scanners=descriptor.execution_profile.external_scanners,
             )
         except Exception:
             self._stop_fatal("dispatch_plan_build_failed")

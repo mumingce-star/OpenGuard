@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--url", default="http://127.0.0.1:8080")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--verify", action="store_true")
+    parser.add_argument("--external-scanners", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
@@ -74,17 +75,33 @@ def main():
                 "node_modules/is-number": {"version": "7.0.0", "license": "MIT"},
                 "node_modules/unlicensed-demo": {"version": "1.0.0"}}}),
     }
+    if args.external_scanners:
+        files["LICENSE"] = (Path(__file__).resolve().parents[1] / "LICENSE").read_text()
     scan_id, status, zipped = create(files)
     assert status["status"] == "completed", status
     (args.output / "compose-demo.zip").write_bytes(zipped)
     resources = json.loads(get(f"/api/v1/scans/{scan_id}/resources"))
-    assert resources["total"] == 2
+    assert resources["total"] == (3 if args.external_scanners else 2)
     risks = json.loads(get(f"/api/v1/scans/{scan_id}/risks"))
-    assert len(risks["items"]) == 2
+    assert len(risks["items"]) == resources["total"]
     report = json.loads(get(f"/api/v1/scans/{scan_id}/report?format=json&download=true"))
     scan = report["scan_run"]
-    assert {item["expression"] for item in scan["licenses"]} == {"MIT", "NOASSERTION"}
+    assert {item["expression"] for item in scan["licenses"]} == ({"MIT", "NOASSERTION", "Apache-2.0"} if args.external_scanners else {"MIT", "NOASSERTION"})
     assert all(item["verification_status"] == "pending" for item in scan["licenses"])
+    if args.external_scanners:
+        versions = {item["name"]: item["version"] for item in scan["provenance"]["tool_versions"]}
+        assert versions["scancode"] == "32.5.0" and versions["syft"] == "1.51.0"
+        sources = {name: hashlib.sha256(data.encode()).hexdigest() for name, data in files.items()}
+        tool_evidence = [item for item in scan["evidence"] if item["producer"]["name"] in {"scancode", "syft"}]
+        assert {item["producer"]["name"] for item in tool_evidence} == {"scancode", "syft"}
+        assert any(item["locator"] == "LICENSE" and item["producer"]["name"] == "scancode" for item in tool_evidence)
+        for item in tool_evidence:
+            assert item["content_hash"]["value"] == sources[item["locator"]]
+        licenses = {item["id"]: item["expression"] for item in scan["licenses"]}
+        components = {item["name"]: item for item in scan["components"]}
+        assert licenses[components["is-number"]["license_expression_id"]] == "MIT"
+        assert licenses[components["unlicensed-demo"]["license_expression_id"]] == "NOASSERTION"
+        assert {"syft", "manifest_parser"} <= set(components["is-number"]["detected_by"])
     for evidence in scan["evidence"]:
         assert json.loads(get(f'/api/v1/scans/{scan_id}/evidence/{evidence["id"]}'))
     hashes = {}
@@ -96,7 +113,7 @@ def main():
         hashes[format_name] = digest
     assert set(hashes) == {"html", "json", "csv", "resource_inventory"}
     _, partial, _ = create({"package.json": files["package.json"]})
-    assert partial["status"] == "partial", partial
+    assert partial["status"] == ("completed" if args.external_scanners else "partial"), partial
     _, failed, _ = create({"../escape.txt": "unsafe path"})
     assert failed["status"] == "failed", failed
     try:
@@ -108,8 +125,9 @@ def main():
     receipt = {"scan_id": scan_id, "reports": hashes}
     (args.output / "receipt.json").write_text(json.dumps(receipt, indent=2))
     print(json.dumps({"status": "passed", "scan_id": scan_id,
-                      "checks": ["SPA deep link", "ZIP completed", "two resources", "pending licenses",
-                                 "risks and evidence", "four report hashes", "partial", "unsafe ZIP failed", "404"]}, indent=2))
+                      "external_scanners": args.external_scanners,
+                      "checks": ["SPA deep link", "ZIP completed", "resource count", "pending licenses",
+                                 "risks and evidence", "four report hashes", "missing declarations", "unsafe ZIP failed", "404"]}, indent=2))
 
 
 if __name__ == "__main__":

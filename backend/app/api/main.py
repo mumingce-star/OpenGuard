@@ -305,6 +305,7 @@ def create_app(
                 ai_provider=zip_runtime._ai_provider,
                 ai_enabled=zip_runtime._ai_enabled,
                 ai_timeout_seconds=zip_runtime._ai_timeout_seconds,
+                external_scanners=zip_runtime._external_scanners,
             )
         ):
             raise ValueError("zip dispatcher must own the matching ZIP runtime and registry lifecycle")
@@ -443,6 +444,9 @@ def create_app(
 
 
 def create_default_app() -> FastAPI:
+    external_scanners = os.environ.get("OPENGUARD_ENABLE_EXTERNAL_SCANNERS", "0")
+    if external_scanners not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_EXTERNAL_SCANNERS")
     durable_zip_enabled = os.environ.get("OPENGUARD_ENABLE_DURABLE_ZIP", "0")
     if durable_zip_enabled not in {"0", "1"}:
         raise RuntimeError("invalid OPENGUARD_ENABLE_DURABLE_ZIP")
@@ -491,6 +495,7 @@ def create_default_app() -> FastAPI:
         ai_provider=ai_provider,
         ai_enabled=ai_enabled == "1",
         dispatch_store=dispatch_store,
+        external_scanners=external_scanners == "1",
     )
     git_enabled = os.environ.get("OPENGUARD_ENABLE_PUBLIC_GIT", "0")
     if git_enabled not in {"0", "1"}:
@@ -515,6 +520,7 @@ def create_default_app() -> FastAPI:
             report_publisher=PipelineReportPublisher(report_store),
             ai_provider=ai_provider,
             ai_enabled=ai_enabled == "1",
+            external_scanners=external_scanners == "1",
         )
         if dispatch_store is not None
         else None

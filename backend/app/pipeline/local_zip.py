@@ -20,6 +20,7 @@ from app.pipeline.dependency_plan import (
     is_pristine,
     replace_run,
 )
+from app.pipeline.external_scans import collect_external_scans
 from app.pipeline.worker import PipelineError, PipelinePlan
 from app.pipeline.manifest_licenses import collect_manifest_licenses
 from app.scanners import (
@@ -84,10 +85,11 @@ def build_local_zip_dependency_plan(
     ai_provider: Provider | None = None,
     ai_enabled: bool = False,
     ai_timeout_seconds: float = 10.0,
+    external_scanners: bool = False,
 ) -> PipelinePlan:
     """Build one explicit plan for one queued ZIP ScanRun."""
 
-    if not isinstance(archive_path, Path) or not isinstance(workspace_root, Path) or not callable(clock):
+    if type(external_scanners) is not bool or not isinstance(archive_path, Path) or not isinstance(workspace_root, Path) or not callable(clock):
         raise PipelineError("pipeline_invalid_argument") from None
     state = DependencyPlanState()
     used = False
@@ -112,10 +114,16 @@ def build_local_zip_dependency_plan(
             with raw:
                 reader = _DigestingReader(raw)
                 service = ZipIngestionService(workspace_root)
+                options = {}
+                if external_scanners:
+                    def scan_tree(tree, inventory):
+                        state.external = collect_external_scans(tree, inventory, clock)
+                    options["tree_consumer"] = scan_tree
                 result = service.ingest_with_consumer(
                     reader,
                     lambda session: _consume_dependencies(session, clock),
                     read_limits=READ_LIMITS,
+                    **options,
                 )
         except Exception:
             failed = True

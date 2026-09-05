@@ -554,3 +554,7 @@ PYTHONPATH=backend python -m pytest -q tests/security/test_a4_local_zip_pipeline
 ```
 
 原启动、POST multipart 及报告 GET 方法保持不变。验收：实现46、独立23、完整1025 passed/3 skipped；独立大 ZIP 用例验证预算不足仍保留原结果。三个skip属于已有可选真实模型/公网门禁，本轮没有验证外部工具或真实模型。
+
+## 真实 ZIP 外部工具（2026-09-05）
+
+使用 [Compose](../deploy/README.md) 启用 OPENGUARD_ENABLE_EXTERNAL_SCANNERS=1，默认仍为 0。固定 ScanCode32.5.0/Syft1.51.0 必须存在于镜像路径，不接收请求传入的可执行程序或参数。接受时保存工具开关；旧描述符无字段等价关闭，恢复不随当前默认值改变。真实输出校验 inventory 路径和 SHA 后进入现有资源/许可证/风险/报告。无声明保持 NOASSERTION，根许可证不继承；工具不完整保留可用事实并返回 partial。此次完整回归1103 passed/3 skipped，真实容器和 Chrome 插件报告通过。

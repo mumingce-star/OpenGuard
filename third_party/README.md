@@ -20,6 +20,10 @@
 
 所有依赖、模型、数据、框架、组件、工具、素材和第三方服务在首次引入时登记，不在提交前集中补录。
 
+### 真实工具接线状态补充（2026-09-05）
+
+ScanCode32.5.0/Syft1.51.0 沿用已登记官方包和 SHA，现已复用组员 f8bedfd 的 pipeline 代码接入 API ZIP 主链；新增的受控目录、文件清单/SHA 校验与聚合由 OpenGuard 编写。API 与独立 scanner 共享 Dockerfile 的工具阶段，API 使用单独 venv；未引入新依赖、未复制引擎、未上传安装包或生成报告。真实 Chrome 报告及 HTTP 来源哈希/版本验证通过。根 LICENSE 候选保持 pending，不代表依赖授权；完整镜像再分发审计仍留最终交付。
+
 ## 2026-09-05 最小部署实际引入
 
 - ScanCode 32.5.0、Syft 1.51.0沿用上述已有资源，状态补充为：官方Linux发行包摘要校验及断网容器真实MIT/npm样例通过，Web Pipeline事实接线仍未完成。来源、完整摘要与命令见[部署说明](../deploy/README.md)，镜像保留随包LICENSE/NOTICE，不上传安装包或生成结果。

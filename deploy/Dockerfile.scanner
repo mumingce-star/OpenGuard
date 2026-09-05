@@ -1,6 +1,6 @@
 # ScanCode's official 32.5.0 Linux distribution contains x86_64 wheels.
 # Compose fixes this image to linux/amd64, including on Apple silicon.
-FROM python:3.12-slim-bookworm@sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254
+FROM python:3.12-slim-bookworm@sha256:782412e85d0f0984994c290652577d4018aff08145c85b262bb63dc0c7522254 AS tools
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 SYFT_CHECK_FOR_APP_UPDATE=false
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl bzip2 xz-utils zlib1g libxml2 libxslt1.1 libgomp1 libsqlite3-0 libgcrypt20 libpopt0 libzstd1 \
@@ -23,3 +23,19 @@ COPY deploy/tool-smoke.py /opt/openguard/tool-smoke.py
 USER 10001:10001
 WORKDIR /tmp
 CMD ["python", "/opt/openguard/tool-smoke.py"]
+
+FROM tools AS api
+USER root
+ENV PYTHONPATH=/app/backend
+WORKDIR /app
+COPY backend/pyproject.toml /app/backend/pyproject.toml
+RUN /usr/local/bin/python -m venv /opt/api \
+    && /opt/api/bin/python -c 'import subprocess,tomllib; d=tomllib.load(open("backend/pyproject.toml","rb")); subprocess.check_call(["/opt/api/bin/python","-m","pip","install","--no-cache-dir",*d["project"]["dependencies"]])' \
+    && install -d -m 0700 -o 10001 -g 10001 /var/lib/openguard
+ENV PATH=/opt/api/bin:/opt/scancode/venv/bin:/opt/syft:$PATH
+COPY backend/app /app/backend/app
+COPY rules /app/rules
+COPY LICENSE /app/
+USER 10001:10001
+EXPOSE 8000
+CMD ["python", "-m", "uvicorn", "app.api.main:create_default_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--no-access-log"]

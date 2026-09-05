@@ -152,3 +152,5 @@
 | 2026-09-05 | GPT-6 Astra / Root、实现及只读审查子任务 | A7简单Web真实接线 | 复用83e8928核心页面，Root独立真实Chrome验收并关闭409轮询/无报告处理 | 无Graph/新API/依赖/锁文件变化；API失败不降mock，pending/info不升级；子任务异常后Root接手 | unit20、TypeScript/build、开发及生产preview各10项真实浏览器检查；后端源码未变，不重复历史全量；原始失败与修正保留 | 是（简单本机Web完成；部署和完整P0未完成） |
 
 | 2026-09-05 | GPT-6 Astra / Root与只读审查子任务 | A7最小Compose与扫描工具环境 | Docker官方安装核验，复用原API/Web和已有工具锁版，编写最小容器配置与复现脚本 | 不改业务/Schema/队列；工具环境实跑不等于A4接线；Chrome extension验收，不用内置浏览器 | 配置/构建/健康/UID权限、真实HTTP9项、重建后4格式SHA、断网ScanCode/Syft输出通过；Chrome提交/报告/刷新通过，文件保存确认未完成 | 是（最小部署与工具环境；完整P0及Chrome保存确认尚未完成） |
+
+| 2026-09-05 | GPT-6 Astra / Root与受限实现、独立验收子任务 | A4真实ZIP工具接线 | 复用组员f8bedfd两个pipeline及已有A2/B1/B4/B5/A6；同树fd回调、实时输出限额、来源SHA、固定版本与内部接受开关 | 真实运行修正ScanCode多行版本和proc空扫描、Syft source根相对位置；严格保留NOASSERTION/pending与已有组件ID，无新API/队列/依赖 | 全量1103 passed/3 skipped；独立36项；真实HTTP9项含版本/来源SHA/四格式、重建不变；Chrome真实提交/三资源三提示/工具证据/刷新通过 | 是（工具接线技术通过；待Root功能分支发布，不代表完整P0） |
