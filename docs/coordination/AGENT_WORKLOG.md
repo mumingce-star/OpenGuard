@@ -3778,3 +3778,15 @@
 - 已有B1-B6代码可继续复用，不要求重写扫描器或重复部署Qwen3。最小交付建议：首批可再分发ZIP/固定公开仓库commit及人工expected标签、对应文件/行号和许可证原文依据；补数据集/API和不应命中的负样例；在现有Bench之上提供真实运行预测的取得方式与命令、版本、失败说明。当前p0-smoke.json将expected/predicted均写入文件，evaluate.py只算集合指标，不能据此声称真实扫描准确率。
 - Root已有整文件SHA、dataset/model排除与重复Evidence修复在2ccb75c及其功能分支，组员应基于该已验收版本对齐，避免旧候选覆盖修复。交付仅B线输入与证据，API/Pipeline/Web/部署集成仍归用户A4/A7/A8；不索要图谱、企业权限、模型权重或完整竞赛包装。
 - 本次运行精确 token 数不可获得；开工核查估算2k–4k，核查完成、无范围调整，实际区间不可确认。P0状态沿用进度13节，无新功能完成声明。
+
+### [20260905-RootAstra-PublicSampleSelection] START
+
+- GPT-6 Astra / Root；按用户要求只读选取公开测试项目，非硬估算2k–4k token。当前feat/a4-ai-asset-report干净；沿用进度13节，不扩P0。仅追加既有工作日志与进度记录；通过公开固定源码核查大小、许可和引用，不执行第三方代码。
+
+### [20260905-RootAstra-PublicSampleSelection] COMPLETE
+
+- 选定huggingface/smolagents，标签v1.0.0对应commit a3df1a21db6045aa9be15b4bdf2067041100e96a；pyproject自述版本为1.1.0.dev0，复现以commit为准。固定源码地址 https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041100e96a 。
+- 公开Git refs与固定commit ZIP核查：ZIP878043字节、62文件、展开1253301字节；现有AI选择规则下52文本、418497字节、最大45957字节，未超现有限额。ZIP SHA256 c486d41688b937e208393b95e70fc7293c555b046f4284a8fca7a925fe6ef4a9；临时保存，不纳入作品仓库。
+- 根LICENSE为Apache-2.0；pyproject含15项运行依赖及2项test依赖；README第76行有m-ric/agents_medium_benchmark_2数据集完整URL，docs/source/en/examples/multiagents.md第57行有Qwen/Qwen2.5-Coder-32B-Instruct完整URL。只证明引用存在，根许可证不继承到依赖/模型/数据集，版本范围不是精确安装版本；未执行代码、下载权重或运行完整扫描。
+- 默认网络DNS受限后只读提权；GitHub匿名API返回403限额，改用公开Git refs与codeload成功，无产品修复。未改产品源码，无需重跑产品测试。下一步由用户A4/A5/A7/A8链路执行该固定ZIP端到端验收，只修阻断。正式指标仍需人工真值和实际预测；当前P0父任务不变。
+- 本次运行精确 token 数不可获得；开工2k–4k估算，选样任务完整完成，无范围调整，实际是否落入区间无法确认。待提交仅两个既有治理文件，功能分支发布，不合并或Release。
