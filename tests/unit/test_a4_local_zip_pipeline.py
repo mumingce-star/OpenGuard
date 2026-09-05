@@ -352,3 +352,117 @@ def test_neg_a4zip_010_factory_validation_and_disabled_future_stages(tmp_path: P
     assert ai_disabled.provenance.ai_enabled is False
     assert ai_disabled.provenance.ai_model is None
     assert plan.steps[6].handler(ai_disabled) == ai_disabled
+
+
+def _licensed_files(license_value="MIT", **record_changes):
+    record = {"version": "1.0.0", "license": license_value, **record_changes}
+    return {
+        "package.json": json.dumps({"dependencies": {"known": "1.0.0", "unknown": "2.0.0"}}),
+        "package-lock.json": json.dumps({"lockfileVersion": 3, "packages": {
+            "": {"license": "GPL-3.0-only"},
+            "node_modules/known": record,
+            "node_modules/unknown": {"version": "2.0.0"},
+        }}),
+        "requirements.txt": "requests==2.32.5\n",
+    }
+
+
+def test_zip_explicit_license_reaches_rules_and_report_without_verification(tmp_path):
+    from app.domain.models import VerificationStatus, FindingOutcome
+    archive = _archive(tmp_path, _licensed_files())
+    registry, result = _run(tmp_path, archive, _queued(archive))
+    run = result.run
+    assert run.status is ScanStatus.COMPLETED
+    assert run.stage is ScanStage.COMPLETED
+    licenses = {item.id: item for item in run.licenses}
+    components = {item.name: item for item in run.components}
+    assert licenses[components["known"].license_expression_id].normalized_ids == ["MIT"]
+    for name in ("unknown", "requests"):
+        assert licenses[components[name].license_expression_id].expression == "NOASSERTION"
+    assert all(item.verification_status is VerificationStatus.PENDING for item in run.licenses)
+    license_evidence = [item for item in run.evidence if item.locator.endswith("/license")]
+    assert len(license_evidence) == 1
+    item = license_evidence[0]
+    assert item.locator == "package-lock.json:/packages/node_modules~1known/license"
+    assert item.verification_status is VerificationStatus.PENDING
+    assert item.content_hash.value == hashlib.sha256(_licensed_files()["package-lock.json"].encode()).hexdigest()
+    assert run.findings and all(item.outcome is FindingOutcome.REVIEW_REQUIRED for item in run.findings)
+    assert run.summary.evidence_count == len(run.evidence)
+    assert registry.get(run.id).run == run
+    registry.close()
+
+
+@pytest.mark.parametrize("license_value", [None, {}, ["MIT"], "", "MIT\n", "secret_token=abc", "Custom-Unknown", "MIT OR Unknown"])
+def test_zip_invalid_or_unknown_license_preserves_legacy_partial(tmp_path, license_value):
+    archive = _archive(tmp_path, _licensed_files(license_value))
+    registry, result = _run(tmp_path, archive, _queued(archive))
+    assert result.run.status is ScanStatus.PARTIAL
+    assert [item.code for item in result.run.errors] == ["rules_stage_not_connected"]
+    assert not result.run.licenses
+    assert not any(item.locator.endswith("/license") for item in result.run.evidence)
+    registry.close()
+
+
+@pytest.mark.parametrize("changes", [{"name": "other"}, {"version": "9.0.0"}])
+def test_zip_mismatched_lock_identity_never_inherits_license(tmp_path, changes):
+    archive = _archive(tmp_path, _licensed_files(**changes))
+    registry, result = _run(tmp_path, archive, _queued(archive))
+    assert result.run.status is ScanStatus.PARTIAL
+    assert not result.run.licenses
+    registry.close()
+
+
+@pytest.mark.parametrize("invalid", [
+    '{"lockfileVersion":3,"packages":{"node_modules/known":{"version":"1.0.0","license":"MIT","license":"ISC"}}}',
+    '{"lockfileVersion":3,"packages":{"node_modules/known":{"version":"1.0.0","license":"MIT"}},"extra":NaN}',
+    '{"lockfileVersion":3,"packages":{"node_modules/known":{"version":"1.0.0","license":"MIT"}},"extra":1e999}',
+])
+def test_zip_ambiguous_json_cannot_supply_license(tmp_path, invalid):
+    files = _licensed_files()
+    files["package-lock.json"] = invalid
+    archive = _archive(tmp_path, files)
+    registry, result = _run(tmp_path, archive, _queued(archive))
+    assert result.run.status is ScanStatus.PARTIAL
+    assert not result.run.licenses
+    registry.close()
+
+
+@pytest.mark.parametrize("lock_version", [2, 3])
+def test_zip_scoped_nested_package_lock_binding(tmp_path, lock_version):
+    files = {
+        "web/package.json": '{"dependencies":{"@scope/library":"1.0.0"}}',
+        "web/package-lock.json": json.dumps({"lockfileVersion": lock_version, "packages": {
+            "node_modules/@scope/library": {"version": "1.0.0", "name": "@scope/library", "license": "Apache-2.0"},
+        }}),
+    }
+    registry, result = _run(tmp_path, (archive := _archive(tmp_path, files)), _queued(archive))
+    assert result.run.status is ScanStatus.COMPLETED
+    assert result.run.licenses[0].normalized_ids == ["Apache-2.0"]
+    assert any(item.locator == "web/package-lock.json:/packages/node_modules~1@scope~1library/license" for item in result.run.evidence)
+    registry.close()
+
+
+def test_large_valid_locks_preserve_shared_read_budget_and_legacy_partial(tmp_path):
+    # B1 reads below its 8 MiB limit, but rereading all locks would exceed A2's
+    # 12 MiB budget and irreversibly invalidate the session.
+    files = {}
+    for index in range(4):
+        name = f"dependency-{index}"
+        files[f"project-{index}/package.json"] = json.dumps({"dependencies": {name: "1.0.0"}})
+        files[f"project-{index}/package-lock.json"] = json.dumps({
+            "lockfileVersion": 3,
+            "packages": {f"node_modules/{name}": {"version": "1.0.0"}},
+            "padding": ["a" * 4000 for _ in range(410)],
+        })
+    archive = tmp_path / "large-manifests.zip"
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as output:
+        for path, content in files.items():
+            output.writestr(path, content)
+    registry, result = _run(tmp_path, archive, _queued(archive))
+    assert result.run.status is ScanStatus.PARTIAL
+    assert result.run.stage is ScanStage.RULES
+    assert result.run.progress == 70
+    assert len(result.run.components) == 4
+    assert not result.run.licenses
+    assert [item.code for item in result.run.errors] == ["rules_stage_not_connected"]
+    registry.close()

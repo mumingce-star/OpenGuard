@@ -3637,3 +3637,26 @@
 - 当前能力无新增：仍可真实依赖扫描与阶段报告，完整风险Web/部署未完成；用户A1–A8状态与竞赛门禁见第7–8节。下一轮Root推进A4最小真实事实接线，复用候选而非生成第二套实现。
 - 本次运行精确 token 数不可获得；开工6k–12k非硬估算，核查任务完整完成，实际区间不可确认，无范围调整。
 - EOF anchor：OPENGUARD-P0-GAP-COMPLETE-20260905-1947
+
+
+### [20260905-RootAstra-ZipLicense] START - 一个真实ZIP的许可证风险与报告
+
+- Root / GPT-6 Astra；基线d640ef4，分支feat/a4-zip-license-report，开工干净。沿用刚完成的P0候选核查及用户简化要求，复用当前A2/A3/A4/B5/A5/A6和组员SPDX候选，不增加队列/图谱/API。
+- 当前无已确认可运行ScanCode/Syft环境，已向用户询问环境。独立方案审计确认先走真实package-lock显式许可证声明→准确组件绑定→pending规则复核风险→现有报告；不把manifest扫描宣称外部工具验收。完整P0真实ScanCode/Syft仍待关闭。
+- 实施范围：A4薄事实提取模块、local_zip/dependency_plan最小接线、组员licenses两文件原样复用；不改B线parser/规则引擎/公共模型/worker/registry/API。没有任何许可证声明的旧ZIP保持原partial/rules70；有声明时未声明依赖用NOASSERTION及真实声明来源保留未知，不冒充许可证授权事实。
+- 并行角色：实现子任务负责业务薄适配和单元测试；Root负责HTTP/报告独立验收、治理和推送；方案审计只读。Root独占共享日志。优先扩展现有相关测试与运行文档，仅必要薄模块新增。
+- 门禁：声明name/version/位置绑定、重复/未知/畸形字段、pending不提升verified、根LICENSE不扩散、原无license行为、真实ZIP HTTP到报告及证据摘要、相关回归与完整回归、冻结契约/范围/敏感/append-only。不把用户输入、报告产物或工具安装包上传。
+- token非硬估算12k–22k，本轮精确遥测不可读取；实际完成和工具限制分开汇报，不为赶进度生成虚假completed证据。
+- EOF anchor：OPENGUARD-A4-ZIP-LICENSE-START-20260905
+
+
+### [20260905-2004-RootAstra-ZipLicense] COMPLETE - 真实声明链与报告验收
+
+- Root代记实现与独立方案审查交付，双方停止写入。复用f8bedfd SPDX两文件，新增A4 manifest_licenses薄模块，local_zip/dependency_plan最小接线；未改B1/B5/API/Schema/worker/registry/A5/A6/Git/Web。
+- 真实HTTP证据：v2/v3动态ZIP，生产工厂POST202→completed/100，两个资源、MIT与NOASSERTION pending、两review_required，四格式GET/内容hash/来源字段SHA通过，重启后报告字节一致。无license原输入仍partial/rules70，完成不等于授权核验。Root只在仓库外保留生成报告供用户查看。
+- 实现46 passed；独立23 passed；最终受控完整1025 passed/3 skipped/2 warnings（55.70秒）。两warning为AnyIO与刻意fork；skip为原可选真实模型/公网。本轮无外部工具/模型调用，不用manifest证据冒充ScanCode/Syft。
+- 原始问题保留：初版缺失Evidence key导致原单元1失败，改get跳过由原scan校验拒绝；新增HTTP oracle误写report，按原worker已冻结completed修正（首轮20pass/2fail）。scoped测试v版本触发现有mapper约束，样例改canonical而未改旧代码。独立大ZIP探针确认重复读耗尽12MiB从partial退化failed，读前按上界保守跳过修复，unit和独立真实大ZIP通过；修复前完整1023结果不能替代最终1025。
+- 兼容：原unit/独立函数AST未改，OpenAPI精确等值、P0 Schema/sample与组员SPDX原字节核验通过。最终只更新运行与治理文档；diff/敏感/append-only及上传白名单复核后Root提交推送feat/a4-zip-license-report，未合并main/integration或Release。
+- 限制：仅支持已有npm直接依赖的明确许可证声明；未知文本/大inventory保守回退，Git/Python许可证/真实外部工具/AI资产/Web/部署未完成。组员需提供工具环境复现与精确来源输出，前端按冻结API适配，无需重复框架；具体A1–A8表与下一步见进度第9节。
+- 本次运行精确 token 数不可获得；开工12k–22k非硬估算，manifest ZIP完整交付，实际区间不可确认。范围明确收窄为当前环境能实测的声明链，外部工具门禁保留，不扩产品P1/P2。
+- EOF anchor：OPENGUARD-A4-ZIP-LICENSE-COMPLETE-20260905-2004

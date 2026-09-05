@@ -538,3 +538,19 @@ PYTHONPATH=backend python -m pytest -q \
 不接前端，也没有把进程内 BackgroundTask 扩展为
 持久队列。完整许可证内容仍须消费组员提供的真实 `LicenseExpression`、`Obligation` 与
 `RiskFinding`。
+
+## ZIP 许可证声明到风险和报告（A4 最小接线）
+
+真实 ZIP 中的 `package.json` 声明依赖、`package-lock.json` v2/v3 的对应 `packages["node_modules/名称"]` 含精确版本与可识别 `license` 字符串时，现有 API 自动执行：manifest 扫描→组员 SPDX 标准化→B5 待核验风险→AI 关闭/降级→四格式报告。不增加接口或启动开关，旧 BackgroundTasks 与显式 durable ZIP 均复用本地计划。
+
+例如依赖 `demo-mit: 1.0.0` 对应 lock 记录 `{"version":"1.0.0","license":"MIT"}`。根项目的 `license` 与根 `LICENSE` 不继承给依赖。至少一个明确绑定时，其余资源使用 `NOASSERTION` 保留未知。许可证和新增声明 Evidence 始终 `pending`，B5 输出 `review_required`；`completed` 仅表示处理流程完成，不表示授权已核验。AI 默认关闭时不会生成整改文本。
+
+没有可绑定许可证、字段不支持或读取预算不足时，保留既有依赖结果与 `partial/rules/70`，不制造完成结果。当前限于既有 npm 直接依赖、canonical lock 版本、显式支持的 SPDX 别名/表达式；不代表 Python 许可证、ScanCode/Syft 真实运行、未知文本推理或公开 Git 的许可证接线。为保持原 A2 12 MiB 共享预算，按 inventory 与 lock 重读上界保守判断；大 ZIP 可能跳过许可证补充。
+
+完整可重复样例已放在既有独立测试中，动态生成 ZIP，经真实 Uvicorn 与生产工厂上传，核对资源/风险/Evidence、四格式报告摘要和重启后内容，不需要再维护一份重复样例文件：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/security/test_a4_local_zip_pipeline_independent.py -k real_zip_declared_licenses
+```
+
+原启动、POST multipart 及报告 GET 方法保持不变。验收：实现46、独立23、完整1025 passed/3 skipped；独立大 ZIP 用例验证预算不足仍保留原结果。三个skip属于已有可选真实模型/公网门禁，本轮没有验证外部工具或真实模型。

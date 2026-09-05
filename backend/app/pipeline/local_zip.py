@@ -21,6 +21,7 @@ from app.pipeline.dependency_plan import (
     replace_run,
 )
 from app.pipeline.worker import PipelineError, PipelinePlan
+from app.pipeline.manifest_licenses import collect_manifest_licenses
 from app.scanners import (
     JavascriptP0MappingResult,
     PythonP0MappingResult,
@@ -68,7 +69,10 @@ def _consume_dependencies(session: object, clock: Callable[[], datetime]) -> Dep
     except Exception:
         javascript_mapping = None
     return DependencyConsumerResult(
-        lanes=(LaneResult("python", python_mapping), LaneResult("javascript", javascript_mapping))
+        lanes=(LaneResult("python", python_mapping), LaneResult("javascript", javascript_mapping)),
+        manifest_licenses=collect_manifest_licenses(
+            session, javascript_mapping, clock(), total_read_budget=READ_LIMITS.total_max_bytes,
+        ),
     )
 
 

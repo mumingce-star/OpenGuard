@@ -146,3 +146,5 @@
 | 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：I2发布绑定 | `f48108f6da32ea36e6e757a3cd80a2b42baa0767`已推送feat/a3-zip-dispatcher-recovery并核对远端完整哈希；EVD已绑定 | 精确11文件，无运行产物/凭据/新依赖；未合并或Release | unit28、独立70、全量1005 passed/3 skipped；公开范围、AST、append-only与diff通过 | 是（I2已发布；P0总体验收未完成） |
 
 | 2026-09-05 | GPT-6 Astra / Root及独立只读审计 | P0第一版缺口核查 | 对照原执行书DoD、当前源码及组员f8bedfd/83e8928，验证真实请求与候选契约 | 未修改产品代码/依赖/组员分支；只更新既有三份治理文件，不新增包装产物 | 候选扫描10 passed/2真实工具skip，前端16 passed；动态复现422/202适配不兼容、dataset误识别和重复Evidence ID；未重复I2全量 | 是（仅核查完成；真实全链和部署待实现） |
+
+| 2026-09-05 | GPT-6 Astra / Root及实现、独立审查子任务 | A4真实ZIP许可证声明到风险报告 | 复用组员SPDX和既有A2/A3/B1/B5/A5/A6；Root独立真实HTTP与报告验收 | 新声明保持pending，缺失NOASSERTION；仅薄接线，不改变API/Schema/worker/规则；不代表外部工具运行 | 实现46、独立23、全量1025 passed/3 skipped；大ZIP重复读预算真实缺陷已修，旧测试AST和契约不变；首次新增stage oracle按原worker修正 | 是（manifest ZIP链验收完成；ScanCode/Syft/Web/部署未完成） |

@@ -23,6 +23,7 @@ from app.ai import Provider, apply_ai_remediations
 from app.ingestion import ReadOnlyScanSession, ScanReadLimits
 from app.pipeline.worker import PipelineError, PipelinePlan, PipelineStageFailure, PipelineStep
 from app.pipeline.license_rules import apply_license_rules
+from app.pipeline.manifest_licenses import ManifestLicenseBinding, apply_manifest_licenses
 from app.scanners import (
     JavascriptP0MappingResult,
     JavascriptParseStatus,
@@ -48,6 +49,7 @@ class LaneResult:
 @dataclass(frozen=True)
 class DependencyConsumerResult:
     lanes: tuple[LaneResult, LaneResult]
+    manifest_licenses: tuple[ManifestLicenseBinding, ...] = ()
 
 
 @dataclass
@@ -222,7 +224,7 @@ def build_dependency_plan(
         return replace_run(run, components=components, evidence=evidence, errors=errors, summary=summary, provenance=provenance)
 
     def normalize(run: ScanRun) -> ScanRun:
-        return ScanRun.model_validate(run.model_dump(mode="python"))
+        return apply_manifest_licenses(run, state.consumer_result.manifest_licenses if state.consumer_result else ())
 
     def rules(run: ScanRun) -> ScanRun:
         if not run.licenses:
