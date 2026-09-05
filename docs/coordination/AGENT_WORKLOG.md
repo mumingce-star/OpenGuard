@@ -3356,3 +3356,11 @@
 - 保护门禁：P0 `46 passed`、`schema_export_equal=True`、compileall、staged/unstaged `git diff --check` 通过；受保护 B5/rules、scanners、P0 Domain/Schema/sample、frontend、deploy 无本轮 tracked diff。仓库中唯一大于 10 MiB 的文件位于已忽略的 `frontend/node_modules`，不在 Git 提交清单。
 - 证据边界：本轮最终候选包含 9 项实现测试与 11 项独立测试实例；A5-1c 已可对既有 B5 finding 执行默认关闭、显式生成、确定性整改跳过和失败降级，并让 A6 持久化报告。普通 ZIP/Git 仍缺 B2/B3/B4 许可证事实，不能声称完整真实仓库链已到 A5。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，当前 A5-1c 已在同一工作包内完成技术验收，待不可变提交与远端发布，不发生范围扩张。
+
+### [20260905-1330-RootAstra-A5Pipeline发布] AMENDMENT/COMPLETE - GitHub 不可变实现已绑定
+
+- GitHub 发布事实：A5-1c 实现、测试、规格与首轮治理提交 `3237ab0e8634ba5f0c62535100ef97785bd611a6` 已推送 `origin/feat/a5-pipeline-integration`；本地 HEAD 与 `git ls-remote` 返回同一完整对象，`EVD-A5-PIPELINE-INTEGRATION-001` 绑定该实现。
+- 上传范围：15 个竞赛仓库文件，包括 6 个项目负责人 Pipeline/API 接线文件、9 项实现测试、11 项独立测试实例、A5-1c 规格，以及根/后端/测试运行说明与 AI/进度/协作记录；未上传 B4/B5/B6/B7 改动、前端、部署、模型、缓存、运行数据库、prompt、完整 response、凭据或本机临时物。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、既有 A5 PR #2 或两个组员分支；组员 B5 远端仍为 `f8bedfd6bd823b7459ffbffda9d38c2903984a6c`。本发布状态回填将作为第二个纯治理提交继续推送同一 A5-1c 分支。
+- 阶段结论：A5/S4 P0 子系统完成；当前真实产品主链仍会因普通 ZIP/Git 未产出 B2/B3/B4 许可证事实而停在 `partial/rules/70`，这不影响 A5 模块闭环，但阻止宣称完整真实仓库许可证 AI 端到端。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A5-1c 已在该范围内完成实现、独立复核、真实模型、全量回归和首次发布；发布回填未扩大功能范围。
