@@ -3616,3 +3616,24 @@
 - 未合并main/integration、未创建PR、未修改组员分支或发布Release；无新依赖及运行产物上传。
 - 本次运行精确 token 数不可获得；开工估算20k–35k，I2完整交付，实际区间不可确认，无产品范围调整。
 - EOF anchor：OPENGUARD-DZI2-PUBLISHED-20260905
+
+
+### [20260905-1945-RootAstra-P0Gap] START - 第一版产品缺口核查
+
+- GPT-6 Astra / Root；基线5679113088f980b5ec73f385679348a064df24af，开工工作区干净；分支docs/p0-first-product-gap-check。用户明确先框架和简单可运行产品，减少复杂化与无用产物。
+- 本轮只读核查当前源码及已fetch的组员候选，临时动态探针位于仓库外。Root查真实前端/API和部署；独立子任务查scanner/SPDX/AI资产/Bench，禁止并行编辑。沿用此前I2已核实历史，本轮历史日志分块读取发生截断，仅据实际已读的相关记录作结论，不声称重新完整逐行复读。
+- 预计只更新既有PROJECT_PROGRESS、AGENT_WORKLOG、05-ai-assistance-log三份治理文件；不生成新报告、规格、Schema、实现或测试文件。不改组员分支、不安装软件、不扩大P1/P2。
+- 验收：候选源码/commit、聚焦测试、真实后端请求形状与候选验证器、部署文件/工具可用性检查；保护产品源码、append-only、diff/敏感范围、提交推送。只读技术核查完成后本START先于任何项目内容修订追加。
+- token非硬估算6k–12k；精确本轮遥测不可读取。目标是具体缺口和条件工时，不把完整竞赛包装或未验证候选算成已交付产品。
+- EOF anchor：OPENGUARD-P0-GAP-START-20260905-1945
+
+
+### [20260905-1947-RootAstra-P0Gap] COMPLETE - 最小产品缺口已核清
+
+- Root对照原V1.0第15节DoD与当前代码，独立审计提供扫描候选源码/动态验证。扫描f8bedfd、前端83e8928已fetch核对；当前框架可复用，主要工作为真实事实绑定→核心Web适配→部署，非新框架。
+- 验证：仓库外git archive候选扫描四文件聚焦10 passed/2真实工具skip；前端node --test tests/model.test.mjs为16 passed。TestClient真实默认工厂收到候选multipart形状为422、合法形状为202；候选validateSnapshot拒绝实际202。动态探针复现dataset额外model和重复Evidence ID。未修改现有测试或放宽断言，未重复未变化代码的全量回归。
+- 具体缺口/条件估算/下一任务见PROJECT_PROGRESS第8节。PATH与常用socket未找到当前可用工具环境，不推断全机安装状态，不用fixture代替真实工具。旧7–14工作日撤回；按具体接线分项估计，非工期承诺。
+- 修改仅三份既有治理文件，无新项目文件/接口/Schema/规则/依赖，无产品P1/P2。共享日志append-only、保护源码、diff/敏感/文件范围核验后提交推送docs/p0-first-product-gap-check；未合并或Release。
+- 当前能力无新增：仍可真实依赖扫描与阶段报告，完整风险Web/部署未完成；用户A1–A8状态与竞赛门禁见第7–8节。下一轮Root推进A4最小真实事实接线，复用候选而非生成第二套实现。
+- 本次运行精确 token 数不可获得；开工6k–12k非硬估算，核查任务完整完成，实际区间不可确认，无范围调整。
+- EOF anchor：OPENGUARD-P0-GAP-COMPLETE-20260905-1947

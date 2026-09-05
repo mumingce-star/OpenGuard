@@ -144,3 +144,5 @@
 | 2026-09-05 | GPT-6 Astra / Root；GPT-5.6 Terra、Luna | AMENDMENT：I2技术验收 | 原fixture失败与真实running busy冷却缺陷分开保留；Terra最小修复，Luna真实OS/HTTP独立验证，Root终审 | 无产品P1/P2、第三方依赖、真实模型/公网新增调用；旧独立函数AST不变，冻结worker/registry/API不变 | unit28、独立70、Root完整1005 passed/3 skipped；两warning为AnyIO和刻意fork测试；OpenAPI/Schema/sample/编译通过 | 是（技术通过，待提交和远端绑定） |
 
 | 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：I2发布绑定 | `f48108f6da32ea36e6e757a3cd80a2b42baa0767`已推送feat/a3-zip-dispatcher-recovery并核对远端完整哈希；EVD已绑定 | 精确11文件，无运行产物/凭据/新依赖；未合并或Release | unit28、独立70、全量1005 passed/3 skipped；公开范围、AST、append-only与diff通过 | 是（I2已发布；P0总体验收未完成） |
+
+| 2026-09-05 | GPT-6 Astra / Root及独立只读审计 | P0第一版缺口核查 | 对照原执行书DoD、当前源码及组员f8bedfd/83e8928，验证真实请求与候选契约 | 未修改产品代码/依赖/组员分支；只更新既有三份治理文件，不新增包装产物 | 候选扫描10 passed/2真实工具skip，前端16 passed；动态复现422/202适配不兼容、dataset误识别和重复Evidence ID；未重复I2全量 | 是（仅核查完成；真实全链和部署待实现） |

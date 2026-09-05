@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-05 19:30（Asia/Shanghai）
+更新时间：2026-09-05 19:47（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -10,7 +10,7 @@
 
 每次收工仅展示用户负责的A1-A8，区分本轮/累计完成、进行中、未开始、阻塞、验证证据、责任角色和发布状态。组员模块只列作这些任务的输入依赖，不算作用户尚未完成的独立工作包。
 P0结束依据：公开Git/ZIP、真实ScanCode/Syft、模型/数据/API带Evidence样例、首批许可证规则及可追溯风险、AI结构化降级、核心前端真实API、HTML/JSON/CSV、首批golden cases与指标、Compose陌生机复现、第三方与AI使用记录。完整竞赛材料及获奖竞争力证据另列。
-I2已获明确授权；Git恢复、lease/heartbeat和业务retry不自动成为下一任务。I2通过后先回到上述DoD的真实分析模块接线与Web/部署闭环，不扩张队列架构。
+I2已获明确授权；Git恢复、lease/heartbeat和业务retry不自动成为下一任务。I2通过后先回到上述DoD的真实分析模块接线与Web/部署闭环，不扩张队列架构。2026-09-05最新用户要求：优先简单可运行第一版，最小适配，不新建包装性产物；当前核查结论见第8节。
 
 ## 0. 真人责任边界（模型角色不能替代真人主责）
 
@@ -79,8 +79,8 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | B4 | SPDX标准化 | 扫描组员 / Sol/Terra | 进行中 | 组员分支已有显式别名与复合表达式标准化回归，未知值保持 pending；本轮未导入或修改 | SPDX 官方数据版本台账、完整表达式语法、LicenseRef、人工复核及与许可证事实生产链集成 | 9月4日-20日 |
 | B5/S3 | 15种许可证义务规则 | 扫描组员 / Sol/Terra/Luna | 进行中 | 组员分支已有 15 条 JSON-subset YAML 规则、逐规则 fixture、证据门禁和稳定 P0 输出；其公共实现已由项目负责人 A4-2 原样消费，组员 B5 定向 `10 passed` | 官方许可证原文证据台账、人工复核状态和更完整冲突样例仍缺；不得因 A4 接线而标为 B5 完成 | 9月12日-20日 |
 | B6 | 模型/数据/API检测 | 扫描组员 / Terra | 进行中 | 组员分支已有离线 HF/ModelScope/API 静态识别与 Evidence 定位回归；本轮未导入或修改 | AST 覆盖、误报评测、授权/许可证人工核验与主链接入 | 9月12日-20日 |
-| A3 | FastAPI扫描API | 项目负责人 / Root | 进行中 | 6个端点、SQLite、Git JSON、ZIP multipart 与两种输入的进程内 BackgroundTask 已验证；公开 Git 需管理员显式开启，ZIP/Git 都可产生可查询终态 | A3父任务仍缺持久队列、lease/retry/recovery 与进程重启后 queued/running 恢复 | 9月21日-28日 |
-| A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4 worker、ZIP/公开 Git 依赖接线、A6-2 报告发布、A4-2 B5 规则适配及 A5-1c AI 阶段接线已完成；注入合法许可证事实时可持久化 B5 与 AI 输出 | 当前真实输入仍缺 B2/B3/B4 许可证事实；另需持久消费/重试/lease/recovery 和普通输入含真实规则/AI的端到端证据 | 9月21日-28日 |
+| A3 | FastAPI扫描API | 项目负责人 / Root | 进行中 | 6个端点、SQLite、Git JSON、ZIP multipart 与两种输入的进程内 BackgroundTask 已验证；公开 Git 需管理员显式开启，ZIP/Git 都可产生可查询终态 | ZIP持久派发及queued/running恢复已由I2完成；剩余核心Web联调与部署验收。Git恢复、lease/retry不自动排入P0 | 9月21日-28日 |
+| A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4 worker、ZIP/公开 Git 依赖接线、A6-2 报告发布、A4-2 B5 规则适配及 A5-1c AI 阶段接线已完成；注入合法许可证事实时可持久化 B5 与 AI 输出 | I2持久ZIP消费与恢复已完成；剩余真实许可证/AI资产事实接线及端到端证据，不继续扩张lease/retry | 9月21日-28日 |
 | A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 已完成 | A5-0 Provider、A5-1a transport、A5-1b 本机真实运行和 A5-1c Pipeline 接线均已绑定不可变证据；已有 B5 pending→真实 Qwen3→SQLite→A6 单项证据，且 verified 确定性整改不重复、失败可降级 | 普通 Web 端到端仍需上游许可证事实，多项目质量需 Bench；这些属于集成/效果门禁，不回退 A5 P0 子系统完成状态 | 9月12日-28日 |
 | F0 | P0前端核心页面 | Terra/团队前端 | 进行中 | React/Vite/Tailwind 应用壳已提交并通过锁文件安装、TypeScript与Vite生产构建 | 当前仍为mock；继续完成 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 的真实API接线 | 9月21日-28日 |
 | A6 | HTML/JSON/CSV与资源清单 | 项目负责人 / Terra/Luna | 进行中 | 四格式渲染、私有持久化/下载与 Pipeline 发布已完成；A4-2 的实际 B5 输出可由既有报告器呈现；受控完整 `888 passed, 2 skipped` | 前端下载接线和最终匿名化验收；真实许可证内容仍需上游事实进入 B5 | 9月21日-28日 |
@@ -197,9 +197,32 @@ I1不可变实现证据：`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`；功能分
 
 当前可独立演示：安全ZIP/公开Git依赖纵切与阶段报告；显式durable ZIP可重启消费queued，中断running只收敛事实而不重放。缺少真实资源→许可证风险→AI→Web完整链和陌生机部署，不称完整P0成品。本轮无开放阻断I2的缺陷；剩余依赖是候选模块与目标环境验收。
 
-P0剩余5个验收工作包：①A4真实scanner/SPDX/AI资产事实接线；②A7核心页面真实六API与报告下载；③A2/A7部署安全、Compose及陌生机；④A8首批golden cases、可计算指标与真实全链演示；⑤A8资源/版本/许可证/AI记录及P0冻结。预计约30–50有效工程/验证小时；在候选可用、环境顺利且每天4–6小时投入下约7–14个工作日，非测量承诺，出现上游或环境阻塞需重估。下一轮仅先做①的可验收窄切片。
+P0剩余5个验收工作包：①A4真实scanner/SPDX/AI资产事实接线；②A7核心页面真实六API与报告下载；③A2/A7部署安全、Compose及陌生机；④A8首批golden cases、可计算指标与真实全链演示；⑤A8资源/版本/许可证/AI记录及P0冻结。此前30–50小时/7–14工作日估计依据不足，已撤回；以第8节基于候选代码核查的分项估算为当前参考。下一轮仅先做①的可验收窄切片。
 报名/参赛仍需Owner核实平台资格与权属；完整作品还需上述P0、报告/视频/资源表/匿名与Release；竞争力还需真实案例、基线/消融、误差分析和稳定演示。此处不授权实施产品P1批量Bench等扩展。
 
 本次运行精确 token 数不可获得；开工非硬估算20k–35k，I2功能范围完整完成，实际是否在区间内不可确认；验证补证未扩大产品范围。
 
 I2发布：精确11个源文件/测试/运行及治理文档；未上传运行产物、模型或凭据。功能分支已推送，未合并main/integration、未创建PR或发布Release；随后仅回填本次发布绑定记录。
+
+## 8. 第一版简单产品缺口核查（2026-09-05）
+
+本轮完成核查，不宣称新增产品能力。代码基线5679113；fetch后组员扫描候选f8bedfd6bd823b7459ffbffda9d38c2903984a6c、前端83e89281e941801e1a62f0661d3def6de77f9a8b未变化。只更新既有三份治理文件；无新架构、规格或重复代码。
+
+| 顺序 | 已有可复用代码 | 实测缺口与最小动作 | 有效工程小时估计 |
+|---|---|---|---|
+| 1 真实扫描链 | 候选scan_sealed_tree、normalize_license、detect_ai_assets；当前A4/B5/A5/A6 | 在现有输入会话内调用；Syft尚丢弃artifact licenses、ScanCode仅全局候选，需准确资源绑定；规则适配不能因一个未知资源阻断整批。修复dataset误识别及重复Evidence ID，不重写检测器 | 7–12 |
+| 2 核心Web | 已有NewScan/Progress/Overview/Risks/EvidenceReader与轮询 | 改为冻结请求字段和202→状态/资源/风险/证据读取，下载已有后端报告；不新增仓库validate或PATCH处理状态接口，不引入Graph等P1页面 | 4–7 |
+| 3 部署 | 已有API工厂、私有data目录、前端build；deploy仅说明 | 最小Compose/启动说明，固定工具版本与数据卷，目标Linux运行实际受限工具并验证一次重启与全链 | 3–5 |
+| 4 P0收口 | 候选指标计算器、已有资源与AI记录 | 从真实扫描结果产首批golden预测而非手填predicted，核验Git/ZIP与四类资源样例、AI降级及资源记录 | 2–4 |
+
+估计依据是上述具体适配点，尚非实测开发速度：先看到简单真实Web约11–19有效小时；原执行书完整P0约16–28有效小时，工具环境准备暂另留2–4小时（合计参考18–32小时）。安装/权限/目标机器阻塞没有可靠上限，因此不再给固定工作日承诺。正式报告、视频、竞争力对照/消融不计入该P0开发估算。
+
+核查证据：扫描候选原测试10 passed/2 skipped（真实工具两项跳过）；独立动态探针复现HF dataset URL额外model及同一行重复Evidence ID。前端候选原测试16 passed，但真实后端按候选multipart字段返回422，正确source_type=zip返回202，而候选validateSnapshot拒绝该真实202。故候选单测通过不等于联调通过。前端还请求冻结API不存在的repositories/validate与PATCH风险路径，报告页自行导出前端快照；应仅适配P0路径与既有报告，不扩后端契约。
+
+环境边界：当前PATH未发现docker/scancode/syft，常用Docker socket未发现；不能据此断言全机未安装。候选工具入口使用/proc/self/fd，本机无该路径；组员历史真实工具测试不等于本轮ZIP→受限工具→A4完成。不得用模拟工具冒充此门禁。
+
+下一任务只做第一行：复用组员候选接通一个ZIP样例，使已知与未知许可证资源都能诚实进入规则/AI降级/报告；不得把根LICENSE分配给全部依赖，也不得把pending自动提升verified。未知资源的处理需保持原公共模型和事实边界。按文件选择候选，避免覆盖旧ingestion导出而回退当前Git能力。
+
+用户A1–A8状态沿用第7节：A1/A5子系统完成，A2/A3/A4/A6已有纵切，A7真实Web与部署未完成，A8首批指标及收口未完成。本轮完成的是A4/A7/A8缺口核查，无新增产品功能；Root主责、独立审计辅助。当前可演示仍为真实依赖扫描、持久查询与阶段报告；完整风险Web和陌生机尚不可宣称。
+报名资格/权属由Owner核实；完整作品另需报告/视频/资源表/匿名与发布；竞争力另需案例对照、误差分析及稳定演示。这些不阻止先跑通简单产品，不作为当前扩展功能的理由。
+发布范围：docs/p0-first-product-gap-check，仅PROJECT_PROGRESS、AGENT_WORKLOG、05-ai-assistance-log；不合并主线或改组员分支。本次运行精确 token 数不可获得；开工6k–12k估算，核查范围完成，实际区间不可确认，无范围扩张。
