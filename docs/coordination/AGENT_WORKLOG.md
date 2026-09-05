@@ -3364,3 +3364,54 @@
 - 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、既有 A5 PR #2 或两个组员分支；组员 B5 远端仍为 `f8bedfd6bd823b7459ffbffda9d38c2903984a6c`。本发布状态回填将作为第二个纯治理提交继续推送同一 A5-1c 分支。
 - 阶段结论：A5/S4 P0 子系统完成；当前真实产品主链仍会因普通 ZIP/Git 未产出 B2/B3/B4 许可证事实而停在 `partial/rules/70`，这不影响 A5 模块闭环，但阻止宣称完整真实仓库许可证 AI 端到端。
 - token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A5-1c 已在该范围内完成实现、独立复核、真实模型、全量回归和首次发布；发布回填未扩大功能范围。
+
+
+### [20260905-1524-RootAstra-DurableZIP规格开工] START - A3/A4-3a-S 窄规格与验收门禁
+
+- 作者：GPT-6 Astra / Codex Root；协作模型 GPT-5.6 Sol（架构）、GPT-5.6 Terra（可实现性）、GPT-5.6 Luna（独立验收设计）。
+- 时间：2026-09-05 15:24（Asia/Shanghai）；分支 `docs/a3-a4-durable-zip-spec`，基于 `1ba14aff6894aabdd25f4491688df5d7b852e95a`；开始前工作树干净。
+- 用户授权：按既定下一步继续，并允许 Root 协调 Sol/Terra/Luna。本轮仅规格门禁，不编码；三模型只读分析，Root 统一代记报告并串行编辑共享文件。
+- 开工核验：Root 已读 AGENTS、README、进度、交接与 A3/A4/A6 规格及代码；Sol 承担全量 3366 行共享日志的逐段完整复核，明确补读截断部分并确认无缺段、无本任务同路径在途修改；Root 核对其报告和物理 EOF。远端主控/集成/组员 HEAD 与上一轮核验一致。
+- 任务范围：从持久 worker 父包拆出 ZIP-only durable dispatch、queued 重启消费和 interrupted-running 诚实终态；不新增 jobs.db，不改变 scans.db/P0/六 API；Git恢复、lease/heartbeat接管、handler retry/checkpoint 和 HA 留在父包，不能据窄规格宣称全部完成。
+- 预计修改：仅新建 `docs/spec/a3-a4-durable-zip-dispatch.md`，更新 `docs/coordination/PROJECT_PROGRESS.md`，追加 `docs/05-ai-assistance-log.md` 与本共享日志。禁止修改业务代码、测试、Schema/sample、组员 B 线、前端和部署。
+- 验收：Sol 架构复核、Terra 可实现性复核、Luna 逐项 oracle 复核；检查引用、唯一门禁ID、P0/保护路径无差异、append-only前缀、diff/敏感内容及待提交清单。设计证据与运行证据严格分开。
+- 发布：Root 验收后只提交推送这四个竞赛治理文件到独立文档分支；不创建/合并PR，不变更 main/integration/组员分支，不发布产品Release。
+- token：开工非硬估算 12k–20k；本次运行精确 token 数不可获得。全量历史日志阅读规模高于初估，不能证实实际消耗处于该区间；本轮交付仍仅规格，未扩为实现。
+- EOF anchor：OPENGUARD-DZ-SPEC-START-20260905-1524
+
+
+### [20260905-1531-Sol-DurableZIP规格复审] COMPLETE - 架构规格批准（Root代记）
+
+- 作者：GPT-5.6 Sol；Root依据只读子任务原始报告代记，模型未直接修改项目文件。
+- 范围与结果：完整3366行历史日志逐段可见复核、既有A3/A4/A6约束审查、两轮规格复审；最终APPROVE。
+- 关闭项：异常running若含report_links，不得通过terminal收敛使其可见；规格选择保留running/输入并停止该任务自动恢复。正常恢复links为空；不重放handler/publisher。
+- 审查更正：曾因两段sed边界重叠误报DZ-01重复，Root实际文件核查无重复，Sol已撤销；没有删除有效条目。
+- 边界：只批准ZIP-only文件descriptor与单机flock规格，不批准Git恢复、lease接管、业务retry、exactly-once或产品实现。没有代码或新测试运行证据。
+- token：本次运行精确 token 数不可获得；子任务初估4k–7k，全量569KB日志补读与复审增加了阅读量，不能证实消耗在区间内。
+
+### [20260905-1531-Terra-DurableZIP规格复审] COMPLETE - 工程可实现性批准（Root代记）
+
+- 作者：GPT-5.6 Terra；Root依据只读报告代记，未编辑代码、日志、分支或测试。
+- 范围与结果：候选run构造/提交拆分、prepared→ready、幂等输入保护、profile、busy和legacy边界可实现；最终APPROVE。
+- 关闭项：首个multipart字节前预留slot+64MiB，持久descriptor后降实际值，重启残留计入配额，可疑对象阻止接收而非计零。
+- 取舍：不引入第二SQLite任务库、不改scans.db v1；Git在执行时才固定revision，留在后续任务。报名权属/平台门禁与技术完整作品门禁分别汇报。
+- token：本次运行精确 token 数不可获得；子任务初估3k–6k，未做精确计量；先前候选报告中的“在范围内”不作为遥测结论。
+
+### [20260905-1531-Luna-DurableZIP验收设计] COMPLETE - 独立oracle矩阵批准（Root代记）
+
+- 作者：GPT-5.6 Luna；Root依据只读报告代记，未新增测试或复用实现侧expected。
+- 范围与结果：最终DZ-01..15矩阵APPROVE；真实OS进程、kill/restart、第二SQLite连接、事件屏障、独立Provider调用计数和实际报告GET为未来门禁。
+- 修订：prepared精确绑定可恢复ready；同key同字节保留原profile，不因配置变化造409；删除过时持久attempt建议；补fsync事件证据、AI false歧义和busy单周期口径。
+- 边界：这是可测性设计，15项动态门禁尚未执行；不代表持久队列、模型或完整Web验收。
+- token：本次运行精确 token 数不可获得；子任务初估3k–5k，未取得精确计量。
+
+### [20260905-1531-RootAstra-DurableZIP规格验收] PARTIAL - 技术规格批准，待文档发布
+
+- 作者：GPT-6 Astra / Codex Root；任务A3/A4-3a-S；分支docs/a3-a4-durable-zip-spec。
+- 实际交付：唯一新规格docs/spec/a3-a4-durable-zip-dispatch.md；更新PROJECT_PROGRESS，仅追加AI记录和共享日志。A3/A4-3a-I1/I2实现与运行evidence未开始。
+- 设计决策：ZIP-only、文件descriptor、不改registry v1或P0/六API；精确profile与幂等；全生命周期flock；queued恢复、正常running零重放partial/failed；异常links拒绝恢复；报告orphan不可见。
+- 验证：Sol/Terra/Luna最终APPROVE；本轮P0回归46 passed；后续执行文档/路径/ID/append-only/敏感/diff门禁后由Root提交推送文档分支。上一轮基线完整907 passed,3 skipped为旧代码证据，不冒充本任务动态恢复测试。
+- 发布状态：尚未提交推送，不创建/合并PR，不修改main/integration/组员分支。
+- 下一步：文档发布后按同规格先I1持久输入/登记，再I2后台消费与中断收敛；保留Git恢复/lease/heartbeat/业务retry/cleanup父包缺口。
+- token：本次运行精确 token 数不可获得；初估12k–20k，长日志核验阅读高于预估，无法确认实际区间；范围收窄为ZIP规格，未扩大编码。
+- EOF anchor：OPENGUARD-DZ-SPEC-REVIEW-20260905-1531

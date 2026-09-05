@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-05 13:20（Asia/Shanghai）
+更新时间：2026-09-05 15:31（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -10,7 +10,7 @@
 
 | 真人角色 | 负责范围 | 本轮处理 |
 |---|---|---|
-| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 本轮只推进项目负责人 A5-1c：把既有 A5 Provider/Ollama 接入 `AI_ASSIST`，完成默认关闭、显式启用、B5 pending/verified 与降级报告纵切；不修改 B5、B4/B6/B7、前端或部署 |
+| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 本轮仅完成 A3/A4-3a-S ZIP 持久派发窄规格与三角色审查；复用既有 A3/A4/A5/A6，不编码，不代做 B 线、前端或部署 |
 | 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 远端 `codex/p0-external-tools-sync` 仍为 `f8bedfd`；本轮只读取当前分支已原样引入的 B5 公共输出，不改写组员引擎、规则、扫描器、测试或分支 |
 | 前端组员 | React/Vite 与 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 页面 | 本轮未修改；远端前端分支新提交保持组员在途状态 |
 
@@ -18,8 +18,14 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 
 ## 1. 当前任务点
 
+本轮规格门禁与实现必须分开：`A3/A4-3a-S` 设计审查已通过，发布状态见下表；
+`A3/A4-3a-I1/I2` 代码与运行证据均未开始。主控代码基线仍为 `1ba14af`，
+受控全量 `907 passed, 3 skipped` 为该代码的既有验证，本轮只复跑 P0 `46 passed`。
+
+
 | 任务点 | P级 | 主责模型 | 状态 | 已完成/当前证据 | 未完成/下一步 | GitHub状态 |
 |---|---|---|---|---|---|---|
+| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 进行中 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 仅待文档提交/推送闭环；实现I1/I2未开始，Git恢复/lease/heartbeat/业务retry仍待后续 | `docs/a3-a4-durable-zip-spec` 本地文档候选；不创建/合并PR |
 | S1a/A1 P0领域契约 | P0 | Sol | 已完成 | 契约 v0.1.1、唯一公共模型、6个API、风险四态、证据与provenance；历史提交 `02c3d46` | 后续仅通过变更流程新增 ADR，不再并行维护第二套模型 | 已推送 `feat/p0-domain-contract` |
 | A1 领域模型实现 | P0 | Terra | 已完成 | Pydantic模型、Draft 2020-12 Schema、sample和 AI producer 条件字段；历史提交 `b2fd061` | 进入 A2 前保持兼容性回归 | 已推送 `feat/p0-domain-contract` |
 | L-A1 独立边界审计 | P0 | Luna | 已完成 | 46项测试全部通过；覆盖路径脱敏、partial语义及 AI producer 正反边界 | 进入 A2 后扩展输入安全测试 | 已推送 `feat/p0-domain-contract` |
@@ -111,7 +117,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 ## 3.1 当前远端分支入口
 
 - 团队日常入口：`integration/p0`；里程碑发布目标：`main`。
-- 项目负责人当前短分支：`feat/a5-pipeline-integration`，基于已发布 A4-2 建立，A5-1c 实现 `3237ab0` 已推送并核对远端；既有 A5 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 仍提交到 `integration/p0`，本轮不修改或合并该 PR。
+- 项目负责人当前短分支：`docs/a3-a4-durable-zip-spec`，基于已发布 `feat/a5-pipeline-integration` 的 `1ba14af`，只交付ZIP持久派发规格及治理。A5-1c实现仍为已发布的 `3237ab0`；既有 A5 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 不在本轮修改或合并范围。
 - 组员在途分支：`feat/xzb-frontend`、`codex/p0-external-tools-sync`，均保留。
 - 待明确授权清理的项目负责人历史分支：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
 - 上述待清理分支的提交均已从 `integration/p0` 可达，删除分支引用不会删除集成线中的代码和证据；未获明确授权前保持现状。
@@ -125,3 +131,25 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 竞赛原始附件 | 通过 | 原始PDF/DOCX不复制进公开仓库，正式要求以脱敏规范文档表达 |
 | 敏感信息 | A5-1c 发布复核通过 | 不上传密钥、账号、本机绝对路径、学校/教师/成员隐私或目标仓库内容 |
 | 第三方资源 | 持续 | 首次真实引入时锁版本并更新 `third_party/` 与资源清单 |
+
+## 5. A3/A4-3a-S 规格门禁与下一任务（2026-09-05）
+
+唯一规格：[ZIP持久派发与中断收敛](../spec/a3-a4-durable-zip-dispatch.md)。
+Sol完成架构审查，Terra确认可实现性，Luna批准15项独立oracle；Root关闭报告links可见性和配额预留歧义。
+仅有设计批准，没有持久worker运行evidence。未新增依赖，未修改代码、公共契约或测试。
+
+| 范围 | 状态 | 责任 | 下一项可验证门禁 |
+|---|---|---|---|
+| 本轮规格门禁 | 审查通过，文档发布闭环中 | Root/Sol/Terra/Luna | 四文件范围、append-only、P0回归、文档提交与远端核对 |
+| I1 descriptor与输入生命周期 | 未开始 | Terra→Luna→Root | prepared/ready、实际ZIP、幂等、fsync/崩溃窗口、保留输入与配额；默认关闭 |
+| I2 dispatcher与恢复接线 | 未开始 | Terra→Luna→Sol→Root | 真正多进程锁、kill/restart、queued消费、running不重放、DZ-01..15和完整回归 |
+| Git恢复、lease/heartbeat与业务retry | 未开始 | 项目负责人A线 | 另立窄规格；本轮不承诺任意阶段续跑或exactly-once |
+| 前端与B线候选接入 | 进行中 | 各组员→Root集成 | 组员分支已有候选；前端拟定接口须适配冻结六API，B4/B6/B7不得重复生成 |
+
+现有可演示能力仍为安全ZIP/公开Git依赖纵切、持久查询与阶段性报告；普通输入仍为
+`partial/rules/70`，当前主控前端仍为mock。最新组员分支有请求/轮询与检测/Bench候选，
+不等于已完成主控真实Web联调。`integration/p0`仍比本轮代码基线少25个提交，不自动合并。
+
+报名/参赛资格门禁：Owner落实平台、缴费、主体和权属确认。完整作品门禁：上游许可证事实、
+前端契约对齐与真实Web链、部署/陌生机、安全与Bench、报告视频/资源表/匿名及Release。
+获奖竞争力门禁：真实案例、基线/消融、误差分析和稳定演示。不得由规格或P0回归推出完成率。
