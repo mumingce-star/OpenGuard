@@ -909,3 +909,10 @@
 - 已知风险和未完成项：样例是公开、虚构、合成的 source-only case，评分不能代表生产准确率；仍缺 3–5 个独立项目/固定公开提交、双人标注与误报基线；Windows 未验证 POSIX descriptor ZIP 到 ScanCode/Syft 的端到端链路，也未完成 A4 接入。
 - 下一步与责任：Luna 建立独立项目/固定提交和双人标注台账；Terra 在受控 Linux 完成 ZIP→工具→A4；Root 审核、提交、推送和创建 PR。关联 evidence：`benchmarks/results/static-ai-assets-v1.actual.json`；提交/PR：待 Root 本轮验收后创建。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 8,000～14,000，本轮因恢复 Python 环境并增加实际回归而使用范围扩大，但未改变任务边界。
+
+### [20260906-1030-Sol-真实样例发布绑定] AMENDMENT - 完成 GitHub 分支发布
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-06 10:30（Asia/Shanghai）。
+- 发布事实：已将已验收的 11 个作品文件提交为 `1c7239e`（`feat: add reproducible AI asset benchmark evidence`）并推送至 `origin/codex/p0-external-tools-sync`；推送后工作区与上游一致。PR 尚未创建或合并，`main` 未被直接修改。
+- 发布前验证复核：`git diff --check` 通过；目标回归 `9 passed, 1 skipped`，并已确认实际输出 SHA-256。唯一 Git 提示为 JSON 的 CRLF 将在下一次 Git 触碰时规范为 LF，不影响已提交文件内容或输出哈希。
+- 下一步：Root/CZ 可从 `https://github.com/mumingce-star/OpenGuard/pull/new/codex/p0-external-tools-sync` 创建 PR；Linux ZIP 链路和独立样例标注仍按上一条收工记录处理。
