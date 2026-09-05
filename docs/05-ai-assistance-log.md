@@ -154,3 +154,5 @@
 | 2026-09-05 | GPT-6 Astra / Root与只读审查子任务 | A7最小Compose与扫描工具环境 | Docker官方安装核验，复用原API/Web和已有工具锁版，编写最小容器配置与复现脚本 | 不改业务/Schema/队列；工具环境实跑不等于A4接线；Chrome extension验收，不用内置浏览器 | 配置/构建/健康/UID权限、真实HTTP9项、重建后4格式SHA、断网ScanCode/Syft输出通过；Chrome提交/报告/刷新通过，文件保存确认未完成 | 是（最小部署与工具环境；完整P0及Chrome保存确认尚未完成） |
 
 | 2026-09-05 | GPT-6 Astra / Root与受限实现、独立验收子任务 | A4真实ZIP工具接线 | 复用组员f8bedfd两个pipeline及已有A2/B1/B4/B5/A6；同树fd回调、实时输出限额、来源SHA、固定版本与内部接受开关 | 真实运行修正ScanCode多行版本和proc空扫描、Syft source根相对位置；严格保留NOASSERTION/pending与已有组件ID，无新API/队列/依赖 | 全量1103 passed/3 skipped；独立36项；真实HTTP9项含版本/来源SHA/四格式、重建不变；Chrome真实提交/三资源三提示/工具证据/刷新通过 | 是（工具接线技术通过；待Root功能分支发布，不代表完整P0） |
+
+| 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：真实ZIP工具发布绑定 | e50f4ce4fe94f9ce98e169c43286d25a28c70f99 已推送 feat/a4-real-zip-scanners，远端完整哈希一致 | 29文件、无新依赖/安装包/生成报告；未合并或Release | EVD-A4-REAL-ZIP-SCANNERS-001绑定实现，全量及真实链验收记录见工作日志 | 是（任务点交付完成，完整P0未完成） |

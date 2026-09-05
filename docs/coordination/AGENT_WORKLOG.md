@@ -3736,3 +3736,10 @@
 - 能力限制：根LICENSE候选pending不继承，未知依赖NOASSERTION；模型资产仍未接线，Compose AI/Git关闭；API使用现有网络（只有独立probe断网），不外推完整隔离或陌生机安全。完整P0/golden/材料尚未完成。下一任务最小AI资产事实→现有报告，由Root核查再复用组员代码。
 - 开工12k–22k非硬估算；本次运行精确 token 数不可获得，技术范围已完成，实际是否在区间不可确认；仅增加必要内部profile布尔值，无功能越界。待Root最终只读审查、敏感/清单检查及GitHub分支完整哈希绑定后追加COMPLETE。
 - EOF anchor：OPENGUARD-A4-REAL-SCANNERS-TECH-20260905
+
+### [20260905-2250-RootAstra-RealZIPPublish] COMPLETE
+
+- GPT-6 Astra / Root：真实ZIP工具接线本任务验收与发布完成；最终只读审查无阻断，29文件清单、敏感模式、保护目录、append-only、staged diff检查通过。实现提交 e50f4ce4fe94f9ce98e169c43286d25a28c70f99 已推送 feat/a4-real-zip-scanners，git ls-remote 完整哈希一致；未合并、未Release。
+- 证据绑定 EVD-A4-REAL-ZIP-SCANNERS-001 → 上述实现提交：1103 passed/3 skipped、独立36项、真实HTTP版本/来源SHA/四报告、重建不变、Chrome真实提交/报告/刷新。随后只追加三份治理文档的发布记录，不改变已验收实现。
+- 限制沿用上条：完整P0、AI资产与陌生机复现未完成，Chrome文件保存未确认；这些不伪装为本任务完成。下一任务仍为最小AI资产事实接现有报告。开工12k–22k估算，本次运行精确 token 数不可获得，任务点完整交付，实际区间无法确认；无P1/P2扩展。
+- EOF anchor：OPENGUARD-A4-REAL-SCANNERS-COMPLETE-20260905
