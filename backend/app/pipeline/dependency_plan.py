@@ -22,6 +22,7 @@ from app.domain.models import (
 from app.ai import Provider, apply_ai_remediations
 from app.ingestion import ReadOnlyScanSession, ScanReadLimits
 from app.pipeline.worker import PipelineError, PipelinePlan, PipelineStageFailure, PipelineStep
+from app.pipeline.ai_assets import AIAssetScan, apply_ai_asset_licenses
 from app.pipeline.external_scans import ExternalScanFacts, merge_external_components, apply_external_licenses
 from app.pipeline.license_rules import apply_license_rules
 from app.pipeline.manifest_licenses import ManifestLicenseBinding, apply_manifest_licenses
@@ -51,6 +52,7 @@ class LaneResult:
 class DependencyConsumerResult:
     lanes: tuple[LaneResult, LaneResult]
     manifest_licenses: tuple[ManifestLicenseBinding, ...] = ()
+    ai_scan: AIAssetScan | None = None
 
 
 @dataclass
@@ -180,15 +182,21 @@ def build_dependency_plan(
             fail("dependency_scan_failed", "Dependency scanning failed.")
         components = _deduplicate([item for mapping in mappings for item in mapping.components])
         evidence = _deduplicate([item for mapping in mappings for item in mapping.evidence])
+        ai_scan = state.consumer_result.ai_scan
+        assets = list(ai_scan.assets) if ai_scan else []
+        if ai_scan:
+            evidence = _deduplicate(evidence + list(ai_scan.evidence))
         if state.external is not None:
             components = merge_external_components(components, state.external.components)
             evidence = _deduplicate(evidence + state.external.evidence)
         components.sort(key=lambda item: (item.ecosystem.encode(), item.name.encode(), (item.version or "").encode(), item.id))
         evidence.sort(key=lambda item: (item.locator.encode(), item.id))
-        if not components or not evidence:
+        if not (components or assets) or not evidence:
             fail("dependency_manifest_not_found", "No dependency manifest was found.")
 
         errors: list[ScanError] = list(state.external.errors) if state.external else []
+        if ai_scan:
+            errors.extend(ai_scan.errors)
         for lane in state.consumer_result.lanes:
             mapping = lane.mapping
             title = "Python" if lane.name == "python" else "JavaScript"
@@ -224,15 +232,17 @@ def build_dependency_plan(
         )
         summary = ScanSummary(
             component_count=len(components),
-            ai_asset_count=0,
+            ai_asset_count=len(assets),
             evidence_count=len(evidence),
             finding_counts=dict(ZERO_FINDINGS),
         )
-        return replace_run(run, components=components, evidence=evidence, errors=errors, summary=summary, provenance=provenance)
+        return replace_run(run, components=components, ai_assets=assets, evidence=evidence, errors=errors, summary=summary, provenance=provenance)
 
     def normalize(run: ScanRun) -> ScanRun:
         normalized = apply_manifest_licenses(run, state.consumer_result.manifest_licenses if state.consumer_result else ())
-        return apply_external_licenses(normalized, state.external) if state.external is not None else normalized
+        if state.external is not None:
+            normalized = apply_external_licenses(normalized, state.external)
+        return apply_ai_asset_licenses(normalized)
 
     def rules(run: ScanRun) -> ScanRun:
         if not run.licenses:
@@ -248,6 +258,8 @@ def build_dependency_plan(
         ).run
 
     def report(run: ScanRun) -> ScanRun:
+        if state.consumer_result and state.consumer_result.ai_scan and state.consumer_result.ai_scan.errors:
+            fail("ai_asset_scan_incomplete", "AI reference scanning was incomplete.", recoverable=True)
         if state.external is not None and state.external.errors:
             fail("external_scan_incomplete", "External scanning was incomplete.", recoverable=True)
         return ScanRun.model_validate(run.model_dump(mode="python"))

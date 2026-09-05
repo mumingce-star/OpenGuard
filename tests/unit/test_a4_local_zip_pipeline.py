@@ -521,3 +521,38 @@ def test_external_failure_is_partial_with_existing_facts(tmp_path, monkeypatch):
     assert run.components and run.findings
     assert {error.code for error in run.errors} >= {"scancode_scan_incomplete", "external_scan_incomplete"}
     assert all(item.expression == "NOASSERTION" for item in run.licenses)
+
+
+def test_qwen_reference_only_zip_reaches_existing_rules_and_report(tmp_path):
+    text = 'Model: https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507\n'
+    archive = _archive(tmp_path, {"README.md": text})
+    registry, result = _run(tmp_path, archive, _queued(archive, 600))
+    run = result.run
+    assert run.status == ScanStatus.COMPLETED
+    assert not run.components
+    assert run.summary.ai_asset_count == 1
+    asset = run.ai_assets[0]
+    assert asset.name == "Qwen/Qwen3-4B-Instruct-2507"
+    assert asset.authorization_status.value == "pending"
+    assert run.licenses[0].expression == "NOASSERTION"
+    assert run.findings and all(item.outcome.value != "pass" for item in run.findings)
+    evidence = {item.id: item for item in run.evidence}
+    assert evidence[asset.evidence_ids[0]].content_hash.value == hashlib.sha256(text.encode()).hexdigest()
+    assert run.provenance.ai_enabled is False
+
+
+def test_qwen_reference_keeps_npm_license_and_does_not_inherit_it(tmp_path):
+    files = {"README.md": 'https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507\n',
+        "package.json": json.dumps({"name": "fixture", "dependencies": {"is-number": "7.0.0"}}),
+        "package-lock.json": json.dumps({"lockfileVersion": 3, "packages": {
+            "": {"dependencies": {"is-number": "7.0.0"}},
+            "node_modules/is-number": {"version": "7.0.0", "license": "MIT"}}})}
+    archive = _archive(tmp_path, files)
+    registry, result = _run(tmp_path, archive, _queued(archive, 601))
+    run = result.run
+    assert run.status == ScanStatus.COMPLETED
+    assert (run.summary.component_count, run.summary.ai_asset_count) == (1, 1)
+    licenses = {item.id: item.expression for item in run.licenses}
+    assert licenses[run.components[0].license_expression_id] == "MIT"
+    assert licenses[run.ai_assets[0].license_expression_id] == "NOASSERTION"
+    assert len(run.findings) == 2

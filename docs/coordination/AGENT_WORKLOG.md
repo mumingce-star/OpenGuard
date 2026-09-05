@@ -3743,3 +3743,24 @@
 - 证据绑定 EVD-A4-REAL-ZIP-SCANNERS-001 → 上述实现提交：1103 passed/3 skipped、独立36项、真实HTTP版本/来源SHA/四报告、重建不变、Chrome真实提交/报告/刷新。随后只追加三份治理文档的发布记录，不改变已验收实现。
 - 限制沿用上条：完整P0、AI资产与陌生机复现未完成，Chrome文件保存未确认；这些不伪装为本任务完成。下一任务仍为最小AI资产事实接现有报告。开工12k–22k估算，本次运行精确 token 数不可获得，任务点完整交付，实际区间无法确认；无P1/P2扩展。
 - EOF anchor：OPENGUARD-A4-REAL-SCANNERS-COMPLETE-20260905
+
+### [20260905-RootAstra-AIAssetZIP] START
+
+- GPT-6 Astra / Root；基线6a832f3，开工干净，分支feat/a4-ai-asset-report，fetch组员分支后核对现有detectors/static_assets候选。沿用本对话已读治理历史并检查新增收工记录，超长历史读取有截断，不宣称完整重新逐行复读。
+- 执行书A4职责为挂接组员B6，不重写识别引擎。本轮仅首个明确Qwen3模型引用样例进入ZIP资源/风险/现有报告；复用组员detector，修复阻断接线的HF dataset误识别、重复Evidence ID和文件SHA问题。模型授权与许可证无证据时保持NOASSERTION/pending，不使用本机Provider许可证替扫描对象背书。
+- 预计范围：复用detectors两文件及最小修复、pipeline薄只读消费者/local_zip/dependency_plan、既有smoke或公开小样例、相关unit与独立security、现有README/spec/资源/AI/进度日志。保护公共模型/Schema/API、worker、registry、B5、前端和部署架构；不加新接口/图谱/P1/P2，不下载模型、不推理、不上传权重或私人配置。
+- Root负责接线、预算与验收；受限实现子任务只detector/其unit，独立验收后派发。验收顺序：实现测试、独立动态ZIP与证据哈希/不执行/重复/误报、全量回归、真实Compose和Chrome插件、报告持久化、静态与敏感检查、Root统一GitHub功能分支推送。
+- token非硬估算10k–18k，精确遥测不可读取；本轮任务点止于模型样例主链，不宣称B6全覆盖或P0完成。
+- EOF anchor：OPENGUARD-AI-ASSET-ZIP-START-20260905
+
+### [20260905-RootAstra-AIAssetZIP验收] PARTIAL（技术完成，待发布）
+
+- GPT-6 Astra / Root；本轮按执行书A4集成B6，分支feat/a4-ai-asset-report。原有Qwen3 manifest只读校验与锁定一致，不下载、推理或上传权重。官方模型页仅用于来源核查，不把网页许可证人为注入扫描结果。
+- 实现：复用组员f8bedfd detectors，0.1.1修正HF dataset同时误识别model、重复Evidence、完整文件哈希和只保留匹配引用；新增pipeline/ai_assets薄消费者，原local_zip/dependency_plan聚合AIAsset/summary/provenance，经NOASSERTION/pending进入原B5/A6。无软件依赖的合法模型样例可完成。A2、公共模型/Schema/API、worker/registry、B5、前端、Docker架构不变，无新依赖/接口/图谱/P1/P2。
+- 预算：有限文本512KiB/文件、2MiB总量、128文件，保守预留两倍inventory给既有读取；不完整或证据失配有诊断，可用事实仍保留。根LICENSE和npm声明不继承给模型，不声称实际使用、授权或权重身份。大体积无关文件可能使小引用被跳过；两个B1 mapper同时异常组合仍受既有前置条件约束，未扩故障恢复。
+- 子任务：受限实现只detectors/其unit，已停写；首个独立agent容量失败，无产物，改由用户授权的GPT-5.6 Luna独立验收，只写security测试且已停写。Root独占pipeline/部署复现脚本和治理。
+- 测试：实现50+32=82 passed；独立初轮5pass/2fail，两失败为ZIP_DEFLATED重复文本先触发A2解压比，status failed/ingestion/zip_ingestion_failed；用ZIP_STORED将fixture到达AI限额，保留原实现/断言，补文件数/总量分离、代码不执行和store四报告后9 passed，相关91 passed。Root完整1146 passed/3 skipped/2既有warning，60.31秒；OpenAPI基线等值、P0 Schema、编译、append-only、diff通过。跳过项不计验收完成。
+- 真实Docker HTTP任务scn_144faecc-e76f-4338-a105-dbb08a080f34：4资源/1模型、pending/NOASSERTION、README第3行与文件SHA、模型风险引用、四格式含模型、坏ZIP/404通过；API重建后四报告SHA不变。Chrome extension任务scn_c2d897cf-3d9d-4b3a-b497-284b5be23c41：完成、Qwen3模型详情/来源/风险/README第3行、报告模型章节和附录、重建后刷新保持。未使用内置浏览器代验；文件保存旧限制仍未关闭。
+- 修改范围：detectors两文件、pipeline/ai_assets与local_zip/dependency_plan、既有deploy/smoke、既有localZIP unit、新detector unit和独立security、README/backend/deploy/spec/资源/AI/进度/工作日志。无样例权重、私人配置、生成报告或临时文件进入仓库。
+- 下一任务按执行书真实公开项目完整链，先核对现有Git与A5部署差距，只修阻断；P0剩余与用户A1–A8状态见进度13节。开工10k–18k非硬估算，本次运行精确 token 数不可获得，任务点技术完成、实际区间无法确认，未扩大产品范围。待Root敏感清单及GitHub绑定后COMPLETE。
+- EOF anchor：OPENGUARD-AI-ASSET-ZIP-TECH-20260905

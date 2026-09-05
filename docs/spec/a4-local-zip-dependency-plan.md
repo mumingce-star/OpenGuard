@@ -140,3 +140,9 @@ A4-1 evidence 只能表述为：“本机受控测试环境下，本地 ZIP 经�
 ## 可选真实工具接线（2026-09-05）
 
 external_scanners=False 保留既有计划。启用时，同一次 ingest_with_consumer 的可信 tree_consumer 在 parser 返回后、封印复验和清理前执行；能力仅同步有效，所有子进程退出后再清理。薄 external_scans 聚合复用组员两个 pipeline 与 B4，不改 worker、公共 Schema 或 B5。详见[工具边界](b2-b3-external-tool-adapters.md)与[部署验收](../../deploy/README.md)。
+
+## 明确模型引用接线（2026-09-05）
+
+DependencyConsumerResult 增加内部可选 AIAssetScan；仅 ZIP 消费者在原 A2 read session 内调用组员 detect_ai_assets。detector 0.1.1 修复候选中的 dataset/model 重叠、重复 Evidence ID 和行哈希误当文件哈希，excerpt 仅保留匹配引用；不创建第二套公共模型。文本上限与保守共享预算见 backend/README。
+
+scan 聚合 AIAsset/Evidence/summary/provenance；允许无软件依赖的有效模型样例。normalize 只为未绑定资源添加 NOASSERTION，模型授权状态保持 pending；B5 和报告直接消费原模型，不新增接口或规则。有限文本无法完整识别时保留诊断和可用事实；无可用事实仍按原 worker 失败语义收口。两个 B1 mapper 同时异常的故障组合仍受原依赖前置检查约束，本轮不外推该组合的资产恢复能力。

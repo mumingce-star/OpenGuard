@@ -156,3 +156,5 @@
 | 2026-09-05 | GPT-6 Astra / Root与受限实现、独立验收子任务 | A4真实ZIP工具接线 | 复用组员f8bedfd两个pipeline及已有A2/B1/B4/B5/A6；同树fd回调、实时输出限额、来源SHA、固定版本与内部接受开关 | 真实运行修正ScanCode多行版本和proc空扫描、Syft source根相对位置；严格保留NOASSERTION/pending与已有组件ID，无新API/队列/依赖 | 全量1103 passed/3 skipped；独立36项；真实HTTP9项含版本/来源SHA/四格式、重建不变；Chrome真实提交/三资源三提示/工具证据/刷新通过 | 是（工具接线技术通过；待Root功能分支发布，不代表完整P0） |
 
 | 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：真实ZIP工具发布绑定 | e50f4ce4fe94f9ce98e169c43286d25a28c70f99 已推送 feat/a4-real-zip-scanners，远端完整哈希一致 | 29文件、无新依赖/安装包/生成报告；未合并或Release | EVD-A4-REAL-ZIP-SCANNERS-001绑定实现，全量及真实链验收记录见工作日志 | 是（任务点交付完成，完整P0未完成） |
+
+| 2026-09-05 | GPT-6 Astra / Root、受限实现及 GPT-5.6 Luna 独立验收 | A4明确模型引用接资源/风险/报告 | 按执行书A4复用组员B6候选，修复dataset/model重叠、重复Evidence、整文件SHA与邻近秘密泄露风险；薄消费者遵守A2预算 | 只读确认已有Qwen3 manifest，不安装/推理/上传权重；模型引用不代表使用或授权，NOASSERTION/pending不继承其他LICENSE | 实现82、独立9、相关91、全量1146 passed/3 skipped；真实HTTP四报告、Chrome模型详情/行号/报告、重建恢复通过；两初始失败为ZIP高压缩比fixture，改stored后原限额断言通过 | 是（技术验收完成，待Root发布；完整P0未完成） |

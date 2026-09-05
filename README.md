@@ -34,6 +34,8 @@ A6-2 已把 publisher 接到 Pipeline 首次终态提交边界：ZIP HTTP 主链
 
 团队集成分支 `integration/p0` 汇合了前端组员的 React/Vite 应用壳和扫描组员的 ScanCode/Syft Adapter。本功能分支复用核心页面与适配器，已完成真实 ZIP→ScanCode/Syft→资源/待核验风险/Evidence→四格式报告及刷新恢复，默认 API，演示需主动选择；未自动合并团队集成线。
 
+最新 ZIP 接线还可识别 README 等有限文本中的明确模型／数据集引用。例如 Qwen3 官方模型链接能进入 AIAsset、待核验风险、来源证据及四格式报告；无需推理或权重下载。只发现引用，不证明实际使用或授权，模型保留 NOASSERTION/pending。Git AI 资产接线、自动远程许可证绑定、完整识别覆盖率和 P0 总验收尚未完成。可运行样例见[部署说明](deploy/README.md)。
+
 使用 Python 3.12 环境，在项目根目录运行：
 
 ```bash

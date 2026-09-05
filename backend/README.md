@@ -558,3 +558,9 @@ PYTHONPATH=backend python -m pytest -q tests/security/test_a4_local_zip_pipeline
 ## 真实 ZIP 外部工具（2026-09-05）
 
 使用 [Compose](../deploy/README.md) 启用 OPENGUARD_ENABLE_EXTERNAL_SCANNERS=1，默认仍为 0。固定 ScanCode32.5.0/Syft1.51.0 必须存在于镜像路径，不接收请求传入的可执行程序或参数。接受时保存工具开关；旧描述符无字段等价关闭，恢复不随当前默认值改变。真实输出校验 inventory 路径和 SHA 后进入现有资源/许可证/风险/报告。无声明保持 NOASSERTION，根许可证不继承；工具不完整保留可用事实并返回 partial。此次完整回归1103 passed/3 skipped，真实容器和 Chrome 插件报告通过。
+
+## ZIP 中的明确 AI 引用
+
+A4 已挂接组员静态检测器，按 inventory 在只读回调内读取有限文本，整文件 SHA 绑定证据。README 的明确 Qwen3 模型链接即可生成 AIAsset，只有模型而没有软件依赖的 ZIP 也可进入原规则与报告。模型许可无绑定证据时为 NOASSERTION，授权 pending；同项目的软件许可证不会继承给模型。它识别引用，不证明实际调用、权重身份或授权；不扫描用户本机模型目录，不启动 Ollama。
+
+范围：md/py/js/jsx/ts/tsx/json/yaml/yml/toml 文本，package.json/package-lock.json/pyproject.toml 留原依赖通道。单文件512 KiB、总2 MiB、128文件，并为已有读取保守预留两倍inventory大小；超限/无效UTF-8/检测器失败保留已有事实与不完整诊断。Git 路径仍未挂接此能力，未扩大公共接口或B6识别范围。复现见[模型样例](../deploy/README.md)。

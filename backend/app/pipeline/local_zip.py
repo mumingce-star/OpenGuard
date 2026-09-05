@@ -20,6 +20,7 @@ from app.pipeline.dependency_plan import (
     is_pristine,
     replace_run,
 )
+from app.pipeline.ai_assets import collect_ai_assets
 from app.pipeline.external_scans import collect_external_scans
 from app.pipeline.worker import PipelineError, PipelinePlan
 from app.pipeline.manifest_licenses import collect_manifest_licenses
@@ -74,6 +75,7 @@ def _consume_dependencies(session: object, clock: Callable[[], datetime]) -> Dep
         manifest_licenses=collect_manifest_licenses(
             session, javascript_mapping, clock(), total_read_budget=READ_LIMITS.total_max_bytes,
         ),
+        ai_scan=collect_ai_assets(session, clock(), total_read_budget=READ_LIMITS.total_max_bytes),
     )
 
 

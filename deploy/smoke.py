@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--verify", action="store_true")
     parser.add_argument("--external-scanners", action="store_true")
+    parser.add_argument("--ai-assets", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
@@ -77,11 +78,16 @@ def main():
     }
     if args.external_scanners:
         files["LICENSE"] = (Path(__file__).resolve().parents[1] / "LICENSE").read_text()
+    if args.ai_assets:
+        files["README.md"] = ("# Model reference sample\n\n"
+            "Model: https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507\n"
+            "Local runtime tag: qwen3:4b-instruct-2507-q4_K_M\n"
+            "This sample records a reference only; it does not contain weights or execute inference.\n")
     scan_id, status, zipped = create(files)
     assert status["status"] == "completed", status
     (args.output / "compose-demo.zip").write_bytes(zipped)
     resources = json.loads(get(f"/api/v1/scans/{scan_id}/resources"))
-    assert resources["total"] == (3 if args.external_scanners else 2)
+    assert resources["total"] == (3 if args.external_scanners else 2) + int(args.ai_assets)
     risks = json.loads(get(f"/api/v1/scans/{scan_id}/risks"))
     assert len(risks["items"]) == resources["total"]
     report = json.loads(get(f"/api/v1/scans/{scan_id}/report?format=json&download=true"))
@@ -102,6 +108,21 @@ def main():
         assert licenses[components["is-number"]["license_expression_id"]] == "MIT"
         assert licenses[components["unlicensed-demo"]["license_expression_id"]] == "NOASSERTION"
         assert {"syft", "manifest_parser"} <= set(components["is-number"]["detected_by"])
+    if args.ai_assets:
+        assert scan["summary"]["ai_asset_count"] == 1
+        asset = scan["ai_assets"][0]
+        assert asset["asset_type"] == "model" and asset["name"] == "Qwen/Qwen3-4B-Instruct-2507"
+        assert asset["authorization_status"] == "pending"
+        assert asset["source_url"] == "https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507"
+        license_map = {item["id"]: item for item in scan["licenses"]}
+        assert license_map[asset["license_expression_id"]]["expression"] == "NOASSERTION"
+        evidence_map = {item["id"]: item for item in scan["evidence"]}
+        for key in asset["evidence_ids"]:
+            item = evidence_map[key]
+            assert item["locator"] == "README.md" and item["start_line"] == 3
+            assert item["content_hash"]["value"] == hashlib.sha256(files["README.md"].encode()).hexdigest()
+        assert scan["provenance"]["ai_enabled"] is False
+        assert asset["id"] in json.dumps(risks)
     for evidence in scan["evidence"]:
         assert json.loads(get(f'/api/v1/scans/{scan_id}/evidence/{evidence["id"]}'))
     hashes = {}
@@ -110,6 +131,8 @@ def main():
         data = get(f'/api/v1/scans/{scan_id}/report?format={format_name}&download=true')
         digest = hashlib.sha256(data).hexdigest()
         assert digest == link["content_hash"]["value"]
+        if args.ai_assets:
+            assert b"Qwen/Qwen3-4B-Instruct-2507" in data
         hashes[format_name] = digest
     assert set(hashes) == {"html", "json", "csv", "resource_inventory"}
     _, partial, _ = create({"package.json": files["package.json"]})
@@ -125,7 +148,7 @@ def main():
     receipt = {"scan_id": scan_id, "reports": hashes}
     (args.output / "receipt.json").write_text(json.dumps(receipt, indent=2))
     print(json.dumps({"status": "passed", "scan_id": scan_id,
-                      "external_scanners": args.external_scanners,
+                      "external_scanners": args.external_scanners, "ai_assets": args.ai_assets,
                       "checks": ["SPA deep link", "ZIP completed", "resource count", "pending licenses",
                                  "risks and evidence", "four report hashes", "missing declarations", "unsafe ZIP failed", "404"]}, indent=2))
 

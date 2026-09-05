@@ -66,4 +66,15 @@ ScanCode 官方 Linux 包包含 x86_64 wheels，因此 **API 和 scanner 固定 
 
 工具版本在调用前核验，ScanCode 文件覆盖及两工具 locator 必须匹配 A2 inventory，Evidence SHA 来自封印文件。根 LICENSE 只作文件候选，不自动赋给依赖。宿主机开关 OPENGUARD_ENABLE_EXTERNAL_SCANNERS 默认 0，Compose 明确启用；接受时固定开关，旧排队任务仍关闭。API 使用现有 Compose 网络，只有独立 scanner probe 设置 network_mode:none，不能声称 API 子进程拥有单独网络隔离。
 
-下一步接最小 AI 资产事实，再做首批样例与陌生机验收。
+## 模型引用样例
+
+```bash
+python3 deploy/smoke.py --external-scanners --ai-assets --output /tmp/openguard-model-check
+# 在 Chrome 上传输出目录中的 compose-demo.zip。
+```
+
+该样例复用同一验收脚本，增加 README 中的 Qwen/Qwen3-4B-Instruct-2507 官方引用和已有 Ollama 标签，不包含权重或推理代码。预期为三个软件资源与一个模型，四格式报告都有模型条目、文件行号和来源 SHA。模型保持 NOASSERTION/pending，不把本机安装或旁边 LICENSE 当成授权证据。
+
+只识别被扫描 ZIP 中的明确引用，不读取操作者模型目录、不运行模型、不抓取远程许可证。完整 HTTPS 仓库链接可识别；带查询、fragment、子路径或尾斜杠链接保守忽略。文本文件受 512 KiB/文件、2 MiB/资产读取、128 文件与原 A2 总预算限制，跳过或无法解析时显示不完整诊断。大型 ZIP 的保守预算可能跳过小引用，不承诺任意项目覆盖率。
+
+下一步按执行书验收一个真实公开项目的完整 P0 链，再收口首批样例与陌生机复现。

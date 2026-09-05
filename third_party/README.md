@@ -31,3 +31,9 @@ ScanCode32.5.0/Syft1.51.0 沿用已登记官方包和 SHA，现已复用组员 f
 - nginx 1.30.4：[上游BSD-2-Clause许可证](https://github.com/nginx/nginx/blob/release-1.30.4/LICENSE)；只用于静态Web与API反向代理，OpenGuard自行编写配置，未改nginx源码；保留版权、条款和免责声明，镜像保留上游随包文件。
 - pnpm 10.30.0只用于构建，沿用前端锁文件；[官方来源](https://github.com/pnpm/pnpm/tree/v10.30.0)，MIT及随包第三方条款。未加入运行时或修改前端依赖/锁文件，构建阶段不进入最终Web镜像。
 - Docker Desktop 4.89.0仅为经用户明确授权安装的本机部署工具；[官方Mac来源](https://docs.docker.com/desktop/setup/install/mac-install/)，适用Docker Subscription Service Agreement，不作为OpenGuard代码或镜像再分发。官方arm64构建238018，DMG SHA-256 `d333f7c8d42f746429ab1f32ad3284efec887e2a08c03b2ed373a7091373e392`与官方checksums一致，Developer ID Team `9BNSXJN65R`、arm64、codesign和Gatekeeper公证通过；Engine29.7.2/Compose5.5.0实跑。
+
+## 2026-09-05 模型引用样例
+
+沿用已登记 Qwen3 与 Ollama，不新增依赖、下载、推理或权重分发。本机现有 qwen3:4b-instruct-2507-q4_K_M manifest 再读 SHA 为 0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0，与既有锁定值相等；本轮没有重算权重 blob，也不把安装记录当成被扫描项目的使用证据。
+
+样例只引用 [Qwen 官方模型页](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507)，当日核对页面标注 Apache-2.0；运行中的静态扫描器不抓取该网页，不将人工浏览结果注入扫描事实，因此模型 LicenseExpression 仍为 NOASSERTION、授权 pending。扫描证明的是输入 README 中的明确引用。检测器复用团队 f8bedfd 候选，0.1.1 修正来源哈希、重复和误识别；不复制模型卡正文、不上传个人配置。
