@@ -3269,3 +3269,26 @@
 - GitHub 发布事实：A2-3a 实现、测试、规格和首轮治理提交 `f6aea1eb2db1475be489f9ce8afc517e10f3c0e2` 已推送 `origin/feat/a2-public-git-egress`；本地实现提交与 `git ls-remote` 返回同一完整对象，`EVD-A2-PUBLIC-GIT-EGRESS-001` 绑定该实现。
 - 上传范围：30 个竞赛仓库文件，包括 URL/address/DoH/TrustedEgress、Git runner/object 物化、API/Pipeline 接线、实现与真实公网测试、规格、资源台账和治理记录；未上传目标仓库对象/代码、运行数据库、缓存、虚拟环境、模型内容、凭据、本机私有路径或其他真人负责代码。
 - 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A2-3a 分支。
+
+### [20260905-1100-RootAstra-A4B5规则接线] START - 消费组员 B5 的 A4 规则阶段纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A4 集成与发布验收；2026-09-05 11:00（Asia/Shanghai）。分支 `feat/a4-b5-rule-integration`，基于已发布 A2-3a HEAD `280ad02` 建立；开工前工作区干净。
+- 任务归属与目标：只推进项目负责人负责的 A4-2，把组员 `origin/codex/p0-external-tools-sync` 中已提交的 B5 公共规则实现作为只读依赖引入当前主线，并实现 `ScanRun` 规则阶段适配器、聚合校验和诚实失败语义；不修改 B5 规则内容或扫描分析实现。
+- 开始前已确认：已读取根 README、项目职责/进度、工程交接和共享日志，获取并审阅组员截至 `f8bedfd` 的 8 个新提交；组员 B5 定向回归在本机隔离快照为 `15 passed`。B5 已有 15 条规则，但仍缺官方原文证据台账和 A4 接线，现有 ZIP/Git 主链尚无许可证事实。
+- 预计修改：原样引入组员拥有的 `backend/app/rules/`、`rules/license-obligations.yaml` 和 B5 单测/fixture；新增项目负责人拥有的 `backend/app/pipeline/license_rules.py`、A4-2 实现测试和规格；最小修改 Pipeline 导出/组装、运行说明、AI 记录、项目进度及本日志。不会修改 B5 引擎/规则语义、B1-B7 扫描器、P0 Domain/Schema/sample、前端或部署。
+- 验收：验证已验证许可证产生稳定 Obligation/Finding/Remediation；pending/未知保持证据门禁；无许可证事实时稳定 `partial/rules/70` 且明确为上游事实缺失；碰撞、断链、非 B5 返回值失败关闭；运行 B5、A4、A5、A6、A3、P0 定向回归及 compileall、Schema、diff、敏感信息和上传范围门禁。
+- 已知契约风险：组员 B5 当前会为已匹配 finding 绑定确定性 remediation，而 A5-0 只处理未绑定 remediation 的 finding；本轮不擅自修改 B5 或 A5 契约，只完成 A4 规则接线并把 A5-1c 兼容决策保留为下一独立任务。
+- token：本轮开工非硬估算 `8k-14k`；当前客户端未提供精确 token 遥测。
+
+### [20260905-1210-RootAstra-A4B5规则接线] COMPLETE - A4-2 规则阶段接线与全量回归闭环
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A4 集成与发布验收；2026-09-05 12:10（Asia/Shanghai）。分支 `feat/a4-b5-rule-integration`。
+- 完成内容：新增 `app.pipeline.apply_license_rules()`，只消费已链接的 P0 许可证事实并调用组员 B5 `evaluate()`；完成参数/旧结果冲突、B5 返回类型、引用/ID 聚合、summary、ruleset version 与失败脱敏校验，并把 shared dependency plan 的 rules 阶段接到该适配器。规则成功后 AI 显式保持关闭，A6 publisher 仍在既有终态边界发布报告。
+- 组员代码边界：从 `origin/codex/p0-external-tools-sync@f8bedfd` 原样引入 B5 引擎、规则 README、15 条规则、fixture、10 项单测和规格；7 个文件逐一执行 `git hash-object`，均与组员远端 blob 相同。未导入或修改 B4、B6、B7，也未改动 `backend/app/scanners/`、P0 Domain/Schema/sample、前端、部署或组员分支。
+- 契约风险结论：B5 对 verified 匹配规则生成确定性 remediation，A5 应跳过以避免重复；B5 对 pending 许可证生成无 remediation 的 `license-evidence-gate` finding，可由下一独立任务 A5-1c 消费。无需在本轮修改 B5/A5 公共契约。
+- 真实性边界：当前 ZIP/Git 依赖主链尚未产生 B2/B3/B4 许可证事实，因此仍以兼容错误 `rules_stage_not_connected` 诚实终止为 `partial/rules/70`；A4-2 证明“已有合法许可证事实时能够执行并持久化 B5”，不代表真实输入的完整许可证扫描已经跑通，也不代表 B5 官方原文和人工复核完成。
+- 测试证据：A4+B5 聚焦 `68 passed`；沙箱完整原样 `877 passed, 11 failed, 2 skipped, 1 warning`，11 项全部为创建回环测试监听器时的 `PermissionError`；不改测试，在受控环境原样复跑完整集合 `888 passed, 2 skipped, 1 warning`。两项 skip 为既有显式外部条件门禁；warning 为既有 Starlette/AnyIO alias 弃用。
+- 静态/发布门禁：`schema_export_equal=True`、compileall、`git diff --check`、敏感模式、超大文件、world-writable 和上传范围检查通过；候选 `EVD-A4-B5-RULE-INTEGRATION-001` 待不可变提交和远端对象绑定。
+- 修改范围：18 个竞赛仓库文件，包括 7 个原样 B5 文件、A4 适配器/导出/计划、8 项 A4-2 测试与 1 项既有 A4 未来阶段断言更新，以及根/后端说明、A4-2 规格、AI/进度/协作记录；不含缓存、虚拟环境、运行数据库、模型内容、凭据或本机临时物。
+- 下一任务：项目负责人 A5-1c，把既有 A5 Provider/Ollama transport 接入 AI_ASSIST，只消费 B5 尚未绑定整改的 finding，并覆盖 enabled/disabled/degraded 消融；真实 ZIP/Git 全链仍需扫描组员把许可证事实生产接入主线。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `8k-14k`，A4-2 在该单轮工作包内完整完成，未发生范围扩张。

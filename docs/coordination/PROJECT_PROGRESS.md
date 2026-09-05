@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-04 22:45（Asia/Shanghai）
+更新时间：2026-09-05 11:40（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -10,8 +10,8 @@
 
 | 真人角色 | 负责范围 | 本轮处理 |
 |---|---|---|
-| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 本轮只推进项目负责人 A2-3a 公开 Git 安全摄取与 A3/A4/A6 接线；不实现 B5，不修改 B1-B7、A5、前端或部署，不合并既有 PR |
-| 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 本轮未修改；远端 B2/B3 分支新提交保持组员在途状态 |
+| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 本轮只推进项目负责人 A4-2：审阅并原样消费组员 B5 公共接口，完成规则阶段接线、验证与发布；不修改 B5 语义，不实现 B4/B6/B7、前端或部署，不合并既有 PR |
+| 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 已审阅远端 `codex/p0-external-tools-sync` 截至 `f8bedfd`：B4/B5/B6/B7 均有在途实现；本轮仅原样引入 B5 公共实现和测试，未改写组员代码，其他模块仍留在组员分支 |
 | 前端组员 | React/Vite 与 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 页面 | 本轮未修改；远端前端分支新提交保持组员在途状态 |
 
 Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三位真人的任务归属。后续选题必须先按上表确定真人主责，再分派模型。
@@ -38,17 +38,18 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | A3-1 FastAPI Git API 纵切 | P0 | Root→Luna→Sol | 已完成 | FastAPI 六路由、Git queued 持久幂等、结果读取/过滤与统一脱敏错误；Luna 独立发现的404/405信封、控制字符、UTF-8字节上限三项P1已关闭；A3-1实现+独立48项、全量549项通过；证据绑定 `aedf65c` | ZIP/worker/A4/公开 Git 后由 A3-2/A4-1/A2-3a 关闭；本纵切自身仍只代表 API 契约，不外推 Linux 或完整扫描 | 已推送 `feat/a3-fastapi-api`；实现/独立证据 `aedf65c`，绑定 `68163de`；待PR合并 |
 | A4-0 显式单进程 Pipeline Worker | P0 | Sol→Terra→Luna→Root | 已完成 | 七阶段/固定进度、A3 CAS认领、Adapter聚合持久化、completed/partial/failed/cancelled与脱敏错误；Terra 21项、Luna独立25项，A4合计46项；Root定向169项、完整集合595项通过；`EVD-A4-PIPELINE-WORKER-001` 已绑定 `66fc2ae`；无开放P0/P1/P2 | A4父任务仍缺真实Adapter接线、API队列自动消费、重试/超时、lease/heartbeat、stale-running恢复与系统集成；stub结果不得外推真实扫描 | 已推送 `feat/a4-pipeline-worker`；实现证据 `66fc2ae`；待PR合并 |
 | A4-1 本地 ZIP 依赖 Pipeline 接线 | P0 | Sol→Terra→Root→Luna→Root | 已完成 | 本地 ZIP 经单次 A2 只读会话调用既有 B1 Python/JavaScript parser/mapper，持久化真实 P0 Component/Evidence、digest、producer与summary；规则未接线时诚实为partial；实现29项、Luna独立20项、A4-1合计49项、完整集合644项通过；`EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001` 已绑定 `fbed364`，无开放P0/P1/P2 | A4父任务继续接许可证规则、API/后台消费、AI与报告；A4-1不包含这些能力 | 已推送 `feat/a4-local-zip-pipeline`；待PR合并 |
-| A3-2 ZIP HTTP 与进程内后台扫描 | P0 | Sol/Root→Luna→Root | 已完成 | 同一 POST 路径支持 Git JSON 与 ZIP multipart；请求/上传限额、私有暂存、摘要/幂等、queued→BackgroundTask→A4-1、清理与 OpenAPI 已实现；实现20项、Luna独立22项、完整集合等价686项通过；`EVD-A3-ZIP-BACKGROUND-SCAN-001` 已绑定 `530e930` | `partial/rules/70` 表示依赖结果可用、规则待接入；公开 Git 已由 A2-3a 接入，A3父任务仍缺持久队列/恢复 | 已推送 `feat/a3-zip-background-scan`；待PR合并 |
+| A4-2 B5 许可证规则阶段接线 | P0 | Root/Astra | 已完成 | 原样引入组员 B5 引擎、15条规则、fixture/spec，并以薄适配器接入 A4 rules 阶段；verified 产生稳定义务/风险/整改，pending 保持证据门禁且不产生整改；A4+B5 聚焦 `68 passed`，受控完整 `888 passed, 2 skipped`，Schema 等值 | 当前 ZIP/Git 尚未产生 B2/B3/B4 许可证事实，真实输入仍为 `partial/rules/70`；下一项由项目负责人完成 A5-1c，不在本轮修改 B5 | 待提交并推送 `feat/a4-b5-rule-integration`；未创建/合并 PR |
+| A3-2 ZIP HTTP 与进程内后台扫描 | P0 | Sol/Root→Luna→Root | 已完成 | 同一 POST 路径支持 Git JSON 与 ZIP multipart；请求/上传限额、私有暂存、摘要/幂等、queued→BackgroundTask→A4-1、清理与 OpenAPI 已实现；实现20项、Luna独立22项、完整集合等价686项通过；`EVD-A3-ZIP-BACKGROUND-SCAN-001` 已绑定 `530e930` | 当前 `partial/rules/70` 表示依赖结果可用但上游许可证事实未进入已接入的 B5；公开 Git 已由 A2-3a 接入，A3父任务仍缺持久队列/恢复 | 已推送 `feat/a3-zip-background-scan`；待PR合并 |
 | A5-0 可注入 AI Provider 与降级核心 | P0 | Sol→Terra/Root→Luna→Root | 已完成 | local/remote 统一接口、finding/evidence/license canonical 输入、64 KiB 严格 JSON、引用/敏感门禁、pending Remediation、稳定 ID、P0 入口重校验与 generated/skipped/disabled/degraded 原子语义；实现30项、Luna独立16项、完整非回环734项通过；`EVD-A5-AI-PROVIDER-001` 绑定 `2c824bf` | A5父任务继续 A5-1：真实 Qwen3/Ollama transport、超时、A4 AI_ASSIST 接线与消融；必须消费组员 B5 的真实 finding，不代做规则 | 已推送；PR #2 待团队审核 |
-| A5-1a Qwen3/Ollama 本地 Transport | P0 | Sol→Terra/Root→Luna→Root | 已完成 | 锁定 Ollama `0.33.3`、Qwen3 4B Instruct Q4_K_M 与完整 manifest；字面量回环、禁代理、版本/模型摘要校验、三步 HTTP、总 deadline、严格封装和稳定降级；实现60项、Luna独立17项，A5组合123项、完整非回环794项通过；`EVD-A5-OLLAMA-TRANSPORT-001` 绑定 `e4d8e2e` | A5-1b 已另行闭环；A5-1c 等待组员 B5 真实 finding 后再接 A4，不代做规则 | 已推送 `feat/a5-ollama-transport`；PR #2 待团队审核 |
-| A5-1b Ollama/Qwen3 本机真实运行 | P0 | Sol→Terra/Root→Luna→Root | 已完成 | 官方 Ollama `0.33.3` DMG 的 SHA-256、Developer ID、Gatekeeper、公证与 arm64 均通过；锁定 Qwen3 manifest/API/disk/blob 摘要一致；Root 探针与 Luna 独立脚本各完成真实 `3/3`，冷轮约 4.34/3.88 秒、热轮约 2.73/2.77 秒，均验证 generated、pending、来源绑定、事实保持和稳定 ID；加载约 3.175 GB、100% GPU、context 4096；runtime probe unit `5 passed`、A5 `128 passed`、全量 `818 passed`；`EVD-A5-OLLAMA-REAL-RUN-001` 已绑定不可变实现 `ca0c3ed` | 仅为当前 Apple-silicon 和单一样例实测，不是 Bench；A5-1c 必须等待扫描组员 B5 提供真实 finding/license facts 后再接 A4 AI_ASSIST，不代做规则 | 已推送 `feat/a5-ollama-transport`；PR #2 待团队审核 |
-| A6-0 确定性报告导出核心 | P0 | Terra/Root | 已完成 | 终态 `ScanRun` 可导出稳定 JSON、竞赛七字段 CSV/资源清单和安全静态 HTML；`partial/rules/70` 明示规则缺失；专项 `12 passed`、A6+P0 `58 passed`、受控全量 `830 passed`，Schema/compileall/静态门禁通过；实现 `fda4ce6` | 内存核心由 A6-1 继续消费；完整许可证内容仍等待 B5 事实 | 已推送 `feat/a6-report-export-core`，远端实现 HEAD 已核对 |
-| A6-1 报告安全持久化与只读下载 | P0 | Terra/Root | 已完成 | 私有 `0700/0600` 内容寻址存储、原子 metadata 提交、重启/摘要/篡改验证、P0 `ReportLink`、同一冻结 GET 的只读下载和安全响应头已实现；A6-1 `16 passed`、受控全量 `846 passed` | A6-2 已完成 Pipeline 接线；前端接线归前端组员，完整许可证报告继续等待 B5 | 已推送 `feat/a6-report-delivery`；实现 `9ce9535`；`EVD-A6-REPORT-DELIVERY-001` 已绑定 |
-| A6-2 Pipeline 终态报告发布 | P0 | Terra/Root | 已完成 | publisher 在首次 terminal CAS 前发布四格式并只允许增加完整 `ReportLink`；ZIP HTTP 自动得到带链接的诚实 `partial/rules/70`；registry 是可见性门禁，orphan/元数据不一致/篡改均失败关闭；专项 `10 passed`、A6/A4/A3/P0 联合 `177 passed`、受控全量 `856 passed` | 前端真实下载接线归前端组员；完整许可证/义务/风险报告继续等待 B5；持久队列仍属 A3/A4 后续 | 已推送 `feat/a6-pipeline-publish`；实现 `eec66a6`；`EVD-A6-PIPELINE-PUBLISH-001` 已绑定 |
+| A5-1a Qwen3/Ollama 本地 Transport | P0 | Sol→Terra/Root→Luna→Root | 已完成 | 锁定 Ollama `0.33.3`、Qwen3 4B Instruct Q4_K_M 与完整 manifest；字面量回环、禁代理、版本/模型摘要校验、三步 HTTP、总 deadline、严格封装和稳定降级；实现60项、Luna独立17项，A5组合123项、完整非回环794项通过；`EVD-A5-OLLAMA-TRANSPORT-001` 绑定 `e4d8e2e` | A5-1b 已另行闭环；B5 pending finding 已可供下一项 A5-1c 接入 A4，不代做规则 | 已推送 `feat/a5-ollama-transport`；PR #2 待团队审核 |
+| A5-1b Ollama/Qwen3 本机真实运行 | P0 | Sol→Terra/Root→Luna→Root | 已完成 | 官方 Ollama `0.33.3` DMG 的 SHA-256、Developer ID、Gatekeeper、公证与 arm64 均通过；锁定 Qwen3 manifest/API/disk/blob 摘要一致；Root 探针与 Luna 独立脚本各完成真实 `3/3`，冷轮约 4.34/3.88 秒、热轮约 2.73/2.77 秒，均验证 generated、pending、来源绑定、事实保持和稳定 ID；加载约 3.175 GB、100% GPU、context 4096；runtime probe unit `5 passed`、A5 `128 passed`、全量 `818 passed`；`EVD-A5-OLLAMA-REAL-RUN-001` 已绑定不可变实现 `ca0c3ed` | 仅为当前 Apple-silicon 和单一样例实测，不是 Bench；A5-1c 可开始消费 B5 pending finding 并接 A4 AI_ASSIST，不代做规则；真实输入端到端仍需上游许可证事实 | 已推送 `feat/a5-ollama-transport`；PR #2 待团队审核 |
+| A6-0 确定性报告导出核心 | P0 | Terra/Root | 已完成 | 终态 `ScanRun` 可导出稳定 JSON、竞赛七字段 CSV/资源清单和安全静态 HTML；阶段性报告不补写缺失事实；专项 `12 passed`、A6+P0 `58 passed`、受控全量 `830 passed`，Schema/compileall/静态门禁通过；实现 `fda4ce6` | 内存核心由 A6-1 继续消费；真实许可证内容仍等待上游事实进入已接入 B5 | 已推送 `feat/a6-report-export-core`，远端实现 HEAD 已核对 |
+| A6-1 报告安全持久化与只读下载 | P0 | Terra/Root | 已完成 | 私有 `0700/0600` 内容寻址存储、原子 metadata 提交、重启/摘要/篡改验证、P0 `ReportLink`、同一冻结 GET 的只读下载和安全响应头已实现；A6-1 `16 passed`、受控全量 `846 passed` | A6-2 已完成 Pipeline 接线；前端接线归前端组员，完整许可证报告继续等待真实许可证事实 | 已推送 `feat/a6-report-delivery`；实现 `9ce9535`；`EVD-A6-REPORT-DELIVERY-001` 已绑定 |
+| A6-2 Pipeline 终态报告发布 | P0 | Terra/Root | 已完成 | publisher 在首次 terminal CAS 前发布四格式并只允许增加完整 `ReportLink`；ZIP HTTP 自动得到带链接的诚实 `partial/rules/70`；registry 是可见性门禁，orphan/元数据不一致/篡改均失败关闭；专项 `10 passed`、A6/A4/A3/P0 联合 `177 passed`、受控全量 `856 passed` | 前端真实下载接线归前端组员；A4-2 可把实际 B5 输出交给报告，但真实主链仍缺上游许可证事实；持久队列仍属 A3/A4 后续 | 已推送 `feat/a6-pipeline-publish`；实现 `eec66a6`；`EVD-A6-PIPELINE-PUBLISH-001` 已绑定 |
 | A8-1a P0团队集成基线 | P0 | Root/Sol | 已完成 | `integration/p0` 已汇合项目负责人六层后端纵切、前端组员壳和扫描组员B2/B3 Adapter候选；后端688项非回环+2项真实回环通过，前端锁文件供应链检查和生产构建通过；Schema不变；`EVD-P0-TEAM-INTEGRATION-001` 绑定 `f486ead` | 前端仍为mock；B2/B3仍缺本机真实工具和主链接线；不外推完整产品 | 已推送 `integration/p0`；团队后续从此创建短分支 |
 | A8-1b 冗余远端分支清理 | P0治理 | Root | 阻塞 | 已证明13个旧项目负责人任务分支均被 `integration/p0` 完整包含且零独有提交；组员两分支明确排除 | 远端删除被安全审批拒绝，需用户明确批准下方13个具体分支；本轮没有删除任何分支 | 待用户确认；不影响 `integration/p0` 使用 |
 | A8-1c A5 团队集成 PR | P0治理 | Root/Sol | 进行中 | 隔离 worktree 合并无冲突；沙箱原样 `807 passed, 11 failed, 1 warning` 的 11 项均为回环 bind 权限限制，受控环境原样 `818 passed, 1 warning`；P0 `46 passed`，Schema、compileall、diff、敏感/路径/大文件/上传范围门禁通过；PR #2 已创建且 GitHub 显示可自动合并 | 等待团队代码审核与明确合并决定；本任务不自动请求组员评审、不自动合并 | [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 已打开，base=`integration/p0`、head=`feat/a5-ollama-transport` |
-| A8-1d VS Code 本机复现演示 | P0治理 | Root/Sol | 已完成 | Python 3.12.14 启动 FastAPI；动态 ZIP POST `202`，SQLite 终态 `partial/rules/70`，得到 React/FastAPI/Pydantic 3 个组件和 3 条 verified evidence；Ollama/Qwen3 聚合探针 `2/2` 且全部校验通过；Vite 页面可见并明确 `MOCK MODE` | 演示只覆盖当前可验证纵切；A5 尚未接 Pipeline，前端尚未接真实 API，许可证规则仍依赖 B5 | 治理证据已推送当前 PR 分支；临时脚本、ZIP、SQLite、prompt/response 未上传 |
+| A8-1d VS Code 本机复现演示 | P0治理 | Root/Sol | 已完成 | Python 3.12.14 启动 FastAPI；动态 ZIP POST `202`，SQLite 终态 `partial/rules/70`，得到 React/FastAPI/Pydantic 3 个组件和 3 条 verified evidence；Ollama/Qwen3 聚合探针 `2/2` 且全部校验通过；Vite 页面可见并明确 `MOCK MODE` | 演示只覆盖当时可验证纵切；A4-2 已接 B5，但 A5 尚未接 Pipeline、前端尚未接真实 API、真实输入仍缺许可证事实 | 治理证据已推送当前 PR 分支；临时脚本、ZIP、SQLite、prompt/response 未上传 |
 | F0-0 前端应用壳 | P0 | 前端组员→Root验证 | 进行中 | React/Vite/Tailwind应用壳、基础页面与动效已由组员提交；Root按锁文件安装并完成TypeScript+Vite生产构建 | 当前仍使用mock，未接真实API；页面功能与视觉验收归前端组员 | 来源 `feat/xzb-frontend`，已纳入本地集成候选 |
 
 ## 2. P0 工作包全景
@@ -62,15 +63,15 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | B1 | Python/JS依赖解析 | Terra | 进行中 | Python requirements/pyproject 与 P0 CLI 已完成；根 package.json 四类直接依赖、package-lock v2/v3 enrichment 与 JS P0 CLI 已完成；当前全量424项通过 | 选定 Python lockfile；Yarn/pnpm/workspace/传递依赖列后续增强；再进入多来源合并 | 9月4日-11日 |
 | B2 | ScanCode适配器 | Terra | 进行中 | 安全 JSON 适配、超时/失败对象、许可证证据候选映射和单测已实现 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归；B4 规范化候选 SPDX | 9月4日-11日 |
 | B3 | Syft适配器 | Terra | 进行中 | 安全 JSON 适配、SBOM Component/Evidence 映射、跨来源合并和单测已实现 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归 | 9月4日-11日 |
-| B4 | SPDX标准化 | Sol/Terra | 未开始 | LicenseExpression契约已具备 | SPDX数据版本、别名、复合表达式、LicenseRef及测试 | 9月4日-20日 |
-| B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 未开始 | Obligation/RiskFinding结构已具备 | 规则Schema、原文证据、正反未知冲突样例、人工核验状态 | 9月12日-20日 |
-| B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
+| B4 | SPDX标准化 | 扫描组员 / Sol/Terra | 进行中 | 组员分支已有显式别名与复合表达式标准化回归，未知值保持 pending；本轮未导入或修改 | SPDX 官方数据版本台账、完整表达式语法、LicenseRef、人工复核及与许可证事实生产链集成 | 9月4日-20日 |
+| B5/S3 | 15种许可证义务规则 | 扫描组员 / Sol/Terra/Luna | 进行中 | 组员分支已有 15 条 JSON-subset YAML 规则、逐规则 fixture、证据门禁和稳定 P0 输出；其公共实现已由项目负责人 A4-2 原样消费，组员 B5 定向 `10 passed` | 官方许可证原文证据台账、人工复核状态和更完整冲突样例仍缺；不得因 A4 接线而标为 B5 完成 | 9月12日-20日 |
+| B6 | 模型/数据/API检测 | 扫描组员 / Terra | 进行中 | 组员分支已有离线 HF/ModelScope/API 静态识别与 Evidence 定位回归；本轮未导入或修改 | AST 覆盖、误报评测、授权/许可证人工核验与主链接入 | 9月12日-20日 |
 | A3 | FastAPI扫描API | 项目负责人 / Root | 进行中 | 6个端点、SQLite、Git JSON、ZIP multipart 与两种输入的进程内 BackgroundTask 已验证；公开 Git 需管理员显式开启，ZIP/Git 都可产生可查询终态 | A3父任务仍缺持久队列、lease/retry/recovery 与进程重启后 queued/running 恢复 | 9月21日-28日 |
-| A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4 worker、ZIP 与公开 Git 真实依赖接线、A6-2 终态报告发布已完成；有 manifest 的两种输入均可产生四种可下载 `partial/rules/70` 报告；A5 核心/transport 已完成但 AI 尚未接线 | 等待并消费组员 B5 的真实许可证事实后再接 A5 AI_ASSIST；另需持久消费/重试/lease/recovery 和含规则/AI的端到端证据 | 9月21日-28日 |
-| A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 进行中 | A5-0 可注入 Provider、A5-1a 回环 transport 与 A5-1b 官方 Ollama/Qwen3 本机真实运行均已完成；真实探针与独立脚本各 `3/3`，摘要、pending、来源、事实和稳定身份通过；受控 A5 `128 passed`、全量 `818 passed` | A5-1c 等待 B5 的真实 finding/license facts 后接 A4，并完成 AI 开关消融；A5-1b 单一样例不得外推为多项目质量 | 9月12日-28日 |
+| A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4 worker、ZIP/公开 Git 依赖接线、A6-2 报告发布及 A4-2 B5 规则适配已完成；注入合法许可证事实时可持久化 B5 输出，受控完整 `888 passed, 2 skipped` | 当前真实输入仍缺 B2/B3/B4 许可证事实；下一步接 A5-1c，另需持久消费/重试/lease/recovery 和含真实规则/AI的端到端证据 | 9月21日-28日 |
+| A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 进行中 | A5-0 可注入 Provider、A5-1a 回环 transport 与 A5-1b 官方 Ollama/Qwen3 本机真实运行均已完成；A4-2 已提供 B5 pending finding 的稳定入口 | A5-1c 接入 A4 AI_ASSIST 并完成开关/降级消融；真实 Web 端到端仍需上游许可证事实；A5-1b 单一样例不得外推为多项目质量 | 9月12日-28日 |
 | F0 | P0前端核心页面 | Terra/团队前端 | 进行中 | React/Vite/Tailwind 应用壳已提交并通过锁文件安装、TypeScript与Vite生产构建 | 当前仍为mock；继续完成 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 的真实API接线 | 9月21日-28日 |
-| A6 | HTML/JSON/CSV与资源清单 | 项目负责人 / Terra/Luna | 进行中 | 四格式渲染、私有持久化/下载与 Pipeline 发布已完成；ZIP/公开 Git 主链均可下载诚实 `partial/rules/70` 报告；当前受控完整 `872 passed` | 前端下载接线和最终匿名化验收；完整许可证内容仍需消费 B5 事实 | 9月21日-28日 |
-| S5/B7 | OpenGuard-Bench | Sol/Luna/Terra | 未开始 | 只有A1边界fixture，不等于Bench | 3-5个首批case→20-30公开仓库、50-100合成样例、指标/基线/消融 | 9月29日-10月5日 |
+| A6 | HTML/JSON/CSV与资源清单 | 项目负责人 / Terra/Luna | 进行中 | 四格式渲染、私有持久化/下载与 Pipeline 发布已完成；A4-2 的实际 B5 输出可由既有报告器呈现；受控完整 `888 passed, 2 skipped` | 前端下载接线和最终匿名化验收；真实许可证内容仍需上游事实进入 B5 | 9月21日-28日 |
+| S5/B7 | OpenGuard-Bench | 扫描组员 / Sol/Luna/Terra | 进行中 | 组员分支已有版本化合成 smoke cases 与 TP/FP/FN/Precision/Recall/F1 评测器回归；本轮未导入或修改，smoke 不等于完整 Bench | 3–5 个独立复现 case、人工标注、20–30 公开仓库、50–100 合成样例、基线/消融与误差分析 | 9月29日-10月5日 |
 | A7 | Docker与一键部署 | Terra | 未开始 | deploy目录说明存在 | Compose、固定镜像版本、陌生机器复现与Demo仓库全链 | 9月21日-10月5日 |
 | S7/L10/L11 | 技术报告与材料证据 | Sol/Luna | 未开始 | 交接文档已有九章/匿名/资源表规则 | 证据映射、15页报告、3-5分钟视频、资源表、AI记录、匿名审计 | 10月6日-13日 |
 | FINAL | 提交前审计与上传 | Sol/Root/全员 | 未开始 | GitHub公开仓库已建立 | 100分模拟评审、链接/部署/视频复核、10月14日正式上传 | 10月11日-14日 |
@@ -103,11 +104,12 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 2026-09-04 | A6-1 报告持久化与只读下载 | `feat/a6-report-delivery` | `9ce9535`（不可变实现/测试/证据） | 内容寻址私有存储、原子 metadata、ReportLink、同一路由只读下载、16项专项测试、规格与治理记录；不含生成报告文件、B5、Pipeline 或前端 | 已推送；远端完整对象 `9ce9535436372295eaf1598a9805ec415b79db86` 已核对；未创建/合并 PR |
 | 2026-09-04 | A6-2 Pipeline 终态报告发布 | `feat/a6-pipeline-publish` | `eec66a6`（不可变实现/测试/证据） | Pipeline publisher、worker/ZIP/default factory 接线、API 可见性一致性、10项专项测试、规格与治理记录；不含生成报告文件、B5、A5、前端或部署 | 已推送；远端完整对象 `eec66a6aa0458abdbadd912f17c6c9d54ce3a247` 已核对；未创建/合并 PR |
 | 2026-09-04 | A2-3a 公开 Git/TrustedEgress | `feat/a2-public-git-egress` | `f6aea1e`（不可变实现/测试/证据） | URL/DNS/CONNECT/Git object 安全摄取、公共依赖 Pipeline、API/A6 接线、实现与真实公网测试、规格/资源/治理记录；不含目标仓库内容、B5、A5、前端或部署 | 已推送；远端完整对象 `f6aea1eb2db1475be489f9ce8afc517e10f3c0e2` 已核对；未创建/合并 PR |
+| 2026-09-05 | A4-2 B5 许可证规则阶段接线 | `feat/a4-b5-rule-integration` | 待提交 | 原样引入组员 B5 公共实现/15条规则/测试/规格；新增项目负责人 A4 薄适配器、7项集成测试和运行/治理说明；不含 B4/B6/B7、前端、部署或运行产物 | 待推送；未创建/合并 PR |
 
 ## 3.1 当前远端分支入口
 
 - 团队日常入口：`integration/p0`；里程碑发布目标：`main`。
-- 项目负责人当前短分支：`feat/a2-public-git-egress`，已推送并绑定实现 `f6aea1e`；A5 的 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 仍提交到 `integration/p0`，完成审核并获明确合并决定后再纳入集成线。本轮未创建或合并 PR。
+- 项目负责人当前短分支：`feat/a4-b5-rule-integration`，待提交推送；A5 的 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 仍提交到 `integration/p0`，完成审核并获明确合并决定后再纳入集成线。本轮未创建或合并 PR。
 - 组员在途分支：`feat/xzb-frontend`、`codex/p0-external-tools-sync`，均保留。
 - 待明确授权清理的项目负责人历史分支：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
 - 上述待清理分支的提交均已从 `integration/p0` 可达，删除分支引用不会删除集成线中的代码和证据；未获明确授权前保持现状。

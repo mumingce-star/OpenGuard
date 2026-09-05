@@ -1,0 +1,146 @@
+{
+  "ruleset_version": "2026.09.1",
+  "rules": [
+    {
+      "id": "LIC-MIT-NOTICE",
+      "version": "1.0.0",
+      "license_ids": ["MIT"],
+      "severity": "low",
+      "title": "Review MIT notice retention",
+      "obligation": {
+        "action": "retain_license_notice",
+        "trigger": "Verified MIT-licensed material is included in a distribution",
+        "description": "Preserve the copyright and permission notice with the distributed material."
+      },
+      "remediation": {
+        "summary": "Confirm MIT notice handling before distribution",
+        "steps": ["Locate the verified license text", "Retain the required notice in distribution materials"]
+      }
+    },
+    {
+      "id": "LIC-APACHE-2.0-NOTICE",
+      "version": "1.0.0",
+      "license_ids": ["Apache-2.0"],
+      "severity": "medium",
+      "title": "Review Apache-2.0 notice and modification duties",
+      "obligation": {
+        "action": "retain_license_and_notice",
+        "trigger": "Verified Apache-2.0 material is redistributed or modified",
+        "description": "Review retention of the license and applicable NOTICE content, and document material modifications where required."
+      },
+      "remediation": {
+        "summary": "Review Apache-2.0 distribution materials",
+        "steps": ["Locate LICENSE and NOTICE evidence", "Review modification notices before distribution"]
+      }
+    },
+    {
+      "id": "LIC-BSD-3-CLAUSE-NOTICE",
+      "version": "1.0.0",
+      "license_ids": ["BSD-3-Clause"],
+      "severity": "low",
+      "title": "Review BSD-3-Clause notice retention",
+      "obligation": {
+        "action": "retain_bsd_notices",
+        "trigger": "Verified BSD-3-Clause material is redistributed",
+        "description": "Preserve the required copyright, conditions, and disclaimer notices in source or binary redistribution materials."
+      },
+      "remediation": {
+        "summary": "Confirm BSD notice handling",
+        "steps": ["Locate verified BSD license evidence", "Include required notices in the selected distribution form"]
+      }
+    },
+    {
+      "id": "LIC-GPL-3.0-ONLY-COPYLEFT",
+      "version": "1.0.0",
+      "license_ids": ["GPL-3.0-only"],
+      "severity": "high",
+      "title": "Review GPL-3.0-only copyleft obligations",
+      "obligation": {
+        "action": "perform_copyleft_distribution_review",
+        "trigger": "Verified GPL-3.0-only material may be conveyed or incorporated into a distributed work",
+        "description": "Obtain a human review of applicable corresponding-source, notice, and distribution obligations before conveyance."
+      },
+      "remediation": {
+        "summary": "Escalate GPL distribution review",
+        "steps": ["Confirm the intended distribution scenario", "Review the verified GPL text with an authorized reviewer"]
+      }
+    },
+    {
+      "id": "LIC-CC-BY-4.0-ATTRIBUTION",
+      "version": "1.0.0",
+      "license_ids": ["CC-BY-4.0"],
+      "severity": "medium",
+      "title": "Review CC-BY-4.0 attribution requirements",
+      "obligation": {
+        "action": "prepare_attribution",
+        "trigger": "Verified CC-BY-4.0 material is shared or adapted",
+        "description": "Review attribution, license-link, change-indication, and other applicable attribution details before sharing."
+      },
+      "remediation": {
+        "summary": "Prepare a reviewed CC-BY attribution record",
+        "steps": ["Collect creator and license evidence", "Review attribution and change disclosure for the intended use"]
+      }
+    },
+    {
+      "id": "LIC-CC-BY-NC-4.0-NONCOMMERCIAL",
+      "version": "1.0.0",
+      "license_ids": ["CC-BY-NC-4.0"],
+      "severity": "high",
+      "title": "Review CC-BY-NC-4.0 non-commercial restriction",
+      "obligation": {
+        "action": "review_noncommercial_scope",
+        "trigger": "Verified CC-BY-NC-4.0 material is proposed for sharing or adaptation",
+        "description": "Obtain a human review of whether the intended use and distribution fit the non-commercial condition and attribution terms."
+      },
+      "remediation": {
+        "summary": "Escalate non-commercial use review",
+        "steps": ["Document the intended use and distribution", "Review the verified license text with an authorized reviewer"]
+      }
+    },
+    {
+      "id": "LIC-BSD-2-CLAUSE-NOTICE", "version": "1.0.0", "license_ids": ["BSD-2-Clause"], "severity": "low", "title": "Review BSD-2-Clause notice retention",
+      "obligation": {"action": "retain_bsd_notices", "trigger": "Verified BSD-2-Clause material is redistributed", "description": "Preserve the required copyright, conditions, and disclaimer notices."},
+      "remediation": {"summary": "Confirm BSD notice handling", "steps": ["Locate verified license evidence", "Include required notices in distribution materials"]}
+    },
+    {
+      "id": "LIC-ISC-NOTICE", "version": "1.0.0", "license_ids": ["ISC"], "severity": "low", "title": "Review ISC notice retention",
+      "obligation": {"action": "retain_license_notice", "trigger": "Verified ISC material is redistributed", "description": "Preserve the ISC permission and disclaimer notice."},
+      "remediation": {"summary": "Confirm ISC notice handling", "steps": ["Locate verified license evidence", "Retain the ISC notice"]}
+    },
+    {
+      "id": "LIC-MPL-2.0-FILE-COPYLEFT", "version": "1.0.0", "license_ids": ["MPL-2.0"], "severity": "medium", "title": "Review MPL-2.0 file-level obligations",
+      "obligation": {"action": "perform_file_level_copyleft_review", "trigger": "Verified MPL-2.0 files are modified or distributed", "description": "Review applicable source-availability and notice duties for covered files."},
+      "remediation": {"summary": "Review MPL-covered files", "steps": ["Identify modified covered files", "Obtain a human review before distribution"]}
+    },
+    {
+      "id": "LIC-EPL-2.0-RECIPROCAL", "version": "1.0.0", "license_ids": ["EPL-2.0"], "severity": "medium", "title": "Review EPL-2.0 reciprocal obligations",
+      "obligation": {"action": "perform_reciprocal_license_review", "trigger": "Verified EPL-2.0 material is distributed", "description": "Review applicable notice, source and reciprocal-license duties for the intended distribution."},
+      "remediation": {"summary": "Escalate EPL distribution review", "steps": ["Document the distribution scenario", "Review verified EPL evidence with an authorized reviewer"]}
+    },
+    {
+      "id": "LIC-LGPL-2.1-ONLY-REVIEW", "version": "1.0.0", "license_ids": ["LGPL-2.1-only"], "severity": "high", "title": "Review LGPL-2.1-only obligations",
+      "obligation": {"action": "perform_lgpl_distribution_review", "trigger": "Verified LGPL-2.1-only material is used in a distributed work", "description": "Obtain human review of linking, notice and source obligations before distribution."},
+      "remediation": {"summary": "Escalate LGPL distribution review", "steps": ["Confirm linking and distribution facts", "Review verified LGPL evidence"]}
+    },
+    {
+      "id": "LIC-GPL-2.0-ONLY-COPYLEFT", "version": "1.0.0", "license_ids": ["GPL-2.0-only"], "severity": "high", "title": "Review GPL-2.0-only copyleft obligations",
+      "obligation": {"action": "perform_copyleft_distribution_review", "trigger": "Verified GPL-2.0-only material may be conveyed", "description": "Obtain human review of applicable corresponding-source and notice obligations before conveyance."},
+      "remediation": {"summary": "Escalate GPL distribution review", "steps": ["Confirm intended distribution", "Review verified GPL evidence"]}
+    },
+    {
+      "id": "LIC-AGPL-3.0-ONLY-NETWORK", "version": "1.0.0", "license_ids": ["AGPL-3.0-only"], "severity": "high", "title": "Review AGPL-3.0-only network-use obligations",
+      "obligation": {"action": "perform_network_copyleft_review", "trigger": "Verified AGPL-3.0-only material may be modified for network interaction", "description": "Obtain human review of applicable source-offer and notice obligations before deployment."},
+      "remediation": {"summary": "Escalate AGPL deployment review", "steps": ["Confirm network deployment facts", "Review verified AGPL evidence"]}
+    },
+    {
+      "id": "LIC-CC0-1.0-ATTRIBUTION-REVIEW", "version": "1.0.0", "license_ids": ["CC0-1.0"], "severity": "info", "title": "Review CC0-1.0 provenance",
+      "obligation": {"action": "retain_provenance_record", "trigger": "Verified CC0-1.0 material is included", "description": "Retain provenance evidence and review any non-license restrictions applicable to the source."},
+      "remediation": {"summary": "Record CC0 provenance", "steps": ["Keep verified source evidence", "Review source-specific terms"]}
+    },
+    {
+      "id": "LIC-UNLICENSE-PROVENANCE", "version": "1.0.0", "license_ids": ["Unlicense"], "severity": "info", "title": "Review Unlicense provenance",
+      "obligation": {"action": "retain_provenance_record", "trigger": "Verified Unlicense material is included", "description": "Retain source and license evidence for the selected material."},
+      "remediation": {"summary": "Record Unlicense provenance", "steps": ["Keep verified license evidence", "Review source-specific notices"]}
+    }
+  ]
+}

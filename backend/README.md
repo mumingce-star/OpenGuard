@@ -280,9 +280,11 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_pipeline_worker.py
 只读会话内调用既有 Python 与 JavaScript parser/mapper，核对 ZIP 原始字节摘要，随后把 inventory
 root digest、真实 P0 `Component`/`Evidence`、producer 版本和 summary 持久化到 A3 SQLite。
 
-当前许可证规则尚未接线，所以有真实依赖证据的预期终态是 `partial/rules/70`，错误码为
-`rules_stage_not_connected`；这不是运行失败，也不能描述为完整许可证或合规扫描。AI 与 report 阶段
-不会执行。workspace root 必须是后端预先创建、仅当前用户可写的绝对 POSIX 目录；计划不接受调用方
+当前 A4-2 已把 B5 规则引擎接到 rules 阶段：若输入 `ScanRun` 已包含与资源相连的许可证事实，
+worker 会校验并持久化 B5 义务、风险、整改及实际规则集版本；没有许可证事实时继续稳定终止为
+`partial/rules/70`、错误码 `rules_stage_not_connected`。这不是运行失败，也不能描述为完整许可证或
+合规扫描。规则成功后 AI 阶段当前显式关闭；A6 publisher 仍在最终终态提交边界发布报告。workspace
+root 必须是后端预先创建、仅当前用户可写的绝对 POSIX 目录；计划不接受调用方
 抬高 A2 安全限额，不联网、不执行 ZIP 中的代码、不安装依赖，也不暴露本机 ZIP 路径。
 
 实现侧回归：
@@ -292,7 +294,25 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_local_zip_pipeline.py
 ```
 
 该内部工厂本身不启动 HTTP 或后台队列；A3-2 现已在受控单进程内替调用方创建 queued 记录并通过
-BackgroundTask 显式执行它。公开 Git、安全网络摄取、许可证规则、AI、报告和持久队列仍不属于 A4-1。
+BackgroundTask 显式执行它。公开 Git、安全网络摄取、B5 规则接线和报告分别由 A2-3a、A4-2、A6-2
+后续纵切完成；许可证事实生产、AI 主链接线和持久队列仍不属于 A4-1。
+
+## A4-2 B5 许可证规则阶段接线
+
+`app.pipeline.apply_license_rules()` 是项目负责人 A4 集成层对组员 B5 公共规则接口的薄适配器。
+它只消费已验证的 P0 `Resource`、`LicenseFact` 和 `Evidence`，调用 B5 `evaluate()`，检查返回类型、
+引用与 ID 唯一性，重算 finding summary 并写入实际 ruleset version。适配器不会改写 B5 规则语义，
+也不会从依赖名称猜测许可证。
+
+当前 ZIP/Git 依赖路径尚未把 B2/B3/B4 许可证识别结果映射到 P0，因此无许可证事实时仍保留
+`rules_stage_not_connected` 的历史兼容终态。若调用方提供有效许可证事实，B5 `verified` 规则可直接
+产生确定性整改；`pending` 证据门禁 finding 不产生整改，可由后续 A5-1c 消费。实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a4_b5_rule_integration.py \
+  tests/unit/test_b5_license_rule_engine.py
+```
 
 ## A3-2 ZIP HTTP 与进程内后台扫描
 
@@ -313,7 +333,8 @@ curl -sS -X POST http://127.0.0.1:8000/api/v1/scans \
 ```
 
 响应中的 `status_url` 可用于轮询。当前合法依赖 ZIP 的预期终态是 `partial/rules/70`：这表示 Python/
-JavaScript 依赖组件与证据已经可以查询，但许可证规则尚未接入；不是 ZIP/Pipeline 失败。资源可通过
+JavaScript 依赖组件与证据已经可以查询，但主链尚未产生许可证事实供已接入的 B5 规则消费；不是
+ZIP/Pipeline 失败。资源可通过
 `GET /api/v1/scans/{scan_id}/resources` 查看，证据可通过返回的 evidence ID 查询。
 
 上传和 multipart 请求均有服务端边界，暂存目录与 workspace 为私有目录；任务结束后清理。该后台执行
@@ -426,7 +447,7 @@ PYTHONPATH=backend python -m pytest -q \
 `app.reporting.PipelineReportPublisher` 会在 worker 首次写入 `completed` 或 `partial` 终态之前，
 显式发布 JSON、HTML、CSV 和资源清单四种格式，再把全部 `ReportLink` 放入同一份终态 `ScanRun`。
 默认 `ZipScanRuntime` 已使用同一个私有 `ReportArtifactStore` 完成接线。因此当前 ZIP HTTP 主链即使
-因 B5 未到位停在 `partial/rules/70`，也会自动产生可下载、可重启读取的诚实阶段性报告。
+因上游许可证事实未到位而停在 `partial/rules/70`，也会自动产生可下载、可重启读取的诚实阶段性报告。
 
 SQLite 终态不可变，所以实现不会先落无链接终态再补写。报告文件先于一次终态 CAS 写入，但 API
 只承认 SQLite `ScanRun.report_links` 已登记且与 store metadata 精确一致的产物；发布中断或 CAS
@@ -446,6 +467,7 @@ PYTHONPATH=backend python -m pytest -q \
   tests/unit/test_a3_zip_background_scan.py
 ```
 
-本纵切不实现 B5 许可证规则、不调用 Qwen3、不接前端，也没有把进程内 BackgroundTask 扩展为
+本 A6-2 纵切本身不实现 B5 许可证规则；当前 A4-2 已在独立任务中消费 B5。A6-2 不调用 Qwen3、
+不接前端，也没有把进程内 BackgroundTask 扩展为
 持久队列。完整许可证内容仍须消费组员提供的真实 `LicenseExpression`、`Obligation` 与
 `RiskFinding`。

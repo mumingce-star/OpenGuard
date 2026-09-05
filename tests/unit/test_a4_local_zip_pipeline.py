@@ -338,7 +338,7 @@ def test_neg_a4zip_009_plan_is_one_shot(tmp_path: Path) -> None:
     assert second_result.run.stage is ScanStage.INGESTION
 
 
-def test_neg_a4zip_010_factory_validation_and_unreachable_stages(tmp_path: Path) -> None:
+def test_neg_a4zip_010_factory_validation_and_disabled_future_stages(tmp_path: Path) -> None:
     with pytest.raises(PipelineError) as raised:
         build_local_zip_dependency_plan("project.zip", tmp_path, clock=lambda: NOW)  # type: ignore[arg-type]
     assert raised.value.code == "pipeline_invalid_argument"
@@ -347,7 +347,8 @@ def test_neg_a4zip_010_factory_validation_and_unreachable_stages(tmp_path: Path)
     plan = build_local_zip_dependency_plan(archive, tmp_path / "workspace", clock=lambda: NOW)
     assert plan.steps[5].stage is ScanStage.AI_ASSIST
     assert plan.steps[6].stage is ScanStage.REPORT
-    with pytest.raises(Exception):
-        plan.steps[5].handler(_queued(archive))
-    with pytest.raises(Exception):
-        plan.steps[6].handler(_queued(archive))
+    queued = _queued(archive)
+    ai_disabled = plan.steps[5].handler(queued)
+    assert ai_disabled.provenance.ai_enabled is False
+    assert ai_disabled.provenance.ai_model is None
+    assert plan.steps[6].handler(ai_disabled) == ai_disabled

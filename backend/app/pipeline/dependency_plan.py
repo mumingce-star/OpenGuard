@@ -20,6 +20,7 @@ from app.domain.models import (
 )
 from app.ingestion import ReadOnlyScanSession, ScanReadLimits
 from app.pipeline.worker import PipelinePlan, PipelineStageFailure, PipelineStep
+from app.pipeline.license_rules import apply_license_rules
 from app.scanners import (
     JavascriptP0MappingResult,
     JavascriptParseStatus,
@@ -208,11 +209,17 @@ def build_dependency_plan(
     def normalize(run: ScanRun) -> ScanRun:
         return ScanRun.model_validate(run.model_dump(mode="python"))
 
-    def rules(_: ScanRun) -> ScanRun:
-        fail("rules_stage_not_connected", "License rules are not connected for this scan.", recoverable=True)
+    def rules(run: ScanRun) -> ScanRun:
+        if not run.licenses:
+            fail("rules_stage_not_connected", "License rules are not connected for this scan.", recoverable=True)
+        return apply_license_rules(run)
 
-    def unreachable(_: ScanRun) -> ScanRun:
-        fail("pipeline_stage_failed", "Pipeline stage failed unexpectedly.")
+    def ai_disabled(run: ScanRun) -> ScanRun:
+        provenance = run.provenance.model_copy(update={"ai_enabled": False, "ai_model": None})
+        return replace_run(run, provenance=provenance)
+
+    def report(run: ScanRun) -> ScanRun:
+        return ScanRun.model_validate(run.model_dump(mode="python"))
 
     return PipelinePlan(
         steps=(
@@ -221,8 +228,8 @@ def build_dependency_plan(
             PipelineStep(ScanStage.SCAN, scan),
             PipelineStep(ScanStage.NORMALIZE, normalize),
             PipelineStep(ScanStage.RULES, rules),
-            PipelineStep(ScanStage.AI_ASSIST, unreachable),
-            PipelineStep(ScanStage.REPORT, unreachable),
+            PipelineStep(ScanStage.AI_ASSIST, ai_disabled),
+            PipelineStep(ScanStage.REPORT, report),
         )
     )
 
