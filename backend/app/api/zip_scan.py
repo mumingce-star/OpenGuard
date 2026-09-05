@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import os
 import stat
 import tempfile
@@ -15,6 +16,7 @@ from urllib.parse import unquote
 from fastapi import BackgroundTasks
 from starlette.datastructures import UploadFile
 
+from app.ai import Provider
 from app.api.models import ScanCreateAccepted, ZipScanCreateFields
 from app.api.service import ApiError, ScanApiService
 from app.persistence import SQLiteScanRunRegistry
@@ -85,11 +87,20 @@ class ZipScanRuntime:
         workspace_root: Path,
         clock: Callable[[], datetime] | None = None,
         report_publisher: PipelineReportPublisher | None = None,
+        ai_provider: Provider | None = None,
+        ai_enabled: bool = False,
+        ai_timeout_seconds: float = 10.0,
     ) -> None:
         if (
             not isinstance(registry, SQLiteScanRunRegistry)
             or (clock is not None and not callable(clock))
             or (report_publisher is not None and type(report_publisher) is not PipelineReportPublisher)
+            or type(ai_enabled) is not bool
+            or type(ai_timeout_seconds) not in {int, float}
+            or isinstance(ai_timeout_seconds, bool)
+            or not math.isfinite(ai_timeout_seconds)
+            or ai_timeout_seconds <= 0
+            or (ai_enabled and ai_provider is None)
         ):
             raise ValueError("invalid zip runtime")
         self._registry = registry
@@ -98,6 +109,9 @@ class ZipScanRuntime:
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self._upload_max_bytes = ZipSafetyLimits().upload_max_bytes
         self._report_publisher = report_publisher
+        self._ai_provider = ai_provider
+        self._ai_enabled = ai_enabled
+        self._ai_timeout_seconds = float(ai_timeout_seconds)
 
     async def submit(
         self,
@@ -191,6 +205,9 @@ class ZipScanRuntime:
                 archive_path,
                 self._workspace_root,
                 clock=self._clock,
+                ai_provider=self._ai_provider,
+                ai_enabled=self._ai_enabled,
+                ai_timeout_seconds=self._ai_timeout_seconds,
             )
             publisher = self._report_publisher
             ScanPipelineWorker(

@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse, Response
 from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.ai import OllamaProvider
 from app.api.models import (
     ErrorBody,
     ErrorEnvelope,
@@ -421,13 +422,19 @@ def create_default_app() -> FastAPI:
             raise RuntimeError("OpenGuard runtime directory is unavailable") from error
         if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
             raise RuntimeError("OpenGuard runtime directory must be private")
+    ai_enabled = os.environ.get("OPENGUARD_ENABLE_AI", "0")
+    if ai_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_AI")
     registry = SQLiteScanRunRegistry(data_dir / "scans.db")
     report_store = ReportArtifactStore(report_root)
+    ai_provider = OllamaProvider() if ai_enabled == "1" else None
     runtime = ZipScanRuntime(
         registry,
         upload_root=upload_root,
         workspace_root=workspace_root,
         report_publisher=PipelineReportPublisher(report_store),
+        ai_provider=ai_provider,
+        ai_enabled=ai_enabled == "1",
     )
     git_enabled = os.environ.get("OPENGUARD_ENABLE_PUBLIC_GIT", "0")
     if git_enabled not in {"0", "1"}:
@@ -437,6 +444,8 @@ def create_default_app() -> FastAPI:
             registry,
             workspace_root=workspace_root,
             report_publisher=PipelineReportPublisher(report_store),
+            ai_provider=ai_provider,
+            ai_enabled=ai_enabled == "1",
         )
         if git_enabled == "1"
         else None

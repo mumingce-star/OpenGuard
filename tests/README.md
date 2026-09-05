@@ -119,3 +119,18 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_pipeline_publish.py
 发布失败脱敏降级、publisher 篡改隔离、store/registry 元数据不一致失败关闭、重复发布拒绝、默认
 factory 接线，以及“文件已写但终态 CAS 冲突”的 orphan 不可下载。它不实现 B5、A5 主链接线、
 前端或持久任务队列。
+
+## A5-1c Pipeline `AI_ASSIST` 复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a5_pipeline_integration.py \
+  tests/security/test_a5_pipeline_integration_independent.py
+```
+
+实现侧测试独立于真实网络，使用组员 B5 的公共规则输出和可注入 Provider 覆盖：AI 默认关闭、
+pending evidence-gate finding 生成待复核整改、verified 规则整改不重复、Provider 失败仍持久化
+规则结果并发布 A6 四格式报告、ZIP/Git 计划配置传递，以及默认应用 `0/1` 开关。它不生产
+B2/B3/B4 许可证事实，也不把合成 B5 输入冒充普通 ZIP/Git 的完整端到端结果。独立安全文件以
+手工 P0 聚合复核事实保持、失败脱敏和 A6 产物；其中真实本机模型单项默认跳过，只有操作者已
+启动锁定 Ollama 后显式设置 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 才会执行，不会自动启动或下载模型。

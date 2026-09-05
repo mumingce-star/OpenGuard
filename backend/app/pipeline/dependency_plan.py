@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -18,8 +19,9 @@ from app.domain.models import (
     ScanStage,
     ScanSummary,
 )
+from app.ai import Provider, apply_ai_remediations
 from app.ingestion import ReadOnlyScanSession, ScanReadLimits
-from app.pipeline.worker import PipelinePlan, PipelineStageFailure, PipelineStep
+from app.pipeline.worker import PipelineError, PipelinePlan, PipelineStageFailure, PipelineStep
 from app.pipeline.license_rules import apply_license_rules
 from app.scanners import (
     JavascriptP0MappingResult,
@@ -138,8 +140,21 @@ def build_dependency_plan(
     *,
     ingestion_error_code: str,
     ingestion_error_message: str,
+    ai_provider: Provider | None = None,
+    ai_enabled: bool = False,
+    ai_timeout_seconds: float = 10.0,
 ) -> PipelinePlan:
     """Attach the existing B1/A4 tail to one source-specific ingestion stage."""
+
+    if (
+        type(ai_enabled) is not bool
+        or type(ai_timeout_seconds) not in {int, float}
+        or isinstance(ai_timeout_seconds, bool)
+        or not math.isfinite(ai_timeout_seconds)
+        or ai_timeout_seconds <= 0
+        or (ai_enabled and ai_provider is None)
+    ):
+        raise PipelineError("pipeline_invalid_argument") from None
 
     def inventory(run: ScanRun) -> ScanRun:
         if (
@@ -214,9 +229,13 @@ def build_dependency_plan(
             fail("rules_stage_not_connected", "License rules are not connected for this scan.", recoverable=True)
         return apply_license_rules(run)
 
-    def ai_disabled(run: ScanRun) -> ScanRun:
-        provenance = run.provenance.model_copy(update={"ai_enabled": False, "ai_model": None})
-        return replace_run(run, provenance=provenance)
+    def ai_assist(run: ScanRun) -> ScanRun:
+        return apply_ai_remediations(
+            run,
+            ai_provider,
+            enabled=ai_enabled,
+            timeout_seconds=float(ai_timeout_seconds),
+        ).run
 
     def report(run: ScanRun) -> ScanRun:
         return ScanRun.model_validate(run.model_dump(mode="python"))
@@ -228,7 +247,7 @@ def build_dependency_plan(
             PipelineStep(ScanStage.SCAN, scan),
             PipelineStep(ScanStage.NORMALIZE, normalize),
             PipelineStep(ScanStage.RULES, rules),
-            PipelineStep(ScanStage.AI_ASSIST, ai_disabled),
+            PipelineStep(ScanStage.AI_ASSIST, ai_assist),
             PipelineStep(ScanStage.REPORT, report),
         )
     )

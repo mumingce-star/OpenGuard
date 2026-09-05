@@ -283,7 +283,7 @@ root digest、真实 P0 `Component`/`Evidence`、producer 版本和 summary 持�
 当前 A4-2 已把 B5 规则引擎接到 rules 阶段：若输入 `ScanRun` 已包含与资源相连的许可证事实，
 worker 会校验并持久化 B5 义务、风险、整改及实际规则集版本；没有许可证事实时继续稳定终止为
 `partial/rules/70`、错误码 `rules_stage_not_connected`。这不是运行失败，也不能描述为完整许可证或
-合规扫描。规则成功后 AI 阶段当前显式关闭；A6 publisher 仍在最终终态提交边界发布报告。workspace
+合规扫描。规则成功后，A5-1c 会按显式开关执行或跳过 AI；A6 publisher 仍在最终终态提交边界发布报告。workspace
 root 必须是后端预先创建、仅当前用户可写的绝对 POSIX 目录；计划不接受调用方
 抬高 A2 安全限额，不联网、不执行 ZIP 中的代码、不安装依赖，也不暴露本机 ZIP 路径。
 
@@ -371,10 +371,8 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ai_provider.py
 共享一个总 deadline，任何连接、超时、HTTP、版本、模型、摘要或包装错误都只返回脱敏 transport
 错误，并由 A5-0 保留确定性结果、记录 `degraded`。
 
-本模块不会启动 Ollama、自动下载模型或读取凭据。当前开发机器尚未发现 Ollama，因此只能复现
-协议 adapter 与本地测试 server，不能声称真实 Qwen3 已运行。安装、权重拉取、实际 manifest
-比对、结构化输出质量/延迟实测属于 A5-1b；消费组员 B5 真实 finding 并接入 Pipeline 属于
-A5-1c。
+本模块不会启动 Ollama、自动下载模型或读取凭据。A5-1b 已在当前 Apple-silicon 开发机完成锁定
+运行时、模型摘要和三轮结构化输出实测；该单机样例不能外推为 Bench 或多平台结论。
 
 实现侧回归：
 
@@ -383,6 +381,26 @@ PYTHONPATH=backend python -m pytest -q \
   tests/unit/test_a5_ai_provider.py \
   tests/unit/test_a5_ollama_transport.py
 ```
+
+## A5-1c Pipeline `AI_ASSIST` 接线
+
+共享 dependency plan、ZIP runtime 与公开 Git runtime 已接受同一显式 A5 配置。默认应用只有在
+`OPENGUARD_ENABLE_AI=1` 时才注入锁定的本机 `OllamaProvider`；未设置时保持关闭，其他值拒绝启动。
+启用后，B5 `license-evidence-gate` 等未绑定整改 finding 可生成 `pending` 建议；B5 已有确定性整改
+时不重复调用。模型不可用或输出无效时，规则结果保持不变，Pipeline 继续 REPORT，并由 A6 发布
+包含脱敏 `ai_assist` 诊断的四格式报告。
+
+```bash
+OPENGUARD_ENABLE_AI=1 \
+OPENGUARD_DATA_DIR=./data \
+PYTHONPATH=backend \
+python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_pipeline_integration.py
+```
+
+当前普通 ZIP/Git 输入仍缺 B2/B3/B4 许可证事实，因此会先在 `rules/70` 诚实终止；A5-1c 的测试
+通过真实 B5 公共输出验证接线，但不冒充上游许可证发现或完整 Web 端到端。
 
 ## A6-0 确定性报告导出核心
 

@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import BinaryIO, Callable
 
+from app.ai import Provider
 from app.domain.models import HashValue, Project, RunProvenance, ScanRun, SourceType
 from app.ingestion import ZipIngestionService
 from app.pipeline.dependency_plan import (
@@ -76,6 +77,9 @@ def build_local_zip_dependency_plan(
     workspace_root: Path,
     *,
     clock: Callable[[], datetime],
+    ai_provider: Provider | None = None,
+    ai_enabled: bool = False,
+    ai_timeout_seconds: float = 10.0,
 ) -> PipelinePlan:
     """Build one explicit plan for one queued ZIP ScanRun."""
 
@@ -136,4 +140,7 @@ def build_local_zip_dependency_plan(
         state,
         ingestion_error_code="zip_ingestion_failed",
         ingestion_error_message="Local ZIP ingestion failed.",
+        ai_provider=ai_provider,
+        ai_enabled=ai_enabled,
+        ai_timeout_seconds=ai_timeout_seconds,
     )

@@ -7,6 +7,7 @@ from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
+from app.ai import Provider
 from app.domain.models import HashValue, ProducerRef, ProducerType, Project, RunProvenance, ScanRun, SourceType
 from app.ingestion import GitIngestionService
 from app.pipeline.dependency_plan import (
@@ -32,6 +33,9 @@ def build_public_git_dependency_plan(
     *,
     clock: Callable[[], datetime],
     ingestion_factory: GitIngestionFactory | None = None,
+    ai_provider: Provider | None = None,
+    ai_enabled: bool = False,
+    ai_timeout_seconds: float = 10.0,
 ) -> PipelinePlan:
     """Build a real HTTPS Git→inventory→B1→partial-report plan."""
 
@@ -107,6 +111,9 @@ def build_public_git_dependency_plan(
         state,
         ingestion_error_code="scanner_failed",
         ingestion_error_message="Public Git ingestion failed.",
+        ai_provider=ai_provider,
+        ai_enabled=ai_enabled,
+        ai_timeout_seconds=ai_timeout_seconds,
     )
 
 

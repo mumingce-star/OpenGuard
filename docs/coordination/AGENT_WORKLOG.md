@@ -3298,3 +3298,61 @@
 - GitHub 发布事实：A4-2 实现、测试、规格和首轮治理提交 `4752f2b11252870c1b33306583390321c8d24397` 已推送 `origin/feat/a4-b5-rule-integration`；本地 HEAD 与 `git ls-remote` 返回同一完整对象，`EVD-A4-B5-RULE-INTEGRATION-001` 绑定该实现。
 - 上传范围：18 个竞赛仓库文件，包括 7 个与组员远端 blob 完全相同的 B5 文件、项目负责人 A4 薄适配器/计划接线、8 项 A4-2 测试、1 项既有 A4 未来阶段断言更新，以及运行/规格/AI/进度/协作说明；未上传 B4/B6/B7、前端、部署、运行数据库、缓存、虚拟环境、模型内容、凭据或本机临时物。
 - 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A4-2 分支。
+
+### [20260905-1300-RootAstra-A5Pipeline接线] START - A5-1c AI_ASSIST 纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A5 集成与发布验收；2026-09-05 13:00（Asia/Shanghai）。分支 `feat/a5-pipeline-integration`，基于已发布 A4-2 HEAD `048c167` 建立；开工前工作区干净。
+- 任务归属与目标：只推进项目负责人负责的 A5-1c，把既有 `apply_ai_remediations()` 与锁定的本机 `OllamaProvider` 接入 A4 `AI_ASSIST` 阶段；只消费 B5 已生成且尚未绑定整改的 finding，不改变 B5 规则、事实、结论或确定性整改。
+- 开始前已确认：已交叉核对项目计划书、当前进度台账、共享日志、Git 历史与组员远端；组员 `origin/codex/p0-external-tools-sync` 仍停在 `f8bedfd`，当前分支已原样包含其 B5 公共规则接口。A5-0、A5-1a、A5-1b 与 A4-2 均已完成，下一项确为 A5-1c。
+- 预计修改：最小修改项目负责人拥有的 dependency plan、ZIP/Git runtime 与默认应用配置；新增 A5-1c 实现测试和规格，更新运行说明、AI 记录、项目进度及本日志。不会修改 `backend/app/rules/`、`rules/`、`backend/app/scanners/`、P0 Domain/Schema/sample、前端、部署或组员分支。
+- 验收：AI 默认关闭且不调用 Provider；显式开启时 B5 pending finding 生成 `pending` remediation 并保持事实/引用；B5 已有确定性整改时不重复调用；Provider 不可用/无效输出时保留规则结果、追加脱敏可恢复诊断并继续 A6 报告；运行 A4/A5/A6/API/P0 定向与完整回归、Schema、compileall、diff、敏感信息和上传范围门禁。
+- 真实性边界：当前 ZIP/Git 真实输入仍缺 B2/B3/B4 许可证事实，因此即使管理员启用 AI，也会先在 rules 阶段诚实终止；本轮证明的是“B5 finding 已存在时 Pipeline 可调用/降级 A5”，不冒充完整真实仓库许可证端到端。
+- token：本轮开工非硬估算 `10k-16k`；当前客户端未提供精确 token 遥测。
+
+### [20260905-1320-RootAstra-A5Pipeline接线] COMPLETE - A5-1c 实现、独立与真实模型门禁通过
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A5 集成、独立复核与发布验收；2026-09-05 13:20（Asia/Shanghai）。分支 `feat/a5-pipeline-integration`；尚未提交、尚未推送。
+- 完成内容：shared dependency plan 的 `AI_ASSIST/85` 已调用既有 `apply_ai_remediations()`；ZIP/公开 Git runtime 传递显式 Provider、开关和 timeout；默认应用仅在 `OPENGUARD_ENABLE_AI=1` 时注入锁定 `OllamaProvider`，未设置时保持关闭，歧义值拒绝启动。
+- B5 边界：只消费组员 B5 的公共 `RiskFinding`。pending `license-evidence-gate` finding 可生成 `verification_status=pending` 的 AI 整改；B5 verified 规则已有确定性整改时不调用生成、不覆盖或重复；未修改 `backend/app/rules/`、`rules/`、组员测试或远端分支。
+- 降级与报告：Provider 不可用或无效响应时，Pipeline 保留 B5 事实/结论、丢弃候选、只追加脱敏可恢复的 `ai_assist` 错误，继续到 completed 与 A6 四格式报告。真实 ZIP/Git 仍因缺少 B2/B3/B4 许可证事实先停在 `partial/rules/70`，本轮不冒充普通上传的完整许可证 AI 纵切。
+- 实现与独立测试：新增 9 项实现测试及 6 项独立安全测试；实现侧验证 disabled、pending、verified no-duplicate、降级报告、ZIP/Git 配置传递和默认开关；独立文件手工构造 P0/B5/Provider/A6，不复用实现侧 helper，默认结果 `5 passed, 1 skipped`。
+- 真实模型证据：显式真实 Ollama 单项首次在服务未启动时原样 `1 failed, 5 deselected`，Pipeline 正确降级且未伪造建议；只读确认 `127.0.0.1:11434` 未监听后，临时启动已安装 Ollama `0.33.3`，原样复跑得到 `1 passed, 5 deselected`，实际完成 B5 pending→Qwen3→AI pending remediation→SQLite→A6 四链接，随后停止本轮服务会话。未上传 prompt、完整 response、模型权重、缓存或运行数据库。
+- 回归证据：A5/A4/B5 聚焦曾获 `105 passed`，A4/A5/A6/API 保护集 `109 passed, 1 skipped`；加入独立文件后的沙箱完整原样为 `891 passed, 11 failed, 3 skipped, 1 warning`，11 项均是既有回环监听 `PermissionError`；受控环境不改测试完整复跑为 `902 passed, 3 skipped, 1 warning`。warning 仍是 Starlette/AnyIO 第三方 alias 弃用。
+- 静态与范围：P0 `46 passed` 且存储 Schema 等值；compileall、`git diff --check`、受保护 P0/Schema/sample、B5/rules、scanners、frontend、deploy 零差异，world-writable 与上传范围检查通过。本轮未新增第三方依赖。
+- 修改范围：15 个竞赛仓库文件，包括 6 个项目负责人 Pipeline/API 接线文件、2 个 A5-1c 测试文件、1 个规格，以及根/后端/测试运行说明、AI/进度/协作记录；不含组员模块、缓存、数据库、模型内容、凭据、本机路径或临时物。
+- 协作说明：已尝试把独立验证派给现有 Luna 对话，但该任务在客户端更新后仍停留于旧轮次，未实际开始 A5-1c；为不虚构模型产出，本条明确由 Root/Astra 完成独立文件与受控实跑，不把它记为 Luna 结果。
+- 证据与下一步：候选 `EVD-A5-PIPELINE-INTEGRATION-001` 待建立不可变实现提交、推送并核对远端对象；发布后 A5 P0 子系统可标完成。紧接着项目负责人不应代做上游许可证事实，适合推进 A3/A4 持久 worker 最小纵切，或等待组员把 B2/B3/B4 真实许可证事实接入后补普通 ZIP/Git 全链证据。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A5-1c 在单轮工作包内完整完成；因 Luna 旧任务未启动而由 Root 补独立安全测试，属于同一验收范围，未扩张产品功能。
+
+### [20260905-1318-独立验收-Luna-A5-1c] AMENDMENT/COMPLETE - A5-1c 独立安全复核
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、批量夹具与材料形式复核角色；2026-09-05 13:18（Asia/Shanghai）。本条承接前一条 Root/Astra A5-1c 候选完成记录，不改写既有历史。
+- 验证范围：独立手工构造 P0 `ScanRun` 与 B5 pending/verified 结果，独立 Provider/expected，调用公共 dependency plan/AI boundary；覆盖默认关闭零调用、pending `license-evidence-gate` 生成 pending AI remediation、verified B5 确定性 remediation 不重复、Provider 异常/无效响应降级、ZIP/Git timeout/config 传递、非法 timeout/provider、SQLite 持久化及 A6 四种报告。
+- 修改文件：仅新增 `tests/security/test_a5_pipeline_integration_independent.py`，以及本条 AI 辅助日志和共享日志的 append-only 记录；未修改 backend 实现、既有 unit、P0 Domain/Schema/sample、`backend/app/rules/`、`rules/`、`backend/app/scanners/`、前端、部署或项目进度；未提交、未推送。
+- 真实模型门禁：新增 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 显式门控的 B5 pending→Ollama/Qwen3→AI_ASSIST→SQLite→A6 单项；默认执行保持 `1 skipped`，测试不启动 Ollama、不下载模型，故本条不宣称独立真实 Qwen3 运行证据。
+- 命令与结果：`PYTHONPATH=backend /private/tmp/openguard-a5-venv/bin/python -m pytest -q tests/security/test_a5_pipeline_integration_independent.py` 为 `9 passed, 1 skipped`；实现侧 `tests/unit/test_a5_pipeline_integration.py` 为 `9 passed`；A4/A5/A6/API/P0 保护回归在受控环境为 `187 passed, 1 warning`。沙箱原样回归为 `177 passed, 10 failed`，10 项均在既有 A5 TCP fixture/A3 Uvicorn 绑定 `127.0.0.1` 处收到 `PermissionError: [Errno 1] Operation not permitted`；受控重跑全部通过。`git diff --check` 通过；warning 为既有 Starlette/AnyIO alias 弃用。
+- 缺陷与升级：独立门禁未发现 A5-1c 功能性 P1/P2；首轮独立测试唯一失败是夹具创建 SQLite 记录时漏传与幂等键匹配的 fingerprint，已仅修正测试夹具调用并原样复跑通过。回环 bind 失败按环境限制保留，不修改测试或实现；若真实门控项失败，应把原始结果升级给 Root/Terra/Sol，不自动启动服务或调整断言。
+- 证据边界：本条只证明已有合法 B5 finding 上的 AI_ASSIST 接线与降级报告行为；不证明普通真实 ZIP/Git 已生产 B2/B3/B4 许可证事实，不证明完整 Bench、前端真实 API、Linux 隔离、持久队列、报告材料或完整参赛作品；候选 A5 证据仍待 Root 不可变提交与远端对象绑定。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `6k-10k`，本轮在该单轮工作包内完成，未发生范围调整。
+
+### [20260905-1320-RootAstra-A5Pipeline协作更正] AMENDMENT/COMPLETE - 接纳 Luna 独立验收并刷新门禁
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；A5 集成与发布验收；2026-09-05 13:20（Asia/Shanghai）。本条只追加更正，不改写前述 Root 或 Luna 历史。
+- 协作更正：Luna 实际已交付 `tests/security/test_a5_pipeline_integration_independent.py` 并在物理 EOF 追加独立验收记录；因此前述 Root 条目中“Luna 未实际开始”、独立 `5 passed, 1 skipped` 与 6 项测试的描述已过时。最终归属为 Root/Astra 实现、Luna 独立验收、Root 统一复核与发布。
+- 最终复核：实现与独立文件合计 `18 passed, 1 skipped`；Root 临时启动已安装 Ollama 后，以 Luna 的显式门禁 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 原样运行真实 B5 pending→Qwen3→SQLite→A6 单项，得到 `1 passed, 9 deselected`，随后停止服务。沙箱完整为 `895 passed, 11 failed, 3 skipped`，11 项全部是既有回环监听 `PermissionError`；受控环境同一完整集合为 `906 passed, 3 skipped`。
+- 静态与边界：P0 `46 passed`，compileall 与 staged/unstaged `git diff --check` 通过；A5-1c 仍只证明已有 B5 finding 的 AI_ASSIST 行为，不证明普通 ZIP/Git 已产生 B2/B3/B4 许可证事实。候选 evidence 仍待不可变实现提交与远端对象绑定。
+- token：本次运行精确 token 数不可获得；沿用本工作包开工非硬估算 `10k-16k`，协作更正与补跑仍在同一 A5-1c 收口范围内，未扩张产品功能。
+
+### [20260905-1320-独立验收-Luna-A5-1c] AMENDMENT - 无效响应降级继续进入 A6 的加固
+
+- 补充验收：将 Provider 降级的独立 SQLite→A6 管线覆盖参数化为异常和无效 JSON/证据响应两种路径；两者均必须保留 B5 `license-evidence-gate` finding、无 AI remediation、写入结构化脱敏错误，并由 publisher 生成四种报告。
+- 结果：独立文件单跑 `10 passed, 1 skipped`；与实现侧 A5-1c 合跑 `19 passed, 1 skipped, 1 warning`；新增测试文件敏感信息/本机绝对路径扫描无命中，`git diff --check` 通过。显式 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 项仍未启用，继续不自动启动服务或下载模型。
+- 边界：本 amendment 只加固独立测试，不改变任何 backend、B5、P0、现有 unit、前端、部署或进度文件；上一条独立复核记录保留，不改写历史。
+
+### [20260905-1325-RootAstra-A5Pipeline最终复核] AMENDMENT/COMPLETE - 固定 Luna 最终文件与发布前证据
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；A5 集成与发布验收；2026-09-05 13:25（Asia/Shanghai）。Luna 已停止继续写入共享仓库，独立测试 SHA-256 固定为 `fd7a483ee9f5b3d843e34839f688603267cb14ead1853a801e4582b561f99bcd`。
+- 最终运行：A5-1c 实现与独立合跑 `19 passed, 1 skipped, 1 warning`；临时启动已安装 Ollama 后，最新显式真实模型项为 `1 passed, 10 deselected, 1 warning`，随后停止服务。沙箱完整原样为 `896 passed, 11 failed, 3 skipped, 1 warning`，11 项仍全部是既有回环监听 `PermissionError`；受控环境同一完整集合为 `907 passed, 3 skipped, 1 warning`。
+- 保护门禁：P0 `46 passed`、`schema_export_equal=True`、compileall、staged/unstaged `git diff --check` 通过；受保护 B5/rules、scanners、P0 Domain/Schema/sample、frontend、deploy 无本轮 tracked diff。仓库中唯一大于 10 MiB 的文件位于已忽略的 `frontend/node_modules`，不在 Git 提交清单。
+- 证据边界：本轮最终候选包含 9 项实现测试与 11 项独立测试实例；A5-1c 已可对既有 B5 finding 执行默认关闭、显式生成、确定性整改跳过和失败降级，并让 A6 持久化报告。普通 ZIP/Git 仍缺 B2/B3/B4 许可证事实，不能声称完整真实仓库链已到 A5。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，当前 A5-1c 已在同一工作包内完成技术验收，待不可变提交与远端发布，不发生范围扩张。
