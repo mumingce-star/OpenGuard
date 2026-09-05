@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/model.test.mjs",
+    "test:browser": "node tests/browser-smoke.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",

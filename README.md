@@ -28,11 +28,11 @@ JSON、竞赛七字段 UTF-8 CSV/资源清单和安全静态 HTML。A6-1 可把�
 SHA-256 和原子 metadata 提交持久化，生成 P0 `ReportLink`，并通过冻结的报告 GET 路径只读下载。
 A6-2 已把 publisher 接到 Pipeline 首次终态提交边界：ZIP HTTP 主链现在会把四种报告链接与
 `partial/rules/70` 在同一次 SQLite CAS 中公开，报告可在后端重启后继续下载。阶段性报告不会补写
-缺失的许可证、风险或 AI 建议；GET 不现场生成报告，也不修改 SQLite。前端仍未接真实下载。
+缺失的许可证、风险或 AI 建议；GET 不现场生成报告，也不修改 SQLite。当前功能分支的前端已接真实四格式下载。
 
-当前还不是完整参赛成品：ZIP 与公开 Git 已能把声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析；B5 现在能对 ZIP 中明确 npm 许可证声明输出待核验提示；真实 ScanCode/Syft、完整资源许可证归属与已核验义务仍需后续验收。本地目录输入、其他 lockfile、前端真实 API/下载接线、目标部署安全与陌生机复验、首批golden cases指标仍需按P0进度台账验收。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+当前还不是完整参赛成品：ZIP 与公开 Git 已能把声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析；B5 现在能对 ZIP 中明确 npm 许可证声明输出待核验提示；真实 ScanCode/Syft、完整资源许可证归属与已核验义务仍需后续验收。本地目录输入、其他 lockfile、目标部署安全与陌生机复验、首批golden cases指标仍需按P0进度台账验收。现有核心Web页面已接真实API和报告。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
-团队集成分支 `integration/p0` 还汇合了前端组员的 React/Vite 应用壳，以及扫描组员的 ScanCode/Syft 受限 JSON Adapter 候选。前端已通过锁文件安装和生产构建，但仍使用 mock；外部工具 Adapter 已通过本机 JSON 单测，但尚未接入当前 ZIP 主链或完成本机真实工具回归。两者均不得外推为完整 Web 或外部扫描器能力。
+团队集成分支 `integration/p0` 还汇合了前端组员的 React/Vite 应用壳，以及扫描组员的 ScanCode/Syft 受限 JSON Adapter 候选。本轮功能分支进一步复用组员核心页面，完成真实ZIP→进度→资源/风险/Evidence→四格式下载及刷新恢复，默认API，演示需主动选择。外部工具 Adapter 尚未接入当前 ZIP 主链或完成本机真实工具回归；功能分支未自动合并团队集成线。
 
 使用 Python 3.12 环境，在项目根目录运行：
 
@@ -57,6 +57,18 @@ PYTHONPATH=backend python -m pytest -q
 ```
 
 前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper/Pipeline/ZIP HTTP/A5/A6/公开 Git 用法和退出码说明见 [backend/README.md](backend/README.md)。随后命令分别复现 JavaScript、Python mapper、Python parser、本地 ZIP Pipeline、ZIP HTTP 后台纵切、A5 Provider、Ollama transport、A6 报告、A2-3a 离线安全门禁、显式授权的公开 Git 纵切与真实模型聚合探针。A2-3a 受控完整集合为 `872 passed, 1 warning`。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。公开 Git 测试会访问操作者明确指定的仓库；真实模型探针要求本机已按锁定版本启动 Ollama。
+
+## 简单 Web 本机运行
+
+先在项目根目录启动已有后端（Python 3.12环境）：
+
+```bash
+PYTHONPATH=backend OPENGUARD_ENABLE_DURABLE_ZIP=1 python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+另一个终端进入 `frontend`，按锁文件准备依赖后运行 `pnpm dev`。打开显示的本机地址，进入工作台、选择ZIP、提交真实扫描。示例npm lock含明确许可证时显示待核验提示；无许可证输入仍可显示部分完成。进度、概览、资源、风险证据和四种报告下载均走真实后端，刷新不会重复上传。
+
+`pnpm build && pnpm preview` 验证生产构建的本机预览；开发与preview都代理同源`/api`至8000。它不是Compose或陌生机部署，完整扫描器/AI资产仍待接入。运行及浏览器验收详见[前端说明](frontend/README.md)。
 
 ## 竞赛交付定义
 

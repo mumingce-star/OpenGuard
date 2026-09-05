@@ -3660,3 +3660,25 @@
 - 限制：仅支持已有npm直接依赖的明确许可证声明；未知文本/大inventory保守回退，Git/Python许可证/真实外部工具/AI资产/Web/部署未完成。组员需提供工具环境复现与精确来源输出，前端按冻结API适配，无需重复框架；具体A1–A8表与下一步见进度第9节。
 - 本次运行精确 token 数不可获得；开工12k–22k非硬估算，manifest ZIP完整交付，实际区间不可确认。范围明确收窄为当前环境能实测的声明链，外部工具门禁保留，不扩产品P1/P2。
 - EOF anchor：OPENGUARD-A4-ZIP-LICENSE-COMPLETE-20260905-2004
+
+
+### [20260905-RootAstra-SimpleWeb] START - 现有页面接真实后端
+
+- Root / GPT-6 Astra，基线8318f88，分支feat/a7-simple-web，开工工作区干净；fetch核对前端候选83e8928未变。复用前轮README/交接/进度和相关历史审查，按用户要求优先简单产品，不扩架构或包装。
+- 实现子任务只负责frontend，按文件复用组员核心页面、hooks、services与必要测试/说明；不引入Graph和xyflow依赖，不增加后端接口。Root独占治理日志、根README与独立真实浏览器验收；后端保持冻结。
+- 主线：ZIP表单→POST202→进度/资源/风险/Evidence→真实后端四格式下载；默认API，错误不降mock，保留pending/unknown，不提供不存在的预验证或处理状态PATCH。Vite同源代理避免改变后端CORS。
+- 验收：前端适配unit/build，真实生产后端+浏览器上传/轮询/证据/下载、刷新与404/失败分支、小屏及控制台检查，后端契约与源码不变、锁文件/依赖/来源审计、diff/敏感/append-only，Root统一提交推送。不生成新页面、图谱或复杂规格。
+- token非硬估算12k–22k，精确本轮遥测不可读取。第一版Web与完整P0/Compose部署明确区分。
+- EOF anchor：OPENGUARD-A7-WEB-START-20260905
+
+
+### [20260905-2044-RootAstra-SimpleWeb] COMPLETE - 简单真实Web验收
+
+- Root统一验收与发布；复用83e8928现有核心页面，未引入图谱、ReactFlow、新API或新依赖。实现子任务运行状态pending_init异常后Root显式中止，接手409修复、unit和.env；只读审查确认两项阻断，未并行覆盖。
+- 本轮只改frontend与既有根README/进度/AI/共享日志。默认API与ZIP，202仅导航；结果未就绪只查status；partial无报告仅接受明确409 report_not_ready/not_generated，存储损坏不隐藏。真实风险只读、pending/info/未知保留，下载为固定同源后端四格式。
+- 验证unit20 passed、TS及生产build通过；真实Uvicorn/default factory+Chrome开发和preview各10检查通过：上传/进度/资源/风险Evidence/刷新/四格式SHA/手机导航/partial/无效ZIP异步failed/404/零unsupported端点和浏览器错误。桌面及手机截图检查通过，测试ZIP/数据/截图留仓库外。
+- 原始失败区分保留：资源MIT带子元素导致选择器超时；queued读资源409为产品阻断已修，partial无报告409由审查关闭；响应式布局等待与异步ZIP的202→failed oracle修正；Root冗余TS取消条件已修；服务退出后connection refused重新启动验证。未修改后端使测试通过。
+- 后端/Schema/规则/AI/registry/原测试及依赖锁文件不变，不重复历史1025项全量；本轮20+真实浏览器证据独立记录。最终diff/敏感/来源/白名单/append-only检查后提交推送feat/a7-simple-web，不合并main/integration或Release。
+- 可演示与仅用户A1–A8状态、P0剩余三主包和下一步最小部署见进度第10节；本机Web不是Compose/陌生机或完整工具/AI资产验收。保留本机服务供用户查看，不提交运行数据。
+- 本次运行精确 token 数不可获得；开工12k–22k非硬估算，本轮Web完整完成，实际区间不可确认，无功能扩张。
+- EOF anchor：OPENGUARD-A7-WEB-COMPLETE-20260905-2044
