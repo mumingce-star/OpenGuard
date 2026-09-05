@@ -142,6 +142,7 @@ def _router() -> APIRouter:
                     message="ZIP scanning is unavailable.",
                     reason="zip_runtime_unavailable",
                 )
+            reservation = runtime.reserve_upload_capacity()
             try:
                 async with request.form(max_files=1, max_fields=2, max_part_size=64 * 1024 * 1024) as form:
                     grouped: dict[str, list[object]] = {}
@@ -164,7 +165,7 @@ def _router() -> APIRouter:
                         source_type=source_type,
                         idempotency_key=idempotency,
                     )
-                    return await runtime.submit(upload, fields, service, background_tasks)
+                    return await runtime.submit(upload, fields, service, background_tasks, reservation=reservation)
             except ApiError:
                 raise
             except RequestBodyTooLarge:
@@ -181,6 +182,8 @@ def _router() -> APIRouter:
                     message="ZIP upload is invalid.",
                     reason="request_invalid",
                 ) from None
+            finally:
+                runtime.release_upload_capacity(reservation)
 
         raise ApiError(
             status_code=415,
@@ -400,6 +403,11 @@ def create_app(
 
 
 def create_default_app() -> FastAPI:
+    durable_zip_enabled = os.environ.get("OPENGUARD_ENABLE_DURABLE_ZIP", "0")
+    if durable_zip_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_DURABLE_ZIP")
+    if durable_zip_enabled == "1":
+        raise RuntimeError("OPENGUARD_ENABLE_DURABLE_ZIP requires the unimplemented I2 lifecycle lock and dispatcher")
     configured = os.environ.get("OPENGUARD_DATA_DIR", "data")
     if not configured or "\x00" in configured:
         raise RuntimeError("invalid OPENGUARD_DATA_DIR")

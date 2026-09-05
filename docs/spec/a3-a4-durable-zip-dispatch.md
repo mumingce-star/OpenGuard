@@ -1,8 +1,9 @@
 # A3/A4-3a ZIP 持久派发与中断收敛
 
 规格门禁：`A3/A4-3a-S`；状态：`FROZEN-FOR-IMPLEMENTATION`（2026-09-05 三角色复审通过）。
-实现包：`A3/A4-3a-I`，尚未开始；本文件不是运行 evidence。
-代码基线：`1ba14aff6894aabdd25f4491688df5d7b852e95a`。
+实现包：`A3/A4-3a-I1` 已通过实现、独立与Root全量验收，待发布绑定；`I2` 尚未开始。
+原规格批准与实现证据分开，I1证据和边界见第12节。
+规格冻结时的代码基线：`1ba14aff6894aabdd25f4491688df5d7b852e95a`。
 责任：项目负责人 A 线；Root 统筹，Sol 架构审查，Terra 实现，Luna 独立验证。
 
 ## 1. 问题与本包交付边界
@@ -202,7 +203,7 @@ ScanError使用 `worker_interrupted`、`dispatch_input_unavailable`、`dispatch_
 输入已缺失的terminal可完成descriptor清理；疑似篡改的对象保留并诊断，不扩大删除范围。
 报告orphan和A2中断workspace留给独立cleanup工作包，不采纳、清除或宣称已解决。
 
-## 9. 独立验收矩阵（未来实现门禁，当前未执行）
+## 9. 独立验收矩阵（I1/I2联合门禁，完整闭合待I2）
 
 Luna使用真实独立OS进程、私有临时目录、手写multipart/动态ZIP、第二SQLite连接、
 独立事件管道及kill/restart；不得用线程竞争或实现侧expected/helper替代核心oracle。
@@ -229,7 +230,7 @@ fsync顺序通过受控write/rename/fsync故障注入或事件屏障证明，不
 | DZ-15 | P0/Schema/sample、六API/OpenAPI、registry v1对象allowlist、A4显式worker、默认关闭模式、A5/A6既有保护集及全量回归通过 |
 
 报告下载oracle必须实际GET并校验正文/摘要；kill后的断言必须新进程读取持久数据。
-现有907项通过不能替代这些新门禁；异常路径partial无报告是第7节明确限制，不应改成completed。
+既有回归通过不能替代这些新门禁；异常路径partial无报告是第7节明确限制，不应改成completed。
 
 ## 10. 文件所有权与实施顺序
 
@@ -265,4 +266,35 @@ GPT-6 Astra / Root 统一编写与修订，无模型并发编辑本文件或共�
 审查关闭项：running异常links不得通过终态变为可见；首个multipart字节前完整配额预留；
 prepared匹配后的ready恢复；同key同字节保留原profile；busy只作每周期有界重查。
 Root 另核查DZ编号唯一性，未因工具重叠展示删除有效条目。
-规格批准只说明设计门禁通过；代码、动态ZIP/多进程故障注入、运行evidence和部署能力均尚未实现。
+冻结当时，规格批准仅说明设计门禁通过，代码和动态运行evidence尚未实现；后续I1实际结果见第12节，部署能力仍待后续。
+
+
+## 12. I1 实现与验收记录（2026-09-05）
+
+证据ID：`EVD-A3-DURABLE-ZIP-STORAGE-001`；实现提交待Root发布绑定。
+
+I1新增私有descriptor存储及输入生命周期，内部拆分ZIP candidate构造/提交，复用原registry与
+幂等fingerprint。真实HTTP注入入口在multipart首字节前预留配额；无await临界区覆盖文件创建与
+reservation绑定，以及prepared→registry→ready提交片段。输入fsync/摘要校验、五字段AI身份、
+健康registry限定清理和残留计额已实现。没有新增依赖、数据库对象或公共模型/API。
+
+生产工厂默认`OPENGUARD_ENABLE_DURABLE_ZIP=0`，继续既有BackgroundTasks；精确`1`明确拒绝
+启动，非法值也拒绝。I1只能内部显式注入store进行验证，不会执行worker或自动恢复任务。
+第3节的完整启用方式留待I2生命周期锁与dispatcher验收后开放。
+
+| 验收层 | 结果 | 边界 |
+|---|---|---|
+| Terra实现侧 | 16 passed；关联190 passed,1 deselected | 关联集排除原真实Uvicorn用例，完整集另验 |
+| Luna独立验证 | 最终29 passed | 动态ZIP/手写multipart、实际OS线程和进程、独立期望，不复用实现unit/helper |
+| 并发缺陷闭环 | 首轮19 passed,1 failed；修复后原202断言通过 | 文件创建与预留绑定曾有竞争窗口；只修业务临界区，保留原失败记录 |
+| 系统调用与崩溃 | 实际文件inode定位fsync/rename故障；四个kill窗口、新进程SHA与字段绑定 | input_fsynced、prepared_fsynced、registry后ready前、ready_fsynced；不证明硬件断电 |
+| Root完整回归 | 952 passed,3 skipped,1 warning | 首次沙箱940 passed,11回环权限失败,3 skipped；受控原命令通过 |
+| 冻结兼容性 | OpenAPI与基线完全等值；P0 Schema/sample、保护目录、编译检查通过 | 六API、registry v1、A5/A6及组员代码保持兼容 |
+| 前端基线 | TypeScript与Vite生产构建通过 | 前端未改，仍不代表真实Web联调完成 |
+
+三个skip属于原有可选门禁，本轮没有启用真实模型或公网扫描。warning为既有
+Starlette/AnyIO弃用提示。复现命令见backend/README.md及上述两份测试文件。
+
+本节只批准DZ矩阵中I1存储/协议子集；不将DZ-01..15整体标为完成。I2生命周期flock、自动消费、
+queued恢复、running收敛、handler不重放和报告恢复可见性仍待实现与独立验证。
+Git恢复、lease/heartbeat、业务retry和完整orphan清理仍留后续工作包。

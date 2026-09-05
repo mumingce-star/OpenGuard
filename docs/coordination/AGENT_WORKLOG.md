@@ -3428,3 +3428,129 @@
 - 项目可运行边界：既有依赖扫描与阶段性报告保持不变，普通输入partial/rules/70，主控前端mock；完整Web/许可证事实/部署/Bench/材料与Release尚未闭环。报名平台/缴费/权属由Owner落实，与技术完整作品门禁分开。
 - token：本次运行精确 token 数不可获得；开工估算12k–20k，因569KB历史日志补读及多模型复审阅读规模高于预估，无法确认实际消耗落在区间内。本轮单轮完整交付规格及发布；父任务已明确拆成ZIP-I1/I2，未扩为编码。
 - EOF anchor：OPENGUARD-DZ-SPEC-PUBLISHED-20260905-1534
+
+
+### [20260905-1607-RootAstra-DurableZIPI1开工] START - A3/A4-3a-I1 持久存储实施
+
+- 作者：GPT-6 Astra / Root；时间2026-09-05 16:07（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`，基线 `16cd7d4865a27a6a6401e8b629e0d13ae592be32`；初始工作区干净。
+- 用户授权：按要求与技术文档推进下一步，准确沿目标实施，验收后及时推送GitHub。Root协调既有Terra工程任务与Luna独立测试任务，旧Sol任务停用，Root承担架构终审。
+- 开工核对：复用上一规格轮Sol已完整审查历史日志的记录，Root补读其后至3430行EOF并核对README、AGENTS、进度、交接、冻结规格及当前service/ZIP/API/registry/A5代码；另已派既有Terra进行完整日志再核查。此处不冒称Root本轮重新逐行读完整历史。两份日志原字节前缀及OpenAPI已在仓库外留存供终验。
+- 范围：I1私有descriptor、prepared/ready与原指纹幂等、输入持久化保留/自有清理、原执行profile、首个multipart字节前配额。I2生命周期flock/dispatcher/自动恢复不实现；I1生产入口不得启用缺少I2保护的持久派发。
+- 预计修改：新建backend/app/persistence/zip_dispatch.py及tests/unit/test_a3_durable_zip_dispatch.py；最小调整api/service.py、zip_scan.py、main.py，必要导出；Luna后续独立新增tests/security/test_a3_durable_zip_dispatch_independent.py；更新backend/README.md、PROJECT_PROGRESS、同一规格实施记录，追加AI记录及本日志。
+- 禁止：更改P0/domain/Schema/sample/六API/原fingerprint/scan_registry.py/worker.py/Git runtime/A2/B线/A5/A6实现/frontend/deploy/既有独立测试；不安装依赖、请求外部扫描器或真实模型、不创建重复实现文件。
+- 协作：同一工作区仅一个写者；Terra先实现和unit，结束后Luna只写独立测试，P0/P1原始失败保留交Root协调修复；Root最终文档、审查、提交推送。不得自动合并PR、删分支、改Git身份或发Release。
+- 验收：真实动态ZIP/手写multipart、独立进程崩溃窗口与SQLite重读、严格JSON及权限/fsync、幂等/profile/不确定提交/容量/清理边界；默认兼容、P0/Schema/OpenAPI、全量回归、compileall、前端构建、diff/敏感/文件范围/append-only检查；实现证据绑定不可变提交并核对远端。
+- token：非硬估算18k–30k；本次运行精确 token 数不可获得。范围限定I1，最终依实际验证报告完成情况，不把存储门禁描述成自动恢复能力。
+- EOF anchor：OPENGUARD-DZI1-ROOT-START-20260905-1607
+
+
+### [20260905-1620-Terra-DurableZIPI1实施] START - A3/A4-3a-I1 私有 ZIP descriptor 与输入生命周期
+
+- 作者：GPT-5.6 Terra；时间：2026-09-05 16:20（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`，基线 `16cd7d4865a27a6a6401e8b629e0d13ae592be32`。
+- 开工核对：已完整阅读 AGENTS、README、共享日志 1–3430（物理 EOF 为 `OPENGUARD-DZI1-ROOT-START-20260905-1607`）、进度台账、Terra/Sol 交接、三份正式 PDF、冻结 `a3-a4-durable-zip-dispatch.md`，并核对现有 API、ZIP runtime、A3 registry、A4 local ZIP 与 A5 runtime 接线。
+- 范围：仅实现 I1 的私有 descriptor v1、prepared→ready 原子提交、原 ZIP fingerprint 幂等、输入保留/受限清理、执行 profile 与首个 multipart 字节前的容量预留；保留可注入内部存储 seam 供后续独立 HTTP 测试。生产 `OPENGUARD_ENABLE_DURABLE_ZIP=0` 维持旧路径，精确 `1` 因 I2 flock/dispatcher 未实现而拒绝启动，其他值同样拒绝。
+- 预计修改：新增 `backend/app/persistence/zip_dispatch.py` 与 `tests/unit/test_a3_durable_zip_dispatch.py`；最小调整 `backend/app/api/service.py`、`backend/app/api/zip_scan.py`、`backend/app/api/main.py`、必要包导出和 `backend/README.md`；本日志只追加。不会修改 P0/domain/Schema/registry/worker/扫描器/规则/A5/A6/前端/部署或既有独立测试。
+- 验收：使用 `/private/tmp/openguard-a4-b5-venv/bin/python`、`PYTHONDONTWRITEBYTECODE=1`、`PYTHONPATH=backend` 运行新增 unit 与既有 ZIP/API/P0 关联集；检查默认行为、严格 descriptor/权限/fsync、幂等/profile、容量/清理及 OpenAPI 兼容。全量、独立测试、治理文档、提交和推送由 Root/Luna 后续执行。
+- token：实施非硬估算 `12k–20k`；本次运行精确 token 数不可获得。
+- EOF anchor：OPENGUARD-DZI1-TERRA-START-20260905-1620
+
+
+### [20260905-1705-Terra-DurableZIPI1实施] PARTIAL - I1 实现侧交付，待独立验收与主控发布
+
+- 作者：GPT-5.6 Terra；时间：2026-09-05 17:05（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`。本条只追加，未改写既有记录。
+- 实现：新增 `backend/app/persistence/zip_dispatch.py`，提供私有 `0700` 目录/`0600` 文件、严格 descriptor JSON v1、输入 SHA-256 与 run identity 绑定、prepared→ready rename+目录 fsync、预 body 的 slot+64MiB 预留及持久残留计入；新增受限 cleanup helper，只允许“无 registry 行的已验证 prepared”或 registry 已健康确认的 terminal run，输入缺失时先 fsync uploads 目录。未实现 I2 flock、dispatcher、重启消费或自动调用 cleanup。
+- API 接线：`service.py` 将 ZIP candidate 构造与 registry 提交拆分但保留原 fingerprint；`zip_scan.py` 在注入 store 时把 staged ZIP、原 fingerprint 幂等、冻结 profile、prepared→registry→ready 放进同一无 await 临界区。新建成功返回 queued/202；同 key 同字节固定原 ID/profile，即使 loser cleanup 失败仍返回原 202 并保留残留计入容量；异字节保留 409。`main.py` 在 `request.form()`/首个 receive 前预留，生产开关默认 `0` 保留旧路径，精确 `1` 和非法值均拒绝启动，避免把 I1 误启为无 I2 保护的派发。
+- 执行 profile：仅支持锁定的本地 Ollama 身份，AI 载荷精确为 `provider`、`model_id`、`runtime_version`、`manifest_digest`、`prompt_schema_digest` 五字段；不保存任意 provider 配置或秘密。上传临时文件名仅接受 `openguard-upload-*.zip`。
+- 实现侧验证：新增 `tests/unit/test_a3_durable_zip_dispatch.py` 单跑 `16 passed, 1 warning`；关联 ZIP/API/A4/A5/A6/P0 集合（排除真实 Uvicorn）`190 passed, 1 deselected, 1 warning`；`compileall`、`git diff --check`、变更范围敏感字串扫描通过。警告是既有 Starlette 对 AnyIO `BlockingPortal` alias 的弃用警告。未运行真实 Uvicorn、真实模型、完整套件或 Luna 独立测试。
+- 文件范围：新增上述 store 和 unit；最小修改 `backend/app/api/{service,zip_scan,main}.py`、`backend/app/persistence/__init__.py`、`backend/README.md` 与本日志。未改 P0/domain/Schema/sample、registry/worker、scanner/rules、A5/A6、前端、部署或既有独立测试；未提交、未推送、未修改 Root 的进度/规格/AI 记录。
+- 后续/状态：I1 仍为 PARTIAL，等待 Luna 按独立 oracle 以手写 multipart、第二 SQLite 连接和崩溃窗口验证；再由 Root 完成全量/兼容性/文档治理、不可变提交与远端核验。当前仅可通过内部依赖注入验证 descriptor 准备；生产环境必须保持 durable 开关为 `0`，不能宣称具备持久队列或重启恢复。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `12k–20k`。范围未扩出 I1；因完整正式材料/历史记录复读与多轮代码审查，无法确认实际消耗是否落在该区间。
+- EOF anchor：OPENGUARD-DZI1-TERRA-PARTIAL-20260905-1705
+
+
+### [20260905-1642-Luna-DurableZIPI1独立验收] START - A3/A4-3a-I1 独立安全验证
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05 16:42（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`；当前 HEAD `16cd7d4865a27a6a6401e8b629e0d13ae592be32`，不提交、不推送、不切分支。
+- 日志读取范围：复用前序已完整审阅的共享日志前缀；本轮实际补读当前实现交付后的物理尾部至第 `3468` 行，EOF anchor 为 `OPENGUARD-DZI1-TERRA-PARTIAL-20260905-1705`。不照抄 Terra 先前记录的行号，后续以本条及实时 tail 为准。
+- 范围：只验证 I1 descriptor、输入生命周期、幂等/profile、首字节前配额、fsync/rename 顺序、健康 registry 清理和多进程持久事实读取；独立构造动态 ZIP/手写 multipart/SQLite，并用独立 OS 进程和事件屏障验证崩溃窗口。
+- 禁止范围：不验收或宣称 I2 flock、dispatcher、自动恢复消费、worker handler、running 收敛、A6 恢复、lease/heartbeat/retry 或 DZ-01..15 全闭合；不修改 Terra 实现、P0/Schema/sample、registry/worker、既有测试或其他文档。
+- 允许修改：仅新增 `tests/security/test_a3_durable_zip_dispatch_independent.py` 与本次 START/结束日志；不引入依赖，不联网，不启动模型/扫描器。真实回环若被沙箱拒绝，保留原始失败并交 Root 受控重跑。
+- 首批 oracle：严格 JSON/键/UTF-8/非有限数/bool、descriptor 双态冲突与绑定、0700/0600/owner/symlink/FIFO/摘要；ASGI `receive` 首字节前 slot+64 MiB 预留；8 slots/512 MiB 与残留/并发账本；file fsync→descriptor prepared fsync→SQLite→ready rename+fsync→202；commit 不确定保留；同 key bytes 原 ID/profile、异 bytes 409、loser 自有副本清理；prepared 无 row 与 terminal 健康清理及失败保留。
+- 测试契约：只使用 `ZipDispatchStore` 的内部显式注入 seam（`operation`/`bind_upload`/`prepare`/`read`/`promote`/`discard_prepared`/`cleanup_*`）和已注入 `ZipScanRuntime`；expected 手工重算 canonical identity，不导入实现 unit/fixture/helper。
+- token：本轮非硬估算 `8k–14k`；当前客户端无精确 token 遥测，收工如实报告。
+- EOF anchor：OPENGUARD-DZI1-LUNA-START-20260905-1642
+
+
+### [20260905-Luna-DurableZIPI1独立验收] PARTIAL - 独立 I1 验收完成，发现真实 staging 并发 P1
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`；未提交、未推送、未切分支。
+- 读取与范围：在前序完整规格/材料审阅基础上，本轮补读 Terra 交付后的物理日志尾部至 `OPENGUARD-DZI1-TERRA-PARTIAL-20260905-1705`，并以本轮实时 tail 为准；仅验证 I1 descriptor、输入保留、幂等/profile、首字节前配额、fsync/rename 顺序、健康 registry 清理和新 OS 进程重读。明确未验收 I2 flock、dispatcher、自动恢复消费、worker handler、running 收敛、A6 恢复、lease/heartbeat/retry 或 DZ-01..15。
+- 实现侧基线：按交接要求先复跑 `tests/unit/test_a3_durable_zip_dispatch.py`，结果 `16 passed, 1 warning`；warning 为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示。
+- 独立测试：新增且仅新增 `tests/security/test_a3_durable_zip_dispatch_independent.py`；动态构造 ZIP、手写 multipart、手工 canonical identity、ASGI receive 计数、真实 SQLite 和新 OS 子进程/事件屏障，无复用实现 unit fixture/helper，无联网、安装、模型或扫描器调用。
+- 独立结果：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend /private/tmp/openguard-a4-b5-venv/bin/python -m pytest -q -p no:cacheprovider tests/security/test_a3_durable_zip_dispatch_independent.py` 得 `19 passed, 1 failed, 1 warning`。
+- 通过门禁：HTTP `202` 后 ready descriptor 与 queued registry 绑定；严格未知键/重复键/非法 UTF-8/非有限数/version bool；descriptor 双态冲突；锁定 Ollama/Qwen3 profile 记录；8 inputs 残留与并发 reservation；满容量时 ASGI `receive()` 调用数为 0；私有 mode/symlink/FIFO；input→prepared→registry→ready 事件顺序；prepared 无 row、prepared 有 row、ready 有 row 三个真实进程 kill 窗口及 SQLite 重读；missing-input fsync；健康 absence/terminal cleanup；running/不健康 cleanup 拒绝；无 token submit 拒绝；commit 已写入但抛错保留；same-key same-bytes 原 ID/profile、different-bytes 409、loser 清理失败仍保留公共响应。
+- P1 原始失败保留：`test_i1_real_cross_thread_staging_race_preserves_expected_202_contract` 用真实独立线程 A 的 TestClient 请求，在 `tempfile.mkstemp` 实际创建后设置事件并暂停；B 为独立线程调用 `store.reserve_upload()`，无任意 sleep。当前实现 B 在 A bind 前成功 reservation，A 随后返回 `500 Internal Server Error`，响应详情为 `reason=upload_staging_failed`，而契约期望 `202`、registry 一行且无非法 staging 失败。测试断言未改为接受 500；修复后同一事件屏障会先释放 A，再让 B 完成，避免正确互斥导致死锁。
+- 文件边界：除本条日志外只新增独立安全测试文件；未改 Terra 实现、P0/Schema/sample、registry/worker、既有测试、Root 文档或其他角色文件。P1 已停止继续修改并交 Root 顺序协调 Terra 修复；本轮不宣称 I1 完整通过，更不宣称生产持久队列或 I2 恢复能力。
+- 当前状态：I1 独立验收 `PARTIAL`，19 项通过、1 项真实 P1 阻塞；Root 需先协调修复并复跑本独立文件及原关联集，再做最终规格、发布和提交门禁。
+- token：本轮开工非硬估算 `8k–14k`；当前客户端无精确 token 遥测，无法获得本次运行精确 token 数；本轮范围未调整，测试文件、首轮夹具修正、复跑与日志交付均已完成。
+- EOF anchor：OPENGUARD-DZI1-LUNA-PARTIAL-20260905-I1-INDEPENDENT-20260905
+
+
+### [20260905-1655-Terra-DurableZIPI1-P1修复] START - staged ZIP 创建与 reservation 绑定竞态
+
+- 作者：GPT-5.6 Terra；实际时钟：2026-09-05 16:55:55 CST；分支 `feat/a3-durable-zip-storage`。
+- 授权与原始失败：Root 已停止 Luna 写入并授权 Terra 为唯一写者。Luna 的 `test_i1_real_cross_thread_staging_race_preserves_expected_202_contract` 原始结果保持为独立文件 `19 passed, 1 failed, 1 warning`：A 在 `mkstemp` 后、`bind_upload` 前暂停时，B 的 `reserve_upload()` 将 A 文件误算 persistent，A 恢复后 `500/upload_staging_failed`，违反应为 `202` 的契约。
+- 范围：只修改 `backend/app/api/zip_scan.py`，将 durable 路径的 `mkstemp`、fd 私有 regular-file 验证和 `store.bind_upload()` 放入同一无 `await` `store.operation()` 临界区；legacy 不变，所有 `await upload.read()` 保持锁外。不修改 Luna 独立测试、P0/Schema/registry/worker/其他实现、Root 文档或项目进度。
+- 验收顺序：先原 Luna 失败节点，再独立文件全量、实现 unit、原关联 190 集；任何新失败原样交 Root。无提交、推送、切分支、联网或模型调用。
+- token：后续修复非硬估算 `2k–4k`；本次运行精确 token 数不可获得。
+- EOF anchor：OPENGUARD-DZI1-TERRA-P1-START-20260905-1655
+
+
+### [20260905-1657-Terra-DurableZIPI1-P1修复] COMPLETE - staging reservation 竞态最小修复
+
+- 作者：GPT-5.6 Terra；实际时钟：2026-09-05 16:57:31 CST；分支 `feat/a3-durable-zip-storage`。原 Luna 失败记录保持不改。
+- 修改：仅 `backend/app/api/zip_scan.py`。durable 分支现以同一无 `await` `store.operation()` 临界区完成 `tempfile.mkstemp`、fd 的 regular/owner/private-mode 验证和 `store.bind_upload()`；因此并发 `reserve_upload()` 在目录重扫时会看见 reservation input，而不会把它错误计为 persistent。`await upload.read()`、实际写入、fd fsync 和目录 fsync 均仍在锁外；legacy 分支保持原有创建/验证路径，异常 fd 关闭与未完成输入删除仍由既有 finally 处理。
+- 原失败复跑：Luna 的原节点 `test_i1_real_cross_thread_staging_race_preserves_expected_202_contract` 现为 `1 passed, 19 deselected, 1 warning`；未改其独立测试或断言。
+- 回归：Luna 独立文件全量 `20 passed, 1 warning`；实现 unit `16 passed, 1 warning`；原 ZIP/API/A4/A5/A6/P0 关联集合 `190 passed, 1 deselected, 1 warning`。warning 均为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示。`compileall`、`git diff --check`、本次实现 diff 的敏感字串扫描通过。
+- 范围与发布：未新增实现 unit（独立事件屏障已覆盖修复契约），未修改 Luna 文件、P0/Schema/registry/worker/其他实现或 Root 文档；未提交、未推送、未切分支、未联网/模型调用。I1 总体仍待 Root/Luna 后续复核与最终门禁，I2 仍未实现。
+- token：本次运行精确 token 数不可获得；非硬估算 `2k–4k`，范围未调整，无法确认实际消耗是否处于该区间。
+- EOF anchor：OPENGUARD-DZI1-TERRA-P1-COMPLETE-20260905-1657
+
+
+### [20260905-Luna-DurableZIPI1最终补强] COMPLETE - I1 独立补强复核通过
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`；未提交、未推送、未切分支。
+- 复核顺序：先原样复跑此前 P1 独立节点，结果 `1 passed, 19 deselected, 1 warning`，确认 Terra 将 durable 路径的 `mkstemp`、文件安全验证和 `bind_upload()` 放入同一无 await `store.operation()` 临界区后，A/B 真实跨线程 staging race 已关闭且无死锁。
+- 独立补强：仅修改 Luna 自有 `tests/security/test_a3_durable_zip_dispatch_independent.py`，并使用真实 `os.fsync`/`os.rename` 系统调用注入和 selectors+deadline 有界进程事件等待；未修改业务实现、既有测试、P0/Schema/registry/worker 或其他文档。
+- 新增门禁：HTTP 文件 fsync、prepared descriptor 文件 fsync、prepared 目录 fsync、ready 目录 fsync、rename 失败均不得返回 `202`，并核对确定/不确定的 row、prepared/ready 和输入保留；真实 `input_fsynced` 前 kill；新 OS 进程读取实际输入 SHA、descriptor `scan_id/upload_name/input_sha256/run_identity_sha256` 与 registry run 字段绑定；固定独立 oracle `8` 输入、`512 MiB` 总量、`64 MiB` reservation（sparse 文件）；same-key profile `false→true`、`true→false` 及 timeout 变化保持原 ID/profile；历史 race 的 `202` 断言保持不变并补充互斥正向证据。
+- 结果：独立文件全量 `28 passed, 1 warning`；实现 unit `tests/unit/test_a3_durable_zip_dispatch.py` 为 `16 passed, 1 warning`；warning 均为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示。`git diff --check` 通过。
+- 覆盖边界：I1 descriptor、输入生命周期、幂等/profile、容量预留、fsync/rename 失败保留和健康清理已独立复核；I2 flock、dispatcher、自动恢复消费、worker handler、running 收敛、A6 恢复及 DZ-01..15 仍未验收或实现。本轮不宣称生产持久队列、重启恢复或完整作品发布。
+- 当前状态：原 P1 已关闭；I1 独立补强通过。Root 仍需完成关联集/全量测试、最终规格与材料审查、提交/发布门禁；当前工作区仍保留 Terra 的未提交实现修改以及 Luna 独立测试修改。
+- token：本轮开工非硬估算 `4k–7k`；当前客户端无精确 token 遥测，无法获得本次运行精确 token 数；范围未调整。
+- EOF anchor：OPENGUARD-DZI1-LUNA-COMPLETE-20250905-I1-RECHECK
+
+
+### [20260905-Luna-DurableZIPI1最终补强] AMENDMENT - descriptor fsync 定位修正
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05（Asia/Shanghai）；仅追加修正，不改写前序记录，不修改业务实现或既有测试。
+- 修正原因：原 `test_i1_real_http_syscall_faults_never_claim_202_and_retain_state` 以全局 regular-file fsync 次数把第 2 次错误标为 descriptor fsync；实际顺序包含 `_stage` 输入 fsync、第 2 次 `_archive_facts` 输入 fsync，descriptor 临时文件 fsync 发生在其后。
+- 修正内容：按真实 fd 的 `(st_dev, st_ino)` 与 uploads/dispatch 当前目录对象匹配，descriptor 故障只注入 dispatch 临时 descriptor inode；新增 `input_archive_fsync` case 保留第二次输入 fsync 覆盖。跨进程 reader 的 no-row 分支仅捕获 `ScanRegistryError(code="registry_not_found")`，其他 registry 错误传播。原 P1 `202` 断言保持不变。
+- 复跑：独立文件全量 `29 passed, 1 warning`；warning 仍为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示；`git diff --check` 通过。
+- 状态：I1 独立补强仍通过；覆盖边界不扩展至 I2 dispatcher、flock、自动恢复、worker 或完整发布。Root 负责最终全量、材料、提交和发布审计。
+- token：本轮开工非硬估算 `1k–2k`；当前客户端无精确 token 遥测，无法获得本次运行精确 token 数；范围未调整。
+- EOF anchor：OPENGUARD-DZI1-LUNA-AMENDMENT-20260905-FSYNC-INODE
+
+
+### [20260905-1710-RootAstra-DurableZIPI1终验] PARTIAL - I1技术验收完成，待提交推送
+
+- 作者：GPT-6 Astra / Root；实际时间2026-09-05 17:10（Asia/Shanghai）；分支feat/a3-durable-zip-storage，基线16cd7d4；Terra和Luna均已停止写入，Root接管。
+- 实施与复核：Terra实现私有输入/descriptor、prepared→registry→ready、原profile幂等和首字节前配额；Root审查关闭配置过量、摘要/清理/配额边界；Luna独立首轮19 passed,1 failed发现并确认跨线程staging P1。Terra只修文件创建+绑定临界区，原202断言不变；Luna复核通过。
+- 测试审计：Root发现第2次输入fsync曾被独立测试误标为descriptor fsync；Luna按实际inode修正并追加input_archive_fsync，记录AMENDMENT，未改业务或放宽断言。最终unit16、独立29通过。
+- Root验证：首次沙箱全量940 passed,11 failed,3 skipped，11项均为既有loopback PermissionError；原始输出保存在仓库外。受控原命令pytest -q -p no:cacheprovider为952 passed,3 skipped,1 warning。三个可选skip未开启真实模型/公网；warning为既有Starlette/AnyIO弃用提示。OpenAPI与开工快照完全相等、Schema/sample、保护路径、compileall及前端TypeScript/Vite构建通过。
+- 本轮修改范围：6项后端实现/运行说明、实现与独立测试各1项、同一规格/进度/AI记录/本日志共12个文件。没有改registry v1、P0/Schema/sample、worker/Git/A2/B线/A5/A6、前端或部署；没有新依赖、外部工具或模型调用。
+- 运行边界：I1只能内部显式注入；生产开关默认0，1/非法值拒绝启动。没有I2生命周期锁/dispatcher/queued恢复/running收敛，不宣称持久worker父包完成。既有ZIP/Git依赖与阶段性报告仍可演示，普通输入partial/rules/70，主控前端mock。
+- 文档与证据：更新同一规格第12节及PROJECT_PROGRESS、追加AI使用记录；EVD-A3-DURABLE-ZIP-STORAGE-001待不可变实现提交绑定。随后完成新增文本/精确上传清单/append-only/diff审查，提交推送功能分支，不合并PR或发Release。
+- AMENDMENT（记录元数据）：Terra首轮PARTIAL标记17:05与客户端完成时间不一致；客户端记录1788597632对应2026-09-05 16:40:32（Asia/Shanghai），以此为准。其START中的3430行指旧规格日志，Root新增START位于其后；完整复读说明与EOF分开理解。Luna最终补强anchor含20250905为标识符笔误，实际记录日期2026-09-05；历史内容原样保留。
+- 下一步：本轮发布后实施A3/A4-3a-I2。报名资格由Owner确认；完整作品与获奖竞争力门禁按PROJECT_PROGRESS保留，不编造完成率。
+- token：开工非硬估算18k–30k；本次运行精确 token 数不可获得，无法确认实际消耗在估算区间。功能范围未扩大，审查增加了缺陷修复和独立故障验证；本轮I1技术验收已完整完成，发布待执行。
+- EOF anchor：OPENGUARD-DZI1-ROOT-ACCEPTED-20260905-1710

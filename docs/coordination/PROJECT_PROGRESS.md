@@ -1,6 +1,6 @@
 # OpenGuard 项目进度台账
 
-更新时间：2026-09-05 15:34（Asia/Shanghai）
+更新时间：2026-09-05 17:10（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -10,7 +10,7 @@
 
 | 真人角色 | 负责范围 | 本轮处理 |
 |---|---|---|
-| 项目负责人（用户） | A1 领域、A2 输入、A3 API/注册表、A4 Pipeline、A5 AI Provider、A6 报告、A7 部署、A8 集成与材料 | 本轮仅完成 A3/A4-3a-S ZIP 持久派发窄规格与三角色审查；复用既有 A3/A4/A5/A6，不编码，不代做 B 线、前端或部署 |
+| 项目负责人（用户） | A1领域、A2输入、A3 API/注册表、A4 Pipeline、A5 AI、A6报告、A7部署、A8集成与材料 | 本轮推进A3/A4-3a-I1，Terra实现、Luna独立验证、Root审查与发布；不代做B线、前端或部署 |
 | 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 远端 `codex/p0-external-tools-sync` 仍为 `f8bedfd`；本轮只读取当前分支已原样引入的 B5 公共输出，不改写组员引擎、规则、扫描器、测试或分支 |
 | 前端组员 | React/Vite 与 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 页面 | 本轮未修改；远端前端分支新提交保持组员在途状态 |
 
@@ -18,13 +18,14 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 
 ## 1. 当前任务点
 
-本轮规格门禁与实现必须分开：`A3/A4-3a-S` 设计审查已通过，发布状态见下表；
-`A3/A4-3a-I1/I2` 代码与运行证据均未开始。主控代码基线仍为 `1ba14af`，
-受控全量 `907 passed, 3 skipped` 为该代码的既有验证，本轮只复跑 P0 `46 passed`。
+`A3/A4-3a-S`规格已发布；本轮`A3/A4-3a-I1`代码、独立验证和Root全量验收通过，
+待提交推送绑定。I2未开始，生产durable开关仍不可启用。最终完整回归`952 passed,3 skipped`；
+I1只证明私有输入、descriptor、幂等/配额/清理协议，不代表自动派发或重启恢复。
 
 | 任务点 | P级 | 主责模型 | 状态 | 已完成/当前证据 | 未完成/下一步 | GitHub状态 |
 |---|---|---|---|---|---|---|
-| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 已完成 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 规格已发布；实现I1/I2未开始，Git恢复/lease/heartbeat/业务retry仍待后续 | `docs/a3-a4-durable-zip-spec` 已推送，规格提交 `f9a59fa`；未创建/合并PR |
+| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 已完成 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 规格已发布；I1验收通过待发布，I2未开始，Git恢复/lease/heartbeat/业务retry仍待后续 | `docs/a3-a4-durable-zip-spec` 已推送，规格提交 `f9a59fa`；未创建/合并PR |
+| A3/A4-3a-I1 ZIP持久存储协议 | P0 | Terra→Luna→Root | 进行中 | 实现16项、独立29项、原并发P1闭合、受控全量952 passed,3 skipped；EVD-A3-DURABLE-ZIP-STORAGE-001 | 技术验收通过待发布；I2锁/dispatcher/恢复未实现 | `feat/a3-durable-zip-storage` 待提交推送；不合并PR |
 | S1a/A1 P0领域契约 | P0 | Sol | 已完成 | 契约 v0.1.1、唯一公共模型、6个API、风险四态、证据与provenance；历史提交 `02c3d46` | 后续仅通过变更流程新增 ADR，不再并行维护第二套模型 | 已推送 `feat/p0-domain-contract` |
 | A1 领域模型实现 | P0 | Terra | 已完成 | Pydantic模型、Draft 2020-12 Schema、sample和 AI producer 条件字段；历史提交 `b2fd061` | 进入 A2 前保持兼容性回归 | 已推送 `feat/p0-domain-contract` |
 | L-A1 独立边界审计 | P0 | Luna | 已完成 | 46项测试全部通过；覆盖路径脱敏、partial语义及 AI producer 正反边界 | 进入 A2 后扩展输入安全测试 | 已推送 `feat/p0-domain-contract` |
@@ -116,7 +117,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 ## 3.1 当前远端分支入口
 
 - 团队日常入口：`integration/p0`；里程碑发布目标：`main`。
-- 项目负责人当前短分支：`docs/a3-a4-durable-zip-spec`，基于已发布 `feat/a5-pipeline-integration` 的 `1ba14af`，只交付ZIP持久派发规格及治理。A5-1c实现仍为已发布的 `3237ab0`；既有 A5 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 不在本轮修改或合并范围。
+- 项目负责人当前短分支：`feat/a3-durable-zip-storage`，基于规格发布`16cd7d4`；交付I1存储协议、测试与治理，待本轮Root提交推送。既有PR、main/integration及组员分支均未自动修改或合并。
 - 组员在途分支：`feat/xzb-frontend`、`codex/p0-external-tools-sync`，均保留。
 - 待明确授权清理的项目负责人历史分支：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
 - 上述待清理分支的提交均已从 `integration/p0` 可达，删除分支引用不会删除集成线中的代码和证据；未获明确授权前保持现状。
@@ -131,28 +132,41 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | 敏感信息 | A5-1c 发布复核通过 | 不上传密钥、账号、本机绝对路径、学校/教师/成员隐私或目标仓库内容 |
 | 第三方资源 | 持续 | 首次真实引入时锁版本并更新 `third_party/` 与资源清单 |
 
-## 5. A3/A4-3a-S 规格门禁与下一任务（2026-09-05）
+## 5. A3/A4-3a 实施进展与下一任务（2026-09-05）
 
 唯一规格：[ZIP持久派发与中断收敛](../spec/a3-a4-durable-zip-dispatch.md)。
 Sol完成架构审查，Terra确认可实现性，Luna批准15项独立oracle；Root关闭报告links可见性和配额预留歧义。
-仅有设计批准，没有持久worker运行evidence。未新增依赖，未修改代码、公共契约或测试。
+I1现已通过存储协议实现与独立验收，运行证据见规格第12节；I2自动派发/恢复未实现。
+未新增依赖或改变公共契约；本轮新增I1实现与独立测试，已有保护测试未放宽。
 
 | 范围 | 状态 | 责任 | 下一项可验证门禁 |
 |---|---|---|---|
 | 本轮规格门禁 | 已完成 | Root/Sol/Terra/Luna | 四文件范围、append-only、P0回归、DZ唯一ID通过；规格提交f9a59fa与远端完整对象一致 |
-| I1 descriptor与输入生命周期 | 未开始 | Terra→Luna→Root | prepared/ready、实际ZIP、幂等、fsync/崩溃窗口、保留输入与配额；默认关闭 |
+| I1 descriptor与输入生命周期 | 进行中 | Terra→Luna→Root | 实现16项、独立29项、受控全量952 passed,3 skipped；验收通过，待Root发布绑定 |
 | I2 dispatcher与恢复接线 | 未开始 | Terra→Luna→Sol→Root | 真正多进程锁、kill/restart、queued消费、running不重放、DZ-01..15和完整回归 |
 | Git恢复、lease/heartbeat与业务retry | 未开始 | 项目负责人A线 | 另立窄规格；本轮不承诺任意阶段续跑或exactly-once |
 | 前端与B线候选接入 | 进行中 | 各组员→Root集成 | 组员分支已有候选；前端拟定接口须适配冻结六API，B4/B6/B7不得重复生成 |
 
 现有可演示能力仍为安全ZIP/公开Git依赖纵切、持久查询与阶段性报告；普通输入仍为
 `partial/rules/70`，当前主控前端仍为mock。最新组员分支有请求/轮询与检测/Bench候选，
-不等于已完成主控真实Web联调。`integration/p0`仍比本轮代码基线少25个提交，不自动合并。
+不等于已完成主控真实Web联调。团队集成线尚未自动合入本轮工作，不以功能分支推送代替团队联调或合并。
 
 报名/参赛资格门禁：Owner落实平台、缴费、主体和权属确认。完整作品门禁：上游许可证事实、
 前端契约对齐与真实Web链、部署/陌生机、安全与Bench、报告视频/资源表/匿名及Release。
 获奖竞争力门禁：真实案例、基线/消融、误差分析和稳定演示。不得由规格或P0回归推出完成率。
 
 文档发布证据：规格提交 `f9a59fa3eb722c2eb1eb0ec939bda5efe8587b78` 已推送并以
-`git ls-remote` 核对一致；本次只上传上述四个文档，随后同分支回填发布记录。
+`git ls-remote` 核对一致；规格轮仅上传上述四个文档，随后同分支回填发布记录。
 未创建/合并PR，未修改main、integration/p0或组员分支。该提交不是持久worker实现证据。
+
+
+## 6. I1 最终验收与发布准备
+
+- 本轮：私有ZIP/descriptor、实际摘要与身份绑定、prepared/ready协议、首字节前容量、原profile幂等、健康清理已验收；原跨线程P1及测试fsync定位误标均保留历史并闭环。
+- 累计：A1与A5 P0子系统完成；A2/A3/A4/A6已有可运行纵切但父包仍进行中，A7部署与完整材料未完成。
+- 阻塞/依赖：本轮技术缺陷已关闭；完整Web仍依赖B线真实许可证事实、前端契约对齐与团队集成。最终Release未发布。
+- 验证：Terra16、Luna29、受控全量952 passed/3 skipped；OpenAPI精确等值、Schema/sample、编译与前端构建通过。发布前再检查新增内容、敏感信息和append-only前缀。
+- 当前演示：既有安全ZIP/公开Git依赖扫描、持久查询与阶段性报告；I1仅内部注入时生成queued+ready，不运行worker。普通输入仍可诚实partial/rules/70，主控前端仍mock。
+- 紧接任务：A3/A4-3a-I2生命周期锁、dispatcher与中断收敛；继续复用当前store/registry/worker/A5/A6，不新建第二套实现。
+- 报名/参赛：Owner核对平台、主体及权属等资格事项；完整作品：真实许可证链、Web联调、部署/安全/Bench、报告视频/资源表/匿名及Release；获奖竞争力：真实案例、基线/消融、误差分析与稳定演示。
+- 发布：技术验收通过，待Root本轮提交推送功能分支并绑定EVD；不修改main或自动合并PR。

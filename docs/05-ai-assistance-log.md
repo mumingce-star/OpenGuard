@@ -133,3 +133,6 @@
 | 2026-09-05 | GPT-6 Astra / Root；GPT-5.6 Sol、Terra、Luna | A3/A4-3a-S ZIP持久派发规格门禁；输入为既有代码、契约、完整历史日志与进度 | Root写唯一规格；Sol架构与历史复核、Terra可实现性、Luna独立15项oracle；均只读交付由Root统一记录 | 不新增业务代码、测试、公共Schema、模型或第三方依赖；关闭running links可见性与配额预留风险；保留profile/幂等、legacy边界；只批准规格，未获得用户最终产品发布许可 | 三角色最终APPROVE，本轮P0 46 passed；文档ID/引用/保护路径/append-only/diff/敏感门禁；动态恢复测试未执行，代码实现I1/I2未开始 | 是（设计文档，待Root文档分支发布；不是运行效果证据） |
 
 | 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：ZIP持久派发规格发布证据 | 规格提交f9a59fa3eb722c2eb1eb0ec939bda5efe8587b78已推送docs/a3-a4-durable-zip-spec，远端完整对象已只读核对 | 仅四个规格/治理文件；不修改产品代码、不创建或合并PR；三角色只读意见经Root逐条取舍与修订，未代替Owner最终作品审查 | P0 46 passed、15个独立门禁ID、Schema等值、append-only前缀、四文件保护范围、diff与新增敏感内容检查通过；持久worker动态测试未执行 | 是（已发布设计规格，代码实现未开始） |
+
+
+| 2026-09-05 | GPT-6 Astra / Root；GPT-5.6 Terra、Luna | A3/A4-3a-I1 ZIP持久输入与派发记录 | 复用冻结规格/现有A3/A4/A5/A6；Terra实现、Luna独立动态ZIP/手写multipart/OS线程及进程验证，Root审查与最终回归 | 原并发P1与fsync测试定位问题均保留失败/AMENDMENT并闭环；不改P0/六API/registry/组员代码，不引入依赖或调用模型；生产durable仍关闭 | unit16、独立29、受控全量952 passed,3 skipped；沙箱11回环权限失败原样保留；OpenAPI/Schema/编译/前端构建通过；不是I2恢复或完整Web证据 | 是（Root技术验收通过，待不可变提交与推送绑定） |

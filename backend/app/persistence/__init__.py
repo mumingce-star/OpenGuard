@@ -8,6 +8,21 @@ from .scan_registry import (
     ScanRunPage,
     StoredScanRun,
 )
+from .zip_dispatch import (
+    ZIP_DISPATCH_MAX_BYTES,
+    ZIP_DISPATCH_MAX_DESCRIPTOR_BYTES,
+    ZIP_DISPATCH_MAX_INPUTS,
+    ZIP_DISPATCH_PLAN_VERSION,
+    ZIP_DISPATCH_RESERVATION_BYTES,
+    ZIP_DISPATCH_SCHEMA,
+    ZIP_DISPATCH_VERSION,
+    ZipDispatchDescriptor,
+    ZipDispatchError,
+    ZipDispatchReservation,
+    ZipDispatchStore,
+    ZipExecutionProfile,
+    run_identity_sha256,
+)
 
 __all__ = [
     "REGISTRY_STORAGE_SCHEMA",
@@ -16,4 +31,17 @@ __all__ = [
     "ScanRegistryError",
     "ScanRunPage",
     "StoredScanRun",
+    "ZIP_DISPATCH_MAX_BYTES",
+    "ZIP_DISPATCH_MAX_DESCRIPTOR_BYTES",
+    "ZIP_DISPATCH_MAX_INPUTS",
+    "ZIP_DISPATCH_PLAN_VERSION",
+    "ZIP_DISPATCH_RESERVATION_BYTES",
+    "ZIP_DISPATCH_SCHEMA",
+    "ZIP_DISPATCH_VERSION",
+    "ZipDispatchDescriptor",
+    "ZipDispatchError",
+    "ZipDispatchReservation",
+    "ZipDispatchStore",
+    "ZipExecutionProfile",
+    "run_identity_sha256",
 ]

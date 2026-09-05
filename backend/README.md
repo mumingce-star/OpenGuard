@@ -345,6 +345,33 @@ ZIP/Pipeline 失败。资源可通过
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py
 ```
 
+## A3/A4-3a-I1 ZIP 持久派发准备
+
+I1 新增 `app.persistence.ZipDispatchStore`，只负责私有 `uploads/` 输入、8 KiB 严格
+descriptor v1、`prepared → ready` 的文件/目录 fsync 与原子改名、原始 ZIP fingerprint 幂等、
+接受时的 `zip-dependency-v1` 执行 profile，以及上传第一个 multipart 字节前的 `8 × 64 MiB` /
+`512 MiB` 容量预留。descriptor 仅记录服务端随机上传名、输入 SHA-256、冻结的 queued-run
+identity 投影和五字段锁定 Ollama identity；不保存绝对路径、prompt、响应或 config digest。
+
+默认生产工厂完全保留 A3-2 的 BackgroundTask 路径。`OPENGUARD_ENABLE_DURABLE_ZIP=0` 为默认值；
+精确 `1` 会明确拒绝启动，因为 I2 的生命周期 `flock`、单消费者 dispatcher、queued/running 恢复
+和自动消费尚未实现，不能把已写入的 ready descriptor 当作会自动扫描。非法开关值同样拒绝启动。
+I1 的 durable 行为只能经测试/集成时显式注入 `ZipDispatchStore`，并会在 202 后保留 queued run、
+ZIP 和 ready descriptor 供 I2 消费；它不会启动 worker、重放 handler、恢复 running、生成报告或清理
+未知残留。
+
+受限 cleanup 只接受已健康读取的 terminal registry 快照，或调用方已证明 registry 中不存在该
+prepared run；会先验证 descriptor、输入 basename、身份与实际 SHA-256，按 ZIP→目录 fsync→descriptor
+顺序删除。输入已在前一中断中删除时仍会 fsync 上传目录后删除 descriptor；任何可疑对象、身份不符
+或 registry 不确定都拒绝删除并继续计入容量。
+
+实现侧复现（不会启用 I2、不会联网或启动模型）：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend \
+  python -m pytest -q -p no:cacheprovider tests/unit/test_a3_durable_zip_dispatch.py
+```
+
 ## A5-0 可注入 AI Provider 与确定性降级
 
 `app.ai.apply_ai_remediations()` 接受一个已验证的 P0 `ScanRun` 和调用方注入的 local/remote

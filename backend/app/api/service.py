@@ -7,6 +7,7 @@ import json
 import platform
 import sys
 from collections.abc import Callable
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from urllib.parse import unquote, urlsplit
 from uuid import UUID, uuid4
@@ -61,6 +62,14 @@ class ApiError(RuntimeError):
 
 def _fail(*, status_code: int, code: str, message: str, reason: str) -> None:
     raise ApiError(status_code=status_code, code=code, message=message, reason=reason) from None
+
+
+@dataclass(frozen=True)
+class ZipScanCandidate:
+    """A constructed ZIP request that has not yet touched the A3 registry."""
+
+    run: ScanRun
+    idempotency_fingerprint: str | None
 
 
 def canonicalize_public_git_url(value: str) -> str:
@@ -171,6 +180,25 @@ class ScanApiService:
         project_name: str,
         input_digest: str,
     ) -> tuple[ScanCreateAccepted, bool]:
+        return self.commit_zip_scan_candidate(
+            self.build_zip_scan_candidate(
+                request,
+                staged_name=staged_name,
+                project_name=project_name,
+                input_digest=input_digest,
+            )
+        )
+
+    def build_zip_scan_candidate(
+        self,
+        request: ZipScanCreateFields,
+        *,
+        staged_name: str,
+        project_name: str,
+        input_digest: str,
+    ) -> ZipScanCandidate:
+        """Construct the original ZIP fingerprint before I1 writes a descriptor."""
+
         if (
             type(staged_name) is not str
             or not staged_name
@@ -231,8 +259,15 @@ class ScanApiService:
             created_at=created_at,
         )
         fingerprint = hashlib.sha256(fingerprint_payload).hexdigest() if request.idempotency_key is not None else None
+        return ZipScanCandidate(run=run, idempotency_fingerprint=fingerprint)
+
+    def commit_zip_scan_candidate(self, candidate: ZipScanCandidate) -> tuple[ScanCreateAccepted, bool]:
+        """Commit a prebuilt ZIP candidate through the unchanged A3 create contract."""
+
+        if type(candidate) is not ZipScanCandidate:
+            _fail(status_code=500, code="internal_error", message="The scan could not be created.", reason="zip_runtime_failure")
         try:
-            stored = self._registry.create(run, idempotency_fingerprint=fingerprint)
+            stored = self._registry.create(candidate.run, idempotency_fingerprint=candidate.idempotency_fingerprint)
         except ScanRegistryError as error:
             if error.code == "registry_idempotency_conflict":
                 _fail(
@@ -247,7 +282,7 @@ class ScanApiService:
             status=stored.run.status,
             status_url=f"/api/v1/scans/{stored.run.id}",
         )
-        return accepted, stored.run.id == candidate_id
+        return accepted, stored.run.id == candidate.run.id
 
     def status(self, scan_id: str) -> ScanRunStatusView:
         run = self._get_run(scan_id)
@@ -367,4 +402,4 @@ class ScanApiService:
         return run
 
 
-__all__ = ["APPLICATION_VERSION", "ApiError", "ScanApiService", "canonicalize_public_git_url"]
+__all__ = ["APPLICATION_VERSION", "ApiError", "ScanApiService", "ZipScanCandidate", "canonicalize_public_git_url"]
