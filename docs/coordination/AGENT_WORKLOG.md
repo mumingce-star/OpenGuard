@@ -3606,3 +3606,13 @@
 - 本次运行精确 token 数不可获得；开工20k–35k非硬估算，I2功能完整完成，实际区间不可确认，验证补证未扩大功能范围。
 - EVD-A3-DURABLE-ZIP-DISPATCH-001技术批准，待精确文件审计、不可变提交与远端核对；不自动合并或Release。
 - EOF anchor：OPENGUARD-DZI2-ROOT-ACCEPTED-20260905-1930
+
+
+### [20260905-RootAstra-DurableZIPI2发布] COMPLETE - AMENDMENT
+
+- 不可变实现`f48108f6da32ea36e6e757a3cd80a2b42baa0767`已推送feat/a3-zip-dispatcher-recovery，git ls-remote完整哈希一致；EVD-A3-DURABLE-ZIP-DISPATCH-001绑定实现提交。
+- 精确11文件、diff检查、体积/新增敏感内容、旧独立AST及日志前缀通过。代码/测试修改时间早于最终全量结束；发布绑定只改四个治理文件，不重复运行未变化产品的全量测试。
+- 技术结果仍为unit28、独立70、Root完整1005 passed/3 skipped；P0仍未整体完成，范围和剩余5包见PROJECT_PROGRESS第7节。
+- 未合并main/integration、未创建PR、未修改组员分支或发布Release；无新依赖及运行产物上传。
+- 本次运行精确 token 数不可获得；开工估算20k–35k，I2完整交付，实际区间不可确认，无产品范围调整。
+- EOF anchor：OPENGUARD-DZI2-PUBLISHED-20260905

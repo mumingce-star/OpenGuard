@@ -302,7 +302,7 @@ Git恢复、lease/heartbeat、业务retry和完整orphan清理仍留后续工作
 ## 13. I2 实现与验收记录（2026-09-05）
 
 基线：`2368d91120a72e7bb474ddacfcb72743b9aa02b1`；分支：`feat/a3-zip-dispatcher-recovery`。
-证据ID：`EVD-A3-DURABLE-ZIP-DISPATCH-001`；技术验收通过，待不可变实现提交与远端绑定。
+证据ID：`EVD-A3-DURABLE-ZIP-DISPATCH-001`；实现提交：`f48108f6da32ea36e6e757a3cd80a2b42baa0767`，已推送功能分支并核对远端完整哈希。
 本轮仅实施第10节I2，复用I1存储、registry v1、原worker与A4/A5/A6；无新增公共API、数据库对象或第三方依赖。
 生产开关默认0保持旧路径；精确1现在启用单机ZIP dispatcher。I1 unit中“因I2未实现而拒绝1”的阶段性断言迁移为真实生命周期正向验收，默认0和非法值门禁保留；既有独立函数/类AST未变。
 
