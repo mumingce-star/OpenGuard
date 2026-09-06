@@ -3866,3 +3866,16 @@
 
 - GPT-6 Astra / Root；实现0f1bdcc22a01a5f1f91b666d1ae94040bd3929ae已推送feat/a7-public-git-deploy-acceptance并核对远端完整哈希一致；16个既有文件、无新增文件，EVD-A7-PUBLIC-GIT-DEPLOY-001绑定该实现。本任务完整交付，完整P0仍待陌生机及最终冻结；未合并main或Release。
 - 发布前完整回归、真实Git/Chrome/失败清理/重建报告、OpenAPI等值、保护路径、append-only、敏感信息与git diff --check通过；随后提交仅追加发布记录，不改实现或复跑扫描。
+
+### [20260906-RootAstra-DownloadRepro] START
+
+- GPT-6 Astra / Root；基线341dc34，开工干净，分支docs/a7-browser-download-handoff。用户请求陌生机复现与Chrome下载确认；用户明确当前没有另一台设备，因此异机门禁保持未验证，不把同机容器重建冒充。开工估算6k–12k，本次运行精确 token 数不可获得。
+- 继续不依赖异机的Chrome实际下载落盘/摘要验证，复用原已完成Git报告和原验收脚本，不重新扫描。仅按需更新现有部署说明、进度、AI和工作日志，整理异机最短可执行步骤；无新实现/接口/框架/P1/P2，不安装远程工具或创建云主机。
+
+### [20260906-RootAstra-DownloadRepro-Close] PARTIAL
+
+- GPT-6 Astra / Root；异机复现与Chrome下载确认尚未全部通过。用户明确没有另一台设备；Chrome原Git报告JSON下载链接已点击，但默认下载及桌面未发现对应文件，已询问实际保存位置，落盘SHA待核对。未把同机容器或HTTP下载冒充本次验收。
+- 仅追加deploy/README.md、PROJECT_PROGRESS.md、AGENT_WORKLOG.md、docs/05-ai-assistance-log.md四个既有文档；固定341dc34、复用Compose/smoke参数与现有报告文件名，提供最小匿名回传要求。无新文件、源码、接口、Schema、规则、扫描或模型调用。
+- 校对脚本参数和报告命名；git diff --check、四文件清单、append-only及新增行敏感信息检查通过。首次Python追加命令因输入编码报错且未写入，改为原文追加；没有丢失记录。未重复原1221回归，不把原测试算成本次新验收。文档准备完成，待Root推送docs/a7-browser-download-handoff并追加发布绑定；不合并main或Release。
+- 下一步由用户提供实际Chrome保存路径，Root核对四格式文件与原receipt；设备可用后由异机操作者运行现有步骤。最终冻结和人工复核仍未完成。
+- 本次运行精确 token 数不可获得；开工估算6k–12k，本任务部分完成，实际是否在估算区间不可确认；未扩大功能范围。

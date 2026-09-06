@@ -134,3 +134,27 @@ python3 deploy/smoke.py --output /tmp/openguard-public-git --verify
 11条Evidence与同revision独立归档原文件SHA一致；HTTP、回环/元数据IP、query URL在接收前拒绝，保留域名 `.invalid` 摄取失败且无报告，成功/失败后工作目录为空。容器实际UID10001、cap=0、NoNewPrivs=1、Seccomp=2、只读根、4GiB内存/128进程、私有named volume与noexec临时区通过。初次检查把Docker HostConfig.Binds中的named volume误当宿主目录，随后依据Mounts.Type核实未挂载宿主目录；未修改容器权限。
 
 这些证据只证明当前Mac上的Linux Compose最小部署。工具子进程仍使用API容器网络，不宣称逐子进程网络隔离、所有攻击语料或陌生机验收完成；pending提示不等于违规确认或授权通过。
+
+## 另一台设备的最小复现（待实际设备验收）
+
+2026-09-06 用户确认目前没有另一台设备，因此本门禁尚未执行。同一Mac的新容器、重建镜像或测试通过不能代替异机结果。以下复用已有脚本；不需要新框架、账号、API密钥或复制开发机数据卷。先准备Docker的Linux容器环境、Git及Python 3，使用macOS/Linux或已配置Docker的WSL终端。
+
+在另一台设备的新目录获取已验收版本，避免从仍为早期基线的main开始：
+
+```bash
+git clone --branch feat/a7-public-git-deploy-acceptance https://github.com/mumingce-star/OpenGuard.git OpenGuard
+git -C OpenGuard checkout --detach 341dc348670a558fae35d699b204e4d927f898fb
+cd OpenGuard
+OPENGUARD_ENABLE_PUBLIC_GIT=1 OPENGUARD_ENABLE_AI=0 OPENGUARD_OLLAMA_DOCKER_HOST=0 docker compose -f deploy/compose.yaml up -d --build --wait
+python3 deploy/smoke.py --external-scanners --ai-assets --output /tmp/openguard-other-zip
+python3 deploy/smoke.py --public-git https://github.com/pypa/sampleproject.git --output /tmp/openguard-other-git
+OPENGUARD_ENABLE_PUBLIC_GIT=1 OPENGUARD_ENABLE_AI=0 OPENGUARD_OLLAMA_DOCKER_HOST=0 docker compose -f deploy/compose.yaml up -d --force-recreate --no-deps --wait api
+python3 deploy/smoke.py --output /tmp/openguard-other-zip --verify
+python3 deploy/smoke.py --output /tmp/openguard-other-git --verify
+```
+
+两个初始命令各创建一个任务；`--verify`只复核原任务。PyPA默认分支可能变化，以输出receipt的实际revision为准；如果验收失败，保留原输出，不反复创建任务。此首轮关闭AI，不要求另一台设备额外安装模型，也不据此声称异机AI已通过。
+
+Chrome打开 `http://127.0.0.1:8080/app/new-scan`。可用receipt中的scan_id打开现有任务 `/app/scans/实际scan_id/report?mode=api`，确认真实接口、资源/风险/Evidence；通过四个下载链接各保存一次。文件名为 `openguard-实际scan_id.html`、`.json`、`.csv`和`.resources.csv`（以浏览器实际名称为准）。核对文件SHA与同一任务receipt中的对应reports摘要；不要与开发机不同任务的摘要比较，也不要把HTTP下载代替浏览器落盘。
+
+回传最小证据即可：设备系统与CPU架构、Docker/Compose版本、代码commit、两个命令的原始成功或失败输出、两个receipt.json、重建后两条PASS，以及Chrome实际文件的格式/字节数/SHA。不要回传用户名、主机名、完整环境变量、凭据、Docker账户或个人目录内容。只在上述结果实际取得后更新异机状态；准备好文档本身不算验收完成。
