@@ -218,3 +218,21 @@ docker run --rm --platform linux/amd64 --network none --read-only --cap-drop ALL
 ```
 
 原ZIP生产摄取在剩余1MiB（接收失败）和3MiB（接收成功、解压失败）均触发实际ENOSPC，返回scanner_failed/workspace_write_failed，任务树清空；释放填充文件后同一服务成功摄取并清理。最终API挂载容量1073741824字节、权限正确；小ZIP在实际挂载路径成功/清理，原Git/Qwen各四格式报告verify通过，无新公开扫描/推理。运行时无用户数据卷参与写满测试。
+
+## 扫描子进程禁网（2026-09-06）
+
+现有API/tools镜像默认设置 `OPENGUARD_SCANNER_SANDBOX=/opt/openguard/scanner-no-network`。生产run_json_tool在原固定命令前加原生启动器，目录fd、cwd、进程组和超时机制保持。启动器安装不可撤回且后代继承的seccomp过滤器后才exec扫描器：只允许AF_UNIX socket/socketpair用于扫描器本地IPC，拒绝IPv4/IPv6及其他网络family，并拒绝io_uring_setup防止异步网络调用绕过；未知架构及x32 ABI失败关闭。无Python preexec线程风险、无新服务/接口，不添加capability或关闭Docker安全配置。
+
+首次尝试在amd64/Rosetta进程直接装libseccomp失败（load=-125/errno22），因此启动器必须按Docker BUILDPLATFORM编译为构建主机原生架构，并静态链接后复制进现有amd64扫描镜像。新增源码只在deploy/scanner-no-network.c，GCC只在构建阶段；随包运行库版权保留。**不同架构设备应从源码重新build；不要把本机生成的混合架构镜像导出给另一种架构使用。** 原生Linux amd64实现分支已包含，实际异机验收仍待Windows设备执行。
+
+镜像中的默认环境变量不可移除以规避过滤器。若路径不符、启动器缺失、过滤器加载或exec失败，runner返回失败/不可用，不直接运行扫描器。未配置该环境变量的宿主开发调用不具备本节保障，仅当前Compose镜像profile为已验收入口。
+
+复用原验收脚本（API正常运行，不访问外部网络）：
+
+```bash
+docker compose -f deploy/compose.yaml exec -T api python -c 'import runpy; print(runpy.run_path("/opt/openguard/tool-smoke.py")["check_network_sandbox"]())'
+```
+
+实测IPv4/IPv6的TCP/UDP四类libc.socket均EPERM，后代exec进程也被拒绝，AF_UNIX socketpair可用，父进程仍可创建网络套接字。最终API固定ScanCode/Syft入口和传递目录fd的正例通过；分别检测Apache-2.0和is-number7.0.0。原Git TrustedEgress成功获取PyPA sampleproject revision621e4974ca25ce531773def586ba3ed8e736b3fc并清理；原模型qwen3:4b-instruct-2507-q4_K_M短推理done=true。旧Git/Qwen两组四SHA保持，APIhealthy。
+
+此项是扫描子进程及后代的网络创建边界；不等于网络namespace、跨任务文件/Unix IPC隔离、持久存储预算或完整P0安全验收完成。生产仅传递受控目录fd，不能扩展为传递已有网络socket。Git获取器和Qwen调用不使用扫描启动器，仍遵循各自原有网络门禁。

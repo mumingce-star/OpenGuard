@@ -380,3 +380,24 @@ def test_real_subprocess_reads_contents_from_trusted_working_directory(tmp_path)
         assert parse_json_output(execution) == {"license": "controlled-license"}
     finally:
         os.close(descriptor)
+
+
+def test_configured_network_sandbox_never_falls_back(monkeypatch, tmp_path):
+    marker = tmp_path / "unsafe-executed"
+    monkeypatch.setenv("OPENGUARD_SCANNER_SANDBOX", "/not-the-approved-launcher")
+    result = run_json_tool(sys.executable, ["-c", f"open({str(marker)!r}, 'w').close()"])
+    assert result.status == "failed"
+    assert not marker.exists()
+
+
+def test_missing_approved_network_sandbox_does_not_run_tool(monkeypatch):
+    import subprocess
+    calls = []
+    def missing(command, **kwargs):
+        calls.append(command)
+        raise FileNotFoundError("missing sandbox")
+    monkeypatch.setenv("OPENGUARD_SCANNER_SANDBOX", "/opt/openguard/scanner-no-network")
+    monkeypatch.setattr(subprocess, "Popen", missing)
+    result = run_json_tool("scancode", ["--version"])
+    assert result.status == "unavailable"
+    assert calls == [["/opt/openguard/scanner-no-network", "scancode", "--version"]]

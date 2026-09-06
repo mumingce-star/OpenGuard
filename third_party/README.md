@@ -141,3 +141,10 @@ uvicorn==0.52.4
 - Syft1.51.0 保留 `/opt/syft/LICENSE`；Python保留 `/usr/local/lib/python3.12/LICENSE.txt`；Debian Git保留 `/usr/share/doc/git/copyright`（摘要见前节）。本轮核对文件存在和ScanCode声明，不把它计为所有OS/Go/扫描器传递组件逐包审计完成。
 - Qwen3/Ollama、基础镜像digest、pnpm及Docker Desktop继续沿用原登记；本轮未重新下载权重或改变服务条款。公开样例是扫描输入，不能把其依赖/许可继承为本项目依赖。
 - 当前发布源码/构建说明，未发布镜像或模型权重；完整镜像再分发、外部服务适用条款、人工许可/风险标签与AI建议复核仍须最终确认。历史选型中的未使用资源不新增为P0任务。
+
+## 2026-09-06 原生扫描禁网启动器构建资源
+
+- `deploy/scanner-no-network.c`为本项目自研内核过滤启动器，沿用项目许可证，无第三方代码复制；使用Linux seccomp接口文档：https://man7.org/linux/man-pages/man2/seccomp.2.html 。本机原生arm64二进制SHA256为d3888210092c7f5e17049e43e6d4d3f9393b1b08efbe63806e44cebf063de419，不把该摘要作为不同架构的预期值。
+- 原有固定Python/Debian基础镜像的BUILDPLATFORM构建阶段安装Debian GCC（gcc元包4:12.2.0-3，gcc-12为12.2.0-14+deb12u1）、libc6-dev2.36-9+deb12u14。来源为Debian签名bookworm仓库；官方入口 https://packages.debian.org/bookworm/gcc 、https://packages.debian.org/bookworm/libc6-dev 。编译器不复制进最终API，构建包及其传递闭包本轮未新增精确版本锁，不外推全部构建供应链冻结。
+- 启动器静态链接GNU运行库，不能因代码自研而忽略运行库许可。原Debian libc6及gcc-12-base版权文件已从构建层复制到 `/opt/openguard/scanner-libc-copyright` 和 `/opt/openguard/scanner-gcc-copyright`，保留LGPL及相关例外/各组件条款全文。当前仅发布源码与构建说明，不发布二进制镜像；若分发静态二进制，须先落实适用的对应源码/重链接等义务，不能以台账链接替代。
+- 不增加Python运行包、扫描工具版本、模型或远端服务。新增构建资源与跨架构build要求属于本次必要实现，不扩展P1/P2。

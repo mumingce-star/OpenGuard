@@ -105,6 +105,35 @@ def check_workspace_quota():
     return {'capacity_bytes': capacity, 'failures': results, 'next_ingestion': 'passed'}
 
 
+def check_network_sandbox():
+    """Exercise the production runner and inherited filter, with no remote traffic."""
+    import socket
+    from app.scanners.external_tools import run_json_tool
+    # Parent remains capable of sockets; scanner children must not be.
+    for family in (socket.AF_INET, socket.AF_INET6):
+        with socket.socket(family, socket.SOCK_STREAM):
+            pass
+    probe = r"""
+import ctypes, errno, json, socket, subprocess, sys
+libc = ctypes.CDLL(None, use_errno=True)
+blocked = 0
+for family in (socket.AF_INET, socket.AF_INET6):
+    for kind in (socket.SOCK_STREAM, socket.SOCK_DGRAM):
+        fd = libc.socket(family, kind, 0)
+        assert fd == -1 and ctypes.get_errno() == errno.EPERM, (family, kind, fd)
+        blocked += 1
+left, right = socket.socketpair()
+left.close(); right.close()
+child = subprocess.run([sys.executable, '-c',
+    'import socket,errno;\ntry: socket.socket()\nexcept OSError as e: assert e.errno==errno.EPERM\nelse: raise AssertionError("network allowed")'],
+    check=True, capture_output=True, timeout=5)
+print(json.dumps({'blocked_families_types': blocked, 'unix_ipc': True, 'descendant_blocked': True}))
+"""
+    result = run_json_tool(sys.executable, ['-c', probe], timeout_seconds=15)
+    assert result.status == 'complete', result
+    return json.loads(result.stdout)
+
+
 def main():
     nofile = check_nofile()
     scancode_version = run(["scancode", "--version"]).decode().strip()

@@ -397,3 +397,22 @@ API环境与禁网tools profile各运行既有ScanCode32.5.0 MIT识别/Syft1.51.
 探针断言实际文件系统容量、tmpfs类型、底层errno，拒绝非空或非挂载的/quota；不模拟os.write、不执行目标代码。最终API在无queued/running且旧目录空时重建，实际mount容量1073741824字节，权限/限制通过；实际挂载路径小ZIP正例与清理通过，APIhealthy。190项相关回归通过（首次107通过、两条HTTP被沙箱回环权限阻断，原样受控复验2通过；追加81通过，1条既有弃用warning）。原Git/Qwen两组四SHA保持。
 
 本轮关闭工作目录容量及两条真实ENOSPC清理边界；并非Git全流程磁盘耗尽、API完整并发压力或完整NEG-A2-013/028已通过。剩余优先项是API内扫描子进程默认deny-egress；持久上传累计预算/剩余资源及人工、异机门禁继续保留，不把禁网测试容器当作生产网络隔离证据。
+
+### 9.6 扫描子进程默认禁网（2026-09-06）
+
+基线872b2f1，分支fix/a2-scanner-no-network。当前Compose API内run_json_tool默认经原生seccomp启动器运行；不改GitProcessRunner或Ollama路径。禁止除AF_UNIX外的socket/socketpair和io_uring_setup，验证audit架构并在x86拒绝x32，no_new_privs和过滤器均由子孙继承。Popen仅保留标准管道/受控目录fd；无网络socket传入。过滤失败拒绝exec，启动器丢失/路径错误不回退直跑；实现见deploy/scanner-no-network.c，启动路径见原external_tools.py。内核规则依据：https://man7.org/linux/man-pages/man2/seccomp.2.html 。
+
+初次在Rosetta amd64进程加载libseccomp返回-125且errno22，原始失败保留，改用BUILDPLATFORM原生静态启动器。在本机Docker ARM内核、amd64扫描器转译的实际运行路径通过：
+
+| 验收 | 实际结果 |
+|---|---|
+| 生产runner负例 | IPv4/IPv6×TCP/UDP四种libc.socket均EPERM；不只在Python层拦截 |
+| 后代与IPC | 子进程再exec后的socket被拒绝；本地Unix socketpair可用 |
+| 父进程边界 | 父进程仍可创建网络socket；未把整个API断网 |
+| 实际工具正例 | 过滤器下原MIT/is-number样例通过；最终API两固定扫描入口目录fd通过，Apache-2.0/is-number输出正确 |
+| Git保留 | 既有GitIngestionService/TrustedEgress真实获取固定PyPA revision621e4974ca25ce531773def586ba3ed8e736b3fc，1连接，工作目录清理 |
+| Qwen保留 | 原本机模型短generate实际done=true、模型身份匹配；非完整建议质量复评 |
+| 失败关闭与回归 | 87工具/外部扫描相关测试通过；95 Git/AI回归通过、1 opt-in实网测试跳过、1既有弃用warning；缺失/错误启动器无直接执行回退 |
+| 持久成果 | APIhealthy；原Git/Qwen两份receipt各四报告SHA保持 |
+
+SEC-A2-015扫描子进程网络创建及继承边界本轮关闭；不将其等同独立网络namespace、AF_UNIX跨任务IPC隔离或整个SEC-A2-015完成。跨任务读写隔离、已有fd传递契约、持久资源累计限制、其余完整负面矩阵、人工及异机仍需最后验收。镜像因包含构建主机原生启动器，不应跨不同主机架构直接搬运；Windows应按原说明build并实测。未更改浏览器设置/主机安全策略，无privileged/cap-add/seccomp=unconfined。

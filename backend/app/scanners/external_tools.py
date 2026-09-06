@@ -174,8 +174,14 @@ def run_json_tool(
     process = None
     try:
         deadline = time.monotonic() + timeout_seconds
+        sandbox = os.environ.get("OPENGUARD_SCANNER_SANDBOX")
+        command = [tool, *arguments]
+        if sandbox is not None:
+            if sandbox != "/opt/openguard/scanner-no-network":
+                return ToolExecution(tool, "failed", None, "scanner_failed")
+            command.insert(0, sandbox)
         process = subprocess.Popen(
-            [tool, *arguments], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+            command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL, shell=False, close_fds=True,
             start_new_session=True, pass_fds=tuple(pass_fds), env=environment, cwd=working_directory,
         )

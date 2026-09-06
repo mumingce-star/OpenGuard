@@ -4003,3 +4003,15 @@
 ### [20260906-RootAstra-WorkspaceDisk-Published] COMPLETE
 
 - GPT-6 Astra / Root；7ec1a418d018e03552361ab48fb27371bd7c1709已推送fix/a2-workspace-disk-limit，远端完整哈希一致；8个既有文件，无新增文件。本轮工作目录硬上限/真实超限清理完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-ScannerNetwork] START
+
+- GPT-6 Astra / Root；基线872b2f1，干净，Root单写。现有amd64/Rosetta进程libseccomp加载返回-125/errno22，不能宣称生效。拟增加一个必要的原生C启动器源码，随既有镜像构建、在扫描器exec前拒绝非AF_UNIX socket/socketpair及io_uring，过滤器继承后代；Git/AI路径不改。失败关闭，不放宽Docker能力或安全策略，无新服务/API/队列。估算6k–12k，精确token不可获得；需真实转译环境负例、两工具正例及Git/模型网络保留验证。
+
+### [20260906-RootAstra-ScannerNetwork-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；实际完成Compose扫描子进程默认禁网，Git/Qwen仍工作。原生启动器禁非AF_UNIX socket/socketpair、io_uring，校验架构/x32，过滤器由后代继承，失败不exec。原run_json_tool只增加固定启动器前缀，不改组员解析/规则；属于A2安全集成必要修改。新增仅deploy/scanner-no-network.c，其他使用原文件；无新服务/API/Schema/队列或权限提升。
+- 原转译libseccomp load=-125/errno22失败保留；BUILDPLATFORM原生静态启动器解决本机实际路径。新增构建阶段GCC/libc声明及运行库copyright随镜像保留，不能把混合架构本机镜像直接搬另一架构；构建依赖闭包冻结及静态再分发义务未外推完成。
+- 87工具/扫描回归+95Git/AI回归=182通过，1 opt-in跳过/1既有warning。真实生产runner中IPv4/IPv6 TCP/UDP libc.socket四类EPERM、后代exec继承、AF_UNIX可用，父网络保持；原两工具样例及最终固定wrapper/pass_fd正例通过。原Git安全获取器真实取得既定PyPA revision并清理；Qwen8token上限短调用done=true身份匹配；旧Git/Qwen各四SHA通过、APIhealthy。更新前queued/running=0和workspaces空，未删除data。
+- 当前禁网边界完成，完整安全/跨任务文件与IPC/持久累计预算/人工/异机仍待办。下一步Root先核对跨任务读取边界，只修具体缺口。Root检查后推送fix/a2-scanner-no-network，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，目标完成，转译限制导致必要原生启动器与构建阶段调整，未扩展产品范围；实际token区间不可确认。
