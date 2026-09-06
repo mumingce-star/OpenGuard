@@ -186,3 +186,5 @@
 | 2026-09-06 | GPT-6 Astra / Root | API Python间接依赖锁定及真实下载诊断 | 既有pyproject记录15包精确闭包，Docker --no-deps及pip check；普通Chrome操作与用户保存真实JSON | 无新文件/依赖升级/接口/扫描；不修改安全策略或传输路径；组织提示具体原因未证实 | 重新安装/15包集合一致、API健康/2CPU保持、旧Git/Qwen四SHA各通过；JSON落盘SHA一致 | 依赖锁定完成，四格式验收见进度20节 |
 
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：真实四格式下载验收完成 | 用户通过正常Chrome保存原HTML/JSON/CSV/资源清单，Root逐文件核对 | 不改变浏览器保护或传输；历史拦截触发原因未证实，撤回确定组织策略归因 | 四SHA等于原Git receipt；JSON任务ID、两CSV7列9行通过 | 本机下载与API依赖锁定完成，完整P0未完成 |
+
+| 2026-09-06 | GPT-6 Astra / Root | Debian Git构建版本固定 | 原Dockerfile精确安装git/git-man1:2.39.5-0+deb12u3并验证dpkg；沿用默认签名仓库 | 无升级/新源/回退/接口/扫描，不外推全部系统包已冻结 | 真实重建成功，Git及copyright SHA与原容器一致；15包及2CPU保持，旧Git/Qwen四格式各verify通过 | 本任务完成，完整P0未完成；发布见进度21节 |

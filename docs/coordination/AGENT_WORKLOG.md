@@ -3938,3 +3938,14 @@
 ### [20260906-RootAstra-PythonLock-Published] COMPLETE
 
 - GPT-6 Astra / Root；549d7c004c5288d9a443c866744399437b9e815e已推送fix/a7-api-python-lock，远端完整哈希一致。8个既有文件，无新增；API版本锁定及Mac真实四格式下载验收完成，完整P0未完成，未合并main或Release。随后仅追加发布绑定。
+
+### [20260906-RootAstra-DebianGitPin] START
+
+- GPT-6 Astra / Root；基线1b5bb6b，开工干净，分支fix/a7-debian-git-pin，Root单写。仅固定现有API镜像Git构建版本；dpkg-query确认git amd64及git-man all均1:2.39.5-0+deb12u3。沿用Debian签名仓库，精确安装并核对，版本不可获取时失败而不自动换版；不新增快照服务或锁定全部系统包。
+- 修改现有Dockerfile及部署/资源/安全/进度/AI/日志；验证真实构建、安装包/二进制版本、旧Git/Qwen四SHA与API健康/CPU限制，不创建扫描或改用户下载文件。估算4k–8k，本次运行精确 token 数不可获得。
+
+### [20260906-RootAstra-DebianGitPin-Close] COMPLETE
+
+- GPT-6 Astra / Root；原Dockerfile精确固定git/git-man1:2.39.5-0+deb12u3并逐项校验。真实安装层重建成功，API重建健康；运行Git2.39.5，Git和copyright SHA与原容器一致，15API包及2CPU保持；旧Git与ZIP/Qwen各smoke --verify四SHA通过。没有新扫描/推理，未重复业务全量测试；构建/运行版本/字节和持久报告为相关验收。
+- 修改7个既有文件：Dockerfile、部署说明、third_party、安全、进度、AI及共享日志，无新文件/API/Schema/升级/源/快照架构。版本下架时失败，无静默换版，不外推所有Debian依赖已锁定。资源声明、其他安全限制、人工和异机仍待完成，下一任务核对现有资源台账，不扩P1/P2。
+- 分支fix/a7-debian-git-pin，Root检查后推送，不合并main或Release。本次运行精确 token 数不可获得；开工4k–8k，本轮范围完成，无范围调整，实际token区间不可确认。

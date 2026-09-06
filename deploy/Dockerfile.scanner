@@ -26,7 +26,10 @@ CMD ["python", "/opt/openguard/tool-smoke.py"]
 
 FROM tools AS api
 USER root
-RUN apt-get update && apt-get install -y --no-install-recommends git \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git=1:2.39.5-0+deb12u3 git-man=1:2.39.5-0+deb12u3 \
+    && test "$(dpkg-query -W -f='${Version}' git)" = '1:2.39.5-0+deb12u3' \
+    && test "$(dpkg-query -W -f='${Version}' git-man)" = '1:2.39.5-0+deb12u3' \
     && rm -rf /var/lib/apt/lists/*
 ENV PYTHONPATH=/app/backend
 WORKDIR /app

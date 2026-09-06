@@ -84,3 +84,7 @@ uvicorn==0.52.4
 ### 2026-09-06 API 间接版本冻结补充
 
 前文API15个运行包（不含pip）现已在既有backend/pyproject.toml中逐项精确锁定，构建使用该闭包并禁止自动解析间接依赖，pip check必须通过。重建后15包集合与旧已安装版本完全一致；无新增/升级第三方资源。pip由固定基础镜像创建venv引导，开发依赖和ScanCode专用venv不属于此次闭包。该技术冻结不代替每个包的许可证/来源/必要声明复核，也不声称所有发行文件hash或Debian包版本均已冻结。
+
+### 2026-09-06 Debian Git 版本固定补充
+
+原已验收Git及git-man发行包版本1:2.39.5-0+deb12u3现写入Dockerfile精确安装参数并通过dpkg-query检查；来源仍为原Debian bookworm仓库，不升级工具或新增资源。git为amd64、git-man为all。此项关闭Git构建时自动选择版本的缺口，不外推为全部Debian依赖/发行物hash/完整再分发义务已冻结；若旧版本不再可获取，构建失败而非自动换版。
