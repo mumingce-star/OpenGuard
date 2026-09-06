@@ -166,3 +166,5 @@
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：公开ZIP/Qwen发布绑定 | 实现提交48f6267a27df792c8c248b45d54f4bc8b311346a已推送feat/a7-public-zip-qwen-acceptance，git ls-remote完整哈希与本地一致。19个源码/测试/既有说明文件；未合并main或Release。EVD-A7-PUBLIC-ZIP-QWEN-001绑定该实现，任务点完整交付，P0父任务仍进行中。 | 无新增实现或测试范围 | 远端完整哈希一致；最终完整回归与实跑见原记录 | 是（本任务完成，P0未完成） |
 
 | 2026-09-06 | GPT-6 Astra / Root及限定只读审查 | 扫描组员5例Bench接入当前P0 | 精准复用1c7239e/89c8ba2样例、runner/evaluator，版本从实际producer读取并绑定样例SHA；保留detector0.1.1，未整支覆盖 | 无业务API/Schema/扫描器改动，无新依赖，无P1批量评测；只读审查修正负例409及报告绑定预期 | 159相关测试；4正例/1负例真实ZIP与HTTP；Chrome API Evidence；原Qwen报告保留；合成指标TP4/FP0/FN0不外推总体准确率 | 是（本任务接入完成，P0及人工复核未完成；发布见进度15节） |
+
+| 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：首批Bench发布绑定 | 2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。 | 无新增实现范围 | 远端完整哈希一致，159相关测试及真实5例记录保留 | 是（本任务交付，P0未完成） |

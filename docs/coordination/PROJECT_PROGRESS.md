@@ -396,3 +396,5 @@ EVD-A8-SCANNER-BENCH-001：固定5例不改源片段或expected；当前detector
 报名/参赛仍由Owner核实平台资格及权属；完整作品提交还需材料/视频/匿名检查与正式发布；竞争力需更广真实样例、误差分析和对照效果，不由5例推导。当前任务无代码缺交阻塞，不要求扫描组员重复提交本批代码。
 
 本次运行精确 token 数不可获得。开工8k–16k非硬估算，本轮范围确定为组员首批Bench集成验收并完整收口，未扩P1/P2；实际是否落入区间不可确认。分支feat/a8-scanner-bench-acceptance，发布绑定随后追加。
+
+发布绑定：2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。 上表本轮待发布项现为已推送功能分支；随后提交仅补发布事实。

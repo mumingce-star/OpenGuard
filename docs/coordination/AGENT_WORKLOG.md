@@ -3840,3 +3840,8 @@
 - 限定只读审查初稿遗漏实际409差异，主代理实跑指出后审查更正；按建议补saved case SHA检查、旧报告摘要对比及verify失败不覆盖旧receipt。最终HTTP verify通过；恢复原AI=1/Docker-host=1，旧成功Qwen报告verify四SHA通过；只读复核无新推理。Chrome extension新标签页真实显示API openai、待核验提示与src/client.py:1/openai.responses，未改用户当前mock标签页。
 - 既有README/Bench说明/部署说明/进度/AI/来源记录同步。只提交团队合成检测器结果，HTTP报告和ZIP留在仓库外。首批代码已齐，无需组员重复交付；独立人工标签复核、公开Git部署安全、陌生机与P0最终冻结仍待做。下一任务由Root核清公开Git现有缺口；不引入图谱/新接口/队列或P1/P2。
 - 本次运行精确 token 数不可获得；开工8k–16k，任务确定为本批Bench集成并技术收口，无产品范围扩大，实际消耗是否在区间不可确认。待文件清单、append-only和敏感/保护路径检查后推送功能分支，不合并main或Release。
+
+### [20260906-RootAstra-ScannerBench-Published] COMPLETE
+
+- GPT-6 Astra / Root；2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。
+- 推送前检查组员cases字节一致、公共backend/frontend/schemas零变更、append-only、新增行敏感/绝对路径、diff与文件清单全部通过。后续提交仅追加发布记录，不重复扫描或改写历史。
