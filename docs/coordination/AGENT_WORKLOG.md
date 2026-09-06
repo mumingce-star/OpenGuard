@@ -3879,3 +3879,7 @@
 - 校对脚本参数和报告命名；git diff --check、四文件清单、append-only及新增行敏感信息检查通过。首次Python追加命令因输入编码报错且未写入，改为原文追加；没有丢失记录。未重复原1221回归，不把原测试算成本次新验收。文档准备完成，待Root推送docs/a7-browser-download-handoff并追加发布绑定；不合并main或Release。
 - 下一步由用户提供实际Chrome保存路径，Root核对四格式文件与原receipt；设备可用后由异机操作者运行现有步骤。最终冻结和人工复核仍未完成。
 - 本次运行精确 token 数不可获得；开工估算6k–12k，本任务部分完成，实际是否在估算区间不可确认；未扩大功能范围。
+
+### [20260906-RootAstra-DownloadRepro-Published] PARTIAL
+
+- GPT-6 Astra / Root；四份既有文档提交e902c8dd23e2c41d0186592083e8ee3ed4bb8efc已推送docs/a7-browser-download-handoff，git ls-remote完整哈希一致。文档上传完成，异机与Chrome落盘验收仍未完成；未合并main或Release。随后仅追加发布事实。

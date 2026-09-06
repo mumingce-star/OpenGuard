@@ -174,3 +174,5 @@
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：Git部署发布绑定 | 实现0f1bdcc22a01a5f1f91b666d1ae94040bd3929ae已推送feat/a7-public-git-deploy-acceptance并核对远端完整哈希一致；16个既有文件、无新增文件，EVD-A7-PUBLIC-GIT-DEPLOY-001绑定该实现。本任务完整交付，完整P0仍待陌生机及最终冻结；未合并main或Release。 | 无新增实现范围 | 远端完整哈希一致，1221回归及真实Git证据见原记录 | 是（本任务完成，P0未完成） |
 
 | 2026-09-06 | GPT-6 Astra / Root | 异机复现与Chrome下载核验准备 | 复用现有Compose/smoke并固定341dc34版本；整理最小回传信息，Chrome点击原Git报告JSON链接 | 用户当前无另一台设备；未找到下载落盘文件，不能冒充异机或下载通过；无业务改动/新文件/重扫 | 文档命令和报告文件名与源码核对，diff检查；真实异机/落盘SHA仍待证据 | 部分完成（文档准备；验收门禁未关闭） |
+
+| 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：复现准备文档发布 | 四份既有文档e902c8dd23e2c41d0186592083e8ee3ed4bb8efc已推送docs/a7-browser-download-handoff | 无新增实现；未合并main或Release | 远端完整哈希一致 | 部分完成（文档已上传，异机/落盘未验收） |
