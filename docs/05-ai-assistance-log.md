@@ -170,3 +170,5 @@
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：首批Bench发布绑定 | 2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。 | 无新增实现范围 | 远端完整哈希一致，159相关测试及真实5例记录保留 | 是（本任务交付，P0未完成） |
 
 | 2026-09-06 | GPT-6 Astra / Root及限定实现子任务 | 公开Git复用现有ZIP事实和报告链 | 内部tree callback保持封印/失效/清理，直接复用已验收消费者；GitRuntime严格bool开关；API镜像Debian Git，Compose默认0显式启用 | 无新API/Schema/检测器/队列/Git恢复/P1/P2；不执行源码或安装目标依赖 | 1221 passed/2 skipped；Chrome真实公网9组件/11证据/9提示，全部Evidence SHA独立核对、失败清理、容器控制和重建报告通过；AI关闭，旧Qwen保留 | 是（本机Git部署验收完成；陌生机和最终冻结未完成，发布见进度16节） |
+
+| 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：Git部署发布绑定 | 实现0f1bdcc22a01a5f1f91b666d1ae94040bd3929ae已推送feat/a7-public-git-deploy-acceptance并核对远端完整哈希一致；16个既有文件、无新增文件，EVD-A7-PUBLIC-GIT-DEPLOY-001绑定该实现。本任务完整交付，完整P0仍待陌生机及最终冻结；未合并main或Release。 | 无新增实现范围 | 远端完整哈希一致，1221回归及真实Git证据见原记录 | 是（本任务完成，P0未完成） |

@@ -3861,3 +3861,8 @@
 - 部署安全：HTTP、回环IP、元数据IP、query在接收前422；保留.invalid域名负例scn_8713935b-837a-4b05-8b59-eff6a7810110为failed/ingestion/invalid_source，报告409、零资源/证据，成功失败workspaces均空。实际UID10001、cap0、NoNewPrivs1、Seccomp2、只读写入失败、4GiB/128PID、noexec临时区与0700数据目录。首次HostConfig.Binds零值断言忽略了named volume，依据实际Mounts.Type验证无host bind后通过，未放宽挂载/权限。API子进程共用容器网络，未声称完整隔离或所有攻击面已验收。
 - 本轮Git关闭AI以独立验收确定性链，不宣称Git已生成新Qwen建议。既有ZIP/Qwen/Bench保留；剩余陌生机/浏览器下载确认、最终安全资源冻结与标签人工复核，下一任务只用原部署脚本做陌生机最小复现。无P1/P2、新API/队列/图谱。README、部署说明、A2规格、来源、AI记录、进度16节同步；待最终清单检查和功能分支推送，不合并main或Release。
 - 本次运行精确 token 数不可获得；开工8k–16k，任务范围内技术完成，无范围扩大，实际token是否在区间不可确认。
+
+### [20260906-RootAstra-PublicGitDeploy-Published] COMPLETE
+
+- GPT-6 Astra / Root；实现0f1bdcc22a01a5f1f91b666d1ae94040bd3929ae已推送feat/a7-public-git-deploy-acceptance并核对远端完整哈希一致；16个既有文件、无新增文件，EVD-A7-PUBLIC-GIT-DEPLOY-001绑定该实现。本任务完整交付，完整P0仍待陌生机及最终冻结；未合并main或Release。
+- 发布前完整回归、真实Git/Chrome/失败清理/重建报告、OpenAPI等值、保护路径、append-only、敏感信息与git diff --check通过；随后提交仅追加发布记录，不改实现或复跑扫描。
