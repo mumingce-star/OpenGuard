@@ -18,6 +18,7 @@ services:
     read_only: true
     tmpfs:
       - /tmp:size=256m,mode=1777,noexec,nosuid,nodev
+      - /var/lib/openguard/workspaces:size=1g,uid=10001,gid=10001,mode=0700,noexec,nosuid,nodev
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     init: true

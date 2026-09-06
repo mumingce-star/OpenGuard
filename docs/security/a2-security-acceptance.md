@@ -379,3 +379,21 @@ API Dockerfile现在明确指定git和git-man均为1:2.39.5-0+deb12u3，并在�
 受控子进程实测：初始6个fd（其中3个为Rosetta转译相关），再打开250个达到总计256，下次打开返回EMFILE；关闭后可重新打开，提升hard到257被拒绝。首次断言误假定只占3个标准fd而失败，真实/proc证明额外占用后改为“实际初始数+新增数=256”，没有放宽硬上限或错误断言。此探针保留在原deploy/tool-smoke.py，不改进程自身限额来模拟部署通过。
 
 API环境与禁网tools profile各运行既有ScanCode32.5.0 MIT识别/Syft1.51.0 is-number7.0.0样例成功。另在API容器调用真实run_json_tool运行自建fd耗尽子进程：返回failed/scanner_failed、子进程已回收、父fd计数不变、下一次调用complete。未执行不可信目标代码、未耗尽API主进程。API最终healthy、2CPU保持；原Git与ZIP/Qwen两份receipt各verify四格式SHA保持，未重新扫描公开项目或推理。工具小样例不代表整个任务状态机耗尽矩阵通过。
+
+### 9.5 工作目录硬上限与写满清理（2026-09-06）
+
+基线780536b，分支fix/a2-workspace-disk-limit。SEC-A2-007/015/020中的工作目录无硬上限缺口本轮关闭：现有workspaces挂载1GiB tmpfs，10001/0700/noexec/nosuid/nodev，API4GiB内存/cpu2/nofile256保持。所有任务共享容量，单任务不能超过共享总上限；无每任务独占预留。工具/tmp另有256MiB，持久uploads、dispatch、数据库和reports保留原data卷。故不能把工作目录通过外推为所有临时/持久存储、上传排队累计容量和公平隔离已完成。
+
+实际发现ZIP解压的os.write失败会进入“invalid_archive/archive_integrity_failed”。现_write_all将目标写失败包装为已有scanner_failed/workspace_write_failed，原错误链保留用于内部验收，不向API暴露本机路径。源ZIP损坏的既有分类不变，无Schema/错误码新增。
+
+在无网络、无用户数据卷的隔离容器，原ZipIngestionService.ingest_with_consumer真实物化2MiB ZIP_STORED输入：
+
+| 实际条件 | 预期和实际 | 清理与恢复 |
+|---|---|---|
+| 1GiB文件系统仅剩1MiB | 接收写入返回ENOSPC，scanner_failed/workspace_write_failed | 原任务目录清空 |
+| 仅剩3MiB | 接收完整ZIP后解压写入返回ENOSPC，同一错误分类 | 部分解压和归档均清空 |
+| 删除本测试填充文件释放空间 | 同一服务再次摄取成功 | 成功后目录清空 |
+
+探针断言实际文件系统容量、tmpfs类型、底层errno，拒绝非空或非挂载的/quota；不模拟os.write、不执行目标代码。最终API在无queued/running且旧目录空时重建，实际mount容量1073741824字节，权限/限制通过；实际挂载路径小ZIP正例与清理通过，APIhealthy。190项相关回归通过（首次107通过、两条HTTP被沙箱回环权限阻断，原样受控复验2通过；追加81通过，1条既有弃用warning）。原Git/Qwen两组四SHA保持。
+
+本轮关闭工作目录容量及两条真实ENOSPC清理边界；并非Git全流程磁盘耗尽、API完整并发压力或完整NEG-A2-013/028已通过。剩余优先项是API内扫描子进程默认deny-egress；持久上传累计预算/剩余资源及人工、异机门禁继续保留，不把禁网测试容器当作生产网络隔离证据。

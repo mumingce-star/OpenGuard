@@ -202,3 +202,19 @@ docker compose -f deploy/compose.yaml exec -T api python /opt/openguard/tool-smo
 ```
 
 tool-smoke先检查真实继承的256/256、拒绝提高硬限制、到上限返回EMFILE及释放后恢复，再运行原两工具样例。运行环境若有Rosetta额外fd，按/proc实际占用计入256，不固定可新增数为253。最终API及独立tools均为initial6/opened250；两工具样例通过。原Git/ZIP-Qwen receipt的smoke --verify各通过，API健康/2CPU保持。网络deny-egress和data卷任务磁盘配额仍未通过；详见原安全表9.4，不将本项外推为完整安全冻结或异机验收。
+
+## 工作目录临时磁盘硬上限（2026-09-06）
+
+API现将现有 `/var/lib/openguard/workspaces` 挂为1GiB tmpfs，uid/gid10001、0700、noexec/nosuid/nodev。Git物化和ZIP工作副本复用该路径，无新API或目录配置。该容量为所有在途工作目录共享总额，也约束单个任务最大占用；不是每任务独享1GiB，不保证并发任务各自预留空间。tmpfs占用受API已有4GiB内存限制约束，磁盘和内存资源不是相互独立。
+
+数据库、reports、dispatch以及待处理ZIP的uploads继续保留在原data卷；容器重建只清空临时工作树，queued恢复仍使用持久上传。部署前须确认没有queued/running任务且原workspaces为空，防止遮蔽旧树；有残留时先核查生命周期，不删除用户数据，不执行down -v。保持原AI/Git环境开关后用既有Compose up更新api。
+
+此项只约束工作目录；工具 `/tmp` 另有256MiB上限，持久uploads/report累计占用不计入1GiB，不能声称所有存储都有任务配额或完整worker临时存储预算已冻结。
+
+真实写满验收复用tool-smoke中的check_workspace_quota，只允许在空的独立 `/quota` tmpfs执行。以下一次性容器不挂载data卷，临时占用约1GiB，退出自动回收：
+
+```bash
+docker run --rm --platform linux/amd64 --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 4g --cpus 2 --pids-limit 128 --ulimit nofile=256:256 --tmpfs /tmp:size=256m,mode=1777,noexec,nosuid,nodev --tmpfs /quota:size=1g,uid=10001,gid=10001,mode=0700,noexec,nosuid,nodev --entrypoint python openguard-api -c 'import json,runpy; print(json.dumps(runpy.run_path("/opt/openguard/tool-smoke.py")["check_workspace_quota"]()))'
+```
+
+原ZIP生产摄取在剩余1MiB（接收失败）和3MiB（接收成功、解压失败）均触发实际ENOSPC，返回scanner_failed/workspace_write_failed，任务树清空；释放填充文件后同一服务成功摄取并清理。最终API挂载容量1073741824字节、权限正确；小ZIP在实际挂载路径成功/清理，原Git/Qwen各四格式报告verify通过，无新公开扫描/推理。运行时无用户数据卷参与写满测试。

@@ -285,7 +285,11 @@ def _stream_member(
 def _write_all(file_descriptor: int, data: bytes) -> None:
     view = memoryview(data)
     while view:
-        written = os.write(file_descriptor, view)
-        if written <= 0:
-            raise OSError("short write")
+        try:
+            written = os.write(file_descriptor, view)
+            if written <= 0:
+                raise OSError("short write")
+        except OSError as error:
+            # Destination failures are infrastructure errors, not corrupt ZIPs.
+            raise IngestionSecurityError("scanner_failed", "workspace_write_failed") from error
         view = view[written:]

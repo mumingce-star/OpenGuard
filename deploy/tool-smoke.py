@@ -50,6 +50,61 @@ print(json.dumps({'soft': 256, 'hard': 256, 'initial': initial, 'opened': len(fd
     return json.loads(run([sys.executable, '-c', probe]))
 
 
+def check_workspace_quota():
+    """Destructive capacity probe ONLY for a disposable /quota tmpfs container.
+
+    Never run against the live data volume. This function requires a separate
+    /quota mount and refuses other paths or non-empty mounts.
+    """
+    import errno
+    import io
+    import os
+    import zipfile
+    from app.ingestion.zip_stream import ZipIngestionService
+    from app.security.errors import IngestionSecurityError
+
+    root = Path('/quota')
+    assert root.is_mount() and not list(root.iterdir())
+    mounts = Path('/proc/mounts').read_text().splitlines()
+    assert any(row.split()[1:3] == ['/quota', 'tmpfs'] for row in mounts)
+    capacity = os.statvfs(root).f_blocks * os.statvfs(root).f_frsize
+    assert capacity == 1024 * 1024 * 1024, capacity
+    workspace = root / 'workspaces'
+    workspace.mkdir(mode=0o700)
+    archive = io.BytesIO()
+    with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_STORED) as zipped:
+        zipped.writestr('payload.txt', b'x' * (2 * 1024 * 1024))
+    service = ZipIngestionService(workspace)
+    results = []
+    try:
+        # 1 MiB: receive fails. 3 MiB: receive fits, extraction fails.
+        for remaining_mib in (1, 3):
+            ballast = root / 'ballast'
+            try:
+                with ballast.open('wb') as handle:
+                    os.posix_fallocate(handle.fileno(), 0, capacity - remaining_mib * 1024 * 1024)
+                try:
+                    service.ingest_with_consumer(io.BytesIO(archive.getvalue()), lambda session: None)
+                except IngestionSecurityError as error:
+                    assert (error.code, error.reason) == ('scanner_failed', 'workspace_write_failed'), error
+                    cause = error
+                    while cause.__cause__ is not None:
+                        cause = cause.__cause__
+                    assert isinstance(cause, OSError) and cause.errno == errno.ENOSPC, repr(cause)
+                else:
+                    raise AssertionError('over-capacity ZIP unexpectedly succeeded')
+                assert not list(workspace.iterdir()), 'failed task left workspace bytes'
+                results.append({'remaining_mib': remaining_mib, 'errno': 'ENOSPC', 'cleaned': True})
+            finally:
+                ballast.unlink(missing_ok=True)
+        service.ingest_with_consumer(io.BytesIO(archive.getvalue()), lambda session: None)
+        assert not list(workspace.iterdir()), 'successful task left workspace bytes'
+    finally:
+        service.close()
+        workspace.rmdir()
+    return {'capacity_bytes': capacity, 'failures': results, 'next_ingestion': 'passed'}
+
+
 def main():
     nofile = check_nofile()
     scancode_version = run(["scancode", "--version"]).decode().strip()

@@ -3986,3 +3986,16 @@
 ### [20260906-RootAstra-Nofile-Published] COMPLETE
 
 - GPT-6 Astra / Root；06e3e54318811c2c93b5c7c115c59e17585f8acc已推送fix/a2-nofile-limit，远端完整哈希一致；7个既有文件，无新增文件。fd配置及本轮边界验收完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-WorkspaceDisk] START
+
+- GPT-6 Astra / Root；基线780536b，干净，Root单写。现有workspaces空；仅加工作目录1GiB共享tmpfs硬上限，持久uploads/dispatch/db/reports保留，不宣称每任务独享或全部磁盘已限额。修正解压写入OSError被误报ZIP损坏；复用tool-smoke验证隔离容器真实ENOSPC、清理和恢复。预计Compose、zip_stream、原测试脚本和部署/安全/进度/AI/日志，无新依赖/API/架构。
+- 估算6k–12k，本次运行精确 token 数不可获得；受控测试不挂载生产data卷，检查最终挂载、旧报告SHA和正常小扫描。网络/上传积累/完整安全及异机保持未完成。
+
+### [20260906-RootAstra-WorkspaceDisk-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；仅修工作目录容量和超限清理。8个既有文件：Compose、zip_stream、tool-smoke、部署/安全/进度/AI/共享日志，无新文件/依赖/API/Schema。1GiB共享tmpfs限制所有任务工作树；持久uploads/dispatch/db/reports保持，未删除用户数据。不宣称每任务独享、上传积累或全临时存储已受同一预算保护。
+- 隔离容器无用户卷，真实posix_fallocate填充；剩余1MiB和3MiB分别触发接收/解压ENOSPC，原摄取清理全部任务树、释放后同服务成功。修复_write_all把目标写失败误归ZIP损坏的问题，使用已有scanner_failed/workspace_write_failed，不改源损坏分类。
+- 190相关回归通过：107通过及2条回环权限失败保留，原样受控复验2通过，追加81通过/1既有弃用warning。构建完成；queued/running=0且旧workspaces空后更新API；实际容量1073741824、uid10001/0700及noexec/nosuid/nodev、nofile256/2CPU通过。最终挂载小ZIP及清理、APIhealthy、旧Git/Qwen各四SHA通过，无新公开扫描/推理。首次独立docker run未显式platform产生amd64提示但测试通过，复现说明已显式platform。
+- 本项完成，完整P0/网络/持久积累/人工/异机未完成。下一任务Root限定扫描子进程默认deny-egress，保留Git/Qwen既有授权网络边界。检查后推送fix/a2-workspace-disk-limit，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，范围完成无调整，实际是否在区间不可确认。
