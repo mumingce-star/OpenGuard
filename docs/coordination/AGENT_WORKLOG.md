@@ -3999,3 +3999,7 @@
 - 190相关回归通过：107通过及2条回环权限失败保留，原样受控复验2通过，追加81通过/1既有弃用warning。构建完成；queued/running=0且旧workspaces空后更新API；实际容量1073741824、uid10001/0700及noexec/nosuid/nodev、nofile256/2CPU通过。最终挂载小ZIP及清理、APIhealthy、旧Git/Qwen各四SHA通过，无新公开扫描/推理。首次独立docker run未显式platform产生amd64提示但测试通过，复现说明已显式platform。
 - 本项完成，完整P0/网络/持久积累/人工/异机未完成。下一任务Root限定扫描子进程默认deny-egress，保留Git/Qwen既有授权网络边界。检查后推送fix/a2-workspace-disk-limit，不合并main/Release。
 - 本次运行精确 token 数不可获得；开工6k–12k，范围完成无调整，实际是否在区间不可确认。
+
+### [20260906-RootAstra-WorkspaceDisk-Published] COMPLETE
+
+- GPT-6 Astra / Root；7ec1a418d018e03552361ab48fb27371bd7c1709已推送fix/a2-workspace-disk-limit，远端完整哈希一致；8个既有文件，无新增文件。本轮工作目录硬上限/真实超限清理完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
