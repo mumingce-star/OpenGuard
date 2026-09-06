@@ -12,7 +12,18 @@
 docker compose -f deploy/compose.yaml up -d --build --wait
 ```
 
-在 **Chrome** 打开 <http://127.0.0.1:8080/app/new-scan>，选择 ZIP 并提交。含 npm 依赖的输入可完成资源、待核验风险和报告；缺少许可证声明保留 NOASSERTION，工具失败或漏扫则显示部分完成。Web 仅监听本机回环，API 不映射宿主端口。无需账号、API 密钥或新增接口。
+这条命令是 **ZIP 模式**，公开 Git 与 AI 均保持安全默认关闭。要在已启动锁定 Qwen3 的 Mac 上演示“GitHub 仓库 → 真实扫描 → 中文 AI 建议 → 报告”，应在同一个终端先设置运行开关，再启动：
+
+```bash
+export OPENGUARD_ENABLE_PUBLIC_GIT=1
+export OPENGUARD_ENABLE_AI=1
+export OPENGUARD_OLLAMA_DOCKER_HOST=1
+docker compose -f deploy/compose.yaml up -d --build --wait
+```
+
+在 **Chrome** 打开 <http://127.0.0.1:8080/app/new-scan>，选择 ZIP 或在真实模式下填写公开 GitHub 仓库链接并提交。含受支持依赖声明的输入可完成资源、待核验风险和报告；缺少许可证声明保留 NOASSERTION，工具失败或漏扫则显示部分完成。Web 仅监听本机回环，API 不映射宿主端口。无需账号、API 密钥或新增接口。
+
+这些开关在创建或重建 API 容器时读取。若换了终端，或执行新的 `docker compose up` / `--force-recreate`，必须再次导出或在该命令前显式传入；否则 Compose 会按默认值 `0` 重建 API。此时 Git 请求只保留兼容的排队记录，页面会停在 `queued/0%`，不会自动恢复为真实扫描。应先确认容器已启用 Git 再提交，不要反复创建同一任务；项目当前不包含 Git 任务重启恢复。
 
 端口占用时可在命令前加 `OPENGUARD_WEB_PORT=8081`。Docker CLI 未加入 PATH 时，使用 Docker Desktop 中配置的 CLI 路径；不要修改应用安全策略或跳过签名检查。
 
@@ -26,6 +37,8 @@ python3 deploy/smoke.py --external-scanners --output /tmp/openguard-compose-chec
 docker compose -f deploy/compose.yaml up -d --force-recreate --no-deps --wait api
 python3 deploy/smoke.py --output /tmp/openguard-compose-check --verify
 ```
+
+上面的重建命令用于 ZIP 默认模式。真实 Git/Qwen3 模式应保留同一终端里的三个 `export`，或在重建命令前再次显式传入三个值，避免把运行中的真实模式切回默认关闭。
 
 首条验收真实 SPA 深链接、ZIP 完成、三个资源（含 Syft 识别的项目自身）、pending 许可证、两工具版本和来源 SHA、风险/Evidence、四报告 SHA-256、缺声明输入、路径穿越 ZIP 失败、未知任务 404；第二次只读验证重建后原任务和四报告字节相同。只重启 API 时 nginx 通过 Docker DNS 重新解析服务地址。
 
