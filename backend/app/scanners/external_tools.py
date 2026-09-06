@@ -10,6 +10,7 @@ remains a parser-only capability.
 from __future__ import annotations
 
 import json
+import math
 import os
 import re
 import selectors
@@ -136,7 +137,7 @@ def run_json_tool(
     tool: str,
     arguments: Sequence[str],
     *,
-    timeout_seconds: int = 120,
+    timeout_seconds: float = 120,
     max_output_bytes: int = _MAX_OUTPUT_BYTES,
     pass_fds: Sequence[int] = (),
     disable_update_check: bool = False,
@@ -226,15 +227,31 @@ def _validate_proc_target(target: str, pass_fds: Sequence[int]) -> None:
         raise ValueError("scanner target must match its sole inherited proc descriptor")
 
 
-def run_scancode_license_scan(tool: str, target: str, *, pass_fds: Sequence[int]) -> ToolExecution:
+def run_scancode_license_scan(
+    tool: str, target: str, *, pass_fds: Sequence[int],
+    relative_file: str | None = None, timeout_seconds: float = 120,
+    max_output_bytes: int = _MAX_OUTPUT_BYTES,
+) -> ToolExecution:
     """Run fixed license-only ScanCode JSON over a trusted proc-FD target."""
 
     _validate_proc_target(target, pass_fds)
+    if (
+        type(timeout_seconds) not in {int, float} or not math.isfinite(timeout_seconds)
+        or not 0 < timeout_seconds <= 120
+        or type(max_output_bytes) is not int or not 0 < max_output_bytes <= _MAX_OUTPUT_BYTES
+        or (relative_file is not None and _relative_path(relative_file) is None)
+    ):
+        raise ValueError("invalid ScanCode limits or file")
+    arguments = ("--processes", "1", "--license", "--strip-root", "--json", "-", ".")
+    if relative_file is not None:
+        # Single-file roots bypass ScanCode's default VCS-file walk exclusions.
+        # --info supplies the hash required before rebinding the basename.
+        arguments = ("--processes", "1", "--license", "--info", "--strip-root", "--json", "-", f"./{relative_file}")
     # Resolve the trusted directory in the child before launching ScanCode;
     # scanning the proc symlink itself does not reliably traverse its files.
     return run_json_tool(
-        tool, ("--processes", "1", "--license", "--strip-root", "--json", "-", "."),
-        timeout_seconds=120, max_output_bytes=_MAX_OUTPUT_BYTES,
+        tool, arguments,
+        timeout_seconds=timeout_seconds, max_output_bytes=max_output_bytes,
         pass_fds=pass_fds, scancode_runtime=True, working_directory=target,
     )
 

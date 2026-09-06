@@ -14,6 +14,9 @@ from datetime import datetime, timezone
 
 from app.domain.models import Component, ComponentType, DetectionMethod
 from app.scanners import external_tools
+from app.scanners import scancode_pipeline
+from app.ingestion.inventory import Inventory, InventoryEntry
+from app.security.errors import IngestionSecurityError
 from app.scanners.external_tools import (
     ToolExecution,
     map_scancode_output,
@@ -26,6 +29,131 @@ from app.scanners.external_tools import (
 
 _DIGEST = "0" * 64
 _NOW = datetime(2026, 9, 2, tzinfo=timezone.utc)
+
+
+class _TreeTarget:
+    inherited_fds = (9,)
+
+    def proc_target(self):
+        return "/proc/self/fd/9"
+
+
+def _scan_inventory(paths):
+    return Inventory(tuple(InventoryEntry(path, 1, "a" * 64) for path in paths), _DIGEST)
+
+
+def _scan(inventory):
+    return scancode_pipeline.scan_sealed_tree(
+        _TreeTarget(), inventory, executable="scancode", tool_version="32.5.0", observed_at=_NOW
+    )
+
+
+def test_missing_file_supplements_rebind_only_matching_hashes_under_shared_budgets(monkeypatch):
+    paths = ["repo/.gitignore", "repo/ordinary.txt"]
+    calls = []
+    clock = [0.0]
+    outputs = []
+
+    def invoke(tool, target, **kwargs):
+        calls.append((tool, target, kwargs))
+        path = kwargs["relative_file"]
+        files = [] if path is None else [{"path": path.rsplit("/", 1)[-1], "type": "file",
+            "sha256": "a" * 64, "scan_errors": [], "detected_license_expression": "mit"}]
+        raw = json.dumps({"files": files}).encode()
+        outputs.append(len(raw))
+        clock[0] += 4
+        return ToolExecution(tool, "complete", raw)
+
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    monkeypatch.setattr(scancode_pipeline.time, "monotonic", lambda: clock[0])
+    result = _scan(_scan_inventory(paths))
+    assert [e.locator for e in result.mapping.evidence] == paths
+    assert all(e.content_hash.value == "a" * 64 for e in result.mapping.evidence)
+    assert [call[2]["relative_file"] for call in calls] == [None, *paths]
+    assert [call[2]["timeout_seconds"] for call in calls] == [120, 116, 112]
+    assert [call[2]["max_output_bytes"] for call in calls] == [
+        8 * 1024 * 1024, 8 * 1024 * 1024 - outputs[0], 8 * 1024 * 1024 - sum(outputs[:2])]
+    assert all(call[1] == "/proc/self/fd/9" and call[2]["pass_fds"] == (9,) for call in calls)
+
+
+@pytest.mark.parametrize("bad", [
+    {"path": "different"}, {"path": "../.gitignore"}, {"path": "repo/.gitignore"},
+    {"sha256": "b" * 64}, {"sha256": None}, {"type": "directory"}, {"scan_errors": ["failure"]},
+])
+def test_bad_supplement_never_becomes_inventory_evidence(monkeypatch, bad):
+    def invoke(tool, _target, **kwargs):
+        record = {"path": ".gitignore", "type": "file", "sha256": "a" * 64, **bad}
+        files = [] if kwargs["relative_file"] is None else [record]
+        return ToolExecution(tool, "complete", json.dumps({"files": files}).encode())
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError) as error:
+        _scan(_scan_inventory(["repo/.gitignore"]))
+    assert error.value.reason == "external_scanner_invalid_output"
+
+
+@pytest.mark.parametrize("record", [
+    {"path": "other", "type": "file"},
+    {"path": "present", "type": "file", "sha256": "b" * 64},
+    {"path": "present", "type": "file", "scan_errors": ["failure"]},
+])
+def test_invalid_initial_observation_is_not_hidden_by_supplements(monkeypatch, record):
+    calls = []
+    def invoke(tool, _target, **kwargs):
+        calls.append(kwargs)
+        return ToolExecution(tool, "complete", json.dumps({"files": [record]}).encode())
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError):
+        _scan(_scan_inventory(["present", "missing"]))
+    assert len(calls) == 1
+
+
+def test_supplement_count_is_limited_before_extra_processes(monkeypatch):
+    calls = []
+    def invoke(tool, _target, **kwargs):
+        calls.append(kwargs)
+        return ToolExecution(tool, "complete", b'{"files":[]}')
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError):
+        _scan(_scan_inventory([f"file{i}" for i in range(9)]))
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("exhaust", ["time", "bytes"])
+def test_total_scancode_budget_is_not_reset_for_supplements(monkeypatch, exhaust):
+    clock = [0.0]
+    calls = []
+    def invoke(tool, _target, **kwargs):
+        calls.append(kwargs)
+        if kwargs["relative_file"] is None:
+            raw = b'{"files":[]}'
+            if exhaust == "time":
+                clock[0] = 121
+            else:
+                raw += b" " * (8 * 1024 * 1024 - len(raw))
+            return ToolExecution(tool, "complete", raw)
+        pytest.fail("exhausted total budget started a supplement")
+    monkeypatch.setattr(scancode_pipeline.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError) as error:
+        _scan(_scan_inventory(["missing"]))
+    assert error.value.reason == ("scanner_timeout" if exhaust == "time" else "tool_output_limit_exceeded")
+    assert len(calls) == 1
+
+
+def test_single_file_command_is_fixed_and_cannot_be_an_option(monkeypatch):
+    calls = []
+    monkeypatch.setattr(external_tools, "run_json_tool", lambda *args, **kwargs: calls.append((args, kwargs)))
+    external_tools.run_scancode_license_scan("scancode", "/proc/self/fd/9", pass_fds=(9,),
+        relative_file="--help", timeout_seconds=37.5, max_output_bytes=1000)
+    assert calls == [(("scancode", ("--processes", "1", "--license", "--info", "--strip-root", "--json", "-", "./--help")),
+        {"timeout_seconds": 37.5, "max_output_bytes": 1000, "pass_fds": (9,), "scancode_runtime": True,
+         "working_directory": "/proc/self/fd/9"})]
+
+
+@pytest.mark.parametrize("path", ["../escape", "/etc/passwd", "nested/../escape", "./file", "nested\\file", ""])
+def test_single_file_command_rejects_untrusted_paths(path):
+    with pytest.raises(ValueError):
+        external_tools.run_scancode_license_scan("scancode", "/proc/self/fd/9", pass_fds=(9,), relative_file=path)
 
 
 def test_scancode_maps_only_locatable_license_evidence_and_candidates() -> None:

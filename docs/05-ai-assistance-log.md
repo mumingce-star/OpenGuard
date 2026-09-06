@@ -160,3 +160,5 @@
 | 2026-09-05 | GPT-6 Astra / Root、受限实现及 GPT-5.6 Luna 独立验收 | A4明确模型引用接资源/风险/报告 | 按执行书A4复用组员B6候选，修复dataset/model重叠、重复Evidence、整文件SHA与邻近秘密泄露风险；薄消费者遵守A2预算 | 只读确认已有Qwen3 manifest，不安装/推理/上传权重；模型引用不代表使用或授权，NOASSERTION/pending不继承其他LICENSE | 实现82、独立9、相关91、全量1146 passed/3 skipped；真实HTTP四报告、Chrome模型详情/行号/报告、重建恢复通过；两初始失败为ZIP高压缩比fixture，改stored后原限额断言通过 | 是（技术验收完成，待Root发布；完整P0未完成） |
 
 | 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：模型样例发布绑定 | 2ccb75cbd09e7950aa0a98656daea6014dc0e3f9已推送feat/a4-ai-asset-report，远端完整哈希一致 | 17文件，无模型权重/个人配置/新依赖，未合并或Release | EVD-A4-AI-ASSET-ZIP-001绑定已验收实现 | 是（本任务完整交付，P0未完成） |
+
+| 2026-09-06 | GPT-6 Astra / Root与限定实现及独立检查子任务 | 固定公开ZIP→真实Qwen3→报告 | 复用扫描组员既有实现；补ScanCode最多8个遗漏文件且共享原预算、Docker固定宿主机opt-in禁代理/重定向、提示词避免非法JSON Pointer；不放宽AI验证 | 无新API/Schema/队列或P1/P2；未上传目标源码/权重/生成报告；中断后复用原scan、不重复推理 | 1200 passed/3 skipped/2既有warning；真实227组件/4引用/283证据/231提示/231建议；事实对照、Chrome正文与重建四SHA通过；原失败保留 | 是（本机公开ZIP链验收通过；完整P0及建议效果评测未完成；功能分支绑定见进度14节） |

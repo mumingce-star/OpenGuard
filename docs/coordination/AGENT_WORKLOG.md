@@ -3790,3 +3790,33 @@
 - 根LICENSE为Apache-2.0；pyproject含15项运行依赖及2项test依赖；README第76行有m-ric/agents_medium_benchmark_2数据集完整URL，docs/source/en/examples/multiagents.md第57行有Qwen/Qwen2.5-Coder-32B-Instruct完整URL。只证明引用存在，根许可证不继承到依赖/模型/数据集，版本范围不是精确安装版本；未执行代码、下载权重或运行完整扫描。
 - 默认网络DNS受限后只读提权；GitHub匿名API返回403限额，改用公开Git refs与codeload成功，无产品修复。未改产品源码，无需重跑产品测试。下一步由用户A4/A5/A7/A8链路执行该固定ZIP端到端验收，只修阻断。正式指标仍需人工真值和实际预测；当前P0父任务不变。
 - 本次运行精确 token 数不可获得；开工2k–4k估算，选样任务完整完成，无范围调整，实际是否落入区间无法确认。待提交仅两个既有治理文件，功能分支发布，不合并或Release。
+
+### [20260906-RootAstra-PublicZIPQwen] START
+
+- GPT-6 Astra / Root；基线6ac3998，开工干净，新功能分支feat/a7-public-zip-qwen-acceptance。复用前轮已核实历史并阅读新增日志、README、Sol交接、进度13节；历史超长输出截断，不虚称本轮完整重读。fetch扫描组员新增至89c8ba2，先审查差异，不覆盖已验收detector。
+- 用户授权固定smolagents ZIP→真实工具→风险/证据→本机Qwen3→现有报告，Chrome插件验收；只修阻断。不新增API/Schema/队列/图谱，不运行第三方源码、不安装其依赖、不下载权重。预计修改最小A5部署配置与必要测试、复现脚本和既有治理说明；Root独占写入，子任务只读审查连接边界。
+- 开工非硬token估算10k–18k；验证固定ZIP SHA、真实HTTP/Chrome、AI事实保持与报告持久化，定向及必要全量回归后推送功能分支。当前Compose健康、AI关闭，Ollama未响应；先运行AI关闭基线并恢复现有本机模型服务。
+
+### [20260906-RootAstra-PublicZIPQwen-Checks] PARTIAL（回归完成，真实整批AI待验）
+
+- 原始固定ZIP SHA已复核；无AI首轮scn_98c8ae07-8eb8-4c64-9915-f099c4a7d6db为partial：ScanCode complete但漏.gitignore，原始JSON194147字节、61/62文件。实际安装源码证明递归walk默认忽略VCS文件，--include不能补回。修复在同一封印fd内补扫最多8遗漏文件，严格basename/type/SHA/scan_errors，共享原120秒/8MiB限额，完整覆盖门禁保留。修复后scn_be55489e-b1c1-4de5-81b9-1b8f1b37a4ae完成，227组件/4资产/283证据/231待核验提示，29.33秒，四格式SHA通过。验收脚本初始把manifest字段locator误当纯文件名，按原path:field契约修正后复核同一任务通过，未改业务事实。
+- A5新增严格显式Docker Desktop固定host.docker.internal:11434接线，默认AI关闭，禁代理和全部HTTP重定向；运行时/模型完整摘要保持。原子AI输出校验不放宽、无重试或新接口/Schema/队列。30项独立真实HTTP验证默认零DNS拒绝、固定host、代理零访问及三阶段15种重定向目标零访问；首轮sandbox bind PermissionError保留，受控原样30 passed。ScanCode定向85 passed；完整初轮1199 passed/3 skipped，后述prompt修复最终1200 passed/3 skipped/2既有warning，59.60秒。OpenAPI与6ac3998等值，公共domain/Schema未改。
+- Chrome首轮AI scn_b5bdb019-63f8-49eb-9b91-4e5f04b0ac3e完成报告但ai_response_invalid，974.64秒且无AI建议，不能作为成功。小范围原payload复现精确定位第229索引@e2b/cli：模型steps复述JSON Pointer触发原绝对路径保护；4个AI资产及末尾219..228均合法。仅追加system prompt要求简短行动步骤、证据ID引用、不复述路径/JSON Pointer等；坏输入真实3/3通过。旧保护和整批原子降级保留，prompt摘要变为488130706fdd4b56e3385c52a3c55d42832d34a27c6aa69d06b6464b7f0ffcd4，增加原JSON Pointer仍须拒绝的回归。升级前dispatch为空、无在途任务，不迁移旧队列。
+- Chrome后续scn_ff197a8f-8c42-4d65-a91e-11fea9d4b3d4在65秒内ai_provider_unavailable，测试终端输出阻塞是运行方式嫌疑；nohup后台尝试被执行环境回收，导致scn_ef4bfb85-9275-4d7b-988e-c9164f360121同样降级。现已用保持运行的原Ollama主进程将输出直接写私有临时文件，仍仅127.0.0.1/no-cloud/no-history；容器真实冷生成4.23秒通过，旧失败报告保留。当前Chrome任务scn_58822f0b-c0c5-47f2-825d-2206103cd597正在独立日志服务下验收，不预判成功。一次只读验收调用自动审批超时，按返回提示仅重试一次成功，无未解决权限阻塞。
+- Root独占A5、部署脚本、治理及Chrome；同为GPT-6 Astra的受限子任务负责只读审查、独立协议测试及限定ScanCode修复，已停写。组员89c8ba2已提供5个实际运行的合成B6基准，当前detector0.1.1保留，不覆盖为旧候选0.1.0；本轮未接B7新任务。没有第三方源码/模型权重/生成报告进入Git。
+- token开工10k–18k非硬估算，本次运行精确token数不可获得；范围只增加真实阻断修复，无P1/P2。最终任务点、Chrome AI正文、事实对照和重建持久性仍等待本轮最后实际结果，不提前COMPLETE或推送。
+
+### [20260906-RootAstra-PublicZIPQwen-Resume] START
+
+- GPT-6 Astra / Root；用户要求保留成果并从未完成处继续。核对原功能分支和全部未提交文件，复用此前已读历史和新增日志，不重新生成文件或运行扫描。原 scn_58822f0b-c0c5-47f2-825d-2206103cd597 已完成：227组件、4资产、231提示、231真实AI建议，963.30秒；原验收脚本事实对照和四格式SHA已通过。
+- 本轮仅 Chrome 正文、重建持久性、既有README/进度/AI记录/工作日志更新、diff与发布检查及功能分支推送。此前最终1200 passed/3 skipped/2既有warning保留，不无故重复长推理和全量测试。无其他写入者。
+- 非硬token估算6k–12k；本次运行精确 token 数不可获得。无新接口、Schema、队列或P1/P2；不提交样例源码、报告、模型权重或本机产物。
+
+### [20260906-RootAstra-PublicZIPQwen-Accept] COMPLETE（技术验收；发布绑定随后追加）
+
+- GPT-6 Astra / Root；EVD-A7-PUBLIC-ZIP-QWEN-001绑定成功scan scn_58822f0b-c0c5-47f2-825d-2206103cd597。227组件、4明确引用、283证据、231待核验风险和231条锁定Qwen3建议；963.30秒，无errors。原AI关闭scan29.33秒；原脚本比较除observed_at/remediation_id外全部组件/资产/许可/证据/义务/风险及输入和inventory摘要一致。未重新上传或重复推理。
+- Chrome extension原页面刷新completed/100%，报告DOM读到231条AI解释、4个NOASSERTION模型/数据集及来源行号。保留原报告标签页。API保持AI=1和Docker-host=1，compose up --force-recreate --no-deps --wait api后健康；deploy/smoke.py --output <原仓库外证据目录> --verify通过；Chrome再刷新仍231条建议与原任务ID。
+- 四格式SHA：HTML 0d6c3983a32bdc73cff0fa400e11754efbff72bfbfd233a69561ce9eaca29747；JSON 36b9cbbb9a843a25aa90b60aa784d31c1be017688c7757e2128324589f3d9810；CSV与resource_inventory均87a8c1a9b48617071ff0774f9b0e4f0f4abf2f45a66374d6d00b0d29245872b8。原失败报告和首次受限socket失败保留，不冒充成功。
+- 复用上一段最终1200 passed/3 skipped/2既有warning、独立HTTP30项、OpenAPI等值；本次仅记录更新与运行验收，无新业务修复，故未重复全量。修改范围为既有A5/API工厂、扫描器两文件、Compose/验收脚本与说明、四个单测、一个独立边界测试及既有治理文档。公共契约和依赖未变。只提交源码/测试/说明，不提交原始输入或本机输出。
+- Chrome下载文件落盘仍待确认，HTTP四格式已通过；单样例不证明建议语义全部准确、全覆盖或授权确认。P0公开Git部署安全、陌生机复现、首批golden指标与最终冻结仍未完成；下一任务由Root先核清公开Git现有缺口。已查组员89c8ba2，不覆盖现有detector，不把B线计入用户任务。
+- 本次运行精确 token 数不可获得；恢复开工估算6k–12k，所定收口范围技术完成，实际token是否在区间不可确认，无功能扩展。README、进度14节、AI记录、来源登记均同步，待Root检查与功能分支发布绑定；不合并main或Release。

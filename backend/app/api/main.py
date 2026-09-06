@@ -481,7 +481,13 @@ def create_default_app() -> FastAPI:
         raise RuntimeError("invalid OPENGUARD_ENABLE_AI")
     registry = SQLiteScanRunRegistry(data_dir / "scans.db")
     report_store = ReportArtifactStore(report_root)
-    ai_provider = OllamaProvider() if ai_enabled == "1" else None
+    docker_ollama = os.environ.get("OPENGUARD_OLLAMA_DOCKER_HOST", "0")
+    if docker_ollama not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_OLLAMA_DOCKER_HOST")
+    ai_provider = (
+        OllamaProvider("http://host.docker.internal:11434", docker_host=True)
+        if docker_ollama == "1" else OllamaProvider()
+    ) if ai_enabled == "1" else None
     dispatch_store = (
         ZipDispatchStore(dispatch_root, upload_root, recovery_mode=True)
         if durable_zip_enabled == "1"

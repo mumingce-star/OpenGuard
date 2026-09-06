@@ -107,3 +107,21 @@ API 版本为 `0.33.3`；tags digest 与磁盘 manifest 原始字节 SHA-256 均
 该记录只证明当前 Apple-silicon 机器、锁定模型和单一冻结样例可真实生成符合 A5 边界的候选整改；
 不证明多项目质量、许可证规则正确、法律结论、A4 主链接线、离线安装包、Linux/Docker、Bench、
 报告或完整作品。仓库不保存 Ollama 安装包、模型缓存、prompt 或完整模型 response。
+
+## 7. P0 Docker Desktop 接线补充（2026-09-06）
+
+既有本机默认与模型身份不变。API 管理员同时显式设置 `OPENGUARD_ENABLE_AI=1`
+和 `OPENGUARD_OLLAMA_DOCKER_HOST=1` 时，仅使用固定
+`http://host.docker.internal:11434` 访问 Docker Desktop 宿主机已有 Ollama；两个开关严格为0/1，
+未开启 AI 不创建 Provider。此模式信任操作者的 Docker Desktop 主机解析，不允许任意 endpoint、
+端口、凭据、路径或云服务；不是任意 Linux 主机部署保证。宿主 Ollama 继续只绑定127.0.0.1，
+不扩大监听地址、不挂模型目录、不自动pull。普通进程默认仍只允许字面量回环地址。
+
+两种模式都禁用环境代理，并显式拒绝 HTTP 重定向，避免已校验地址把事实转送到其他目标。
+固定运行时/模型完整digest、单次deadline、结构化输出与A5事实保护不变。
+
+同轮真实样例暴露：模型在`@e2b/cli`建议中复述JSON Pointer，触发既有绝对路径拒绝，整批建议诚实撤回。
+补充system prompt要求简短行动步骤，通过evidence_ids引用，不复述路径、JSON Pointer、URL、哈希或凭据；
+不放宽输出校验、不修补响应、不重试。新prompt/schema摘要为
+`488130706fdd4b56e3385c52a3c55d42832d34a27c6aa69d06b6464b7f0ffcd4`。
+升级前确认无queued/running且dispatch目录为空；旧完成报告保留原摘要，不重放旧AI任务、不迁移队列。

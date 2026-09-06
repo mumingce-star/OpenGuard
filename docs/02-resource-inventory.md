@@ -111,3 +111,13 @@ profile，不能把当前 macOS 实测直接当作部署证据。
 - 技术报告；
 - 演示脚本和 3-5 分钟视频；
 - 最终答辩 PPT（晋级后）。
+
+## 2026-09-06 真实公开项目验收样例
+
+huggingface/smolagents 固定commit `a3df1a21db6045aa9be15b4bdf2067041100e96a`：
+https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041100e96a 。
+根LICENSE为Apache-2.0，源码只作为外部静态扫描输入，未修改、安装、执行或复制入作品仓库；
+保留原ZIP内版权及许可证。归档SHA和获取/复现命令见deploy/README.md。
+Qwen2.5-Coder、FLUX.1-dev及两个HF数据集仅为该输入中的明确引用，不是OpenGuard新增运行依赖，
+未下载权重或数据集，授权未知保留NOASSERTION/pending；不能套用仓库根许可证。
+实际建议生成复用此前登记的本机Qwen3 4B/Ollama，不新增模型或工具依赖。

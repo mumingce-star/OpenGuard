@@ -78,3 +78,32 @@ python3 deploy/smoke.py --external-scanners --ai-assets --output /tmp/openguard-
 只识别被扫描 ZIP 中的明确引用，不读取操作者模型目录、不运行模型、不抓取远程许可证。完整 HTTPS 仓库链接可识别；带查询、fragment、子路径或尾斜杠链接保守忽略。文本文件受 512 KiB/文件、2 MiB/资产读取、128 文件与原 A2 总预算限制，跳过或无法解析时显示不完整诊断。大型 ZIP 的保守预算可能跳过小引用，不承诺任意项目覆盖率。
 
 下一步按执行书验收一个真实公开项目的完整 P0 链，再收口首批样例与陌生机复现。
+
+## 固定公开项目与本机 Qwen3
+
+公开验收样例为 [smolagents 固定提交](https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041100e96a)，
+下载 [该提交 ZIP](https://github.com/huggingface/smolagents/archive/a3df1a21db6045aa9be15b4bdf2067041100e96a.zip) 到仓库外。
+原始 ZIP SHA256 为 `c486d41688b937e208393b95e70fc7293c555b046f4284a8fca7a925fe6ef4a9`。
+标签v1.0.0与pyproject自述1.1.0.dev0不同，复现以完整commit及ZIP摘要为准。
+不安装其依赖或执行其源码，根Apache-2.0不继承给模型、数据集或依赖。
+
+在已准备锁定模型的 Mac 上启动原有 Ollama（版本与模型见A5规格），只监听回环。若已有服务则复用；将日志写入本机文件，避免长扫描被终端输出阻塞：
+
+```bash
+umask 077
+OLLAMA_HOST=127.0.0.1:11434 OLLAMA_NO_CLOUD=1 OLLAMA_NOHISTORY=1 nohup ollama serve > /tmp/openguard-ollama.log 2>&1 < /dev/null &
+# 另一个终端；先完成AI关闭基线：
+docker compose -f deploy/compose.yaml up -d --build --wait
+python3 deploy/smoke.py --public-zip /tmp/smolagents.zip --output /tmp/openguard-public-noai
+# 显式启用 Docker Desktop 到宿主机已有模型的连接：
+OPENGUARD_ENABLE_AI=1 OPENGUARD_OLLAMA_DOCKER_HOST=1 docker compose -f deploy/compose.yaml up -d --no-deps --wait api
+python3 deploy/smoke.py --public-zip /tmp/smolagents.zip --expect-ai --compare-to /tmp/openguard-public-noai/report.json --output /tmp/openguard-public-ai
+```
+
+也可在 Chrome 上传同一ZIP，然后将任务ID传入上述脚本的 `--scan-id`，避免重复扫描。
+脚本校验四个明确模型/数据集引用、来源SHA/行号、软件依赖、未知授权、AI身份/证据引用与四格式报告；
+临时输出包含任务ID、原始报告和SHA receipt，失败记录不覆盖为成功。`--verify`可复核重建后的四格式字节。
+此验收不是完整识别准确率评测。现有A5逐条生成且一条失败会整体降级，较多依赖会增加耗时；
+脚本最多等待30分钟，不改变单次推理限额或增加自动重试。模型不可用时仍保留确定性扫描和报告。
+
+2026-09-06 实测：AI 关闭 29.33 秒；锁定 Qwen3 开启 963.30 秒，227 组件、4 引用资产、283 证据、231 待核验提示和 231 待复核建议。确定性事实对照、Chrome 正文及容器重建后的四格式 SHA 均通过。整批模型输出曾因非法 JSON Pointer 降级；只改提示词引导，原校验与原子降级保留。实际建议质量尚未经 golden 标注评测，不能将结构校验通过解释为语义全部准确。

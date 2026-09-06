@@ -37,3 +37,13 @@ ScanCode32.5.0/Syft1.51.0 沿用已登记官方包和 SHA，现已复用组员 f
 沿用已登记 Qwen3 与 Ollama，不新增依赖、下载、推理或权重分发。本机现有 qwen3:4b-instruct-2507-q4_K_M manifest 再读 SHA 为 0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0，与既有锁定值相等；本轮没有重算权重 blob，也不把安装记录当成被扫描项目的使用证据。
 
 样例只引用 [Qwen 官方模型页](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507)，当日核对页面标注 Apache-2.0；运行中的静态扫描器不抓取该网页，不将人工浏览结果注入扫描事实，因此模型 LicenseExpression 仍为 NOASSERTION、授权 pending。扫描证明的是输入 README 中的明确引用。检测器复用团队 f8bedfd 候选，0.1.1 修正来源哈希、重复和误识别；不复制模型卡正文、不上传个人配置。
+
+## 2026-09-06 真实公开项目验收样例
+
+huggingface/smolagents 固定commit `a3df1a21db6045aa9be15b4bdf2067041100e96a`：
+https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041100e96a 。
+根LICENSE为Apache-2.0，源码只作为外部静态扫描输入，未修改、安装、执行或复制入作品仓库；
+保留原ZIP内版权及许可证。归档SHA和获取/复现命令见deploy/README.md。
+Qwen2.5-Coder、FLUX.1-dev及两个HF数据集仅为该输入中的明确引用，不是OpenGuard新增运行依赖，
+未下载权重或数据集，授权未知保留NOASSERTION/pending；不能套用仓库根许可证。
+实际建议生成复用此前登记的本机Qwen3 4B/Ollama，不新增模型或工具依赖。

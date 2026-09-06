@@ -186,8 +186,9 @@ def test_default_opener_is_built_with_an_explicit_empty_proxy_map(monkeypatch) -
         observed["proxies"] = proxies
         return sentinel_handler
 
-    def opener_builder(handler: object) -> FakeOpener:
+    def opener_builder(handler: object, redirect: object) -> FakeOpener:
         observed["handler"] = handler
+        assert isinstance(redirect, module._NoRedirect)
         return sentinel_opener
 
     monkeypatch.setattr(module, "ProxyHandler", proxy_handler)

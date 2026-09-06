@@ -6,7 +6,9 @@
 
 > 产品定位是“合规信息整理与风险提示工具”，不提供法律意见，不替代许可证原文核验或专业法律审查。
 
-## 当前可运行状态（2026-09-05）
+## 当前可运行状态（2026-09-06）
+
+最新验收已跑通固定 smolagents ZIP → 真实 ScanCode/Syft → 许可证／待复核风险与证据 → 本机 Qwen3 建议 → 现有 Web 报告：227 个软件组件、4 个模型／数据集引用、283 条证据、231 条提示及 231 条待人工复核 AI 建议。关闭 AI 耗时约 29 秒，开启 AI 约 16 分钟；AI 开关前后确定性事实相同，API 容器重建后四格式报告字节不变。Chrome 已显示真实建议及引用来源。运行命令与固定输入摘要见[部署说明](deploy/README.md)。这不是许可证授权确认或完整准确率评测；公开 Git 部署、陌生机复现和 P0 指标冻结仍待验收。
 
 现在已经可以独立跑通六层真实扫描底座纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**生命周期绑定只读会话 → Python/JavaScript manifest**，**声明与 npm lock v2/v3 → P0 `Component`/`Evidence`**，**Python/JavaScript 两种稳定依赖 JSON CLI**，**显式本地 ZIP Pipeline → durable P0 依赖聚合**，以及 **ZIP multipart HTTP 创建 → 进程内后台 A4-1 → 状态/资源/证据查询**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
 
@@ -30,7 +32,7 @@ A6-2 已把 publisher 接到 Pipeline 首次终态提交边界：ZIP HTTP 主链
 `partial/rules/70` 在同一次 SQLite CAS 中公开，报告可在后端重启后继续下载。阶段性报告不会补写
 缺失的许可证、风险或 AI 建议；GET 不现场生成报告，也不修改 SQLite。当前功能分支的前端已接真实四格式下载。
 
-当前还不是完整参赛成品：ZIP 与公开 Git 已能把声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析；B5 现在能对 ZIP 中明确 npm 许可证声明输出待核验提示；真实 ScanCode/Syft、完整资源许可证归属与已核验义务仍需后续验收。本地目录输入、其他 lockfile、目标部署安全与陌生机复验、首批golden cases指标仍需按P0进度台账验收。现有核心Web页面已接真实API和报告。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
+当前还不是完整参赛成品：ZIP 与公开 Git 已能把声明的 Python 依赖，以及根 `package.json` 与 `package-lock.json` v2/v3 的直接 npm 依赖映射为 P0 对象，但尚不代表依赖已安装/完整解析；B5 现在能对 ZIP 中明确 npm 许可证声明输出待核验提示；真实 ScanCode/Syft 已接通 ZIP；完整资源许可证归属与已核验义务仍需后续验收。本地目录输入、其他 lockfile、目标部署安全与陌生机复验、首批golden cases指标仍需按P0进度台账验收。现有核心Web页面已接真实API和报告。评委最终看到的产品形态仍是下文定义的本地 Web 应用。
 
 团队集成分支 `integration/p0` 汇合了前端组员的 React/Vite 应用壳和扫描组员的 ScanCode/Syft Adapter。本功能分支复用核心页面与适配器，已完成真实 ZIP→ScanCode/Syft→资源/待核验风险/Evidence→四格式报告及刷新恢复，默认 API，演示需主动选择；未自动合并团队集成线。
 

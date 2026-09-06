@@ -12,6 +12,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.api import create_default_app
+from app.ai import OllamaProvider
 from app.domain.models import (
     ProducerRef,
     ProducerType,
@@ -284,4 +285,21 @@ def test_default_app_rejects_ambiguous_ai_toggle(tmp_path: Path, monkeypatch: py
     monkeypatch.setenv("OPENGUARD_DATA_DIR", str(data))
     monkeypatch.setenv("OPENGUARD_ENABLE_AI", "true")
     with pytest.raises(RuntimeError, match="invalid OPENGUARD_ENABLE_AI"):
+        create_default_app()
+
+
+def test_default_app_selects_fixed_docker_ollama(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENGUARD_DATA_DIR", str(_private(tmp_path / "runtime")))
+    monkeypatch.setenv("OPENGUARD_ENABLE_AI", "1")
+    monkeypatch.setenv("OPENGUARD_OLLAMA_DOCKER_HOST", "1")
+    with TestClient(create_default_app()) as client:
+        provider = client.app.state.zip_scan_runtime._ai_provider
+        assert provider._origin == "http://host.docker.internal:11434"
+        assert provider.producer.model_id == OllamaProvider().producer.model_id
+
+
+def test_default_app_rejects_ambiguous_docker_ollama(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENGUARD_DATA_DIR", str(_private(tmp_path / "runtime")))
+    monkeypatch.setenv("OPENGUARD_OLLAMA_DOCKER_HOST", "true")
+    with pytest.raises(RuntimeError, match="invalid OPENGUARD_OLLAMA_DOCKER_HOST"):
         create_default_app()

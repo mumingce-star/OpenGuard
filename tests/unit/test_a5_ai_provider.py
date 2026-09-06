@@ -176,6 +176,8 @@ def _invalid_reply(case: str):
             valid["summary"] = "   "
         elif case == "path":
             valid["steps"] = ["Inspect (/etc/passwd)."]
+        elif case == "json_pointer_in_prose":
+            valid["steps"] = ["Review /packages/node_modules~1@e2b~1cli/license."]
         elif case == "secret":
             valid["summary"] = "authorization=secret"
         elif case == "empty_steps":
@@ -202,6 +204,7 @@ def _invalid_reply(case: str):
         "unknown_evidence",
         "blank",
         "path",
+        "json_pointer_in_prose",
         "secret",
         "empty_steps",
         "long_step",
