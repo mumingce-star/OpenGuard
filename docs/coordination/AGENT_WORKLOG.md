@@ -4036,3 +4036,7 @@
 ### [20260906-RootAstra-ScannerFiles-Published] COMPLETE
 
 - GPT-6 Astra / Root；103aa77a8ce1a2d9c76fd45b64a791fe9e02cf44已推送fix/a2-scanner-file-boundary，远端完整哈希一致；9个既有文件、无新增文件。本机已部署并验证，跨任务读取边界完成，完整P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-BranchConsolidation] START
+
+- GPT-6 Astra / Root；用户授权整理并合并分支。基线450b8eb、工作区干净、Root单写。刷新远端后确认47个分支，41个无开放PR的历史分支头完整包含于当前验收链；保留main、integration/p0、两位组员分支、当前异机验收分支及PR #2来源。按既有协作方案先PR汇入integration/p0，不因整理而宣布P0冻结或合并main。仅更新原协作/进度/日志文档，运行现有unit/security和前端测试构建；远端删除须先确认合并后祖先关系及分支头未变，保留全部提交历史，不force push。开工估算3k–6k，精确token不可获得。
