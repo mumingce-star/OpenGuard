@@ -2,9 +2,9 @@
 
 ## 2026-09-06 分支归并
 
-将450b8eb累计验收链通过保留历史的merge PR汇入integration/p0，main仍等待P0里程碑。保留main、integration/p0、fix/a2-scanner-file-boundary、codex/p0-external-tools-sync、feat/xzb-frontend和feat/a5-ollama-transport；开放PR #1/#2暂保留。其余41个历史分支仅在头未变化且已完整包含于合并结果后清理。merge保留原提交，避免squash使Evidence提交丢失祖先关系；不改仓库设置。
+450b8eb累计验收链已通过保留历史的PR #3汇入integration/p0，PR #2也已合并，main仍等待P0里程碑。用户明确授权后，43个无独有提交的项目负责人历史远端分支已删除；GitHub当前只保留main、integration/p0、扫描组员codex/p0-external-tools-sync和前端组员feat/xzb-frontend。PR #1继续使用前端组员分支。merge保留原提交和下方恢复SHA；未force push或修改仓库设置。
 
-异机继续固定450b8ebe3381a6a27ca333ed78c9a7ad572ba65b。以后复用integration/p0作为开发入口，任务合入后清理历史分支，不为发布记录反复开新分支。清理不删除提交历史；本文件末尾登记恢复SHA。实际结果以PR与远端refs核对为准。
+异机继续固定450b8ebe3381a6a27ca333ed78c9a7ad572ba65b，该提交仍可从integration/p0追溯。以后复用integration/p0作为开发入口，任务合入后清理本人短分支，不为发布记录反复开新分支。清理只删除分支引用，不删除提交历史；本文件末尾保留恢复SHA。
 
 ## 仓库目标
 

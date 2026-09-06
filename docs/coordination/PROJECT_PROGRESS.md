@@ -59,7 +59,7 @@ Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三�
 | A6-1 报告安全持久化与只读下载 | P0 | Terra/Root | 已完成 | 私有 `0700/0600` 内容寻址存储、原子 metadata 提交、重启/摘要/篡改验证、P0 `ReportLink`、同一冻结 GET 的只读下载和安全响应头已实现；A6-1 `16 passed`、受控全量 `846 passed` | A6-2 已完成 Pipeline 接线；前端接线归前端组员，完整许可证报告继续等待真实许可证事实 | 已推送 `feat/a6-report-delivery`；实现 `9ce9535`；`EVD-A6-REPORT-DELIVERY-001` 已绑定 |
 | A6-2 Pipeline 终态报告发布 | P0 | Terra/Root | 已完成 | publisher 在首次 terminal CAS 前发布四格式并只允许增加完整 `ReportLink`；ZIP HTTP 自动得到带链接的诚实 `partial/rules/70`；registry 是可见性门禁，orphan/元数据不一致/篡改均失败关闭；专项 `10 passed`、A6/A4/A3/P0 联合 `177 passed`、受控全量 `856 passed` | 前端真实下载接线归前端组员；A4-2 可把实际 B5 输出交给报告，但真实主链仍缺上游许可证事实；持久队列仍属 A3/A4 后续 | 已推送 `feat/a6-pipeline-publish`；实现 `eec66a6`；`EVD-A6-PIPELINE-PUBLISH-001` 已绑定 |
 | A8-1a P0团队集成基线 | P0 | Root/Sol | 已完成 | `integration/p0` 已汇合项目负责人六层后端纵切、前端组员壳和扫描组员B2/B3 Adapter候选；后端688项非回环+2项真实回环通过，前端锁文件供应链检查和生产构建通过；Schema不变；`EVD-P0-TEAM-INTEGRATION-001` 绑定 `f486ead` | 前端仍为mock；B2/B3仍缺本机真实工具和主链接线；不外推完整产品 | 已推送 `integration/p0`；团队后续从此创建短分支 |
-| A8-1b 冗余远端分支清理 | P0治理 | Root | 阻塞 | 已证明13个旧项目负责人任务分支均被 `integration/p0` 完整包含且零独有提交；组员两分支明确排除 | 远端删除被安全审批拒绝，需用户明确批准下方13个具体分支；本轮没有删除任何分支 | 待用户确认；不影响 `integration/p0` 使用 |
+| A8-1b 冗余远端分支清理 | P0治理 | Root | 已完成 | 用户明确授权后复核并删除43个已被 `integration/p0` 完整包含、零独有提交的项目负责人历史远端分支；恢复SHA保留 | 以后只需按短分支策略随合并清理，不再保留每个发布记录分支 | GitHub仅保留 `main`、`integration/p0` 及两条组员分支；组员分支未修改 |
 | A8-1c A5 团队集成 PR | P0治理 | Root/Sol | 进行中 | 隔离 worktree 合并无冲突；沙箱原样 `807 passed, 11 failed, 1 warning` 的 11 项均为回环 bind 权限限制，受控环境原样 `818 passed, 1 warning`；P0 `46 passed`，Schema、compileall、diff、敏感/路径/大文件/上传范围门禁通过；PR #2 已创建且 GitHub 显示可自动合并 | 等待团队代码审核与明确合并决定；本任务不自动请求组员评审、不自动合并 | [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 已打开，base=`integration/p0`、head=`feat/a5-ollama-transport` |
 | A8-1d VS Code 本机复现演示 | P0治理 | Root/Sol | 已完成 | Python 3.12.14 启动 FastAPI；动态 ZIP POST `202`，SQLite 终态 `partial/rules/70`，得到 React/FastAPI/Pydantic 3 个组件和 3 条 verified evidence；Ollama/Qwen3 聚合探针 `2/2` 且全部校验通过；Vite 页面可见并明确 `MOCK MODE` | 该次演示只覆盖当时纵切；后续 A5-1c 已接 Pipeline，但前端仍未接真实 API、真实输入仍缺许可证事实，需另做更新后的完整演示 | 治理证据已推送当前 PR 分支；临时脚本、ZIP、SQLite、prompt/response 未上传 |
 | F0-0 前端应用壳 | P0 | 前端组员→Root验证 | 进行中 | React/Vite/Tailwind应用壳、基础页面与动效已由组员提交；Root按锁文件安装并完成TypeScript+Vite生产构建 | 当前仍使用mock，未接真实API；页面功能与视觉验收归前端组员 | 来源 `feat/xzb-frontend`，已纳入本地集成候选 |
@@ -674,3 +674,22 @@ AMENDMENT下载诊断：此前把Chrome“组织屏蔽”直接定为组织策�
 当前可演示Git/ZIP到真实资源/风险/证据、四格式报告及已有Qwen建议。下一产品任务仍为P0剩余条目核对，异机由组员执行。报名需Owner资格权属；完整作品需P0冻结及材料/视频/匿名/正式发布；竞争力需真实对照与误差分析。精确token不可获得，开工3k–6k；按既有协作规则将目标由main调整为integration/p0，未扩产品范围。
 
 执行结果：PR #3已合并，integration/p0=4056069b7dce35eecf36652dfc98ad9b96d5e147，与源8d13765文件树完全一致。归并完成；自动审批拒绝删除41个远端分支，理由是需要明确批量删除授权，命令未执行、分支数量未减少。main/组员/异机版本保持；清理等待用户批准，非代码或测试失败。本条远端结果追加发布在原验收分支，集成分支业务内容已完成归并。
+
+## 28. 本人历史分支清理完成（2026-09-06）
+
+用户明确授权删除不用的本人分支并要求不触碰组员分支。刷新远端和PR状态后，PR #2/#3均已合并，PR #1仍使用前端组员分支。先把当前本人治理记录合入并推送integration/p0，再逐一确认43个本人历史远端头均未移动、为integration/p0祖先且零独有提交，随后删除这些远端引用及对应本地分支。恢复SHA继续保存在`docs/06-github-collaboration.md`；源码、部署、前端、规则、Bench、测试和第三方目录相对PR #3合并结果零变化。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 契约与Schema未变化 | 保持兼容 | 用户/Root | 已在integration/p0保留 |
+| A2 | 进行中 | 已完成的输入及安全边界提交均可追溯，未删除代码 | 剩余安全/持久预算核清与最终冻结 | 用户/Root | 历史分支已清理，提交保留 |
+| A3 | 单机累计完成 | API、注册表、持久派发与报告链源码树不变 | 无新增队列任务 | 用户/Root | 已在integration/p0保留 |
+| A4 | P0样例链累计完成 | 真实工具、许可证/风险/证据接线源码树不变 | 不外推总体准确率 | 用户/Root | 已在integration/p0保留 |
+| A5 | 本机累计完成 | PR #2已合并，Qwen与降级实现保留 | 人工建议质量复核 | 用户/Root与Owner | 来源分支已清理，提交保留 |
+| A6 | 本机四格式下载累计完成 | 报告生成、下载与原证据保留 | 异机确认 | 用户/Root | 已在integration/p0保留 |
+| A7 | Mac完成；异机未开始 | 固定复现提交450b8eb仍可追溯 | Windows复现 | 用户/Root | 已在integration/p0保留 |
+| A8 | 本轮分支治理完成；整体进行中 | 43个本人远端分支删除；远端仅四条预期分支 | 人工/资源/安全最终冻结 | 用户/Root与Owner | 治理结果待本轮记录推送 |
+
+GitHub保留分支为`main`、`integration/p0`、扫描组员`codex/p0-external-tools-sync`和前端组员`feat/xzb-frontend`。两条组员分支的SHA分别保持89c8ba2和83e8928，未删除、合并、改写或推送。未合并main、未改仓库权限、未force push，也未删除用户运行数据或未跟踪的说明书产物。本地`docs/project-flowchart`含独有未上传图表，因未证明可丢弃而保留。
+
+当前仍可在Mac演示Git/ZIP真实扫描到资源、许可证/风险证据、四格式报告及已有Qwen建议。尚无Windows异机、完整安全矩阵和人工冻结结论。报名/参赛仍需Owner资格与权属确认；完整作品还需上述P0门禁以及材料、视频、匿名和正式发布；获奖竞争力仍需真实对照、误差分析及人工质量证据。下一任务仍按P0剩余门禁推进，不因分支清理新增功能。

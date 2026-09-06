@@ -4058,3 +4058,11 @@
 - GPT-6 Astra / Root；用户现已明确授权继续归并并删除不用的本人分支，同时禁止修改或删除组员分支。开始前刷新 GitHub，确认 `main`、`integration/p0`、扫描组员 `codex/p0-external-tools-sync`、前端组员 `feat/xzb-frontend` 的边界；PR #1 仍使用前端组员分支，PR #2/#3 已合并。
 - 本轮只做分支治理：先把当前本人分支末尾治理记录汇入 `integration/p0`，核对源码树无变化；再仅删除已完整包含且头未移动的 43 个本人历史远端分支及对应本地分支。保留全部提交历史和恢复 SHA，不 force push，不修改 `main`、组员分支、仓库权限或产品功能。
 - 验证：远端删除前后分别 fetch，逐分支校验原 SHA、祖先关系、开放 PR 与保留分支；运行 `git diff --check`、源码树等值、敏感信息和待提交清单检查。开工估算 8k-14k token；本次运行精确 token 数不可获得。
+
+### [20260906-1955-RootAstra-OwnBranchCleanup] COMPLETE
+
+- GPT-6 Astra / Root；PR #2/#3已合并，当前本人治理尾提交通过保留历史的merge进入`integration/p0`并先推送至`0ad2a9f`。随后按用户明确授权删除43个本人历史远端分支和对应已合并本地分支；GitHub仅保留`main`、`integration/p0`、扫描组员`codex/p0-external-tools-sync`与前端组员`feat/xzb-frontend`。
+- 两条组员分支分别保持89c8ba2和83e8928，PR #1仍使用前端组员分支；未删除、合并、改写或推送组员分支。没有force push、没有修改`main`或仓库权限。历史提交与恢复SHA保留，异机固定提交450b8eb仍为集成线祖先。
+- 本轮只更新既有`docs/06-github-collaboration.md`、`PROJECT_PROGRESS.md`及追加本日志；产品源码、前端、部署、规则、Bench、测试、Schema和第三方目录相对PR #3结果零变化。`git diff --check`、源码树等值、待提交清单和敏感模式检查通过，因此不重复运行上一轮已通过的1222后端及20前端测试。
+- 未跟踪`output/`为用户刚生成的PDF成果，保持原样且未加入提交。本地`docs/project-flowchart`有独有未上传图表，未证明可丢弃，故暂时保留；它不出现在GitHub分支列表。P0功能与剩余安全、异机、人工冻结门禁均未因治理任务改变。
+- 本次运行精确 token 数不可获得；开工估算8k-14k，本轮授权范围完整完成且未扩展产品功能，无法确认实际token是否落入估算区间。
