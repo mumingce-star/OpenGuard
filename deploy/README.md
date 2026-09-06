@@ -236,3 +236,18 @@ docker compose -f deploy/compose.yaml exec -T api python -c 'import runpy; print
 实测IPv4/IPv6的TCP/UDP四类libc.socket均EPERM，后代exec进程也被拒绝，AF_UNIX socketpair可用，父进程仍可创建网络套接字。最终API固定ScanCode/Syft入口和传递目录fd的正例通过；分别检测Apache-2.0和is-number7.0.0。原Git TrustedEgress成功获取PyPA sampleproject revision621e4974ca25ce531773def586ba3ed8e736b3fc并清理；原模型qwen3:4b-instruct-2507-q4_K_M短推理done=true。旧Git/Qwen两组四SHA保持，APIhealthy。
 
 此项是扫描子进程及后代的网络创建边界；不等于网络namespace、跨任务文件/Unix IPC隔离、持久存储预算或完整P0安全验收完成。生产仅传递受控目录fd，不能扩展为传递已有网络socket。Git获取器和Qwen调用不使用扫描启动器，仍遵循各自原有网络门禁。
+
+
+## 扫描子进程跨任务读取边界（2026-09-06）
+
+原启动器同时施加Landlock文件限制和原seccomp网络限制。要求运行内核Landlock ABI至少3（含truncate保护），本机Docker原生ARM实测ABI8；不支持或规则失败时拒绝执行，不降级为无限制扫描。运行时通过原单个任务目录fd给予当前输入只读权限，每次调用独立临时目录承载HOME/TMP/ScanCode缓存，结束后回收。只开放必要运行库、特定系统信息文件及原生转译父进程的可执行文件inode；不开放整个/proc、其他任务、持久data或共享/tmp树。依据：[Linux Landlock文档](https://docs.kernel.org/userspace-api/landlock.html)。
+
+ScanCode固定入口使用既有串行模式 `--processes 0`，避免进程池对共享信号量的依赖；不开放/dev/shm。当前Rosetta任意后代再次exec可能因新的/proc/self/maps不可读而失败关闭，不能宣称任意子程序兼容；本轮验证fork继承以及当前固定ScanCode/Syft入口真实输出。此前禁网节的后代exec结果属于上一版本，本版本继承探针明确为fork。
+
+复用原脚本验证合成任务边界（不读取真实任务内容）：
+
+```bash
+docker compose -f deploy/compose.yaml exec -T api python -c 'import runpy; print(runpy.run_path("/opt/openguard/tool-smoke.py")["check_file_sandbox"]())'
+```
+
+本轮实际workspaces挂载中六种读取绕行均被内核拒绝，当前输入可读不可写、私有temp可写、fork后代受限，退出工作目录为空。最终镜像ScanCode识别apache-2.0，Syft识别pkg:npm/is-number@7.0.0；155相关回归通过。旧Git/Qwen两组四报告SHA保持，API健康；本轮不重复公开扫描或推理。该边界不等于所有文件元数据操作、Unix IPC或完整P0安全矩阵均已隔离。宿主未配置沙箱的开发运行仍不具备本节保障。

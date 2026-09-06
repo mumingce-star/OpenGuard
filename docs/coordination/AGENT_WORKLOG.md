@@ -4019,3 +4019,16 @@
 ### [20260906-RootAstra-ScannerNetwork-Published] COMPLETE
 
 - GPT-6 Astra / Root；665bd3862c221d1648fde16a00f8f0e07119cb07已推送fix/a2-scanner-no-network，远端完整哈希一致；10个既有文件及1个必要C源码。当前扫描禁网/Git和Qwen保持验收完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-ScannerFiles] START
+
+- GPT-6 Astra / Root；基线d38f897，干净，Root单写。两自建临时任务经生产runner证明A可读B标记，已自动清理，无真实用户内容读取。Rosetta查询ENOSYS，原生ARM同基础镜像查询Landlock ABI8；复用已有C启动器做运行文件/任务FD白名单与独立工具temp，保留网络过滤和API/Git/Qwen边界。预计修改原启动器/runner/原测试及部署安全进度AI日志，无新服务/文件/接口。估算6k–12k，精确token不可获得；以真实内核拒绝和两工具正例验收，失败关闭。
+
+
+### [20260906-RootAstra-ScannerFiles-Close] COMPLETE
+
+- GPT-6 Astra / Root；复用原C启动器、runner、tool-smoke和原测试实现Landlock ABI>=3的当前任务只读/独立temp访问限制，保持seccomp。无新文件/依赖/服务/接口，组员解析规则未改；ScanCode固定参数改既有串行0以兼容窄白名单。
+- 六条真实内核负例及输入只读、temp可写、fork继承通过；实际workspaces路径复验及清理通过。最终隔离镜像两固定wrapper+dirfd识别apache-2.0、pkg:npm/is-number@7.0.0；155相关回归通过。API空闲且目录空后更新，当前healthy，原Git/Qwen各四SHA保持，无新公开扫描/推理。
+- 初始原生产越界标记、转译ENOSYS、旧头缺常量、Rosetta具体proc需求、进程池SemLock和后代re-exec限制均保留在安全表9.7。整个/proc实验方案被自动审批拒绝后撤回，未生产部署；最终仅特定proc文件及父可执行inode。一次审批超时分开重试通过，首次空闲断言未通过时未更新。fork证明不能外推任意re-exec兼容。
+- 本轮跨任务文件内容读取缺口关闭，完整元数据/IPC隔离、剩余资源/完整安全、人工及异机未外推完成；下一任务核对持久累计预算与P0要求，只修实际阻断。准备推送fix/a2-scanner-file-boundary，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，任务范围完成，串行兼容调整未扩展产品范围，实际token区间不可确认。

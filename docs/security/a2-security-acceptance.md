@@ -416,3 +416,21 @@ API环境与禁网tools profile各运行既有ScanCode32.5.0 MIT识别/Syft1.51.
 | 持久成果 | APIhealthy；原Git/Qwen两份receipt各四报告SHA保持 |
 
 SEC-A2-015扫描子进程网络创建及继承边界本轮关闭；不将其等同独立网络namespace、AF_UNIX跨任务IPC隔离或整个SEC-A2-015完成。跨任务读写隔离、已有fd传递契约、持久资源累计限制、其余完整负面矩阵、人工及异机仍需最后验收。镜像因包含构建主机原生启动器，不应跨不同主机架构直接搬运；Windows应按原说明build并实测。未更改浏览器设置/主机安全策略，无privileged/cap-add/seccomp=unconfined。
+
+
+### 9.7 跨任务工作目录读取边界（2026-09-06）
+
+基线d38f897，fix/a2-scanner-file-boundary。原生产runner在两个人工临时目录间可读取另一个任务的标记，证实仅Python只读会话不足以限制外部进程；未读取真实用户内容。复用原C启动器和受控目录fd施加Landlock ABI>=3，当前任务只读、每次调用独立temp可写、最小运行资源白名单，规则失败不执行。无新文件/服务/API/依赖或权限提升。
+
+| 实际验收 | 结果 |
+|---|---|
+| 其他任务绝对路径、当前任务内外指软链接、目录fd后的父目录绕行 | 三条均EACCES/EPERM |
+| /proc/self/root别名、父进程持有的外部文件fd、父进程environ | 三条均EACCES/EPERM |
+| 当前输入/私有temp | 输入读取成功、改写被拒绝且原字节保持；temp写入成功 |
+| 后代继承 | 真实fork后代读取外部标记被拒绝；四类网络socket及fork后代仍被拒绝，Unix socketpair可用 |
+| 实际扫描正例 | 最终隔离镜像原固定ScanCode/Syft wrapper+dirfd识别apache-2.0及pkg:npm/is-number@7.0.0 |
+| 回归/生产 | 155测试通过；实际workspaces六路径探针及清理通过；旧Git/Qwen各四SHA保持、APIhealthy |
+
+Rosetta的Landlock查询ENOSYS与旧构建头缺truncate常量的初始失败保留；原生启动器查询ABI8，稳定ABI常量兼容旧头但不降低运行ABI要求。转译所需只开放特定proc文件及父进程可执行inode。曾试验整个/proc白名单，自动审批以广泛持久放宽安全边界拒绝其最终构建；该方案已撤回且未部署生产。最终没有整个/proc、整个/proc/self、/dev/shm或共享/tmp放行。ScanCode进程池SemLock受限后改用现有串行模式0；任意Rosetta后代re-exec可能失败关闭，不能把fork验收外推为任意re-exec可用。一次安全窄方案审批超时后拆分重试通过；首次部署空闲断言失败时未更新，后续只读确认空闲/目录空再更新。
+
+本轮关闭扫描子进程的跨任务文件内容读取缺口，并验证当前输入只读；不宣称所有元数据操作、Unix IPC、持久上传/报告累计预算或完整SEC-A2-015/负面矩阵完成。接下来先把剩余安全表条目对照P0原文核清，优先确认持久上传/报告累计预算是否存在明确阻断；不自动增加新架构。

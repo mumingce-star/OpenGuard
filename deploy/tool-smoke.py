@@ -114,7 +114,7 @@ def check_network_sandbox():
         with socket.socket(family, socket.SOCK_STREAM):
             pass
     probe = r"""
-import ctypes, errno, json, socket, subprocess, sys
+import ctypes, errno, json, os, socket, subprocess, sys
 libc = ctypes.CDLL(None, use_errno=True)
 blocked = 0
 for family in (socket.AF_INET, socket.AF_INET6):
@@ -124,14 +124,66 @@ for family in (socket.AF_INET, socket.AF_INET6):
         blocked += 1
 left, right = socket.socketpair()
 left.close(); right.close()
-child = subprocess.run([sys.executable, '-c',
-    'import socket,errno;\ntry: socket.socket()\nexcept OSError as e: assert e.errno==errno.EPERM\nelse: raise AssertionError("network allowed")'],
-    check=True, capture_output=True, timeout=5)
+pid = os.fork()
+if pid == 0:
+    try: socket.socket()
+    except OSError as e: os._exit(0 if e.errno == errno.EPERM else 1)
+    else: os._exit(2)
+_, status = os.waitpid(pid, 0)
+assert os.WIFEXITED(status) and os.WEXITSTATUS(status) == 0
 print(json.dumps({'blocked_families_types': blocked, 'unix_ipc': True, 'descendant_blocked': True}))
 """
     result = run_json_tool(sys.executable, ['-c', probe], timeout_seconds=15)
     assert result.status == 'complete', result
     return json.loads(result.stdout)
+
+
+def check_file_sandbox():
+    """Synthetic sibling task markers only; never read real task contents."""
+    import os
+    from app.scanners.external_tools import run_json_tool
+    with tempfile.TemporaryDirectory(prefix='openguard-files-') as directory:
+        root = Path(directory)
+        a, b = root / 'a', root / 'b'
+        a.mkdir(mode=0o700); b.mkdir(mode=0o700)
+        (a / 'own').write_text('own-marker')
+        (b / 'foreign').write_text('synthetic-foreign-marker')
+        (a / 'escape').symlink_to(b / 'foreign')
+        fd = os.open(a, os.O_RDONLY | os.O_DIRECTORY)
+        foreign_fd = os.open(b / 'foreign', os.O_RDONLY)
+        probe = r"""
+import errno,json,os,pathlib,subprocess,sys
+own,foreign,fd,parent,foreign_fd=sys.argv[1:]
+assert pathlib.Path(own,'own').read_text()=='own-marker'
+blocked=0
+for path in (foreign, str(pathlib.Path(own,'escape')), f'/proc/self/fd/{fd}/../b/foreign',
+             '/proc/self/root'+foreign, f'/proc/{parent}/fd/{foreign_fd}', f'/proc/{parent}/environ'):
+    try: pathlib.Path(path).read_bytes()
+    except OSError as e: assert e.errno in (errno.EACCES,errno.EPERM); blocked+=1
+    else: raise AssertionError('foreign task readable')
+try: pathlib.Path(own,'own').write_text('changed')
+except OSError as e: assert e.errno in (errno.EACCES,errno.EPERM)
+else: raise AssertionError('input writable')
+temp=pathlib.Path(os.environ['TMPDIR']);(temp/'writable').write_text('ok')
+pid=os.fork()
+if pid==0:
+    try: pathlib.Path(foreign).read_bytes()
+    except OSError as e: os._exit(0 if e.errno in (errno.EACCES,errno.EPERM) else 1)
+    else: os._exit(2)
+_,status=os.waitpid(pid,0)
+assert os.WIFEXITED(status) and os.WEXITSTATUS(status)==0
+print(json.dumps({'own_read':True,'foreign_paths_blocked':blocked,'input_read_only':True,
+                  'private_temp_writable':True,'descendant_blocked':True}))
+"""
+        try:
+            result = run_json_tool(sys.executable, ['-c',probe,str(a),str(b/'foreign'),str(fd),str(os.getpid()),str(foreign_fd)],
+                                   pass_fds=(fd,), working_directory=f'/proc/self/fd/{fd}')
+            assert result.status == 'complete', result
+            assert (a/'own').read_text() == 'own-marker'
+            return json.loads(result.stdout)
+        finally:
+            os.close(fd)
+            os.close(foreign_fd)
 
 
 def main():

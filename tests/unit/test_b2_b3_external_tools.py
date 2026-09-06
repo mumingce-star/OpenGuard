@@ -145,7 +145,7 @@ def test_single_file_command_is_fixed_and_cannot_be_an_option(monkeypatch):
     monkeypatch.setattr(external_tools, "run_json_tool", lambda *args, **kwargs: calls.append((args, kwargs)))
     external_tools.run_scancode_license_scan("scancode", "/proc/self/fd/9", pass_fds=(9,),
         relative_file="--help", timeout_seconds=37.5, max_output_bytes=1000)
-    assert calls == [(("scancode", ("--processes", "1", "--license", "--info", "--strip-root", "--json", "-", "./--help")),
+    assert calls == [(("scancode", ("--processes", "0", "--license", "--info", "--strip-root", "--json", "-", "./--help")),
         {"timeout_seconds": 37.5, "max_output_bytes": 1000, "pass_fds": (9,), "scancode_runtime": True,
          "working_directory": "/proc/self/fd/9"})]
 
@@ -342,7 +342,7 @@ def test_fixed_scanner_invocations(monkeypatch) -> None:
     external_tools.run_scancode_license_scan("scancode", "/proc/self/fd/9", pass_fds=(9,))
     external_tools.run_syft_sbom_scan("syft", "/proc/self/fd/9", pass_fds=(9,))
     assert calls[0] == (
-        "scancode", ("--processes", "1", "--license", "--strip-root", "--json", "-", "."),
+        "scancode", ("--processes", "0", "--license", "--strip-root", "--json", "-", "."),
         {"timeout_seconds": 120, "max_output_bytes": 8 * 1024 * 1024, "pass_fds": (9,), "scancode_runtime": True, "working_directory": "/proc/self/fd/9"},
     )
     assert calls[1] == (
@@ -400,4 +400,7 @@ def test_missing_approved_network_sandbox_does_not_run_tool(monkeypatch):
     monkeypatch.setattr(subprocess, "Popen", missing)
     result = run_json_tool("scancode", ["--version"])
     assert result.status == "unavailable"
-    assert calls == [["/opt/openguard/scanner-no-network", "scancode", "--version"]]
+    assert len(calls) == 1
+    assert calls[0][:2] == ["/opt/openguard/scanner-no-network", "--files"]
+    assert calls[0][3:] == ["-", "scancode", "--version"]
+    assert not os.path.exists(calls[0][2])

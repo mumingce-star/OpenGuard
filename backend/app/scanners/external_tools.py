@@ -17,6 +17,7 @@ import selectors
 import signal
 import time
 import subprocess
+import tempfile
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -172,6 +173,7 @@ def run_json_tool(
         environment["SCANCODE_CACHE"] = "/tmp/scancode-cache"
         environment["SCANCODE_TEMP"] = "/tmp"
     process = None
+    private_temp = None
     try:
         deadline = time.monotonic() + timeout_seconds
         sandbox = os.environ.get("OPENGUARD_SCANNER_SANDBOX")
@@ -179,7 +181,14 @@ def run_json_tool(
         if sandbox is not None:
             if sandbox != "/opt/openguard/scanner-no-network":
                 return ToolExecution(tool, "failed", None, "scanner_failed")
-            command.insert(0, sandbox)
+            private_temp = tempfile.TemporaryDirectory(prefix="openguard-scanner-")
+            environment.update(TMPDIR=private_temp.name, TEMP=private_temp.name, TMP=private_temp.name,
+                               HOME=private_temp.name, SCANCODE_TEMP=private_temp.name,
+                               SCANCODE_CACHE=private_temp.name + "/scancode-cache")
+            if len(pass_fds) > 1:
+                return ToolExecution(tool, "failed", None, "scanner_failed")
+            task = f"/proc/self/fd/{pass_fds[0]}" if pass_fds else "-"
+            command = [sandbox, "--files", private_temp.name, task, *command]
         process = subprocess.Popen(
             command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL, shell=False, close_fds=True,
@@ -222,6 +231,8 @@ def run_json_tool(
             _stop_process_group(process)
             if process.stdout is not None:
                 process.stdout.close()
+        if private_temp is not None:
+            private_temp.cleanup()
 
 
 def _validate_proc_target(target: str, pass_fds: Sequence[int]) -> None:
@@ -248,11 +259,11 @@ def run_scancode_license_scan(
         or (relative_file is not None and _relative_path(relative_file) is None)
     ):
         raise ValueError("invalid ScanCode limits or file")
-    arguments = ("--processes", "1", "--license", "--strip-root", "--json", "-", ".")
+    arguments = ("--processes", "0", "--license", "--strip-root", "--json", "-", ".")
     if relative_file is not None:
         # Single-file roots bypass ScanCode's default VCS-file walk exclusions.
         # --info supplies the hash required before rebinding the basename.
-        arguments = ("--processes", "1", "--license", "--info", "--strip-root", "--json", "-", f"./{relative_file}")
+        arguments = ("--processes", "0", "--license", "--info", "--strip-root", "--json", "-", f"./{relative_file}")
     # Resolve the trusted directory in the child before launching ScanCode;
     # scanning the proc symlink itself does not reliably traverse its files.
     return run_json_tool(
