@@ -3917,3 +3917,7 @@
 - CPU子任务完成：原Compose api.cpus:2，config --quiet通过，保持Git/AI/Docker-host=1重建健康；cgroup cpu.max=200000 100000、NanoCpus2000000000；4个自建4秒忙循环exit0，nr_throttled增量41、usage_usec8272191。内存/PID/UID/只读/cap/no-new-privileges保持。两组原Git/Qwen smoke --verify通过；不重复扫描/推理，无目标代码执行。未重跑业务单测，实际配置/内核/留存为相关验收。
 - 修改6个既有文件：Compose、部署说明、安全清单、进度、AI及共享日志，无新增文件/API/Schema/依赖。网络隔离、磁盘/fd、供应链锁定、人工/异机仍待验；下一任务限定API Python间接依赖锁定与重建复核。Root检查后推送fix/a7-api-cpu-limit，不合并main或Release。
 - 本次运行精确 token 数不可获得；开工6k–12k，CPU完成、下载阻塞、整轮部分完成，无范围扩大，实际token区间不可确认。
+
+### [20260906-RootAstra-CPUDownload-Published] PARTIAL
+
+- GPT-6 Astra / Root；d70a1e55e89b0f903f68416823658d33ba3b7517已推送fix/a7-api-cpu-limit，远端完整哈希一致。6个既有文件；CPU配置与运行验收完成，Chrome下载仍阻塞，未合并main或Release。随后仅追加发布绑定。
