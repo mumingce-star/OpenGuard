@@ -3949,3 +3949,7 @@
 - GPT-6 Astra / Root；原Dockerfile精确固定git/git-man1:2.39.5-0+deb12u3并逐项校验。真实安装层重建成功，API重建健康；运行Git2.39.5，Git和copyright SHA与原容器一致，15API包及2CPU保持；旧Git与ZIP/Qwen各smoke --verify四SHA通过。没有新扫描/推理，未重复业务全量测试；构建/运行版本/字节和持久报告为相关验收。
 - 修改7个既有文件：Dockerfile、部署说明、third_party、安全、进度、AI及共享日志，无新文件/API/Schema/升级/源/快照架构。版本下架时失败，无静默换版，不外推所有Debian依赖已锁定。资源声明、其他安全限制、人工和异机仍待完成，下一任务核对现有资源台账，不扩P1/P2。
 - 分支fix/a7-debian-git-pin，Root检查后推送，不合并main或Release。本次运行精确 token 数不可获得；开工4k–8k，本轮范围完成，无范围调整，实际token区间不可确认。
+
+### [20260906-RootAstra-DebianGitPin-Published] COMPLETE
+
+- GPT-6 Astra / Root；dbc0bf54c2e9ec959564d73aa88d2d11a51ee605已推送fix/a7-debian-git-pin，远端完整哈希一致。7个既有文件、无新增；本轮Git版本固定完成，完整P0未完成，未合并main或Release。随后仅追加发布绑定。
