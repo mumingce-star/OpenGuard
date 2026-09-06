@@ -3905,3 +3905,15 @@
 ### [20260906-RootAstra-MacAcceptance-Published] PARTIAL
 
 - GPT-6 Astra / Root；e90ba11466c112e8accd70c2237ec1fb0c22de7a已推送feat/a6-download-csp-fix，远端完整哈希一致。9个既有文件、零新增，源码仅下载CSP修复；61相关测试、两组旧报告重建摘要、diff/清单/append-only/新增行敏感检查通过。浏览器组织策略阻塞及最终冻结差距保留，未合并main或Release；随后仅绑定发布事实。
+
+### [20260906-RootAstra-CPUDownload] START
+
+- GPT-6 Astra / Root；基线d9a6aca，开工干净，分支fix/a7-api-cpu-limit，Root单写。用户授权真实下载诊断，组织策略受阻时继续API CPU最小修复；估算6k–12k，本次运行精确 token 数不可获得。
+- Chrome原生下载详情直接显示“贵组织屏蔽了此文件，因为它不符合安全政策”，未提供保存入口；演示文件成功不能替代真实链。保留阻塞，不改策略、不变更传输路径绕过。API仅补现有Compose cpus:2，受控短时cgroup节流验证和原报告verify，不重扫、不新增接口/架构/文件。预计修改Compose及既有部署、安全、进度、AI、共享记录。
+
+### [20260906-RootAstra-CPUDownload-Close] PARTIAL
+
+- GPT-6 Astra / Root；Chrome原生工具栏下载详情直接显示组织屏蔽，无正常保存入口，未变更策略/Blob传输/文件名绕过；真实下载维持阻塞。
+- CPU子任务完成：原Compose api.cpus:2，config --quiet通过，保持Git/AI/Docker-host=1重建健康；cgroup cpu.max=200000 100000、NanoCpus2000000000；4个自建4秒忙循环exit0，nr_throttled增量41、usage_usec8272191。内存/PID/UID/只读/cap/no-new-privileges保持。两组原Git/Qwen smoke --verify通过；不重复扫描/推理，无目标代码执行。未重跑业务单测，实际配置/内核/留存为相关验收。
+- 修改6个既有文件：Compose、部署说明、安全清单、进度、AI及共享日志，无新增文件/API/Schema/依赖。网络隔离、磁盘/fd、供应链锁定、人工/异机仍待验；下一任务限定API Python间接依赖锁定与重建复核。Root检查后推送fix/a7-api-cpu-limit，不合并main或Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，CPU完成、下载阻塞、整轮部分完成，无范围扩大，实际token区间不可确认。

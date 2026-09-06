@@ -166,3 +166,9 @@ Chrome打开 `http://127.0.0.1:8080/app/new-scan`。可用receipt中的scan_id�
 本机用户在修复前后均确认Chrome显示“贵组织屏蔽了该文件，因为它不符合安全政策”。修复后手动点击也受阻，指定Downloads目录未出现报告；因此不能断言CSP是此次唯一根因，浏览器落盘门禁仍被组织策略阻塞。需由有权限的管理员按实际策略处理，或之后在符合策略的另一台设备正常验收；不关闭保护、不绕过组织限制，也不以命令行保存冒充Chrome下载。
 
 61项相关API/报告测试通过；本次API重建后原Git及ZIP/Qwen四格式摘要均保持。资源/安全清单核对见docs/02-resource-inventory.md及docs/security/a2-security-acceptance.md第9节：检查完成不等于最终冻结。
+
+## 2026-09-06 API CPU 配额验收
+
+API服务现沿用独立scanner的`cpus: 2`，只改变原Compose一项配置。保持Git/AI/Docker-host原开关重建API，私有数据卷未变，健康检查通过。Docker NanoCpus=2000000000；容器cgroup v2 `cpu.max=200000 100000`。4个自建Python忙循环各运行约4秒后正常退出，cpu.stat增量nr_periods=41、nr_throttled=41、usage_usec=8272191，证明实际发生节流；无目标代码执行或新扫描。内存4GiB、128PID、UID10001、只读根、cap_drop ALL及no-new-privileges保持。
+
+原Git和ZIP/Qwen两份receipt各执行一次`deploy/smoke.py --verify`，四格式摘要均保持。该检查证明配额与原报告留存，不声称已复跑真实扫描性能或完成所有资源隔离。Chrome下载详情本轮直接显示“贵组织屏蔽了此文件，因为它不符合安全政策”，无正常保存入口，真实四格式浏览器落盘仍待合规策略环境验收；没有改策略、改传输路径或借演示文件替代。
