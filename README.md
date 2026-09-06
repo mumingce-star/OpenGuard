@@ -68,7 +68,7 @@ PYTHONPATH=backend python -m pytest -q
 
 ## 简单 Web 本机运行
 
-推荐使用已实跑的最小 Compose：ZIP 默认模式在仓库根目录执行 `docker compose -f deploy/compose.yaml up -d --build --wait`；公开 Git 加本机 Qwen3 的真实模式须先设置 `OPENGUARD_ENABLE_PUBLIC_GIT=1 OPENGUARD_ENABLE_AI=1 OPENGUARD_OLLAMA_DOCKER_HOST=1`，再执行同一 Compose 命令。在 Chrome 打开 <http://127.0.0.1:8080/app/new-scan>。三个开关必须在每次创建或重建 API 容器时保留，否则 Git 请求会停在兼容的 `queued/0%`。当前容器支持 ZIP/公开 Git→真实 ScanCode/Syft→资源/待核验风险→Qwen3建议→四格式报告，重建 API 后报告仍可读取。根 LICENSE 不自动继承给依赖，工具失败保留 partial。完整命令、工具检查、持久化与已知限制见[部署说明](deploy/README.md)。
+推荐使用已实跑的最小 Compose：在仓库根目录执行 `docker compose -f deploy/compose.yaml up -d --build --wait`，在 Chrome 打开 <http://127.0.0.1:8080/app/new-scan>。当前容器支持 ZIP→真实 ScanCode/Syft→资源/待核验风险→四格式报告，重建 API 后报告仍可读取。根 LICENSE 不自动继承给依赖，工具失败保留 partial。安装、工具检查、持久化与已知限制见[部署说明](deploy/README.md)。
 
 需要开发模式时，先在项目根目录启动已有后端（Python 3.12环境）：
 

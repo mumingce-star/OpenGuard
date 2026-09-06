@@ -73,29 +73,6 @@ test("untrusted links and CSV formulas are neutralized", () => {
   assert.equal(model.csvCell("=1+1"), '"\'=1+1"');
   assert.equal(model.csvCell('a"b'), '"a""b"');
 });
-test("legacy English findings are localized without changing technical identifiers", () => {
-  assert.equal(
-    model.localizeDisplayText("License evidence requires verification"),
-    "许可证证据需要核验",
-  );
-  assert.equal(model.licenseDisplay("NOASSERTION"), "待核验（NOASSERTION）");
-  assert.equal(
-    model.evidenceSourceLabel("manifest_parser"),
-    "依赖清单解析器（manifest_parser）",
-  );
-  const translated = model.localizeDisplayText(
-    "A license evidence verification is required for 'gdown' in the requirements.txt file.\nThe license expression is currently marked as 'NOASSERTION' with pending verification.\nManual review is needed before any action is taken.",
-  );
-  assert.match(translated, /requirements\.txt 文件中“gdown”/);
-  assert.match(translated, /“NOASSERTION”/);
-  assert.doesNotMatch(translated, /verification|required|Manual review/);
-  assert.equal(
-    model.localizeDisplayText(
-      "Confirm the intended distribution and usage scenario of the 'llama-index' package.",
-    ),
-    "确认“llama-index”软件包的预期分发和使用场景。",
-  );
-});
 test("exports contain snapshot identity and exact requested resource scope", () => {
   const scan = fixture(),
     report = model.reportPayload(scan);
@@ -184,12 +161,8 @@ test("real DTO adapter preserves pending, info, evidence and actual times", () =
   assert.equal(scan.risks[0].outcome, "review_required");
   assert.equal(scan.risks[0].verification, "unverified");
   assert.equal(scan.risks[0].ai.status, "unavailable");
-  assert.equal(scan.risks[0].title, "许可证声明需要复核");
-  assert.equal(scan.risks[0].conclusion, "该声明尚未经过授权核验");
-  assert.equal(scan.risks[0].remediation, "复核许可证\n核对来源");
   assert.equal(scan.evidence[0].kind, "code");
   assert.equal(scan.evidence[0].text, "MIT");
-  assert.equal(scan.evidence[0].source, "依赖清单解析器（manifest_parser）");
   assert.equal(scan.createdAt, run.created_at);
   assert.equal(model.summarize(scan).high, 0);
   assert.throws(() => s.adaptApiScan("other", state(), resources, risks, evidence), /契约/);

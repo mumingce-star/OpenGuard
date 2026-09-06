@@ -164,7 +164,7 @@ def _finding(
         id=_id("rsk", [resource_kind, resource_id, rule_id, rule_version, outcome, sorted(evidence_ids)]),
         resource_kind=resource_kind, resource_id=resource_id, outcome=outcome, severity=severity,
         title=title,
-        description="这是基于证据的合规提示，不构成法律意见。采取行动前，请核对许可证原文和预期分发方式。",
+        description="This is an evidence-based compliance reminder, not legal advice. Review the license text and the intended distribution before acting.",
         rule_id=rule_id, rule_version=rule_version, trigger=trigger,
         evidence_ids=list(sorted(set(evidence_ids))), obligation_ids=[], remediation_id=None, confidence=confidence,
     )
@@ -203,21 +203,21 @@ def evaluate(
     if not verified:
         finding = _finding(
             resource_kind=resource_kind, resource_id=resource_id, outcome=FindingOutcome.REVIEW_REQUIRED,
-            severity=Severity.INFO, title="许可证证据需要核验", rule_id="license-evidence-gate",
-            rule_version=selected.version, trigger="许可证或佐证材料尚待核验",
+            severity=Severity.INFO, title="License evidence requires verification", rule_id="license-evidence-gate",
+            rule_version=selected.version, trigger="License or supporting evidence is pending verification",
             evidence_ids=source_ids, confidence=0.0,
         ) if source_ids else _finding(
             resource_kind=resource_kind, resource_id=resource_id, outcome=FindingOutcome.UNKNOWN,
-            severity=Severity.INFO, title="缺少可用的许可证证据", rule_id="license-evidence-gate",
-            rule_version=selected.version, trigger="关联许可证缺少可用的佐证材料",
+            severity=Severity.INFO, title="License evidence is unavailable", rule_id="license-evidence-gate",
+            rule_version=selected.version, trigger="No supporting evidence is available for the linked license",
             evidence_ids=(), confidence=0.0,
         )
         return RuleEvaluationResult((), (finding,), ())
     if not matching:
         finding = _finding(
             resource_kind=resource_kind, resource_id=resource_id, outcome=FindingOutcome.UNKNOWN,
-            severity=Severity.INFO, title="标准化许可证暂无匹配规则", rule_id="license-rule-coverage",
-            rule_version=selected.version, trigger="已加载规则中没有与已核验许可证标识匹配的规则",
+            severity=Severity.INFO, title="No rule for normalized license", rule_id="license-rule-coverage",
+            rule_version=selected.version, trigger="No loaded rule matches the verified normalized license identifier",
             evidence_ids=source_ids, confidence=0.0,
         )
         return RuleEvaluationResult((), (finding,), ())

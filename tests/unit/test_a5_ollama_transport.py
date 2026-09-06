@@ -173,7 +173,6 @@ def test_locked_identity_and_hashes_are_complete_and_stable() -> None:
     assert len(first.producer.prompt_schema_digest.value) == 64
     assert len(first.producer.config_digest.value) == 64
     assert first.producer.config_digest != alternate.producer.config_digest
-    assert "Simplified Chinese" in SYSTEM_PROMPT
 
 
 def test_default_opener_is_built_with_an_explicit_empty_proxy_map(monkeypatch) -> None:

@@ -424,7 +424,7 @@ def test_canonical_payload_only_contains_bound_resource_license_and_evidence() -
     assert result.status == "generated"
     assert raw_payload == json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     assert payload["schema_version"] == "openguard.ai-remediation-input/v1"
-    assert payload["language"] == "zh-CN"
+    assert payload["language"] == "en"
     assert payload["finding"]["resource_id"] == _BOUND_COMPONENT_ID
     assert [item["id"] for item in payload["evidence"]] == [_BOUND_EVIDENCE_ID]
     assert [item["id"] for item in payload["licenses"]] == [_BOUND_LICENSE_ID]

@@ -1,11 +1,6 @@
 import type { Scan, Mode, Handling, ScanInput, ReportFormat, ResourceType } from "../types/domain";
 import { createSnapshot, type Scenario } from "../mocks/data";
-import {
-  evidenceSourceLabel,
-  localizeDisplayText,
-  validateGithub,
-  validateZip,
-} from "./model";
+import { validateGithub, validateZip } from "./model";
 export const defaultMode: Mode =
   import.meta.env.VITE_DATA_MODE === "mock" ? "mock" : "api";
 const base = (
@@ -277,18 +272,16 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
   const risks: Scan["risks"] = collection(riskRaw).map(r => {
     if (!text(r.id) || !text(r.title) || !resources.some(x => x.id === r.resource_id) || !one(r.severity, ["info", "low", "medium", "high"]) || !one(r.outcome, ["pass", "warning", "review_required", "unknown"]) || !strings(r.evidence_ids)) throw new Error("后端风险不符合冻结 API 契约。");
     const rem = remediations.find(x => x.id === r.remediation_id && x.finding_id === r.id);
-    const advice = rem
-      ? localizeDisplayText([rem.summary, ...rem.steps].join("\n"))
-      : null;
+    const advice = rem ? [rem.summary, ...rem.steps].join("\n") : null;
     const ai = rem?.generated_by?.type === "ai";
-    return { id: r.id, resourceId: r.resource_id, title: localizeDisplayText(r.title) ?? r.title, severity: r.severity, outcome: r.outcome,
-      handling: "open", verification: "unverified", fact: localizeDisplayText(r.trigger), conclusion: localizeDisplayText(r.description),
+    return { id: r.id, resourceId: r.resource_id, title: r.title, severity: r.severity, outcome: r.outcome,
+      handling: "open", verification: "unverified", fact: r.trigger, conclusion: r.description,
       remediation: advice, ai: { status: ai ? "ready" : "unavailable", text: ai ? advice : null }, evidenceIds: r.evidence_ids };
   });
   const evidence: Scan["evidence"] = evidenceRaw.map(raw => {
     const e = object(raw);
     if (!text(e.id) || !text(e.locator) || !text(e.detected_by)) throw new Error("后端证据不符合冻结 API 契约。");
-    return { id: e.id, kind: e.kind === "license_text" ? "license" : "code", label: e.locator, source: evidenceSourceLabel(e.detected_by),
+    return { id: e.id, kind: e.kind === "license_text" ? "license" : "code", label: e.locator, source: e.detected_by,
       ...(e.kind === "url" ? { url: e.locator } : { path: e.locator }),
       ...(e.start_line ? { startLine: e.start_line } : {}), text: e.excerpt ?? null };
   });
@@ -296,7 +289,7 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
   return { id, mode: "api", project: run?.project?.name ?? "扫描任务", input: run?.project?.source ?? "未提供",
     createdAt: run?.created_at ?? null, finishedAt: run?.finished_at ?? null,
     status: state.status, stages, stageIndex: state.stage === "completed" ? stages.length : Math.max(0, stageKeys.indexOf(state.stage)), progress: state.progress,
-    error: errors.length ? errors.map(e => `${e.code}: ${localizeDisplayText(e.message) ?? e.message}`).join("；") : null,
+    error: errors.length ? errors.map(e => `${e.code}: ${e.message}`).join("；") : null,
     resources, risks, evidence, resultsReady: ["completed", "partial"].includes(state.status), completeness: "full", snapshotVersion: run?.contract_version ?? "P0 API", reportFormats: available };
 }
 export async function getScan(id: string, mode: Mode, signal?: AbortSignal): Promise<Scan> {

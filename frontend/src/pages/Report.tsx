@@ -4,9 +4,8 @@ import {
   statusLabels,
   handlingLabels,
   verificationLabels,
-  resourceTypeLabels,
 } from "../types/domain";
-import { licenseDisplay, reportPayload, summarize } from "../services/model";
+import { reportPayload, summarize } from "../services/model";
 import { Header, download, useNotice } from "../components/ui";
 const chapters = [
   "执行摘要",
@@ -52,7 +51,7 @@ export function Report({ scan }: { scan: Scan }) {
         </nav>
         <article className="og-report">
           <header>
-            <p>OPENGUARD / 证据优先</p>
+            <p>OPENGUARD / EVIDENCE FIRST</p>
             <h1>
               {scan.project}
               <br />
@@ -126,14 +125,14 @@ export function Report({ scan }: { scan: Scan }) {
               scan.resources.map((r) => (
                 <div className="og-report-block" key={r.id}>
                   <h3>
-                    {r.name} · {resourceTypeLabels[r.type]}
+                    {r.name} · {r.type}
                   </h3>
                   <p>
                     {r.id} / 版本：{r.version ?? "待补充"} / 来源：
                     {r.origin ?? "待补充"}
                   </p>
                   <p>
-                    许可证：{licenseDisplay(r.license)} /{" "}
+                    许可证：{r.license ?? "未知"} /{" "}
                     {r.licenseStatus === "confirmed" ? "已核验" : "待确认"}
                   </p>
                 </div>
@@ -151,7 +150,7 @@ export function Report({ scan }: { scan: Scan }) {
                 .map((r) => (
                   <p key={r.id}>
                     {r.name}：来源 {r.origin ?? "待补充"}；许可{" "}
-                    {licenseDisplay(r.license)}；证据{" "}
+                    {r.license ?? "待确认"}；证据{" "}
                     {r.evidenceIds.join("、") || "待补充"}。
                   </p>
                 ))

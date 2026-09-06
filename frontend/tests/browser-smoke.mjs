@@ -66,7 +66,7 @@ try {
   const risks = (await api(prefix + '/risks')).items;
   assert.equal(risks.length, 2);
   await page.locator('.og-risk-preview').filter({ hasText: 'demo-mit' }).click();
-  await page.getByRole('heading', { name: /许可证证据需要核验/ }).waitFor();
+  await page.getByRole('heading', { name: /License evidence requires verification/ }).waitFor();
   await visible('提示');
   assert.equal(await page.getByRole('button', { name: /标记.*处理/ }).count(), 0);
   const evidenceIds = risks.flatMap(r => r.evidence_ids);
@@ -76,7 +76,7 @@ try {
   passed('real risk detail and referenced evidence');
   const postCount = requests.filter(r => r.method === 'POST').length;
   await page.reload();
-  await page.getByRole('heading', { name: /许可证证据需要核验/ }).waitFor();
+  await page.getByRole('heading', { name: /License evidence requires verification/ }).waitFor();
   assert.equal(requests.filter(r => r.method === 'POST').length, postCount);
   assert.ok(page.url().includes(id));
   passed('deep-link refresh retains task without resubmitting');

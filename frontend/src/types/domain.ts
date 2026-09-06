@@ -112,19 +112,5 @@ export const resourceTypes: ResourceType[] = [
   "Service",
   "Asset",
 ];
-export const resourceTypeLabels: Record<ResourceType, string> = {
-  Package: "软件包",
-  Model: "模型",
-  Dataset: "数据集",
-  API: "外部接口",
-  Service: "外部服务",
-  Asset: "其他资源",
-};
-export const outcomeLabels: Record<string, string> = {
-  pass: "已通过",
-  warning: "风险提示",
-  review_required: "需要复核",
-  unknown: "结论未知",
-};
 
 export type ReportFormat = "html" | "json" | "csv" | "resource_inventory";
