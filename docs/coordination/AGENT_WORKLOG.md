@@ -4032,3 +4032,7 @@
 - 初始原生产越界标记、转译ENOSYS、旧头缺常量、Rosetta具体proc需求、进程池SemLock和后代re-exec限制均保留在安全表9.7。整个/proc实验方案被自动审批拒绝后撤回，未生产部署；最终仅特定proc文件及父可执行inode。一次审批超时分开重试通过，首次空闲断言未通过时未更新。fork证明不能外推任意re-exec兼容。
 - 本轮跨任务文件内容读取缺口关闭，完整元数据/IPC隔离、剩余资源/完整安全、人工及异机未外推完成；下一任务核对持久累计预算与P0要求，只修实际阻断。准备推送fix/a2-scanner-file-boundary，不合并main/Release。
 - 本次运行精确 token 数不可获得；开工6k–12k，任务范围完成，串行兼容调整未扩展产品范围，实际token区间不可确认。
+
+### [20260906-RootAstra-ScannerFiles-Published] COMPLETE
+
+- GPT-6 Astra / Root；103aa77a8ce1a2d9c76fd45b64a791fe9e02cf44已推送fix/a2-scanner-file-boundary，远端完整哈希一致；9个既有文件、无新增文件。本机已部署并验证，跨任务读取边界完成，完整P0未完成，未合并main或Release。随后仅追加此发布绑定。
