@@ -4085,3 +4085,7 @@
 
 - GPT-6 Astra / Root；汉化实现`6c836ed3349be1f10e7dc89696dabea181df4224`已推送`feat/zh-cn-ui`，随后通过普通非快进合并进入`integration/p0`，远端合并头`52d8540a68416e64bab7ab4ce529515d091db9ea`已核对。两条组员分支继续保持`89c8ba2`和`83e8928`，未修改、合并或推送。
 - 本条仅补发布绑定并把进度/AI记录从待绑定更新为已集成，不改变产品实现或验证结论。待本记录推送后删除本人远端和本地`feat/zh-cn-ui`短分支，GitHub恢复四条保留分支；不删除提交历史。
+
+### [20260906-2052-RootAstra-ZhCnUI-Cleanup] COMPLETE
+
+- GPT-6 Astra / Root；发布绑定提交`12d15c67c83cf6e9c2eadb011ce8a60a99c5fd2f`已推送`integration/p0`，随后删除已完整合并的本人远端/本地`feat/zh-cn-ui`。最终GitHub仅保留`main`、`integration/p0`、扫描组员`codex/p0-external-tools-sync`和前端组员`feat/xzb-frontend`；组员SHA仍为`89c8ba2`、`83e8928`，未修改或删除。当前工作树仅有用户未跟踪`output/`。
