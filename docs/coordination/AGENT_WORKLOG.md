@@ -297,3 +297,17 @@
 - 已知风险与未完成项：不执行主分支合并，团队审查仍由仓库成员完成。
 - 下一步与责任模型：完成推送后核对远端分支提交并记录收工。
 - 关联提交/PR/Issue/evidence_id：基于 83e8928；PR https://github.com/mumingce-star/OpenGuard/pull/1 。
+
+### [20260907-0103-Sol-真实接口按钮同步收工] COMPLETE - 调整已上传并更新现有 PR
+
+- 作者：GPT-5.6 Sol
+- 对话角色：用户明确授权上传；团队成员后续审查。
+- 时间：2026-09-07 01:03（Asia/Shanghai）
+- 分支或工作区：feat/xzb-frontend；功能提交已正常推送至 origin/feat/xzb-frontend，未直接修改或合并 main。
+- 任务目标与实际结果：真实接口模式隐藏“载入固定演示”的调整已进入团队仓库；mock 模式仍保留该入口；现有 PR #1 已自动包含新提交。
+- 修改或新增文件：frontend/src/pages/NewScan.tsx、frontend/tests/browser-smoke.mjs、docs/05-ai-assistance-log.md、docs/coordination/change-requests.md、docs/coordination/AGENT_WORKLOG.md。
+- 命令与测试结果：推送前 fetch 显示本地与远端分支 0/0 且无冲突；定向暂存 5 个文件；git diff --cached --check、禁止目录检查和敏感模式扫描均通过。功能代码版本此前已通过 pnpm test 16 项、pnpm build 和隔离 Chrome 12 组流程。
+- 接口、Schema、规则或决策：无 API、Schema、提交逻辑或路由变更；不创建重复 PR。
+- 已知风险与未完成内容：PR 尚待团队审查和合并；真实后端联调不属于本次按钮调整。
+- 下一步与责任模型：团队成员在 PR #1 审查；确认后由有权限成员合并至 main。
+- 关联提交/PR/Issue/evidence_id：功能提交 516bcff；PR https://github.com/mumingce-star/OpenGuard/pull/1 。本条收工记录通过后续独立文档提交同步。
