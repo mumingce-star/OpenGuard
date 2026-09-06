@@ -26,6 +26,12 @@ from app.security.errors import IngestionSecurityError
 
 
 GitIngestionFactory = Callable[[Path], GitIngestionService]
+_CAPACITY_FAILURE_REASONS = {
+    "git_fetch_limit_exceeded",
+    "git_file_count_limit_exceeded",
+    "git_single_file_limit_exceeded",
+    "git_materialized_limit_exceeded",
+}
 
 
 def build_public_git_dependency_plan(
@@ -76,6 +82,8 @@ def build_public_git_dependency_plan(
             if error.code == "scanner_timeout":
                 fail("scanner_timeout", "Public Git ingestion timed out.")
             if error.code == "scanner_failed":
+                if error.reason in _CAPACITY_FAILURE_REASONS:
+                    fail("scanner_failed", "Public Git repository exceeds the configured scan capacity limit.")
                 fail("scanner_failed", "Public Git ingestion failed.")
             fail("invalid_source", "Public Git ingestion failed.")
         except Exception:

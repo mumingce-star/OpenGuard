@@ -4153,3 +4153,16 @@
 - 用户当前crewAI任务在API重建前自然终态，没有被中断：308.82秒，627组件、712证据、627风险、0整改，`partial/report/95%`，错误为ScanCode/AI资产/Python依赖部分结果及AI provider不可用。API/Web随后用汉化前代码重建，均healthy；真实Git、AI和宿主Ollama开关保持1，active=0。
 - 验收：汉化前前端20项测试、TypeScript/Vite构建通过；相关AI/规则117项通过；Compose双服务健康。Chrome新标签打开既有8组件成功任务，4秒内显示`TASK`、7/7及100%。同一Chrome中627组件历史页超过20秒仍处于原版逐批Evidence读取，这是汉化前真实行为，未包装成回退后加速。
 - 当前Mac可运行和演示汉化前P0链；大仓库扫描/结果读取慢的问题仍存在于该基线。P0剩余持久累计预算、Windows异机、AI质量/规模裁决及最终资源安全发布冻结。下一步需Owner决定是否接受原版耗时边界。本轮形成一个本地回退提交，GitHub发布待明确目标授权。精确token不可获得；开工5k–9k，范围完整完成且未扩展。
+
+### [20260906-2341-RootAstra-PublicGitFailure] START
+
+- GPT-6 Astra / Root；用户要求严格修复当前“Public Git ingestion failed”，由Root自行输入公开GitHub链接并实跑到汉化前可用效果，同时核对Docker。本轮限于既有公开Git摄取、Docker运行配置、扫描与报告主链，只修明确阻断，不恢复汉化、动态视觉或增加P1/P2。
+- 失败任务`scn_2a8b4e19-b530-498a-b0cd-ec2ae2d36913`来源为`https://github.com/run-llama/llama_index`，33.57秒在ingestion失败。通过生产容器原`GitIngestionService`独立复现，真实内部原因为`scanner_failed:git_materialized_limit_exceeded`：网络、TLS、Git和工作目录创建均已通过，仓库物化超过现有512MiB安全上限；API原通用消息隐藏了该边界。
+- 拟仅细化既有错误消息及相关测试，使仓库容量超限与运行故障可区分；不提高或绕过安全上限。随后重建API，在Chrome正常页面提交固定小型公开仓库，跟踪真实阶段、资源/风险/证据和四格式报告，并核对容器健康、真实模式开关、数据卷及工作目录清理。开工估算8k–14k token；精确token不可获得。
+
+### [20260906-2341-RootAstra-PublicGitFailure] COMPLETE
+
+- 根因确认：`llama_index`通过Git/TLS/公网获取后触发汉化前即存在的`git_materialized_limit_exceeded`，不是汉化或Docker网络故障。只在`public_git.py`映射四类既有容量reason为明确安全消息；错误码、接口、Schema、512MiB上限及其他故障消息不变。既有单测文件增加一项容量分类断言，相关25通过、2 opt-in网络测试跳过、1条既有warning。
+- Chrome真实产品路径：Root输入`https://github.com/andreped/chatbot-streamlit-demo`，任务`scn_eac4fbff-99de-4c3e-9849-a81a8416c789`在46.30秒内从5%到85%再到100%，7/7完成；revision`e32b3e6...57bac`、8组件、10证据、8风险、8条Qwen3建议、零错误。HTML/JSON/CSV/资源清单均200，字节与SHA已记录于进度34节。
+- Docker验收：API/Web healthy；Git/AI/Ollama开关为1，锁定Qwen3标签/摘要可见；API只读根、drop ALL、no-new-privileges、2 CPU、4GiB、128 PID、nofile 256、工作目录1GiB tmpfs保持。工作目录清空。重建时遗漏活动任务检查导致旧`smolagents`执行线程中断；已按现有worker语义保留80组件/6 AI资源并收敛`partial/85%`、发布四报告，未重放；最终active=0。既定范围下不新增Git恢复/lease/队列，后续重建前先检查active=0。
+- 当前Mac的汉化前P0产品链恢复可用；仍缺持久累计预算、Windows异机、AI人工质量/规模裁决及资源/安全/发布最终冻结。实现与治理修改待形成提交并推送`integration/p0`，`output/`及两条组员分支未修改。本次运行精确token数不可获得；开工8k–14k，本轮目标完成，额外仅处理本轮重建造成的明确阻断，未扩产品架构。

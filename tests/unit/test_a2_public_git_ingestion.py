@@ -195,15 +195,16 @@ def test_git_tree_rejects_symlink_before_materialization(tmp_path: Path) -> None
 
 
 class _FakeGitIngestion:
-    def __init__(self, root: Path, calls: list[str], *, failure: bool = False) -> None:
+    def __init__(self, root: Path, calls: list[str], *, failure_reason: str | None = None) -> None:
         self.root = root
         self.calls = calls
-        self.failure = failure
+        self.failure_reason = failure_reason
 
     def ingest_with_consumer(self, source: str, consumer: object, *, read_limits: object) -> object:
         self.calls.append(source)
-        if self.failure:
-            raise IngestionSecurityError("invalid_source", "source_address_not_public")
+        if self.failure_reason is not None:
+            code = "invalid_source" if self.failure_reason.startswith("source_") else "scanner_failed"
+            raise IngestionSecurityError(code, self.failure_reason)
         service = ZipIngestionService(self.root)
         try:
             result = service.ingest_with_consumer(io.BytesIO(_archive()), consumer, read_limits=read_limits)  # type: ignore[arg-type]
@@ -279,7 +280,7 @@ def test_git_post_accept_security_failure_is_durable_failed_not_partial(tmp_path
     runtime = GitScanRuntime(
         registry,
         workspace_root=workspaces,
-        ingestion_factory=lambda root: _FakeGitIngestion(root, calls, failure=True),  # type: ignore[arg-type]
+        ingestion_factory=lambda root: _FakeGitIngestion(root, calls, failure_reason="source_address_not_public"),  # type: ignore[arg-type]
     )
     try:
         with TestClient(create_app(registry, git_runtime=runtime)) as client:
@@ -293,6 +294,38 @@ def test_git_post_accept_security_failure_is_durable_failed_not_partial(tmp_path
             assert [(error.code, error.message) for error in run.errors] == [
                 ("invalid_source", "Public Git ingestion failed.")
             ]
+            assert not run.report_links
+    finally:
+        registry.close()
+
+
+def test_git_capacity_failure_is_distinguished_from_runtime_failure(tmp_path: Path) -> None:
+    os.chmod(tmp_path, 0o700)
+    workspaces = _private(tmp_path / "workspaces")
+    calls: list[str] = []
+    registry = SQLiteScanRunRegistry(tmp_path / "scans.sqlite")
+    runtime = GitScanRuntime(
+        registry,
+        workspace_root=workspaces,
+        ingestion_factory=lambda root: _FakeGitIngestion(
+            root,
+            calls,
+            failure_reason="git_materialized_limit_exceeded",
+        ),  # type: ignore[arg-type]
+    )
+    try:
+        with TestClient(create_app(registry, git_runtime=runtime)) as client:
+            response = client.post(
+                "/api/v1/scans",
+                json={"source_type": "git", "source": "https://github.com/example/repository.git"},
+            )
+            assert response.status_code == 202
+            run = registry.get(response.json()["scan_id"]).run
+            assert (run.status.value, run.stage.value, run.progress) == ("failed", "ingestion", 5)
+            assert [(error.code, error.message) for error in run.errors] == [
+                ("scanner_failed", "Public Git repository exceeds the configured scan capacity limit.")
+            ]
+            assert calls == ["https://github.com/example/repository.git"]
             assert not run.report_links
     finally:
         registry.close()

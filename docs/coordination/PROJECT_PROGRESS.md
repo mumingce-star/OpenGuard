@@ -804,3 +804,28 @@ AI诊断确认不是无限卡死。现有`apply_ai_remediations`对每个eligibl
 当前Mac仍可独立运行汉化前版本的Git/ZIP扫描、ScanCode/Syft、资源/风险证据、Qwen3建议和报告。中文风险文案、动态0–100进度、部分结果中文去重以及大报告Evidence快照复用均已撤销。大仓库扫描与历史结果页仍可能较慢，这是所选汉化前版本的已验证行为。
 
 P0仍缺持久累计预算、Windows异机、AI人工质量与规模裁决、资源/安全/发布冻结。可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需关闭P0门禁并准备材料、视频、匿名和成果链接；具备获奖竞争力仍需真实对照、误差分析和人工质量证据。下一任务应先决定是否接受汉化前版本的大仓库耗时边界，再继续持久累计占用核查。本次运行精确token数不可获得；开工估算5k–9k，完整回退、测试、部署和Chrome验收均在原范围内完成。
+
+## 34. 公开 Git 容量失败修复与汉化前产品链复验（2026-09-06）
+
+用户截图任务`scn_2a8b4e19-b530-498a-b0cd-ec2ae2d36913`的来源为`https://github.com/run-llama/llama_index`。生产容器内复用原`GitIngestionService`得到内部原因`scanner_failed:git_materialized_limit_exceeded`：Git/TLS/公网获取已通过，仓库物化超过512MiB安全上限。该上限及原通用错误消息均已存在于汉化前`e0845c0`，不是汉化引入的扫描故障。本轮不提高或绕过上限，只让四类既有容量错误返回“Public Git repository exceeds the configured scan capacity limit.”，保留原错误码、Schema和接口。
+
+Root在Chrome正常“新建扫描”页亲自提交`https://github.com/andreped/chatbot-streamlit-demo`，产生任务`scn_eac4fbff-99de-4c3e-9849-a81a8416c789`。页面依次显示5%、85%和100%，46.30秒完成7/7阶段；固定Git revision为`e32b3e6cea77f65e2c10bd5b1a0fe3d745057bac`，得到8组件、10证据、8条待复核风险和8条Qwen3整改建议，零错误。四报告实际下载均为200：HTML 6208字节/SHA `5c544669...c7ad0`，JSON 40466字节/SHA `370e36ba...c51b`，CSV与资源清单各1769字节/SHA `e056dff8...5a17`。
+
+API/Web均healthy；公开Git、AI和Docker宿主Ollama开关为1；容器能读取锁定模型`qwen3:4b-instruct-2507-q4_K_M`及摘要`0edcdef3...ba0`。API保持只读根文件系统、drop ALL capabilities、no-new-privileges、2 CPU、4GiB内存、128 PID、nofile 256及1GiB工作目录tmpfs；成功与容量失败后工作目录为空。25项公开Git相关回归通过、2项需要受控网络的测试按声明跳过、1条既有AnyIO弃用warning。
+
+本轮API重建时未先确认活动任务，导致更早的`smolagents`任务`scn_0bb32fbb-89d0-44ef-bcec-fe13576569ae`失去内存执行线程并停在85%。按现有worker中断语义一次性收敛为`partial/ai_assist/85%`，保留80组件、6个AI资源及全部既有事实，追加`worker_interrupted`并生成四报告；没有重放Git或Qwen，也没有删除记录。最终注册表`queued/running=0`。依既定范围不新增Git恢复、lease或队列；后续重建前必须先核对活动任务为0。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 错误码、API、Schema和稳定枚举不变，仅细化容量提示 | 保持兼容 | 用户/Root | 本轮待绑定 |
+| A2 | 进行中 | 512MiB Git物化上限保持；容器安全配置和失败清理通过 | 持久上传/报告累计预算及最终安全冻结 | 用户/Root | 本轮待绑定 |
+| A3 | Mac单机累计完成 | 新真实任务正常终态；被重建中断的旧任务诚实收敛且active=0 | Windows异机；不在P0扩展Git恢复 | 用户/Root；组员执行异机 | 本轮待绑定 |
+| A4 | P0样例链累计完成 | 小型公开Git真实完成8组件/10证据/8风险；超限输入明确拒绝 | 大仓库支持边界需写入最终使用说明，不外推总体准确率 | 用户/Root | 本轮待绑定 |
+| A5 | 本机可用；人工复核进行中 | 锁定Qwen3生成8条建议，模型身份摘要匹配 | AI建议质量与规模裁决 | 用户/Root与Owner | 本轮待绑定 |
+| A6 | 本机四格式累计完成 | 新任务四报告200、实际字节和SHA已核验 | Windows下载确认 | 用户/Root | 本轮待绑定 |
+| A7 | Mac部署累计完成 | Docker双服务healthy；Chrome真实提交、进度、结果和报告页面通过 | Windows复现 | 用户/Root；组员执行异机 | 本轮待绑定 |
+| A8 | 进行中 | 无新依赖、接口或文件；根因、限制和操作失误均已留痕 | 人工/资源/安全/发布最终冻结 | 用户/Root与Owner | 本轮待绑定 |
+
+当前Mac可独立运行和演示汉化前版本的公开Git/ZIP扫描、ScanCode/Syft、资源/许可证风险与证据、Qwen3建议及四格式报告；合规规模的公开Git仓库已重新实跑通过。当前不具备超过512MiB物化上限的仓库扫描、运行中安全重启自动恢复、Windows异机、AI人工质量、持久累计预算及最终资源/安全/发布冻结。
+
+可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需关闭上述P0门禁并完成材料、视频、匿名和正式成果链接；具备获奖竞争力仍需真实对照、误差分析和人工质量证据。下一任务回到P0主线：核对持久上传与报告累计占用，只修明确缺口。本次运行精确token数不可获得；开工估算8k–14k，本轮根因修复、Docker重建、Chrome真实扫描、Qwen和四报告验收完整完成；额外发现并安全收敛一条由本轮重建中断的旧任务，未扩展产品架构。
