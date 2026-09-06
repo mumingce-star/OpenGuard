@@ -837,16 +837,75 @@
 }
 .og-progress-summary strong {
   font-size: 32px;
+  color: #f8fafc;
+  font-variant-numeric: tabular-nums;
 }
 .og-progress-summary small {
-  font-size: 14px;
+  margin-left: 3px;
+  color: var(--og-muted);
+  font-size: 16px;
 }
-.og-app progress {
-  display: block;
+.og-progress-track {
+  position: relative;
   width: 100%;
-  height: 8px;
-  accent-color: #9383f0;
+  height: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 20px;
+  background: rgba(71, 85, 105, 0.46);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.32);
+}
+.og-progress-fill {
+  position: relative;
+  display: block;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6d5ee8 0%, #8b7cf6 52%, #38c9db 100%);
+  box-shadow: 0 0 18px rgba(99, 102, 241, 0.45);
+}
+.og-progress-fill.active::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(100deg, transparent 15%, rgba(255, 255, 255, 0.4) 48%, transparent 82%);
+  transform: translateX(-120%);
+  animation: og-progress-sweep 1.5s ease-in-out infinite;
+}
+.og-progress-live {
+  --og-progress-pulse: 84, 216, 232;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 12px 0 0;
+  color: #aebbd0;
+  font-size: 13px;
+}
+.og-progress-live > span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #54d8e8;
+  box-shadow: 0 0 0 0 rgba(var(--og-progress-pulse), 0.55);
+  animation: og-progress-pulse 1.6s ease-out infinite;
+}
+.og-progress-live.ai {
+  --og-progress-pulse: 158, 145, 255;
+  color: #c9c2ff;
+}
+.og-progress-live.ai > span {
+  background: #9e91ff;
+  box-shadow: 0 0 0 0 rgba(var(--og-progress-pulse), 0.55);
+}
+@keyframes og-progress-sweep {
+  0% { transform: translateX(-120%); }
+  60%, 100% { transform: translateX(120%); }
+}
+@keyframes og-progress-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(var(--og-progress-pulse), 0.5); }
+  70%, 100% { box-shadow: 0 0 0 8px rgba(var(--og-progress-pulse), 0); }
 }
 .og-stages {
   list-style: none;
