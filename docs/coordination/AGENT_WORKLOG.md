@@ -2798,3 +2798,1251 @@
 - 待确认删除：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
 - 下一步：用户明确批准上述13个分支删除后，Root只删除这些远端引用、刷新分支清单并记录结果；随后从 `integration/p0` 创建一个 `feat/a5-ai-provider` 短分支，按技术执行书进入A5最小Provider与降级纵切。
 - token：本次运行精确 token 数不可获得；开工估算 `16k-24k`，团队集成与发布已在范围内完整完成，分支引用删除因审批要求缩小为待确认项；没有开始A5半成品。
+
+### [20260904-1057-RootSol-A5Provider契约与断点续作] START - 从 A5-0 未开始位置建立最小 AI Provider 纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；状态复核、AI 边界契约与发布门禁；2026-09-04 10:57（Asia/Shanghai）。分支 `feat/a5-ai-provider`，基线 `30965d1`。
+- 断点复核：`integration/p0` 本地工作树干净，既有 A1-A4、组员前端壳和 B2/B3 Adapter 均保留；仓库不存在 `backend/app/ai/`、A5 规格或 A5 测试，因此本轮不会重复生成或覆盖已有实现。远端 `git fetch --prune origin` 因当前受限网络无法解析 GitHub，推送前须在受控联网环境再次刷新和核对。
+- 本轮范围：只完成项目负责人 A5-0——冻结可替换 Local/Remote Provider 边界、严格结构化整改输出、已有 evidence 引用约束、确定性事实优先、AI 关闭/异常/无效输出的稳定降级；不实现真实 Ollama 网络传输，不接入组员 B4/B5 许可证规则或 B6 AI 资源检测，不修改前端、公共 P0 Schema 或 API。
+- 模型分工：Sol 冻结规格；Terra 只实现 `backend/app/ai/` 与实现侧测试；Luna 只新增独立可靠性/安全测试；Root 最终复核、更新证据与推送。本轮不删除此前列出的 13 个旧远端分支，因为仍缺用户对精确列表的明确删除授权。
+- 验收：有效建议只能引用本次输入证据，生成的 `Remediation` 必须为 AI producer 且保持 `pending`；模型不能改写 resource/license/rule/outcome/severity 等事实；关闭、超时、不可用、异常 JSON、重复键、超限、未知引用或身份不匹配均不得伪造建议，并保留原确定性结果。先通过 A5 定向测试，再运行完整后端回归、Schema 等值、compileall、diff 与敏感信息门禁。
+- token：本轮非硬估算 `18k-26k`；客户端不提供精确本轮 token 遥测。如实现审计发现需要改公共契约或进入组员任务，将停止并记录变更请求，不扩大本轮范围。
+
+### [20260904-1110-Terra-A5Provider] START - 实现冻结 A5-0 可注入 Provider 与降级
+
+- 作者：GPT-5.6 Terra；分支 `feat/a5-ai-provider`；仅新增 `backend/app/ai/`、实现侧测试及必要 README/AI/日志；不提交、不推送。
+- 验收：严格 JSON/引用/敏感校验、pending remediation 原子提升、disabled/skipped/degraded；不实现 HTTP/Ollama 或修改 P0/API/pipeline/组员模块。
+- token：非硬估算 `8k-12k`，精确遥测不可得。
+
+### [20260904-1140-Terra-A5Provider] PARTIAL - A5-0 核心边界已实现，验收覆盖待补
+
+- 实际修改：新增 `backend/app/ai/__init__.py`、`provider.py` 与 `tests/unit/test_a5_ai_provider.py`。实现 local/remote 注入 Provider 校验、canonical 输入、重复键/非有限/大小/额外字段/引用/敏感路径内容拒绝、pending `Remediation` UUIDv5 提升、disabled/skipped/generated/degraded 与整批失败不发布部分建议。
+- 验证：A5 最小实现测试 `2 passed`，`compileall -q backend/app tests` 与 `git diff --check` 通过。
+- 未完成：规格要求的完整定向边界（重复 key、超限、批次原子性、全部降级分支、事实逐值不变）及后端全量/P0回归、README/AI记录尚未完成；因此不可交 Luna、不形成 evidence、不提交或推送。后续 Terra 应在同一允许文件中补全实现测试与回归，不扩大到真实传输或公共模型。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-12k`，范围未扩大但未完整收工。
+
+### [20260904-1200-Terra-A5ProviderResume] START - 补齐 A5-0 快照、原子性与降级边界
+
+- 范围不变：仅 A5 provider、实现测试、README/AI/追加日志；不提交、不推送；估算 `6k-10k`。
+
+### [20260904-1225-Terra-A5ProviderResume] PARTIAL - 修复快照与分类缺口，完整验收待补
+
+- 修复：canonical payload 现加入 finding resource 绑定的 LicenseExpression 与其 Evidence；Provider 属性访问异常转换 `ai_invalid_argument`，ProducerRef 被快照化；拒绝 bool/NaN/Infinity timeout；generate 异常稳定为 `ai_provider_unavailable`，decode/validation 为 `ai_response_invalid`，不会被前一批 response 状态误分类。
+- 验证：现有 A5 unit `2 passed`、AI compileall 与 `git diff --check` 通过。
+- 未完成：尚未补全用户要求的完整 A5 unit 矩阵、README/AI记录、P0/全 unit 回归，因此仍不可交 Luna、不可声明 COMPLETE/evidence、未提交或推送。
+- token：本次运行精确 token 数不可获得；估算 `6k-10k`，范围未扩大但任务未完成。
+
+### [20260904-1132-Root-A5Provider实现收口] COMPLETE - A5-0 实现侧可交独立验证
+
+- Root 处置：保留 Terra 已验证方向，在同一冻结范围重构 `backend/app/ai/provider.py` 和实现测试，补齐许可证事实/evidence 允许集、Provider 元数据快照、generate/response 错误分流、原子批处理、事实逐值保持、稳定 pending Remediation 与幂等降级诊断；未引入新依赖或真实 transport。
+- 实现验收：local/remote、生成/跳过/关闭/降级、稳定 ID/provenance、license evidence、Provider 第二项失败不发布第一项、重复键/非有限/额外字段/错 finding/未知 evidence/空白/超长/绝对路径/credential/64 KiB、非法 timeout/provider 与身份快照均有实现侧断言。
+- 运行结果：A5 + P0 `75 passed`；完整 `tests/unit` 为 `368 passed`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；`compileall -q backend/app tests` 与 `git diff --check` 通过。
+- 边界：只新增 A5 package/spec/unit 并最小更新 backend README、AI/协作记录；没有修改 P0/Schema/sample/API/pipeline、组员 B1-B7、前端、依赖锁或 PROJECT_PROGRESS。当前只批准交 Luna 独立验证，不形成最终 evidence，不提交或推送。
+- token：本次运行精确 token 数不可获得；Root 收口包含在本任务 `18k-26k` 总估算中，未发生范围扩张。
+
+### [20260904-1136-Luna-A5Provider独立验证] START - A5-0 AI Provider 与确定性降级独立验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 11:36（Asia/Shanghai）。分支 `feat/a5-ai-provider`；当前 HEAD `30965d1`；不提交、不推送。
+- 前置核验：已完整阅读 `AGENTS.md`、根 `README.md`、共享工作日志、`PROJECT_PROGRESS.md`、`docs/handoffs/LUNA_HANDOFF.md`、冻结 `docs/spec/a5-ai-provider.md` 及当前 `backend/app/ai/`；已核对 Root `20260904-1132` COMPLETE 和 Terra 两轮 PARTIAL 历史，不采信实现侧 expected。
+- 本轮唯一目标：仅新增 `tests/security/test_a5_ai_provider_independent.py`，独立构造 P0 `ScanRun`、Provider、finding/evidence/license 事实和 canonical expected，覆盖 local/remote、pending/stable evidence、disabled/skipped/generated/degraded、整批原子性、事实逐值保持及稳定 ID/provenance。
+- 负面范围：重复 key、额外字段、错 finding、未知/重复 evidence、非 finite/截断/非字符串/64 KiB 响应、credential/Unix/Windows/UNC 路径、Provider 属性/异常、timeout、批次第二项失败、metadata 变异、repeated degradation；另核验 canonical payload 不含未绑定资源/许可证、原始异常不泄露。
+- 允许修改：仅上述独立测试，最小更新 `tests/security/README.md`、`docs/05-ai-assistance-log.md`，以及本共享日志；禁止修改 backend、tests/unit、P0/Schema/sample/API/pipeline、B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party；不生成持久 fixture。
+- 验收顺序：先运行独立 A5 测试；若发现 P0/P1，保留原样失败并以 BLOCKED 结束，不修实现、不放宽断言。全绿后运行 A5 unit+独立、全 security（排除既有回环限制）、P0 Schema 等值、compileall、diff、敏感信息与范围门禁；仅报告可证明的本地注入 Provider 边界，不外推 Ollama/Qwen3、网络 transport、许可证规则、报告或完整产品。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告是否在范围内完成及是否调整。
+
+### [20260904-1216-Luna-A5Provider独立验证] BLOCKED - A5-0 P1 原子性/错误契约缺口
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 12:16（Asia/Shanghai）。分支 `feat/a5-ai-provider`；HEAD 仍为 `30965d1`；不提交、不推送。
+- 测试证据：独立文件收集 16 项，首轮测试自身的 helper 错误与 remediation 列表顺序假设仅在独立测试内修正；最终 `15 passed, 1 failed`。通过项覆盖 local/remote、pending/stable evidence、disabled/skipped/no-call、严格响应/引用/敏感/路径、Provider 属性/异常/timeout、64 KiB、批次原子性、事实保持、metadata snapshot、stable ID 与 repeated degradation。
+- P1 复现：`test_invalid_p0_aggregate_fails_before_provider_execution` 先从合法 P0 `ScanRun` 构造后篡改 `summary.component_count`。冻结契约要求入口完整 revalidate，抛 `ai_invalid_argument` 且 provider 不得执行；当前实现实际调用 provider 1 次（canonical payload 2076 UTF-8 bytes），随后从 `_degraded` 逸出未包装的 Pydantic `ValidationError`，没有在模型执行前失败关闭。
+- 处置：失败断言原样保留；未修改 backend、tests/unit、P0/Schema/sample/API/pipeline、组员 B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party；仅修改本独立测试自身夹具/断言，并追加安全 README、AI 使用记录和本记录。按 P1 规则停止 A5 unit+独立、全 security、Schema/compileall 扩大回归，不批准 `EVD-A5-AI-PROVIDER-001`，升级 Terra 修复、Luna 原始复测、Sol/Root 重审与不可变绑定。
+- 证据边界：本轮不证明真实 Ollama/Qwen3、HTTP/network transport、A4 接线、许可证规则、报告、Bench、公开部署或完整竞赛作品；未把 15 个通过项外推为 A5 完成。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在该估算范围内完成本轮独立验证与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1218-Root-A5P1修复] START - 关闭 Provider 调用前 P0 重校验缺口
+
+- 范围：仅在 A5 入口对传入 `ScanRun` 的完整 dump 做 P0 重校验，并补一条实现侧回归；非法或事后篡改聚合统一在 Provider 调用前抛 `ai_invalid_argument`。不修改 P0 模型、Luna 原测试、API/pipeline、组员模块或前端。
+- 验收：Luna 原始失败由 `15 passed, 1 failed` 变为全绿；随后运行 A5 unit+independent、P0、完整非回环与静态门禁。token 沿用本任务 `18k-26k` 总估算，精确遥测不可得。
+
+### [20260904-1217-Luna-A5Provider复测] AMENDMENT/START - Root 修复后的 A5-0 P1 原样复测
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 12:17（Asia/Shanghai）。按 Root 修复交接继续复测；不提交、不推送。
+- 修复输入：Root 仅在 `apply_ai_remediations` 入口增加 `ScanRun.model_validate(run.model_dump(mode='python'))` 的 `ai_invalid_argument` 失败关闭并补一条 unit；本轮不修改 backend、tests/unit、独立断言或其他模块。
+- 验收顺序：先原样运行 `tests/security/test_a5_ai_provider_independent.py`；若 16 项全绿，再运行 A5 unit+独立、全 security 排除 `real_uvicorn`、Schema 等值、compileall、diff、敏感与范围门禁；若仍失败，保留失败并 BLOCKED。
+- token：本轮非硬估算 `8k-14k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1220-Luna-A5Provider复测] COMPLETE - A5-0 P1 修复独立复核与门禁收口
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、安全可靠性与材料证据边界；2026-09-04 12:20（Asia/Shanghai）。分支 `feat/a5-ai-provider`；不提交、不推送。
+- 原样复测：`tests/security/test_a5_ai_provider_independent.py` 为 `16 passed`；此前 `test_invalid_p0_aggregate_fails_before_provider_execution` 已确认事后篡改 P0 在 Provider 执行前返回 `ai_invalid_argument`，原 P1 关闭。
+- 联合门禁：A5 unit + 独立 `46 passed`；`tests/unit` + `tests/security -k 'not real_uvicorn'` 为 `734 passed, 2 deselected`；P0 Schema 专项 `46 passed`；`compileall -q backend/app tests`、`git diff --check`、受保护路径、world-writable 与敏感模式检查通过；仅保留 1 条 Starlette/AnyIO 第三方弃用 warning。
+- 处置与边界：本轮未修改 backend、tests/unit、独立断言、P0/Schema/sample/API/pipeline、B1-B7、前端、`PROJECT_PROGRESS.md` 或 third_party；Root/Terra 既有工作区变更未越权清理。候选 `EVD-A5-AI-PROVIDER-001` 仅完成独立验证，仍待 Root/Sol 绑定不可变提交、运行 profile 与有界发布范围。
+- 证据边界：结果限于本机 CPython 3.12、本地注入 Provider 与确定性 P0 边界；不证明真实 Ollama/Qwen3、HTTP/network transport、A4 接线、许可证规则、报告、Bench、公开部署或完整竞赛作品。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-14k`，在该范围内完成本轮复测与门禁收口，未发生范围调整。
+
+### [20260904-1224-RootSol-A5Provider终审] COMPLETE - A5-0 候选通过有界终审，待不可变提交绑定
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 架构、安全、证据与发布终审；2026-09-04 12:24（Asia/Shanghai）。分支 `feat/a5-ai-provider`；本条记录时未提交、未推送。
+- 完成内容：冻结 `docs/spec/a5-ai-provider.md` v1；新增可注入 local/remote Provider、canonical finding/evidence/license 输入、64 KiB 严格 JSON、重复键/非有限/额外字段/身份/引用/敏感路径门禁、pending P0 Remediation、UUIDv5 稳定身份、Provider 元数据快照和 generated/skipped/disabled/degraded 原子语义。入口重新验证事后可变 P0，Luna 发现的 Provider 调用前 P1 已关闭。
+- 验证：实现侧 30 项、Luna 独立 16 项，A5 合计 46 项；Root 复跑 `tests` 排除两个既有真实 Uvicorn 回环项为 `734 passed, 2 deselected`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；`schema_export_equal=True`、compileall 与 `git diff --check` 通过。
+- 范围与上传检查：仅 A5 package、spec、unit/independent tests、根/后端/安全说明、AI/共享日志；未修改 P0/Schema/sample/API/pipeline、依赖锁、组员 B1-B7、前端、PROJECT_PROGRESS 或原始附件。测试中的 synthetic credential/path 只用于负面泄漏断言；新增公开文件不含真实密钥或本机个人绝对路径。
+- 证据裁决：`EVD-A5-AI-PROVIDER-001` 为 `APPROVED-PENDING-ROOT-BINDING`，仅证明本机 CPython 3.12、显式注入 Provider 的结构化整改与确定性降级核心；不证明真实 Ollama/Qwen3、HTTP/network transport、模型版权/性能、A4 接线、许可证规则、报告、Bench、部署或完整作品。
+- 下一步：创建不可变实现提交并回填哈希、进度与 GitHub 状态后推送；不创建/合并 PR，不删除旧远端分支。A5 后续任务为 A5-1：锁定开放权重模型与 Ollama transport、真实超时和 A4 AI_ASSIST 接线，但必须等待 B5 提供真实 finding/license facts，不代做组员规则。
+- token：本次运行精确 token 数不可获得；开工总估算 `18k-26k`，A5-0 在该范围内完成，期间只增加对 Luna P1 的最小修复，没有扩张到 A5-1 或组员任务。
+
+### [20260904-1228-Root-A5Provider证据绑定与发布] COMPLETE - A5-0 已绑定并推送 GitHub 功能分支
+
+- 作者/角色/时间：Codex Root Coordinator；不可变证据绑定、远端刷新与发布；2026-09-04 12:28（Asia/Shanghai）。分支 `feat/a5-ai-provider`。
+- 不可变绑定：`EVD-A5-AI-PROVIDER-001` 绑定实现、规格、30 项 unit、16 项 Luna 独立测试和 P1 闭环提交 `2c824bf13522ce8a211a34f9c61af323141037f0`；该提交已首次推送至 `origin/feat/a5-ai-provider`。本记录与进度回填将作为后续治理提交再次推送。
+- 远端复核：推送前 `git fetch --prune origin` 发现组员 `codex/p0-external-tools-sync` 与 `feat/xzb-frontend` 均有新提交；本轮没有合并、改写或测试这些新提交，仍由对应组员负责。远端此前不存在同名 A5 分支。
+- 上传范围：A5 Provider 源码、冻结规格、实现/独立测试、根/后端/安全说明、AI 和 append-only 协作记录；没有上传临时依赖目录、cache、原始附件、P0/API/pipeline 改动、组员业务代码、真实凭据或个人绝对路径。`main` 与 `integration/p0` 均未改变，未创建或合并 PR，旧远端分支未删除。
+- 状态：A5-0 子任务完成；A5 父任务保持进行中，A5-1 仍缺真实 Qwen3/Ollama transport、超时/A4接线和消融。下一工程点在 B5 提供真实 finding 之前只应做 A5-1 transport 的独立配置/运行时准备，不能代做许可证规则。
+- token：本次运行精确 token 数不可获得；本轮总估算 `18k-26k` 内已完成断点复核、实现、独立验证、P1关闭、完整门禁、提交和首次推送，未发生功能范围扩张。
+
+### [20260904-1229-RootSol-A5OllamaTransport] START - A5-1a Qwen3/Ollama 资源与本地 transport
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 架构、实现编排与发布终审；2026-09-04 12:29（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，基线 `ee700d9`。
+- 任务目标：核验并锁定 Qwen3/Ollama 的官方来源、版本/模型候选和许可边界，冻结真实本地 transport 契约，实现只访问回环地址的 Ollama HTTP adapter、严格响应封装、真实超时与稳定降级，并交 Luna 独立验证。
+- 允许修改：`docs/spec/a5-ollama-transport.md`、`backend/app/ai/`、A5 定向 unit/security tests、根/后端/安全 README、`docs/02-resource-inventory.md`、`docs/05-ai-assistance-log.md`、`PROJECT_PROGRESS.md` 和本 append-only 日志；不修改 P0/Schema/sample、A2/A3/A4、组员 B1-B7、前端或竞赛原始附件。
+- 边界：本轮不安装 Ollama、不下载 Qwen3 权重、不声明真实模型已运行，不接 A4 主链，也不补 B5 许可证规则或虚构 finding；本机 PATH、常见安装路径均未发现 Ollama，实际模型推理保留到 A5-1b。
+- 验收：仅采用 Ollama/Qwen 官方一手来源；adapter 请求体/回环限制/禁代理/超时/HTTP 与 JSON 错误/大小上限有实现测试；Luna 使用独立本地有界 HTTP fixture 复核；随后执行 A5、P0、完整非回环回归、compileall、diff、敏感信息和范围门禁，Root 绑定不可变提交并推送功能分支。
+- 模型分工：Sol 冻结资源与 transport 契约；Terra 实现 adapter；Luna 以 `xhigh` 独立构造 HTTP 可靠性与安全测试；Root 统一验收、提交和推送，三个角色均不得修改真人组员任务。
+- token：本轮非硬估算 `18k-26k`；如果真实回环测试受 sandbox 限制，保留原始失败并仅请求受控回环复跑，不修改测试绕过。
+
+### [20260904-1240-Terra-A5OllamaTransport] START - 实现冻结 loopback Ollama transport
+
+- 作者：GPT-5.6 Terra；仅 `backend/app/ai/ollama.py`、导出与实现侧 unit/必要运行记录；不安装/下载/真实请求、不提交推送。
+- 验收：标准库 HTTP、严格回环 origin/禁代理/总 deadline/三步包装校验及脱敏失败；token 非硬估算 `8k-14k`。
+
+### [20260904-1250-Terra-A5OllamaTransport] PARTIAL - transport 骨架完成，测试环境缺失
+
+- 修改：新增 `backend/app/ai/ollama.py`，导出 `OllamaProvider`/稳定 transport error；实现显式空代理 opener、字面量 loopback origin、固定 Ollama/Qwen/digest、GET version/tags 后 POST generate、总 deadline、大小/content-type/JSON/wrapper 检查。
+- 阻塞：既有定向环境 `/private/tmp/openguard-a1-venv/bin/python` 当前不存在，无法运行 compileall、unit 或 diff 后验收；尚未新增自建 fake-opener unit、README/AI记录，故不能交 Luna 或形成 evidence。
+- 边界：未安装/下载/请求真实模型，未修改 P0/A2-A4/B1-B7/frontend/progress/规格；未提交、未推送。
+- token：本次运行精确 token 数不可获得；估算 `8k-14k`，范围未扩大但任务未完成。
+
+### [20260904-1300-Terra-A5OllamaTransport] AMENDMENT/START - 修正 transport 契约与补齐 fake-opener 测试
+
+- 环境更正：旧 venv 不存在，当前只发现系统 Python 3.9；不会修改项目 Python 约束。继续以静态/可用解释器核验并如实记录。
+- 范围：原 A5-1a 允许文件；重写可读实现、补自建 fake-opener unit；估算 `8k-14k`，不提交推送。
+
+### [20260904-1315-Terra-A5OllamaTransport] PARTIAL - 审计实现修正，测试运行时仍缺失
+
+- 修正：`ipaddress.ip_address(...).is_loopback` 校验字面量 IP；完整 64-hex digest 明确写入 `MODEL_ID`；严格 MIME `application/json`（允许参数）；不再以 getattr 默认表达式提前调用 `getcode`；输出 Schema 加入 A5-0 长度/数组约束；系统提示声明不可信输入、禁止嵌入指令和新增事实/法律结论；版本/tags/generate 仍共享总 deadline 且 ProxyHandler 空映射禁代理。
+- 未完成：当前仅发现系统 Python 3.9，且旧 3.12 venv 不存在；尚未新增或运行要求的 20+ fake-opener unit、A5/P0 回归、README/AI记录，故不可交 Luna、不可形成 evidence。
+- 边界：未安装/下载/运行真实 Ollama，未改 P0/A2-A4/B1-B7/frontend/progress/规格，未提交推送。
+- token：本次运行精确 token 数不可获得；估算 `8k-14k`，范围未扩大但任务未完成。
+
+### [20260904-1330-Terra-A5OllamaTransportFinal] START - 使用 bundled Python 3.12 收口 A5-1a
+
+- 使用 Codex bundled Python 3.12 runtime；仅改 A5 transport/unit/README/AI/日志；估算 `6k-10k`，不提交推送。
+
+### [20260904-1340-Terra-A5OllamaTransportFinal] PARTIAL - 静态契约修正完成，pytest 依赖缺失
+
+- 修正：origin 的非法 port 失败关闭；注入 opener/clock 校验；UTF-8 canonical digest；JSON root 强制 object；tags models 强制 list；generate response 非空且不超过 64 KiB。新增基础 unit target。
+- 阻塞：bundled Python 3.12 不含 `pytest`，无法执行要求的 fake-opener 矩阵、A5-0 回归和完整编译/门禁；当前未达 20+ case，README/AI记录未更新，不能交 Luna 或形成 evidence。
+- token：精确 token 数不可获得；估算 `6k-10k`，范围未扩大、未提交推送，任务未完成。
+
+### [20260904-1248-Luna-A5OllamaTransport] START - A5-1a 本地 Ollama Transport 独立验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:48（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；HEAD `ee700d9`；不提交、不推送。
+- 前置核验：已完整阅读 `AGENTS.md`、根 README、共享工作日志、`PROJECT_PROGRESS.md`、`LUNA_HANDOFF.md`、A5-0 规格、A5-1a 规格、当前 `backend/app/ai/`、实现侧 unit 与 `third_party/README.md`；Root/Terra 当前均已记录 A5-1a 在途，未发现同一独立测试文件冲突。
+- 本轮目标：仅新增 `tests/security/test_a5_ollama_transport_independent.py`；独立启动有界 `ThreadingHTTPServer`，验证真实 TCP GET `/api/version` → GET `/api/tags` → POST `/api/generate`、请求字段、loopback/禁代理、锁定版本/模型/完整 manifest digest、A5 pending/degraded、真实 socket timeout、HTTP 错误、停止与无持久临时文件。
+- 允许修改：最小追加 `tests/security/README.md`、`third_party/README.md`、`docs/05-ai-assistance-log.md` 与本日志；禁止修改 backend、unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend、`PROJECT_PROGRESS.md`；不安装/下载/调用 Ollama/Qwen，不产生持久 fixture。
+- 独立性与验收：硬编码并核对官方 `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M` 和完整 manifest digest；不导入实现侧 FakeOpener、常量或 expected helper。先独立测试；若 sandbox bind 抛 `PermissionError`，保留原始失败并 BLOCKED，不跳过、不改实现；全绿后再跑 A5 unit+独立、安全非回环、静态/范围门禁。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-2005-RootTerra-A6Pipeline报告] COMPLETE - A6-2 终态发布纵切完成并通过全量回归
+
+- 实现完成：新增 `PipelineReportPublisher`，worker 在首次 `completed/partial` CAS 前发布 JSON、HTML、CSV、资源清单并只允许 publisher 增加完整且唯一的四种 `ReportLink`；默认 ZIP runtime 与 FastAPI 复用同一个私有 store。当前真实 ZIP HTTP 主链会以一次终态 revision 公开带四种 link 的 `partial/rules/70`。
+- 一致性与安全：报告正文投影掉 delivery links，避免 `content_hash` 自引用；API 只读取 SQLite 已登记且与 store metadata 精确一致的报告。发布中断、未登记 store 内容和终态 CAS 冲突不会暴露 orphan；已登记内容缺失或不一致按脱敏 `report_storage_failure` 失败关闭。发布失败保留已有确定性聚合并追加 `report_publish_failed`，不让任务卡在 running。
+- 测试证据：A6-2 专项 `10 passed, 1 warning`；A6/A4/A3/P0 联合 `177 passed, 1 warning`。沙箱完整集合原样为 `845 passed, 11 failed, 1 warning`，11 项全部是既有 A3/A5 回环 listener bind 的 `PermissionError: [Errno 1] Operation not permitted`；不改测试在受控环境原样复跑为 `856 passed, 1 warning`。warning 为既有 Starlette/anyio alias 弃用提示。
+- 静态与范围门禁：`compileall`、`git diff --check`、P0 Domain/Schema/sample/SQLite registry/scanners/rules/A5/frontend 零差异、大文件和 world-writable 检查通过；敏感扫描仅命中已有及新增测试中的合成 `/Users/private token=do-not-leak` 脱敏哨兵，不是真实路径或凭据。无新增第三方依赖、路由或数据库迁移。
+- 诚实边界：未实现或模拟组员 B5，未接 A5/Qwen3，未修改前端、部署或公开 Git 输入；阶段性报告明确缺少许可证/义务/风险/AI 事实，空 finding 不表示合规通过。进程内 BackgroundTask 仍不具备持久队列、lease、retry 或 crash recovery。
+- 发布计划：本条后仅提交 A6-2 源码、10 项专项测试、规格、运行说明和治理记录到 `feat/a6-pipeline-publish` 并推送；不创建/合并 PR，不修改 `integration/p0`、`main`、A5 PR #2 或组员分支。远端对象核对结果将在重新读取 EOF 后以 amendment 追加。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A6-2 实现、测试、说明和发布前验收在该单轮范围内完整完成，未发生范围扩张。
+
+### [20260904-1836-RootTerra-A6报告持久化下载] COMPLETE - A6-1 实现与受控全量回归闭环
+
+- 实现结果：新增内容寻址 `ReportArtifactStore`，以私有 `0700` 目录、`0600` 普通文件、内容先行/metadata 后提交、文件与目录 `fsync` 和原子替换持久化 A6-0 产物；读取时重新核对 owner、精确权限、文件类型/inode/长度、metadata 形状与 SHA-256。发布返回 P0 `ReportLink`，重启后仍可读取；相同内容重复发布保留首次生成时间。
+- API 结果：未新增第七条业务路由。冻结的报告 GET 默认从 store 返回 link，其相对 `href` 以同一路径 `download=true` 只读返回附件，包含 `Content-Digest`、SHA-256 `ETag`、attachment、`nosniff`、`private, no-store` 与限制性 CSP；GET 不渲染、不写 SQLite、不修复损坏报告。不存在映射既有 `409 report_not_ready`，损坏统一脱敏为 `500 internal_error / report_storage_failure`。
+- 诚实边界：`partial/rules/70` 下载仍显示“阶段性报告”和“并不等于通过许可证合规核验”。未实现或模拟 B5，未修改 P0 Domain/Schema/sample、SQLite registry、Pipeline、A2-A5、扫描组员 B1-B7、`rules/` 或前端；A6-2 才负责显式 Pipeline 发布与最终 `ScanRun.report_links` 一致性。
+- 测试与证据：A6-1 恰为 `16 tests`，A3 冻结 API 恰为 `23 tests`；A6+A3+P0 联合 `97 passed, 1 warning`。沙箱原样完整集为 `835 passed, 11 failed, 1 warning`，11 项全部在既有 A3/A5 回环 bind 处因 `PermissionError: [Errno 1] Operation not permitted` 失败；不改测试在受控环境原样复跑为 `846 passed, 1 warning`。唯一 warning 为既有 Starlette/anyio alias 弃用提示。
+- 审计收口：最终审计发现实现会拒绝 group/other 权限，却可能放过 owner execute 位；已按既有 `0700/0600` 契约最小收紧为精确 mode 校验，并由专项测试覆盖。`compileall`、`git diff --check`、P0/Schema/sample/SQLite/Pipeline/AI/scanner/rules/frontend 零差异、敏感凭据/个人路径/大文件/world-writable/上传范围检查通过；测试中的 `/Users/private token=do-not-leak` 是验证错误脱敏的合成哨兵，不是凭据。
+- 产品状态：当前能够对显式提供的终态 `ScanRun` 生成四格式报告、私有持久化、重启读取、返回 link 并经 HTTP 下载；ZIP 主链仍止于 `partial/rules/70`，尚不会自动进入 REPORT 阶段。完整许可证/义务/风险内容继续依赖组员 B5，前端真实下载接线继续归前端组员。
+- 发布计划：本条后只提交 A6-1 源码、16 项专项测试、规格、运行说明和治理记录到 `feat/a6-report-delivery` 并推送；不创建/合并 PR，不修改 `integration/p0`、`main`、A5 PR #2 或组员分支。远端不可变对象核对结果另以 EOF amendment 追加。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，任务在该估算对应的单轮范围内完整交付，未发生范围调整，也未扩张到 B5、Pipeline 或前端；由于没有精确遥测，不能核验实际消耗是否落在该数值区间。
+
+### [20260904-1256-Luna-A5OllamaTransport] BLOCKED - sandbox 回环绑定阻塞真实 TCP 独立证据
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:56（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 实际修改：仅新增 `tests/security/test_a5_ollama_transport_independent.py`，追加 `tests/security/README.md`、`third_party/README.md`、`docs/05-ai-assistance-log.md` 与本日志；未修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`。第三方仅登记 Ollama 0.33.3、Qwen3 锁定候选及 manifest/blob digest，明确未安装、未下载、未运行、未比对。
+- 测试结果：独立文件收集 20 项；12 项不需监听端口的 loopback origin/身份检查通过，8 项真实 TCP 用例失败。每项均在自建 `ThreadingHTTPServer` 绑定 `("127.0.0.1", 0)` 处原样收到 `PermissionError: [Errno 1] Operation not permitted`；未跳过、未修改断言、未调用 Ollama/Qwen。
+- 未完成门禁：因 sandbox 禁止回环监听，无法取得真实 GET `/api/version` → GET `/api/tags` → POST `/api/generate` 顺序、固定请求字段、环境代理直连、A5 pending/degraded、真实 socket timeout、HTTP 失败脱敏和 shutdown/临时物证据；按规则停止 A5 unit/独立、全 security、Schema、compileall 与扩大静态回归。
+- 证据与下一步：`EVD-A5-OLLAMA-TRANSPORT-001` 保持 `BLOCKED-ENV`，不是产品 P1 结论。Root 应在受控回环环境用同一命令和原始测试复跑；若通过，再由 Root/Sol 复核不可变提交、运行 profile、第三方授权和有限证据范围。当前不批准真实 transport evidence。
+- 证据边界：本轮只证明非网络配置/身份负面分支和测试可收集性；不证明 Ollama API 实际可用、模型性能、许可证正确性、A4 接线、报告、Bench、公开部署或完整竞赛作品。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在该范围内完成测试构造、原样执行与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1254-Luna-A5OllamaTransport-独立复验续跑] START - 执行 A5-1a 真实 TCP 独立验证
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:54（Asia/Shanghai）。
+- 分支或工作区：`feat/a5-ollama-transport`；沿用 Terra/Root 未提交改动；本轮不提交、不推送。
+- 任务目标：在上一条 A5-1a Luna START 的同一冻结范围内继续执行独立测试，使用自建有界 `ThreadingHTTPServer`，核验真实 HTTP 顺序、请求字段、锁定版本/模型/digest、A5 pending/degraded、真实 socket timeout、HTTP/JSON/大小错误、代理环境隔离、shutdown 与临时物状态。
+- 开始前已确认：仅允许新增 `tests/security/test_a5_ollama_transport_independent.py`，以及最小更新 `tests/security/README.md`、`third_party/README.md`、`docs/05-ai-assistance-log.md` 和本共享日志；禁止修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend、`PROJECT_PROGRESS.md`；不安装、下载或请求真实 Ollama/Qwen3。
+- 验收顺序：先运行该独立文件；若回环绑定触发 `PermissionError`，保留原始失败并以 `BLOCKED` 结束，不跳过或弱化断言；全绿后再运行 A5 unit+独立、安全非回环、静态/范围门禁。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1257-Luna-A5OllamaTransport] AMENDMENT/BLOCKED - 更正真实 EOF 并保留 sandbox 回环失败
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:57（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- EOF 更正：前一条 BLOCKED 记录因重复 token 锚点被追加在较早历史段之前；本条不删除、不移动、不改写任何记录，作为当前物理 EOF 的权威状态补充。
+- 实际结果：独立文件收集 20 项；12 项 loopback origin/身份负面检查通过，8 项真实 TCP 用例均在自建 `ThreadingHTTPServer` 绑定 `("127.0.0.1", 0)` 处原样失败为 `PermissionError: [Errno 1] Operation not permitted`。未跳过、未调用 Ollama/Qwen、未运行 unit/全 security/Schema/compileall 扩大门禁。
+- 处置与边界：允许的独立测试、安全 README、第三方候选台账、AI 记录和日志已更新；未修改 backend、unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`。`EVD-A5-OLLAMA-TRANSPORT-001` 保持 `BLOCKED-ENV`，由 Root 在受控回环环境原样复跑后再决定是否关闭。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在范围内完成原样执行与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1258-Luna-A5OllamaTransport-独立复验续跑] BLOCKED - 真实 TCP 仍受 sandbox 回环绑定限制
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 12:58（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 实际结果：本续跑使用自建有界 `ThreadingHTTPServer`，独立文件收集 `17` 项；8 项不需监听端口的字面量 origin/身份检查通过，9 项真实 TCP 用例均在 `socket.bind(("127.0.0.1", 0))` 原样失败为 `PermissionError: [Errno 1] Operation not permitted`。由于 bind 未成功，未启动 server 线程、无 timeout 线程残留、未调用 Ollama/Qwen，也未跳过或弱化断言。
+- 未完成门禁：未取得真实 GET `/api/version` → GET `/api/tags` → POST `/api/generate`、请求字段、代理直连、A5 pending/degraded、真实 socket timeout、HTTP 错误脱敏和 shutdown 的回环证据；按冻结规则停止扩大 A5/unit/security/Schema/compileall 回归。
+- 处置：与物理 EOF 上已有的 A5-1a `BLOCKED-ENV` 记录一致；由 Root 在受控回环环境用当前原始独立文件复跑，保留本原始 PermissionError。未修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`。
+- token：本次运行精确 token 数不可获得；本续跑开工估算 `10k-16k`，在估算范围内完成原样执行与 BLOCKED 收口，未发生范围调整。
+
+### [20260904-1303-Luna-A5OllamaTransport-受控复跑收口] AMENDMENT/COMPLETE - A5-1a 独立验证受控复跑通过
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、真实 TCP fixture、第三方资源与证据边界；2026-09-04 13:03（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 更正与保留：此前共享日志中 `20 collected: 12 passed, 8 failed` 属于过时数量，保留其历史文本不改写；当前原始最终版本为 `17 collected`，sandbox 中 `8 passed`，另 `9` 项在真实 TCP fixture 的 `socket.bind(("127.0.0.1", 0))` 原样失败为 `PermissionError: [Errno 1] Operation not permitted`。
+- 受控复跑：Root 在受控回环环境用同一当前独立测试文件原样执行，结果 `17 passed in 4.70s`。该复跑覆盖真实 GET `/api/version` → GET `/api/tags` → POST `/api/generate`、请求字段、代理环境、A5 pending/degraded、真实 socket timeout、HTTP identity/content/size 失败脱敏、loopback 限制、server shutdown 与无持久 fixture 文件。
+- 范围与边界：未修改 backend、实现侧 unit、Sol 规格、P0/Schema/sample、A2-A4、B1-B7、frontend 或 `PROJECT_PROGRESS.md`；未安装、下载或请求真实 Ollama/Qwen3；`third_party/README.md` 已准确，未重复登记。结果只证明当前有界协议 fixture 与 Ollama adapter 的受控本地行为，不证明真实模型质量、许可证规则、A4 接线、报告、Bench、公开部署或完整竞赛作品。
+- 证据状态：原始 sandbox 失败与受控通过均保留；`EVD-A5-OLLAMA-TRANSPORT-001` 可交 Root/Sol 复核不可变提交、运行 profile 和有界范围，Luna 本轮不自行批准发布。
+- token：本次运行精确 token 数不可获得；本轮开工估算 `4k-7k`，在估算范围内完成数量更正、AI记录与共享日志收口，未发生范围调整。
+
+### [20260904-1307-RootSol-A5OllamaTransport终审发布] COMPLETE - A5-1a 已绑定并推送 GitHub 功能分支
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 架构、安全、证据与发布终审；2026-09-04 13:07（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 完成内容：以 Ollama/Qwen 官方一手来源锁定 Ollama `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M`、完整 manifest SHA-256 与模型 blob 摘要；冻结 transport v1；新增标准库 `OllamaProvider`，只允许字面量回环 HTTP、显式禁用环境代理，按 version→tags→generate 三步核验身份并共享总 deadline，对 HTTP/JSON/大小/身份错误统一脱敏失败，由 A5-0 保持确定性结果并降级。
+- 模型协作：Terra 的多轮 PARTIAL 骨架及环境判断完整保留，Root 使用既有 bundled Python 3.12 runtime 在原范围完成可维护实现和 60 项 unit；Luna 独立构造 17 项真实 TCP/非网络探针。sandbox 原始 `8 passed, 9 failed` 均为回环 bind 权限限制，受控环境原样复跑为 `17 passed in 4.70s`，没有跳过或放宽断言。
+- 验证：A5 Provider、transport、两组独立测试组合 `123 passed`；完整 unit/security 排除两个既有真实 Uvicorn 项及单独受控的 Ollama TCP 文件为 `794 passed, 2 deselected`，保留 1 条 Starlette/AnyIO 第三方弃用 warning；`schema_export_equal=True`、`compileall -q backend/app tests`、`git diff --check`、受保护路径零差异和 world-writable 检查通过。
+- 修改与上传：实现提交 `e4d8e2ed338bf7de881a41825f59efbd4130ed6a` 已推送 `origin/feat/a5-ollama-transport`；上传范围为 A5 transport/export、冻结规格、60 项 unit、17 项 Luna 独立测试、根/后端/安全说明、资源/第三方/AI/协作记录。发布前将未提交报告中的本机 runtime 路径改为通用表述；未上传缓存、虚拟环境、原始附件、权重、二进制、真实凭据或新增个人绝对路径。
+- 边界与证据裁决：`EVD-A5-OLLAMA-TRANSPORT-001` 绑定上述不可变实现提交并批准；它只证明本机 CPython 3.12 下 adapter 与有界 HTTP fixture 的协议、安全、超时及降级行为。不证明真实 Ollama/Qwen3 已安装运行、模型质量/许可证规则正确、A4 已接线、报告/Bench/部署完成或作品已经可提交。
+- 未完成与下一步：A5-1b 需用户明确批准后才安装 Ollama、下载约 2.5GB 锁定权重并做本机摘要、结构化输出成功率、延迟和资源实测；A5-1c 必须等待扫描分析组员 B5 提供真实 finding/license facts 后再接 A4 AI_ASSIST，不代做组员许可证规则。未创建或合并 PR，`main`、`integration/p0` 和组员分支未改变，旧远端分支未删除。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `18k-26k`，A5-1a 的资源核验、实现、两侧测试、独立受控复跑、完整门禁、不可变提交、首次推送及治理回填均在本轮完整交付；范围没有扩张到安装/权重/A4/B5。
+
+### [20260904-1358-RootSol-A5真实模型运行] START - A5-1b Ollama/Qwen3 本机安装与真实推理证据
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 运行时安全、模型证据与发布终审；2026-09-04 13:58（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，基线 `46c301f`。
+- 用户授权解释：用户在上一轮被明确告知下一步会安装官方 Ollama `0.33.3` 并下载约 2.5GB 锁定权重，本轮回复“好的，现在按照要求进行下一步”；据此仅授权该 A5-1b 安装、下载与本机验证，不扩张到云服务、其他模型、B5规则、A4接线或发布部署。
+- 任务目标：从官方一手来源解析 Apple-silicon 安装资产及完整性信息；下载到私有临时目录，先核验架构、SHA-256、Developer ID 签名、Gatekeeper 与实际版本，再安装/启动；拉取精确模型 tag，核对本机 manifest/digest，并用现有 A5 Provider 运行真实结构化输出、超时/降级和有界延迟/资源测量。
+- 安全边界：若资产来源、签名、架构、版本、manifest 或锁定摘要不一致立即停止；不绕过 Gatekeeper、不用 `latest`、不提交 Ollama 二进制或 Qwen 权重、不记录 prompt/response 中的敏感数据、不修改 P0/Schema/sample、A2-A4、组员 B1-B7、frontend 或原始竞赛附件。系统安装和模型缓存属于用户机器状态，项目仓库只记录可公开的命令、版本、摘要、聚合结果和证据边界。
+- 允许项目改动：仅 A5 真实运行复现工具/测试、`docs/spec/a5-ollama-transport.md` 的附录或专用验证记录、根/后端/安全运行说明、资源/第三方/AI/进度/共享日志；是否新增文件以实际复现需要为准，不重复既有文件。Terra 只负责最小运行工具候选，Luna 只负责独立复测与资源台账，均不提交推送。
+- 验收：安装后 `ollama --version` 精确匹配；本机 tags/manifest 与锁定 tag 和完整摘要一致；真实 Provider 至少完成合法生成和受控不可用降级；保存不含完整模型输出的重复运行成功率、首轮/热轮延迟、峰值或稳定内存观察；运行 A5、P0、完整非回环、Schema、compileall、diff、隐私/范围门禁后由 Root 绑定不可变提交并推送功能分支。
+- token：本轮非硬估算 `22k-32k`；若下载耗时或外部签名/版本不满足，不扩大范围，保留已验证事实并以 `PARTIAL/BLOCKED` 收口。
+
+### [20260904-1410-Terra-A5RuntimeProbe] START - 新增 A5-1b 最小真实运行复现工具
+
+- 作者：GPT-5.6 Terra；仅 runtime probe、unit、README/AI/日志；默认 loopback provider，不安装/下载/启动或提交推送；估算 `8k-12k`。
+
+### [20260904-1430-Terra-A5RuntimeProbe] PARTIAL - 复现 CLI 与 fake Provider 测试已新增
+
+- 新增 `runtime_probe.py` 与 unit：显式 JSON ScanRun、1..3 次 loopback Provider 调用、pending remediation/稳定身份与确定性事实保持检查，稳定聚合 stdout；失败固定 `ai_runtime_probe_failed`。
+- 未完成：当前未运行定向 pytest/compileall/diff，且 AI记录未更新；不能声明真实模型运行或交付 evidence。未安装、下载、启动或请求 Ollama/Qwen3，未提交推送。
+- token：精确 token 数不可获得；估算 `8k-12k`，范围未扩大但未完整验收。
+
+### [20260904-独立验收-Luna-A5-1b-START] START - A5-1b 独立真实运行复验
+
+- 作者/角色/时间：GPT-5.6 Luna；A5 独立验收、运行态/摘要核验与证据边界；2026-09-04（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 本轮范围：仅核对 Ollama `0.33.3`、锁定 Qwen3 tag、API version/tags digest、磁盘 manifest/blob 摘要、`ollama ps` 聚合运行态，并绕过 `runtime_probe.run_probe`，以独立内存样例经 `OllamaProvider` 与 `apply_ai_remediations` 连续运行 3 次。
+- 禁止范围：不修改 backend、实现侧 unit、P0/Schema/sample、A2-A4、B1-B7、frontend；不记录完整 prompt/model response、绝对临时路径或异常秘密；仅允许追加本日志与 `docs/05-ai-assistance-log.md`。
+- 验收重点：generated、pending、`generated_by`、finding 绑定、除允许字段外的 P0 不变、三轮 remediation 身份稳定、聚合成功率、冷/热延迟、处理器/context/loaded size；若回环 `PermissionError` 原样保留并立即以 `BLOCKED` 报 Root。
+- token：本轮非硬估算 `6k-9k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-独立验收-Luna-A5-1b-BLOCKED] BLOCKED - sandbox 禁止连接已运行的回环服务
+
+- 作者/角色/时间：GPT-5.6 Luna；A5 独立验收与证据边界；2026-09-04（Asia/Shanghai）。分支 `feat/a5-ollama-transport`；不提交、不推送。
+- 原始阻塞：独立使用无代理 Python 标准库请求 `http://127.0.0.1:11434/api/version`，sandbox 原样返回 `PermissionError: [Errno 1] Operation not permitted`；同一环境的 `ollama` CLI 不在 PATH。已立即向 Root 报告，未把环境失败归因于产品。
+- 停止范围：未调用 `runtime_probe.run_probe`、`OllamaProvider` 或 Qwen3；未继续读取 API version/tags、磁盘 manifest/blob、`ollama ps`，未执行三轮 `apply_ai_remediations`，因此没有生成率、延迟、资源或 remediation 证据。
+- 修改边界：仅追加本日志与 `docs/05-ai-assistance-log.md`；未修改 backend、实现侧 unit、P0/Schema/sample、A2-A4、B1-B7、frontend 或其他项目文档；未打印/写入 prompt、完整模型 response、绝对临时路径或异常秘密。
+- 处置与证据：`EVD-A5-OLLAMA-REAL-RUN-001` 暂记 `BLOCKED-ENV`，Root 应在已验证服务所在的受控环境原样完成独立 version/tags/disk hash/ps 与三轮 Provider 验收；本条不证明真实 Ollama/Qwen3 不可用，也不证明 A4 接线、B5 规则或完整作品可提交。
+- token：本次运行精确 token 数不可获得；开工估算 `6k-9k`，在范围内完成阻塞复现、Root 通报与日志收口，未发生范围调整。
+
+### [20260904-1438-RootSol-A5真实模型运行收口] AMENDMENT/COMPLETE - A5-1b 已独立复验并绑定不可变实现
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 运行时安全、证据裁决与发布；2026-09-04 14:38（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 对 Luna 阻塞的处置：保留上条 sandbox `PermissionError` 原文，不改写为产品失败。Luna 随后只在 `/private/tmp` 生成一次性独立脚本，SHA-256 为 `675c64de5620c6fd4fcc6714eb3cca30a08835d247f093934b0b53933c59462f`；脚本不导入 `runtime_probe`，由 Root 在受控回环环境原样执行，结果 `success_rate=3/3 cold_ms=3877 hot_ms=2768`。
+- 官方运行时与完整性：精确官方 DMG 大小 `196424896` bytes、SHA-256 `cc21bd6a1486ddff3cdcbf00549f61d0a3e6e6893d6456a12d37c486161bcc43`；安装前后严格 codesign、Developer ID Team `3MU9H2V9Y9`、Gatekeeper `Notarized Developer ID`、stapled notarization、universal arm64/x86_64 与运行版本 `0.33.3` 均通过。受限 sandbox 曾同时误报系统 Calculator 与 Ollama 签名无效，受控信任链复核转绿，未绕过 Gatekeeper。
+- 模型身份与运行：锁定 `qwen3:4b-instruct-2507-q4_K_M`；API tags、磁盘 manifest 原始字节 SHA-256 均为 `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`，`2497280480`-byte 模型 blob 重算 SHA-256 为 `85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9`。服务仅绑定 loopback，并以 `OLLAMA_NO_CLOUD=1`、`OLLAMA_NOHISTORY=1` 启动。
+- 项目探针结果：真实三轮 `3/3`；冷轮 `4344.062 ms`，热轮 `2736.214/2723.574 ms`，中位数 `2736.214 ms`；generated、pending、producer、finding 引用、确定性事实保持与 remediation 身份稳定全部通过。`ollama ps`/API 报告加载大小与 `size_vram` `3175339786` bytes、100% GPU、context 4096；只作为当前设备与样例记录，不外推为峰值系统内存或 Bench。
+- Terra/Root 实现收口：保留 Terra 的 PARTIAL 历史；Root 复核并最小修正 runtime probe 的多 finding、完整事实保持、稳定身份、参数界限和脱敏输出，新增 5 项 unit。实现证据已绑定不可变提交 `ca0c3eda8c5f062b0cb18d2d8bc0a12caac22579`。
+- 门禁：runtime probe `5 passed`；A5 受控专项 `128 passed`；完整 unit/security 受控环境 `818 passed, 1 warning`；P0 `46 passed`；`compileall -q backend/app tests`、`git diff --check` 与上传/敏感范围复核通过。沙箱完整集原始 `807 passed, 11 failed` 均为回环 bind `PermissionError`，受控环境原样全绿；第三方 Starlette/AnyIO 弃用 warning 保留。
+- 修改与边界：仓库新增 `backend/app/ai/runtime_probe.py`、`tests/unit/test_a5_ollama_runtime_probe.py`，更新根/后端运行说明、A5 规格、资源与第三方台账、AI/进度/协作记录；不上传 DMG、Ollama 应用、模型权重、本机缓存、prompt、完整 response、临时脚本、私钥或个人绝对路径。未修改 P0/Schema/sample、A2-A4、扫描组员 B1-B7、前端或竞赛原始附件。
+- 证据边界与下一步：`EVD-A5-OLLAMA-REAL-RUN-001` 只批准当前 Apple-silicon、锁定运行时/模型和单一样例的真实 A5 输出边界；不证明许可证规则正确、法律结论、多项目质量、A4 已接线、报告/Bench/部署或作品完整。A5-1c 等待扫描分析组员 B5 提供真实 finding/license facts 后再由项目负责人接 A4 AI_ASSIST，不代做 B5。
+- 发布状态：实现已本地提交，治理记录待提交后推送同一功能分支；不创建或合并 PR，不修改 `main`、`integration/p0` 或组员分支。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `22k-32k`，A5-1b 的官方安装核验、锁定模型下载/摘要、两套真实三轮复验、资源测量、复现工具、全量门禁和不可变实现绑定均在本轮完整完成；范围未扩张到 A4/B5/前端/部署。
+
+### [20260904-1444-Root-A5真实模型运行发布] AMENDMENT/COMPLETE - A5-1b 已推送并核对远端
+
+- 发布：不可变实现 `ca0c3eda8c5f062b0cb18d2d8bc0a12caac22579` 与首轮治理 `26ebdc8c783adb2cd6e344f02164bd2abee422e1` 已推送 `origin/feat/a5-ollama-transport`；只读 `git ls-remote` 已确认远端分支指向 `26ebdc8c783adb2cd6e344f02164bd2abee422e1`。
+- 上传范围：A5-1b 聚合运行探针、5 项 unit、运行说明、A5 规格、资源/第三方台账、聚合实测结果和 AI/进度/协作证据；未上传安装包、应用、模型权重、模型缓存、prompt、完整 response、临时独立脚本、密钥或个人绝对路径。
+- 分支边界：未创建或合并 PR，未修改 `main`、`integration/p0`、扫描组员分支或前端组员分支；A5-1c 依赖 B5，仍未开始。
+- token：本条仅补远端发布事实；精确 token 遥测不可获得，计入 A5-1b 开工估算 `22k-32k`，无范围调整。
+
+### [20260904-1450-RootSol-组员远端产物审计] START - 只读核查组员 GitHub 新增代码与资料
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；团队集成只读审计；2026-09-04 14:50（Asia/Shanghai）。当前分支 `feat/a5-ollama-transport`。
+- 目标：同步 GitHub 远端引用，按提交作者、分支、相对 `integration/p0` 的独有提交和文件差异识别两位组员新增内容；判断对当前 P0 主线、A5-1c 依赖、报告/演示和后续集成是否有用，并列出需验证、不可直接接入或重复的部分。
+- 边界：本轮不修改、合并、cherry-pick、rebase 或运行组员业务代码，不改 P0/Schema/sample、A2-A5、B1-B7、frontend、第三方台账或进度状态；除本 append-only 审计记录外不改项目文件。若需要测试或集成，作为下一任务另行授权和冻结范围。
+- 验收：远端 heads 与作者映射明确；每个组员分支的独有提交、文件类型、与当前/集成线重叠关系及可用性有证据；敏感/大文件/错误目录做只读检查；输出“可直接候选、需验证、暂不用、阻塞依赖”四类结论。
+- token：本轮非硬估算 `8k-14k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1518-RootSol-组员远端产物审计] COMPLETE - 已分级组员上传内容，未接入未验证代码
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；团队集成只读审计；2026-09-04 15:18（Asia/Shanghai）。当前分支 `feat/a5-ollama-transport`。
+- 远端事实：前端组员分支 `origin/feat/xzb-frontend` 指向 `83e89281e941801e1a62f0661d3def6de77f9a8b`，相对 `integration/p0` 有 3 个提交，其中初始 shell 已 patch-equivalent 集成，新增内容为模块化页面、证据阅读器、关系图、报告页、API 草案、测试和第三方说明；开放 PR #1 仍以旧 `main` 为基线且标题/正文仅描述 shell，与当前扩大后的提交范围不一致。扫描组员分支 `origin/codex/p0-external-tools-sync` 指向 `d8198bbc715188c8c7f9d82e727866d7c7faba2e`，初始 JSON adapter/test/spec 的文件内容已存在当前集成线，新增候选主要为 ScanCode 与 Syft 的密封 ZIP 子进程管线及资料；该分支没有 PR。
+- 可用性裁决：前端视觉与交互资产、事实/规则/AI 分层、PARTIAL/FAILED 状态、证据查看和报告演示具有高复用价值，但其 `/scans`、`/repositories/validate`、风险 PATCH、camelCase/完整 Scan snapshot 契约与当前 `/api/v1`、snake_case、`ScanCreateAccepted`/分页端点不兼容，不能直接连当前后端。ScanCode 管线是可评审候选；Syft 明确仍为 PARTIAL；两者都没有 B5 许可证规则，因此不解除 A5-1c 对真实 finding/license facts 的依赖。
+- 独立检查：两分支相对 `integration/p0` 的补丁均通过 `git diff --check`；未发现私钥、token、常见秘密、个人绝对路径、大型模型/压缩包/二进制上传。隔离副本执行外部工具相关单元测试为 `5 passed, 1 skipped`，跳过项需要真实 ScanCode binary，未把它记为真实工具验收。前端依赖因沙箱无法访问包注册表而未能独立安装，GitHub 两个 head 均无 status/check run，因此组员所列前端测试暂不算独立证据。
+- 风险与集成门禁：PR #1 应先改以 `integration/p0` 为基线并更新 scope；前端需冻结/适配当前 P0 DTO 后再选取提交。ScanCode/Syft 的 `/proc/self/fd` 路径是 Linux 方案，当前 macOS 无法直接演示；外部进程仍需真实二进制/版本/摘要、进程组超时清理、流式输出上限和受限 Linux 运行配置的独立验证。组员历史进度/工作日志不可整份覆盖当前治理文件。
+- 处置边界：未 merge、cherry-pick、rebase、修改或运行组员业务分支，未修改 P0/Schema/sample、A2-A5、B1-B7、frontend 或 `PROJECT_PROGRESS.md`；本轮只追加审计日志。功能进度未因审计而前移，下一集成任务应拆成“前端 P0 契约适配”与“ScanCode Linux 真工具安全门禁”两个独立工作包，由相应责任角色处理。
+- 发布计划：仅发布本 append-only 审计记录到现有 A5 功能分支，不把组员代码带入该分支，不改 `main`、`integration/p0` 或组员分支。
+- token：本次运行精确 token 数不可获得；开工估算 `8k-14k`，在该范围内完成远端同步、提交/文件/PR/CI/敏感与大文件检查、隔离测试和分级裁决，范围未扩展到代码集成。
+
+### [20260904-1520-RootSol-A5团队集成候选] START - A8-1c A5 功能分支进入 integration/p0 的 PR 门禁
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 集成与发布终审；2026-09-04 15:20（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，远端集成基线 `30965d19c29dbc63218a927f56a619aa888bd360`。
+- 任务目标：只把已经完成独立验收的 A5-0、A5-1a、A5-1b 及其证据作为候选提交给 `integration/p0`；先在隔离 worktree 验证真实合并结果，再创建以 `integration/p0` 为 base 的 PR，不直接合并。
+- 已确认：当前功能分支相对集成线为 `0 behind / 8 ahead`，merge-base 即当前 `origin/integration/p0`；远端已同步且工作区干净，没有其他模型在途修改同一范围。组员 B4-B7 和前端分支保持独立，不纳入本任务。
+- 预计修改：仅更新 `docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 并向本日志追加治理记录；A5 已冻结实现与测试不再改动。若验证发现实现问题则停止创建 PR，以 `PARTIAL/BLOCKED` 收口。
+- 验收：隔离合并无冲突；A5 定向、P0、完整 unit/security、Schema 导出、`compileall`、`git diff --check`、敏感信息/绝对路径/大文件/上传范围门禁通过；推送治理提交后创建目标为 `integration/p0` 的 PR，并核对 head/base/可合并状态。
+- 边界：不改 P0/Schema/sample、A2-A4、B1-B7、frontend、规则或组员分支；不上传 Ollama 安装包、模型权重、缓存、prompt、完整 response、临时 worktree 或凭据；不点击合并。
+- token：本轮非硬估算 `12k-18k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1521-RootSol-A5团队集成候选] PARTIAL - A5 集成门禁全绿，等待用户确认公开创建 PR
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 集成与发布终审；2026-09-04 15:21（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，目标 `integration/p0`。
+- 实际结果：在仓库外隔离 worktree 从远端集成基线 `30965d19c29dbc63218a927f56a619aa888bd360` 合并 A5 功能分支，无冲突；合并差异只含已冻结 A5 实现、测试、规格及对应运行/证据/治理资料，不含 B4-B7、frontend 或组员分支代码。
+- 测试与门禁：沙箱原样完整集为 `807 passed, 11 failed, 1 warning`，11 项全部在回环 bind 处得到 `PermissionError: [Errno 1] Operation not permitted`；受控环境不改测试原样复跑为 `818 passed, 1 warning`。P0 `46 passed`，Schema 导出一致由该组测试覆盖；`compileall` 通过，敏感模式、个人绝对路径、超过 5 MiB 的仓库文件与待上传范围检查无命中。
+- 发现与修正：首次对完整 PR diff 执行 `git diff --check` 发现 `docs/spec/a5-ai-provider.md` 两个 Markdown 行尾双空格；只删除不可见空格，未改变规格语义、接口或代码。更正此前门禁记录：历史提交单独工作区 diff 干净不等于相对集成线完整 PR diff 干净；本轮最终候选已通过。
+- 发布：准备提交 `1354863` 已推送 `origin/feat/a5-ollama-transport`；当前 GitHub 比较页已核对 base=`integration/p0`、compare=`feat/a5-ollama-transport` 且显示可合并。尚未创建或合并 PR，未改变 `integration/p0`、`main` 或组员分支。
+- 暂停原因：创建 PR 会以用户身份向 GitHub 发布标题和说明，属于外部代表性操作；按 UI 安全确认规则必须在提交前由用户明确确认。确认后只创建 PR，不点击合并，并回填 PR、进度、AI 与 COMPLETE 记录。
+- token：本次运行精确 token 数不可获得；开工估算 `12k-18k`，已在该范围内完成全部技术门禁和 PR 表单准备，未扩展到 B5/A5-1c/前端；任务仅剩用户确认后的公开 PR 创建与治理回填。
+
+### [20260904-1545-RootSol-A5团队集成候选] AMENDMENT/COMPLETE - PR #2 已创建并保持待审核
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人 A5 集成与发布终审；2026-09-04 15:45（Asia/Shanghai）。分支 `feat/a5-ollama-transport`，目标 `integration/p0`。
+- 用户授权与公开操作：用户在 PR 表单准备完成后明确回复“确认”；随后创建 [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2)，标题为 `feat: integrate deterministic A5 Ollama remediation pipeline`。未请求指定组员评审、未点击合并、未修改目标分支。
+- GitHub 可见终态：PR 状态 `Open`；base=`integration/p0`，head=`feat/a5-ollama-transport`；页面显示 `Ready to merge`、`No conflicts with base branch`、`Merging can be performed automatically`。创建时包含 10 个提交、19 个变更文件；checks 为 0，因此可合并仅表示 Git 图无冲突，不等于新增 CI 证据。
+- 内容与边界：PR 正文披露 A5-0/A5-1a/A5-1b、`818 passed, 1 warning` 受控完整回归、沙箱回环权限失败、三项 evidence、第三方资源、AI 辅助、安全/匿名和 A5-1c 等待 B5 的依赖；没有纳入 B4-B7、前端、安装包、模型权重、缓存、prompt、完整 response、临时脚本或凭据。
+- 治理回填：更新项目进度中的真人责任、本轮 A8-1c 状态、A5 GitHub 状态、发布记录和当前分支入口，并追加 AI 辅助记录；A5 业务实现和测试在本步骤保持冻结。
+- 发布计划：本条及治理文档提交后推送同一功能分支，PR #2 将自动更新；任务状态为“PR 创建完成、团队审核/合并待定”，不得外推为已进入 `integration/p0`。
+- token：本次确认后收尾的精确 token 数不可获得；非硬估算 `5k-8k`，在该范围内完成 PR 创建核验、治理回填和发布核对，未发生范围调整。
+
+### [20260904-1629-RootSol-VSCode实机演示] START - 在 VS Code 跑通当前可验证纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人可复现运行与演示核验；2026-09-04 16:29（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 目标：在用户已打开的 VS Code 仓库与集成终端中，实际演示 Python 3.12 环境、后端 FastAPI、最小动态 ZIP multipart→A4-1→SQLite→查询、真实 Ollama/Qwen3 A5 聚合探针，以及独立 mock 前端；保留清晰可重复命令与可见结果。
+- 边界：不修改业务代码、P0/Schema/sample、A2-A5、B1-B7 或前端实现，不执行或安装被扫描 ZIP 的代码/依赖；演示样例和运行数据只放仓库外临时目录；前端仍明确为 mock，A5 尚未接 ZIP Pipeline，不宣称完整许可证合规闭环。
+- 预计项目修改：只在演示结束后追加本日志，并按真实结果更新 AI/进度中的演示证据；本地进程、临时 ZIP/SQLite 和 VS Code 终端输出不提交。
+- 验收：VS Code 内显示正确分支与 Python 3.12；后端可启动，动态 ZIP 请求返回 202，终态为预期 `partial/rules/70` 且资源可查；A5 真实探针 generated/pending/稳定身份通过；前端可在 `127.0.0.1:5173` 打开并明确 mock；最后停止不需保留的进程、检查工作区和上传范围。
+- token：本轮非硬估算 `8k-12k`；精确 token 遥测若不可读则收工如实说明。
+
+### [20260904-1641-RootSol-VSCode实机演示] COMPLETE - 当前可验证纵切已在 VS Code 跑通
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Sol；项目负责人可复现运行与演示核验；2026-09-04 16:41（Asia/Shanghai）。分支 `feat/a5-ollama-transport`。
+- 后端实机结果：VS Code 集成终端使用 CPython `3.12.14` 启动 Uvicorn/FastAPI，仅绑定 `127.0.0.1:8000`；项目首次拒绝默认 `0755` 数据目录，修正仓库外演示目录为 `0700` 后成功启动，SQLite 文件为 `0600`。未放宽项目权限门禁。
+- 动态 ZIP 纵切：自建 ZIP 仅含 `requirements.txt` 与 `package.json`，未执行其中代码或安装依赖；`POST /api/v1/scans` 返回 `202`，随后 `ScanRun` 持久化为 `partial/rules/70`、错误码 `rules_stage_not_connected`。结果包含 `react@19.2.0`、`fastapi@0.141.1`、`pydantic@2.13.4` 三个组件及三条 `verified` manifest evidence，输入摘要与 idempotency key 绑定。
+- 原始环境证据：沙箱客户端访问回环端口原样返回 `PermissionError: [Errno 1] Operation not permitted`；受控本机同一脚本运行成功。固定幂等键重建 ZIP 时返回 `409 idempotency_conflict`，确认后端按源摘要失败关闭；仅修正仓库外脚本以摘要派生演示幂等键，未修改产品实现或测试。
+- A5 真实模型：VS Code 终端以 `OLLAMA_NO_CLOUD=1`、`OLLAMA_NOHISTORY=1` 启动官方 Ollama `0.33.3`；锁定 `qwen3:4b-instruct-2507-q4_K_M@sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。聚合探针两轮 `2/2`，冷/热 `2923.336/2898.259 ms`；`all_pending`、`deterministic_facts_preserved`、`producer_bound`、`stable_identity` 均为 `true`。不保存或上传 prompt、完整 response、模型权重或缓存。
+- 前端可见性：首次因 VS Code `PATH` 缺少 Node 失败，只在仓库外临时启动脚本加入既有受信 Node 路径后，Vite `8.2.2` 于 `127.0.0.1:5173` 成功启动；Chrome 可见首页及工作台，页面明确显示 `MOCK MODE 本地演示数据 · 不依赖网络`。未修改前端组员代码，不宣称真实 API 联调。
+- 交付与边界：本轮没有新增业务功能；仅更新本进度、AI 辅助和 append-only 工作日志。仓库外临时脚本、ZIP、SQLite 与进程不提交。当前真实产品能力仍止于 ZIP→Python/JavaScript 直接依赖→SQLite→可查询 `partial`，A5 只能对已有 finding 独立运行；B5、A5-1c、A6 和前端真实接线仍未完成。
+- 进程收口：保留后端与前端开发服务器供用户继续检查；真实 AI 探针结束后停止 Ollama 服务以释放本机模型资源。用户可在对应 VS Code 终端按 `Ctrl+C` 停止剩余服务。
+- 发布计划：静态门禁通过后仅提交并推送上述三份治理文档到当前功能分支，自动更新 PR #2；不合并 PR，不修改 `integration/p0`、`main`、组员分支或组员负责代码。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `8k-12k`，在范围内完整完成 VS Code 后端、动态 ZIP、SQLite、真实 Qwen3、mock 前端与治理收口，未发生业务范围扩张。
+
+### [20260904-1645-RootSol-VSCode实机演示发布] AMENDMENT/COMPLETE - 远端分支已接收演示证据
+
+- 发布事实：首个演示治理提交 `44c8cf19dbc14cbc42e0fabb5388463b8a5930ce` 已推送 `origin/feat/a5-ollama-transport`，`git ls-remote` 返回相同对象；本发布状态修正随后推送同一分支并自动更新 PR #2。
+- 上传范围仍只包含 `docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本 append-only 工作日志；未上传仓库外临时脚本、ZIP、SQLite、Ollama/模型、prompt/完整 response 或任何业务代码改动。
+- GitHub CLI 本机不可用，未为只读核验额外安装工具；以成功 push 和原生 `git ls-remote` 作为远端分支证据。未合并 PR，未修改 `integration/p0`、`main` 或组员分支。
+
+### [20260904-1749-RootTerra-A6报告核心] START - 构建不依赖 B5 的确定性报告导出纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A6 报告实现、边界与发布验收；2026-09-04 17:49（Asia/Shanghai）。分支 `feat/a6-report-export-core`，基于当前 A5 已发布 HEAD `1ad3700` 建立堆叠短分支，未修改 A5 分支本身。
+- 任务目标：只实现项目负责人拥有的 A6-0 报告导出核心，使已验证的终态 `ScanRun` 能稳定生成 UTF-8 JSON、竞赛七字段资源清单 CSV 和安全转义的静态 HTML；`partial/rules/70` 必须明确标示阶段性结果与未完成规则，不能伪造风险、AI 建议或完整合规结论。
+- 开始前已确认：技术执行书明确 A6/`backend/app/reporting/` 属于项目负责人，B5/`backend/app/rules/` 属于扫描分析组员；当前远端没有 B5 实现，且没有其他在途模型修改 reporting。公开 Git 网络获取因 `SEC-A2-004` TrustedEgress 前置尚未满足，本轮不以不安全直连实现替代。
+- 预计修改文件：新增 `backend/app/reporting/__init__.py`、`backend/app/reporting/render.py`、`tests/unit/test_a6_report_exports.py`、`docs/spec/a6-report-export-core.md`；最小更新根/后端运行说明、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 并仅追加本日志。不会修改 P0 Domain/Schema/sample、API、A2-A5、B1-B7、规则、前端或原始竞赛材料。
+- 验收方法：覆盖 JSON 可重验、七字段 CSV、HTML 转义、partial 诚实披露、稳定排序、无运行时间注入、非终态拒绝和输入不变；运行 A6 定向、P0/Schema、完整 unit/security（回环环境限制单独披露）、`compileall`、`git diff --check`、敏感信息/绝对路径/大文件/上传范围检查。
+- 接口、Schema 与依赖：不改变冻结 P0 Schema 或 HTTP API；A6-0 仅新增内部 Python 导出接口。只使用 Python 标准库，不新增第三方依赖，也不接线前端或 B5。
+- token：本轮非硬估算 `8k-14k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1759-RootTerra-A6报告核心] COMPLETE - A6-0 已独立于 B5 完成并通过全量回归
+
+- 实现结果：新增 `app.reporting.render_report()` 与不可变 `ReportArtifact`，只消费已验证的 `completed`/`partial` P0 `ScanRun`；生成稳定 JSON、HTML、CSV 和 `resource_inventory`，携带媒体类型、稳定文件名及内容 SHA-256。CSV/资源清单严格为竞赛七字段，HTML 静态转义并声明 CSP，CSV 中潜在公式前缀和控制字符被规范化。
+- 诚实边界：`partial/rules/70` 可以生成明确的阶段性报告，保留 `rules_stage_not_connected`，没有 finding 时明确“不等于合规通过”；未知许可证、义务、使用方式、团队改动均保持待核验/待补充。未实现或伪造扫描组员 B5，未调用 Qwen3，未修改 P0/Schema/sample、API、SQLite、Pipeline、A2-A5、B1-B7、`rules/` 或 `frontend/`。
+- 测试与证据：A6 专项 `12 passed`；A6+P0 权威入口 `58 passed`，其中 P0 测试包含存储 Schema 与 `ScanRun.model_json_schema()` 等值断言；CPython 3.12.14 受控完整集合 `830 passed, 1 warning`。样例内存产物实际生成 HTML `3145` bytes、JSON `8065` bytes、CSV/资源清单各 `613` bytes，四种产物均返回 SHA-256。
+- 环境与失败保留：首个旧临时 venv 已不存在，改用官方工作区 Python 3.12 和仓库外临时依赖；一次误调用不存在的 `tests/unit/test_p0_schema_export.py` 得到 pytest 路径错误，随后按权威 P0 入口复核。沙箱全量原样为 `819 passed, 11 failed`，11 项均在既有回环测试 bind 处被拒；受控首次为 `828 passed, 2 failed`，两项因测试子进程未继承 target 依赖而退出；建立仓库外临时 venv 并继承精确依赖后，两项先 `2 passed`，完整集合原样 `830 passed`。未修改测试规避失败。
+- 静态与发布门禁：compileall、`git diff --check`、P0/Schema/sample/API/Pipeline/AI/scanner/rules/frontend 零差异、本轮源码/测试/说明敏感凭据扫描、可发布本机绝对路径、大于 1 MiB 文件和 world-writable 检查通过；未新增第三方依赖。临时 venv/依赖/缓存均在 `/private/tmp`，不会上传。
+- 产品状态：A6-0 内存核心已完成，但 A6 父任务仍为进行中；尚未持久化产物、生成 `ReportLink`、提供 FastAPI 下载或接入 Pipeline/前端。下一项目负责人任务可做 A6-1 报告持久化与只读下载纵切，并继续对 partial 诚实展示；B5 到位后只消费其真实许可证/风险事实。
+- 发布计划：本条后创建不可变实现提交并推送 `feat/a6-report-export-core`；不创建或合并 PR，不修改 `integration/p0`、`main` 或组员分支。远端发布事实另以 EOF amendment 追加。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `8k-14k`，A6-0 的实现、测试、说明、全量回归和发布前门禁在同一任务范围内完整完成；范围未扩张到 B5、前端或其他真人任务。
+
+### [20260904-1802-RootTerra-A6报告核心发布] AMENDMENT/COMPLETE - A6-0 已发布到独立远端分支
+
+- GitHub 发布事实：不可变实现、测试和首轮治理提交 `fda4ce6ba4361efaa3dcdba2a04aae6cf6067338` 已推送 `origin/feat/a6-report-export-core`；`git ls-remote` 与本地 `HEAD` 返回同一完整对象。
+- 上传范围：仅 10 个竞赛仓库文件——A6 源码 2 个、专项测试 1 个、A6 规格 1 个，以及根/后端/测试说明、AI 辅助记录、项目进度和本 append-only 日志。未上传 `/private/tmp` 环境、缓存、生成报告、模型内容、原始附件、凭据、本机路径或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2 或两个组员分支。本 amendment 和发布状态修正将作为第二个纯治理提交推送到同一 A6 分支。
+
+### [20260904-1822-RootTerra-A6报告持久化下载] START - A6-1 安全持久化与只读下载纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A6 报告实现与发布验收；2026-09-04 18:22（Asia/Shanghai）。分支 `feat/a6-report-delivery`，基于已发布 A6-0 HEAD `682c9ed` 建立堆叠短分支，未修改 A6-0 分支本身。
+- 任务目标：只完成项目负责人 A6-1：把 A6-0 内存报告安全、原子地持久化为私有文件，生成可校验 `ReportLink`，并在冻结的 `/api/v1/scans/{scan_id}/report?format=...` 路径上提供只读元数据与下载；现有 `partial/rules/70` 继续输出诚实阶段性报告。
+- 开始前已确认：已复核正式竞赛通知、附件1/附件2、根/模块 README、架构/资源/计划、P0/A3/A6 规格、Sol/Terra 交接、项目进度和共享日志；A6-0 已完成且当前无其他任务修改 reporting。B5 许可证规则、组员 B1-B7、前端、Pipeline REPORT、A5 接线和公网 Git 均不属于本轮。
+- 预计修改文件：新增 `backend/app/reporting/store.py` 与 A6-1 专项测试/规格；最小修改 reporting 导出、FastAPI factory/service/路由和运行说明；更新 AI 辅助记录、项目进度并只追加本日志。不会修改 P0 Domain/Schema/sample、SQLite scan registry schema/状态机、A2-A5、B1-B7、`rules/` 或 `frontend/`。
+- 验收方法：覆盖私有目录/普通文件/权限、原子写入、摘要与 sidecar 一致、重启后读取、损坏/替换/缺失失败关闭、相同内容幂等、元数据与下载、HEAD/POST 不放开、Content-Disposition/CSP/nosniff/cache 头、partial 披露和错误脱敏；运行 A6/A3/P0 定向及全量回归、Schema、compileall、diff、敏感信息/绝对路径/大文件/上传范围门禁。
+- 接口、Schema 与依赖：不新增业务路径，继续使用冻结六路由；同一 GET 默认返回 `ReportLink`，仅其 `download=true` href 返回报告字节。A6-1 内部 publisher 供未来 Pipeline REPORT 调用，本轮不自动生成、不把 GET 变成写操作。只使用 Python 标准库和既有 FastAPI/Pydantic。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-1840-RootTerra-A6报告持久化下载] AMENDMENT/COMPLETE - EOF 顺序更正与最终验收
+
+- 顺序更正：`[20260904-1836-RootTerra-A6报告持久化下载] COMPLETE` 因补丁锚点匹配到较早同文行而未物理落在当时 EOF；不删除、不搬动该历史记录。本 amendment 在重新读取尾部后追加到真实 EOF，并作为本轮最终完成记录。
+- 最终实现：A6-1 内容寻址私有存储、原子 metadata 提交、P0 `ReportLink` 和冻结报告 GET 的只读下载均已完成；权限审计后将目录/文件复核收紧为精确 `0700/0600`。没有实现 B5、Pipeline REPORT、前端或其他真人任务。
+- 最终证据：A6-1 `16 tests`、A3 API `23 tests`；A6+A3+P0 联合 `97 passed, 1 warning`，受控完整集 `846 passed, 1 warning`；沙箱 11 个回环权限失败已在前条完整保留。compileall、diff、保护路径、敏感/个人路径、大文件、world-writable 与上传范围门禁通过。
+- 发布边界：下一步仅创建 A6-1 不可变实现提交并推送 `feat/a6-report-delivery`；远端对象核对完成后继续只在 EOF 追加发布绑定，不合并 PR 或目标分支。
+- token：本次运行精确 token 数不可获得；开工估算 `10k-16k`，在该估算对应的单轮范围内完整交付且无范围调整；没有精确遥测，不能确认实际 token 数值。
+
+### [20260904-1844-RootTerra-A6报告持久化下载发布] AMENDMENT/COMPLETE - 远端不可变实现已绑定
+
+- GitHub 发布事实：A6-1 实现、测试、规格和首轮治理提交 `9ce9535436372295eaf1598a9805ec415b79db86` 已推送 `origin/feat/a6-report-delivery`；`git ls-remote` 与本地 `HEAD` 返回同一完整对象，`EVD-A6-REPORT-DELIVERY-001` 绑定该实现。
+- 上传范围：12 个竞赛仓库文件，包括 A6-1 store/API 接线、16 项专项测试、规格、运行说明及治理记录；未上传生成报告、运行数据、临时环境、原始附件、模型内容、凭据或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为纯治理提交继续推送同一分支。
+
+### [20260904-1953-RootTerra-A6Pipeline报告] START - A6-2 终态前报告发布与 partial 纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A6/A4 接线实现与发布验收；2026-09-04 19:53（Asia/Shanghai）。分支 `feat/a6-pipeline-publish`，基于已发布 A6-1 远端 HEAD `6de6671` 建立；开工前工作区干净。
+- 任务归属与目标：只推进用户负责的 A6-2，把 A6-1 publisher 接入 Pipeline 终态提交边界，使当前 ZIP 主链在 B5 缺失时仍以一次 CAS 持久化带四种 `ReportLink` 的诚实 `partial/rules/70`，并可通过既有 GET 下载阶段性报告。
+- 一致性决策：A3 SQLite 终态不可变，因此禁止“先写 partial、后补 link”。worker 只在构造 `completed/partial` 候选后、首次终态 CAS 前调用可选 terminal publisher；store 内容先提交但 API 以 `ScanRun.report_links` 为可见性门禁。崩溃或发布失败留下的未登记内容不可下载，成功时报告 link 与终态快照同一 revision 生效。
+- 预计修改：A6 Pipeline publisher、A4 worker 的向后兼容可选终态 hook、ZIP runtime/default factory 接线、API link/store 一致性校验、报告自引用投影；新增 A6-2 unit/集成测试与规格，最小更新根/后端/测试说明、AI 记录、进度台账并只追加本日志。
+- 严格边界：不实现/模拟 B5，不修改 P0 Domain/Schema/sample、SQLite schema/状态机、扫描组员 B1-B7、`rules/`、A5、前端、部署或公开 Git 输入；不新增路由/依赖。未配置 publisher 的现有 `ScanPipelineWorker` 和 `ZipScanRuntime` 行为保持兼容。
+- 验收：覆盖四格式终态绑定、`partial/rules/70` 报告真实性、API 可见性门禁、报告内容非递归快照、发布失败不使任务卡在 running、内容先写/终态 CAS 冲突不暴露、默认 ZIP HTTP 自动报告、幂等与重启下载；运行 A6/A4/A3/P0 定向及完整 unit/security、Schema/compileall/diff/保护路径/敏感/大文件/上传范围门禁。
+- token：本轮非硬估算 `10k-16k`；当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-2006-RootTerra-A6Pipeline报告] AMENDMENT/COMPLETE - EOF 顺序更正与最终验收
+
+- 顺序更正：`[20260904-2005-RootTerra-A6Pipeline报告] COMPLETE` 因通用补丁锚点匹配到较早同文行而未物理落在当时 EOF；不删除、不搬动该历史记录。本 amendment 在重新读取尾部后追加到真实 EOF，并作为本轮最终完成记录。
+- 最终实现：A6-2 terminal publisher、worker/ZIP/default factory 接线、报告链接原子可见性与 API store/registry 一致性校验已完成；当前 ZIP HTTP 可自动形成四格式、可重启下载的诚实 `partial/rules/70` 报告。
+- 最终证据：专项 `10 passed`，A6/A4/A3/P0 联合 `177 passed`；沙箱完整集合 `845 passed/11 loopback bind denied`，受控环境原样 `856 passed`；唯一 warning 为既有 Starlette/anyio alias 弃用。Schema/P0 由联合与全量回归覆盖，compileall、diff、保护路径、敏感/路径、大文件/world-writable 和上传范围门禁通过。
+- 边界：未实现或模拟 B5，未修改 P0/Schema/sample、SQLite 状态机、scanners/rules、A5、前端、部署、公开 Git 或组员分支；没有新增依赖、路由或数据库迁移。下一步只创建 A6-2 不可变实现提交并推送当前分支，远端绑定另追加 amendment。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A6-2 在该范围对应的单轮工作包内完整完成，未发生范围扩张。
+
+### [20260904-2007-RootTerra-A6Pipeline报告发布] AMENDMENT/COMPLETE - GitHub 远端不可变实现已绑定
+
+- GitHub 发布事实：A6-2 实现、测试、规格和首轮治理提交 `eec66a6aa0458abdbadd912f17c6c9d54ce3a247` 已推送 `origin/feat/a6-pipeline-publish`；本地 `HEAD` 与 `git ls-remote` 返回同一完整对象，`EVD-A6-PIPELINE-PUBLISH-001` 绑定该实现。
+- 上传范围：17 个竞赛仓库文件，包括 Pipeline publisher、worker/ZIP/default factory 最小接线、API link/store 一致性、报告自引用投影、10 项专项测试、A6-2 规格及运行/AI/进度/协作记录；未上传生成报告、运行数据库、缓存、虚拟环境、原始附件、模型内容、凭据、本机真实路径或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A6-2 分支。
+
+### [20260904-2203-RootTerra-A2公开Git摄取] START - A2-3a TrustedEgress 与公开 Git 安全摄取纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-5.6 Terra；项目负责人 A2 输入安全、主链接线与发布验收；2026-09-04 22:03（Asia/Shanghai）。分支 `feat/a2-public-git-egress`，基于已发布 A6-2 HEAD `ec57e57` 建立；开工前工作区干净。
+- 任务归属与目标：只推进项目负责人负责、且不依赖 B5 的 A2-3a：公开 HTTPS Git URL 规范化与全地址公网判定、任务级受控 CONNECT 出口、锁定 Git 无 checkout 浅克隆、Git object tree 安全物化、不可变 inventory/revision，以及现有 API→A4/B1→A6 阶段性报告纵切。
+- 必要前置：当前仓库尚无 A2-2 Git object materialization；它是公开 Git 安全摄取不可绕过的内部前置，因此仅在 A2-3a 内补齐 no-checkout、`ls-tree`/`cat-file` 和安全工作区，不扩展为独立产品功能。
+- 严格边界：不实现或模拟组员 B5，不修改 `backend/app/scanners/`、`backend/app/rules/`、`frontend/`、P0 Domain/Schema/sample、SQLite schema/状态机或组员分支；不支持私有仓库、OAuth、SSH、HTTP、重定向、submodule/symlink，也不执行、构建、安装或测试目标仓库。
+- 可信出口口径：不会用“先 DNS 检查、后让 Git 自行直连”冒充防重绑定；Git 只经本机任务级 CONNECT 代理，由代理逐连接解析全部 A/AAAA、任一非公网即失败、立即拨号已核验 IP、保留原 host 的端到端 TLS，并对上下行隧道字节实行共享硬上限。
+- 预计修改：A2 URL/address/egress/Git runner/materializer/runtime 与公共依赖 Pipeline 的最小实现；实现侧单元/集成/可选真实公网测试；A2-3a 规格、Git 依赖台账及根/后端/测试/AI/进度/本日志最小更新。只用标准库与系统 Git，不新增 Python 依赖或公共路由/字段。
+- 验收：先离线覆盖恶意 URL、mixed/private DNS、CONNECT host/方法、配额、固定 argv/env、symlink/gitlink/路径/数量/大小、revision/root digest、清理、异步失败语义和既有 ZIP/A6 回归；再对本团队公开小仓库做受控真实 HTTPS/TLS/TrustedEgress 纵切，最后跑完整 unit/security、Schema/compileall/diff/保护路径/敏感/大文件/上传范围门禁。
+- token：本轮非硬估算 `12k-18k`；若真实公网或全量回归暴露独立环境问题，只保留原始失败并缩小验收结论，不把未验证门禁写成完成。当前客户端未提供精确本轮 token 遥测，收工时如实报告。
+
+### [20260904-2238-RootTerra-A2公开Git摄取] COMPLETE - A2-3a 有界实现与真实公网验收
+
+- 最终实现：公开 HTTPS URL 严格规范化、固定 TLS DoH、全 A/AAAA 公网判定、逐连接 CONNECT TrustedEgress、共享传输硬上限、固定 Git allowlist/no-checkout 浅克隆、`ls-tree` 类型/路径/配额检查、`cat-file --batch` descriptor-safe 物化、revision/inventory/provenance，以及 API→B1/A4→A6 四格式阶段性报告接线均已完成。默认应用仅在 `OPENGUARD_ENABLE_PUBLIC_GIT=1` 时启用真实联网，未设置时保留 queued-only 兼容行为。
+- 必要环境调整：本机 Clash/TUN 系统 DNS 把 `github.com` 返回为 benchmark Fake-IP `198.18.0.15`；公网策略按设计拒绝该地址。本轮没有放宽 denylist，而是增加固定 `cloudflare-dns.com` TLS DoH bootstrap，且已在第三方资源台账披露 DNS queryName/隐私边界。
+- 真实证据：团队 OpenGuard 默认分支完成 A2 摄取后因没有受支持 manifest 诚实停在 `failed/scan/35`；官方 PyPA sampleproject 完成 HTTPS/TrustedEgress→Git object→A2-2/B1→SQLite→`partial/rules/70`→四格式下载→workspace cleanup。该差异证明失败阶段未被伪装，而不是 A2 纵切失败。
+- 测试证据：A2 实现侧 `13 passed, 1 skipped`（跳过项需回环）；沙箱完整原样 `858 passed, 9 failed, 2 skipped, 2 deselected`，9 项均为既有 A5 fixture 回环 bind `PermissionError`，2 项真实 Uvicorn 被筛除；受控环境显式启用回环与公开仓库后完整 `871 passed, 1 warning`。唯一 warning 为既有 Starlette/AnyIO alias 弃用。
+- 静态与责任门禁：compileall、`git diff --check`、尾随空白、敏感模式、world-writable、目录与上传范围检查通过；相对基线 `ec57e57`，P0 Domain/Schema/sample、`backend/app/scanners/`、`backend/app/rules/`、`rules/`、`frontend/` 均零改动。未实现/模拟 B5、A5 主链、前端、部署、Linux 隔离或持久队列，未保存目标仓库内容、运行数据库、缓存、虚拟环境或测试 workspace。
+- 证据边界：候选 `EVD-A2-PUBLIC-GIT-EGRESS-001` 只批准当前 macOS/POSIX 公开 HTTPS Git profile；A2 总包仍需 Linux namespace/seccomp/cgroup、完整 Git/ZIP 攻击 corpus、cleanup orphan/quarantine 与陌生机复现。下一步只创建不可变提交并推送 `feat/a2-public-git-egress`，不创建或合并 PR。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `12k-18k`，A2-3a 在该范围对应的单轮工作包内完整交付。因 Fake-IP 环境新增固定 DoH 是 TrustedEgress 必要闭环，未扩大到其他产品模块。
+
+### [20260904-2243-RootTerra-A2公开Git摄取] AMENDMENT/COMPLETE - 最终端点与开关加固计数
+
+- 在完成记录后补充两项同范围加固：resolver 返回端点必须 family/IP 匹配且端口精确为 443；固定 Git 环境显式禁用 replace objects；默认应用的联网开关新增只允许 `0/1` 的回归。没有扩大产品功能或修改公共契约。
+- 最新证据取代上一条作为发布口径：A2 实现侧 `14 passed, 1 skipped`；沙箱原样 `859 passed, 9 failed, 2 skipped, 2 deselected`，9 项仍全部是既有 A5 回环 bind 权限限制；受控完整 `872 passed, 1 warning`。上一条计数作为加固前历史保留，不改写。
+
+### [20260904-2248-RootTerra-A2公开Git发布] AMENDMENT/COMPLETE - GitHub 远端不可变实现已绑定
+
+- GitHub 发布事实：A2-3a 实现、测试、规格和首轮治理提交 `f6aea1eb2db1475be489f9ce8afc517e10f3c0e2` 已推送 `origin/feat/a2-public-git-egress`；本地实现提交与 `git ls-remote` 返回同一完整对象，`EVD-A2-PUBLIC-GIT-EGRESS-001` 绑定该实现。
+- 上传范围：30 个竞赛仓库文件，包括 URL/address/DoH/TrustedEgress、Git runner/object 物化、API/Pipeline 接线、实现与真实公网测试、规格、资源台账和治理记录；未上传目标仓库对象/代码、运行数据库、缓存、虚拟环境、模型内容、凭据、本机私有路径或其他真人负责代码。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A2-3a 分支。
+
+### [20260905-1100-RootAstra-A4B5规则接线] START - 消费组员 B5 的 A4 规则阶段纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A4 集成与发布验收；2026-09-05 11:00（Asia/Shanghai）。分支 `feat/a4-b5-rule-integration`，基于已发布 A2-3a HEAD `280ad02` 建立；开工前工作区干净。
+- 任务归属与目标：只推进项目负责人负责的 A4-2，把组员 `origin/codex/p0-external-tools-sync` 中已提交的 B5 公共规则实现作为只读依赖引入当前主线，并实现 `ScanRun` 规则阶段适配器、聚合校验和诚实失败语义；不修改 B5 规则内容或扫描分析实现。
+- 开始前已确认：已读取根 README、项目职责/进度、工程交接和共享日志，获取并审阅组员截至 `f8bedfd` 的 8 个新提交；组员 B5 定向回归在本机隔离快照为 `15 passed`。B5 已有 15 条规则，但仍缺官方原文证据台账和 A4 接线，现有 ZIP/Git 主链尚无许可证事实。
+- 预计修改：原样引入组员拥有的 `backend/app/rules/`、`rules/license-obligations.yaml` 和 B5 单测/fixture；新增项目负责人拥有的 `backend/app/pipeline/license_rules.py`、A4-2 实现测试和规格；最小修改 Pipeline 导出/组装、运行说明、AI 记录、项目进度及本日志。不会修改 B5 引擎/规则语义、B1-B7 扫描器、P0 Domain/Schema/sample、前端或部署。
+- 验收：验证已验证许可证产生稳定 Obligation/Finding/Remediation；pending/未知保持证据门禁；无许可证事实时稳定 `partial/rules/70` 且明确为上游事实缺失；碰撞、断链、非 B5 返回值失败关闭；运行 B5、A4、A5、A6、A3、P0 定向回归及 compileall、Schema、diff、敏感信息和上传范围门禁。
+- 已知契约风险：组员 B5 当前会为已匹配 finding 绑定确定性 remediation，而 A5-0 只处理未绑定 remediation 的 finding；本轮不擅自修改 B5 或 A5 契约，只完成 A4 规则接线并把 A5-1c 兼容决策保留为下一独立任务。
+- token：本轮开工非硬估算 `8k-14k`；当前客户端未提供精确 token 遥测。
+
+### [20260905-1210-RootAstra-A4B5规则接线] COMPLETE - A4-2 规则阶段接线与全量回归闭环
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A4 集成与发布验收；2026-09-05 12:10（Asia/Shanghai）。分支 `feat/a4-b5-rule-integration`。
+- 完成内容：新增 `app.pipeline.apply_license_rules()`，只消费已链接的 P0 许可证事实并调用组员 B5 `evaluate()`；完成参数/旧结果冲突、B5 返回类型、引用/ID 聚合、summary、ruleset version 与失败脱敏校验，并把 shared dependency plan 的 rules 阶段接到该适配器。规则成功后 AI 显式保持关闭，A6 publisher 仍在既有终态边界发布报告。
+- 组员代码边界：从 `origin/codex/p0-external-tools-sync@f8bedfd` 原样引入 B5 引擎、规则 README、15 条规则、fixture、10 项单测和规格；7 个文件逐一执行 `git hash-object`，均与组员远端 blob 相同。未导入或修改 B4、B6、B7，也未改动 `backend/app/scanners/`、P0 Domain/Schema/sample、前端、部署或组员分支。
+- 契约风险结论：B5 对 verified 匹配规则生成确定性 remediation，A5 应跳过以避免重复；B5 对 pending 许可证生成无 remediation 的 `license-evidence-gate` finding，可由下一独立任务 A5-1c 消费。无需在本轮修改 B5/A5 公共契约。
+- 真实性边界：当前 ZIP/Git 依赖主链尚未产生 B2/B3/B4 许可证事实，因此仍以兼容错误 `rules_stage_not_connected` 诚实终止为 `partial/rules/70`；A4-2 证明“已有合法许可证事实时能够执行并持久化 B5”，不代表真实输入的完整许可证扫描已经跑通，也不代表 B5 官方原文和人工复核完成。
+- 测试证据：A4+B5 聚焦 `68 passed`；沙箱完整原样 `877 passed, 11 failed, 2 skipped, 1 warning`，11 项全部为创建回环测试监听器时的 `PermissionError`；不改测试，在受控环境原样复跑完整集合 `888 passed, 2 skipped, 1 warning`。两项 skip 为既有显式外部条件门禁；warning 为既有 Starlette/AnyIO alias 弃用。
+- 静态/发布门禁：`schema_export_equal=True`、compileall、`git diff --check`、敏感模式、超大文件、world-writable 和上传范围检查通过；候选 `EVD-A4-B5-RULE-INTEGRATION-001` 待不可变提交和远端对象绑定。
+- 修改范围：18 个竞赛仓库文件，包括 7 个原样 B5 文件、A4 适配器/导出/计划、8 项 A4-2 测试与 1 项既有 A4 未来阶段断言更新，以及根/后端说明、A4-2 规格、AI/进度/协作记录；不含缓存、虚拟环境、运行数据库、模型内容、凭据或本机临时物。
+- 下一任务：项目负责人 A5-1c，把既有 A5 Provider/Ollama transport 接入 AI_ASSIST，只消费 B5 尚未绑定整改的 finding，并覆盖 enabled/disabled/degraded 消融；真实 ZIP/Git 全链仍需扫描组员把许可证事实生产接入主线。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `8k-14k`，A4-2 在该单轮工作包内完整完成，未发生范围扩张。
+
+### [20260905-1220-RootAstra-A4B5规则发布] AMENDMENT/COMPLETE - GitHub 不可变实现已绑定
+
+- GitHub 发布事实：A4-2 实现、测试、规格和首轮治理提交 `4752f2b11252870c1b33306583390321c8d24397` 已推送 `origin/feat/a4-b5-rule-integration`；本地 HEAD 与 `git ls-remote` 返回同一完整对象，`EVD-A4-B5-RULE-INTEGRATION-001` 绑定该实现。
+- 上传范围：18 个竞赛仓库文件，包括 7 个与组员远端 blob 完全相同的 B5 文件、项目负责人 A4 薄适配器/计划接线、8 项 A4-2 测试、1 项既有 A4 未来阶段断言更新，以及运行/规格/AI/进度/协作说明；未上传 B4/B6/B7、前端、部署、运行数据库、缓存、虚拟环境、模型内容、凭据或本机临时物。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、A5 PR #2、`feat/xzb-frontend` 或 `codex/p0-external-tools-sync`。本发布状态回填作为第二个纯治理提交继续推送同一 A4-2 分支。
+
+### [20260905-1300-RootAstra-A5Pipeline接线] START - A5-1c AI_ASSIST 纵切
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A5 集成与发布验收；2026-09-05 13:00（Asia/Shanghai）。分支 `feat/a5-pipeline-integration`，基于已发布 A4-2 HEAD `048c167` 建立；开工前工作区干净。
+- 任务归属与目标：只推进项目负责人负责的 A5-1c，把既有 `apply_ai_remediations()` 与锁定的本机 `OllamaProvider` 接入 A4 `AI_ASSIST` 阶段；只消费 B5 已生成且尚未绑定整改的 finding，不改变 B5 规则、事实、结论或确定性整改。
+- 开始前已确认：已交叉核对项目计划书、当前进度台账、共享日志、Git 历史与组员远端；组员 `origin/codex/p0-external-tools-sync` 仍停在 `f8bedfd`，当前分支已原样包含其 B5 公共规则接口。A5-0、A5-1a、A5-1b 与 A4-2 均已完成，下一项确为 A5-1c。
+- 预计修改：最小修改项目负责人拥有的 dependency plan、ZIP/Git runtime 与默认应用配置；新增 A5-1c 实现测试和规格，更新运行说明、AI 记录、项目进度及本日志。不会修改 `backend/app/rules/`、`rules/`、`backend/app/scanners/`、P0 Domain/Schema/sample、前端、部署或组员分支。
+- 验收：AI 默认关闭且不调用 Provider；显式开启时 B5 pending finding 生成 `pending` remediation 并保持事实/引用；B5 已有确定性整改时不重复调用；Provider 不可用/无效输出时保留规则结果、追加脱敏可恢复诊断并继续 A6 报告；运行 A4/A5/A6/API/P0 定向与完整回归、Schema、compileall、diff、敏感信息和上传范围门禁。
+- 真实性边界：当前 ZIP/Git 真实输入仍缺 B2/B3/B4 许可证事实，因此即使管理员启用 AI，也会先在 rules 阶段诚实终止；本轮证明的是“B5 finding 已存在时 Pipeline 可调用/降级 A5”，不冒充完整真实仓库许可证端到端。
+- token：本轮开工非硬估算 `10k-16k`；当前客户端未提供精确 token 遥测。
+
+### [20260905-1320-RootAstra-A5Pipeline接线] COMPLETE - A5-1c 实现、独立与真实模型门禁通过
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；项目负责人 A5 集成、独立复核与发布验收；2026-09-05 13:20（Asia/Shanghai）。分支 `feat/a5-pipeline-integration`；尚未提交、尚未推送。
+- 完成内容：shared dependency plan 的 `AI_ASSIST/85` 已调用既有 `apply_ai_remediations()`；ZIP/公开 Git runtime 传递显式 Provider、开关和 timeout；默认应用仅在 `OPENGUARD_ENABLE_AI=1` 时注入锁定 `OllamaProvider`，未设置时保持关闭，歧义值拒绝启动。
+- B5 边界：只消费组员 B5 的公共 `RiskFinding`。pending `license-evidence-gate` finding 可生成 `verification_status=pending` 的 AI 整改；B5 verified 规则已有确定性整改时不调用生成、不覆盖或重复；未修改 `backend/app/rules/`、`rules/`、组员测试或远端分支。
+- 降级与报告：Provider 不可用或无效响应时，Pipeline 保留 B5 事实/结论、丢弃候选、只追加脱敏可恢复的 `ai_assist` 错误，继续到 completed 与 A6 四格式报告。真实 ZIP/Git 仍因缺少 B2/B3/B4 许可证事实先停在 `partial/rules/70`，本轮不冒充普通上传的完整许可证 AI 纵切。
+- 实现与独立测试：新增 9 项实现测试及 6 项独立安全测试；实现侧验证 disabled、pending、verified no-duplicate、降级报告、ZIP/Git 配置传递和默认开关；独立文件手工构造 P0/B5/Provider/A6，不复用实现侧 helper，默认结果 `5 passed, 1 skipped`。
+- 真实模型证据：显式真实 Ollama 单项首次在服务未启动时原样 `1 failed, 5 deselected`，Pipeline 正确降级且未伪造建议；只读确认 `127.0.0.1:11434` 未监听后，临时启动已安装 Ollama `0.33.3`，原样复跑得到 `1 passed, 5 deselected`，实际完成 B5 pending→Qwen3→AI pending remediation→SQLite→A6 四链接，随后停止本轮服务会话。未上传 prompt、完整 response、模型权重、缓存或运行数据库。
+- 回归证据：A5/A4/B5 聚焦曾获 `105 passed`，A4/A5/A6/API 保护集 `109 passed, 1 skipped`；加入独立文件后的沙箱完整原样为 `891 passed, 11 failed, 3 skipped, 1 warning`，11 项均是既有回环监听 `PermissionError`；受控环境不改测试完整复跑为 `902 passed, 3 skipped, 1 warning`。warning 仍是 Starlette/AnyIO 第三方 alias 弃用。
+- 静态与范围：P0 `46 passed` 且存储 Schema 等值；compileall、`git diff --check`、受保护 P0/Schema/sample、B5/rules、scanners、frontend、deploy 零差异，world-writable 与上传范围检查通过。本轮未新增第三方依赖。
+- 修改范围：15 个竞赛仓库文件，包括 6 个项目负责人 Pipeline/API 接线文件、2 个 A5-1c 测试文件、1 个规格，以及根/后端/测试运行说明、AI/进度/协作记录；不含组员模块、缓存、数据库、模型内容、凭据、本机路径或临时物。
+- 协作说明：已尝试把独立验证派给现有 Luna 对话，但该任务在客户端更新后仍停留于旧轮次，未实际开始 A5-1c；为不虚构模型产出，本条明确由 Root/Astra 完成独立文件与受控实跑，不把它记为 Luna 结果。
+- 证据与下一步：候选 `EVD-A5-PIPELINE-INTEGRATION-001` 待建立不可变实现提交、推送并核对远端对象；发布后 A5 P0 子系统可标完成。紧接着项目负责人不应代做上游许可证事实，适合推进 A3/A4 持久 worker 最小纵切，或等待组员把 B2/B3/B4 真实许可证事实接入后补普通 ZIP/Git 全链证据。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A5-1c 在单轮工作包内完整完成；因 Luna 旧任务未启动而由 Root 补独立安全测试，属于同一验收范围，未扩张产品功能。
+
+### [20260905-1318-独立验收-Luna-A5-1c] AMENDMENT/COMPLETE - A5-1c 独立安全复核
+
+- 作者/角色/时间：GPT-5.6 Luna；独立测试、批量夹具与材料形式复核角色；2026-09-05 13:18（Asia/Shanghai）。本条承接前一条 Root/Astra A5-1c 候选完成记录，不改写既有历史。
+- 验证范围：独立手工构造 P0 `ScanRun` 与 B5 pending/verified 结果，独立 Provider/expected，调用公共 dependency plan/AI boundary；覆盖默认关闭零调用、pending `license-evidence-gate` 生成 pending AI remediation、verified B5 确定性 remediation 不重复、Provider 异常/无效响应降级、ZIP/Git timeout/config 传递、非法 timeout/provider、SQLite 持久化及 A6 四种报告。
+- 修改文件：仅新增 `tests/security/test_a5_pipeline_integration_independent.py`，以及本条 AI 辅助日志和共享日志的 append-only 记录；未修改 backend 实现、既有 unit、P0 Domain/Schema/sample、`backend/app/rules/`、`rules/`、`backend/app/scanners/`、前端、部署或项目进度；未提交、未推送。
+- 真实模型门禁：新增 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 显式门控的 B5 pending→Ollama/Qwen3→AI_ASSIST→SQLite→A6 单项；默认执行保持 `1 skipped`，测试不启动 Ollama、不下载模型，故本条不宣称独立真实 Qwen3 运行证据。
+- 命令与结果：`PYTHONPATH=backend /private/tmp/openguard-a5-venv/bin/python -m pytest -q tests/security/test_a5_pipeline_integration_independent.py` 为 `9 passed, 1 skipped`；实现侧 `tests/unit/test_a5_pipeline_integration.py` 为 `9 passed`；A4/A5/A6/API/P0 保护回归在受控环境为 `187 passed, 1 warning`。沙箱原样回归为 `177 passed, 10 failed`，10 项均在既有 A5 TCP fixture/A3 Uvicorn 绑定 `127.0.0.1` 处收到 `PermissionError: [Errno 1] Operation not permitted`；受控重跑全部通过。`git diff --check` 通过；warning 为既有 Starlette/AnyIO alias 弃用。
+- 缺陷与升级：独立门禁未发现 A5-1c 功能性 P1/P2；首轮独立测试唯一失败是夹具创建 SQLite 记录时漏传与幂等键匹配的 fingerprint，已仅修正测试夹具调用并原样复跑通过。回环 bind 失败按环境限制保留，不修改测试或实现；若真实门控项失败，应把原始结果升级给 Root/Terra/Sol，不自动启动服务或调整断言。
+- 证据边界：本条只证明已有合法 B5 finding 上的 AI_ASSIST 接线与降级报告行为；不证明普通真实 ZIP/Git 已生产 B2/B3/B4 许可证事实，不证明完整 Bench、前端真实 API、Linux 隔离、持久队列、报告材料或完整参赛作品；候选 A5 证据仍待 Root 不可变提交与远端对象绑定。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `6k-10k`，本轮在该单轮工作包内完成，未发生范围调整。
+
+### [20260905-1320-RootAstra-A5Pipeline协作更正] AMENDMENT/COMPLETE - 接纳 Luna 独立验收并刷新门禁
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；A5 集成与发布验收；2026-09-05 13:20（Asia/Shanghai）。本条只追加更正，不改写前述 Root 或 Luna 历史。
+- 协作更正：Luna 实际已交付 `tests/security/test_a5_pipeline_integration_independent.py` 并在物理 EOF 追加独立验收记录；因此前述 Root 条目中“Luna 未实际开始”、独立 `5 passed, 1 skipped` 与 6 项测试的描述已过时。最终归属为 Root/Astra 实现、Luna 独立验收、Root 统一复核与发布。
+- 最终复核：实现与独立文件合计 `18 passed, 1 skipped`；Root 临时启动已安装 Ollama 后，以 Luna 的显式门禁 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 原样运行真实 B5 pending→Qwen3→SQLite→A6 单项，得到 `1 passed, 9 deselected`，随后停止服务。沙箱完整为 `895 passed, 11 failed, 3 skipped`，11 项全部是既有回环监听 `PermissionError`；受控环境同一完整集合为 `906 passed, 3 skipped`。
+- 静态与边界：P0 `46 passed`，compileall 与 staged/unstaged `git diff --check` 通过；A5-1c 仍只证明已有 B5 finding 的 AI_ASSIST 行为，不证明普通 ZIP/Git 已产生 B2/B3/B4 许可证事实。候选 evidence 仍待不可变实现提交与远端对象绑定。
+- token：本次运行精确 token 数不可获得；沿用本工作包开工非硬估算 `10k-16k`，协作更正与补跑仍在同一 A5-1c 收口范围内，未扩张产品功能。
+
+### [20260905-1320-独立验收-Luna-A5-1c] AMENDMENT - 无效响应降级继续进入 A6 的加固
+
+- 补充验收：将 Provider 降级的独立 SQLite→A6 管线覆盖参数化为异常和无效 JSON/证据响应两种路径；两者均必须保留 B5 `license-evidence-gate` finding、无 AI remediation、写入结构化脱敏错误，并由 publisher 生成四种报告。
+- 结果：独立文件单跑 `10 passed, 1 skipped`；与实现侧 A5-1c 合跑 `19 passed, 1 skipped, 1 warning`；新增测试文件敏感信息/本机绝对路径扫描无命中，`git diff --check` 通过。显式 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 项仍未启用，继续不自动启动服务或下载模型。
+- 边界：本 amendment 只加固独立测试，不改变任何 backend、B5、P0、现有 unit、前端、部署或进度文件；上一条独立复核记录保留，不改写历史。
+
+### [20260905-1325-RootAstra-A5Pipeline最终复核] AMENDMENT/COMPLETE - 固定 Luna 最终文件与发布前证据
+
+- 作者/角色/时间：Codex Root Coordinator / GPT-6 Astra；A5 集成与发布验收；2026-09-05 13:25（Asia/Shanghai）。Luna 已停止继续写入共享仓库，独立测试 SHA-256 固定为 `fd7a483ee9f5b3d843e34839f688603267cb14ead1853a801e4582b561f99bcd`。
+- 最终运行：A5-1c 实现与独立合跑 `19 passed, 1 skipped, 1 warning`；临时启动已安装 Ollama 后，最新显式真实模型项为 `1 passed, 10 deselected, 1 warning`，随后停止服务。沙箱完整原样为 `896 passed, 11 failed, 3 skipped, 1 warning`，11 项仍全部是既有回环监听 `PermissionError`；受控环境同一完整集合为 `907 passed, 3 skipped, 1 warning`。
+- 保护门禁：P0 `46 passed`、`schema_export_equal=True`、compileall、staged/unstaged `git diff --check` 通过；受保护 B5/rules、scanners、P0 Domain/Schema/sample、frontend、deploy 无本轮 tracked diff。仓库中唯一大于 10 MiB 的文件位于已忽略的 `frontend/node_modules`，不在 Git 提交清单。
+- 证据边界：本轮最终候选包含 9 项实现测试与 11 项独立测试实例；A5-1c 已可对既有 B5 finding 执行默认关闭、显式生成、确定性整改跳过和失败降级，并让 A6 持久化报告。普通 ZIP/Git 仍缺 B2/B3/B4 许可证事实，不能声称完整真实仓库链已到 A5。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，当前 A5-1c 已在同一工作包内完成技术验收，待不可变提交与远端发布，不发生范围扩张。
+
+### [20260905-1330-RootAstra-A5Pipeline发布] AMENDMENT/COMPLETE - GitHub 不可变实现已绑定
+
+- GitHub 发布事实：A5-1c 实现、测试、规格与首轮治理提交 `3237ab0e8634ba5f0c62535100ef97785bd611a6` 已推送 `origin/feat/a5-pipeline-integration`；本地 HEAD 与 `git ls-remote` 返回同一完整对象，`EVD-A5-PIPELINE-INTEGRATION-001` 绑定该实现。
+- 上传范围：15 个竞赛仓库文件，包括 6 个项目负责人 Pipeline/API 接线文件、9 项实现测试、11 项独立测试实例、A5-1c 规格，以及根/后端/测试运行说明与 AI/进度/协作记录；未上传 B4/B5/B6/B7 改动、前端、部署、模型、缓存、运行数据库、prompt、完整 response、凭据或本机临时物。
+- 分支治理：未创建或合并 PR，未修改 `integration/p0`、`main`、既有 A5 PR #2 或两个组员分支；组员 B5 远端仍为 `f8bedfd6bd823b7459ffbffda9d38c2903984a6c`。本发布状态回填将作为第二个纯治理提交继续推送同一 A5-1c 分支。
+- 阶段结论：A5/S4 P0 子系统完成；当前真实产品主链仍会因普通 ZIP/Git 未产出 B2/B3/B4 许可证事实而停在 `partial/rules/70`，这不影响 A5 模块闭环，但阻止宣称完整真实仓库许可证 AI 端到端。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `10k-16k`，A5-1c 已在该范围内完成实现、独立复核、真实模型、全量回归和首次发布；发布回填未扩大功能范围。
+
+
+### [20260905-1524-RootAstra-DurableZIP规格开工] START - A3/A4-3a-S 窄规格与验收门禁
+
+- 作者：GPT-6 Astra / Codex Root；协作模型 GPT-5.6 Sol（架构）、GPT-5.6 Terra（可实现性）、GPT-5.6 Luna（独立验收设计）。
+- 时间：2026-09-05 15:24（Asia/Shanghai）；分支 `docs/a3-a4-durable-zip-spec`，基于 `1ba14aff6894aabdd25f4491688df5d7b852e95a`；开始前工作树干净。
+- 用户授权：按既定下一步继续，并允许 Root 协调 Sol/Terra/Luna。本轮仅规格门禁，不编码；三模型只读分析，Root 统一代记报告并串行编辑共享文件。
+- 开工核验：Root 已读 AGENTS、README、进度、交接与 A3/A4/A6 规格及代码；Sol 承担全量 3366 行共享日志的逐段完整复核，明确补读截断部分并确认无缺段、无本任务同路径在途修改；Root 核对其报告和物理 EOF。远端主控/集成/组员 HEAD 与上一轮核验一致。
+- 任务范围：从持久 worker 父包拆出 ZIP-only durable dispatch、queued 重启消费和 interrupted-running 诚实终态；不新增 jobs.db，不改变 scans.db/P0/六 API；Git恢复、lease/heartbeat接管、handler retry/checkpoint 和 HA 留在父包，不能据窄规格宣称全部完成。
+- 预计修改：仅新建 `docs/spec/a3-a4-durable-zip-dispatch.md`，更新 `docs/coordination/PROJECT_PROGRESS.md`，追加 `docs/05-ai-assistance-log.md` 与本共享日志。禁止修改业务代码、测试、Schema/sample、组员 B 线、前端和部署。
+- 验收：Sol 架构复核、Terra 可实现性复核、Luna 逐项 oracle 复核；检查引用、唯一门禁ID、P0/保护路径无差异、append-only前缀、diff/敏感内容及待提交清单。设计证据与运行证据严格分开。
+- 发布：Root 验收后只提交推送这四个竞赛治理文件到独立文档分支；不创建/合并PR，不变更 main/integration/组员分支，不发布产品Release。
+- token：开工非硬估算 12k–20k；本次运行精确 token 数不可获得。全量历史日志阅读规模高于初估，不能证实实际消耗处于该区间；本轮交付仍仅规格，未扩为实现。
+- EOF anchor：OPENGUARD-DZ-SPEC-START-20260905-1524
+
+
+### [20260905-1531-Sol-DurableZIP规格复审] COMPLETE - 架构规格批准（Root代记）
+
+- 作者：GPT-5.6 Sol；Root依据只读子任务原始报告代记，模型未直接修改项目文件。
+- 范围与结果：完整3366行历史日志逐段可见复核、既有A3/A4/A6约束审查、两轮规格复审；最终APPROVE。
+- 关闭项：异常running若含report_links，不得通过terminal收敛使其可见；规格选择保留running/输入并停止该任务自动恢复。正常恢复links为空；不重放handler/publisher。
+- 审查更正：曾因两段sed边界重叠误报DZ-01重复，Root实际文件核查无重复，Sol已撤销；没有删除有效条目。
+- 边界：只批准ZIP-only文件descriptor与单机flock规格，不批准Git恢复、lease接管、业务retry、exactly-once或产品实现。没有代码或新测试运行证据。
+- token：本次运行精确 token 数不可获得；子任务初估4k–7k，全量569KB日志补读与复审增加了阅读量，不能证实消耗在区间内。
+
+### [20260905-1531-Terra-DurableZIP规格复审] COMPLETE - 工程可实现性批准（Root代记）
+
+- 作者：GPT-5.6 Terra；Root依据只读报告代记，未编辑代码、日志、分支或测试。
+- 范围与结果：候选run构造/提交拆分、prepared→ready、幂等输入保护、profile、busy和legacy边界可实现；最终APPROVE。
+- 关闭项：首个multipart字节前预留slot+64MiB，持久descriptor后降实际值，重启残留计入配额，可疑对象阻止接收而非计零。
+- 取舍：不引入第二SQLite任务库、不改scans.db v1；Git在执行时才固定revision，留在后续任务。报名权属/平台门禁与技术完整作品门禁分别汇报。
+- token：本次运行精确 token 数不可获得；子任务初估3k–6k，未做精确计量；先前候选报告中的“在范围内”不作为遥测结论。
+
+### [20260905-1531-Luna-DurableZIP验收设计] COMPLETE - 独立oracle矩阵批准（Root代记）
+
+- 作者：GPT-5.6 Luna；Root依据只读报告代记，未新增测试或复用实现侧expected。
+- 范围与结果：最终DZ-01..15矩阵APPROVE；真实OS进程、kill/restart、第二SQLite连接、事件屏障、独立Provider调用计数和实际报告GET为未来门禁。
+- 修订：prepared精确绑定可恢复ready；同key同字节保留原profile，不因配置变化造409；删除过时持久attempt建议；补fsync事件证据、AI false歧义和busy单周期口径。
+- 边界：这是可测性设计，15项动态门禁尚未执行；不代表持久队列、模型或完整Web验收。
+- token：本次运行精确 token 数不可获得；子任务初估3k–5k，未取得精确计量。
+
+### [20260905-1531-RootAstra-DurableZIP规格验收] PARTIAL - 技术规格批准，待文档发布
+
+- 作者：GPT-6 Astra / Codex Root；任务A3/A4-3a-S；分支docs/a3-a4-durable-zip-spec。
+- 实际交付：唯一新规格docs/spec/a3-a4-durable-zip-dispatch.md；更新PROJECT_PROGRESS，仅追加AI记录和共享日志。A3/A4-3a-I1/I2实现与运行evidence未开始。
+- 设计决策：ZIP-only、文件descriptor、不改registry v1或P0/六API；精确profile与幂等；全生命周期flock；queued恢复、正常running零重放partial/failed；异常links拒绝恢复；报告orphan不可见。
+- 验证：Sol/Terra/Luna最终APPROVE；本轮P0回归46 passed；后续执行文档/路径/ID/append-only/敏感/diff门禁后由Root提交推送文档分支。上一轮基线完整907 passed,3 skipped为旧代码证据，不冒充本任务动态恢复测试。
+- 发布状态：尚未提交推送，不创建/合并PR，不修改main/integration/组员分支。
+- 下一步：文档发布后按同规格先I1持久输入/登记，再I2后台消费与中断收敛；保留Git恢复/lease/heartbeat/业务retry/cleanup父包缺口。
+- token：本次运行精确 token 数不可获得；初估12k–20k，长日志核验阅读高于预估，无法确认实际区间；范围收窄为ZIP规格，未扩大编码。
+- EOF anchor：OPENGUARD-DZ-SPEC-REVIEW-20260905-1531
+
+
+### [20260905-1534-RootAstra-DurableZIP规格发布] AMENDMENT/COMPLETE - 文档规格门禁发布闭环
+
+- 作者：GPT-6 Astra / Codex Root；时间2026-09-05 15:34（Asia/Shanghai）。
+- 发布事实：规格与首轮治理提交 `f9a59fa3eb722c2eb1eb0ec939bda5efe8587b78` 已推送 `origin/docs/a3-a4-durable-zip-spec`，git ls-remote已返回完全相同对象。该SHA绑定设计产物，不是运行evidence。
+- 上传范围：仅新规格、PROJECT_PROGRESS、AI辅助记录和本append-only日志四个文件；无业务代码、测试、模型、运行输入、数据库、缓存、个人路径或第三方资源。
+- 最终门禁：三角色最终APPROVE；P0 46 passed；15个DZ编号顺序/唯一性通过；P0 Schema等值；与基线比对两份日志完整前缀不变；精确四文件白名单、新增文本路径/凭据扫描及staged diff检查通过。
+- 状态：A3/A4-3a-S规格任务完成；I1/I2实现未开始；本轮无持久worker动态运行证据。没有创建/合并PR，没有修改main/integration/组员分支或Git身份。
+- 下一任务：按同一规格实施A3/A4-3a-I1私有descriptor与持久输入生命周期，由Terra实现、Luna独立验证、Root验收；不重造既有A3/A4/A5/A6。Git恢复、lease/heartbeat、业务retry、完整cleanup仍属后续工作。
+- 项目可运行边界：既有依赖扫描与阶段性报告保持不变，普通输入partial/rules/70，主控前端mock；完整Web/许可证事实/部署/Bench/材料与Release尚未闭环。报名平台/缴费/权属由Owner落实，与技术完整作品门禁分开。
+- token：本次运行精确 token 数不可获得；开工估算12k–20k，因569KB历史日志补读及多模型复审阅读规模高于预估，无法确认实际消耗落在区间内。本轮单轮完整交付规格及发布；父任务已明确拆成ZIP-I1/I2，未扩为编码。
+- EOF anchor：OPENGUARD-DZ-SPEC-PUBLISHED-20260905-1534
+
+
+### [20260905-1607-RootAstra-DurableZIPI1开工] START - A3/A4-3a-I1 持久存储实施
+
+- 作者：GPT-6 Astra / Root；时间2026-09-05 16:07（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`，基线 `16cd7d4865a27a6a6401e8b629e0d13ae592be32`；初始工作区干净。
+- 用户授权：按要求与技术文档推进下一步，准确沿目标实施，验收后及时推送GitHub。Root协调既有Terra工程任务与Luna独立测试任务，旧Sol任务停用，Root承担架构终审。
+- 开工核对：复用上一规格轮Sol已完整审查历史日志的记录，Root补读其后至3430行EOF并核对README、AGENTS、进度、交接、冻结规格及当前service/ZIP/API/registry/A5代码；另已派既有Terra进行完整日志再核查。此处不冒称Root本轮重新逐行读完整历史。两份日志原字节前缀及OpenAPI已在仓库外留存供终验。
+- 范围：I1私有descriptor、prepared/ready与原指纹幂等、输入持久化保留/自有清理、原执行profile、首个multipart字节前配额。I2生命周期flock/dispatcher/自动恢复不实现；I1生产入口不得启用缺少I2保护的持久派发。
+- 预计修改：新建backend/app/persistence/zip_dispatch.py及tests/unit/test_a3_durable_zip_dispatch.py；最小调整api/service.py、zip_scan.py、main.py，必要导出；Luna后续独立新增tests/security/test_a3_durable_zip_dispatch_independent.py；更新backend/README.md、PROJECT_PROGRESS、同一规格实施记录，追加AI记录及本日志。
+- 禁止：更改P0/domain/Schema/sample/六API/原fingerprint/scan_registry.py/worker.py/Git runtime/A2/B线/A5/A6实现/frontend/deploy/既有独立测试；不安装依赖、请求外部扫描器或真实模型、不创建重复实现文件。
+- 协作：同一工作区仅一个写者；Terra先实现和unit，结束后Luna只写独立测试，P0/P1原始失败保留交Root协调修复；Root最终文档、审查、提交推送。不得自动合并PR、删分支、改Git身份或发Release。
+- 验收：真实动态ZIP/手写multipart、独立进程崩溃窗口与SQLite重读、严格JSON及权限/fsync、幂等/profile/不确定提交/容量/清理边界；默认兼容、P0/Schema/OpenAPI、全量回归、compileall、前端构建、diff/敏感/文件范围/append-only检查；实现证据绑定不可变提交并核对远端。
+- token：非硬估算18k–30k；本次运行精确 token 数不可获得。范围限定I1，最终依实际验证报告完成情况，不把存储门禁描述成自动恢复能力。
+- EOF anchor：OPENGUARD-DZI1-ROOT-START-20260905-1607
+
+
+### [20260905-1620-Terra-DurableZIPI1实施] START - A3/A4-3a-I1 私有 ZIP descriptor 与输入生命周期
+
+- 作者：GPT-5.6 Terra；时间：2026-09-05 16:20（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`，基线 `16cd7d4865a27a6a6401e8b629e0d13ae592be32`。
+- 开工核对：已完整阅读 AGENTS、README、共享日志 1–3430（物理 EOF 为 `OPENGUARD-DZI1-ROOT-START-20260905-1607`）、进度台账、Terra/Sol 交接、三份正式 PDF、冻结 `a3-a4-durable-zip-dispatch.md`，并核对现有 API、ZIP runtime、A3 registry、A4 local ZIP 与 A5 runtime 接线。
+- 范围：仅实现 I1 的私有 descriptor v1、prepared→ready 原子提交、原 ZIP fingerprint 幂等、输入保留/受限清理、执行 profile 与首个 multipart 字节前的容量预留；保留可注入内部存储 seam 供后续独立 HTTP 测试。生产 `OPENGUARD_ENABLE_DURABLE_ZIP=0` 维持旧路径，精确 `1` 因 I2 flock/dispatcher 未实现而拒绝启动，其他值同样拒绝。
+- 预计修改：新增 `backend/app/persistence/zip_dispatch.py` 与 `tests/unit/test_a3_durable_zip_dispatch.py`；最小调整 `backend/app/api/service.py`、`backend/app/api/zip_scan.py`、`backend/app/api/main.py`、必要包导出和 `backend/README.md`；本日志只追加。不会修改 P0/domain/Schema/registry/worker/扫描器/规则/A5/A6/前端/部署或既有独立测试。
+- 验收：使用 `/private/tmp/openguard-a4-b5-venv/bin/python`、`PYTHONDONTWRITEBYTECODE=1`、`PYTHONPATH=backend` 运行新增 unit 与既有 ZIP/API/P0 关联集；检查默认行为、严格 descriptor/权限/fsync、幂等/profile、容量/清理及 OpenAPI 兼容。全量、独立测试、治理文档、提交和推送由 Root/Luna 后续执行。
+- token：实施非硬估算 `12k–20k`；本次运行精确 token 数不可获得。
+- EOF anchor：OPENGUARD-DZI1-TERRA-START-20260905-1620
+
+
+### [20260905-1705-Terra-DurableZIPI1实施] PARTIAL - I1 实现侧交付，待独立验收与主控发布
+
+- 作者：GPT-5.6 Terra；时间：2026-09-05 17:05（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`。本条只追加，未改写既有记录。
+- 实现：新增 `backend/app/persistence/zip_dispatch.py`，提供私有 `0700` 目录/`0600` 文件、严格 descriptor JSON v1、输入 SHA-256 与 run identity 绑定、prepared→ready rename+目录 fsync、预 body 的 slot+64MiB 预留及持久残留计入；新增受限 cleanup helper，只允许“无 registry 行的已验证 prepared”或 registry 已健康确认的 terminal run，输入缺失时先 fsync uploads 目录。未实现 I2 flock、dispatcher、重启消费或自动调用 cleanup。
+- API 接线：`service.py` 将 ZIP candidate 构造与 registry 提交拆分但保留原 fingerprint；`zip_scan.py` 在注入 store 时把 staged ZIP、原 fingerprint 幂等、冻结 profile、prepared→registry→ready 放进同一无 await 临界区。新建成功返回 queued/202；同 key 同字节固定原 ID/profile，即使 loser cleanup 失败仍返回原 202 并保留残留计入容量；异字节保留 409。`main.py` 在 `request.form()`/首个 receive 前预留，生产开关默认 `0` 保留旧路径，精确 `1` 和非法值均拒绝启动，避免把 I1 误启为无 I2 保护的派发。
+- 执行 profile：仅支持锁定的本地 Ollama 身份，AI 载荷精确为 `provider`、`model_id`、`runtime_version`、`manifest_digest`、`prompt_schema_digest` 五字段；不保存任意 provider 配置或秘密。上传临时文件名仅接受 `openguard-upload-*.zip`。
+- 实现侧验证：新增 `tests/unit/test_a3_durable_zip_dispatch.py` 单跑 `16 passed, 1 warning`；关联 ZIP/API/A4/A5/A6/P0 集合（排除真实 Uvicorn）`190 passed, 1 deselected, 1 warning`；`compileall`、`git diff --check`、变更范围敏感字串扫描通过。警告是既有 Starlette 对 AnyIO `BlockingPortal` alias 的弃用警告。未运行真实 Uvicorn、真实模型、完整套件或 Luna 独立测试。
+- 文件范围：新增上述 store 和 unit；最小修改 `backend/app/api/{service,zip_scan,main}.py`、`backend/app/persistence/__init__.py`、`backend/README.md` 与本日志。未改 P0/domain/Schema/sample、registry/worker、scanner/rules、A5/A6、前端、部署或既有独立测试；未提交、未推送、未修改 Root 的进度/规格/AI 记录。
+- 后续/状态：I1 仍为 PARTIAL，等待 Luna 按独立 oracle 以手写 multipart、第二 SQLite 连接和崩溃窗口验证；再由 Root 完成全量/兼容性/文档治理、不可变提交与远端核验。当前仅可通过内部依赖注入验证 descriptor 准备；生产环境必须保持 durable 开关为 `0`，不能宣称具备持久队列或重启恢复。
+- token：本次运行精确 token 数不可获得；开工非硬估算 `12k–20k`。范围未扩出 I1；因完整正式材料/历史记录复读与多轮代码审查，无法确认实际消耗是否落在该区间。
+- EOF anchor：OPENGUARD-DZI1-TERRA-PARTIAL-20260905-1705
+
+
+### [20260905-1642-Luna-DurableZIPI1独立验收] START - A3/A4-3a-I1 独立安全验证
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05 16:42（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`；当前 HEAD `16cd7d4865a27a6a6401e8b629e0d13ae592be32`，不提交、不推送、不切分支。
+- 日志读取范围：复用前序已完整审阅的共享日志前缀；本轮实际补读当前实现交付后的物理尾部至第 `3468` 行，EOF anchor 为 `OPENGUARD-DZI1-TERRA-PARTIAL-20260905-1705`。不照抄 Terra 先前记录的行号，后续以本条及实时 tail 为准。
+- 范围：只验证 I1 descriptor、输入生命周期、幂等/profile、首字节前配额、fsync/rename 顺序、健康 registry 清理和多进程持久事实读取；独立构造动态 ZIP/手写 multipart/SQLite，并用独立 OS 进程和事件屏障验证崩溃窗口。
+- 禁止范围：不验收或宣称 I2 flock、dispatcher、自动恢复消费、worker handler、running 收敛、A6 恢复、lease/heartbeat/retry 或 DZ-01..15 全闭合；不修改 Terra 实现、P0/Schema/sample、registry/worker、既有测试或其他文档。
+- 允许修改：仅新增 `tests/security/test_a3_durable_zip_dispatch_independent.py` 与本次 START/结束日志；不引入依赖，不联网，不启动模型/扫描器。真实回环若被沙箱拒绝，保留原始失败并交 Root 受控重跑。
+- 首批 oracle：严格 JSON/键/UTF-8/非有限数/bool、descriptor 双态冲突与绑定、0700/0600/owner/symlink/FIFO/摘要；ASGI `receive` 首字节前 slot+64 MiB 预留；8 slots/512 MiB 与残留/并发账本；file fsync→descriptor prepared fsync→SQLite→ready rename+fsync→202；commit 不确定保留；同 key bytes 原 ID/profile、异 bytes 409、loser 自有副本清理；prepared 无 row 与 terminal 健康清理及失败保留。
+- 测试契约：只使用 `ZipDispatchStore` 的内部显式注入 seam（`operation`/`bind_upload`/`prepare`/`read`/`promote`/`discard_prepared`/`cleanup_*`）和已注入 `ZipScanRuntime`；expected 手工重算 canonical identity，不导入实现 unit/fixture/helper。
+- token：本轮非硬估算 `8k–14k`；当前客户端无精确 token 遥测，收工如实报告。
+- EOF anchor：OPENGUARD-DZI1-LUNA-START-20260905-1642
+
+
+### [20260905-Luna-DurableZIPI1独立验收] PARTIAL - 独立 I1 验收完成，发现真实 staging 并发 P1
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`；未提交、未推送、未切分支。
+- 读取与范围：在前序完整规格/材料审阅基础上，本轮补读 Terra 交付后的物理日志尾部至 `OPENGUARD-DZI1-TERRA-PARTIAL-20260905-1705`，并以本轮实时 tail 为准；仅验证 I1 descriptor、输入保留、幂等/profile、首字节前配额、fsync/rename 顺序、健康 registry 清理和新 OS 进程重读。明确未验收 I2 flock、dispatcher、自动恢复消费、worker handler、running 收敛、A6 恢复、lease/heartbeat/retry 或 DZ-01..15。
+- 实现侧基线：按交接要求先复跑 `tests/unit/test_a3_durable_zip_dispatch.py`，结果 `16 passed, 1 warning`；warning 为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示。
+- 独立测试：新增且仅新增 `tests/security/test_a3_durable_zip_dispatch_independent.py`；动态构造 ZIP、手写 multipart、手工 canonical identity、ASGI receive 计数、真实 SQLite 和新 OS 子进程/事件屏障，无复用实现 unit fixture/helper，无联网、安装、模型或扫描器调用。
+- 独立结果：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend /private/tmp/openguard-a4-b5-venv/bin/python -m pytest -q -p no:cacheprovider tests/security/test_a3_durable_zip_dispatch_independent.py` 得 `19 passed, 1 failed, 1 warning`。
+- 通过门禁：HTTP `202` 后 ready descriptor 与 queued registry 绑定；严格未知键/重复键/非法 UTF-8/非有限数/version bool；descriptor 双态冲突；锁定 Ollama/Qwen3 profile 记录；8 inputs 残留与并发 reservation；满容量时 ASGI `receive()` 调用数为 0；私有 mode/symlink/FIFO；input→prepared→registry→ready 事件顺序；prepared 无 row、prepared 有 row、ready 有 row 三个真实进程 kill 窗口及 SQLite 重读；missing-input fsync；健康 absence/terminal cleanup；running/不健康 cleanup 拒绝；无 token submit 拒绝；commit 已写入但抛错保留；same-key same-bytes 原 ID/profile、different-bytes 409、loser 清理失败仍保留公共响应。
+- P1 原始失败保留：`test_i1_real_cross_thread_staging_race_preserves_expected_202_contract` 用真实独立线程 A 的 TestClient 请求，在 `tempfile.mkstemp` 实际创建后设置事件并暂停；B 为独立线程调用 `store.reserve_upload()`，无任意 sleep。当前实现 B 在 A bind 前成功 reservation，A 随后返回 `500 Internal Server Error`，响应详情为 `reason=upload_staging_failed`，而契约期望 `202`、registry 一行且无非法 staging 失败。测试断言未改为接受 500；修复后同一事件屏障会先释放 A，再让 B 完成，避免正确互斥导致死锁。
+- 文件边界：除本条日志外只新增独立安全测试文件；未改 Terra 实现、P0/Schema/sample、registry/worker、既有测试、Root 文档或其他角色文件。P1 已停止继续修改并交 Root 顺序协调 Terra 修复；本轮不宣称 I1 完整通过，更不宣称生产持久队列或 I2 恢复能力。
+- 当前状态：I1 独立验收 `PARTIAL`，19 项通过、1 项真实 P1 阻塞；Root 需先协调修复并复跑本独立文件及原关联集，再做最终规格、发布和提交门禁。
+- token：本轮开工非硬估算 `8k–14k`；当前客户端无精确 token 遥测，无法获得本次运行精确 token 数；本轮范围未调整，测试文件、首轮夹具修正、复跑与日志交付均已完成。
+- EOF anchor：OPENGUARD-DZI1-LUNA-PARTIAL-20260905-I1-INDEPENDENT-20260905
+
+
+### [20260905-1655-Terra-DurableZIPI1-P1修复] START - staged ZIP 创建与 reservation 绑定竞态
+
+- 作者：GPT-5.6 Terra；实际时钟：2026-09-05 16:55:55 CST；分支 `feat/a3-durable-zip-storage`。
+- 授权与原始失败：Root 已停止 Luna 写入并授权 Terra 为唯一写者。Luna 的 `test_i1_real_cross_thread_staging_race_preserves_expected_202_contract` 原始结果保持为独立文件 `19 passed, 1 failed, 1 warning`：A 在 `mkstemp` 后、`bind_upload` 前暂停时，B 的 `reserve_upload()` 将 A 文件误算 persistent，A 恢复后 `500/upload_staging_failed`，违反应为 `202` 的契约。
+- 范围：只修改 `backend/app/api/zip_scan.py`，将 durable 路径的 `mkstemp`、fd 私有 regular-file 验证和 `store.bind_upload()` 放入同一无 `await` `store.operation()` 临界区；legacy 不变，所有 `await upload.read()` 保持锁外。不修改 Luna 独立测试、P0/Schema/registry/worker/其他实现、Root 文档或项目进度。
+- 验收顺序：先原 Luna 失败节点，再独立文件全量、实现 unit、原关联 190 集；任何新失败原样交 Root。无提交、推送、切分支、联网或模型调用。
+- token：后续修复非硬估算 `2k–4k`；本次运行精确 token 数不可获得。
+- EOF anchor：OPENGUARD-DZI1-TERRA-P1-START-20260905-1655
+
+
+### [20260905-1657-Terra-DurableZIPI1-P1修复] COMPLETE - staging reservation 竞态最小修复
+
+- 作者：GPT-5.6 Terra；实际时钟：2026-09-05 16:57:31 CST；分支 `feat/a3-durable-zip-storage`。原 Luna 失败记录保持不改。
+- 修改：仅 `backend/app/api/zip_scan.py`。durable 分支现以同一无 `await` `store.operation()` 临界区完成 `tempfile.mkstemp`、fd 的 regular/owner/private-mode 验证和 `store.bind_upload()`；因此并发 `reserve_upload()` 在目录重扫时会看见 reservation input，而不会把它错误计为 persistent。`await upload.read()`、实际写入、fd fsync 和目录 fsync 均仍在锁外；legacy 分支保持原有创建/验证路径，异常 fd 关闭与未完成输入删除仍由既有 finally 处理。
+- 原失败复跑：Luna 的原节点 `test_i1_real_cross_thread_staging_race_preserves_expected_202_contract` 现为 `1 passed, 19 deselected, 1 warning`；未改其独立测试或断言。
+- 回归：Luna 独立文件全量 `20 passed, 1 warning`；实现 unit `16 passed, 1 warning`；原 ZIP/API/A4/A5/A6/P0 关联集合 `190 passed, 1 deselected, 1 warning`。warning 均为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示。`compileall`、`git diff --check`、本次实现 diff 的敏感字串扫描通过。
+- 范围与发布：未新增实现 unit（独立事件屏障已覆盖修复契约），未修改 Luna 文件、P0/Schema/registry/worker/其他实现或 Root 文档；未提交、未推送、未切分支、未联网/模型调用。I1 总体仍待 Root/Luna 后续复核与最终门禁，I2 仍未实现。
+- token：本次运行精确 token 数不可获得；非硬估算 `2k–4k`，范围未调整，无法确认实际消耗是否处于该区间。
+- EOF anchor：OPENGUARD-DZI1-TERRA-P1-COMPLETE-20260905-1657
+
+
+### [20260905-Luna-DurableZIPI1最终补强] COMPLETE - I1 独立补强复核通过
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05（Asia/Shanghai）；分支 `feat/a3-durable-zip-storage`；未提交、未推送、未切分支。
+- 复核顺序：先原样复跑此前 P1 独立节点，结果 `1 passed, 19 deselected, 1 warning`，确认 Terra 将 durable 路径的 `mkstemp`、文件安全验证和 `bind_upload()` 放入同一无 await `store.operation()` 临界区后，A/B 真实跨线程 staging race 已关闭且无死锁。
+- 独立补强：仅修改 Luna 自有 `tests/security/test_a3_durable_zip_dispatch_independent.py`，并使用真实 `os.fsync`/`os.rename` 系统调用注入和 selectors+deadline 有界进程事件等待；未修改业务实现、既有测试、P0/Schema/registry/worker 或其他文档。
+- 新增门禁：HTTP 文件 fsync、prepared descriptor 文件 fsync、prepared 目录 fsync、ready 目录 fsync、rename 失败均不得返回 `202`，并核对确定/不确定的 row、prepared/ready 和输入保留；真实 `input_fsynced` 前 kill；新 OS 进程读取实际输入 SHA、descriptor `scan_id/upload_name/input_sha256/run_identity_sha256` 与 registry run 字段绑定；固定独立 oracle `8` 输入、`512 MiB` 总量、`64 MiB` reservation（sparse 文件）；same-key profile `false→true`、`true→false` 及 timeout 变化保持原 ID/profile；历史 race 的 `202` 断言保持不变并补充互斥正向证据。
+- 结果：独立文件全量 `28 passed, 1 warning`；实现 unit `tests/unit/test_a3_durable_zip_dispatch.py` 为 `16 passed, 1 warning`；warning 均为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示。`git diff --check` 通过。
+- 覆盖边界：I1 descriptor、输入生命周期、幂等/profile、容量预留、fsync/rename 失败保留和健康清理已独立复核；I2 flock、dispatcher、自动恢复消费、worker handler、running 收敛、A6 恢复及 DZ-01..15 仍未验收或实现。本轮不宣称生产持久队列、重启恢复或完整作品发布。
+- 当前状态：原 P1 已关闭；I1 独立补强通过。Root 仍需完成关联集/全量测试、最终规格与材料审查、提交/发布门禁；当前工作区仍保留 Terra 的未提交实现修改以及 Luna 独立测试修改。
+- token：本轮开工非硬估算 `4k–7k`；当前客户端无精确 token 遥测，无法获得本次运行精确 token 数；范围未调整。
+- EOF anchor：OPENGUARD-DZI1-LUNA-COMPLETE-20250905-I1-RECHECK
+
+
+### [20260905-Luna-DurableZIPI1最终补强] AMENDMENT - descriptor fsync 定位修正
+
+- 作者：GPT-5.6 Luna；时间：2026-09-05（Asia/Shanghai）；仅追加修正，不改写前序记录，不修改业务实现或既有测试。
+- 修正原因：原 `test_i1_real_http_syscall_faults_never_claim_202_and_retain_state` 以全局 regular-file fsync 次数把第 2 次错误标为 descriptor fsync；实际顺序包含 `_stage` 输入 fsync、第 2 次 `_archive_facts` 输入 fsync，descriptor 临时文件 fsync 发生在其后。
+- 修正内容：按真实 fd 的 `(st_dev, st_ino)` 与 uploads/dispatch 当前目录对象匹配，descriptor 故障只注入 dispatch 临时 descriptor inode；新增 `input_archive_fsync` case 保留第二次输入 fsync 覆盖。跨进程 reader 的 no-row 分支仅捕获 `ScanRegistryError(code="registry_not_found")`，其他 registry 错误传播。原 P1 `202` 断言保持不变。
+- 复跑：独立文件全量 `29 passed, 1 warning`；warning 仍为既有 Starlette/AnyIO `BlockingPortal` alias 弃用提示；`git diff --check` 通过。
+- 状态：I1 独立补强仍通过；覆盖边界不扩展至 I2 dispatcher、flock、自动恢复、worker 或完整发布。Root 负责最终全量、材料、提交和发布审计。
+- token：本轮开工非硬估算 `1k–2k`；当前客户端无精确 token 遥测，无法获得本次运行精确 token 数；范围未调整。
+- EOF anchor：OPENGUARD-DZI1-LUNA-AMENDMENT-20260905-FSYNC-INODE
+
+
+### [20260905-1710-RootAstra-DurableZIPI1终验] PARTIAL - I1技术验收完成，待提交推送
+
+- 作者：GPT-6 Astra / Root；实际时间2026-09-05 17:10（Asia/Shanghai）；分支feat/a3-durable-zip-storage，基线16cd7d4；Terra和Luna均已停止写入，Root接管。
+- 实施与复核：Terra实现私有输入/descriptor、prepared→registry→ready、原profile幂等和首字节前配额；Root审查关闭配置过量、摘要/清理/配额边界；Luna独立首轮19 passed,1 failed发现并确认跨线程staging P1。Terra只修文件创建+绑定临界区，原202断言不变；Luna复核通过。
+- 测试审计：Root发现第2次输入fsync曾被独立测试误标为descriptor fsync；Luna按实际inode修正并追加input_archive_fsync，记录AMENDMENT，未改业务或放宽断言。最终unit16、独立29通过。
+- Root验证：首次沙箱全量940 passed,11 failed,3 skipped，11项均为既有loopback PermissionError；原始输出保存在仓库外。受控原命令pytest -q -p no:cacheprovider为952 passed,3 skipped,1 warning。三个可选skip未开启真实模型/公网；warning为既有Starlette/AnyIO弃用提示。OpenAPI与开工快照完全相等、Schema/sample、保护路径、compileall及前端TypeScript/Vite构建通过。
+- 本轮修改范围：6项后端实现/运行说明、实现与独立测试各1项、同一规格/进度/AI记录/本日志共12个文件。没有改registry v1、P0/Schema/sample、worker/Git/A2/B线/A5/A6、前端或部署；没有新依赖、外部工具或模型调用。
+- 运行边界：I1只能内部显式注入；生产开关默认0，1/非法值拒绝启动。没有I2生命周期锁/dispatcher/queued恢复/running收敛，不宣称持久worker父包完成。既有ZIP/Git依赖与阶段性报告仍可演示，普通输入partial/rules/70，主控前端mock。
+- 文档与证据：更新同一规格第12节及PROJECT_PROGRESS、追加AI使用记录；EVD-A3-DURABLE-ZIP-STORAGE-001待不可变实现提交绑定。随后完成新增文本/精确上传清单/append-only/diff审查，提交推送功能分支，不合并PR或发Release。
+- AMENDMENT（记录元数据）：Terra首轮PARTIAL标记17:05与客户端完成时间不一致；客户端记录1788597632对应2026-09-05 16:40:32（Asia/Shanghai），以此为准。其START中的3430行指旧规格日志，Root新增START位于其后；完整复读说明与EOF分开理解。Luna最终补强anchor含20250905为标识符笔误，实际记录日期2026-09-05；历史内容原样保留。
+- 下一步：本轮发布后实施A3/A4-3a-I2。报名资格由Owner确认；完整作品与获奖竞争力门禁按PROJECT_PROGRESS保留，不编造完成率。
+- token：开工非硬估算18k–30k；本次运行精确 token 数不可获得，无法确认实际消耗在估算区间。功能范围未扩大，审查增加了缺陷修复和独立故障验证；本轮I1技术验收已完整完成，发布待执行。
+- EOF anchor：OPENGUARD-DZI1-ROOT-ACCEPTED-20260905-1710
+
+
+### [20260905-1713-RootAstra-DurableZIPI1发布] AMENDMENT/COMPLETE - I1验收与GitHub发布闭环
+
+- 作者：GPT-6 Astra / Root；实际时间2026-09-05 17:13（Asia/Shanghai）。
+- 发布证据：实现提交`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`已推送`origin/feat/a3-durable-zip-storage`，git ls-remote返回相同完整对象；EVD-A3-DURABLE-ZIP-STORAGE-001绑定此不可变实现。随后同分支仅回填规格/进度/AI与本日志的发布状态。
+- 最终验收：Terra unit16、Luna独立29、Root受控全量952 passed,3 skipped,1 warning；原跨线程P1经业务最小修复后原202断言通过，fsync注入定位误标已按真实inode更正；原始失败和AMENDMENT保留。OpenAPI精确等值、Schema/sample、compileall、前端TypeScript/Vite构建、精确12文件白名单、新增文本敏感检查、文件大小和append-only完整前缀全部通过。
+- 上传范围：backend README、api三文件、persistence导出及新store、unit与独立测试、同一规格、PROJECT_PROGRESS、AI日志和本工作日志。无运行ZIP/数据库/报告/模型/权重/缓存/个人路径或新第三方依赖；受保护代码与组员分支未改。
+- 状态：A3/A4-3a-I1完成并发布；A3/A4父包仍进行中，I2未开始。生产durable开关保持默认0；只批准内部注入的存储协议，不宣称自动消费/重启恢复或完整Web。没有创建/合并PR、删除分支、改Git身份或发Release。
+- 下一任务：I2生命周期锁、dispatcher、queued恢复和running诚实收敛；普通输入许可证事实、前端接线、部署、安全/Bench与提交材料依赖继续按进度台账执行。报名/权属由Owner确认，获奖竞争力仍须真实案例/基线消融/误差分析/稳定演示。
+- token：开工非硬估算18k–30k；本次运行精确 token 数不可获得，不能确认实际消耗落在估算区间。I1已完整交付，功能范围未扩至I2；多轮审查和补测增加了验证工作。
+- EOF anchor：OPENGUARD-DZI1-PUBLISHED-20260905-1713
+
+
+### [20260905-1801-RootAstra-DurableZIPI2] START - P0生命周期派发与恢复
+
+- 作者：GPT-6 Astra / Root；时间：2026-09-05 18:01（Asia/Shanghai）。分支feat/a3-zip-dispatcher-recovery，基线2368d91120a72e7bb474ddacfcb72743b9aa02b1；开工工作区干净，无既有zip_dispatcher.py，无重复实现。
+- 前置核验：Root读README、进度、Sol交接、原始V1.0执行书P0/三人分工/最终DoD与冻结I2规格、I1/API/registry/worker关键实现；完整历史日志复读委派既有Terra与Luna任务，Terra已确认覆盖完整并核对末锚OPENGUARD-DZI1-PUBLISHED-20260905-1713。Root不声称独自重读全部历史正文。
+- 用户要求：仅推进本人A线P0，收工表只展示A1-A8；每次先核对状态避免重复文件，允许消费组员GitHub候选但先验证，报告P0剩余门禁和条件工期。原始执行书明确P1资源图谱/批量Bench/历史扫描等不计入P0；不得以旧台账更大竞赛目标扩张本轮。
+- 本轮实现：固定私有flock生命周期、单ZIP线程周期发现ready、prepared/queued恢复、interrupted-running保持事实后partial/failed、零handler重放、A6可见性和健康清理；不增加Git恢复/lease/heartbeat/业务retry/多worker/组员模块/前端/部署。running不得回queued。
+- 角色白名单：Terra新增backend/app/pipeline/zip_dispatcher.py，最小修改backend/app/persistence/zip_dispatch.py、backend/app/api/main.py、tests/unit/test_a3_durable_zip_dispatch.py、backend/README.md；Luna只扩展既有tests/security/test_a3_durable_zip_dispatch_independent.py；Root维护既有spec/PROJECT_PROGRESS/AI日志/本日志与必要根README运行状态。Root独占共享日志和治理文档，代记角色交付。
+- 兼容边界：P0 v0.1.1/Schema/sample/六API/ErrorEnvelope/registry v1/原worker/A2/B线/A5/A6/Git/前端/deploy不变；仅迁移unit中I2未实现故精确1拒绝启动的时效性断言至真实I2生命周期验收，默认0和非法值保护保持，独立旧断言不放宽。
+- 验收：开工I1 unit+独立45 passed,1既有warning；新DZ-01..15真实OS进程/事件kill/restart、SQLite忙锁、Provider调用计数和四格式真实GET，原始失败保留；实现→独立→Root全量、Schema/OpenAPI基线等值、编译/范围/敏感/append-only/diff检查，Root提交推送再绑定证据。
+- GitHub只读核对：扫描组员f8bedfd、前端83e8928；前端拟定API与冻结六API仍有差异，不直接纳入本I2提交，不改写组员分支。
+- token：整体开工非硬估算20k–35k；精确本轮遥测不可读取，最终如实说明范围与交付状态，不以账户用量推算消耗。
+- EOF anchor：OPENGUARD-DZI2-ROOT-START-20260905-1801
+
+
+### [20260905-1838-RootAstra-DurableZIPI2实现复核] PARTIAL - 实现侧交付，独立验收进行中
+
+- 作者：GPT-6 Astra / Root，代记既有GPT-5.6 Terra实现任务交付；2026-09-05 18:38（Asia/Shanghai）。Root独占治理文件，Terra已停止写入，Luna仅扩展既有独立测试文件。
+- Terra五文件实现：新增pipeline/zip_dispatcher.py；最小修改api/main.py、persistence/zip_dispatch.py、既有unit和backend/README.md。单机私有flock、fork child只close、默认0兼容、精确1生命周期接线、单线程ready周期发现、prepared/queued与startup running收敛、终态健康清理；未修改冻结worker/registry/P0/Schema/API结构或组员代码。
+- Root草稿审查关闭：忙重查移入唯一worker.run的窄registry代理；启动不执行handler、先处理既有running、busy集合可后续重查；使用同一store互斥；保留acceptance timeout；错绑/异常links保留；CAS冲突重读赢家、不确定ID当前进程隔离；worker结束、registry关闭后才释放锁；dispatcher fatal不继续接单。草稿不作为已验收结果。
+- Terra实现侧交付：专项27 passed、关联unit348 passed，均1项既有Starlette/AnyIO弃用warning；未运行Luna独立集合或Root全量。
+- Root后续具体问题：input_path_for_dispatch遇dispatch_store_io_failed曾被吞掉并允许下一周期反复尝试。Terra最小修复为dispatch_input_storage_failure固定诊断并fatal停止，保留queued及输入，下一multipart首字节前拒绝；新增默认工厂HTTP定向用例后专项28 passed,1 warning。关联旧结果保留，最终全量待Root重验。
+- Luna测试初稿审计：seed running不能代替真实worker kill，publisher异常不能代替terminal CAS前kill，Provider直接调用不能代替A5路径，SQLite锁事件需观测真实三次CAS。Root要求按冻结DZ矩阵补证，不放宽oracle。此阶段属于测试证据完善，不把fixture编排问题记为实现缺陷。
+- Root已对原独立定义作AST比较：既有函数/类无改动；新增I2测试尚未获得最终独立/全量验收，不宣称DZ-01..15完成，不推送未验收代码。
+- 状态：I2仍进行中；本轮无产品P1/P2扩展。下一步Luna独立真实进程证据与Root全量、治理、发布绑定。
+- token：Root开工非硬估算20k–35k；Terra实现估算14k–24k、定向修复3k–5k；本次运行精确 token 数不可获得，实际是否落在估算区间不可确认，功能范围未扩大。
+- EOF anchor：OPENGUARD-DZI2-IMPLEMENTATION-REVIEW-20260905-1838
+
+
+### [20260905-1930-RootAstra-DurableZIPI2验收] PARTIAL - 技术完成，待发布绑定
+
+- Root代记Terra最终实现与Luna独立交付；两者已停止写入。DZ01–15具体证据见既有规格第13节，真实OS锁/fork/CAS/kill/HTTP而非编号或stub替代。
+- 原始fixture/oracle失败与真实running恢复busy缺陷分别保留。修复前第三至第四CAS约0.076秒，周期前冷却修复后1.008917秒；独立断言至少1秒通过，无业务重试或产品P1/P2扩展。
+- Terra专项28 passed；Luna独立70 passed,2 warnings；Root受控完整1005 passed,3 skipped,2 warnings（51.04秒）。skip为既有可选公网/真实模型；warning为Starlette/AnyIO及刻意fork测试提示，不外推一般fork安全。沙箱loopback失败保留为环境事实。
+- Root兼容核验：OpenAPI开工快照精确等值、Schema/sample、编译、保护目录、既有独立AST和原日志前缀通过。全量之后仅修改治理/运行文档，无产品或测试变更。
+- 可演示边界与仅用户A1–A8表、P0剩余5包及条件工期见PROJECT_PROGRESS第7节；下一任务回到A4真实分析事实接线，不自动开展Git恢复/lease/retry。
+- 本次运行精确 token 数不可获得；开工20k–35k非硬估算，I2功能完整完成，实际区间不可确认，验证补证未扩大功能范围。
+- EVD-A3-DURABLE-ZIP-DISPATCH-001技术批准，待精确文件审计、不可变提交与远端核对；不自动合并或Release。
+- EOF anchor：OPENGUARD-DZI2-ROOT-ACCEPTED-20260905-1930
+
+
+### [20260905-RootAstra-DurableZIPI2发布] COMPLETE - AMENDMENT
+
+- 不可变实现`f48108f6da32ea36e6e757a3cd80a2b42baa0767`已推送feat/a3-zip-dispatcher-recovery，git ls-remote完整哈希一致；EVD-A3-DURABLE-ZIP-DISPATCH-001绑定实现提交。
+- 精确11文件、diff检查、体积/新增敏感内容、旧独立AST及日志前缀通过。代码/测试修改时间早于最终全量结束；发布绑定只改四个治理文件，不重复运行未变化产品的全量测试。
+- 技术结果仍为unit28、独立70、Root完整1005 passed/3 skipped；P0仍未整体完成，范围和剩余5包见PROJECT_PROGRESS第7节。
+- 未合并main/integration、未创建PR、未修改组员分支或发布Release；无新依赖及运行产物上传。
+- 本次运行精确 token 数不可获得；开工估算20k–35k，I2完整交付，实际区间不可确认，无产品范围调整。
+- EOF anchor：OPENGUARD-DZI2-PUBLISHED-20260905
+
+
+### [20260905-1945-RootAstra-P0Gap] START - 第一版产品缺口核查
+
+- GPT-6 Astra / Root；基线5679113088f980b5ec73f385679348a064df24af，开工工作区干净；分支docs/p0-first-product-gap-check。用户明确先框架和简单可运行产品，减少复杂化与无用产物。
+- 本轮只读核查当前源码及已fetch的组员候选，临时动态探针位于仓库外。Root查真实前端/API和部署；独立子任务查scanner/SPDX/AI资产/Bench，禁止并行编辑。沿用此前I2已核实历史，本轮历史日志分块读取发生截断，仅据实际已读的相关记录作结论，不声称重新完整逐行复读。
+- 预计只更新既有PROJECT_PROGRESS、AGENT_WORKLOG、05-ai-assistance-log三份治理文件；不生成新报告、规格、Schema、实现或测试文件。不改组员分支、不安装软件、不扩大P1/P2。
+- 验收：候选源码/commit、聚焦测试、真实后端请求形状与候选验证器、部署文件/工具可用性检查；保护产品源码、append-only、diff/敏感范围、提交推送。只读技术核查完成后本START先于任何项目内容修订追加。
+- token非硬估算6k–12k；精确本轮遥测不可读取。目标是具体缺口和条件工时，不把完整竞赛包装或未验证候选算成已交付产品。
+- EOF anchor：OPENGUARD-P0-GAP-START-20260905-1945
+
+
+### [20260905-1947-RootAstra-P0Gap] COMPLETE - 最小产品缺口已核清
+
+- Root对照原V1.0第15节DoD与当前代码，独立审计提供扫描候选源码/动态验证。扫描f8bedfd、前端83e8928已fetch核对；当前框架可复用，主要工作为真实事实绑定→核心Web适配→部署，非新框架。
+- 验证：仓库外git archive候选扫描四文件聚焦10 passed/2真实工具skip；前端node --test tests/model.test.mjs为16 passed。TestClient真实默认工厂收到候选multipart形状为422、合法形状为202；候选validateSnapshot拒绝实际202。动态探针复现dataset额外model和重复Evidence ID。未修改现有测试或放宽断言，未重复未变化代码的全量回归。
+- 具体缺口/条件估算/下一任务见PROJECT_PROGRESS第8节。PATH与常用socket未找到当前可用工具环境，不推断全机安装状态，不用fixture代替真实工具。旧7–14工作日撤回；按具体接线分项估计，非工期承诺。
+- 修改仅三份既有治理文件，无新项目文件/接口/Schema/规则/依赖，无产品P1/P2。共享日志append-only、保护源码、diff/敏感/文件范围核验后提交推送docs/p0-first-product-gap-check；未合并或Release。
+- 当前能力无新增：仍可真实依赖扫描与阶段报告，完整风险Web/部署未完成；用户A1–A8状态与竞赛门禁见第7–8节。下一轮Root推进A4最小真实事实接线，复用候选而非生成第二套实现。
+- 本次运行精确 token 数不可获得；开工6k–12k非硬估算，核查任务完整完成，实际区间不可确认，无范围调整。
+- EOF anchor：OPENGUARD-P0-GAP-COMPLETE-20260905-1947
+
+
+### [20260905-RootAstra-ZipLicense] START - 一个真实ZIP的许可证风险与报告
+
+- Root / GPT-6 Astra；基线d640ef4，分支feat/a4-zip-license-report，开工干净。沿用刚完成的P0候选核查及用户简化要求，复用当前A2/A3/A4/B5/A5/A6和组员SPDX候选，不增加队列/图谱/API。
+- 当前无已确认可运行ScanCode/Syft环境，已向用户询问环境。独立方案审计确认先走真实package-lock显式许可证声明→准确组件绑定→pending规则复核风险→现有报告；不把manifest扫描宣称外部工具验收。完整P0真实ScanCode/Syft仍待关闭。
+- 实施范围：A4薄事实提取模块、local_zip/dependency_plan最小接线、组员licenses两文件原样复用；不改B线parser/规则引擎/公共模型/worker/registry/API。没有任何许可证声明的旧ZIP保持原partial/rules70；有声明时未声明依赖用NOASSERTION及真实声明来源保留未知，不冒充许可证授权事实。
+- 并行角色：实现子任务负责业务薄适配和单元测试；Root负责HTTP/报告独立验收、治理和推送；方案审计只读。Root独占共享日志。优先扩展现有相关测试与运行文档，仅必要薄模块新增。
+- 门禁：声明name/version/位置绑定、重复/未知/畸形字段、pending不提升verified、根LICENSE不扩散、原无license行为、真实ZIP HTTP到报告及证据摘要、相关回归与完整回归、冻结契约/范围/敏感/append-only。不把用户输入、报告产物或工具安装包上传。
+- token非硬估算12k–22k，本轮精确遥测不可读取；实际完成和工具限制分开汇报，不为赶进度生成虚假completed证据。
+- EOF anchor：OPENGUARD-A4-ZIP-LICENSE-START-20260905
+
+
+### [20260905-2004-RootAstra-ZipLicense] COMPLETE - 真实声明链与报告验收
+
+- Root代记实现与独立方案审查交付，双方停止写入。复用f8bedfd SPDX两文件，新增A4 manifest_licenses薄模块，local_zip/dependency_plan最小接线；未改B1/B5/API/Schema/worker/registry/A5/A6/Git/Web。
+- 真实HTTP证据：v2/v3动态ZIP，生产工厂POST202→completed/100，两个资源、MIT与NOASSERTION pending、两review_required，四格式GET/内容hash/来源字段SHA通过，重启后报告字节一致。无license原输入仍partial/rules70，完成不等于授权核验。Root只在仓库外保留生成报告供用户查看。
+- 实现46 passed；独立23 passed；最终受控完整1025 passed/3 skipped/2 warnings（55.70秒）。两warning为AnyIO与刻意fork；skip为原可选真实模型/公网。本轮无外部工具/模型调用，不用manifest证据冒充ScanCode/Syft。
+- 原始问题保留：初版缺失Evidence key导致原单元1失败，改get跳过由原scan校验拒绝；新增HTTP oracle误写report，按原worker已冻结completed修正（首轮20pass/2fail）。scoped测试v版本触发现有mapper约束，样例改canonical而未改旧代码。独立大ZIP探针确认重复读耗尽12MiB从partial退化failed，读前按上界保守跳过修复，unit和独立真实大ZIP通过；修复前完整1023结果不能替代最终1025。
+- 兼容：原unit/独立函数AST未改，OpenAPI精确等值、P0 Schema/sample与组员SPDX原字节核验通过。最终只更新运行与治理文档；diff/敏感/append-only及上传白名单复核后Root提交推送feat/a4-zip-license-report，未合并main/integration或Release。
+- 限制：仅支持已有npm直接依赖的明确许可证声明；未知文本/大inventory保守回退，Git/Python许可证/真实外部工具/AI资产/Web/部署未完成。组员需提供工具环境复现与精确来源输出，前端按冻结API适配，无需重复框架；具体A1–A8表与下一步见进度第9节。
+- 本次运行精确 token 数不可获得；开工12k–22k非硬估算，manifest ZIP完整交付，实际区间不可确认。范围明确收窄为当前环境能实测的声明链，外部工具门禁保留，不扩产品P1/P2。
+- EOF anchor：OPENGUARD-A4-ZIP-LICENSE-COMPLETE-20260905-2004
+
+
+### [20260905-RootAstra-SimpleWeb] START - 现有页面接真实后端
+
+- Root / GPT-6 Astra，基线8318f88，分支feat/a7-simple-web，开工工作区干净；fetch核对前端候选83e8928未变。复用前轮README/交接/进度和相关历史审查，按用户要求优先简单产品，不扩架构或包装。
+- 实现子任务只负责frontend，按文件复用组员核心页面、hooks、services与必要测试/说明；不引入Graph和xyflow依赖，不增加后端接口。Root独占治理日志、根README与独立真实浏览器验收；后端保持冻结。
+- 主线：ZIP表单→POST202→进度/资源/风险/Evidence→真实后端四格式下载；默认API，错误不降mock，保留pending/unknown，不提供不存在的预验证或处理状态PATCH。Vite同源代理避免改变后端CORS。
+- 验收：前端适配unit/build，真实生产后端+浏览器上传/轮询/证据/下载、刷新与404/失败分支、小屏及控制台检查，后端契约与源码不变、锁文件/依赖/来源审计、diff/敏感/append-only，Root统一提交推送。不生成新页面、图谱或复杂规格。
+- token非硬估算12k–22k，精确本轮遥测不可读取。第一版Web与完整P0/Compose部署明确区分。
+- EOF anchor：OPENGUARD-A7-WEB-START-20260905
+
+
+### [20260905-2044-RootAstra-SimpleWeb] COMPLETE - 简单真实Web验收
+
+- Root统一验收与发布；复用83e8928现有核心页面，未引入图谱、ReactFlow、新API或新依赖。实现子任务运行状态pending_init异常后Root显式中止，接手409修复、unit和.env；只读审查确认两项阻断，未并行覆盖。
+- 本轮只改frontend与既有根README/进度/AI/共享日志。默认API与ZIP，202仅导航；结果未就绪只查status；partial无报告仅接受明确409 report_not_ready/not_generated，存储损坏不隐藏。真实风险只读、pending/info/未知保留，下载为固定同源后端四格式。
+- 验证unit20 passed、TS及生产build通过；真实Uvicorn/default factory+Chrome开发和preview各10检查通过：上传/进度/资源/风险Evidence/刷新/四格式SHA/手机导航/partial/无效ZIP异步failed/404/零unsupported端点和浏览器错误。桌面及手机截图检查通过，测试ZIP/数据/截图留仓库外。
+- 原始失败区分保留：资源MIT带子元素导致选择器超时；queued读资源409为产品阻断已修，partial无报告409由审查关闭；响应式布局等待与异步ZIP的202→failed oracle修正；Root冗余TS取消条件已修；服务退出后connection refused重新启动验证。未修改后端使测试通过。
+- 后端/Schema/规则/AI/registry/原测试及依赖锁文件不变，不重复历史1025项全量；本轮20+真实浏览器证据独立记录。最终diff/敏感/来源/白名单/append-only检查后提交推送feat/a7-simple-web，不合并main/integration或Release。
+- 可演示与仅用户A1–A8状态、P0剩余三主包和下一步最小部署见进度第10节；本机Web不是Compose/陌生机或完整工具/AI资产验收。保留本机服务供用户查看，不提交运行数据。
+- 本次运行精确 token 数不可获得；开工12k–22k非硬估算，本轮Web完整完成，实际区间不可确认，无功能扩张。
+- EOF anchor：OPENGUARD-A7-WEB-COMPLETE-20260905-2044
+
+### [20260905-RootAstra-MinimalCompose] START - 最小Compose与扫描工具环境
+
+- 作者GPT-6 Astra / Root；基线a1a710f，分支feat/a7-minimal-compose，工作区干净。已fetch：组员扫描f8bedfd、前端83e8928未变化；deploy只有占位README，无重复Dockerfile/Compose。阅读当前README、进度、Terra交接和扫描规格；历史日志全读调用被输出截断，沿用前轮已核实历史并复核近期记录，不声称本轮完整复读全部历史。
+- 用户授权最小Compose与扫描工具运行环境，Web必须Chrome插件；已连接type=extension的Chrome并打开真实现有Web。当前PATH/常见安装位置/socket未找到Docker引擎，已询问用户安装Docker Desktop或使用已有环境，环境选择待答，不擅自安装桌面软件。
+- 范围：deploy最小web/api及按需scanner工具镜像、根.dockerignore、必要运行验收脚本；更新既有README、third_party、AI/进度/共享记录。不改公共API/Schema、队列、B线引擎或新增P1/P2；scanner环境就绪与A4事实接入分别判定，不以工具version冒充Web已调用工具。
+- 验收：官方现有锁版/安装包摘要、Compose解析/镜像构建、容器真实ZIP和报告持久性、非root/卷权限/同源代理、固定工具真实输出，Chrome插件上传/结果/下载。保留失败，环境未完成如实标记；Root统一提交推送，不合并main/integration、不Release。
+- token非硬估算12k–22k，本次精确遥测不可读取；本轮限最小部署，不引入新的服务治理或UI。
+- EOF anchor：OPENGUARD-A7-COMPOSE-START-20260905
+
+### [20260905-2135-RootAstra-MinimalCompose] PARTIAL - 部署与工具完成，Chrome保存确认未完成
+
+- GPT-6 Astra / Root统一实现与验收；只读审查子任务复核非root/data/规则路径/tmp/扫描器缓存，未写文件。现有backend/frontend/Schema/规则/tests和组员分支不变。新增.dockerignore、deploy三Dockerfile/compose/nginx与两个标准库验收脚本；更新既有运行/资源/AI/进度记录，无新规格或包装报告。
+- 经用户选择安装官方Docker Desktop4.89.0 arm64，官方DMG SHA匹配，hdiutil完整校验通过。沙箱codesign/spctl内部错误原始结果保留；系统上下文原包codesign和Gatekeeper Notarized Developer ID通过，Team9BNSXJN65R；安装后再次codesign通过。初次应用句柄超时后按实际bundle定位Docker Desktop欢迎页，仅跳过可选登录，未操作许可/密码；Engine29.7.2/Compose5.5.0图形与CLI运行确认。
+- 构建失败修复：初稿COPY不存在的NOTICE导致cache-key失败，去掉错误引用后重建；Docker credential helper PATH缺失改用应用自带bin目录；引擎初启info500后Engine running确认恢复。源码核对修正烟测草稿licenses字段及ReportLink直接对象/导出JSON不含links，未修改业务契约迁就测试。ScanCode默认home缓存不可写由只读审查识别，改SCANCODE_CACHE/TEMP到tmp，无放宽只读或capability。
+- 验证：所有Compose profile config通过；api/web/scanner真实构建通过，基础镜像manifest固定；api/web健康、API10001 UID/data0700、只读/cap_drop ALL及唯一回环8080端口通过，pip check无broken requirement（只读pip缓存warning不影响检查）。真实HTTP9项全部通过，force-recreate API后原扫描及四格式字节SHA一致。无新增后端逻辑，未重复历史1025全量。
+- 工具：官方ScanCode32.5.0 py3.12 linux包SHA638adcd0…f027及Syft1.51.0 amd64包SHA2a2e837a…bc7f在构建内完整校验。断网、只读、非root amd64容器真实检测MIT/LICENSE和pkg:npm/is-number@7.0.0/lock来源；不运行目标代码、不安装目标依赖；输出SHA在仓库外日志，不把工具原始输出冒充A4绑定结果。
+- Chrome：使用type=extension插件，真实上传ZIP后queued→completed、2资源/2待核验提示及报告，重建API后刷新恢复原ID，页面截图已检查并保留Chrome页。点击JSON后download事件10秒超时；下载管理页被浏览器URL策略拒绝，未绕过，未通过其他浏览器替代。故浏览器保存确认保持未完成；HTTP四格式下载和内容摘要独立通过。本PARTIAL仅保留该验收缺口，最小Compose/真实工具环境已完成。
+- 当前仅本机部署ZIP，AI/Git0；A4工具/AI资产完整主链及陌生机P0仍未完成。仅用户A1–A8、剩余三包与条件16–28有效工程小时估算见进度第11节，下一任务工具接现有ZIP Pipeline；报名资格、完整材料、竞争力另列。
+- Root最终核对diff/保护路径/append-only/新增敏感内容/文件范围后提交推送feat/a7-minimal-compose；不合并main/integration、不Release、不上传安装包/镜像/运行数据。发布结果后续追加绑定。
+- 本次运行精确 token 数不可获得；开工12k–22k非硬估算，部署与工具环境完成，Chrome保存确认未完成，实际消耗区间不可确认；无功能范围扩张。
+- EOF anchor：OPENGUARD-A7-COMPOSE-ACCEPTED-20260905-2135
+
+### [20260905-RootAstra-MinimalCompose发布] PARTIAL - 发布绑定
+
+- 实现提交`a231d7273cf2e31da3b3d08bbcb3af5075a426a7`已推送`feat/a7-minimal-compose`，git ls-remote完整哈希与本地一致。精确14文件、diff/体积/新增敏感与私有路径/历史前缀核验通过。未合并main/integration、未Release。
+- 本条及进度追加仅绑定发布证据，不改变已实跑配置或业务。最小部署、工具环境与Chrome页面已完成；Chrome下载保存确认仍未完成，保留前条PARTIAL的诚实边界。下轮紧接A4工具事实绑定，不重复构建框架。
+- EOF anchor：OPENGUARD-A7-COMPOSE-PUBLISHED-20260905
+
+### [20260905-RootAstra-RealZIPScanners] START - 外部工具接现有ZIP主链
+
+- GPT-6 Astra / Root，基线2dc451d，分支feat/a4-real-zip-scanners，开工干净，fetch扫描组员f8bedfd未变。沿用本对话已读README/交接与历史进度，并核对新增日志；不重复声明完整复读超长历史。Docker/Compose与工具已于上轮实跑，用户已自行完成Docker登录。
+- 仅P0：复用组员fixed argv及adapter、当前A2生命周期和A4/B5/A6，真实ScanCode/Syft输出进入ZIP资源/证据/provenance/现有报告。根LICENSE只作文件候选，组件归属继续用已有精确npm声明；无归属保持NOASSERTION/pending，不猜测授权。无新API/队列/图谱/AI资产功能。
+- 只读审查确认：候选A2树入口异常时未总做封印复验，不直接替换；工具locator/SHA需核对inventory；原stdout先全读后限额需修成运行时有界。Root负责A2最小独立scanner回调、A4聚合/部署与真实HTTP/Chrome；受限实现子任务仅external_tools.py及其现有unit。Root独占治理日志，不同时写同一源码。
+- 预计文件：ingestion/zip_stream.py及导出、scanners/external_tools.py和两个组员pipeline、A4薄external_scans模块/local_zip/dependency_plan、已有部署Dockerfile/compose/smoke、相关unit/security与既有spec/README/资源/AI/进度日志。保护公共P0/Schema/worker/registry与B5规则语义；默认宿主机开关0，Compose明确启用固定工具。
+- 验收：实现unit→独立动态ZIP/路径/hash/超时/缺工具/不继承根LICENSE→相关与全量回归→真实容器HTTP及Chrome插件；完整SHA/固定版本/partial不冒充completed、报告重建可读、冻结契约与敏感/范围/append-only。Root统一GitHub功能分支上传，不合并或Release。
+- token非硬估算12k–22k；精确本轮遥测不可读取，按实际闭环与限制收工。
+- EOF anchor：OPENGUARD-A4-REAL-SCANNERS-START-20260905
+
+### [20260905-RootAstra-RealZIPProfile] AMENDMENT
+
+- 为使已接受的 ZIP 在恢复时仍按同一工具开关执行，最小扩展内部 ZipExecutionProfile 的可选 external_scanners 布尔值；旧描述符默认 false 且 false 序列化保留原四键。仅贯通现有 runtime/dispatcher/config，不增加队列、lease、heartbeat 或业务重试，不改变公开请求/响应。受限执行器子任务已结束，现转为独占该四文件与既有 durable 测试；部署审查子任务独占三个 Docker/Compose 文件并已停止编辑。Root继续 A2/A4 与验收。
+
+### [20260905-2245-RootAstra-RealZIPScanners] PARTIAL（技术验收通过，发布待完成）
+
+- GPT-6 Astra / Root；基线2dc451d，分支feat/a4-real-zip-scanners。复用组员f8bedfd两个pipeline，A2同树可信fd生命周期、实时stdout上限/进程回收、A4组件精确合并及文件候选、版本与inventory SHA绑定；默认工具开关0，Compose固定1；内部接受profile旧四键保持，公开契约/worker/规则未改。无P1/P2、新依赖、新队列或图谱。
+- 文件范围：A2 ingestion、scanners执行器/两个pipeline、A4薄聚合与接线、现有API/runtime/dispatch profile；复用Dockerfile.scanner多阶段API并删除重复Dockerfile.api；Compose/smoke和已有README/spec/第三方/AI/进度日志；既有三unit文件和一份独立安全测试。所有子任务已停写，Root独占治理和发布。
+- 原始失败保留：初次Docker未运行，启动已有Desktop后成功；实现fixture缺package.json，补齐输入保持解析规则；ScanCode真实三行版本与原假设不同、proc目标返回空树，修正首行校验和受控cwd扫描并新增完整覆盖门禁；Syft实际根相对路径需source精确绑定后再查inventory；HTTP脚本错误使用manifest枚举，按冻结manifest_parser纠正。未放宽安全断言。
+- 验证：实现localZIP+工具先75 passed（runner补cwd后28项）；profile/API87 passed；独立安全最终36 passed。完整命令PYTHONPATH=backend python -m pytest -q tests/unit tests/security：1103 passed、3 skipped、2既有warning，59.12秒；skip不算完成。OpenAPI与HEAD等值、P0导出Schema等值、编译、保护路径、append-only及diff检查通过。
+- 真实Docker API/Web健康。HTTP样例scn_3c626132-f98c-4bea-952c-c90c38ad4215：3资源、3待核验提示，两个工具真实版本/所有工具Evidence来源SHA/四格式摘要/缺声明/穿越失败/404通过；API重建后原四格式字节SHA一致。临时日志与ZIP仅存本机临时目录，不提交。
+- Chrome extension真实提交scn_1f412415-f8c2-471a-adfe-17ae9a540bfc，页面7阶段完成、3资源3提示、报告附录scancode/LICENSE及syft/package-lock证据、API重建后刷新仍在；未借内置浏览器代验。原Chrome文件保存确认未完成，本轮不重试被禁止的下载管理页、不冒充保存成功。
+- 能力限制：根LICENSE候选pending不继承，未知依赖NOASSERTION；模型资产仍未接线，Compose AI/Git关闭；API使用现有网络（只有独立probe断网），不外推完整隔离或陌生机安全。完整P0/golden/材料尚未完成。下一任务最小AI资产事实→现有报告，由Root核查再复用组员代码。
+- 开工12k–22k非硬估算；本次运行精确 token 数不可获得，技术范围已完成，实际是否在区间不可确认；仅增加必要内部profile布尔值，无功能越界。待Root最终只读审查、敏感/清单检查及GitHub分支完整哈希绑定后追加COMPLETE。
+- EOF anchor：OPENGUARD-A4-REAL-SCANNERS-TECH-20260905
+
+### [20260905-2250-RootAstra-RealZIPPublish] COMPLETE
+
+- GPT-6 Astra / Root：真实ZIP工具接线本任务验收与发布完成；最终只读审查无阻断，29文件清单、敏感模式、保护目录、append-only、staged diff检查通过。实现提交 e50f4ce4fe94f9ce98e169c43286d25a28c70f99 已推送 feat/a4-real-zip-scanners，git ls-remote 完整哈希一致；未合并、未Release。
+- 证据绑定 EVD-A4-REAL-ZIP-SCANNERS-001 → 上述实现提交：1103 passed/3 skipped、独立36项、真实HTTP版本/来源SHA/四报告、重建不变、Chrome真实提交/报告/刷新。随后只追加三份治理文档的发布记录，不改变已验收实现。
+- 限制沿用上条：完整P0、AI资产与陌生机复现未完成，Chrome文件保存未确认；这些不伪装为本任务完成。下一任务仍为最小AI资产事实接现有报告。开工12k–22k估算，本次运行精确 token 数不可获得，任务点完整交付，实际区间无法确认；无P1/P2扩展。
+- EOF anchor：OPENGUARD-A4-REAL-SCANNERS-COMPLETE-20260905
+
+### [20260905-RootAstra-AIAssetZIP] START
+
+- GPT-6 Astra / Root；基线6a832f3，开工干净，分支feat/a4-ai-asset-report，fetch组员分支后核对现有detectors/static_assets候选。沿用本对话已读治理历史并检查新增收工记录，超长历史读取有截断，不宣称完整重新逐行复读。
+- 执行书A4职责为挂接组员B6，不重写识别引擎。本轮仅首个明确Qwen3模型引用样例进入ZIP资源/风险/现有报告；复用组员detector，修复阻断接线的HF dataset误识别、重复Evidence ID和文件SHA问题。模型授权与许可证无证据时保持NOASSERTION/pending，不使用本机Provider许可证替扫描对象背书。
+- 预计范围：复用detectors两文件及最小修复、pipeline薄只读消费者/local_zip/dependency_plan、既有smoke或公开小样例、相关unit与独立security、现有README/spec/资源/AI/进度日志。保护公共模型/Schema/API、worker、registry、B5、前端和部署架构；不加新接口/图谱/P1/P2，不下载模型、不推理、不上传权重或私人配置。
+- Root负责接线、预算与验收；受限实现子任务只detector/其unit，独立验收后派发。验收顺序：实现测试、独立动态ZIP与证据哈希/不执行/重复/误报、全量回归、真实Compose和Chrome插件、报告持久化、静态与敏感检查、Root统一GitHub功能分支推送。
+- token非硬估算10k–18k，精确遥测不可读取；本轮任务点止于模型样例主链，不宣称B6全覆盖或P0完成。
+- EOF anchor：OPENGUARD-AI-ASSET-ZIP-START-20260905
+
+### [20260905-RootAstra-AIAssetZIP验收] PARTIAL（技术完成，待发布）
+
+- GPT-6 Astra / Root；本轮按执行书A4集成B6，分支feat/a4-ai-asset-report。原有Qwen3 manifest只读校验与锁定一致，不下载、推理或上传权重。官方模型页仅用于来源核查，不把网页许可证人为注入扫描结果。
+- 实现：复用组员f8bedfd detectors，0.1.1修正HF dataset同时误识别model、重复Evidence、完整文件哈希和只保留匹配引用；新增pipeline/ai_assets薄消费者，原local_zip/dependency_plan聚合AIAsset/summary/provenance，经NOASSERTION/pending进入原B5/A6。无软件依赖的合法模型样例可完成。A2、公共模型/Schema/API、worker/registry、B5、前端、Docker架构不变，无新依赖/接口/图谱/P1/P2。
+- 预算：有限文本512KiB/文件、2MiB总量、128文件，保守预留两倍inventory给既有读取；不完整或证据失配有诊断，可用事实仍保留。根LICENSE和npm声明不继承给模型，不声称实际使用、授权或权重身份。大体积无关文件可能使小引用被跳过；两个B1 mapper同时异常组合仍受既有前置条件约束，未扩故障恢复。
+- 子任务：受限实现只detectors/其unit，已停写；首个独立agent容量失败，无产物，改由用户授权的GPT-5.6 Luna独立验收，只写security测试且已停写。Root独占pipeline/部署复现脚本和治理。
+- 测试：实现50+32=82 passed；独立初轮5pass/2fail，两失败为ZIP_DEFLATED重复文本先触发A2解压比，status failed/ingestion/zip_ingestion_failed；用ZIP_STORED将fixture到达AI限额，保留原实现/断言，补文件数/总量分离、代码不执行和store四报告后9 passed，相关91 passed。Root完整1146 passed/3 skipped/2既有warning，60.31秒；OpenAPI基线等值、P0 Schema、编译、append-only、diff通过。跳过项不计验收完成。
+- 真实Docker HTTP任务scn_144faecc-e76f-4338-a105-dbb08a080f34：4资源/1模型、pending/NOASSERTION、README第3行与文件SHA、模型风险引用、四格式含模型、坏ZIP/404通过；API重建后四报告SHA不变。Chrome extension任务scn_c2d897cf-3d9d-4b3a-b497-284b5be23c41：完成、Qwen3模型详情/来源/风险/README第3行、报告模型章节和附录、重建后刷新保持。未使用内置浏览器代验；文件保存旧限制仍未关闭。
+- 修改范围：detectors两文件、pipeline/ai_assets与local_zip/dependency_plan、既有deploy/smoke、既有localZIP unit、新detector unit和独立security、README/backend/deploy/spec/资源/AI/进度/工作日志。无样例权重、私人配置、生成报告或临时文件进入仓库。
+- 下一任务按执行书真实公开项目完整链，先核对现有Git与A5部署差距，只修阻断；P0剩余与用户A1–A8状态见进度13节。开工10k–18k非硬估算，本次运行精确 token 数不可获得，任务点技术完成、实际区间无法确认，未扩大产品范围。待Root敏感清单及GitHub绑定后COMPLETE。
+- EOF anchor：OPENGUARD-AI-ASSET-ZIP-TECH-20260905
+
+### [20260905-RootAstra-AIAssetZIP发布] COMPLETE
+
+- GPT-6 Astra / Root：实现2ccb75cbd09e7950aa0a98656daea6014dc0e3f9已推送feat/a4-ai-asset-report，git ls-remote完整哈希一致；EVD-A4-AI-ASSET-ZIP-001绑定此实现。17文件清单、敏感模式、保护目录、append-only与staged diff通过，未合并/Release。
+- 任务点完成：82实现、9独立、1146全量passed/3skip；真实HTTP、Chrome模型详情/风险/行号/报告及API重建四SHA恢复。仅补充三份治理发布记录，不改变已验收代码；模型授权、完整B6、真实项目总验收与P0父任务仍按上条限制。
+- 开工10k–18k非硬估算，本次运行精确 token 数不可获得，完整交付且无功能范围扩大，实际区间不可确认。下一任务真实公开项目完整链，复用已有Git/A5，只修阻断。
+- EOF anchor：OPENGUARD-AI-ASSET-ZIP-PUBLISHED-20260905
+
+### [20260905-RootAstra-ScannerHandoffCheck] COMPLETE（只读交付核查）
+
+- GPT-6 Astra / Root；用户询问扫描组员还需提交什么。开工干净，fetch后组员分支仍为f8bedfd6bd823b7459ffbffda9d38c2903984a6c；核对执行书分工、现有B6和B7代码，无产品修改、无测试重跑、未向真人发送消息。仅本条治理记录。
+- 已有B1-B6代码可继续复用，不要求重写扫描器或重复部署Qwen3。最小交付建议：首批可再分发ZIP/固定公开仓库commit及人工expected标签、对应文件/行号和许可证原文依据；补数据集/API和不应命中的负样例；在现有Bench之上提供真实运行预测的取得方式与命令、版本、失败说明。当前p0-smoke.json将expected/predicted均写入文件，evaluate.py只算集合指标，不能据此声称真实扫描准确率。
+- Root已有整文件SHA、dataset/model排除与重复Evidence修复在2ccb75c及其功能分支，组员应基于该已验收版本对齐，避免旧候选覆盖修复。交付仅B线输入与证据，API/Pipeline/Web/部署集成仍归用户A4/A7/A8；不索要图谱、企业权限、模型权重或完整竞赛包装。
+- 本次运行精确 token 数不可获得；开工核查估算2k–4k，核查完成、无范围调整，实际区间不可确认。P0状态沿用进度13节，无新功能完成声明。
+
+### [20260905-RootAstra-PublicSampleSelection] START
+
+- GPT-6 Astra / Root；按用户要求只读选取公开测试项目，非硬估算2k–4k token。当前feat/a4-ai-asset-report干净；沿用进度13节，不扩P0。仅追加既有工作日志与进度记录；通过公开固定源码核查大小、许可和引用，不执行第三方代码。
+
+### [20260905-RootAstra-PublicSampleSelection] COMPLETE
+
+- 选定huggingface/smolagents，标签v1.0.0对应commit a3df1a21db6045aa9be15b4bdf2067041100e96a；pyproject自述版本为1.1.0.dev0，复现以commit为准。固定源码地址 https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041100e96a 。
+- 公开Git refs与固定commit ZIP核查：ZIP878043字节、62文件、展开1253301字节；现有AI选择规则下52文本、418497字节、最大45957字节，未超现有限额。ZIP SHA256 c486d41688b937e208393b95e70fc7293c555b046f4284a8fca7a925fe6ef4a9；临时保存，不纳入作品仓库。
+- 根LICENSE为Apache-2.0；pyproject含15项运行依赖及2项test依赖；README第76行有m-ric/agents_medium_benchmark_2数据集完整URL，docs/source/en/examples/multiagents.md第57行有Qwen/Qwen2.5-Coder-32B-Instruct完整URL。只证明引用存在，根许可证不继承到依赖/模型/数据集，版本范围不是精确安装版本；未执行代码、下载权重或运行完整扫描。
+- 默认网络DNS受限后只读提权；GitHub匿名API返回403限额，改用公开Git refs与codeload成功，无产品修复。未改产品源码，无需重跑产品测试。下一步由用户A4/A5/A7/A8链路执行该固定ZIP端到端验收，只修阻断。正式指标仍需人工真值和实际预测；当前P0父任务不变。
+- 本次运行精确 token 数不可获得；开工2k–4k估算，选样任务完整完成，无范围调整，实际是否落入区间无法确认。待提交仅两个既有治理文件，功能分支发布，不合并或Release。
+
+### [20260906-RootAstra-PublicZIPQwen] START
+
+- GPT-6 Astra / Root；基线6ac3998，开工干净，新功能分支feat/a7-public-zip-qwen-acceptance。复用前轮已核实历史并阅读新增日志、README、Sol交接、进度13节；历史超长输出截断，不虚称本轮完整重读。fetch扫描组员新增至89c8ba2，先审查差异，不覆盖已验收detector。
+- 用户授权固定smolagents ZIP→真实工具→风险/证据→本机Qwen3→现有报告，Chrome插件验收；只修阻断。不新增API/Schema/队列/图谱，不运行第三方源码、不安装其依赖、不下载权重。预计修改最小A5部署配置与必要测试、复现脚本和既有治理说明；Root独占写入，子任务只读审查连接边界。
+- 开工非硬token估算10k–18k；验证固定ZIP SHA、真实HTTP/Chrome、AI事实保持与报告持久化，定向及必要全量回归后推送功能分支。当前Compose健康、AI关闭，Ollama未响应；先运行AI关闭基线并恢复现有本机模型服务。
+
+### [20260906-RootAstra-PublicZIPQwen-Checks] PARTIAL（回归完成，真实整批AI待验）
+
+- 原始固定ZIP SHA已复核；无AI首轮scn_98c8ae07-8eb8-4c64-9915-f099c4a7d6db为partial：ScanCode complete但漏.gitignore，原始JSON194147字节、61/62文件。实际安装源码证明递归walk默认忽略VCS文件，--include不能补回。修复在同一封印fd内补扫最多8遗漏文件，严格basename/type/SHA/scan_errors，共享原120秒/8MiB限额，完整覆盖门禁保留。修复后scn_be55489e-b1c1-4de5-81b9-1b8f1b37a4ae完成，227组件/4资产/283证据/231待核验提示，29.33秒，四格式SHA通过。验收脚本初始把manifest字段locator误当纯文件名，按原path:field契约修正后复核同一任务通过，未改业务事实。
+- A5新增严格显式Docker Desktop固定host.docker.internal:11434接线，默认AI关闭，禁代理和全部HTTP重定向；运行时/模型完整摘要保持。原子AI输出校验不放宽、无重试或新接口/Schema/队列。30项独立真实HTTP验证默认零DNS拒绝、固定host、代理零访问及三阶段15种重定向目标零访问；首轮sandbox bind PermissionError保留，受控原样30 passed。ScanCode定向85 passed；完整初轮1199 passed/3 skipped，后述prompt修复最终1200 passed/3 skipped/2既有warning，59.60秒。OpenAPI与6ac3998等值，公共domain/Schema未改。
+- Chrome首轮AI scn_b5bdb019-63f8-49eb-9b91-4e5f04b0ac3e完成报告但ai_response_invalid，974.64秒且无AI建议，不能作为成功。小范围原payload复现精确定位第229索引@e2b/cli：模型steps复述JSON Pointer触发原绝对路径保护；4个AI资产及末尾219..228均合法。仅追加system prompt要求简短行动步骤、证据ID引用、不复述路径/JSON Pointer等；坏输入真实3/3通过。旧保护和整批原子降级保留，prompt摘要变为488130706fdd4b56e3385c52a3c55d42832d34a27c6aa69d06b6464b7f0ffcd4，增加原JSON Pointer仍须拒绝的回归。升级前dispatch为空、无在途任务，不迁移旧队列。
+- Chrome后续scn_ff197a8f-8c42-4d65-a91e-11fea9d4b3d4在65秒内ai_provider_unavailable，测试终端输出阻塞是运行方式嫌疑；nohup后台尝试被执行环境回收，导致scn_ef4bfb85-9275-4d7b-988e-c9164f360121同样降级。现已用保持运行的原Ollama主进程将输出直接写私有临时文件，仍仅127.0.0.1/no-cloud/no-history；容器真实冷生成4.23秒通过，旧失败报告保留。当前Chrome任务scn_58822f0b-c0c5-47f2-825d-2206103cd597正在独立日志服务下验收，不预判成功。一次只读验收调用自动审批超时，按返回提示仅重试一次成功，无未解决权限阻塞。
+- Root独占A5、部署脚本、治理及Chrome；同为GPT-6 Astra的受限子任务负责只读审查、独立协议测试及限定ScanCode修复，已停写。组员89c8ba2已提供5个实际运行的合成B6基准，当前detector0.1.1保留，不覆盖为旧候选0.1.0；本轮未接B7新任务。没有第三方源码/模型权重/生成报告进入Git。
+- token开工10k–18k非硬估算，本次运行精确token数不可获得；范围只增加真实阻断修复，无P1/P2。最终任务点、Chrome AI正文、事实对照和重建持久性仍等待本轮最后实际结果，不提前COMPLETE或推送。
+
+### [20260906-RootAstra-PublicZIPQwen-Resume] START
+
+- GPT-6 Astra / Root；用户要求保留成果并从未完成处继续。核对原功能分支和全部未提交文件，复用此前已读历史和新增日志，不重新生成文件或运行扫描。原 scn_58822f0b-c0c5-47f2-825d-2206103cd597 已完成：227组件、4资产、231提示、231真实AI建议，963.30秒；原验收脚本事实对照和四格式SHA已通过。
+- 本轮仅 Chrome 正文、重建持久性、既有README/进度/AI记录/工作日志更新、diff与发布检查及功能分支推送。此前最终1200 passed/3 skipped/2既有warning保留，不无故重复长推理和全量测试。无其他写入者。
+- 非硬token估算6k–12k；本次运行精确 token 数不可获得。无新接口、Schema、队列或P1/P2；不提交样例源码、报告、模型权重或本机产物。
+
+### [20260906-RootAstra-PublicZIPQwen-Accept] COMPLETE（技术验收；发布绑定随后追加）
+
+- GPT-6 Astra / Root；EVD-A7-PUBLIC-ZIP-QWEN-001绑定成功scan scn_58822f0b-c0c5-47f2-825d-2206103cd597。227组件、4明确引用、283证据、231待核验风险和231条锁定Qwen3建议；963.30秒，无errors。原AI关闭scan29.33秒；原脚本比较除observed_at/remediation_id外全部组件/资产/许可/证据/义务/风险及输入和inventory摘要一致。未重新上传或重复推理。
+- Chrome extension原页面刷新completed/100%，报告DOM读到231条AI解释、4个NOASSERTION模型/数据集及来源行号。保留原报告标签页。API保持AI=1和Docker-host=1，compose up --force-recreate --no-deps --wait api后健康；deploy/smoke.py --output <原仓库外证据目录> --verify通过；Chrome再刷新仍231条建议与原任务ID。
+- 四格式SHA：HTML 0d6c3983a32bdc73cff0fa400e11754efbff72bfbfd233a69561ce9eaca29747；JSON 36b9cbbb9a843a25aa90b60aa784d31c1be017688c7757e2128324589f3d9810；CSV与resource_inventory均87a8c1a9b48617071ff0774f9b0e4f0f4abf2f45a66374d6d00b0d29245872b8。原失败报告和首次受限socket失败保留，不冒充成功。
+- 复用上一段最终1200 passed/3 skipped/2既有warning、独立HTTP30项、OpenAPI等值；本次仅记录更新与运行验收，无新业务修复，故未重复全量。修改范围为既有A5/API工厂、扫描器两文件、Compose/验收脚本与说明、四个单测、一个独立边界测试及既有治理文档。公共契约和依赖未变。只提交源码/测试/说明，不提交原始输入或本机输出。
+- Chrome下载文件落盘仍待确认，HTTP四格式已通过；单样例不证明建议语义全部准确、全覆盖或授权确认。P0公开Git部署安全、陌生机复现、首批golden指标与最终冻结仍未完成；下一任务由Root先核清公开Git现有缺口。已查组员89c8ba2，不覆盖现有detector，不把B线计入用户任务。
+- 本次运行精确 token 数不可获得；恢复开工估算6k–12k，所定收口范围技术完成，实际token是否在区间不可确认，无功能扩展。README、进度14节、AI记录、来源登记均同步，待Root检查与功能分支发布绑定；不合并main或Release。
+
+### [20260906-RootAstra-PublicZIPQwen-Published] COMPLETE
+
+- GPT-6 Astra / Root；实现提交48f6267a27df792c8c248b45d54f4bc8b311346a已推送feat/a7-public-zip-qwen-acceptance，git ls-remote完整哈希与本地一致。19个源码/测试/既有说明文件；未合并main或Release。EVD-A7-PUBLIC-ZIP-QWEN-001绑定该实现，任务点完整交付，P0父任务仍进行中。
+- 推送前diff --check、文件清单、工作日志append-only、保护路径与新增行敏感信息检查通过；收口未改业务代码，不重复全量。此次仅追加发布事实，原失败与未完成门禁完整保留。
+
+### [20260906-RootAstra-ScannerBench] START
+
+- GPT-6 Astra / Root；用户要求结合扫描组员GitHub代码按技术说明书推进。fetch后组员分支codex/p0-external-tools-sync仍为89c8ba2，增量实现1c7239e提供5个源代码片段样例、实测runner/evaluator和结果。原业务检测器0.1.1与前轮真实ZIP/Qwen成果保留，开工干净，基线be1b4f4，新分支feat/a8-scanner-bench-acceptance。
+- 对照执行书第3/5/6/15节：B7由组员提供首批3–5个case，用户A8负责集成验收，AI资源需模型/数据集/API带Evidence演示。当前缺口为组员Bench未接当前版本及产品ZIP链；本轮限定复用这5例并校验真实输出，不做P1批量Bench/图谱，不开展其他P0包。组员旧0.1.0结果不冒充当前版本结果，不整支覆盖。
+- 计划精准导入组员bench/evaluator/测试原路径，修正版本证据并在现有ZIP集成测试与验收入口补实跑；仅更新既有治理文档。Root单写，验收检测器标签/证据/真实ZIP风险报告与指标、负例不虚构成功；来源绑定及发布检查后推送功能分支。开工估算8k–16k，本次运行精确 token 数不可获得；精确实现范围随原增量缺口确定。
+
+### [20260906-RootAstra-ScannerBench-Accept] COMPLETE（技术验收，发布绑定随后追加）
+
+- GPT-6 Astra / Root，基线be1b4f4，分支feat/a8-scanner-bench-acceptance，EVD-A8-SCANNER-BENCH-001。用户明确确认89c8ba2就是目标分支。复用组员1c7239e的runner/evaluator、5例、说明和测试原路径；未导入旧0.1.0检测器或手写预测smoke文件。检测器/公共API/Schema/前端完全未改。当前producer0.1.1、case SHA与实际JSON绑定；生成结果SHA a66320164f14741b843341e42d5e3c2c5d575199d6af3d3b5cb02c861731bd0f。TP4/FP0/FN0，micro P/R/F1=1.0，只限5个合成样例，不声称人工双标注或真实总体准确率。
+- 原期望标签不传入detect_ai_assets；修改expected不影响predicted回归通过，非满分计数测试通过。新增动态5例走既有ZIP→SQLite worker→report publisher，159相关测试通过（首次误用test_p0_domain.py文件名无测试执行，核实后改用已有test_p0_domain_models.py；没有修改断言绕过失败）。没有业务源码变化，故不重复前轮1200全量或16分钟推理。
+- 真实Linux Compose五例：model-huggingface=scn_903f7384-5638-4c08-abf6-7ee5eb28bc3c；dataset=scn_034089ff-e8df-4ddb-a81e-c7f297054c0c；API=scn_6107e0b2-27ab-468c-b9f2-8634977df878；ModelScope=scn_1a96de5b-1a67-4249-a012-8cbb198e2a5b；negative=scn_2113cf04-b032-474c-88cb-370eeb6776ff。4正例completed/无errors、pending/NOASSERTION、原文SHA/行1、四格式下载摘要通过；负例failed/scan/dependency_manifest_not_found/零资源summary，无报告。HTTP verifier首次误假设resources返回空数组，实际409；按冻结scan_not_ready契约修正后--verify复核原ID通过，无重新POST。负例不包装成功。
+- 限定只读审查初稿遗漏实际409差异，主代理实跑指出后审查更正；按建议补saved case SHA检查、旧报告摘要对比及verify失败不覆盖旧receipt。最终HTTP verify通过；恢复原AI=1/Docker-host=1，旧成功Qwen报告verify四SHA通过；只读复核无新推理。Chrome extension新标签页真实显示API openai、待核验提示与src/client.py:1/openai.responses，未改用户当前mock标签页。
+- 既有README/Bench说明/部署说明/进度/AI/来源记录同步。只提交团队合成检测器结果，HTTP报告和ZIP留在仓库外。首批代码已齐，无需组员重复交付；独立人工标签复核、公开Git部署安全、陌生机与P0最终冻结仍待做。下一任务由Root核清公开Git现有缺口；不引入图谱/新接口/队列或P1/P2。
+- 本次运行精确 token 数不可获得；开工8k–16k，任务确定为本批Bench集成并技术收口，无产品范围扩大，实际消耗是否在区间不可确认。待文件清单、append-only和敏感/保护路径检查后推送功能分支，不合并main或Release。
+
+### [20260906-RootAstra-ScannerBench-Published] COMPLETE
+
+- GPT-6 Astra / Root；2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。
+- 推送前检查组员cases字节一致、公共backend/frontend/schemas零变更、append-only、新增行敏感/绝对路径、diff与文件清单全部通过。后续提交仅追加发布记录，不重复扫描或改写历史。
+
+### [20260906-RootAstra-PublicGitDeploy] START
+
+- GPT-6 Astra / Root；用户批准继续公开Git现有接线与部署安全验收，基线0dcca39，开工干净，分支feat/a7-public-git-deploy-acceptance。复核执行书P0第15节、既有A2 TrustedEgress规格、当前进度15节及新增日志；复用历史约束，不重做ZIP/Qwen/Bench。估算8k–16k，本次运行精确 token 数不可获得。
+- 已证实缺口：API镜像无Git包，Compose公开Git固定关闭；Git plan只消费B1，尚未调用已有manifest许可证/AI资产和两外部工具。范围限定复用既有封印树能力和公共阶段、把原开关传入Git runtime，安装发行版Git、真实公开HTTPS样例与容器安全/清理/报告验收。无新API/Schema/队列/Git恢复/图谱/P1/P2，不执行目标代码或安装目标依赖。
+- 分工：Root负责默认factory/部署/真实HTTP与Chrome/独立验收/治理/发布；受限实现子任务仅Git ingestion tree callback、Git plan、Git runtime和限定Git测试，停写后Root统一复核。验收安全边界原断言、Git真实revision与工具来源、证据报告、容器权限/资源限制、失败清理、重建留存，保留原始失败。共享日志仅Root追加。
+
+### [20260906-RootAstra-PublicGitDeploy-Accept] COMPLETE（技术验收，发布绑定随后追加）
+
+- GPT-6 Astra / Root；受限同模型子任务完成git_stream/public_git/git_scan及既有Git测试，停止写入；Root完成默认factory、镜像/Compose、既有smoke与说明。仅复用TrustedTreeScan及local_zip现有消费函数，内部工具开关strictbool/defaultFalse，外部API/Schema/网络策略不改，不复制检测器或引入Git恢复。所有修改在原文件，无新实现文件。
+- 子任务74 passed/1 loopback skip；首个新增断言使用不存在normalized_expression字段，按冻结expression字段更正，未修改业务断言规避失败。Root开启受控回环完整1221 passed/2 skipped/2既有warning（59.82秒）；可选公网/真实模型skip不算通过，本次公网另有下述实跑。OpenAPI与0dcca39等值，Schema无变更。镜像复用原工具层，在API层安装Debian官方git1:2.39.5-0+deb12u3；构建成功，实际Git2.39.5。
+- EVD-A7-PUBLIC-GIT-DEPLOY-001：Chrome真实输入pypa/sampleproject.git，scan scn_fed61b87-fc58-4e70-a7af-0d0e5ead9330，revision621e4974ca25ce531773def586ba3ed8e736b3fc与事前HEAD一致；13.838659秒，9组件、11Evidence、9待核验提示，completed/无errors。Git2.39.5/ScanCode32.5.0/Syft1.51.0 provenance通过。独立同commit归档SHA b3eccda9bfb92813e361eed4f074b97165233eb94ebc60166608ce5412d08a07，全部11条Evidence与原文件SHA一致。只读源码、不执行/安装，无目标源码/ZIP进入Git。
+- 四报告SHA：HTML6f6e6bfcfcf2de44be8ee1453740d3d85532bca7bdbafc1faa3e772f094aee4a；JSONe5af6091ec26877045d7b8c8b68f0d92c422bb5b17ae08667f94ef789fc6a73a；CSV/resource_inventory均c18e7c339836fb7140834af8fab05e7cdf29f59247bcd4ec118d43de8c6d4a86。保持Git=1并恢复AI=1/Docker-host=1重建后原四SHA通过，旧scn_58822f0b-c0c5-47f2-825d-2206103cd597的Qwen四SHA也通过，Ollama0.33.3可读。Chrome刷新原报告仍9提示，页面保留。首次按AX checkbox定位Git输入失败，按实际DOM button角色操作通过；没有改前端或重复创建成功任务。
+- 部署安全：HTTP、回环IP、元数据IP、query在接收前422；保留.invalid域名负例scn_8713935b-837a-4b05-8b59-eff6a7810110为failed/ingestion/invalid_source，报告409、零资源/证据，成功失败workspaces均空。实际UID10001、cap0、NoNewPrivs1、Seccomp2、只读写入失败、4GiB/128PID、noexec临时区与0700数据目录。首次HostConfig.Binds零值断言忽略了named volume，依据实际Mounts.Type验证无host bind后通过，未放宽挂载/权限。API子进程共用容器网络，未声称完整隔离或所有攻击面已验收。
+- 本轮Git关闭AI以独立验收确定性链，不宣称Git已生成新Qwen建议。既有ZIP/Qwen/Bench保留；剩余陌生机/浏览器下载确认、最终安全资源冻结与标签人工复核，下一任务只用原部署脚本做陌生机最小复现。无P1/P2、新API/队列/图谱。README、部署说明、A2规格、来源、AI记录、进度16节同步；待最终清单检查和功能分支推送，不合并main或Release。
+- 本次运行精确 token 数不可获得；开工8k–16k，任务范围内技术完成，无范围扩大，实际token是否在区间不可确认。
+
+### [20260906-RootAstra-PublicGitDeploy-Published] COMPLETE
+
+- GPT-6 Astra / Root；实现0f1bdcc22a01a5f1f91b666d1ae94040bd3929ae已推送feat/a7-public-git-deploy-acceptance并核对远端完整哈希一致；16个既有文件、无新增文件，EVD-A7-PUBLIC-GIT-DEPLOY-001绑定该实现。本任务完整交付，完整P0仍待陌生机及最终冻结；未合并main或Release。
+- 发布前完整回归、真实Git/Chrome/失败清理/重建报告、OpenAPI等值、保护路径、append-only、敏感信息与git diff --check通过；随后提交仅追加发布记录，不改实现或复跑扫描。
+
+### [20260906-RootAstra-DownloadRepro] START
+
+- GPT-6 Astra / Root；基线341dc34，开工干净，分支docs/a7-browser-download-handoff。用户请求陌生机复现与Chrome下载确认；用户明确当前没有另一台设备，因此异机门禁保持未验证，不把同机容器重建冒充。开工估算6k–12k，本次运行精确 token 数不可获得。
+- 继续不依赖异机的Chrome实际下载落盘/摘要验证，复用原已完成Git报告和原验收脚本，不重新扫描。仅按需更新现有部署说明、进度、AI和工作日志，整理异机最短可执行步骤；无新实现/接口/框架/P1/P2，不安装远程工具或创建云主机。
+
+### [20260906-RootAstra-DownloadRepro-Close] PARTIAL
+
+- GPT-6 Astra / Root；异机复现与Chrome下载确认尚未全部通过。用户明确没有另一台设备；Chrome原Git报告JSON下载链接已点击，但默认下载及桌面未发现对应文件，已询问实际保存位置，落盘SHA待核对。未把同机容器或HTTP下载冒充本次验收。
+- 仅追加deploy/README.md、PROJECT_PROGRESS.md、AGENT_WORKLOG.md、docs/05-ai-assistance-log.md四个既有文档；固定341dc34、复用Compose/smoke参数与现有报告文件名，提供最小匿名回传要求。无新文件、源码、接口、Schema、规则、扫描或模型调用。
+- 校对脚本参数和报告命名；git diff --check、四文件清单、append-only及新增行敏感信息检查通过。首次Python追加命令因输入编码报错且未写入，改为原文追加；没有丢失记录。未重复原1221回归，不把原测试算成本次新验收。文档准备完成，待Root推送docs/a7-browser-download-handoff并追加发布绑定；不合并main或Release。
+- 下一步由用户提供实际Chrome保存路径，Root核对四格式文件与原receipt；设备可用后由异机操作者运行现有步骤。最终冻结和人工复核仍未完成。
+- 本次运行精确 token 数不可获得；开工估算6k–12k，本任务部分完成，实际是否在估算区间不可确认；未扩大功能范围。
+
+### [20260906-RootAstra-DownloadRepro-Published] PARTIAL
+
+- GPT-6 Astra / Root；四份既有文档提交e902c8dd23e2c41d0186592083e8ee3ed4bb8efc已推送docs/a7-browser-download-handoff，git ls-remote完整哈希一致。文档上传完成，异机与Chrome落盘验收仍未完成；未合并main或Release。随后仅追加发布事实。
+
+### [20260906-RootAstra-MacAcceptance] START
+
+- GPT-6 Astra / Root；基线15b12ec，开工干净，分支docs/a8-mac-acceptance-check。用户授权先Chrome下载确认、再核对现有资源与安全清单；仅Mac操作，复用原Git报告，不重扫或新建实现。用户现有Windows，异机状态更正为环境待确认，本轮不执行异机。
+- 预计仅修改既有清单、部署说明、进度、AI及共享日志；Root单写。核对真实落盘文件摘要、台账与部署版本/安全约束，发现具体缺口才修复。无P1/P2、新接口或重复文件。开工估算6k–12k，本次运行精确 token 数不可获得。
+
+### [20260906-RootAstra-MacAcceptance-CSP] START
+
+- GPT-6 Astra / Root；用户确认Downloads路径且Chrome提示“不符合安全政策”。定位现有下载响应CSP sandbox未允许下载；MDN sandbox文档说明allow-downloads用途。最小修复仅下载响应增加allow-downloads，保留default-src/base-uri/form-action及其他sandbox约束，不修改Chrome安全设置。
+- 任务分支重命名feat/a6-download-csp-fix（首次误用switch到不存在分支失败，无文件损失，随后branch -m完成）。增加既有A6测试断言，重建API保留原开关/数据，Chrome复用原报告四格式落盘SHA验收。资源/安全仅核对记录，CPU/网络/供应链差距未冒充冻结，不在本轮扩建部署架构。
+
+### [20260906-RootAstra-MacAcceptance-Close] PARTIAL
+
+- GPT-6 Astra / Root；目标为Chrome实际下载及现有资源/安全清单核对。下载响应增加sandbox allow-downloads，保留其他CSP限制；61相关测试通过/1既有warning。API镜像构建与重建健康，原Git及旧ZIP/Qwen两次smoke --verify均通过，不重扫或推理。首次重建后点击因页面在概览而无匹配，返回原报告页后点击成功；不把点击成功算落盘。
+- 用户提供Downloads路径及修复后手动点击原文“贵组织屏蔽了该文件，因为它不符合安全政策”；目录未出现报告。浏览器门禁为组织策略阻塞，未关闭Chrome保护、未读浏览器私有配置、未绕过策略。CSP修复不证明唯一根因或Chrome已通过。
+- 资源/安全核对完成：当前cgroup和UID/权限/端口/挂载、API已安装包及前端锁文件对照原台账。API无CPU配额、API扫描进程网络隔离/磁盘/fd限制覆盖、Debian/Python间接版本锁定及正式资源声明仍待处理，不把这些算作已冻结。Windows设备已有，环境待确认，本轮不执行。
+- 修改9个既有文件：API main、原A6测试、部署说明、资源清单、third_party台账、安全验收文档、进度、AI和共享日志；无新文件/API/Schema/依赖/P1/P2。下一Mac任务可限定API CPU配额修复与验证；组织策略由有权管理员处理，异机与人工复核保留。
+- 分支feat/a6-download-csp-fix，待Root差异/敏感/append-only检查后推送；不合并main或Release。本次运行精确 token 数不可获得，开工6k–12k，本任务部分完成，实际区间不可确认；范围仅增加已授权下载阻断的最小修复。
+
+### [20260906-RootAstra-MacAcceptance-Published] PARTIAL
+
+- GPT-6 Astra / Root；e90ba11466c112e8accd70c2237ec1fb0c22de7a已推送feat/a6-download-csp-fix，远端完整哈希一致。9个既有文件、零新增，源码仅下载CSP修复；61相关测试、两组旧报告重建摘要、diff/清单/append-only/新增行敏感检查通过。浏览器组织策略阻塞及最终冻结差距保留，未合并main或Release；随后仅绑定发布事实。
+
+### [20260906-RootAstra-CPUDownload] START
+
+- GPT-6 Astra / Root；基线d9a6aca，开工干净，分支fix/a7-api-cpu-limit，Root单写。用户授权真实下载诊断，组织策略受阻时继续API CPU最小修复；估算6k–12k，本次运行精确 token 数不可获得。
+- Chrome原生下载详情直接显示“贵组织屏蔽了此文件，因为它不符合安全政策”，未提供保存入口；演示文件成功不能替代真实链。保留阻塞，不改策略、不变更传输路径绕过。API仅补现有Compose cpus:2，受控短时cgroup节流验证和原报告verify，不重扫、不新增接口/架构/文件。预计修改Compose及既有部署、安全、进度、AI、共享记录。
+
+### [20260906-RootAstra-CPUDownload-Close] PARTIAL
+
+- GPT-6 Astra / Root；Chrome原生工具栏下载详情直接显示组织屏蔽，无正常保存入口，未变更策略/Blob传输/文件名绕过；真实下载维持阻塞。
+- CPU子任务完成：原Compose api.cpus:2，config --quiet通过，保持Git/AI/Docker-host=1重建健康；cgroup cpu.max=200000 100000、NanoCpus2000000000；4个自建4秒忙循环exit0，nr_throttled增量41、usage_usec8272191。内存/PID/UID/只读/cap/no-new-privileges保持。两组原Git/Qwen smoke --verify通过；不重复扫描/推理，无目标代码执行。未重跑业务单测，实际配置/内核/留存为相关验收。
+- 修改6个既有文件：Compose、部署说明、安全清单、进度、AI及共享日志，无新增文件/API/Schema/依赖。网络隔离、磁盘/fd、供应链锁定、人工/异机仍待验；下一任务限定API Python间接依赖锁定与重建复核。Root检查后推送fix/a7-api-cpu-limit，不合并main或Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，CPU完成、下载阻塞、整轮部分完成，无范围扩大，实际token区间不可确认。
+
+### [20260906-RootAstra-CPUDownload-Published] PARTIAL
+
+- GPT-6 Astra / Root；d70a1e55e89b0f903f68416823658d33ba3b7517已推送fix/a7-api-cpu-limit，远端完整哈希一致。6个既有文件；CPU配置与运行验收完成，Chrome下载仍阻塞，未合并main或Release。随后仅追加发布绑定。
+
+### [20260906-RootAstra-PythonLock] START
+
+- GPT-6 Astra / Root；基线1d11d01，开工干净，分支fix/a7-api-python-lock，Root单写。用户要求锁定API Python间接依赖并继续真实下载排障。沿用既有pyproject保存当前API版本闭包，Docker构建消费并pip check，不生成重复requirements文件、不升级依赖；验证重建包版本、旧Git/Qwen报告与2CPU限额。
+- Chrome工具明确拒绝chrome://policy且禁止绕道，已请求用户手动查看下载相关策略；不改设置/Blob/文件名规避，不将“组织屏蔽”提示外推为具体规则已查明。预计修改pyproject、Dockerfile及既有部署/资源/安全/进度/AI/日志，估算6k–12k，本次运行精确 token 数不可获得。无新接口/队列/模型/扫描。
+
+### [20260906-RootAstra-PythonLock-Close] COMPLETE
+
+- GPT-6 Astra / Root；API Python间接依赖锁定和真实Chrome下载本轮两项完成。既有pyproject的api-lock记录15个原版本，Docker从空venv --no-deps安装、直接声明包含检查与pip check；安装层真实重建成功，运行15包集合严格相等、pip check通过（非root缓存不可写warning仅禁缓存），2CPU保持。原Git/ZIP-Qwen两组receipt四SHA各verify通过，不扫描/推理。
+- 下载更正：工具拒绝chrome://policy并明确禁止绕道，用户自行查看后回复没有下载相关政策。普通Chrome操作在原报告页出现正常保存框，用户完成四种原文件保存。JSON28846/HTML6722/CSV2024/资源清单2024字节，四SHA等于原Gitreceipt，JSON真实ID且两CSV7列9资源行通过。没有修改保护、组织配置、Blob/传输/文件名，也没有通过命令行生成这些下载文件。历史“组织策略为原因”结论撤回，具体历史触发机制未证明；失败记录保留，当前Mac下载已通过，不外推其他环境。
+- UI初次typeText丢失标点，改paste准确地址；保存目录选择与原生点击未稳定，用户完成正常保存，真实文件独立核验，未把自动点击当成功。只提交8个既有项目文件，不提交用户演示/真实报告；无新API/Schema/依赖升级/文件/架构。API版本锁定不等于所有发行物hash、Dev/ScanCode或Debian系统包冻结。
+- 部署README、third_party、安全、进度、AI及共享日志同步。下一任务可限定Debian Git构建可复现性；人工、其他隔离/资源门禁和异机仍待完成。检查后Root推送fix/a7-api-python-lock，不合并main或Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，本轮范围完成，实际token区间不可确认；无范围扩大。
+
+### [20260906-RootAstra-PythonLock-Published] COMPLETE
+
+- GPT-6 Astra / Root；549d7c004c5288d9a443c866744399437b9e815e已推送fix/a7-api-python-lock，远端完整哈希一致。8个既有文件，无新增；API版本锁定及Mac真实四格式下载验收完成，完整P0未完成，未合并main或Release。随后仅追加发布绑定。
+
+### [20260906-RootAstra-DebianGitPin] START
+
+- GPT-6 Astra / Root；基线1b5bb6b，开工干净，分支fix/a7-debian-git-pin，Root单写。仅固定现有API镜像Git构建版本；dpkg-query确认git amd64及git-man all均1:2.39.5-0+deb12u3。沿用Debian签名仓库，精确安装并核对，版本不可获取时失败而不自动换版；不新增快照服务或锁定全部系统包。
+- 修改现有Dockerfile及部署/资源/安全/进度/AI/日志；验证真实构建、安装包/二进制版本、旧Git/Qwen四SHA与API健康/CPU限制，不创建扫描或改用户下载文件。估算4k–8k，本次运行精确 token 数不可获得。
+
+### [20260906-RootAstra-DebianGitPin-Close] COMPLETE
+
+- GPT-6 Astra / Root；原Dockerfile精确固定git/git-man1:2.39.5-0+deb12u3并逐项校验。真实安装层重建成功，API重建健康；运行Git2.39.5，Git和copyright SHA与原容器一致，15API包及2CPU保持；旧Git与ZIP/Qwen各smoke --verify四SHA通过。没有新扫描/推理，未重复业务全量测试；构建/运行版本/字节和持久报告为相关验收。
+- 修改7个既有文件：Dockerfile、部署说明、third_party、安全、进度、AI及共享日志，无新文件/API/Schema/升级/源/快照架构。版本下架时失败，无静默换版，不外推所有Debian依赖已锁定。资源声明、其他安全限制、人工和异机仍待完成，下一任务核对现有资源台账，不扩P1/P2。
+- 分支fix/a7-debian-git-pin，Root检查后推送，不合并main或Release。本次运行精确 token 数不可获得；开工4k–8k，本轮范围完成，无范围调整，实际token区间不可确认。
+
+### [20260906-RootAstra-DebianGitPin-Published] COMPLETE
+
+- GPT-6 Astra / Root；dbc0bf54c2e9ec959564d73aa88d2d11a51ee605已推送fix/a7-debian-git-pin，远端完整哈希一致。7个既有文件、无新增；本轮Git版本固定完成，完整P0未完成，未合并main或Release。随后仅追加发布绑定。
+
+### [20260906-RootAstra-ResourceAudit] START
+
+- GPT-6 Astra / Root；基线39d062a，开工干净，分支docs/a8-runtime-resource-audit。用户要求核对现有运行资源来源/许可/必要声明，Root单写，估算6k–12k，本次运行精确 token 数不可获得。复用third_party及原资源/进度记录，不建平行清单、不新增依赖或扫描。
+- 先核对API15包实际发行元数据/随包许可证及官方固定版本记录，再核对已有前端运行包与工具声明位置；历史选型不计为已用资源，实际缺失声明或无法核验项保持待办。源码/镜像再分发边界分开，不代替Owner最终授权。
+
+### [20260906-RootAstra-ResourceAudit-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；本轮核对来源/许可/必要声明，24个API及前端固定版本官方元数据与实际包一致；原台账补齐，ScanCode数据许可更正CC-BY-4.0，原NOTICE及许可保留。未把包元数据当发行物hash验收或完整镜像审计。
+- 发现实际前端产物缺完整许可，Root在原Vite配置读取4个原包LICENSE自动生成部署附件，补齐必要声明；跨实现范围属本次发现缺口修复。共6个既有文件（Vite、third_party、资源清单、AI、进度、共享日志），无新增源码文件/依赖/API/Schema/扫描/P1/P2。
+- 本机pnpm build和Docker web构建通过；pnpm test 20/20；只更新web，HTTP200/HTML引用/4618字节/四许可全文逐字一致通过，SHA fb50515ff9316032a876ad16ef1e8dc36a2e7cd46a5dc62c3250a6b82bdf6d25。首次命令路径和node PATH错误已修正后通过。Chrome插件打开附件ERR_BLOCKED_BY_CLIENT保留，不绕过，不把HTTP等同浏览器验收。此前四真实报告下载结论保持。
+- 本轮技术核验和缺失声明修复完成；全P0仍待安全、异机、人工及发布方式最终门禁，不宣称法律审定或所有OS/工具传递许可已核验。下一步Root限定核清P0既有安全表的网络/磁盘/fd缺口。Root检查后推送任务分支，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工估算6k–12k，本轮完成，实际区间不可确认；范围内增加原Vite配置以修必要声明，无新架构。
+
+### [20260906-RootAstra-ResourceAudit-Published] COMPLETE
+
+- GPT-6 Astra / Root；702931556f83e457c5c5cbe2de400699fc07cb6c已推送docs/a8-runtime-resource-audit，远端完整哈希一致；6个既有文件，无新增源码文件。当前核验和必要声明修复完成，完整P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-Nofile] START
+
+- GPT-6 Astra / Root；基线079b14c，开工干净，分支fix/a2-nofile-limit，Root单写。核对现有P0安全表和代码：API实际nofile1048576/1048576，目标256；scanner与API共享网络，data卷上传/workspaces无单任务配额。仅修Compose API及tools profile的nofile限制，复用现有tool-smoke添加真实内核边界验收，并同步部署/安全/进度/AI/日志。无新接口/架构/依赖，不改组员适配器。
+- 估算6k–12k，本次运行精确 token 数不可获得。验证配置、真实运行限制、受控子进程耗尽及退出、真实工具小样例、API健康与旧报告摘要；不在API主进程耗尽fd，不重跑模型。网络/磁盘及完整NEG-A2-028保持未完成。
+
+### [20260906-RootAstra-Nofile-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；核清网络/磁盘/fd差距并关闭一个配置阻断：api/tools nofile软硬256。修改7个既有文件：Compose、tool-smoke、部署说明、安全验收、进度、AI、共享日志，无新增文件/依赖/API/Schema/组员实现变更。
+- Compose config有效、API重建healthy、/proc/1/limits和Docker一致256/256、2CPU保持。API和禁网tools分别通过真实两工具小样例及fd边界：6+250=256后EMFILE、释放恢复、提升hard被拒绝；首次253假设失败，/proc查明Rosetta额外3fd后改为实际初始数计数，未改256上限。通过真实run_json_tool验证受控子进程耗尽failed/scanner_failed、子进程回收、父fd不增、下一次complete。未耗尽API主进程、未重跑模型，旧Git/ZIP-Qwen各四SHA verify通过。
+- 本项完成不等于所有NEG-A2-028或整个A2完成；网络deny-egress、任务磁盘配额及其他安全、人工/异机仍未验收。下一步Root只修P0工作目录临时磁盘硬上限及失败清理，保留原网络待办。检查后推送fix/a2-nofile-limit，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，范围完成、无调整，实际是否在区间不可确认。运行临时证据留仓库外，不上传容器/用户数据。
+
+### [20260906-RootAstra-Nofile-Published] COMPLETE
+
+- GPT-6 Astra / Root；06e3e54318811c2c93b5c7c115c59e17585f8acc已推送fix/a2-nofile-limit，远端完整哈希一致；7个既有文件，无新增文件。fd配置及本轮边界验收完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-WorkspaceDisk] START
+
+- GPT-6 Astra / Root；基线780536b，干净，Root单写。现有workspaces空；仅加工作目录1GiB共享tmpfs硬上限，持久uploads/dispatch/db/reports保留，不宣称每任务独享或全部磁盘已限额。修正解压写入OSError被误报ZIP损坏；复用tool-smoke验证隔离容器真实ENOSPC、清理和恢复。预计Compose、zip_stream、原测试脚本和部署/安全/进度/AI/日志，无新依赖/API/架构。
+- 估算6k–12k，本次运行精确 token 数不可获得；受控测试不挂载生产data卷，检查最终挂载、旧报告SHA和正常小扫描。网络/上传积累/完整安全及异机保持未完成。
+
+### [20260906-RootAstra-WorkspaceDisk-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；仅修工作目录容量和超限清理。8个既有文件：Compose、zip_stream、tool-smoke、部署/安全/进度/AI/共享日志，无新文件/依赖/API/Schema。1GiB共享tmpfs限制所有任务工作树；持久uploads/dispatch/db/reports保持，未删除用户数据。不宣称每任务独享、上传积累或全临时存储已受同一预算保护。
+- 隔离容器无用户卷，真实posix_fallocate填充；剩余1MiB和3MiB分别触发接收/解压ENOSPC，原摄取清理全部任务树、释放后同服务成功。修复_write_all把目标写失败误归ZIP损坏的问题，使用已有scanner_failed/workspace_write_failed，不改源损坏分类。
+- 190相关回归通过：107通过及2条回环权限失败保留，原样受控复验2通过，追加81通过/1既有弃用warning。构建完成；queued/running=0且旧workspaces空后更新API；实际容量1073741824、uid10001/0700及noexec/nosuid/nodev、nofile256/2CPU通过。最终挂载小ZIP及清理、APIhealthy、旧Git/Qwen各四SHA通过，无新公开扫描/推理。首次独立docker run未显式platform产生amd64提示但测试通过，复现说明已显式platform。
+- 本项完成，完整P0/网络/持久积累/人工/异机未完成。下一任务Root限定扫描子进程默认deny-egress，保留Git/Qwen既有授权网络边界。检查后推送fix/a2-workspace-disk-limit，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，范围完成无调整，实际是否在区间不可确认。
+
+### [20260906-RootAstra-WorkspaceDisk-Published] COMPLETE
+
+- GPT-6 Astra / Root；7ec1a418d018e03552361ab48fb27371bd7c1709已推送fix/a2-workspace-disk-limit，远端完整哈希一致；8个既有文件，无新增文件。本轮工作目录硬上限/真实超限清理完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-ScannerNetwork] START
+
+- GPT-6 Astra / Root；基线872b2f1，干净，Root单写。现有amd64/Rosetta进程libseccomp加载返回-125/errno22，不能宣称生效。拟增加一个必要的原生C启动器源码，随既有镜像构建、在扫描器exec前拒绝非AF_UNIX socket/socketpair及io_uring，过滤器继承后代；Git/AI路径不改。失败关闭，不放宽Docker能力或安全策略，无新服务/API/队列。估算6k–12k，精确token不可获得；需真实转译环境负例、两工具正例及Git/模型网络保留验证。
+
+### [20260906-RootAstra-ScannerNetwork-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；实际完成Compose扫描子进程默认禁网，Git/Qwen仍工作。原生启动器禁非AF_UNIX socket/socketpair、io_uring，校验架构/x32，过滤器由后代继承，失败不exec。原run_json_tool只增加固定启动器前缀，不改组员解析/规则；属于A2安全集成必要修改。新增仅deploy/scanner-no-network.c，其他使用原文件；无新服务/API/Schema/队列或权限提升。
+- 原转译libseccomp load=-125/errno22失败保留；BUILDPLATFORM原生静态启动器解决本机实际路径。新增构建阶段GCC/libc声明及运行库copyright随镜像保留，不能把混合架构本机镜像直接搬另一架构；构建依赖闭包冻结及静态再分发义务未外推完成。
+- 87工具/扫描回归+95Git/AI回归=182通过，1 opt-in跳过/1既有warning。真实生产runner中IPv4/IPv6 TCP/UDP libc.socket四类EPERM、后代exec继承、AF_UNIX可用，父网络保持；原两工具样例及最终固定wrapper/pass_fd正例通过。原Git安全获取器真实取得既定PyPA revision并清理；Qwen8token上限短调用done=true身份匹配；旧Git/Qwen各四SHA通过、APIhealthy。更新前queued/running=0和workspaces空，未删除data。
+- 当前禁网边界完成，完整安全/跨任务文件与IPC/持久累计预算/人工/异机仍待办。下一步Root先核对跨任务读取边界，只修具体缺口。Root检查后推送fix/a2-scanner-no-network，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，目标完成，转译限制导致必要原生启动器与构建阶段调整，未扩展产品范围；实际token区间不可确认。
+
+### [20260906-RootAstra-ScannerNetwork-Published] COMPLETE
+
+- GPT-6 Astra / Root；665bd3862c221d1648fde16a00f8f0e07119cb07已推送fix/a2-scanner-no-network，远端完整哈希一致；10个既有文件及1个必要C源码。当前扫描禁网/Git和Qwen保持验收完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-ScannerFiles] START
+
+- GPT-6 Astra / Root；基线d38f897，干净，Root单写。两自建临时任务经生产runner证明A可读B标记，已自动清理，无真实用户内容读取。Rosetta查询ENOSYS，原生ARM同基础镜像查询Landlock ABI8；复用已有C启动器做运行文件/任务FD白名单与独立工具temp，保留网络过滤和API/Git/Qwen边界。预计修改原启动器/runner/原测试及部署安全进度AI日志，无新服务/文件/接口。估算6k–12k，精确token不可获得；以真实内核拒绝和两工具正例验收，失败关闭。
+
+
+### [20260906-RootAstra-ScannerFiles-Close] COMPLETE
+
+- GPT-6 Astra / Root；复用原C启动器、runner、tool-smoke和原测试实现Landlock ABI>=3的当前任务只读/独立temp访问限制，保持seccomp。无新文件/依赖/服务/接口，组员解析规则未改；ScanCode固定参数改既有串行0以兼容窄白名单。
+- 六条真实内核负例及输入只读、temp可写、fork继承通过；实际workspaces路径复验及清理通过。最终隔离镜像两固定wrapper+dirfd识别apache-2.0、pkg:npm/is-number@7.0.0；155相关回归通过。API空闲且目录空后更新，当前healthy，原Git/Qwen各四SHA保持，无新公开扫描/推理。
+- 初始原生产越界标记、转译ENOSYS、旧头缺常量、Rosetta具体proc需求、进程池SemLock和后代re-exec限制均保留在安全表9.7。整个/proc实验方案被自动审批拒绝后撤回，未生产部署；最终仅特定proc文件及父可执行inode。一次审批超时分开重试通过，首次空闲断言未通过时未更新。fork证明不能外推任意re-exec兼容。
+- 本轮跨任务文件内容读取缺口关闭，完整元数据/IPC隔离、剩余资源/完整安全、人工及异机未外推完成；下一任务核对持久累计预算与P0要求，只修实际阻断。准备推送fix/a2-scanner-file-boundary，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，任务范围完成，串行兼容调整未扩展产品范围，实际token区间不可确认。
+
+### [20260906-RootAstra-ScannerFiles-Published] COMPLETE
+
+- GPT-6 Astra / Root；103aa77a8ce1a2d9c76fd45b64a791fe9e02cf44已推送fix/a2-scanner-file-boundary，远端完整哈希一致；9个既有文件、无新增文件。本机已部署并验证，跨任务读取边界完成，完整P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-BranchConsolidation] START
+
+- GPT-6 Astra / Root；用户授权整理并合并分支。基线450b8eb、工作区干净、Root单写。刷新远端后确认47个分支，41个无开放PR的历史分支头完整包含于当前验收链；保留main、integration/p0、两位组员分支、当前异机验收分支及PR #2来源。按既有协作方案先PR汇入integration/p0，不因整理而宣布P0冻结或合并main。仅更新原协作/进度/日志文档，运行现有unit/security和前端测试构建；远端删除须先确认合并后祖先关系及分支头未变，保留全部提交历史，不force push。开工估算3k–6k，精确token不可获得。
+
+### [20260906-RootAstra-BranchConsolidation-Review] PARTIAL
+
+- GPT-6 Astra / Root；治理审查完成，远端执行待PR。1222项unit/security通过、3跳过、2既有warning；前端20通过及本地构建通过。41个可清理分支原SHA登记在协作说明，6个保留；组员独立历史及PR #1/#2不修改。仅原治理3文件，无业务代码/接口变更。
+- 文档追加脚本首次遇编码错误，未写入拟追加内容；当时仅START被提交。随后使用补丁及ASCII脚本更新原文档，保留失败记录。PR将保留历史合入integration/p0，之后仅清理未移动且完整包含的41个头；main、异机固定提交与运行数据保持。
+- 下一步Root核对PR及远端refs后完成清理；P0安全/异机/人工门禁未外推完成。精确token不可获得；开工3k–6k，合并目标按原规则调整为integration/p0，无产品扩张。

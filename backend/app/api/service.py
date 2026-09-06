@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import hashlib
-import ipaddress
 import json
 import platform
 import sys
-import unicodedata
 from collections.abc import Callable
+from dataclasses import dataclass
 from datetime import datetime, timezone
-from urllib.parse import unquote, urlsplit, urlunsplit
+from urllib.parse import unquote, urlsplit
 from uuid import UUID, uuid4
 
 from app.api.models import (
@@ -41,6 +40,9 @@ from app.domain.models import (
     SourceType,
 )
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError
+from app.reporting import ReportArtifactStore, ReportStoreError, StoredReport
+from app.ingestion.url_policy import parse_public_git_url
+from app.security.errors import IngestionSecurityError
 
 
 APPLICATION_VERSION = "0.1.0"
@@ -62,51 +64,22 @@ def _fail(*, status_code: int, code: str, message: str, reason: str) -> None:
     raise ApiError(status_code=status_code, code=code, message=message, reason=reason) from None
 
 
+@dataclass(frozen=True)
+class ZipScanCandidate:
+    """A constructed ZIP request that has not yet touched the A3 registry."""
+
+    run: ScanRun
+    idempotency_fingerprint: str | None
+
+
 def canonicalize_public_git_url(value: str) -> str:
     """Validate the frozen public-HTTPS Git source boundary without networking."""
-
     try:
-        encoded_value = value.encode("utf-8")
-    except UnicodeEncodeError:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    if len(encoded_value) > 2048 or any(unicodedata.category(character) == "Cc" for character in value):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-
-    try:
-        parsed = urlsplit(value)
-        port = parsed.port
-    except ValueError:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    hostname = parsed.hostname
-    if (
-        parsed.scheme != "https"
-        or hostname is None
-        or parsed.username is not None
-        or parsed.password is not None
-        or parsed.query
-        or parsed.fragment
-        or port not in {None, 443}
-    ):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    try:
-        ipaddress.ip_address(hostname)
-    except ValueError:
-        pass
-    else:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is not allowed.", reason="host_not_public")
-    lowered = hostname.rstrip(".").lower()
-    if lowered == "localhost" or lowered.endswith(".localhost"):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is not allowed.", reason="host_not_public")
-    decoded_segments = [unquote(segment) for segment in parsed.path.split("/")]
-    if any(unicodedata.category(character) == "Cc" for segment in decoded_segments for character in segment):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="url_invalid")
-    if parsed.path in {"", "/"} or any(segment in {".", ".."} for segment in decoded_segments):
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="path_invalid")
-    try:
-        ascii_host = lowered.encode("idna").decode("ascii")
-    except UnicodeError:
-        _fail(status_code=422, code="invalid_source", message="Public repository URL is invalid.", reason="host_invalid")
-    return urlunsplit(("https", ascii_host, parsed.path, "", ""))
+        return parse_public_git_url(value).canonical
+    except IngestionSecurityError as error:
+        message = "Public repository URL is not allowed." if error.reason == "host_not_public" else "Public repository URL is invalid."
+        _fail(status_code=422, code="invalid_source", message=message, reason=error.reason)
+    raise AssertionError("unreachable")
 
 
 def _project_name(source: str) -> str:
@@ -123,14 +96,20 @@ class ScanApiService:
         self,
         registry: SQLiteScanRunRegistry,
         *,
+        report_store: ReportArtifactStore | None = None,
         clock: Callable[[], datetime] | None = None,
         id_factory: Callable[[], UUID] | None = None,
     ) -> None:
         self._registry = registry
+        self._report_store = report_store
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self._id_factory = id_factory or uuid4
 
     def create_git_scan(self, request: GitScanCreateRequest) -> ScanCreateAccepted:
+        accepted, _ = self.create_git_scan_record(request)
+        return accepted
+
+    def create_git_scan_record(self, request: GitScanCreateRequest) -> tuple[ScanCreateAccepted, bool]:
         source = canonicalize_public_git_url(request.source)
         created_at = self._clock()
         source_digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
@@ -186,11 +165,12 @@ class ScanApiService:
                     reason="idempotency_conflict",
                 )
             _fail(status_code=500, code="internal_error", message="The scan could not be created.", reason="registry_failure")
-        return ScanCreateAccepted(
+        accepted = ScanCreateAccepted(
             scan_id=stored.run.id,
             status=stored.run.status,
             status_url=f"/api/v1/scans/{stored.run.id}",
         )
+        return accepted, stored.run.id == run.id
 
     def create_zip_scan(
         self,
@@ -200,6 +180,25 @@ class ScanApiService:
         project_name: str,
         input_digest: str,
     ) -> tuple[ScanCreateAccepted, bool]:
+        return self.commit_zip_scan_candidate(
+            self.build_zip_scan_candidate(
+                request,
+                staged_name=staged_name,
+                project_name=project_name,
+                input_digest=input_digest,
+            )
+        )
+
+    def build_zip_scan_candidate(
+        self,
+        request: ZipScanCreateFields,
+        *,
+        staged_name: str,
+        project_name: str,
+        input_digest: str,
+    ) -> ZipScanCandidate:
+        """Construct the original ZIP fingerprint before I1 writes a descriptor."""
+
         if (
             type(staged_name) is not str
             or not staged_name
@@ -260,8 +259,15 @@ class ScanApiService:
             created_at=created_at,
         )
         fingerprint = hashlib.sha256(fingerprint_payload).hexdigest() if request.idempotency_key is not None else None
+        return ZipScanCandidate(run=run, idempotency_fingerprint=fingerprint)
+
+    def commit_zip_scan_candidate(self, candidate: ZipScanCandidate) -> tuple[ScanCreateAccepted, bool]:
+        """Commit a prebuilt ZIP candidate through the unchanged A3 create contract."""
+
+        if type(candidate) is not ZipScanCandidate:
+            _fail(status_code=500, code="internal_error", message="The scan could not be created.", reason="zip_runtime_failure")
         try:
-            stored = self._registry.create(run, idempotency_fingerprint=fingerprint)
+            stored = self._registry.create(candidate.run, idempotency_fingerprint=candidate.idempotency_fingerprint)
         except ScanRegistryError as error:
             if error.code == "registry_idempotency_conflict":
                 _fail(
@@ -276,7 +282,7 @@ class ScanApiService:
             status=stored.run.status,
             status_url=f"/api/v1/scans/{stored.run.id}",
         )
-        return accepted, stored.run.id == candidate_id
+        return accepted, stored.run.id == candidate.run.id
 
     def status(self, scan_id: str) -> ScanRunStatusView:
         run = self._get_run(scan_id)
@@ -329,10 +335,57 @@ class ScanApiService:
         run = self._get_run(scan_id)
         if run.status not in _RESULT_STATUSES:
             _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="status_not_ready")
+        if self._report_store is not None:
+            return self._stored_report(run, report_format).link
         for link in run.report_links:
             if link.format is report_format:
                 return link
         _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="not_generated")
+
+    def download_report(self, scan_id: str, report_format: ReportFormat) -> StoredReport:
+        run = self._get_run(scan_id)
+        if run.status not in _RESULT_STATUSES:
+            _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="status_not_ready")
+        if self._report_store is None:
+            _fail(status_code=409, code="report_not_ready", message="Requested report is not ready.", reason="not_generated")
+        return self._stored_report(run, report_format)
+
+    def _stored_report(self, run: ScanRun, report_format: ReportFormat) -> StoredReport:
+        store = self._report_store
+        if store is None:
+            _fail(
+                status_code=409,
+                code="report_not_ready",
+                message="Requested report is not ready.",
+                reason="not_generated",
+            )
+        links = [link for link in run.report_links if link.format is report_format]
+        if not links:
+            _fail(
+                status_code=409,
+                code="report_not_ready",
+                message="Requested report is not ready.",
+                reason="not_generated",
+            )
+        if len(links) != 1:
+            _fail(
+                status_code=500,
+                code="internal_error",
+                message="The report could not be read.",
+                reason="report_storage_failure",
+            )
+        try:
+            stored = store.get(run.id, report_format)
+            if stored.link != links[0]:
+                raise ReportStoreError("report_store_corrupt")
+            return stored
+        except ReportStoreError:
+            _fail(
+                status_code=500,
+                code="internal_error",
+                message="The report could not be read.",
+                reason="report_storage_failure",
+            )
 
     def _get_run(self, scan_id: str) -> ScanRun:
         try:
@@ -349,4 +402,4 @@ class ScanApiService:
         return run
 
 
-__all__ = ["APPLICATION_VERSION", "ApiError", "ScanApiService", "canonicalize_public_git_url"]
+__all__ = ["APPLICATION_VERSION", "ApiError", "ScanApiService", "ZipScanCandidate", "canonicalize_public_git_url"]

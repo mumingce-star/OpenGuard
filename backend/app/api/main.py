@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import stat
+from base64 import b64encode
 from contextlib import asynccontextmanager
 from pathlib import Path
 from collections.abc import Awaitable, Callable
@@ -17,6 +18,7 @@ from fastapi.responses import JSONResponse, Response
 from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.ai import OllamaProvider
 from app.api.models import (
     ErrorBody,
     ErrorEnvelope,
@@ -30,9 +32,12 @@ from app.api.models import (
     ZipScanCreateFields,
 )
 from app.api.service import APPLICATION_VERSION, ApiError, ScanApiService
+from app.api.git_scan import GitScanRuntime
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
-from app.persistence import SQLiteScanRunRegistry
+from app.persistence import SQLiteScanRunRegistry, ZipDispatchStore
+from app.pipeline.zip_dispatcher import ZipDispatcher
+from app.reporting import PipelineReportPublisher, ReportArtifactStore
 
 
 _ERROR_RESPONSES = {
@@ -124,7 +129,10 @@ def _router() -> APIRouter:
                     message="Request parameters are invalid.",
                     reason="request_invalid",
                 ) from None
-            return service.create_git_scan(body)
+            runtime: GitScanRuntime | None = request.app.state.git_scan_runtime
+            if runtime is None:
+                return service.create_git_scan(body)
+            return runtime.submit(body, service, background_tasks)
 
         if media_type == "multipart/form-data":
             runtime: ZipScanRuntime | None = request.app.state.zip_scan_runtime
@@ -135,6 +143,15 @@ def _router() -> APIRouter:
                     message="ZIP scanning is unavailable.",
                     reason="zip_runtime_unavailable",
                 )
+            dispatcher: ZipDispatcher | None = request.app.state.zip_dispatcher
+            if dispatcher is not None and not dispatcher.is_accepting:
+                raise ApiError(
+                    status_code=500,
+                    code="internal_error",
+                    message="ZIP scanning is unavailable.",
+                    reason="dispatch_storage_failure",
+                )
+            reservation = runtime.reserve_upload_capacity()
             try:
                 async with request.form(max_files=1, max_fields=2, max_part_size=64 * 1024 * 1024) as form:
                     grouped: dict[str, list[object]] = {}
@@ -157,7 +174,7 @@ def _router() -> APIRouter:
                         source_type=source_type,
                         idempotency_key=idempotency,
                     )
-                    return await runtime.submit(upload, fields, service, background_tasks)
+                    return await runtime.submit(upload, fields, service, background_tasks, reservation=reservation)
             except ApiError:
                 raise
             except RequestBodyTooLarge:
@@ -174,6 +191,8 @@ def _router() -> APIRouter:
                     message="ZIP upload is invalid.",
                     reason="request_invalid",
                 ) from None
+            finally:
+                runtime.release_upload_capacity(reservation)
 
         raise ApiError(
             status_code=415,
@@ -238,7 +257,23 @@ def _router() -> APIRouter:
         scan_id: str,
         service: Annotated[ScanApiService, Depends(_service)],
         report_format: Annotated[ReportFormat, Query(alias="format")],
-    ) -> ReportLink:
+        download: Annotated[bool, Query()] = False,
+    ) -> ReportLink | Response:
+        if download:
+            stored = service.download_report(scan_id, report_format)
+            digest = b64encode(bytes.fromhex(stored.link.content_hash.value)).decode("ascii")
+            return Response(
+                content=stored.content,
+                media_type=stored.media_type,
+                headers={
+                    "Cache-Control": "private, no-store",
+                    "Content-Disposition": f'attachment; filename="{stored.filename}"',
+                    "Content-Digest": f"sha-256=:{digest}:",
+                    "Content-Security-Policy": "sandbox allow-downloads; default-src 'none'; base-uri 'none'; form-action 'none'",
+                    "ETag": f'"sha256:{stored.link.content_hash.value}"',
+                    "X-Content-Type-Options": "nosniff",
+                },
+            )
         return service.report(scan_id, report_format)
 
     return router
@@ -248,19 +283,54 @@ def create_app(
     registry: SQLiteScanRunRegistry,
     *,
     zip_runtime: ZipScanRuntime | None = None,
+    git_runtime: GitScanRuntime | None = None,
+    report_store: ReportArtifactStore | None = None,
     close_registry: bool = False,
+    zip_dispatcher: ZipDispatcher | None = None,
 ) -> FastAPI:
+    if zip_dispatcher is not None:
+        # Durable lifecycle ownership is deliberately all-or-nothing.  An
+        # injected dispatcher must use exactly this registry and runtime store,
+        # and this lifespan must close the registry before it can release the
+        # flock.  That prevents a caller from accidentally pairing a lock for
+        # one data root with a worker using another.
+        if (
+            not close_registry
+            or zip_runtime is None
+            or zip_runtime._registry is not registry
+            or type(zip_runtime._dispatch_store) is not ZipDispatchStore
+            or not zip_dispatcher.is_bound_to(
+                registry,
+                zip_runtime._dispatch_store,
+                ai_provider=zip_runtime._ai_provider,
+                ai_enabled=zip_runtime._ai_enabled,
+                ai_timeout_seconds=zip_runtime._ai_timeout_seconds,
+                external_scanners=zip_runtime._external_scanners,
+            )
+        ):
+            raise ValueError("zip dispatcher must own the matching ZIP runtime and registry lifecycle")
+
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        dispatcher_started = False
         try:
+            if zip_dispatcher is not None:
+                zip_dispatcher.start()
+                dispatcher_started = True
             yield
         finally:
+            if dispatcher_started:
+                zip_dispatcher.stop_and_join()
             if close_registry:
                 registry.close()
+            if zip_dispatcher is not None and zip_dispatcher.has_lifecycle_lock:
+                zip_dispatcher.release_lifecycle_lock()
 
     app = FastAPI(title="OpenGuard API", version=APPLICATION_VERSION, lifespan=lifespan)
-    app.state.scan_api_service = ScanApiService(registry)
+    app.state.scan_api_service = ScanApiService(registry, report_store=report_store)
     app.state.zip_scan_runtime = zip_runtime
+    app.state.git_scan_runtime = git_runtime
+    app.state.zip_dispatcher = zip_dispatcher
 
     @app.middleware("http")
     async def limit_zip_request_body(
@@ -374,6 +444,12 @@ def create_app(
 
 
 def create_default_app() -> FastAPI:
+    external_scanners = os.environ.get("OPENGUARD_ENABLE_EXTERNAL_SCANNERS", "0")
+    if external_scanners not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_EXTERNAL_SCANNERS")
+    durable_zip_enabled = os.environ.get("OPENGUARD_ENABLE_DURABLE_ZIP", "0")
+    if durable_zip_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_DURABLE_ZIP")
     configured = os.environ.get("OPENGUARD_DATA_DIR", "data")
     if not configured or "\x00" in configured:
         raise RuntimeError("invalid OPENGUARD_DATA_DIR")
@@ -387,21 +463,83 @@ def create_default_app() -> FastAPI:
         raise RuntimeError("OpenGuard data directory must be private")
     upload_root = data_dir / "uploads"
     workspace_root = data_dir / "workspaces"
-    for root in (upload_root, workspace_root):
+    report_root = data_dir / "reports"
+    dispatch_root = data_dir / "dispatch"
+    roots = (upload_root, workspace_root, report_root)
+    if durable_zip_enabled == "1":
+        roots = (*roots, dispatch_root)
+    for root in roots:
         try:
             root.mkdir(mode=0o700, exist_ok=True)
             info = root.lstat()
         except OSError as error:
-            raise RuntimeError("OpenGuard ZIP runtime directory is unavailable") from error
+            raise RuntimeError("OpenGuard runtime directory is unavailable") from error
         if not stat.S_ISDIR(info.st_mode) or stat.S_ISLNK(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
-            raise RuntimeError("OpenGuard ZIP runtime directory must be private")
+            raise RuntimeError("OpenGuard runtime directory must be private")
+    ai_enabled = os.environ.get("OPENGUARD_ENABLE_AI", "0")
+    if ai_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_AI")
     registry = SQLiteScanRunRegistry(data_dir / "scans.db")
+    report_store = ReportArtifactStore(report_root)
+    docker_ollama = os.environ.get("OPENGUARD_OLLAMA_DOCKER_HOST", "0")
+    if docker_ollama not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_OLLAMA_DOCKER_HOST")
+    ai_provider = (
+        OllamaProvider("http://host.docker.internal:11434", docker_host=True)
+        if docker_ollama == "1" else OllamaProvider()
+    ) if ai_enabled == "1" else None
+    dispatch_store = (
+        ZipDispatchStore(dispatch_root, upload_root, recovery_mode=True)
+        if durable_zip_enabled == "1"
+        else None
+    )
     runtime = ZipScanRuntime(
         registry,
         upload_root=upload_root,
         workspace_root=workspace_root,
+        report_publisher=PipelineReportPublisher(report_store),
+        ai_provider=ai_provider,
+        ai_enabled=ai_enabled == "1",
+        dispatch_store=dispatch_store,
+        external_scanners=external_scanners == "1",
     )
-    return create_app(registry, zip_runtime=runtime, close_registry=True)
+    git_enabled = os.environ.get("OPENGUARD_ENABLE_PUBLIC_GIT", "0")
+    if git_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_PUBLIC_GIT")
+    git_runtime = (
+        GitScanRuntime(
+            registry,
+            workspace_root=workspace_root,
+            report_publisher=PipelineReportPublisher(report_store),
+            ai_provider=ai_provider,
+            ai_enabled=ai_enabled == "1",
+            external_scanners=external_scanners == "1",
+        )
+        if git_enabled == "1"
+        else None
+    )
+    dispatcher = (
+        ZipDispatcher(
+            registry,
+            dispatch_store,
+            data_dir=data_dir,
+            workspace_root=workspace_root,
+            report_publisher=PipelineReportPublisher(report_store),
+            ai_provider=ai_provider,
+            ai_enabled=ai_enabled == "1",
+            external_scanners=external_scanners == "1",
+        )
+        if dispatch_store is not None
+        else None
+    )
+    return create_app(
+        registry,
+        zip_runtime=runtime,
+        git_runtime=git_runtime,
+        report_store=report_store,
+        close_registry=True,
+        zip_dispatcher=dispatcher,
+    )
 
 
 __all__ = ["create_app", "create_default_app"]

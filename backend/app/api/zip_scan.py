@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import os
 import stat
 import tempfile
@@ -15,10 +16,19 @@ from urllib.parse import unquote
 from fastapi import BackgroundTasks
 from starlette.datastructures import UploadFile
 
+from app.ai import Provider
 from app.api.models import ScanCreateAccepted, ZipScanCreateFields
 from app.api.service import ApiError, ScanApiService
-from app.persistence import SQLiteScanRunRegistry
+from app.persistence import (
+    SQLiteScanRunRegistry,
+    ZipDispatchDescriptor,
+    ZipDispatchError,
+    ZipDispatchReservation,
+    ZipDispatchStore,
+    ZipExecutionProfile,
+)
 from app.pipeline import ScanPipelineWorker, build_local_zip_dependency_plan
+from app.reporting import PipelineReportPublisher
 from app.security.limits import ZipSafetyLimits
 
 
@@ -83,14 +93,68 @@ class ZipScanRuntime:
         upload_root: Path,
         workspace_root: Path,
         clock: Callable[[], datetime] | None = None,
+        report_publisher: PipelineReportPublisher | None = None,
+        ai_provider: Provider | None = None,
+        ai_enabled: bool = False,
+        external_scanners: bool = False,
+        ai_timeout_seconds: float = 10.0,
+        dispatch_store: ZipDispatchStore | None = None,
     ) -> None:
-        if not isinstance(registry, SQLiteScanRunRegistry) or (clock is not None and not callable(clock)):
+        if (
+            not isinstance(registry, SQLiteScanRunRegistry)
+            or (clock is not None and not callable(clock))
+            or (report_publisher is not None and type(report_publisher) is not PipelineReportPublisher)
+            or type(ai_enabled) is not bool
+            or type(external_scanners) is not bool
+            or type(ai_timeout_seconds) not in {int, float}
+            or isinstance(ai_timeout_seconds, bool)
+            or not math.isfinite(ai_timeout_seconds)
+            or ai_timeout_seconds <= 0
+            or (ai_enabled and ai_provider is None)
+            or (dispatch_store is not None and type(dispatch_store) is not ZipDispatchStore)
+        ):
             raise ValueError("invalid zip runtime")
         self._registry = registry
         self._upload_root = _validate_private_root(upload_root)
         self._workspace_root = _validate_private_root(workspace_root)
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self._upload_max_bytes = ZipSafetyLimits().upload_max_bytes
+        self._report_publisher = report_publisher
+        self._ai_provider = ai_provider
+        self._ai_enabled = ai_enabled
+        self._external_scanners = external_scanners
+        self._ai_timeout_seconds = float(ai_timeout_seconds)
+        self._dispatch_store = dispatch_store
+        if dispatch_store is not None and dispatch_store.upload_root != self._upload_root:
+            raise ValueError("dispatch store upload root must match ZIP runtime")
+
+    def reserve_upload_capacity(self) -> ZipDispatchReservation | None:
+        """Reserve before ``request.form()`` is allowed to consume one body byte."""
+
+        store = self._dispatch_store
+        if store is None:
+            return None
+        try:
+            return store.reserve_upload()
+        except ZipDispatchError as error:
+            if error.code == "dispatch_capacity_exceeded":
+                raise _api_error(
+                    status_code=500,
+                    code="internal_error",
+                    message="ZIP upload capacity is unavailable.",
+                    reason="dispatch_capacity_exceeded",
+                ) from None
+            raise _api_error(
+                status_code=500,
+                code="internal_error",
+                message="ZIP upload capacity is unavailable.",
+                reason="dispatch_storage_failure",
+            ) from None
+
+    @staticmethod
+    def release_upload_capacity(reservation: ZipDispatchReservation | None) -> None:
+        if reservation is not None:
+            reservation.release()
 
     async def submit(
         self,
@@ -98,15 +162,40 @@ class ZipScanRuntime:
         fields: ZipScanCreateFields,
         service: ScanApiService,
         background_tasks: BackgroundTasks,
+        reservation: ZipDispatchReservation | None = None,
     ) -> ScanCreateAccepted:
         if not isinstance(upload, UploadFile) or type(fields) is not ZipScanCreateFields:
             raise _api_error(status_code=422, code="invalid_archive", message="ZIP upload is invalid.", reason="request_invalid")
         if upload.content_type not in _CONTENT_TYPES:
             raise _api_error(status_code=422, code="invalid_archive", message="ZIP upload is invalid.", reason="content_type_invalid")
         project_name = _project_name(upload.filename)
-        archive_path, digest = await self._stage(upload)
+        store = self._dispatch_store
+        if store is not None and reservation is None:
+            raise _api_error(
+                status_code=500,
+                code="internal_error",
+                message="ZIP upload could not be prepared.",
+                reason="dispatch_reservation_required",
+            )
+        archive_path, digest = await self._stage(upload, reservation=reservation)
+        if store is None:
+            try:
+                accepted, created = service.create_zip_scan(
+                    fields,
+                    staged_name=archive_path.name,
+                    project_name=project_name,
+                    input_digest=digest,
+                )
+            except Exception:
+                self._remove(archive_path)
+                raise
+            if not created:
+                self._remove(archive_path)
+                return accepted
+            background_tasks.add_task(self._execute, accepted.scan_id, archive_path)
+            return accepted
         try:
-            accepted, created = service.create_zip_scan(
+            candidate = service.build_zip_scan_candidate(
                 fields,
                 staged_name=archive_path.name,
                 project_name=project_name,
@@ -115,28 +204,123 @@ class ZipScanRuntime:
         except Exception:
             self._remove(archive_path)
             raise
-        if not created:
-            self._remove(archive_path)
-            return accepted
-        background_tasks.add_task(self._execute, accepted.scan_id, archive_path)
-        return accepted
 
-    async def _stage(self, upload: UploadFile) -> tuple[Path, str]:
+        try:
+            profile = ZipExecutionProfile.from_provider(
+                ai_requested=self._ai_enabled,
+                provider=self._ai_provider,
+                ai_timeout_seconds=self._ai_timeout_seconds,
+                external_scanners=self._external_scanners,
+            )
+        except ZipDispatchError:
+            # No descriptor exists at this point, so this owned staging file is
+            # still safe to remove before the request's finally releases it.
+            self._remove(archive_path)
+            raise _api_error(
+                status_code=500,
+                code="internal_error",
+                message="ZIP upload could not be prepared.",
+                reason="dispatch_storage_failure",
+            ) from None
+        descriptor: ZipDispatchDescriptor
+        try:
+            with store.operation():
+                descriptor = store.prepare(archive_path, candidate.run, profile, reservation)
+                store.checkpoint("after_prepared_before_registry")
+                accepted, created = service.commit_zip_scan_candidate(candidate)
+                if created:
+                    try:
+                        durable = self._registry.get(accepted.scan_id).run
+                    except Exception:
+                        raise _api_error(
+                            status_code=500,
+                            code="internal_error",
+                            message="ZIP upload could not be prepared.",
+                            reason="dispatch_storage_failure",
+                        ) from None
+                    if durable != candidate.run:
+                        raise _api_error(
+                            status_code=500,
+                            code="internal_error",
+                            message="ZIP upload could not be prepared.",
+                            reason="dispatch_storage_failure",
+                        )
+                    store.checkpoint("after_registry_before_ready")
+                    store.promote(descriptor)
+                    return accepted
+                try:
+                    store.discard_prepared(descriptor, archive_path, reservation)
+                except ZipDispatchError:
+                    # The registry has already committed the idempotent answer.
+                    # Preserve that original ID/profile and retain the loser for
+                    # bounded capacity accounting rather than turn it into 500.
+                    pass
+                return accepted
+        except ApiError as error:
+            if error.reason == "idempotency_conflict":
+                try:
+                    # The live reservation token proves this is exactly this
+                    # request's prepared loser; do not leave its ZIP behind.
+                    store.discard_prepared(descriptor, archive_path, reservation)
+                except ZipDispatchError:
+                    # The registry has already determined the public result.
+                    # Preserve its 409 and leave this proven input/descriptor
+                    # pair for bounded future cleanup and capacity accounting.
+                    pass
+                raise
+            raise
+        except ZipDispatchError:
+            # After an attempted prepared write, leave the descriptor and input
+            # for I2 rather than risk a dangling/partially deleted pair.
+            raise _api_error(
+                status_code=500,
+                code="internal_error",
+                message="ZIP upload could not be prepared.",
+                reason="dispatch_storage_failure",
+            ) from None
+        raise AssertionError("unreachable")
+
+    async def _stage(
+        self,
+        upload: UploadFile,
+        *,
+        reservation: ZipDispatchReservation | None = None,
+    ) -> tuple[Path, str]:
         file_descriptor: int | None = None
         archive_path: Path | None = None
         digest = hashlib.sha256()
         received = 0
         completed = False
         try:
-            file_descriptor, rendered = tempfile.mkstemp(
-                prefix="openguard-upload-",
-                suffix=".zip",
-                dir=self._upload_root,
-            )
-            archive_path = Path(rendered)
-            info = os.fstat(file_descriptor)
-            if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
-                raise OSError("unsafe staged file")
+            store = self._dispatch_store
+            if store is not None:
+                if reservation is None:
+                    raise OSError("missing reservation")
+                # ``reserve_upload`` rescans the private directory under the
+                # same store lock.  Binding the generated name before that
+                # lock is released prevents another request from mistaking
+                # this in-flight file for a persistent input.
+                with store.operation():
+                    file_descriptor, rendered = tempfile.mkstemp(
+                        prefix="openguard-upload-",
+                        suffix=".zip",
+                        dir=self._upload_root,
+                    )
+                    archive_path = Path(rendered)
+                    info = os.fstat(file_descriptor)
+                    if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
+                        raise OSError("unsafe staged file")
+                    store.bind_upload(reservation, archive_path)
+            else:
+                file_descriptor, rendered = tempfile.mkstemp(
+                    prefix="openguard-upload-",
+                    suffix=".zip",
+                    dir=self._upload_root,
+                )
+                archive_path = Path(rendered)
+                info = os.fstat(file_descriptor)
+                if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o077:
+                    raise OSError("unsafe staged file")
             while True:
                 chunk = await upload.read(_CHUNK_SIZE)
                 if not chunk:
@@ -163,6 +347,7 @@ class ZipScanRuntime:
             os.fsync(file_descriptor)
             os.close(file_descriptor)
             file_descriptor = None
+            self._fsync_directory(self._upload_root)
             completed = True
             return archive_path, digest.hexdigest()
         except ApiError:
@@ -184,10 +369,42 @@ class ZipScanRuntime:
                 archive_path,
                 self._workspace_root,
                 clock=self._clock,
+                ai_provider=self._ai_provider,
+                ai_enabled=self._ai_enabled,
+                ai_timeout_seconds=self._ai_timeout_seconds,
+                external_scanners=self._external_scanners,
             )
-            ScanPipelineWorker(self._registry, clock=self._clock).run(scan_id, plan)
+            publisher = self._report_publisher
+            ScanPipelineWorker(
+                self._registry,
+                clock=self._clock,
+                terminal_publisher=publisher.publish if publisher is not None else None,
+            ).run(scan_id, plan)
         finally:
             self._remove(archive_path)
+
+    @staticmethod
+    def _fsync_directory(path: Path) -> None:
+        descriptor: int | None = None
+        try:
+            descriptor = os.open(
+                path,
+                os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0),
+            )
+            os.fsync(descriptor)
+        except OSError:
+            raise _api_error(
+                status_code=500,
+                code="internal_error",
+                message="ZIP upload could not be staged.",
+                reason="upload_staging_failed",
+            ) from None
+        finally:
+            if descriptor is not None:
+                try:
+                    os.close(descriptor)
+                except OSError:
+                    pass
 
     @staticmethod
     def _remove(path: Path) -> None:

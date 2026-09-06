@@ -3,9 +3,20 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
+import time
+
+import pytest
+
 from datetime import datetime, timezone
 
 from app.domain.models import Component, ComponentType, DetectionMethod
+from app.scanners import external_tools
+from app.scanners import scancode_pipeline
+from app.ingestion.inventory import Inventory, InventoryEntry
+from app.security.errors import IngestionSecurityError
 from app.scanners.external_tools import (
     ToolExecution,
     map_scancode_output,
@@ -18,6 +29,131 @@ from app.scanners.external_tools import (
 
 _DIGEST = "0" * 64
 _NOW = datetime(2026, 9, 2, tzinfo=timezone.utc)
+
+
+class _TreeTarget:
+    inherited_fds = (9,)
+
+    def proc_target(self):
+        return "/proc/self/fd/9"
+
+
+def _scan_inventory(paths):
+    return Inventory(tuple(InventoryEntry(path, 1, "a" * 64) for path in paths), _DIGEST)
+
+
+def _scan(inventory):
+    return scancode_pipeline.scan_sealed_tree(
+        _TreeTarget(), inventory, executable="scancode", tool_version="32.5.0", observed_at=_NOW
+    )
+
+
+def test_missing_file_supplements_rebind_only_matching_hashes_under_shared_budgets(monkeypatch):
+    paths = ["repo/.gitignore", "repo/ordinary.txt"]
+    calls = []
+    clock = [0.0]
+    outputs = []
+
+    def invoke(tool, target, **kwargs):
+        calls.append((tool, target, kwargs))
+        path = kwargs["relative_file"]
+        files = [] if path is None else [{"path": path.rsplit("/", 1)[-1], "type": "file",
+            "sha256": "a" * 64, "scan_errors": [], "detected_license_expression": "mit"}]
+        raw = json.dumps({"files": files}).encode()
+        outputs.append(len(raw))
+        clock[0] += 4
+        return ToolExecution(tool, "complete", raw)
+
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    monkeypatch.setattr(scancode_pipeline.time, "monotonic", lambda: clock[0])
+    result = _scan(_scan_inventory(paths))
+    assert [e.locator for e in result.mapping.evidence] == paths
+    assert all(e.content_hash.value == "a" * 64 for e in result.mapping.evidence)
+    assert [call[2]["relative_file"] for call in calls] == [None, *paths]
+    assert [call[2]["timeout_seconds"] for call in calls] == [120, 116, 112]
+    assert [call[2]["max_output_bytes"] for call in calls] == [
+        8 * 1024 * 1024, 8 * 1024 * 1024 - outputs[0], 8 * 1024 * 1024 - sum(outputs[:2])]
+    assert all(call[1] == "/proc/self/fd/9" and call[2]["pass_fds"] == (9,) for call in calls)
+
+
+@pytest.mark.parametrize("bad", [
+    {"path": "different"}, {"path": "../.gitignore"}, {"path": "repo/.gitignore"},
+    {"sha256": "b" * 64}, {"sha256": None}, {"type": "directory"}, {"scan_errors": ["failure"]},
+])
+def test_bad_supplement_never_becomes_inventory_evidence(monkeypatch, bad):
+    def invoke(tool, _target, **kwargs):
+        record = {"path": ".gitignore", "type": "file", "sha256": "a" * 64, **bad}
+        files = [] if kwargs["relative_file"] is None else [record]
+        return ToolExecution(tool, "complete", json.dumps({"files": files}).encode())
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError) as error:
+        _scan(_scan_inventory(["repo/.gitignore"]))
+    assert error.value.reason == "external_scanner_invalid_output"
+
+
+@pytest.mark.parametrize("record", [
+    {"path": "other", "type": "file"},
+    {"path": "present", "type": "file", "sha256": "b" * 64},
+    {"path": "present", "type": "file", "scan_errors": ["failure"]},
+])
+def test_invalid_initial_observation_is_not_hidden_by_supplements(monkeypatch, record):
+    calls = []
+    def invoke(tool, _target, **kwargs):
+        calls.append(kwargs)
+        return ToolExecution(tool, "complete", json.dumps({"files": [record]}).encode())
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError):
+        _scan(_scan_inventory(["present", "missing"]))
+    assert len(calls) == 1
+
+
+def test_supplement_count_is_limited_before_extra_processes(monkeypatch):
+    calls = []
+    def invoke(tool, _target, **kwargs):
+        calls.append(kwargs)
+        return ToolExecution(tool, "complete", b'{"files":[]}')
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError):
+        _scan(_scan_inventory([f"file{i}" for i in range(9)]))
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize("exhaust", ["time", "bytes"])
+def test_total_scancode_budget_is_not_reset_for_supplements(monkeypatch, exhaust):
+    clock = [0.0]
+    calls = []
+    def invoke(tool, _target, **kwargs):
+        calls.append(kwargs)
+        if kwargs["relative_file"] is None:
+            raw = b'{"files":[]}'
+            if exhaust == "time":
+                clock[0] = 121
+            else:
+                raw += b" " * (8 * 1024 * 1024 - len(raw))
+            return ToolExecution(tool, "complete", raw)
+        pytest.fail("exhausted total budget started a supplement")
+    monkeypatch.setattr(scancode_pipeline.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(scancode_pipeline, "run_scancode_license_scan", invoke)
+    with pytest.raises(IngestionSecurityError) as error:
+        _scan(_scan_inventory(["missing"]))
+    assert error.value.reason == ("scanner_timeout" if exhaust == "time" else "tool_output_limit_exceeded")
+    assert len(calls) == 1
+
+
+def test_single_file_command_is_fixed_and_cannot_be_an_option(monkeypatch):
+    calls = []
+    monkeypatch.setattr(external_tools, "run_json_tool", lambda *args, **kwargs: calls.append((args, kwargs)))
+    external_tools.run_scancode_license_scan("scancode", "/proc/self/fd/9", pass_fds=(9,),
+        relative_file="--help", timeout_seconds=37.5, max_output_bytes=1000)
+    assert calls == [(("scancode", ("--processes", "0", "--license", "--info", "--strip-root", "--json", "-", "./--help")),
+        {"timeout_seconds": 37.5, "max_output_bytes": 1000, "pass_fds": (9,), "scancode_runtime": True,
+         "working_directory": "/proc/self/fd/9"})]
+
+
+@pytest.mark.parametrize("path", ["../escape", "/etc/passwd", "nested/../escape", "./file", "nested\\file", ""])
+def test_single_file_command_rejects_untrusted_paths(path):
+    with pytest.raises(ValueError):
+        external_tools.run_scancode_license_scan("scancode", "/proc/self/fd/9", pass_fds=(9,), relative_file=path)
 
 
 def test_scancode_maps_only_locatable_license_evidence_and_candidates() -> None:
@@ -80,3 +216,191 @@ def test_tool_output_is_bounded_and_invalid_json_is_not_promoted() -> None:
     assert parse_json_output(ToolExecution("syft", "complete", b"not-json")) is None
     unavailable = run_json_tool("openguard-tool-that-does-not-exist", ["--version"])
     assert unavailable.status == "unavailable" and unavailable.error_code == "tool_unavailable"
+
+
+# Exercise the actual POSIX pipe/process-group boundary with controlled local
+# programs, independent of installed ScanCode/Syft versions.
+@pytest.mark.skipif(os.name != "posix", reason="POSIX process-group contract")
+def test_incremental_capture_stops_at_default_eight_mib(monkeypatch) -> None:
+    reads = []
+    actual_read = os.read
+
+    def recorded_read(fd, size):
+        chunk = actual_read(fd, size)
+        reads.append((size, len(chunk)))
+        return chunk
+
+    monkeypatch.setattr(external_tools.os, "read", recorded_read)
+    started = time.monotonic()
+    execution = run_json_tool(
+        sys.executable,
+        ["-c", "import os,time; chunk=b'x'*65536\nwhile True: os.write(1,chunk)"],
+        timeout_seconds=5,
+    )
+    assert execution.status == "failed"
+    assert execution.error_code == "tool_output_limit_exceeded"
+    assert execution.stdout is None
+    assert time.monotonic() - started < 5
+    # Popen also reads its startup-error pipe (zero bytes on success).
+    assert sum(count for _, count in reads) == 8 * 1024 * 1024 + 1
+    assert max(size for size, _ in reads) <= 65536
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX process-group contract")
+@pytest.mark.parametrize("size,status", [(4096, "complete"), (4097, "failed")])
+def test_exact_capture_limit(size, status) -> None:
+    execution = run_json_tool(
+        sys.executable, ["-c", f"import os; os.write(1,b'x'*{size})"],
+        max_output_bytes=4096,
+    )
+    assert execution.status == status
+    if status == "complete":
+        assert execution.stdout == b"x" * size
+    else:
+        assert execution.error_code == "tool_output_limit_exceeded"
+        assert execution.stdout is None
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX process-group contract")
+def test_timeout_terminates_and_reaps_leader_and_descendant(tmp_path, monkeypatch) -> None:
+    pid_file = tmp_path / "child.pid"
+    code = '''import os,signal,time,sys
+child = os.fork()
+if child == 0:
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
+    open(sys.argv[1], 'w').write(str(os.getpid()))
+    while True: time.sleep(.02)
+def finish(*_):
+    os.waitpid(child, 0)
+    sys.exit(0)
+signal.signal(signal.SIGTERM, finish)
+while True: time.sleep(.02)
+'''
+    spawned = []
+    actual_popen = subprocess.Popen
+
+    def tracked_popen(*args, **kwargs):
+        assert kwargs["stdin"] == subprocess.DEVNULL
+        assert kwargs["stderr"] == subprocess.DEVNULL
+        assert kwargs["shell"] is False
+        assert kwargs["close_fds"] is True
+        assert kwargs["start_new_session"] is True
+        process = actual_popen(*args, **kwargs)
+        spawned.append(process)
+        return process
+
+    monkeypatch.setattr(external_tools.subprocess, "Popen", tracked_popen)
+    started = time.monotonic()
+    execution = run_json_tool(sys.executable, ["-c", code, str(pid_file)], timeout_seconds=1)
+    assert execution == ToolExecution(sys.executable, "timeout", None, "scanner_timeout")
+    assert time.monotonic() - started < 3
+    assert spawned[0].poll() is not None
+    assert spawned[0].stdout.closed
+    child_pid = int(pid_file.read_text())
+    with pytest.raises(ProcessLookupError):
+        os.kill(child_pid, 0)
+    with pytest.raises(ChildProcessError):
+        os.waitpid(spawned[0].pid, os.WNOHANG)
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX process-group contract")
+def test_timeout_applies_after_stdout_closed() -> None:
+    execution = run_json_tool(
+        sys.executable, ["-c", "import os,time; os.close(1); time.sleep(30)"], timeout_seconds=1,
+    )
+    assert execution.status == "timeout" and execution.error_code == "scanner_timeout"
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX process-group contract")
+def test_runtime_environment_and_diagnostics_are_sanitized(monkeypatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "never-forward-this-secret")
+    monkeypatch.setenv("SCANCODE_CACHE", "/caller-chosen-cache")
+    monkeypatch.setenv("SCANCODE_TEMP", "/caller-chosen-temp")
+    monkeypatch.setenv("SYFT_CHECK_FOR_APP_UPDATE", "true")
+    execution = run_json_tool(
+        sys.executable, ["-c", "import os,json; print(json.dumps(dict(os.environ)))"],
+        disable_update_check=True, scancode_runtime=True,
+    )
+    environment = parse_json_output(execution)
+    assert environment is not None
+    assert "OPENAI_API_KEY" not in environment
+    assert environment["SYFT_CHECK_FOR_APP_UPDATE"] == "false"
+    assert environment["SCANCODE_CACHE"] == "/tmp/scancode-cache"
+    assert environment["SCANCODE_TEMP"] == "/tmp"
+    failed = run_json_tool(sys.executable, ["-c", "import sys; print('secret',file=sys.stderr); sys.exit(9)"])
+    assert failed == ToolExecution(sys.executable, "failed", None, "scanner_failed")
+
+
+def test_fixed_scanner_invocations(monkeypatch) -> None:
+    calls = []
+
+    def capture(tool, arguments, **kwargs):
+        calls.append((tool, arguments, kwargs))
+        return ToolExecution(tool, "complete", b"{}")
+
+    monkeypatch.setattr(external_tools, "run_json_tool", capture)
+    external_tools.run_scancode_license_scan("scancode", "/proc/self/fd/9", pass_fds=(9,))
+    external_tools.run_syft_sbom_scan("syft", "/proc/self/fd/9", pass_fds=(9,))
+    assert calls[0] == (
+        "scancode", ("--processes", "0", "--license", "--strip-root", "--json", "-", "."),
+        {"timeout_seconds": 120, "max_output_bytes": 8 * 1024 * 1024, "pass_fds": (9,), "scancode_runtime": True, "working_directory": "/proc/self/fd/9"},
+    )
+    assert calls[1] == (
+        "syft", ("scan", "dir:/proc/self/fd/9", "-o", "syft-json"),
+        {"timeout_seconds": 120, "max_output_bytes": 8 * 1024 * 1024, "pass_fds": (9,), "disable_update_check": True},
+    )
+
+
+@pytest.mark.parametrize("target,fds", [
+    ("/proc/self/fd/9/../../etc", (9,)), ("/proc/self/fd/9suffix", (9,)),
+    ("/proc/self/fd/９", (9,)), ("/proc/self/fd/09", (9,)),
+    ("/proc/self/fd/9", (8,)), ("/proc/self/fd/9", (9, 10)),
+    ("/proc/self/fd/9", ()), ("/tmp/root", (9,)),
+])
+@pytest.mark.parametrize("wrapper", [external_tools.run_scancode_license_scan, external_tools.run_syft_sbom_scan])
+def test_fixed_scanner_rejects_non_exact_or_mismatched_fd(target, fds, wrapper) -> None:
+    with pytest.raises(ValueError):
+        wrapper("tool", target, pass_fds=fds)
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX cwd contract")
+def test_real_subprocess_reads_contents_from_trusted_working_directory(tmp_path) -> None:
+    (tmp_path / "LICENSE").write_text("controlled-license")
+    descriptor = os.open(tmp_path, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+    try:
+        # Linux exercises the actual proc-FD target. macOS lacks procfs, so
+        # exercise the same Popen cwd/read behavior using the controlled path.
+        directory = f"/proc/self/fd/{descriptor}" if sys.platform == "linux" else str(tmp_path)
+        execution = run_json_tool(
+            sys.executable,
+            ["-c", "import json,pathlib; print(json.dumps({'license':pathlib.Path('LICENSE').read_text()}))"],
+            working_directory=directory, pass_fds=(descriptor,),
+        )
+        assert execution.status == "complete"
+        assert parse_json_output(execution) == {"license": "controlled-license"}
+    finally:
+        os.close(descriptor)
+
+
+def test_configured_network_sandbox_never_falls_back(monkeypatch, tmp_path):
+    marker = tmp_path / "unsafe-executed"
+    monkeypatch.setenv("OPENGUARD_SCANNER_SANDBOX", "/not-the-approved-launcher")
+    result = run_json_tool(sys.executable, ["-c", f"open({str(marker)!r}, 'w').close()"])
+    assert result.status == "failed"
+    assert not marker.exists()
+
+
+def test_missing_approved_network_sandbox_does_not_run_tool(monkeypatch):
+    import subprocess
+    calls = []
+    def missing(command, **kwargs):
+        calls.append(command)
+        raise FileNotFoundError("missing sandbox")
+    monkeypatch.setenv("OPENGUARD_SCANNER_SANDBOX", "/opt/openguard/scanner-no-network")
+    monkeypatch.setattr(subprocess, "Popen", missing)
+    result = run_json_tool("scancode", ["--version"])
+    assert result.status == "unavailable"
+    assert len(calls) == 1
+    assert calls[0][:2] == ["/opt/openguard/scanner-no-network", "--files"]
+    assert calls[0][3:] == ["-", "scancode", "--version"]
+    assert not os.path.exists(calls[0][2])

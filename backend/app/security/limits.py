@@ -16,6 +16,44 @@ def _require_range(name: str, value: int, minimum: int, maximum: int) -> None:
 
 
 @dataclass(frozen=True)
+class GitSafetyLimits:
+    """Validated administrator-owned limits for one public Git ingestion."""
+
+    redirects_max: int = 0
+    connect_timeout_s: int = 10
+    total_timeout_s: int = 120
+    transfer_max_bytes: int = 256 * MIB
+    materialized_max_bytes: int = 512 * MIB
+    file_count_max: int = 50_000
+    single_file_max_bytes: int = 32 * MIB
+    path_depth_max: int = 32
+    path_utf8_bytes_max: int = 1_024
+    cleanup_retry_max: int = 3
+    scan_single_file_read_max_bytes: int = 2 * MIB
+    scan_total_read_max_bytes: int = 16 * MIB
+
+    def __post_init__(self) -> None:
+        _require_range("redirects_max", self.redirects_max, 0, 5)
+        if self.redirects_max != 0:
+            raise ValueError("redirects_max must remain zero until redirect validation is implemented")
+        _require_range("connect_timeout_s", self.connect_timeout_s, 3, 30)
+        _require_range("total_timeout_s", self.total_timeout_s, 30, 600)
+        _require_range("transfer_max_bytes", self.transfer_max_bytes, 16 * MIB, 1024 * MIB)
+        _require_range("materialized_max_bytes", self.materialized_max_bytes, 64 * MIB, 2 * 1024 * MIB)
+        _require_range("file_count_max", self.file_count_max, 1_000, 100_000)
+        _require_range("single_file_max_bytes", self.single_file_max_bytes, 1 * MIB, 128 * MIB)
+        _require_range("path_depth_max", self.path_depth_max, 8, 64)
+        _require_range("path_utf8_bytes_max", self.path_utf8_bytes_max, 256, 4_096)
+        _require_range("cleanup_retry_max", self.cleanup_retry_max, 1, 5)
+        _require_range("scan_single_file_read_max_bytes", self.scan_single_file_read_max_bytes, 64 * 1024, 32 * MIB)
+        _require_range("scan_total_read_max_bytes", self.scan_total_read_max_bytes, 1 * MIB, 256 * MIB)
+        if self.single_file_max_bytes > self.materialized_max_bytes:
+            raise ValueError("single_file_max_bytes must not exceed materialized_max_bytes")
+        if not self.scan_single_file_read_max_bytes <= self.scan_total_read_max_bytes <= self.materialized_max_bytes:
+            raise ValueError("scan read limits must fit within materialized limits")
+
+
+@dataclass(frozen=True)
 class ZipSafetyLimits:
     """Validated administrator configuration; request data cannot override it."""
 

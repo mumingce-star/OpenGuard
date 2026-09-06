@@ -11,7 +11,7 @@ app/
 ├── knowledge/       # SPDX、OSI、许可证义务
 ├── risk/            # 确定性规则和证据链
 ├── ai/              # 结构化抽取、解释和整改建议
-├── reports/         # HTML、JSON、CSV、资源清单
+├── reporting/       # HTML、JSON、CSV、资源清单
 ├── persistence/     # SQLite 与迁移接口
 └── security/        # 限额、路径、防泄漏和清理
 ```
@@ -92,6 +92,44 @@ descriptor-relative `O_NOFOLLOW`、目录与文件 identity seal、SHA-256 复�
 结束后保存的 session 引用永久失效；open/read/close、替换竞态、跨线程、重入、consumer
 异常和 cleanup 均按稳定错误失败关闭。该接口仅供可信、非执行性的进程内解析器使用；
 Python 私有属性和反射并不是安全沙箱，不得将任意第三方代码作为 consumer 执行。
+
+## A2-3a 公开 Git 与 TrustedEgress
+
+公开 Git 复用 A2-2 的只读 consumer，但输入必须先经过 `parse_public_git_url()`、固定
+TLS DoH 和任务级 `TrustedEgressProxy`。代理只接受目标 canonical host 的 `CONNECT :443`，
+逐连接检查全部 A/AAAA 都是公网地址并立即拨号已验证 IP；Git 不允许绕过该代理。Git 端固定
+禁凭据、交互、用户配置、环境代理、replace objects、hooks、LFS、重定向、submodule 和非
+HTTPS protocol，并以 `--no-checkout --depth=1 --single-branch --no-tags` 获取对象。
+
+物化阶段只接受 `100644`/`100755 blob`，经 `ls-tree -z` 检查后由 `cat-file --batch`
+流式写入 descriptor-safe tree；目标 executable bit 不恢复，symlink/gitlink/特殊 mode、路径
+冲突以及文件/字节/时间超限均失败关闭。revision、inventory digest、Git version/config digest
+进入现有 P0 provenance。公开连接明细仅是内部安全证据，不修改冻结 P0 Schema。
+
+默认应用必须由管理员显式开启真实摄取：
+
+```bash
+OPENGUARD_ENABLE_PUBLIC_GIT=1 \
+OPENGUARD_DATA_DIR=./data \
+PYTHONPATH=backend \
+python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+然后向既有路径提交 JSON：
+
+```json
+{
+  "source_type": "git",
+  "source": "https://github.com/pypa/sampleproject.git",
+  "idempotency_key": "public-git-demo-001"
+}
+```
+
+有受支持 manifest 的公开仓库当前会生成依赖和四格式报告，并诚实停在
+`partial/rules/70`；摄取安全失败会持久化为 `failed/ingestion/5`。未设置开关时继续保持
+A3-1 queued-only 兼容行为，不会静默联网。完整限制、测试和证据边界见
+`docs/spec/a2-public-git-trusted-egress.md`。Linux 隔离、持久任务恢复、私有仓库、B5 规则、
+A5 主链接线和前端仍未由本纵切完成。
 
 ## B1 Python manifest 解析器
 
@@ -226,6 +264,15 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_pipeline_worker.py
 该能力只证明本机 SQLite、单进程、单次显式调用的 durable 编排。它不提供后台任务、重试、租约、
 心跳、超时、崩溃恢复、exactly-once 外部副作用或完整 Web 扫描流程。
 
+## A5-1b 真实运行复现
+
+`python -m app.ai.runtime_probe SCAN_RUN.json --runs 2 --timeout-seconds 60` 只连接已运行的
+本机 Ollama loopback。输入必须是至少含一个尚未绑定 remediation 的合法 P0 `ScanRun`；不要修改
+冻结样例，可复制到仓库外的临时目录再清空样例 remediation。命令不会安装、下载或启动模型，
+不会打印 prompt、模型原文、异常或输入绝对路径；成功时只输出版本、锁定 model ID、成功率、
+聚合延迟和事实/来源/`pending`/稳定 ID 校验结果，失败只输出固定错误 JSON。正式实测应以
+`OLLAMA_NO_CLOUD=1 OLLAMA_NOHISTORY=1` 启动仅绑定 `127.0.0.1` 的 Ollama 服务。
+
 ## A4-1 本地 ZIP 依赖计划
 
 `app.pipeline.build_local_zip_dependency_plan()` 是项目负责人集成层的显式一次性计划：调用方先建立
@@ -233,9 +280,11 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_pipeline_worker.py
 只读会话内调用既有 Python 与 JavaScript parser/mapper，核对 ZIP 原始字节摘要，随后把 inventory
 root digest、真实 P0 `Component`/`Evidence`、producer 版本和 summary 持久化到 A3 SQLite。
 
-当前许可证规则尚未接线，所以有真实依赖证据的预期终态是 `partial/rules/70`，错误码为
-`rules_stage_not_connected`；这不是运行失败，也不能描述为完整许可证或合规扫描。AI 与 report 阶段
-不会执行。workspace root 必须是后端预先创建、仅当前用户可写的绝对 POSIX 目录；计划不接受调用方
+当前 A4-2 已把 B5 规则引擎接到 rules 阶段：若输入 `ScanRun` 已包含与资源相连的许可证事实，
+worker 会校验并持久化 B5 义务、风险、整改及实际规则集版本；没有许可证事实时继续稳定终止为
+`partial/rules/70`、错误码 `rules_stage_not_connected`。这不是运行失败，也不能描述为完整许可证或
+合规扫描。规则成功后，A5-1c 会按显式开关执行或跳过 AI；A6 publisher 仍在最终终态提交边界发布报告。workspace
+root 必须是后端预先创建、仅当前用户可写的绝对 POSIX 目录；计划不接受调用方
 抬高 A2 安全限额，不联网、不执行 ZIP 中的代码、不安装依赖，也不暴露本机 ZIP 路径。
 
 实现侧回归：
@@ -245,7 +294,25 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a4_local_zip_pipeline.py
 ```
 
 该内部工厂本身不启动 HTTP 或后台队列；A3-2 现已在受控单进程内替调用方创建 queued 记录并通过
-BackgroundTask 显式执行它。公开 Git、安全网络摄取、许可证规则、AI、报告和持久队列仍不属于 A4-1。
+BackgroundTask 显式执行它。公开 Git、安全网络摄取、B5 规则接线和报告分别由 A2-3a、A4-2、A6-2
+后续纵切完成；许可证事实生产、AI 主链接线和持久队列仍不属于 A4-1。
+
+## A4-2 B5 许可证规则阶段接线
+
+`app.pipeline.apply_license_rules()` 是项目负责人 A4 集成层对组员 B5 公共规则接口的薄适配器。
+它只消费已验证的 P0 `Resource`、`LicenseFact` 和 `Evidence`，调用 B5 `evaluate()`，检查返回类型、
+引用与 ID 唯一性，重算 finding summary 并写入实际 ruleset version。适配器不会改写 B5 规则语义，
+也不会从依赖名称猜测许可证。
+
+当前 ZIP/Git 依赖路径尚未把 B2/B3/B4 许可证识别结果映射到 P0，因此无许可证事实时仍保留
+`rules_stage_not_connected` 的历史兼容终态。若调用方提供有效许可证事实，B5 `verified` 规则可直接
+产生确定性整改；`pending` 证据门禁 finding 不产生整改，可由后续 A5-1c 消费。实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a4_b5_rule_integration.py \
+  tests/unit/test_b5_license_rule_engine.py
+```
 
 ## A3-2 ZIP HTTP 与进程内后台扫描
 
@@ -266,7 +333,8 @@ curl -sS -X POST http://127.0.0.1:8000/api/v1/scans \
 ```
 
 响应中的 `status_url` 可用于轮询。当前合法依赖 ZIP 的预期终态是 `partial/rules/70`：这表示 Python/
-JavaScript 依赖组件与证据已经可以查询，但许可证规则尚未接入；不是 ZIP/Pipeline 失败。资源可通过
+JavaScript 依赖组件与证据已经可以查询，但主链尚未产生许可证事实供已接入的 B5 规则消费；不是
+ZIP/Pipeline 失败。资源可通过
 `GET /api/v1/scans/{scan_id}/resources` 查看，证据可通过返回的 evidence ID 查询。
 
 上传和 multipart 请求均有服务端边界，暂存目录与 workspace 为私有目录；任务结束后清理。该后台执行
@@ -276,3 +344,223 @@ JavaScript 依赖组件与证据已经可以查询，但许可证规则尚未接
 ```bash
 PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_zip_background_scan.py
 ```
+
+## A3/A4-3a ZIP 持久输入与单机派发
+
+I1 新增 `app.persistence.ZipDispatchStore`，只负责私有 `uploads/` 输入、8 KiB 严格
+descriptor v1、`prepared → ready` 的文件/目录 fsync 与原子改名、原始 ZIP fingerprint 幂等、
+接受时的 `zip-dependency-v1` 执行 profile，以及上传第一个 multipart 字节前的 `8 × 64 MiB` /
+`512 MiB` 容量预留。descriptor 仅记录服务端随机上传名、输入 SHA-256、冻结的 queued-run
+identity 投影和五字段锁定 Ollama identity；不保存绝对路径、prompt、响应或 config digest。
+
+默认生产工厂保留 `OPENGUARD_ENABLE_DURABLE_ZIP=0` 的 A3-2 BackgroundTask 路径；只有精确
+`1` 启用 I2。durable 模式在接受 multipart 首字节、恢复任务和启动消费者前取得同一私有 POSIX
+数据目录内固定 0600 `flock`，并且一个 FastAPI 生命周期只有一个 ZIP dispatcher 线程。启动先
+收敛已存在的 descriptor-bound `running`，再修复 `prepared`，最后周期扫描 `ready`；新 queued ZIP
+会复用既有 A4 worker 与 A6 publisher。锁竞争、启动失败或 dispatcher 已停止时，该实例不会继续
+接受 durable ZIP 请求。
+
+已进入 `running` 的任务不会重放 handler：无分析聚合时收敛为 `failed`，已有组件/AI资产/证据/finding
+时收敛为 `partial`，均追加 `worker_interrupted`。含 `report_links` 的 interrupted run 保持原状态供
+人工核查。输入缺失/无效或 acceptance profile 不兼容会在 handler 前按既有 CAS 诚实失败；AI timeout
+使用接收时 profile，之后管理员默认值变化不会改写旧任务。未知 descriptor、可疑 upload、清理失败和
+registry 不确定都不擅自删除或重放；可疑 upload 同时会阻止新接收。
+
+durable 与 legacy 不能同时服务同一数据目录；首版仍只支持单机本地 POSIX、一个 cooperative 实例。
+它不提供 Git 恢复、lease/heartbeat、多 worker、业务 retry、外部副作用 exactly-once 或 orphan GC。
+非法开关值仍拒绝启动。纯 I1 显式注入 `ZipDispatchStore` 而未注入 dispatcher 的测试应用保持原有
+queued/ready 留存行为。
+
+仅在停止使用同一数据目录的其他实例后启用；不要使用多worker或reload模式：
+
+```bash
+PYTHONPATH=backend OPENGUARD_DATA_DIR=./data OPENGUARD_ENABLE_DURABLE_ZIP=1 \
+  python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+正常关闭会等待正在执行的ZIP worker结束，随后关闭registry并释放锁；不会因等待超时而放任
+线程继续写入并提前释放锁。若强制结束进程，新进程只恢复queued或收敛interrupted running，
+不会从中断阶段续跑，也不会为恢复结果补生成报告。进程kill验收不等于硬件断电持久性保证。
+
+受限 cleanup 只接受已健康读取的 terminal registry 快照，或调用方已证明 registry 中不存在该
+prepared run；会先验证 descriptor、输入 basename、身份与实际 SHA-256，按 ZIP→目录 fsync→descriptor
+顺序删除。输入已在前一中断中删除时仍会 fsync 上传目录后删除 descriptor；任何可疑对象、身份不符
+或 registry 不确定都拒绝删除并继续计入容量。
+
+实现侧复现（不会启用 I2、不会联网或启动模型）：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend \
+  python -m pytest -q -p no:cacheprovider tests/unit/test_a3_durable_zip_dispatch.py
+```
+
+## A5-0 可注入 AI Provider 与确定性降级
+
+`app.ai.apply_ai_remediations()` 接受一个已验证的 P0 `ScanRun` 和调用方注入的 local/remote
+Provider。它只为尚未绑定整改的 `warning`、`review_required` 或 `unknown` finding 生成
+`pending` Remediation；请求只含该 finding、已引用 Evidence 以及资源已绑定的许可证事实。
+Provider 返回值必须是 64 KiB 以内的严格 JSON，并且只能引用请求中已有的 evidence ID。
+
+AI 关闭时不需要 Provider；模型不可用、抛错、响应截断、重复键、额外字段、身份或引用不匹配、
+敏感片段及绝对路径均稳定降级。降级只记录脱敏的 `ai_assist` 诊断和 AI provenance，不发布部分
+建议，也不改变组件、AI 资源、许可证、义务、规则结果或统计。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_ai_provider.py
+```
+
+## A5-1a 本地 Qwen3/Ollama transport
+
+`app.ai.OllamaProvider` 已实现 A5-0 的标准库 HTTP Provider。它只接受字面量回环 IP，显式禁用
+环境代理，并在每次生成前通过 `GET /api/version` 和 `GET /api/tags` 核验固定的 Ollama
+`0.33.3`、模型 `qwen3:4b-instruct-2507-q4_K_M` 及完整 manifest SHA-256；之后才以
+`stream=false`、`think=false`、固定 options 和 JSON Schema 调用 `POST /api/generate`。三次请求
+共享一个总 deadline，任何连接、超时、HTTP、版本、模型、摘要或包装错误都只返回脱敏 transport
+错误，并由 A5-0 保留确定性结果、记录 `degraded`。
+
+本模块不会启动 Ollama、自动下载模型或读取凭据。A5-1b 已在当前 Apple-silicon 开发机完成锁定
+运行时、模型摘要和三轮结构化输出实测；该单机样例不能外推为 Bench 或多平台结论。
+
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a5_ai_provider.py \
+  tests/unit/test_a5_ollama_transport.py
+```
+
+## A5-1c Pipeline `AI_ASSIST` 接线
+
+共享 dependency plan、ZIP runtime 与公开 Git runtime 已接受同一显式 A5 配置。默认应用只有在
+`OPENGUARD_ENABLE_AI=1` 时才注入锁定的本机 `OllamaProvider`；未设置时保持关闭，其他值拒绝启动。
+启用后，B5 `license-evidence-gate` 等未绑定整改 finding 可生成 `pending` 建议；B5 已有确定性整改
+时不重复调用。模型不可用或输出无效时，规则结果保持不变，Pipeline 继续 REPORT，并由 A6 发布
+包含脱敏 `ai_assist` 诊断的四格式报告。
+
+```bash
+OPENGUARD_ENABLE_AI=1 \
+OPENGUARD_DATA_DIR=./data \
+PYTHONPATH=backend \
+python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a5_pipeline_integration.py
+```
+
+当前普通 ZIP/Git 输入仍缺 B2/B3/B4 许可证事实，因此会先在 `rules/70` 诚实终止；A5-1c 的测试
+通过真实 B5 公共输出验证接线，但不冒充上游许可证发现或完整 Web 端到端。
+
+## A6-0 确定性报告导出核心
+
+`app.reporting.render_report()` 接受已验证、状态为 `completed` 或 `partial` 的 P0 `ScanRun`，
+在内存中生成 JSON、HTML、CSV 或 `resource_inventory` 报告。CSV/资源清单严格使用竞赛要求的
+七字段；HTML 对不可信值做实体转义并禁止脚本和外部资源；每个 `ReportArtifact` 都包含稳定
+文件名、媒体类型、原始字节和 SHA-256。
+
+```python
+from app.domain.models import ReportFormat, ScanRun
+from app.reporting import render_report
+
+run = ScanRun.model_validate_json(scan_run_bytes)
+artifact = render_report(run, ReportFormat.HTML)
+```
+
+本接口不会写文件、更新 SQLite、创建 `ReportLink` 或启动下载路由。`partial/rules/70` 只能生成
+明确标注“阶段性”的报告；缺失的许可证、规则风险和 AI 建议保持缺失，不会被推断成合规通过。
+实现侧回归：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py
+```
+
+A6-0 本身不写文件或提供 HTTP；已由下述 A6-1 接入持久化和只读下载，并由 A6-2 接入 Pipeline
+终态发布。前端接线和最终匿名化验收仍属于 A6 后续纵切。
+
+## A6-1 报告安全持久化与只读下载
+
+`app.reporting.ReportArtifactStore` 把 A6-0 内存产物发布到后端私有报告目录，并返回 P0
+`ReportLink`。默认应用创建 `data/reports` 为 `0700`；扫描子目录同为 `0700`，内容和 metadata
+文件为 `0600`。内容以 SHA-256 寻址并先于 metadata 原子落盘，读取时重新验证类型、owner、权限、
+inode、长度和摘要；损坏或替换不会返回部分字节。
+
+publisher 是显式内部接口，不由 GET 触发：
+
+```python
+from app.domain.models import ReportFormat
+from app.reporting import ReportArtifactStore
+
+store = ReportArtifactStore(private_report_root)
+link = store.publish(terminal_scan_run, ReportFormat.HTML)
+```
+
+`GET /api/v1/scans/{scan_id}/report?format=html` 返回 `ReportLink`；请求该 link 的相对 `href`
+会在同一路径用 `download=true` 只读下载经过摘要校验的附件。下载包含 attachment、digest/ETag、
+`nosniff`、`no-store` 和限制性 CSP。GET 不生成报告、不更新 SQLite；A6-2 已将 publisher 接到
+Pipeline 首次终态提交边界，前端接线仍属后续纵切。`partial/rules/70` 下载继续明确显示许可证
+规则尚未连接，不代表合规通过。
+
+实现侧复现：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a6_report_exports.py \
+  tests/unit/test_a6_report_delivery.py \
+  tests/unit/test_a3_fastapi_api.py
+```
+
+## A6-2 Pipeline 终态报告发布
+
+`app.reporting.PipelineReportPublisher` 会在 worker 首次写入 `completed` 或 `partial` 终态之前，
+显式发布 JSON、HTML、CSV 和资源清单四种格式，再把全部 `ReportLink` 放入同一份终态 `ScanRun`。
+默认 `ZipScanRuntime` 已使用同一个私有 `ReportArtifactStore` 完成接线。因此当前 ZIP HTTP 主链即使
+因上游许可证事实未到位而停在 `partial/rules/70`，也会自动产生可下载、可重启读取的诚实阶段性报告。
+
+SQLite 终态不可变，所以实现不会先落无链接终态再补写。报告文件先于一次终态 CAS 写入，但 API
+只承认 SQLite `ScanRun.report_links` 已登记且与 store metadata 精确一致的产物；发布中断或 CAS
+冲突留下的未登记文件不可见。报告正文投影掉 `report_links`，避免链接摘要引用自身形成递归哈希；
+最终 API `ScanRun` 是链接的权威来源。发布失败会保留已取得的确定性结果，以脱敏
+`report_publish_failed` 结束，不让任务永久卡在 running。
+
+实现侧复现：
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a6_pipeline_publish.py \
+  tests/unit/test_a6_report_exports.py \
+  tests/unit/test_a6_report_delivery.py \
+  tests/unit/test_a4_pipeline_worker.py \
+  tests/unit/test_a4_local_zip_pipeline.py \
+  tests/unit/test_a3_zip_background_scan.py
+```
+
+本 A6-2 纵切本身不实现 B5 许可证规则；当前 A4-2 已在独立任务中消费 B5。A6-2 不调用 Qwen3、
+不接前端，也没有把进程内 BackgroundTask 扩展为
+持久队列。完整许可证内容仍须消费组员提供的真实 `LicenseExpression`、`Obligation` 与
+`RiskFinding`。
+
+## ZIP 许可证声明到风险和报告（A4 最小接线）
+
+真实 ZIP 中的 `package.json` 声明依赖、`package-lock.json` v2/v3 的对应 `packages["node_modules/名称"]` 含精确版本与可识别 `license` 字符串时，现有 API 自动执行：manifest 扫描→组员 SPDX 标准化→B5 待核验风险→AI 关闭/降级→四格式报告。不增加接口或启动开关，旧 BackgroundTasks 与显式 durable ZIP 均复用本地计划。
+
+例如依赖 `demo-mit: 1.0.0` 对应 lock 记录 `{"version":"1.0.0","license":"MIT"}`。根项目的 `license` 与根 `LICENSE` 不继承给依赖。至少一个明确绑定时，其余资源使用 `NOASSERTION` 保留未知。许可证和新增声明 Evidence 始终 `pending`，B5 输出 `review_required`；`completed` 仅表示处理流程完成，不表示授权已核验。AI 默认关闭时不会生成整改文本。
+
+没有可绑定许可证、字段不支持或读取预算不足时，保留既有依赖结果与 `partial/rules/70`，不制造完成结果。当前限于既有 npm 直接依赖、canonical lock 版本、显式支持的 SPDX 别名/表达式；不代表 Python 许可证、ScanCode/Syft 真实运行、未知文本推理或公开 Git 的许可证接线。为保持原 A2 12 MiB 共享预算，按 inventory 与 lock 重读上界保守判断；大 ZIP 可能跳过许可证补充。
+
+完整可重复样例已放在既有独立测试中，动态生成 ZIP，经真实 Uvicorn 与生产工厂上传，核对资源/风险/Evidence、四格式报告摘要和重启后内容，不需要再维护一份重复样例文件：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/security/test_a4_local_zip_pipeline_independent.py -k real_zip_declared_licenses
+```
+
+原启动、POST multipart 及报告 GET 方法保持不变。验收：实现46、独立23、完整1025 passed/3 skipped；独立大 ZIP 用例验证预算不足仍保留原结果。三个skip属于已有可选真实模型/公网门禁，本轮没有验证外部工具或真实模型。
+
+## 真实 ZIP 外部工具（2026-09-05）
+
+使用 [Compose](../deploy/README.md) 启用 OPENGUARD_ENABLE_EXTERNAL_SCANNERS=1，默认仍为 0。固定 ScanCode32.5.0/Syft1.51.0 必须存在于镜像路径，不接收请求传入的可执行程序或参数。接受时保存工具开关；旧描述符无字段等价关闭，恢复不随当前默认值改变。真实输出校验 inventory 路径和 SHA 后进入现有资源/许可证/风险/报告。无声明保持 NOASSERTION，根许可证不继承；工具不完整保留可用事实并返回 partial。此次完整回归1103 passed/3 skipped，真实容器和 Chrome 插件报告通过。
+
+## ZIP 中的明确 AI 引用
+
+A4 已挂接组员静态检测器，按 inventory 在只读回调内读取有限文本，整文件 SHA 绑定证据。README 的明确 Qwen3 模型链接即可生成 AIAsset，只有模型而没有软件依赖的 ZIP 也可进入原规则与报告。模型许可无绑定证据时为 NOASSERTION，授权 pending；同项目的软件许可证不会继承给模型。它识别引用，不证明实际调用、权重身份或授权；不扫描用户本机模型目录，不启动 Ollama。
+
+范围：md/py/js/jsx/ts/tsx/json/yaml/yml/toml 文本，package.json/package-lock.json/pyproject.toml 留原依赖通道。单文件512 KiB、总2 MiB、128文件，并为已有读取保守预留两倍inventory大小；超限/无效UTF-8/检测器失败保留已有事实与不完整诊断。Git 路径仍未挂接此能力，未扩大公共接口或B6识别范围。复现见[模型样例](../deploy/README.md)。

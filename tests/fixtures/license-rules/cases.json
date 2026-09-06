@@ -1,0 +1,10 @@
+{
+  "verified_cases": [
+    {"license_id": "MIT", "expected_rule": "LIC-MIT-NOTICE", "expected_severity": "low"},
+    {"license_id": "Apache-2.0", "expected_rule": "LIC-APACHE-2.0-NOTICE", "expected_severity": "medium"},
+    {"license_id": "BSD-3-Clause", "expected_rule": "LIC-BSD-3-CLAUSE-NOTICE", "expected_severity": "low"},
+    {"license_id": "GPL-3.0-only", "expected_rule": "LIC-GPL-3.0-ONLY-COPYLEFT", "expected_severity": "high"},
+    {"license_id": "CC-BY-4.0", "expected_rule": "LIC-CC-BY-4.0-ATTRIBUTION", "expected_severity": "medium"},
+    {"license_id": "CC-BY-NC-4.0", "expected_rule": "LIC-CC-BY-NC-4.0-NONCOMMERCIAL", "expected_severity": "high"}
+  ]
+}

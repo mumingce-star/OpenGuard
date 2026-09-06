@@ -336,3 +336,101 @@ A2 只有同时满足以下条件才能 `COMPLETE`：
 | `CR-A2-001` | UI 必须展示异步输入拒绝的精细机器原因 | 在未来 v0.1.2 为 `ScanError` 增加可选 `reason` 或结构化 details，并做 Schema/API/fixture 迁移 | **未批准，不得在 A2 擅自新增字段**；当前只用冻结 `code`+通用 message。 |
 | `CR-A2-002` | 产品需要用户主动取消扫描 | 另行设计 `POST /api/v1/scans/{id}/cancel`、幂等和状态竞争 | **未批准，不属于 A2 API**；当前仅保证基础设施/任务取消时清理和 `cancelled` 状态。 |
 | `CR-A2-003` | 需要兼容含安全 symlink/submodule 的真实仓库 | 设计“不跟随链接的安全复制/元数据表示”和独立风险状态 | **未批准**；P0 当前失败关闭，不能由实现自行放宽。 |
+
+## 9. 2026-09-06 Mac Compose 实际核对（AMENDMENT，最终冻结未通过）
+
+本节补充当前实现状态，不重写前文设计与历史验收要求，也不将设计参数视为已生效。基线15b12ec；本轮未重建、重扫或运行攻击样例。
+
+| 检查项 | 本轮只读证据 | 状态 |
+|---|---|---|
+| 非root/权限 | API UID10001、CapEff=0、NoNewPrivs=1、Seccomp=2；Web用户nginx | 当前运行配置已验证 |
+| 文件系统/暴露面 | API/Web只读根，API仅named volume且数据目录0700；仅Web127.0.0.1:8080映射，API无宿主端口 | 当前运行配置已验证 |
+| 内存/进程 | API cgroup memory.max=4294967296、pids.max=128；Web配置256MiB/64PID | 已配置；本轮未重做耗尽攻击 |
+| CPU | API cpu.max为max 100000，Docker NanoCpus=0；Compose只有独立scanner profile设置cpus:2 | API无CPU配额，待修复与验收，不能标已冻结 |
+| 网络隔离 | API子进程共用Compose网络；独立scanner probe的network_mode:none不适用于API | 逐扫描进程deny-egress未实现/未验收；不得以Git公网校验替代该门禁 |
+| 磁盘/文件描述符 | /tmp tmpfs有大小限制；持久data卷未配置单任务磁盘配额，Compose无显式nofile限制 | 限制覆盖与故障证据待核对，不把输入字节上限当作全部磁盘配额 |
+| 供应链 | 三基础镜像digest、两扫描工具包SHA、Python直接依赖版本固定 | Debian包和Python间接依赖仍可在构建时漂移；完整资源台账待补 |
+| 原Git/ZIP边界 | 既有1221回归与Git/ZIP真实链、非法URL/失败清理证据保留 | 本轮未重跑；不将旧通过数算作新测试 |
+
+本轮结论为“清单核对完成，最终安全冻结未完成”。后续只按原SEC-A2-007/015/018/020逐项处理真实缺口；不创建企业级队列、图谱或任意新API。最终冻结前须区分本地单用户演示、异机复现与更强隔离要求，并保留每项未满足门禁，不能只改文案为通过。
+
+### 9.1 API CPU 缺口关闭（2026-09-06）
+
+原第9节API无CPU配额问题已通过Compose `api.cpus: 2`修复。运行cgroup v2 cpu.max=200000 100000，Docker NanoCpus=2000000000。4个自建4秒忙循环全部退出0，节流计数增量41，实际CPU使用8272191微秒；应用健康且两组原报告四格式摘要保持。无需新增调度器、接口或目标扫描。本项通过不关闭网络隔离、磁盘/fd覆盖、供应链锁定、人工复核及异机门禁；也不是新扫描性能验收。
+
+### 9.2 API Python 间接版本缺口关闭（2026-09-06）
+
+现有pyproject保存CPython3.12/Linux amd64的15包运行闭包；Docker按精确版本--no-deps安装、检查直接声明包含关系及pip check。重新构建安装层成功，运行实际集合与原15包严格相等，原Git/Qwen四格式SHA保持、2CPU配额保持。本项关闭API Python间接版本自动漂移缺口，不关闭发行物hash、Dev/扫描器独立环境、Debian系统包、资源许可证/声明或网络隔离等其他门禁。
+
+### 9.3 Debian Git 精确版本配置（2026-09-06）
+
+API Dockerfile现在明确指定git和git-man均为1:2.39.5-0+deb12u3，并在安装层分别验证dpkg版本。沿用Debian默认签名仓库验证，不加允许未认证/忽略签名参数。版本不可获取则安装失败，不回退无版本安装。该项只关闭Git包版本自动漂移，其他系统依赖/仓库快照、网络隔离和磁盘/fd覆盖仍分别保留；实际重建结果见本轮进度台账。
+
+### 9.4 网络／磁盘／fd差距核对与nofile落地（2026-09-06）
+
+基线079b14c，分支fix/a2-nofile-limit。本轮只修一个实际配置阻断：API原始RLIMIT_NOFILE为1048576/1048576，与表中worker_fds_max=256不符。现Compose api及独立scanner均显式soft=hard=256，进程继承内核限制，非root/cap_drop保持，不能自行提升到257。本限额是每进程限制，不是容器内所有进程的fd总配额，也不等于API主进程耗尽后的可用性已证明。
+
+| 原门禁 | 代码及运行核对 | 本轮结果与剩余边界 |
+|---|---|---|
+| SEC-A2-015 网络 | external_tools.run_json_tool直接Popen；无独立netns；api与工具子进程共用网络。独立scanner profile的network_mode:none不覆盖API | 仍未完成逐扫描deny-egress；未用Git公网校验或关闭自动更新代替网络隔离 |
+| SEC-A2-007/015/020 磁盘 | create_default_app将uploads/workspaces/reports/dispatch放在data卷；/tmp为256MiB tmpfs，数据卷未设任务配额 | 输入计数和/tmp限额不覆盖持久卷工作目录/多次任务累计占用；仍未完成单任务磁盘硬上限及超限验收 |
+| SEC-A2-015/020 fd | Compose显式nofile256/256；最终API /proc/1/limits及docker inspect一致 | 本项配置与子进程真实边界通过；完整NEG-A2-028其他资源、API整体耗尽恢复及并发上限验收不由此关闭 |
+
+受控子进程实测：初始6个fd（其中3个为Rosetta转译相关），再打开250个达到总计256，下次打开返回EMFILE；关闭后可重新打开，提升hard到257被拒绝。首次断言误假定只占3个标准fd而失败，真实/proc证明额外占用后改为“实际初始数+新增数=256”，没有放宽硬上限或错误断言。此探针保留在原deploy/tool-smoke.py，不改进程自身限额来模拟部署通过。
+
+API环境与禁网tools profile各运行既有ScanCode32.5.0 MIT识别/Syft1.51.0 is-number7.0.0样例成功。另在API容器调用真实run_json_tool运行自建fd耗尽子进程：返回failed/scanner_failed、子进程已回收、父fd计数不变、下一次调用complete。未执行不可信目标代码、未耗尽API主进程。API最终healthy、2CPU保持；原Git与ZIP/Qwen两份receipt各verify四格式SHA保持，未重新扫描公开项目或推理。工具小样例不代表整个任务状态机耗尽矩阵通过。
+
+### 9.5 工作目录硬上限与写满清理（2026-09-06）
+
+基线780536b，分支fix/a2-workspace-disk-limit。SEC-A2-007/015/020中的工作目录无硬上限缺口本轮关闭：现有workspaces挂载1GiB tmpfs，10001/0700/noexec/nosuid/nodev，API4GiB内存/cpu2/nofile256保持。所有任务共享容量，单任务不能超过共享总上限；无每任务独占预留。工具/tmp另有256MiB，持久uploads、dispatch、数据库和reports保留原data卷。故不能把工作目录通过外推为所有临时/持久存储、上传排队累计容量和公平隔离已完成。
+
+实际发现ZIP解压的os.write失败会进入“invalid_archive/archive_integrity_failed”。现_write_all将目标写失败包装为已有scanner_failed/workspace_write_failed，原错误链保留用于内部验收，不向API暴露本机路径。源ZIP损坏的既有分类不变，无Schema/错误码新增。
+
+在无网络、无用户数据卷的隔离容器，原ZipIngestionService.ingest_with_consumer真实物化2MiB ZIP_STORED输入：
+
+| 实际条件 | 预期和实际 | 清理与恢复 |
+|---|---|---|
+| 1GiB文件系统仅剩1MiB | 接收写入返回ENOSPC，scanner_failed/workspace_write_failed | 原任务目录清空 |
+| 仅剩3MiB | 接收完整ZIP后解压写入返回ENOSPC，同一错误分类 | 部分解压和归档均清空 |
+| 删除本测试填充文件释放空间 | 同一服务再次摄取成功 | 成功后目录清空 |
+
+探针断言实际文件系统容量、tmpfs类型、底层errno，拒绝非空或非挂载的/quota；不模拟os.write、不执行目标代码。最终API在无queued/running且旧目录空时重建，实际mount容量1073741824字节，权限/限制通过；实际挂载路径小ZIP正例与清理通过，APIhealthy。190项相关回归通过（首次107通过、两条HTTP被沙箱回环权限阻断，原样受控复验2通过；追加81通过，1条既有弃用warning）。原Git/Qwen两组四SHA保持。
+
+本轮关闭工作目录容量及两条真实ENOSPC清理边界；并非Git全流程磁盘耗尽、API完整并发压力或完整NEG-A2-013/028已通过。剩余优先项是API内扫描子进程默认deny-egress；持久上传累计预算/剩余资源及人工、异机门禁继续保留，不把禁网测试容器当作生产网络隔离证据。
+
+### 9.6 扫描子进程默认禁网（2026-09-06）
+
+基线872b2f1，分支fix/a2-scanner-no-network。当前Compose API内run_json_tool默认经原生seccomp启动器运行；不改GitProcessRunner或Ollama路径。禁止除AF_UNIX外的socket/socketpair和io_uring_setup，验证audit架构并在x86拒绝x32，no_new_privs和过滤器均由子孙继承。Popen仅保留标准管道/受控目录fd；无网络socket传入。过滤失败拒绝exec，启动器丢失/路径错误不回退直跑；实现见deploy/scanner-no-network.c，启动路径见原external_tools.py。内核规则依据：https://man7.org/linux/man-pages/man2/seccomp.2.html 。
+
+初次在Rosetta amd64进程加载libseccomp返回-125且errno22，原始失败保留，改用BUILDPLATFORM原生静态启动器。在本机Docker ARM内核、amd64扫描器转译的实际运行路径通过：
+
+| 验收 | 实际结果 |
+|---|---|
+| 生产runner负例 | IPv4/IPv6×TCP/UDP四种libc.socket均EPERM；不只在Python层拦截 |
+| 后代与IPC | 子进程再exec后的socket被拒绝；本地Unix socketpair可用 |
+| 父进程边界 | 父进程仍可创建网络socket；未把整个API断网 |
+| 实际工具正例 | 过滤器下原MIT/is-number样例通过；最终API两固定扫描入口目录fd通过，Apache-2.0/is-number输出正确 |
+| Git保留 | 既有GitIngestionService/TrustedEgress真实获取固定PyPA revision621e4974ca25ce531773def586ba3ed8e736b3fc，1连接，工作目录清理 |
+| Qwen保留 | 原本机模型短generate实际done=true、模型身份匹配；非完整建议质量复评 |
+| 失败关闭与回归 | 87工具/外部扫描相关测试通过；95 Git/AI回归通过、1 opt-in实网测试跳过、1既有弃用warning；缺失/错误启动器无直接执行回退 |
+| 持久成果 | APIhealthy；原Git/Qwen两份receipt各四报告SHA保持 |
+
+SEC-A2-015扫描子进程网络创建及继承边界本轮关闭；不将其等同独立网络namespace、AF_UNIX跨任务IPC隔离或整个SEC-A2-015完成。跨任务读写隔离、已有fd传递契约、持久资源累计限制、其余完整负面矩阵、人工及异机仍需最后验收。镜像因包含构建主机原生启动器，不应跨不同主机架构直接搬运；Windows应按原说明build并实测。未更改浏览器设置/主机安全策略，无privileged/cap-add/seccomp=unconfined。
+
+
+### 9.7 跨任务工作目录读取边界（2026-09-06）
+
+基线d38f897，fix/a2-scanner-file-boundary。原生产runner在两个人工临时目录间可读取另一个任务的标记，证实仅Python只读会话不足以限制外部进程；未读取真实用户内容。复用原C启动器和受控目录fd施加Landlock ABI>=3，当前任务只读、每次调用独立temp可写、最小运行资源白名单，规则失败不执行。无新文件/服务/API/依赖或权限提升。
+
+| 实际验收 | 结果 |
+|---|---|
+| 其他任务绝对路径、当前任务内外指软链接、目录fd后的父目录绕行 | 三条均EACCES/EPERM |
+| /proc/self/root别名、父进程持有的外部文件fd、父进程environ | 三条均EACCES/EPERM |
+| 当前输入/私有temp | 输入读取成功、改写被拒绝且原字节保持；temp写入成功 |
+| 后代继承 | 真实fork后代读取外部标记被拒绝；四类网络socket及fork后代仍被拒绝，Unix socketpair可用 |
+| 实际扫描正例 | 最终隔离镜像原固定ScanCode/Syft wrapper+dirfd识别apache-2.0及pkg:npm/is-number@7.0.0 |
+| 回归/生产 | 155测试通过；实际workspaces六路径探针及清理通过；旧Git/Qwen各四SHA保持、APIhealthy |
+
+Rosetta的Landlock查询ENOSYS与旧构建头缺truncate常量的初始失败保留；原生启动器查询ABI8，稳定ABI常量兼容旧头但不降低运行ABI要求。转译所需只开放特定proc文件及父进程可执行inode。曾试验整个/proc白名单，自动审批以广泛持久放宽安全边界拒绝其最终构建；该方案已撤回且未部署生产。最终没有整个/proc、整个/proc/self、/dev/shm或共享/tmp放行。ScanCode进程池SemLock受限后改用现有串行模式0；任意Rosetta后代re-exec可能失败关闭，不能把fork验收外推为任意re-exec可用。一次安全窄方案审批超时后拆分重试通过；首次部署空闲断言失败时未更新，后续只读确认空闲/目录空再更新。
+
+本轮关闭扫描子进程的跨任务文件内容读取缺口，并验证当前输入只读；不宣称所有元数据操作、Unix IPC、持久上传/报告累计预算或完整SEC-A2-015/负面矩阵完成。接下来先把剩余安全表条目对照P0原文核清，优先确认持久上传/报告累计预算是否存在明确阻断；不自动增加新架构。

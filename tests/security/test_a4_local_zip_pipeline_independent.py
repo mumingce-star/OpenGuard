@@ -597,3 +597,170 @@ def test_neg_a4zip_010_rules_partial_does_not_execute_ai_or_report(
     assert not result.run.ai_assets
     assert not result.run.report_links
     assert [error.code for error in result.run.errors] == ["rules_stage_not_connected"]
+
+
+@pytest.mark.parametrize("lock_version", [2, 3])
+def test_real_zip_declared_licenses_reach_risks_and_durable_http_reports(tmp_path: Path, lock_version: int) -> None:
+    """Real socket/production factory; expectations come from independently authored bytes."""
+    import base64
+    import http.client
+    import io
+    import os
+    import socket
+    import subprocess
+    import sys
+    import time
+
+    root = Path(__file__).resolve().parents[2]
+    manifest = json.dumps({"name": "demo-root", "license": "GPL-3.0-only", "dependencies": {"demo-mit": "1.0.0", "demo-unknown": "2.0.0"}})
+    lock = json.dumps({
+        "name": "demo-root", "lockfileVersion": lock_version,
+        "packages": {
+            "": {"name": "demo-root", "license": "GPL-3.0-only"},
+            "node_modules/demo-mit": {"version": "1.0.0", "license": "MIT"},
+            "node_modules/demo-unknown": {"version": "2.0.0"},
+        },
+    })
+    data = io.BytesIO()
+    with zipfile.ZipFile(data, "w") as archive:
+        archive.writestr("package.json", manifest)
+        archive.writestr("package-lock.json", lock)
+        archive.writestr("LICENSE", "Root license must not be inherited by dependencies.")
+    boundary = "openguard-independent-license-boundary"
+    body = (
+        f'--{boundary}\r\nContent-Disposition: form-data; name="source_type"\r\n\r\nzip\r\n'
+        f'--{boundary}\r\nContent-Disposition: form-data; name="idempotency_key"\r\n\r\nlicense-{lock_version}\r\n'
+        f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="license-demo.zip"\r\n'
+        'Content-Type: application/zip\r\n\r\n'
+    ).encode() + data.getvalue() + f"\r\n--{boundary}--\r\n".encode()
+    env = {**os.environ, "PYTHONPATH": str(root / "backend"), "PYTHONDONTWRITEBYTECODE": "1",
+           "OPENGUARD_DATA_DIR": str(tmp_path / "data"), "OPENGUARD_ENABLE_DURABLE_ZIP": "1",
+           "OPENGUARD_ENABLE_AI": "0", "OPENGUARD_ENABLE_PUBLIC_GIT": "0"}
+    downloaded: dict[str, bytes] = {}
+    scan_id = None
+    for boot in range(2):
+        with socket.socket() as listener, (tmp_path / f"server-{boot}.log").open("wb") as log:
+            listener.bind(("127.0.0.1", 0))
+            listener.listen(16)
+            port = listener.getsockname()[1]
+            process = subprocess.Popen(
+                [sys.executable, "-m", "uvicorn", "app.api.main:create_default_app", "--factory", "--fd", str(listener.fileno()), "--log-level", "error"],
+                cwd=root, env=env, pass_fds=(listener.fileno(),), stdin=subprocess.DEVNULL, stdout=log, stderr=log,
+            )
+            def request(path: str, payload: bytes | None = None):
+                connection = http.client.HTTPConnection("127.0.0.1", port, timeout=2)
+                try:
+                    connection.request("GET" if payload is None else "POST", path, body=payload,
+                                       headers={} if payload is None else {"Content-Type": f"multipart/form-data; boundary={boundary}"})
+                    response = connection.getresponse()
+                    return response.status, dict(response.getheaders()), response.read()
+                finally:
+                    connection.close()
+            try:
+                deadline = time.monotonic() + 15
+                while True:
+                    assert process.poll() is None, (tmp_path / f"server-{boot}.log").read_text()
+                    try:
+                        if request("/openapi.json")[0] == 200:
+                            break
+                    except (OSError, http.client.HTTPException):
+                        pass
+                    assert time.monotonic() < deadline
+                    time.sleep(0.05)
+                if boot == 0:
+                    status, _, accepted_bytes = request("/api/v1/scans", body)
+                    assert status == 202
+                    accepted = json.loads(accepted_bytes)
+                    scan_id = accepted["scan_id"]
+                    assert accepted["status"] == "queued"
+                deadline = time.monotonic() + 20
+                while True:
+                    status, _, content = request(f"/api/v1/scans/{scan_id}")
+                    assert status == 200
+                    state = json.loads(content)
+                    if state["status"] not in {"queued", "running"}:
+                        break
+                    assert time.monotonic() < deadline
+                    time.sleep(0.05)
+                assert state["status"] == "completed", state
+                assert state["stage"] == "completed" and state["progress"] == 100
+                assert state["summary"]["component_count"] == 2
+                assert state["summary"]["finding_counts"]["review_required"] == 2
+                status, _, content = request(f"/api/v1/scans/{scan_id}/resources")
+                assert status == 200
+                resources = {x["resource"]["name"]: x["resource"] for x in json.loads(content)["items"]}
+                assert set(resources) == {"demo-mit", "demo-unknown"}
+                status, _, content = request(f"/api/v1/scans/{scan_id}/risks")
+                assert status == 200
+                risks = json.loads(content)["items"]
+                assert len(risks) == 2
+                for risk in risks:
+                    assert risk["outcome"] == "review_required" and risk["rule_id"] == "license-evidence-gate"
+                    assert risk["evidence_ids"]
+                    for evidence_id in risk["evidence_ids"]:
+                        assert request(f"/api/v1/scans/{scan_id}/evidence/{evidence_id}")[0] == 200
+                for fmt in ("json", "html", "csv", "resource_inventory"):
+                    status, _, content = request(f"/api/v1/scans/{scan_id}/report?format={fmt}")
+                    assert status == 200
+                    link = json.loads(content)
+                    status, headers, content = request(f"/api/v1/scans/{scan_id}/report?format={fmt}&download=true")
+                    assert status == 200
+                    digest = hashlib.sha256(content).hexdigest()
+                    assert digest == link["content_hash"]["value"]
+                    assert headers["etag"] == f'"sha256:{digest}"'
+                    assert headers["content-digest"] == f'sha-256=:{base64.b64encode(bytes.fromhex(digest)).decode() }:'
+                    if boot:
+                        assert content == downloaded[fmt]
+                    else:
+                        downloaded[fmt] = content
+                exported = json.loads(downloaded["json"])["scan_run"]
+                assert exported["provenance"]["input_digest"]["value"] == hashlib.sha256(data.getvalue()).hexdigest()
+                licenses = {x["id"]: x for x in exported["licenses"]}
+                assert licenses[resources["demo-mit"]["license_expression_id"]]["expression"] == "MIT"
+                assert licenses[resources["demo-unknown"]["license_expression_id"]]["expression"] == "NOASSERTION"
+                assert all(x["verification_status"] == "pending" for x in licenses.values())
+                assert not exported["obligations"] and not exported["remediations"]
+                assert exported["provenance"]["ai_enabled"] is False
+                evidence = {x["id"]: x for x in exported["evidence"]}
+                mit = licenses[resources["demo-mit"]["license_expression_id"]]
+                observations = [evidence[i] for i in mit["evidence_ids"]]
+                assert any(x["locator"] == "package-lock.json:/packages/node_modules~1demo-mit/license"
+                           and x["content_hash"]["value"] == hashlib.sha256(lock.encode()).hexdigest()
+                           and x["verification_status"] == "pending" for x in observations)
+                assert b"MIT" in downloaded["html"] and b"demo-unknown" in downloaded["csv"]
+            finally:
+                process.terminate()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+                    pytest.fail("server did not shut down")
+
+
+def test_large_valid_zip_does_not_lose_dependency_results_to_license_reread(tmp_path: Path) -> None:
+    files = {}
+    for index in range(4):
+        name = f"dep-{index}"
+        files[f"p{index}/package.json"] = json.dumps({"dependencies": {name: "1.0.0"}})
+        files[f"p{index}/package-lock.json"] = json.dumps({
+            "lockfileVersion": 3,
+            "packages": {f"node_modules/{name}": {"version": "1.0.0"}},
+            "padding": ["x" * 4000] * 410,
+        })
+    archive = tmp_path / "large-valid.zip"
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_STORED) as zipped:
+        for name, content in files.items():
+            zipped.writestr(name, content)
+    database, result, _ = _execute(tmp_path, archive, _queued(archive, 250))
+    registry = SQLiteScanRunRegistry(database)
+    try:
+        final = registry.get(result.run.id).run
+    finally:
+        registry.close()
+    assert final.status is ScanStatus.PARTIAL
+    assert final.stage is ScanStage.RULES
+    assert final.progress == 70
+    assert len(final.components) == 4
+    assert not final.licenses and not final.findings
+    assert [x.code for x in final.errors] == ["rules_stage_not_connected"]

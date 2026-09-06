@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Callable
 
-from app.domain.models import ScanError, ScanRun, ScanStage, ScanStatus
+from app.domain.models import ReportFormat, ScanError, ScanRun, ScanStage, ScanStatus
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError, StoredScanRun
 
 
@@ -60,13 +60,22 @@ def _fail(code: str) -> None:
 class ScanPipelineWorker:
     """Run one supplied plan; this class never polls or consumes API queues."""
 
-    def __init__(self, registry: SQLiteScanRunRegistry, *, clock: Callable[[], datetime] | None = None) -> None:
+    def __init__(
+        self,
+        registry: SQLiteScanRunRegistry,
+        *,
+        clock: Callable[[], datetime] | None = None,
+        terminal_publisher: Callable[[ScanRun], ScanRun] | None = None,
+    ) -> None:
         if not isinstance(registry, SQLiteScanRunRegistry):
             _fail("pipeline_invalid_argument")
-        if clock is not None and not callable(clock):
+        if (clock is not None and not callable(clock)) or (
+            terminal_publisher is not None and not callable(terminal_publisher)
+        ):
             _fail("pipeline_invalid_argument")
         self._registry = registry
         self._clock = clock or (lambda: datetime.now(timezone.utc))
+        self._terminal_publisher = terminal_publisher
 
     @staticmethod
     def _validate_plan(plan: object) -> PipelinePlan:
@@ -121,6 +130,57 @@ class ScanPipelineWorker:
         return bool(run.components or run.ai_assets or run.evidence or run.findings or run.report_links)
 
     @staticmethod
+    def _only_report_links_changed(before: ScanRun, after: ScanRun) -> bool:
+        before_payload = before.model_dump(mode="python")
+        after_payload = after.model_dump(mode="python")
+        before_links = before_payload.pop("report_links")
+        after_links = after_payload.pop("report_links")
+        formats = [link.format for link in after.report_links]
+        return (
+            not before_links
+            and before_payload == after_payload
+            and bool(after_links)
+            and len(formats) == len(set(formats))
+            and set(formats) == set(ReportFormat)
+        )
+
+    def _commit_terminal(self, current: StoredScanRun, terminal: ScanRun) -> StoredScanRun:
+        publisher = self._terminal_publisher
+        if publisher is None or terminal.status not in {ScanStatus.COMPLETED, ScanStatus.PARTIAL}:
+            return self._replace(terminal, expected_revision=current.revision)
+        try:
+            published = publisher(terminal)
+            if type(published) is not ScanRun or not self._only_report_links_changed(terminal, published):
+                raise TypeError
+        except Exception:
+            if terminal.status is ScanStatus.PARTIAL:
+                basis = terminal
+                stage = terminal.stage
+                progress = terminal.progress
+            else:
+                basis = current.run
+                stage = ScanStage.REPORT
+                progress = 95
+            is_partial = self._has_aggregate(basis)
+            error = ScanError(
+                code="report_publish_failed",
+                stage=ScanStage.REPORT,
+                message="Report publishing failed.",
+                recoverable=is_partial,
+            )
+            failed = self._with_control(
+                basis,
+                status=ScanStatus.PARTIAL if is_partial else ScanStatus.FAILED,
+                stage=stage,
+                progress=progress,
+                started_at=terminal.started_at,
+                finished_at=terminal.finished_at,
+                errors=[*basis.errors, error],
+            )
+            return self._replace(failed, expected_revision=current.revision)
+        return self._replace(published, expected_revision=current.revision)
+
+    @staticmethod
     def _preserves_a3_identity(previous: ScanRun, candidate: ScanRun) -> bool:
         if (
             candidate.id != previous.id
@@ -161,7 +221,7 @@ class ScanPipelineWorker:
             finished_at=finished,
             errors=[*current.run.errors, error.model_copy(update={"recoverable": is_partial and error.recoverable})],
         )
-        return self._replace(terminal, expected_revision=current.revision)
+        return self._commit_terminal(current, terminal)
 
     def run(self, scan_id: str, plan: PipelinePlan) -> StoredScanRun:
         if type(scan_id) is not str:
@@ -217,4 +277,4 @@ class ScanPipelineWorker:
 
         finished_at = self._now(minimum=started_at)
         completed = self._with_control(current.run, status=ScanStatus.COMPLETED, stage=ScanStage.COMPLETED, progress=100, started_at=started_at, finished_at=finished_at)
-        return self._replace(completed, expected_revision=current.revision)
+        return self._commit_terminal(current, completed)

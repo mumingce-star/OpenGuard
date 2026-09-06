@@ -24,8 +24,8 @@
 | SQLAlchemy | 数据访问 | MIT | 推荐 |
 | Jinja2 | HTML 报告模板 | BSD-3-Clause | 必需 |
 | RapidFuzz | 名称和文本匹配 | MIT | 可选 |
-| Qwen3 小参数模型 | 本地条款抽取与解释 | Apache-2.0，按具体权重仓库复核 | 必需 |
-| Ollama | 本地模型服务 | MIT | 推荐 |
+| Qwen3-4B-Instruct-2507 Q4_K_M | 本地整改解释；锁定 Ollama tag `qwen3:4b-instruct-2507-q4_K_M`、manifest `sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0` | Apache-2.0；[Qwen 模型卡](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507)、[Ollama 模型页](https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M)；2026-09-04 已下载到本机私有缓存，manifest 与 2497280480-byte blob 完整摘要均重算一致；不进入仓库 | 必需 |
+| Ollama v0.33.3 | 本机回环模型服务；[固定 release](https://github.com/ollama/ollama/releases/tag/v0.33.3)、[macOS 安装说明](https://docs.ollama.com/macos) | MIT；上游 LICENSE 已核验；2026-09-04 官方 DMG 的大小/完整 SHA-256、Developer ID、Gatekeeper、公证、arm64 和安装后版本均通过 | 推荐 |
 | React | 前端框架 | MIT | 必需 |
 | TypeScript | 前端语言 | Apache-2.0 | 必需 |
 | Vite | 构建工具 | MIT | 必需 |
@@ -34,6 +34,18 @@
 | pytest | 单元与集成测试 | MIT | 必需 |
 | Playwright | 端到端测试 | Apache-2.0 | 推荐 |
 | Docker Compose | 一键部署 | 按发行版本核验 | 必需 |
+| Git `2.50.1 (Apple Git-155)` | A2-3a 公开 HTTPS 浅克隆与对象读取；当前仅本机 profile，最终 Linux 包版本/摘要待 A7 锁定 | GPL-2.0-only；[官方来源](https://git-scm.com/downloads)，随镜像分发时履行许可证与源码义务 | 必需 |
+| Cloudflare 1.1.1.1 DoH | A2-3a 固定 TLS DNS 解析；只查询仓库主机名，不发送路径/代码/凭据 | 外部服务条款/隐私适用；[官方 wireformat 文档](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-wireformat/)；最终部署前复核 | 当前 profile 必需 |
+
+A5-1a 把上述身份固化进 transport、文档和测试；A5-1b 在用户授权后完成本机安装、约 2.5GB
+权重下载和真实推理。3 次同一合法输入为 `3/3`，冷轮 4344.062 ms，热轮 2736.214/2723.574 ms；
+运行时报告模型加载约 3.175 GB、100% GPU、context 4096。该结果只代表当前机器和当前样例，
+不等于 Bench 质量评测。Ollama 二进制、模型权重、prompt 和完整 response 均不提交到仓库。
+
+A2-3a 当前使用系统 Git 和 Cloudflare 公共 DoH，不把二进制或第三方仓库内容复制进本仓库。
+受控测试仅保存公开仓库 URL 和聚合断言；目标对象、运行数据库与临时 workspace 在测试结束后
+删除。最终 Docker/Linux 发行前必须锁定 Git 包版本/摘要并再次审查公共 DNS 服务条款与替代
+profile，不能把当前 macOS 实测直接当作部署证据。
 
 ## 自主建设资源
 
@@ -99,3 +111,40 @@
 - 技术报告；
 - 演示脚本和 3-5 分钟视频；
 - 最终答辩 PPT（晋级后）。
+
+## 2026-09-06 真实公开项目验收样例
+
+huggingface/smolagents 固定commit `a3df1a21db6045aa9be15b4bdf2067041100e96a`：
+https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041100e96a 。
+根LICENSE为Apache-2.0，源码只作为外部静态扫描输入，未修改、安装、执行或复制入作品仓库；
+保留原ZIP内版权及许可证。归档SHA和获取/复现命令见deploy/README.md。
+Qwen2.5-Coder、FLUX.1-dev及两个HF数据集仅为该输入中的明确引用，不是OpenGuard新增运行依赖，
+未下载权重或数据集，授权未知保留NOASSERTION/pending；不能套用仓库根许可证。
+实际建议生成复用此前登记的本机Qwen3 4B/Ollama，不新增模型或工具依赖。
+
+2026-09-06：首批Bench复用本项目扫描组员1c7239e（分支89c8ba2）的5个团队合成片段，不新增外部软件/模型/数据依赖。虚构acme链接和API符号只作静态文本输入，不访问、执行或安装；标签来源及复核限制见benchmarks/static-ai-assets-evidence.md。
+
+## 2026-09-06 公开 Git 最小部署
+
+API镜像新增[Debian bookworm Git](https://packages.debian.org/bookworm/git)发行包，实测1:2.39.5-0+deb12u3/运行Git2.39.5；包内copyright及发行版来源保留，最终分发义务逐项复核归资源冻结。仅作为既有安全无checkout摄取工具，不修改Git，不新增Python依赖或下载目标项目依赖。
+
+[PyPA sampleproject](https://github.com/pypa/sampleproject)作为公开静态扫描输入，实测commit621e4974ca25ce531773def586ba3ed8e736b3fc，根LICENSE.txt为MIT。源码/归档不复制进作品仓库、不安装/执行；根许可不自动继承给peppercorn等依赖。独立归档SHA b3eccda9bfb92813e361eed4f074b97165233eb94ebc60166608ce5412d08a07，仅存本机临时验收目录。运行命令见deploy/README.md。
+
+## 2026-09-06 Mac P0 清单核对（非最终冻结）
+
+本节对照当前backend/pyproject.toml、frontend/pnpm-lock.yaml、两个Dockerfile及运行中的API环境。前文“必需/推荐/可选”是历史选型，不是已安装清单，也不自动转为P0新增开发任务；SQLAlchemy、Jinja2、RapidFuzz、ECharts、React Flow等不因出现在选型表就必须接入。实际资源以代码、锁文件和third_party/README.md登记为准。
+
+| 核对项 | 已有事实 | 最终冻结前的具体差距 |
+|---|---|---|
+| Python直接依赖 | FastAPI0.141.1、packaging26.3、Pydantic2.13.4、python-multipart0.0.32、Uvicorn0.52.4均在声明与当前API安装中一致 | Pydantic等实际包的正式台账、来源/许可证原文与随包声明仍需补齐核验 |
+| Python间接依赖 | 当前安装版本见third_party/README.md本日补充 | Dockerfile安装直接依赖，间接依赖没有冻结约束；安装快照不是可重复构建锁文件 |
+| 前端 | pnpm锁文件及frozen-lockfile构建已存在 | React/ReactDOM19.2.8、Tailwind及Vite插件4.3.3、TypeScript5.9.2、Vite8.2.2等固定版本的正式资源与必要声明未完整登记 |
+| 扫描工具与基础镜像 | ScanCode32.5.0、Syft1.51.0发行包SHA及三基础镜像digest已固定 | 不能把这些摘要外推为全部系统包和Python依赖都已锁定 |
+| Debian Git | 原部署实测2.39.5，已有来源登记 | apt安装未指定版本或发行仓库快照，后续重建可能漂移 |
+| 模型/样例 | Qwen3身份锁定、两个公开样例和5个组员合成样例已有来源/摘要 | 原文许可、人工标签及AI建议质量的人工复核仍不由技术通过代替 |
+
+本轮仅核对现有成果，不新增依赖、模型、图谱或评测集。上述为原“资源冻结”工作包中的具体缺口，非新增P1/P2；完整镜像再分发审计与当前仅发布源码/构建说明的边界保持区分。
+
+## 2026-09-06 运行资源核验更新
+
+前节间接依赖和Debian Git漂移项已分别关闭，见进度20、21节。本轮实际15个API包及9个前端运行/构建资源的固定版本与官方PyPI/npm许可证元数据一致，原文/用途/声明位置已补入 `third_party/README.md`，不另建清单。补齐前端实际发布产物的四份完整许可证；更正ScanCode软件Apache-2.0、数据CC-BY-4.0及内嵌组件独立许可。工具许可证/NOTICE仍在镜像；完整镜像逐包再分发审查、人工及服务条款确认未关闭。历史选型表不是安装清单，也不据此新增P0依赖。

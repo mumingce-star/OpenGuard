@@ -1,0 +1,230 @@
+{
+  "case_sha256": "61af8a6011c59ce43711a96ab1df580907285a45f2d4d92bbb457ff709d450c5",
+  "cases": [
+    {
+      "assets": [
+        {
+          "asset_type": "model",
+          "authorization_status": "pending",
+          "confidence": 0.6,
+          "detected_by": [
+            "static_pattern"
+          ],
+          "evidence_ids": [
+            "evd_aecc7e7e-7107-558d-b68d-ddb1f06e98e2"
+          ],
+          "id": "ast_c60f603d-3cfa-556f-a697-1a53531f3603",
+          "license_expression_id": null,
+          "name": "acme/demo-model",
+          "provider": "huggingface",
+          "source_url": "https://huggingface.co/acme/demo-model",
+          "version": null
+        }
+      ],
+      "evidence": [
+        {
+          "content_hash": {
+            "algorithm": "sha256",
+            "value": "8a52f9c88c30cb741bf0e697b9aba89fa884c11ed73887d6d348e66702c55ccc"
+          },
+          "detected_by": "static_pattern",
+          "end_line": 1,
+          "excerpt": "https://huggingface.co/acme/demo-model",
+          "id": "evd_aecc7e7e-7107-558d-b68d-ddb1f06e98e2",
+          "kind": "file",
+          "locator": "src/model.py",
+          "observed_at": "2026-09-06T00:00:00Z",
+          "producer": {
+            "config_digest": null,
+            "model_id": null,
+            "name": "openguard-static-ai-detector",
+            "prompt_schema_digest": null,
+            "provider": null,
+            "type": "parser",
+            "version": "0.1.1"
+          },
+          "start_line": 1,
+          "verification_status": "pending"
+        }
+      ],
+      "expected": [
+        "model:huggingface:acme/demo-model"
+      ],
+      "id": "model-huggingface",
+      "predicted": [
+        "model:huggingface:acme/demo-model"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "asset_type": "dataset",
+          "authorization_status": "pending",
+          "confidence": 0.6,
+          "detected_by": [
+            "static_pattern"
+          ],
+          "evidence_ids": [
+            "evd_fde324ab-38b4-59c5-9d3a-8e2b09c7c79a"
+          ],
+          "id": "ast_d8fd32eb-2238-5e21-a773-8776751b6446",
+          "license_expression_id": null,
+          "name": "acme/demo-dataset",
+          "provider": "huggingface",
+          "source_url": "https://huggingface.co/datasets/acme/demo-dataset",
+          "version": null
+        }
+      ],
+      "evidence": [
+        {
+          "content_hash": {
+            "algorithm": "sha256",
+            "value": "f5af234a92a0fd51df2b272f534c9ad146bcebed0ef7e988fd85c4d5a2a288ce"
+          },
+          "detected_by": "static_pattern",
+          "end_line": 1,
+          "excerpt": "https://huggingface.co/datasets/acme/demo-dataset",
+          "id": "evd_fde324ab-38b4-59c5-9d3a-8e2b09c7c79a",
+          "kind": "file",
+          "locator": "src/data.py",
+          "observed_at": "2026-09-06T00:00:00Z",
+          "producer": {
+            "config_digest": null,
+            "model_id": null,
+            "name": "openguard-static-ai-detector",
+            "prompt_schema_digest": null,
+            "provider": null,
+            "type": "parser",
+            "version": "0.1.1"
+          },
+          "start_line": 1,
+          "verification_status": "pending"
+        }
+      ],
+      "expected": [
+        "dataset:huggingface:acme/demo-dataset"
+      ],
+      "id": "dataset-huggingface",
+      "predicted": [
+        "dataset:huggingface:acme/demo-dataset"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "asset_type": "api",
+          "authorization_status": "pending",
+          "confidence": 0.6,
+          "detected_by": [
+            "static_pattern"
+          ],
+          "evidence_ids": [
+            "evd_859473d4-585e-584e-825f-4f290a523acf"
+          ],
+          "id": "ast_eff857a0-0163-55be-94d5-d5658cab8a39",
+          "license_expression_id": null,
+          "name": "openai",
+          "provider": "openai",
+          "source_url": null,
+          "version": null
+        }
+      ],
+      "evidence": [
+        {
+          "content_hash": {
+            "algorithm": "sha256",
+            "value": "23632d0d3608d9d10aecbdf7bd2ab85cf2cc68a9c0486bb93b19a1b17d1bc34d"
+          },
+          "detected_by": "static_pattern",
+          "end_line": 1,
+          "excerpt": "openai.responses",
+          "id": "evd_859473d4-585e-584e-825f-4f290a523acf",
+          "kind": "file",
+          "locator": "src/client.py",
+          "observed_at": "2026-09-06T00:00:00Z",
+          "producer": {
+            "config_digest": null,
+            "model_id": null,
+            "name": "openguard-static-ai-detector",
+            "prompt_schema_digest": null,
+            "provider": null,
+            "type": "parser",
+            "version": "0.1.1"
+          },
+          "start_line": 1,
+          "verification_status": "pending"
+        }
+      ],
+      "expected": [
+        "api:openai:openai"
+      ],
+      "id": "api-openai",
+      "predicted": [
+        "api:openai:openai"
+      ]
+    },
+    {
+      "assets": [
+        {
+          "asset_type": "model",
+          "authorization_status": "pending",
+          "confidence": 0.6,
+          "detected_by": [
+            "static_pattern"
+          ],
+          "evidence_ids": [
+            "evd_a9dab10d-c241-5a1f-a9a1-f241df74f096"
+          ],
+          "id": "ast_ac599c18-79a6-5225-8550-3345fb191eef",
+          "license_expression_id": null,
+          "name": "acme/demo-model",
+          "provider": "modelscope",
+          "source_url": "https://modelscope.cn/models/acme/demo-model",
+          "version": null
+        }
+      ],
+      "evidence": [
+        {
+          "content_hash": {
+            "algorithm": "sha256",
+            "value": "86258e64008872d3ea553199669b08d9032390c31243b834a8322c3b065c6fa8"
+          },
+          "detected_by": "static_pattern",
+          "end_line": 1,
+          "excerpt": "https://modelscope.cn/models/acme/demo-model",
+          "id": "evd_a9dab10d-c241-5a1f-a9a1-f241df74f096",
+          "kind": "file",
+          "locator": "config/resources.py",
+          "observed_at": "2026-09-06T00:00:00Z",
+          "producer": {
+            "config_digest": null,
+            "model_id": null,
+            "name": "openguard-static-ai-detector",
+            "prompt_schema_digest": null,
+            "provider": null,
+            "type": "parser",
+            "version": "0.1.1"
+          },
+          "start_line": 1,
+          "verification_status": "pending"
+        }
+      ],
+      "expected": [
+        "model:modelscope:acme/demo-model"
+      ],
+      "id": "model-modelscope",
+      "predicted": [
+        "model:modelscope:acme/demo-model"
+      ]
+    },
+    {
+      "assets": [],
+      "evidence": [],
+      "expected": [],
+      "id": "negative-generic-url",
+      "predicted": []
+    }
+  ],
+  "scanner": "openguard-static-ai-detector/0.1.1",
+  "version": "0.1.0"
+}

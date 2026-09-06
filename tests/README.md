@@ -49,6 +49,28 @@ PYTHONPATH=backend python -m app.cli ./demo.zip
 脱敏，以及成功和失败后的 task workspace 清理。CLI 只演示本地 ZIP→inventory，不替代
 Git、依赖/许可证扫描、Web API 或完整 A2 系统门禁。
 
+## A2-3a 公开 Git 与 TrustedEgress 复现
+
+离线实现门禁不访问公网，动态构造本地 Git object、DNS/CONNECT 受控替身、恶意 URL、
+symlink 与临时 SQLite/API：
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a2_public_git_ingestion.py
+```
+
+真实网络纵切必须显式提供获准公开仓库，并需要允许测试绑定本机回环代理：
+
+```bash
+OPENGUARD_RUN_LOOPBACK_TESTS=1 \
+OPENGUARD_PUBLIC_GIT_TEST_URL=https://github.com/pypa/sampleproject.git \
+PYTHONPATH=backend \
+python -m pytest -q tests/security/test_a2_public_git_trusted_egress_integration.py
+```
+
+真实测试经过 HTTPS/TrustedEgress、无 checkout Git object 物化、A2-2/B1/A4、SQLite 和
+A6 报告下载，并断言 workspace 清空。没有显式环境变量时网络测试会跳过，不得把跳过写成
+公网证据。当前范围不覆盖 Linux 隔离、持久队列、B5、A5 主链或前端。
+
 ## A3-1 FastAPI API 复现
 
 ```bash
@@ -60,3 +82,55 @@ PYTHONPATH=backend python -m pytest -q tests/unit/test_a3_fastapi_api.py
 资源/风险/证据/报告读取与过滤、统一脱敏错误，以及默认数据目录权限。为验证读取投影，
 测试会把仓库内合成 P0 sample 通过 A3-0 的合法状态迁移写入临时注册表；这不是产品运行时
 伪造的扫描结果。
+
+## A6-0 报告导出核心复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_report_exports.py
+```
+
+该测试覆盖稳定 JSON、七字段 CSV/资源清单、HTML 转义与 CSP、CSV 公式注入防护、
+`partial/rules/70` 的诚实披露、非终态拒绝和输入对象不变。它不证明报告已接入 Pipeline、
+持久化、HTTP 下载或前端，也不替代 B5 许可证规则。
+
+## A6-1 报告持久化与下载复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a6_report_exports.py \
+  tests/unit/test_a6_report_delivery.py \
+  tests/unit/test_a3_fastapi_api.py
+```
+
+新增测试覆盖私有目录/文件权限、内容寻址与 metadata 原子提交、幂等、重启读取、长度/摘要、
+篡改/缺失/symlink 失败关闭、默认数据目录、P0 `ReportLink`、FastAPI 元数据和只读下载、安全响应头、
+稳定脱敏错误及方法边界。下载前后文件时间必须不变，证明 GET 不写入。测试用终态快照由固定 sample
+和内存构造的 `partial/rules/70` 产生；不会实现或伪造 B5。A6-2 已在后续专项中接入 Pipeline，
+前端仍未接线。
+
+## A6-2 Pipeline 报告发布复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q tests/unit/test_a6_pipeline_publish.py
+```
+
+10 项测试以动态 ZIP、真实 A2/B1/A4、SQLite、FastAPI 和私有报告 store 覆盖：四格式链接与
+`partial/rules/70` 同一终态 revision 生效、报告正文不递归嵌入链接、重启下载、未登记产物不可见、
+发布失败脱敏降级、publisher 篡改隔离、store/registry 元数据不一致失败关闭、重复发布拒绝、默认
+factory 接线，以及“文件已写但终态 CAS 冲突”的 orphan 不可下载。它不实现 B5、A5 主链接线、
+前端或持久任务队列。
+
+## A5-1c Pipeline `AI_ASSIST` 复现
+
+```bash
+PYTHONPATH=backend python -m pytest -q \
+  tests/unit/test_a5_pipeline_integration.py \
+  tests/security/test_a5_pipeline_integration_independent.py
+```
+
+实现侧测试独立于真实网络，使用组员 B5 的公共规则输出和可注入 Provider 覆盖：AI 默认关闭、
+pending evidence-gate finding 生成待复核整改、verified 规则整改不重复、Provider 失败仍持久化
+规则结果并发布 A6 四格式报告、ZIP/Git 计划配置传递，以及默认应用 `0/1` 开关。它不生产
+B2/B3/B4 许可证事实，也不把合成 B5 输入冒充普通 ZIP/Git 的完整端到端结果。独立安全文件以
+手工 P0 聚合复核事实保持、失败脱敏和 A6 产物；其中真实本机模型单项默认跳过，只有操作者已
+启动锁定 Ollama 后显式设置 `OPENGUARD_RUN_REAL_OLLAMA_A5_1C=1` 才会执行，不会自动启动或下载模型。
