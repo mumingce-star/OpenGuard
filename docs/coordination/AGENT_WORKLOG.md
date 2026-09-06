@@ -3970,3 +3970,15 @@
 ### [20260906-RootAstra-ResourceAudit-Published] COMPLETE
 
 - GPT-6 Astra / Root；702931556f83e457c5c5cbe2de400699fc07cb6c已推送docs/a8-runtime-resource-audit，远端完整哈希一致；6个既有文件，无新增源码文件。当前核验和必要声明修复完成，完整P0未完成，未合并main或Release。随后仅追加此发布绑定。
+
+### [20260906-RootAstra-Nofile] START
+
+- GPT-6 Astra / Root；基线079b14c，开工干净，分支fix/a2-nofile-limit，Root单写。核对现有P0安全表和代码：API实际nofile1048576/1048576，目标256；scanner与API共享网络，data卷上传/workspaces无单任务配额。仅修Compose API及tools profile的nofile限制，复用现有tool-smoke添加真实内核边界验收，并同步部署/安全/进度/AI/日志。无新接口/架构/依赖，不改组员适配器。
+- 估算6k–12k，本次运行精确 token 数不可获得。验证配置、真实运行限制、受控子进程耗尽及退出、真实工具小样例、API健康与旧报告摘要；不在API主进程耗尽fd，不重跑模型。网络/磁盘及完整NEG-A2-028保持未完成。
+
+### [20260906-RootAstra-Nofile-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；核清网络/磁盘/fd差距并关闭一个配置阻断：api/tools nofile软硬256。修改7个既有文件：Compose、tool-smoke、部署说明、安全验收、进度、AI、共享日志，无新增文件/依赖/API/Schema/组员实现变更。
+- Compose config有效、API重建healthy、/proc/1/limits和Docker一致256/256、2CPU保持。API和禁网tools分别通过真实两工具小样例及fd边界：6+250=256后EMFILE、释放恢复、提升hard被拒绝；首次253假设失败，/proc查明Rosetta额外3fd后改为实际初始数计数，未改256上限。通过真实run_json_tool验证受控子进程耗尽failed/scanner_failed、子进程回收、父fd不增、下一次complete。未耗尽API主进程、未重跑模型，旧Git/ZIP-Qwen各四SHA verify通过。
+- 本项完成不等于所有NEG-A2-028或整个A2完成；网络deny-egress、任务磁盘配额及其他安全、人工/异机仍未验收。下一步Root只修P0工作目录临时磁盘硬上限及失败清理，保留原网络待办。检查后推送fix/a2-nofile-limit，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，范围完成、无调整，实际是否在区间不可确认。运行临时证据留仓库外，不上传容器/用户数据。

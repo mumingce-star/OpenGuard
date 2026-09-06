@@ -3,6 +3,8 @@
 import hashlib
 import json
 import subprocess
+import resource
+import sys
 import tempfile
 from pathlib import Path
 
@@ -13,7 +15,43 @@ def run(arguments):
     ).stdout
 
 
+def check_nofile():
+    """Exercise inherited kernel limits in a disposable child, not the API."""
+    assert resource.getrlimit(resource.RLIMIT_NOFILE) == (256, 256)
+    probe = r"""
+import errno, json, os, resource
+assert resource.getrlimit(resource.RLIMIT_NOFILE) == (256, 256)
+try:
+    resource.setrlimit(resource.RLIMIT_NOFILE, (257, 257))
+except (ValueError, OSError):
+    pass
+else:
+    raise AssertionError('hard limit could be raised')
+# /proc also exposes translation-runtime descriptors on Apple silicon.
+# Exclude the already-closed descriptor used by listdir itself.
+initial = sum(os.path.exists('/proc/self/fd/' + n) for n in os.listdir('/proc/self/fd'))
+fds = []
+try:
+    for _ in range(257):
+        fds.append(os.open('/dev/null', os.O_RDONLY))
+except OSError as exc:
+    assert exc.errno == errno.EMFILE, exc
+    assert initial + len(fds) == 256, (initial, len(fds))
+else:
+    raise AssertionError('kernel did not enforce the descriptor limit')
+finally:
+    for fd in fds:
+        os.close(fd)
+fd = os.open('/dev/null', os.O_RDONLY)
+os.close(fd)
+print(json.dumps({'soft': 256, 'hard': 256, 'initial': initial, 'opened': len(fds),
+                  'error': 'EMFILE', 'reopen_after_close': True}))
+"""
+    return json.loads(run([sys.executable, '-c', probe]))
+
+
 def main():
+    nofile = check_nofile()
     scancode_version = run(["scancode", "--version"]).decode().strip()
     syft_version = run(["syft", "version", "-o", "json"])
     assert "32.5.0" in scancode_version, scancode_version
@@ -66,6 +104,7 @@ SOFTWARE.
                        if item.get("purl") == "pkg:npm/is-number@7.0.0")
         assert any(item["path"].endswith("package-lock.json") for item in package["locations"])
         print(json.dumps({
+            "nofile": nofile,
             "status": "passed", "scancode": "32.5.0", "syft": "1.51.0",
             "license": "mit", "license_path": "LICENSE", "component": package["purl"],
             "scancode_json_sha256": hashlib.sha256(license_output).hexdigest(),

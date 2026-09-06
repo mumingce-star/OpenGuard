@@ -24,6 +24,10 @@ services:
     pids_limit: 128
     mem_limit: 4g
     cpus: 2
+    ulimits:
+      nofile:
+        soft: 256
+        hard: 256
     stop_grace_period: 30s
     healthcheck:
       test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/openapi.json', timeout=3).close()"]
@@ -69,6 +73,10 @@ services:
     pids_limit: 128
     mem_limit: 4g
     cpus: 2
+    ulimits:
+      nofile:
+        soft: 256
+        hard: 256
     command: [python, /opt/openguard/tool-smoke.py]
 volumes:
   data:

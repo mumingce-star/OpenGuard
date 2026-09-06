@@ -188,3 +188,17 @@ API服务现沿用独立scanner的`cpus: 2`，只改变原Compose一项配置。
 API镜像在原Dockerfile中明确安装`git=1:2.39.5-0+deb12u3`与配套`git-man=1:2.39.5-0+deb12u3`，安装后分别通过dpkg-query核对精确发行包版本，继续使用Debian仓库默认签名校验。版本来自原已验收镜像，不升级Git，不添加替代下载源或忽略签名参数。上游移除该版本时构建应失败，由后续明确升级任务处理，不自动退回无版本安装。
 
 该固定只约束Git与git-man，不代表所有Debian系统依赖、仓库快照或整个镜像字节永久可复现。版本固定也不替代后续安全更新审查；本轮不引入额外仓库快照架构。
+
+## API／工具文件描述符上限（2026-09-06）
+
+现有Compose api与scanner明确设置 `ulimits.nofile.soft: 256`、`hard: 256`，沿用P0安全表默认值；每个进程继承此限额，非容器fd总数。配置需要重建容器才能生效；保持原有AI/Git环境开关和data卷，不使用down -v。不要通过放宽capabilities或自行提高限制让测试通过。
+
+复用现有命令验证（自建小输入，不下载/执行目标依赖）：
+
+```bash
+docker compose -f deploy/compose.yaml config --quiet
+docker compose -f deploy/compose.yaml --profile tools run --build --rm scanner
+docker compose -f deploy/compose.yaml exec -T api python /opt/openguard/tool-smoke.py
+```
+
+tool-smoke先检查真实继承的256/256、拒绝提高硬限制、到上限返回EMFILE及释放后恢复，再运行原两工具样例。运行环境若有Rosetta额外fd，按/proc实际占用计入256，不固定可新增数为253。最终API及独立tools均为initial6/opened250；两工具样例通过。原Git/ZIP-Qwen receipt的smoke --verify各通过，API健康/2CPU保持。网络deny-egress和data卷任务磁盘配额仍未通过；详见原安全表9.4，不将本项外推为完整安全冻结或异机验收。

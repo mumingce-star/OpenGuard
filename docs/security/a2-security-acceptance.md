@@ -365,3 +365,17 @@ A2 只有同时满足以下条件才能 `COMPLETE`：
 ### 9.3 Debian Git 精确版本配置（2026-09-06）
 
 API Dockerfile现在明确指定git和git-man均为1:2.39.5-0+deb12u3，并在安装层分别验证dpkg版本。沿用Debian默认签名仓库验证，不加允许未认证/忽略签名参数。版本不可获取则安装失败，不回退无版本安装。该项只关闭Git包版本自动漂移，其他系统依赖/仓库快照、网络隔离和磁盘/fd覆盖仍分别保留；实际重建结果见本轮进度台账。
+
+### 9.4 网络／磁盘／fd差距核对与nofile落地（2026-09-06）
+
+基线079b14c，分支fix/a2-nofile-limit。本轮只修一个实际配置阻断：API原始RLIMIT_NOFILE为1048576/1048576，与表中worker_fds_max=256不符。现Compose api及独立scanner均显式soft=hard=256，进程继承内核限制，非root/cap_drop保持，不能自行提升到257。本限额是每进程限制，不是容器内所有进程的fd总配额，也不等于API主进程耗尽后的可用性已证明。
+
+| 原门禁 | 代码及运行核对 | 本轮结果与剩余边界 |
+|---|---|---|
+| SEC-A2-015 网络 | external_tools.run_json_tool直接Popen；无独立netns；api与工具子进程共用网络。独立scanner profile的network_mode:none不覆盖API | 仍未完成逐扫描deny-egress；未用Git公网校验或关闭自动更新代替网络隔离 |
+| SEC-A2-007/015/020 磁盘 | create_default_app将uploads/workspaces/reports/dispatch放在data卷；/tmp为256MiB tmpfs，数据卷未设任务配额 | 输入计数和/tmp限额不覆盖持久卷工作目录/多次任务累计占用；仍未完成单任务磁盘硬上限及超限验收 |
+| SEC-A2-015/020 fd | Compose显式nofile256/256；最终API /proc/1/limits及docker inspect一致 | 本项配置与子进程真实边界通过；完整NEG-A2-028其他资源、API整体耗尽恢复及并发上限验收不由此关闭 |
+
+受控子进程实测：初始6个fd（其中3个为Rosetta转译相关），再打开250个达到总计256，下次打开返回EMFILE；关闭后可重新打开，提升hard到257被拒绝。首次断言误假定只占3个标准fd而失败，真实/proc证明额外占用后改为“实际初始数+新增数=256”，没有放宽硬上限或错误断言。此探针保留在原deploy/tool-smoke.py，不改进程自身限额来模拟部署通过。
+
+API环境与禁网tools profile各运行既有ScanCode32.5.0 MIT识别/Syft1.51.0 is-number7.0.0样例成功。另在API容器调用真实run_json_tool运行自建fd耗尽子进程：返回failed/scanner_failed、子进程已回收、父fd计数不变、下一次调用complete。未执行不可信目标代码、未耗尽API主进程。API最终healthy、2CPU保持；原Git与ZIP/Qwen两份receipt各verify四格式SHA保持，未重新扫描公开项目或推理。工具小样例不代表整个任务状态机耗尽矩阵通过。

@@ -190,3 +190,5 @@
 | 2026-09-06 | GPT-6 Astra / Root | Debian Git构建版本固定 | 原Dockerfile精确安装git/git-man1:2.39.5-0+deb12u3并验证dpkg；沿用默认签名仓库 | 无升级/新源/回退/接口/扫描，不外推全部系统包已冻结 | 真实重建成功，Git及copyright SHA与原容器一致；15包及2CPU保持，旧Git/Qwen四格式各verify通过 | 本任务完成，完整P0未完成；发布见进度21节 |
 
 | 2026-09-06 | GPT-6 Astra / Root | A8运行资源核验 | 核对24个固定版本官方元数据/随包许可，补原台账，纠正ScanCode数据许可；现有Vite配置保留四份浏览器完整许可 | 无新依赖/接口/扫描；不替代Owner人工授权或完整镜像审计 | 本机及Docker构建成功；HTTP附件4618字节/四原文逐字一致，Chrome插件ERR_BLOCKED_BY_CLIENT保留 | 当前资源核验与缺失附件修复完成；完整P0未完成 |
+
+| 2026-09-06 | GPT-6 Astra / Root | P0网络/磁盘/fd核对及nofile修复 | 原Compose API/tools设256软硬限制，原tool-smoke加入真实内核边界；修正Rosetta额外fd假设 | 无新文件/依赖/API/扫描架构；不改组员适配器、不耗尽API主进程 | 两环境真实工具样例及fd边界通过；runner失败/回收/后续调用通过；旧两组报告SHA保持 | fd配置子任务完成，网络/磁盘及完整安全门禁未完成 |
