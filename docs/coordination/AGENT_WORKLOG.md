@@ -3820,3 +3820,8 @@
 - 复用上一段最终1200 passed/3 skipped/2既有warning、独立HTTP30项、OpenAPI等值；本次仅记录更新与运行验收，无新业务修复，故未重复全量。修改范围为既有A5/API工厂、扫描器两文件、Compose/验收脚本与说明、四个单测、一个独立边界测试及既有治理文档。公共契约和依赖未变。只提交源码/测试/说明，不提交原始输入或本机输出。
 - Chrome下载文件落盘仍待确认，HTTP四格式已通过；单样例不证明建议语义全部准确、全覆盖或授权确认。P0公开Git部署安全、陌生机复现、首批golden指标与最终冻结仍未完成；下一任务由Root先核清公开Git现有缺口。已查组员89c8ba2，不覆盖现有detector，不把B线计入用户任务。
 - 本次运行精确 token 数不可获得；恢复开工估算6k–12k，所定收口范围技术完成，实际token是否在区间不可确认，无功能扩展。README、进度14节、AI记录、来源登记均同步，待Root检查与功能分支发布绑定；不合并main或Release。
+
+### [20260906-RootAstra-PublicZIPQwen-Published] COMPLETE
+
+- GPT-6 Astra / Root；实现提交48f6267a27df792c8c248b45d54f4bc8b311346a已推送feat/a7-public-zip-qwen-acceptance，git ls-remote完整哈希与本地一致。19个源码/测试/既有说明文件；未合并main或Release。EVD-A7-PUBLIC-ZIP-QWEN-001绑定该实现，任务点完整交付，P0父任务仍进行中。
+- 推送前diff --check、文件清单、工作日志append-only、保护路径与新增行敏感信息检查通过；收口未改业务代码，不重复全量。此次仅追加发布事实，原失败与未完成门禁完整保留。

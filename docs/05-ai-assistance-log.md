@@ -162,3 +162,5 @@
 | 2026-09-05 | GPT-6 Astra / Root | AMENDMENT：模型样例发布绑定 | 2ccb75cbd09e7950aa0a98656daea6014dc0e3f9已推送feat/a4-ai-asset-report，远端完整哈希一致 | 17文件，无模型权重/个人配置/新依赖，未合并或Release | EVD-A4-AI-ASSET-ZIP-001绑定已验收实现 | 是（本任务完整交付，P0未完成） |
 
 | 2026-09-06 | GPT-6 Astra / Root与限定实现及独立检查子任务 | 固定公开ZIP→真实Qwen3→报告 | 复用扫描组员既有实现；补ScanCode最多8个遗漏文件且共享原预算、Docker固定宿主机opt-in禁代理/重定向、提示词避免非法JSON Pointer；不放宽AI验证 | 无新API/Schema/队列或P1/P2；未上传目标源码/权重/生成报告；中断后复用原scan、不重复推理 | 1200 passed/3 skipped/2既有warning；真实227组件/4引用/283证据/231提示/231建议；事实对照、Chrome正文与重建四SHA通过；原失败保留 | 是（本机公开ZIP链验收通过；完整P0及建议效果评测未完成；功能分支绑定见进度14节） |
+
+| 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：公开ZIP/Qwen发布绑定 | 实现提交48f6267a27df792c8c248b45d54f4bc8b311346a已推送feat/a7-public-zip-qwen-acceptance，git ls-remote完整哈希与本地一致。19个源码/测试/既有说明文件；未合并main或Release。EVD-A7-PUBLIC-ZIP-QWEN-001绑定该实现，任务点完整交付，P0父任务仍进行中。 | 无新增实现或测试范围 | 远端完整哈希一致；最终完整回归与实跑见原记录 | 是（本任务完成，P0未完成） |
