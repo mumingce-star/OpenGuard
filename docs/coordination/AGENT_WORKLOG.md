@@ -4107,3 +4107,16 @@
 
 - 文档提交`65f532dd9c9751d8af284a19a148e6d7435302bf`已推送`fix/real-git-runtime-flags`，随后以普通非快进合并进入并推送`integration/p0`，合并提交`6cb53eb45734c9f6571203e59345dd4315b7bb48`。已确认短分支头未移动且完整包含后删除本人远端和本地短分支。
 - `main`保持`476d9549`；扫描组员`codex/p0-external-tools-sync`保持`89c8ba2f`；前端组员`feat/xzb-frontend`保持`83e89281`。未修改或删除组员分支，未加入`output/`。本条只绑定发布结果，不改变本轮运行、验证或P0剩余结论。
+
+### [20260906-2140-RootAstra-AnimatedProgress] START
+
+- GPT-6 Astra / Root；基线`integration/p0`提交`0978eab`，短分支`feat/animated-real-progress`，Root单写。只修改当前集成线中源自前端组员`46f1640`的既有进度页、样式及必要现有测试/说明，不修改、合并或推送组员`feat/xzb-frontend`分支。
+- 截图中后端已到5%，但原`progress`元素绑定`stageIndex=0/7`，因此条形图为空。拟改为真实后端0–100数值的单调平滑显示，动画不超过最新API值；保留阶段列表，并在AI阶段提示Qwen3逐条生成、页面继续轮询。尊重`prefers-reduced-motion`，不增加动画依赖、接口、SSE或伪进度。
+- AI耗时诊断范围只读：现有Provider按eligible finding串行调用，每条在同一10秒预算内核验Ollama版本、模型摘要并生成；当前8条真实任务42秒完成、零错误，不判为卡死。本轮预计6k–12k token；验证前端测试/构建、Chrome真实已完成任务0→100视觉、API值不越界和既有容器链，不扩展P1/P2。
+
+### [20260906-2200-RootAstra-AnimatedProgress] COMPLETE
+
+- 复用前端组员既有Progress结构，只改当前集成线`Progress.tsx`和`workspace.css`：条形图及大号数字改接真实0–100 API值，从0单调缓动到每次轮询目标；运行态加流光和阶段脉冲，AI态说明逐条生成。阶段清单/状态保留；reduced-motion立即显示，partial/failed不补100。更新原前端说明、进度及AI日志，无新文件、依赖、接口、SSE或伪进度；组员分支未动。
+- 前端unit 21通过，TypeScript/Vite生产构建通过，Compose只重建web并healthy，未重建API或数据卷。Chrome新页面实查`openai-python`为真实95/partial、旧Git成功任务为100/completed；ARIA progressbar值与文字一致。原容器真实Git/AI开关保持，不创建扫描任务。
+- AI诊断：当前8 findings任务42秒成功；随后用户`openai-python`任务133 findings，172.399639秒后partial，165证据、0 AI整改，保留四报告；`ai_response_invalid`表明Qwen输出未过严格结构校验，不是仍在运行或无限卡死。Provider逐条串行且每条先验证runtime/model，规模导致耗时；无逐条持久计时，不能定位失败序号。本轮未改AI契约或性能策略。
+- P0仍缺持久累计预算、Windows异机、AI人工质量/规模裁决及最终资源安全发布冻结。下一任务按主线核对持久上传/报告占用。准备推送并合入`integration/p0`后清理本人短分支；`output/`不加入。精确token不可获得；开工6k–12k，范围完整完成且未扩展P1/P2，实际是否在区间不可确认。
