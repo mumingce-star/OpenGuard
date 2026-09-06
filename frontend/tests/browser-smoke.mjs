@@ -343,9 +343,15 @@ try {
         gets++;
         return r.fulfill({ json: scan, headers });
       });
-      await page.goto(base + "/app/new-scan?mode=api");
+    await page.goto(base + "/app/new-scan?mode=api");
+    assert.equal(
       await page
-        .getByLabel("公开仓库地址")
+        .getByRole("button", { name: "载入固定演示", exact: true })
+        .count(),
+      0,
+    );
+    await page
+      .getByLabel("公开仓库地址")
         .fill("https://github.com/example/project");
       await page
         .getByRole("button", { name: "提交真实扫描", exact: true })

@@ -253,3 +253,47 @@
 - 已知风险与未完成内容：团队审查和合并待成员处理；本轮不包含线上站点部署、真实后端联调或主分支合并。
 - 下一步与责任模型：团队成员通过 PR #1 审查，或 Fetch/Pull 后切换 feat/xzb-frontend 运行前端；Terra 对齐后端契约，Luna 可复核测试/台账。
 - 关联提交/PR/Issue/evidence_id：功能提交 46f164066aee6d3509c093b1def72930662e3918；PR https://github.com/mumingce-star/OpenGuard/pull/1 。本条收工记录通过后续独立文档提交同步。
+
+### [20260907-0056-Sol-真实接口移除演示入口] START - 移除真实接口页固定演示按钮
+
+- 作者：GPT-5.6 Sol
+- 对话角色：用户明确授权的前端小改动；Terra 后续复核。
+- 时间：2026-09-07 00:56（Asia/Shanghai）
+- 分支或工作区：feat/xzb-frontend；开工时与 origin/feat/xzb-frontend 一致且工作区干净。
+- 任务目标：仅在新建扫描的真实接口模式隐藏左下角“载入固定演示”，演示模式保留该入口。
+- 开始前已确认：已读取全局规则、README、AGENTS、完整共享日志与 Sol 交接；未发现其他模型在修改 NewScan 或浏览器测试。
+- 修改文件：frontend/src/pages/NewScan.tsx、frontend/tests/browser-smoke.mjs，以及必要的 AI/跨职责/协作记录。
+- 命令与测试：计划执行相关浏览器断言、pnpm test、pnpm build 和 git diff --check。
+- 接口、Schema、规则或决策：不改变 API、Schema、提交真实扫描流程或 mock 数据；仅调整真实接口页面入口。
+- 已知风险与未完成项：本轮不自动提交或推送，除非用户另行授权。
+- 下一步与责任模型：实现、验证并交付用户本地查看。
+- 关联提交/PR/Issue/evidence_id：基于 83e8928；现有 PR #1 不自动更新。
+
+### [20260907-0059-Sol-真实接口移除演示入口收工] COMPLETE - 真实接口页固定演示按钮已移除
+
+- 作者：GPT-5.6 Sol
+- 对话角色：用户明确授权的前端小改动；Terra 后续复核。
+- 时间：2026-09-07 00:59（Asia/Shanghai）
+- 分支或工作区：feat/xzb-frontend；本轮仅保留本地未提交改动，origin 与 PR #1 未更新。
+- 任务目标与实际结果：新建扫描的真实接口模式不再渲染左下角“载入固定演示”；mock 演示模式继续保留该按钮和原有演示流程。
+- 修改或新增文件：frontend/src/pages/NewScan.tsx、frontend/tests/browser-smoke.mjs、docs/05-ai-assistance-log.md、docs/coordination/change-requests.md、本共享日志。
+- 命令与测试结果：pnpm test 的 16 项全部通过；pnpm build 的 TypeScript/Vite 生产构建通过；git diff --check 通过；隔离 Chrome 12 组流程全部通过，新增真实接口模式按钮数量为 0 的断言，mock 创建演示流程继续通过。
+- 接口、Schema、规则或决策：不改变真实 API、Schema、提交逻辑、mock fixture 或路由；仅调整模式条件渲染。
+- 已知风险与未完成内容：团队仓库尚未包含本轮小改动；需要用户明确授权后再提交并更新 PR #1。
+- 下一步与责任模型：用户刷新本地 5174 的真实接口页面验收；需要同步时由当前前端分支正常提交。
+- 关联提交/PR/Issue/evidence_id：基于 83e8928；无新提交，PR #1 未更新。
+
+### [20260907-0101-Sol-真实接口按钮同步] START - 同步真实接口按钮调整到团队仓库
+
+- 作者：GPT-5.6 Sol
+- 对话角色：用户明确授权上传；团队成员后续审查。
+- 时间：2026-09-07 01:01（Asia/Shanghai）
+- 分支或工作区：feat/xzb-frontend；仅向该功能分支推送，不直接修改或合并 main。
+- 任务目标：提交已验收的真实接口模式按钮调整，并更新现有 PR #1。
+- 开始前已确认：本地改动仅包含该功能、自动化断言及必要协作记录；此前同一代码版本的单元测试、构建和 12 组浏览器流程均已通过。
+- 修改文件：frontend/src/pages/NewScan.tsx、frontend/tests/browser-smoke.mjs、docs/05-ai-assistance-log.md、docs/coordination/change-requests.md、本共享日志。
+- 命令与测试：计划 fetch 对齐远端、检查冲突/差异/敏感信息、定向暂存、提交并正常 push。
+- 接口、Schema、规则或决策：无 API 或 Schema 变更；现有 PR #1 自动更新。
+- 已知风险与未完成项：不执行主分支合并，团队审查仍由仓库成员完成。
+- 下一步与责任模型：完成推送后核对远端分支提交并记录收工。
+- 关联提交/PR/Issue/evidence_id：基于 83e8928；PR https://github.com/mumingce-star/OpenGuard/pull/1 。

@@ -313,9 +313,11 @@ export function NewScan({
             </p>
           )}
           <div className="og-form-footer">
-            <button type="button" disabled={busy} onClick={demo}>
-              载入固定演示
-            </button>
+            {mode === "mock" && (
+              <button type="button" disabled={busy} onClick={demo}>
+                载入固定演示
+              </button>
+            )}
             <button
               className="og-primary"
               disabled={
