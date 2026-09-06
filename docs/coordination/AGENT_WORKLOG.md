@@ -4015,3 +4015,7 @@
 - 87工具/扫描回归+95Git/AI回归=182通过，1 opt-in跳过/1既有warning。真实生产runner中IPv4/IPv6 TCP/UDP libc.socket四类EPERM、后代exec继承、AF_UNIX可用，父网络保持；原两工具样例及最终固定wrapper/pass_fd正例通过。原Git安全获取器真实取得既定PyPA revision并清理；Qwen8token上限短调用done=true身份匹配；旧Git/Qwen各四SHA通过、APIhealthy。更新前queued/running=0和workspaces空，未删除data。
 - 当前禁网边界完成，完整安全/跨任务文件与IPC/持久累计预算/人工/异机仍待办。下一步Root先核对跨任务读取边界，只修具体缺口。Root检查后推送fix/a2-scanner-no-network，不合并main/Release。
 - 本次运行精确 token 数不可获得；开工6k–12k，目标完成，转译限制导致必要原生启动器与构建阶段调整，未扩展产品范围；实际token区间不可确认。
+
+### [20260906-RootAstra-ScannerNetwork-Published] COMPLETE
+
+- GPT-6 Astra / Root；665bd3862c221d1648fde16a00f8f0e07119cb07已推送fix/a2-scanner-no-network，远端完整哈希一致；10个既有文件及1个必要C源码。当前扫描禁网/Git和Qwen保持验收完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
