@@ -3934,3 +3934,7 @@
 - UI初次typeText丢失标点，改paste准确地址；保存目录选择与原生点击未稳定，用户完成正常保存，真实文件独立核验，未把自动点击当成功。只提交8个既有项目文件，不提交用户演示/真实报告；无新API/Schema/依赖升级/文件/架构。API版本锁定不等于所有发行物hash、Dev/ScanCode或Debian系统包冻结。
 - 部署README、third_party、安全、进度、AI及共享日志同步。下一任务可限定Debian Git构建可复现性；人工、其他隔离/资源门禁和异机仍待完成。检查后Root推送fix/a7-api-python-lock，不合并main或Release。
 - 本次运行精确 token 数不可获得；开工6k–12k，本轮范围完成，实际token区间不可确认；无范围扩大。
+
+### [20260906-RootAstra-PythonLock-Published] COMPLETE
+
+- GPT-6 Astra / Root；549d7c004c5288d9a443c866744399437b9e815e已推送fix/a7-api-python-lock，远端完整哈希一致。8个既有文件，无新增；API版本锁定及Mac真实四格式下载验收完成，完整P0未完成，未合并main或Release。随后仅追加发布绑定。
