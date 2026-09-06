@@ -204,4 +204,4 @@
 
 | 2026-09-06 | GPT-6 Astra / Root | 汉化部署后真实Git配置恢复 | 定位API重建时三个真实模式开关回落为0；恢复公开Git、Docker宿主Ollama与AI开关，复用现有GitScanRuntime执行原queued任务，并补原部署说明 | 不改汉化实现、接口、队列、Git恢复或安全默认值；不创建同仓库重复任务；模型输出仍为pending且不改确定性事实 | 原任务42秒完成，8组件/10证据/8风险/8条中文Qwen建议、零错误；Ollama/模型摘要匹配，Chrome 7/7和100%，四报告SHA一致 | 是（`65f532d`已并入`integration/p0`；完整P0未完成） |
 
-| 2026-09-06 | GPT-6 Astra / Root | 真实进度动态视觉与AI耗时诊断 | 复用前端组员既有进度页，将条形图从阶段数改接冻结API的0–100实际值，单调平滑递增并为运行中/AI阶段增加活动提示 | 动画不越过后端值，不新增SSE、接口、依赖或虚构子进度；不修改组员分支或AI生成逻辑 | 前端21项与生产构建通过；Chrome实查partial=95及completed=100。openai-python任务172.40秒后partial，133 findings、0 AI整改、`ai_response_invalid`，证明未卡死但模型输出校验失败 | 是（实现待发布；AI规模与质量仍需人工/后续P0裁决） |
+| 2026-09-06 | GPT-6 Astra / Root | 真实进度动态视觉与AI耗时诊断 | 复用前端组员既有进度页，将条形图从阶段数改接冻结API的0–100实际值，单调平滑递增并为运行中/AI阶段增加活动提示 | 动画不越过后端值，不新增SSE、接口、依赖或虚构子进度；不修改组员分支或AI生成逻辑 | 前端21项与生产构建通过；Chrome实查partial=95及completed=100。openai-python任务172.40秒后partial，133 findings、0 AI整改、`ai_response_invalid`，证明未卡死但模型输出校验失败 | 是（`f23be24`已并入`integration/p0`；AI规模与质量仍需P0裁决） |
