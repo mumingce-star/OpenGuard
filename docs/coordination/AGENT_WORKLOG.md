@@ -4040,3 +4040,9 @@
 ### [20260906-RootAstra-BranchConsolidation] START
 
 - GPT-6 Astra / Root；用户授权整理并合并分支。基线450b8eb、工作区干净、Root单写。刷新远端后确认47个分支，41个无开放PR的历史分支头完整包含于当前验收链；保留main、integration/p0、两位组员分支、当前异机验收分支及PR #2来源。按既有协作方案先PR汇入integration/p0，不因整理而宣布P0冻结或合并main。仅更新原协作/进度/日志文档，运行现有unit/security和前端测试构建；远端删除须先确认合并后祖先关系及分支头未变，保留全部提交历史，不force push。开工估算3k–6k，精确token不可获得。
+
+### [20260906-RootAstra-BranchConsolidation-Review] PARTIAL
+
+- GPT-6 Astra / Root；治理审查完成，远端执行待PR。1222项unit/security通过、3跳过、2既有warning；前端20通过及本地构建通过。41个可清理分支原SHA登记在协作说明，6个保留；组员独立历史及PR #1/#2不修改。仅原治理3文件，无业务代码/接口变更。
+- 文档追加脚本首次遇编码错误，未写入拟追加内容；当时仅START被提交。随后使用补丁及ASCII脚本更新原文档，保留失败记录。PR将保留历史合入integration/p0，之后仅清理未移动且完整包含的41个头；main、异机固定提交与运行数据保持。
+- 下一步Root核对PR及远端refs后完成清理；P0安全/异机/人工门禁未外推完成。精确token不可获得；开工3k–6k，合并目标按原规则调整为integration/p0，无产品扩张。
