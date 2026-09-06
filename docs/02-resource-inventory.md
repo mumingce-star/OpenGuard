@@ -129,3 +129,18 @@ Qwen2.5-Coder、FLUX.1-dev及两个HF数据集仅为该输入中的明确引用�
 API镜像新增[Debian bookworm Git](https://packages.debian.org/bookworm/git)发行包，实测1:2.39.5-0+deb12u3/运行Git2.39.5；包内copyright及发行版来源保留，最终分发义务逐项复核归资源冻结。仅作为既有安全无checkout摄取工具，不修改Git，不新增Python依赖或下载目标项目依赖。
 
 [PyPA sampleproject](https://github.com/pypa/sampleproject)作为公开静态扫描输入，实测commit621e4974ca25ce531773def586ba3ed8e736b3fc，根LICENSE.txt为MIT。源码/归档不复制进作品仓库、不安装/执行；根许可不自动继承给peppercorn等依赖。独立归档SHA b3eccda9bfb92813e361eed4f074b97165233eb94ebc60166608ce5412d08a07，仅存本机临时验收目录。运行命令见deploy/README.md。
+
+## 2026-09-06 Mac P0 清单核对（非最终冻结）
+
+本节对照当前backend/pyproject.toml、frontend/pnpm-lock.yaml、两个Dockerfile及运行中的API环境。前文“必需/推荐/可选”是历史选型，不是已安装清单，也不自动转为P0新增开发任务；SQLAlchemy、Jinja2、RapidFuzz、ECharts、React Flow等不因出现在选型表就必须接入。实际资源以代码、锁文件和third_party/README.md登记为准。
+
+| 核对项 | 已有事实 | 最终冻结前的具体差距 |
+|---|---|---|
+| Python直接依赖 | FastAPI0.141.1、packaging26.3、Pydantic2.13.4、python-multipart0.0.32、Uvicorn0.52.4均在声明与当前API安装中一致 | Pydantic等实际包的正式台账、来源/许可证原文与随包声明仍需补齐核验 |
+| Python间接依赖 | 当前安装版本见third_party/README.md本日补充 | Dockerfile安装直接依赖，间接依赖没有冻结约束；安装快照不是可重复构建锁文件 |
+| 前端 | pnpm锁文件及frozen-lockfile构建已存在 | React/ReactDOM19.2.8、Tailwind及Vite插件4.3.3、TypeScript5.9.2、Vite8.2.2等固定版本的正式资源与必要声明未完整登记 |
+| 扫描工具与基础镜像 | ScanCode32.5.0、Syft1.51.0发行包SHA及三基础镜像digest已固定 | 不能把这些摘要外推为全部系统包和Python依赖都已锁定 |
+| Debian Git | 原部署实测2.39.5，已有来源登记 | apt安装未指定版本或发行仓库快照，后续重建可能漂移 |
+| 模型/样例 | Qwen3身份锁定、两个公开样例和5个组员合成样例已有来源/摘要 | 原文许可、人工标签及AI建议质量的人工复核仍不由技术通过代替 |
+
+本轮仅核对现有成果，不新增依赖、模型、图谱或评测集。上述为原“资源冻结”工作包中的具体缺口，非新增P1/P2；完整镜像再分发审计与当前仅发布源码/构建说明的边界保持区分。

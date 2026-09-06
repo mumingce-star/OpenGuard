@@ -3883,3 +3883,21 @@
 ### [20260906-RootAstra-DownloadRepro-Published] PARTIAL
 
 - GPT-6 Astra / Root；四份既有文档提交e902c8dd23e2c41d0186592083e8ee3ed4bb8efc已推送docs/a7-browser-download-handoff，git ls-remote完整哈希一致。文档上传完成，异机与Chrome落盘验收仍未完成；未合并main或Release。随后仅追加发布事实。
+
+### [20260906-RootAstra-MacAcceptance] START
+
+- GPT-6 Astra / Root；基线15b12ec，开工干净，分支docs/a8-mac-acceptance-check。用户授权先Chrome下载确认、再核对现有资源与安全清单；仅Mac操作，复用原Git报告，不重扫或新建实现。用户现有Windows，异机状态更正为环境待确认，本轮不执行异机。
+- 预计仅修改既有清单、部署说明、进度、AI及共享日志；Root单写。核对真实落盘文件摘要、台账与部署版本/安全约束，发现具体缺口才修复。无P1/P2、新接口或重复文件。开工估算6k–12k，本次运行精确 token 数不可获得。
+
+### [20260906-RootAstra-MacAcceptance-CSP] START
+
+- GPT-6 Astra / Root；用户确认Downloads路径且Chrome提示“不符合安全政策”。定位现有下载响应CSP sandbox未允许下载；MDN sandbox文档说明allow-downloads用途。最小修复仅下载响应增加allow-downloads，保留default-src/base-uri/form-action及其他sandbox约束，不修改Chrome安全设置。
+- 任务分支重命名feat/a6-download-csp-fix（首次误用switch到不存在分支失败，无文件损失，随后branch -m完成）。增加既有A6测试断言，重建API保留原开关/数据，Chrome复用原报告四格式落盘SHA验收。资源/安全仅核对记录，CPU/网络/供应链差距未冒充冻结，不在本轮扩建部署架构。
+
+### [20260906-RootAstra-MacAcceptance-Close] PARTIAL
+
+- GPT-6 Astra / Root；目标为Chrome实际下载及现有资源/安全清单核对。下载响应增加sandbox allow-downloads，保留其他CSP限制；61相关测试通过/1既有warning。API镜像构建与重建健康，原Git及旧ZIP/Qwen两次smoke --verify均通过，不重扫或推理。首次重建后点击因页面在概览而无匹配，返回原报告页后点击成功；不把点击成功算落盘。
+- 用户提供Downloads路径及修复后手动点击原文“贵组织屏蔽了该文件，因为它不符合安全政策”；目录未出现报告。浏览器门禁为组织策略阻塞，未关闭Chrome保护、未读浏览器私有配置、未绕过策略。CSP修复不证明唯一根因或Chrome已通过。
+- 资源/安全核对完成：当前cgroup和UID/权限/端口/挂载、API已安装包及前端锁文件对照原台账。API无CPU配额、API扫描进程网络隔离/磁盘/fd限制覆盖、Debian/Python间接版本锁定及正式资源声明仍待处理，不把这些算作已冻结。Windows设备已有，环境待确认，本轮不执行。
+- 修改9个既有文件：API main、原A6测试、部署说明、资源清单、third_party台账、安全验收文档、进度、AI和共享日志；无新文件/API/Schema/依赖/P1/P2。下一Mac任务可限定API CPU配额修复与验证；组织策略由有权管理员处理，异机与人工复核保留。
+- 分支feat/a6-download-csp-fix，待Root差异/敏感/append-only检查后推送；不合并main或Release。本次运行精确 token 数不可获得，开工6k–12k，本任务部分完成，实际区间不可确认；范围仅增加已授权下载阻断的最小修复。

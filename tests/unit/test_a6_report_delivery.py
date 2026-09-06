@@ -317,7 +317,10 @@ def test_api_returns_report_link_then_downloads_verified_partial_bytes_read_only
     assert response.headers["etag"] == f'"sha256:{expected.sha256}"'
     assert response.headers["x-content-type-options"] == "nosniff"
     assert response.headers["cache-control"] == "private, no-store"
-    assert "sandbox" in response.headers["content-security-policy"]
+    policy = response.headers["content-security-policy"]
+    assert policy.split("; ") == [
+        "sandbox allow-downloads", "default-src 'none'", "base-uri 'none'", "form-action 'none'",
+    ]
     assert "阶段性报告" in response.text
     assert "这不等于项目已通过许可证合规核验" in response.text
     assert before == (content_path.stat().st_mtime_ns, metadata_path.stat().st_mtime_ns)

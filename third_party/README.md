@@ -53,3 +53,30 @@ Qwen2.5-Coder、FLUX.1-dev及两个HF数据集仅为该输入中的明确引用�
 API镜像新增[Debian bookworm Git](https://packages.debian.org/bookworm/git)发行包，实测1:2.39.5-0+deb12u3/运行Git2.39.5；包内copyright及发行版来源保留，最终分发义务逐项复核归资源冻结。仅作为既有安全无checkout摄取工具，不修改Git，不新增Python依赖或下载目标项目依赖。
 
 [PyPA sampleproject](https://github.com/pypa/sampleproject)作为公开静态扫描输入，实测commit621e4974ca25ce531773def586ba3ed8e736b3fc，根LICENSE.txt为MIT。源码/归档不复制进作品仓库、不安装/执行；根许可不自动继承给peppercorn等依赖。独立归档SHA b3eccda9bfb92813e361eed4f074b97165233eb94ebc60166608ce5412d08a07，仅存本机临时验收目录。运行命令见deploy/README.md。
+
+## 2026-09-06 AMENDMENT：实际依赖核对，冻结待完成
+
+较早的ScanCode/Syft“仍待集成”描述仅代表当时状态；当前两工具已在真实Git/ZIP链验收，证据见PROJECT_PROGRESS第15/16节。此前“Git部署锁定”不等于Dockerfile已经固定Debian包版本：目前apt安装git无精确版本，最终可复现构建仍需处理。
+
+当前API环境通过importlib.metadata只读取得以下版本（安装快照，不冒充正式锁文件或许可证已核验）：
+
+```text
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+click==8.5.0
+fastapi==0.141.1
+h11==0.16.0
+idna==3.19
+packaging==26.3
+pip==25.0.1
+pydantic==2.13.4
+pydantic_core==2.46.4
+python-multipart==0.0.32
+starlette==1.6.0
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+uvicorn==0.52.4
+```
+
+上述直接/间接包以及前端pnpm-lock.yaml中实际构建资源需要按固定版本核对来源、许可证和必要声明，补入本台账原位置；现有选型表不算正式核验。本轮不新增或升级这些依赖，也不根据包名推定许可证。前端直接锁版为React/ReactDOM19.2.8、Tailwind及其Vite插件4.3.3；开发构建另有TypeScript5.9.2、Vite8.2.2及React类型包19.2.18/19.2.5。版本来自锁文件，不声称已对部署bundle逐包重算。

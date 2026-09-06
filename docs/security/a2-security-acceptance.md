@@ -336,3 +336,20 @@ A2 只有同时满足以下条件才能 `COMPLETE`：
 | `CR-A2-001` | UI 必须展示异步输入拒绝的精细机器原因 | 在未来 v0.1.2 为 `ScanError` 增加可选 `reason` 或结构化 details，并做 Schema/API/fixture 迁移 | **未批准，不得在 A2 擅自新增字段**；当前只用冻结 `code`+通用 message。 |
 | `CR-A2-002` | 产品需要用户主动取消扫描 | 另行设计 `POST /api/v1/scans/{id}/cancel`、幂等和状态竞争 | **未批准，不属于 A2 API**；当前仅保证基础设施/任务取消时清理和 `cancelled` 状态。 |
 | `CR-A2-003` | 需要兼容含安全 symlink/submodule 的真实仓库 | 设计“不跟随链接的安全复制/元数据表示”和独立风险状态 | **未批准**；P0 当前失败关闭，不能由实现自行放宽。 |
+
+## 9. 2026-09-06 Mac Compose 实际核对（AMENDMENT，最终冻结未通过）
+
+本节补充当前实现状态，不重写前文设计与历史验收要求，也不将设计参数视为已生效。基线15b12ec；本轮未重建、重扫或运行攻击样例。
+
+| 检查项 | 本轮只读证据 | 状态 |
+|---|---|---|
+| 非root/权限 | API UID10001、CapEff=0、NoNewPrivs=1、Seccomp=2；Web用户nginx | 当前运行配置已验证 |
+| 文件系统/暴露面 | API/Web只读根，API仅named volume且数据目录0700；仅Web127.0.0.1:8080映射，API无宿主端口 | 当前运行配置已验证 |
+| 内存/进程 | API cgroup memory.max=4294967296、pids.max=128；Web配置256MiB/64PID | 已配置；本轮未重做耗尽攻击 |
+| CPU | API cpu.max为max 100000，Docker NanoCpus=0；Compose只有独立scanner profile设置cpus:2 | API无CPU配额，待修复与验收，不能标已冻结 |
+| 网络隔离 | API子进程共用Compose网络；独立scanner probe的network_mode:none不适用于API | 逐扫描进程deny-egress未实现/未验收；不得以Git公网校验替代该门禁 |
+| 磁盘/文件描述符 | /tmp tmpfs有大小限制；持久data卷未配置单任务磁盘配额，Compose无显式nofile限制 | 限制覆盖与故障证据待核对，不把输入字节上限当作全部磁盘配额 |
+| 供应链 | 三基础镜像digest、两扫描工具包SHA、Python直接依赖版本固定 | Debian包和Python间接依赖仍可在构建时漂移；完整资源台账待补 |
+| 原Git/ZIP边界 | 既有1221回归与Git/ZIP真实链、非法URL/失败清理证据保留 | 本轮未重跑；不将旧通过数算作新测试 |
+
+本轮结论为“清单核对完成，最终安全冻结未完成”。后续只按原SEC-A2-007/015/018/020逐项处理真实缺口；不创建企业级队列、图谱或任意新API。最终冻结前须区分本地单用户演示、异机复现与更强隔离要求，并保留每项未满足门禁，不能只改文案为通过。

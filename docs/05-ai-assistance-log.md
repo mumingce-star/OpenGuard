@@ -176,3 +176,7 @@
 | 2026-09-06 | GPT-6 Astra / Root | 异机复现与Chrome下载核验准备 | 复用现有Compose/smoke并固定341dc34版本；整理最小回传信息，Chrome点击原Git报告JSON链接 | 用户当前无另一台设备；未找到下载落盘文件，不能冒充异机或下载通过；无业务改动/新文件/重扫 | 文档命令和报告文件名与源码核对，diff检查；真实异机/落盘SHA仍待证据 | 部分完成（文档准备；验收门禁未关闭） |
 
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：复现准备文档发布 | 四份既有文档e902c8dd23e2c41d0186592083e8ee3ed4bb8efc已推送docs/a7-browser-download-handoff | 无新增实现；未合并main或Release | 远端完整哈希一致 | 部分完成（文档已上传，异机/落盘未验收） |
+
+| 2026-09-06 | GPT-6 Astra / Root | Chrome下载阻断修复及Mac资源/安全核对 | 报告响应sandbox增加allow-downloads，保留其余CSP；核对实际容器和依赖，对原清单追加具体差距 | 无新API/Schema/文件/扫描/模型；不关闭Chrome保护；不把检查完成当冻结通过 | 61相关测试通过，原Git及Qwen报告重建后SHA保持；Chrome落盘待最终核对 | 部分完成，状态与发布见进度18节 |
+
+| 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：Chrome组织策略确认 | 用户在修复后手动下载仍提示组织屏蔽；实际落盘门禁为阻塞 | 未改变Chrome保护或绕过组织限制，未认定CSP为唯一根因 | 用户原文+指定目录无文件；HTTP摘要与61测试保留 | 部分完成，浏览器待策略处理 |

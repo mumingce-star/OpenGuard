@@ -269,7 +269,7 @@ def _router() -> APIRouter:
                     "Cache-Control": "private, no-store",
                     "Content-Disposition": f'attachment; filename="{stored.filename}"',
                     "Content-Digest": f"sha-256=:{digest}:",
-                    "Content-Security-Policy": "sandbox; default-src 'none'; base-uri 'none'; form-action 'none'",
+                    "Content-Security-Policy": "sandbox allow-downloads; default-src 'none'; base-uri 'none'; form-action 'none'",
                     "ETag": f'"sha256:{stored.link.content_hash.value}"',
                     "X-Content-Type-Options": "nosniff",
                 },

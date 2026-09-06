@@ -158,3 +158,11 @@ python3 deploy/smoke.py --output /tmp/openguard-other-git --verify
 Chrome打开 `http://127.0.0.1:8080/app/new-scan`。可用receipt中的scan_id打开现有任务 `/app/scans/实际scan_id/report?mode=api`，确认真实接口、资源/风险/Evidence；通过四个下载链接各保存一次。文件名为 `openguard-实际scan_id.html`、`.json`、`.csv`和`.resources.csv`（以浏览器实际名称为准）。核对文件SHA与同一任务receipt中的对应reports摘要；不要与开发机不同任务的摘要比较，也不要把HTTP下载代替浏览器落盘。
 
 回传最小证据即可：设备系统与CPU架构、Docker/Compose版本、代码commit、两个命令的原始成功或失败输出、两个receipt.json、重建后两条PASS，以及Chrome实际文件的格式/字节数/SHA。不要回传用户名、主机名、完整环境变量、凭据、Docker账户或个人目录内容。只在上述结果实际取得后更新异机状态；准备好文档本身不算验收完成。
+
+## Chrome 下载排障记录（2026-09-06）
+
+现有报告下载响应的CSP现为`sandbox allow-downloads; default-src 'none'; base-uri 'none'; form-action 'none'`，仅允许预期附件下载，保留其他限制；不改变报告字节、摘要、接口或Chrome设置。依据[MDN sandbox文档](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/sandbox)，未包含allow-downloads的sandbox会限制下载。
+
+本机用户在修复前后均确认Chrome显示“贵组织屏蔽了该文件，因为它不符合安全政策”。修复后手动点击也受阻，指定Downloads目录未出现报告；因此不能断言CSP是此次唯一根因，浏览器落盘门禁仍被组织策略阻塞。需由有权限的管理员按实际策略处理，或之后在符合策略的另一台设备正常验收；不关闭保护、不绕过组织限制，也不以命令行保存冒充Chrome下载。
+
+61项相关API/报告测试通过；本次API重建后原Git及ZIP/Qwen四格式摘要均保持。资源/安全清单核对见docs/02-resource-inventory.md及docs/security/a2-security-acceptance.md第9节：检查完成不等于最终冻结。
