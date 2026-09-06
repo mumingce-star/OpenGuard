@@ -4102,3 +4102,8 @@
 - 复用原任务ID和现有`GitScanRuntime`完成，不重新提交该Git仓库：revision `e32b3e6cea77f65e2c10bd5b1a0fe3d745057bac`，42秒，8组件/10证据/8待复核风险/8条含中文的Qwen3建议，零错误，100%。Ollama 0.33.3、锁定模型名及摘要匹配。Chrome原页实查7/7阶段已完成；HTML6120、JSON39844、CSV1769、资源清单1769字节，各自SHA与API链接完全一致。最终active=0，workspaces空。
 - 仅修改5个既有文档，补清ZIP默认模式与公开Git/Qwen真实模式的启动及重建规则；无产品源码、依赖或新文件。`docker compose config --quiet`与`git diff --check`通过。验收时一次命令漏传`--public-git`，意外创建自建demo ZIP任务`scn_379f4c01-dd3c-4eb5-a9b5-9dd1093c3579`；它已终态并保留原AI降级记录，不触碰用户任务、不计入验收、不删除数据。
 - 当前Mac真实Git/Qwen中文链已恢复；P0仍缺持久上传/报告累计预算核清、Windows异机、AI建议人工质量及资源/安全/发布人工冻结。下一任务回到持久累计占用核查。准备推送本短分支并合入`integration/p0`，不动`main`或组员分支。精确token不可获得；开工4k–8k，本轮完整完成且未扩展P1/P2，实际是否在区间不可确认。
+
+### [20260906-2128-RootAstra-RealGitRuntime-Published] COMPLETE
+
+- 文档提交`65f532dd9c9751d8af284a19a148e6d7435302bf`已推送`fix/real-git-runtime-flags`，随后以普通非快进合并进入并推送`integration/p0`，合并提交`6cb53eb45734c9f6571203e59345dd4315b7bb48`。已确认短分支头未移动且完整包含后删除本人远端和本地短分支。
+- `main`保持`476d9549`；扫描组员`codex/p0-external-tools-sync`保持`89c8ba2f`；前端组员`feat/xzb-frontend`保持`83e89281`。未修改或删除组员分支，未加入`output/`。本条只绑定发布结果，不改变本轮运行、验证或P0剩余结论。
