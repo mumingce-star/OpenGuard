@@ -4089,3 +4089,16 @@
 ### [20260906-2052-RootAstra-ZhCnUI-Cleanup] COMPLETE
 
 - GPT-6 Astra / Root；发布绑定提交`12d15c67c83cf6e9c2eadb011ce8a60a99c5fd2f`已推送`integration/p0`，随后删除已完整合并的本人远端/本地`feat/zh-cn-ui`。最终GitHub仅保留`main`、`integration/p0`、扫描组员`codex/p0-external-tools-sync`和前端组员`feat/xzb-frontend`；组员SHA仍为`89c8ba2`、`83e8928`，未修改或删除。当前工作树仅有用户未跟踪`output/`。
+
+### [20260906-2112-RootAstra-RealGitRuntime] START
+
+- GPT-6 Astra / Root；基线`integration/p0`提交`e4e7e06`，分支`fix/real-git-runtime-flags`，Root单写。用户在真实接口提交公开 Git 仓库后，任务`scn_3bd54e48-59e6-4deb-8214-189b183c3198`保持`queued/0%`；数据库无错误、工作目录为空。
+- 已确认汉化实现没有阻塞扫描；汉化后重建 API 时未携带真实模式环境变量，当前容器实际为公开Git、AI及Docker到宿主Ollama三开关均`0`。本轮只恢复既有真实扫描配置、复用原任务完成扫描，并修订原部署说明防止再次用普通Compose命令静默关闭；不新增接口、队列、图谱或Git恢复架构，不修改组员分支。
+- 锁定Ollama 0.33.3及`qwen3:4b-instruct-2507-q4_K_M`摘要仍可用。验证包括实际容器开关/安全约束、原任务状态推进、真实资源/风险/报告、Chrome进度，以及相关部署配置检查；`output/`保持未跟踪。开工估算4k–8k token；本次运行精确 token 数不可获得。
+
+### [20260906-2121-RootAstra-RealGitRuntime] COMPLETE
+
+- 根因确认并关闭：汉化源码无阻塞；前次重建API遗漏真实模式变量，使`OPENGUARD_ENABLE_PUBLIC_GIT`、`OPENGUARD_ENABLE_AI`和`OPENGUARD_OLLAMA_DOCKER_HOST`均为0。按现有安全设计显式恢复为1，保持默认值、接口、Schema、队列及权限不变；API healthy，readonly root、cap_drop ALL、no-new-privileges、4GiB、2CPU、128 PID保持。
+- 复用原任务ID和现有`GitScanRuntime`完成，不重新提交该Git仓库：revision `e32b3e6cea77f65e2c10bd5b1a0fe3d745057bac`，42秒，8组件/10证据/8待复核风险/8条含中文的Qwen3建议，零错误，100%。Ollama 0.33.3、锁定模型名及摘要匹配。Chrome原页实查7/7阶段已完成；HTML6120、JSON39844、CSV1769、资源清单1769字节，各自SHA与API链接完全一致。最终active=0，workspaces空。
+- 仅修改5个既有文档，补清ZIP默认模式与公开Git/Qwen真实模式的启动及重建规则；无产品源码、依赖或新文件。`docker compose config --quiet`与`git diff --check`通过。验收时一次命令漏传`--public-git`，意外创建自建demo ZIP任务`scn_379f4c01-dd3c-4eb5-a9b5-9dd1093c3579`；它已终态并保留原AI降级记录，不触碰用户任务、不计入验收、不删除数据。
+- 当前Mac真实Git/Qwen中文链已恢复；P0仍缺持久上传/报告累计预算核清、Windows异机、AI建议人工质量及资源/安全/发布人工冻结。下一任务回到持久累计占用核查。准备推送本短分支并合入`integration/p0`，不动`main`或组员分支。精确token不可获得；开工4k–8k，本轮完整完成且未扩展P1/P2，实际是否在区间不可确认。
