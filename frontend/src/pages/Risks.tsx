@@ -5,8 +5,10 @@ import {
   verificationLabels,
   severityLabels,
   resourceTypes,
+  resourceTypeLabels,
+  outcomeLabels,
 } from "../types/domain";
-import { filterRisks } from "../services/model";
+import { filterRisks, licenseDisplay } from "../services/model";
 import { updateHandling } from "../services/scans";
 import {
   Header,
@@ -33,7 +35,7 @@ export function Risks({
     <>
       <Header
         title="风险中心"
-        eyebrow={"FINDINGS / " + scan.id}
+        eyebrow={"风险发现 / " + scan.id}
         description="筛选、处理与复扫验证分开记录。所有判断都应回到证据。"
       />
       <div className="og-filters">
@@ -85,7 +87,7 @@ export function Risks({
           >
             <option value="">全部类型</option>
             {resourceTypes.map((t) => (
-              <option key={t}>{t}</option>
+              <option key={t} value={t}>{resourceTypeLabels[t]}</option>
             ))}
           </select>
         </label>
@@ -110,7 +112,7 @@ export function Risks({
               <div>
                 <strong>{r.title}</strong>
                 <small>
-                  {r.id} · {r.outcome ?? "演示风险"} ·{" "}
+                  {r.id} · {r.outcome ? (outcomeLabels[r.outcome] ?? r.outcome) : "演示风险"} ·{" "}
                   {scan.resources.find((x) => x.id === r.resourceId)?.name ??
                     "待补充"}
                 </small>
@@ -173,7 +175,7 @@ export function RiskDetail({
         description={
           (resource?.name ?? "资源待补充") +
           " · " +
-          (resource?.license ?? "许可证待确认")
+          licenseDisplay(resource?.license)
         }
         action={<SeverityBadge value={risk.severity} />}
       />

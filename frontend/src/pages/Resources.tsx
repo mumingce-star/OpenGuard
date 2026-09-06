@@ -1,8 +1,8 @@
 import { reportDownloadUrl } from "../services/scans";
 import { useState } from "react";
 import type { Scan } from "../types/domain";
-import { resourceTypes, severityLabels } from "../types/domain";
-import { filterResources, resourceCsv } from "../services/model";
+import { resourceTypes, resourceTypeLabels, severityLabels } from "../types/domain";
+import { filterResources, licenseDisplay, resourceCsv } from "../services/model";
 import {
   Header,
   Panel,
@@ -32,7 +32,7 @@ export function Resources({
     <>
       <Header
         title="第三方资源清单"
-        eyebrow={"INVENTORY / " + scan.id}
+        eyebrow={"资源清单 / " + scan.id}
         description="未知许可保持待确认，未发现风险不等于许可已通过。"
         action={
           scan.mode === "api" ? (scan.reportFormats?.includes("resource_inventory") ? <a href={reportDownloadUrl(scan.id, "resource_inventory")} download>下载完整资源清单</a> : <span>资源清单尚未发布</span>) : <button
@@ -67,7 +67,7 @@ export function Resources({
           >
             <option value="">全部类型</option>
             {resourceTypes.map((t) => (
-              <option key={t}>{t}</option>
+              <option key={t} value={t}>{resourceTypeLabels[t]}</option>
             ))}
           </select>
         </label>
@@ -116,10 +116,10 @@ export function Resources({
                     {r.version ?? "版本待补充"} · {r.id}
                   </small>
                 </div>
-                <span>{r.type}</span>
+                <span>{resourceTypeLabels[r.type]}</span>
                 <span>{r.origin ?? "来源待补充"}</span>
                 <span>
-                  {r.license ?? "许可证未知"}
+                  {licenseDisplay(r.license)}
                   <small>
                     {r.licenseStatus === "confirmed"
                       ? "许可已核验"
@@ -147,7 +147,7 @@ export function Resources({
             <dd>{resource.origin ?? "待补充"}</dd>
             <dt>许可证</dt>
             <dd>
-              {resource.license ?? "未知"} ·{" "}
+              {licenseDisplay(resource.license)} ·{" "}
               {resource.licenseStatus === "confirmed" ? "已核验" : "待确认"}
             </dd>
           </dl>

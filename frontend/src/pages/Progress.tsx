@@ -25,7 +25,7 @@ export function Progress({
   return (
     <>
       <Header
-        eyebrow={"TASK / " + scan.id}
+        eyebrow={"任务 / " + scan.id}
         title={
           completed
             ? "扫描已完成"

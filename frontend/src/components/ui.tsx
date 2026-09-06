@@ -28,7 +28,7 @@ export function Header({
   return (
     <div className="og-page-header">
       <div>
-        <p className="og-eyebrow">{eyebrow ?? "OPENGUARD / WORKSPACE"}</p>
+        <p className="og-eyebrow">{eyebrow ?? "OPENGUARD / 工作区"}</p>
         <h1>{title}</h1>
         {description && <p>{description}</p>}
       </div>
