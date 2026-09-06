@@ -3901,3 +3901,7 @@
 - 资源/安全核对完成：当前cgroup和UID/权限/端口/挂载、API已安装包及前端锁文件对照原台账。API无CPU配额、API扫描进程网络隔离/磁盘/fd限制覆盖、Debian/Python间接版本锁定及正式资源声明仍待处理，不把这些算作已冻结。Windows设备已有，环境待确认，本轮不执行。
 - 修改9个既有文件：API main、原A6测试、部署说明、资源清单、third_party台账、安全验收文档、进度、AI和共享日志；无新文件/API/Schema/依赖/P1/P2。下一Mac任务可限定API CPU配额修复与验证；组织策略由有权管理员处理，异机与人工复核保留。
 - 分支feat/a6-download-csp-fix，待Root差异/敏感/append-only检查后推送；不合并main或Release。本次运行精确 token 数不可获得，开工6k–12k，本任务部分完成，实际区间不可确认；范围仅增加已授权下载阻断的最小修复。
+
+### [20260906-RootAstra-MacAcceptance-Published] PARTIAL
+
+- GPT-6 Astra / Root；e90ba11466c112e8accd70c2237ec1fb0c22de7a已推送feat/a6-download-csp-fix，远端完整哈希一致。9个既有文件、零新增，源码仅下载CSP修复；61相关测试、两组旧报告重建摘要、diff/清单/append-only/新增行敏感检查通过。浏览器组织策略阻塞及最终冻结差距保留，未合并main或Release；随后仅绑定发布事实。
