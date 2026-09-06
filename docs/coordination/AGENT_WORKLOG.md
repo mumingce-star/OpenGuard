@@ -3953,3 +3953,16 @@
 ### [20260906-RootAstra-DebianGitPin-Published] COMPLETE
 
 - GPT-6 Astra / Root；dbc0bf54c2e9ec959564d73aa88d2d11a51ee605已推送fix/a7-debian-git-pin，远端完整哈希一致。7个既有文件、无新增；本轮Git版本固定完成，完整P0未完成，未合并main或Release。随后仅追加发布绑定。
+
+### [20260906-RootAstra-ResourceAudit] START
+
+- GPT-6 Astra / Root；基线39d062a，开工干净，分支docs/a8-runtime-resource-audit。用户要求核对现有运行资源来源/许可/必要声明，Root单写，估算6k–12k，本次运行精确 token 数不可获得。复用third_party及原资源/进度记录，不建平行清单、不新增依赖或扫描。
+- 先核对API15包实际发行元数据/随包许可证及官方固定版本记录，再核对已有前端运行包与工具声明位置；历史选型不计为已用资源，实际缺失声明或无法核验项保持待办。源码/镜像再分发边界分开，不代替Owner最终授权。
+
+### [20260906-RootAstra-ResourceAudit-Close] COMPLETE
+
+- GPT-6 Astra / Root，2026-09-06；本轮核对来源/许可/必要声明，24个API及前端固定版本官方元数据与实际包一致；原台账补齐，ScanCode数据许可更正CC-BY-4.0，原NOTICE及许可保留。未把包元数据当发行物hash验收或完整镜像审计。
+- 发现实际前端产物缺完整许可，Root在原Vite配置读取4个原包LICENSE自动生成部署附件，补齐必要声明；跨实现范围属本次发现缺口修复。共6个既有文件（Vite、third_party、资源清单、AI、进度、共享日志），无新增源码文件/依赖/API/Schema/扫描/P1/P2。
+- 本机pnpm build和Docker web构建通过；pnpm test 20/20；只更新web，HTTP200/HTML引用/4618字节/四许可全文逐字一致通过，SHA fb50515ff9316032a876ad16ef1e8dc36a2e7cd46a5dc62c3250a6b82bdf6d25。首次命令路径和node PATH错误已修正后通过。Chrome插件打开附件ERR_BLOCKED_BY_CLIENT保留，不绕过，不把HTTP等同浏览器验收。此前四真实报告下载结论保持。
+- 本轮技术核验和缺失声明修复完成；全P0仍待安全、异机、人工及发布方式最终门禁，不宣称法律审定或所有OS/工具传递许可已核验。下一步Root限定核清P0既有安全表的网络/磁盘/fd缺口。Root检查后推送任务分支，不合并main/Release。
+- 本次运行精确 token 数不可获得；开工估算6k–12k，本轮完成，实际区间不可确认；范围内增加原Vite配置以修必要声明，无新架构。

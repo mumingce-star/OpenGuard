@@ -188,3 +188,5 @@
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：真实四格式下载验收完成 | 用户通过正常Chrome保存原HTML/JSON/CSV/资源清单，Root逐文件核对 | 不改变浏览器保护或传输；历史拦截触发原因未证实，撤回确定组织策略归因 | 四SHA等于原Git receipt；JSON任务ID、两CSV7列9行通过 | 本机下载与API依赖锁定完成，完整P0未完成 |
 
 | 2026-09-06 | GPT-6 Astra / Root | Debian Git构建版本固定 | 原Dockerfile精确安装git/git-man1:2.39.5-0+deb12u3并验证dpkg；沿用默认签名仓库 | 无升级/新源/回退/接口/扫描，不外推全部系统包已冻结 | 真实重建成功，Git及copyright SHA与原容器一致；15包及2CPU保持，旧Git/Qwen四格式各verify通过 | 本任务完成，完整P0未完成；发布见进度21节 |
+
+| 2026-09-06 | GPT-6 Astra / Root | A8运行资源核验 | 核对24个固定版本官方元数据/随包许可，补原台账，纠正ScanCode数据许可；现有Vite配置保留四份浏览器完整许可 | 无新依赖/接口/扫描；不替代Owner人工授权或完整镜像审计 | 本机及Docker构建成功；HTTP附件4618字节/四原文逐字一致，Chrome插件ERR_BLOCKED_BY_CLIENT保留 | 当前资源核验与缺失附件修复完成；完整P0未完成 |

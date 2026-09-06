@@ -12,7 +12,7 @@
 | pytest | Python 开发/测试框架 | 8.4.2 | https://pypi.org/project/pytest/8.4.2/ | MIT | 仅用于运行 OpenGuard 自身测试；不扫描、执行或安装被扫描项目的依赖 | 分发时保留上游版权与许可证文本 | OpenGuard 自研测试与验收逻辑；不复制 pytest 实现 | 组员环境已验证版本；集成分支继续使用项目隔离测试环境复核 | 通过 backend 开发依赖精确锁版，不在仓库存放 wheel/sdist |
 | Git | 外部源码传输/对象读取工具 | `2.50.1 (Apple Git-155)`（当前 macOS profile） | https://git-scm.com/downloads；https://git-scm.com/docs/git-clone | GPL-2.0-only；以实际发行包 LICENSE 为准 | A2-3a 只用固定绝对可执行文件执行无 checkout 的公开 HTTPS 浅克隆、`ls-tree` 与 `cat-file --batch` | 若随部署镜像分发 Git，必须保留许可证和对应源码提供义务；不得把当前 Apple 版本外推为最终 Linux 镜像版本 | OpenGuard 自研 URL/DNS/TrustedEgress、进程 allowlist、对象路径/type/配额校验、物化、inventory 与 provenance；不复制 Git 实现 | 当前本机版本与行为已核验；最终 Linux 镜像的包版本、摘要和许可证文件待 A7 锁定 | 仓库不保存 Git 二进制；部署时使用锁定系统包/镜像并登记摘要 |
 | Cloudflare 1.1.1.1 DNS over HTTPS | 公共 DNS 服务 | 公共服务，无软件版本；固定 endpoint `cloudflare-dns.com/dns-query` 与 bootstrap `1.1.1.1`/`1.0.0.1` | https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-wireformat/；https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/ | 服务条款与隐私政策适用；不分发服务端软件 | A2-3a 查询公开仓库主机的 A/AAAA，避免本机代理 Fake-IP 污染；只发送 DNS 名称，不发送仓库路径、凭据或扫描内容 | 部署/报告需披露外部 DNS 处理及隐私边界；离线部署应提供管理员审计后的替代解析 profile，而不能静默直连系统 DNS | OpenGuard 自研 TLS/HTTP/DNS wireformat 有界客户端、全部地址公网判定与立即拨号；不复制 Cloudflare 代码 | 已核验官方 DoH 请求方式、bootstrap 和公开解析器隐私页；最终部署前仍需团队复核适用条款 | 不在仓库存放第三方内容；仅公开配置、来源与用途 |
-| ScanCode Toolkit | 外部扫描器（可选部署工具） | 32.5.0 | https://github.com/aboutcode-org/scancode-toolkit/releases/tag/v32.5.0 | Apache-2.0 | 通过受限 JSON Adapter 获取许可证/版权候选，不执行被扫描项目代码 | 部署时保留上游许可证、版本与校验；输出必须继续经过规范化和人工核验 | OpenGuard 自研安全调用边界、相对定位校验与 P0 Evidence 映射，不复制 ScanCode 引擎 | 组员环境已作候选验证；当前 macOS 集成和真实工具输出仍待复核 | 不在仓库存放或自动下载二进制 |
+| ScanCode Toolkit | 外部扫描器（可选部署工具） | 32.5.0 | https://github.com/aboutcode-org/scancode-toolkit/releases/tag/v32.5.0 | 软件 Apache-2.0；数据 CC-BY-4.0；内嵌组件各自许可 | 通过受限 JSON Adapter 获取许可证/版权候选，不执行被扫描项目代码 | 部署时保留上游许可证、版本与校验；输出必须继续经过规范化和人工核验 | OpenGuard 自研安全调用边界、相对定位校验与 P0 Evidence 映射，不复制 ScanCode 引擎 | 组员环境已作候选验证；当前 macOS 集成和真实工具输出仍待复核 | 不在仓库存放或自动下载二进制 |
 | Anchore Syft | 外部 SBOM 扫描器（可选部署工具） | 1.51.0 | https://github.com/anchore/syft/releases/tag/v1.51.0 | Apache-2.0 | 通过受限 JSON Adapter获取组件候选，不执行被扫描项目代码 | 部署时保留上游许可证、版本与校验；不把候选许可证当作已确认事实 | OpenGuard 自研安全调用边界、相对定位校验、P0映射与跨来源合并 | 组员环境已作候选验证；当前 macOS 集成和真实工具输出仍待复核 | 不在仓库存放或自动下载二进制 |
 | Ollama | 本地模型运行时 | 0.33.3 | https://github.com/ollama/ollama/releases/tag/v0.33.3；https://docs.ollama.com/macos | MIT；上游 `LICENSE` | A5 本地 loopback transport；以 `OLLAMA_NO_CLOUD=1`、`OLLAMA_NOHISTORY=1` 运行，只监听 `127.0.0.1` | 分发时保留上游许可证和来源；安装包不进入仓库，不静默升级锁定版本 | OpenGuard 自研 loopback/禁代理/超时/响应封装与 A5-0 接线；不复制 Ollama 实现 | 已核验（2026-09-04；官方 DMG 196424896 bytes、SHA-256 `cc21bd6a1486ddff3cdcbf00549f61d0a3e6e6893d6456a12d37c486161bcc43`；Developer ID Team `3MU9H2V9Y9`、Gatekeeper、公证、arm64 与运行版本通过） | 只公开版本、来源、摘要和复现说明；不再分发运行时 |
 | Qwen3 | 开放权重模型 | `qwen3:4b-instruct-2507-q4_K_M` | https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M；https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507 | Apache-2.0；模型页及 Qwen 模型仓库 | 本机 A5 整改建议结构化推理；仅把模型输出作为待人工核验 remediation，不提升为许可证事实 | 保留模型来源和许可证；不得把模型输出写成法律结论，不在公开仓库再分发权重 | OpenGuard 自研 canonical prompt、证据引用和 pending remediation；不复制或再分发权重 | 已核验（2026-09-04；锁定权重本机下载并完成 3/3 结构化推理） | 仅公开官方链接、摘要和聚合实测，不存放或再分发权重 |
@@ -88,3 +88,56 @@ uvicorn==0.52.4
 ### 2026-09-06 Debian Git 版本固定补充
 
 原已验收Git及git-man发行包版本1:2.39.5-0+deb12u3现写入Dockerfile精确安装参数并通过dpkg-query检查；来源仍为原Debian bookworm仓库，不升级工具或新增资源。git为amd64、git-man为all。此项关闭Git构建时自动选择版本的缺口，不外推为全部Debian依赖/发行物hash/完整再分发义务已冻结；若旧版本不再可获取，构建失败而非自动换版。
+
+## 2026-09-06 运行资源来源与必要声明核验
+
+本节更新前文历史状态。对照 API 实际发行元数据、随包原文、pyproject 的15包锁定闭包，以及前端锁文件/安装包，向官方 PyPI/npm 固定版本接口核对24个版本及许可证，全部一致。来源登记不等于所有发行物哈希或完整镜像再分发审计。
+
+### API 运行依赖（完整15包范围）
+
+以下均通过官方固定版本元数据与当前容器随包许可证核对；没有复制其实现，使用方式为 API 依赖，公开方式为锁版声明/构建说明，wheel 不入仓库。许可证原文保留在 `/opt/api/lib/python3.12/site-packages/<distribution>.dist-info/licenses/`。MIT需保留版权/许可全文；BSD需保留版权/条件/免责声明；Apache需保留许可、相关原有声明及修改说明（若修改），不能机械要求不存在的 NOTICE；PSF保留原有许可/版权；packaging 保留随包双许可文本。现有第三方包未作源码修改。
+
+| 包/固定版本 | 官方版本来源 | 许可证 | 随包原文文件 |
+|---|---|---|---|
+| typing_extensions 4.16.0 | https://pypi.org/project/typing_extensions/4.16.0/ | PSF-2.0 | `LICENSE` |
+| annotated-doc 0.0.5 | https://pypi.org/project/annotated-doc/0.0.5/ | MIT | `LICENSE` |
+| python-multipart 0.0.32 | https://pypi.org/project/python-multipart/0.0.32/ | Apache-2.0 | `LICENSE.txt` |
+| idna 3.19 | https://pypi.org/project/idna/3.19/ | BSD-3-Clause | `LICENSE.md` |
+| starlette 1.6.0 | https://pypi.org/project/starlette/1.6.0/ | BSD-3-Clause | `LICENSE.md` |
+| h11 0.16.0 | https://pypi.org/project/h11/0.16.0/ | MIT | `LICENSE.txt` |
+| uvicorn 0.52.4 | https://pypi.org/project/uvicorn/0.52.4/ | BSD-3-Clause | `LICENSE.md` |
+| pydantic_core 2.46.4 | https://pypi.org/project/pydantic_core/2.46.4/ | MIT | `LICENSE` |
+| click 8.5.0 | https://pypi.org/project/click/8.5.0/ | BSD-3-Clause | `LICENSE.txt` |
+| annotated-types 0.8.0 | https://pypi.org/project/annotated-types/0.8.0/ | MIT | `LICENSE` |
+| packaging 26.3 | https://pypi.org/project/packaging/26.3/ | Apache-2.0 OR BSD-2-Clause | `LICENSE`, `LICENSE.APACHE`, `LICENSE.BSD` |
+| anyio 4.15.1 | https://pypi.org/project/anyio/4.15.1/ | MIT | `LICENSE` |
+| pydantic 2.13.4 | https://pypi.org/project/pydantic/2.13.4/ | MIT | `LICENSE` |
+| fastapi 0.141.1 | https://pypi.org/project/fastapi/0.141.1/ | MIT | `LICENSE` |
+| typing-inspection 0.4.4 | https://pypi.org/project/typing-inspection/0.4.4/ | MIT | `LICENSE` |
+
+许可义务原文参考：[MIT](https://opensource.org/license/mit)、[BSD-3-Clause](https://opensource.org/license/bsd-3-clause)、[Apache-2.0 第4节](https://www.apache.org/licenses/LICENSE-2.0)。typing_extensions 的 LICENSE 含 PSF 历史声明，保留整个原文件，不用一行 SPDX 替换。
+
+### 前端运行与构建资源
+
+| 资源/固定版本 | 官方来源 | 许可证/用途 | 声明与分发边界 |
+|---|---|---|---|
+| react 19.2.8 | https://www.npmjs.com/package/react/v/19.2.8 | MIT；浏览器UI | 已核对随包LICENSE；浏览器产物附完整原文 |
+| react-dom 19.2.8 | https://www.npmjs.com/package/react-dom/v/19.2.8 | MIT；浏览器DOM渲染 | 已核对随包LICENSE；浏览器产物附完整原文 |
+| scheduler 0.27.0 | https://www.npmjs.com/package/scheduler/v/0.27.0 | MIT；ReactDOM运行依赖 | 已核对随包LICENSE；浏览器产物附完整原文 |
+| tailwindcss 4.3.3 | https://www.npmjs.com/package/tailwindcss/v/4.3.3 | MIT；构建生成CSS | 已核对随包LICENSE；浏览器产物附完整原文 |
+| @tailwindcss/vite 4.3.3 | https://www.npmjs.com/package/@tailwindcss/vite/v/4.3.3 | MIT；构建插件 | 已核对随包LICENSE；构建期保留原文件，最终nginx不含node_modules |
+| typescript 5.9.2 | https://www.npmjs.com/package/typescript/v/5.9.2 | Apache-2.0；编译检查 | 已核对随包LICENSE.txt及ThirdPartyNoticeText.txt；构建期保留原文件，最终nginx不含node_modules |
+| vite 8.2.2 | https://www.npmjs.com/package/vite/v/8.2.2 | MIT；构建工具 | 已核对随包LICENSE.md含内嵌组件许可；构建期保留原文件，最终nginx不含node_modules |
+| @types/react 19.2.18 | https://www.npmjs.com/package/@types/react/v/19.2.18 | MIT；编译类型 | 已核对随包LICENSE；构建期保留原文件，最终nginx不含node_modules |
+| @types/react-dom 19.2.5 | https://www.npmjs.com/package/@types/react-dom/v/19.2.5 | MIT；编译类型 | 已核对随包LICENSE；构建期保留原文件，最终nginx不含node_modules |
+
+实际发现旧浏览器 JS 缺少完整版权/许可，CSS只有简短MIT标识。现有 `frontend/vite.config.ts` 现从锁定安装包读取 React、ReactDOM、scheduler、Tailwind 的 LICENSE，生成 `dist/third-party-licenses.txt` 并在 HTML 加 rel=license 链接；任一原文缺失会导致构建失败。不是手抄清单，不新增仓库许可副本或依赖。后续新增浏览器依赖须更新覆盖范围，不宣称自动发现全部传递包。
+
+本机 `pnpm build` 与现有 Web Docker 构建均成功，JS/CSS文件名与修改前一致；只重建/更新web，API和数据不动。部署附件 HTTP200、4618字节，SHA256 `fb50515ff9316032a876ad16ef1e8dc36a2e7cd46a5dc62c3250a6b82bdf6d25`；四份原始许可逐字包含、首页引用通过。Chrome插件打开该附件返回ERR_BLOCKED_BY_CLIENT，未改变保护，也未将插件浏览验收记为通过。此前真实报告四格式下载结论不因此撤回。
+
+### 工具、模型与发行边界更正
+
+- ScanCode32.5.0 原容器 `/opt/scancode/NOTICE` 与[官方固定版本NOTICE](https://github.com/aboutcode-org/scancode-toolkit/blob/v32.5.0/NOTICE)均明确：软件 Apache-2.0、检测数据 CC-BY-4.0。保留 `/opt/scancode/apache-2.0.LICENSE`、`cc-by-4.0.LICENSE`、NOTICE及thirdparty的ABOUT/NOTICE；数据署名为 nexB Inc. and others，来源为上述固定版本，未修改其数据。内嵌工具有各自许可，不能由顶层Apache覆盖，最终镜像若再分发需逐包审查并落实适用源码提供义务。
+- Syft1.51.0 保留 `/opt/syft/LICENSE`；Python保留 `/usr/local/lib/python3.12/LICENSE.txt`；Debian Git保留 `/usr/share/doc/git/copyright`（摘要见前节）。本轮核对文件存在和ScanCode声明，不把它计为所有OS/Go/扫描器传递组件逐包审计完成。
+- Qwen3/Ollama、基础镜像digest、pnpm及Docker Desktop继续沿用原登记；本轮未重新下载权重或改变服务条款。公开样例是扫描输入，不能把其依赖/许可继承为本项目依赖。
+- 当前发布源码/构建说明，未发布镜像或模型权重；完整镜像再分发、外部服务适用条款、人工许可/风险标签与AI建议复核仍须最终确认。历史选型中的未使用资源不新增为P0任务。
