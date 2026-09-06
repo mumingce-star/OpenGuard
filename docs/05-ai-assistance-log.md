@@ -182,3 +182,7 @@
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：Chrome组织策略确认 | 用户在修复后手动下载仍提示组织屏蔽；实际落盘门禁为阻塞 | 未改变Chrome保护或绕过组织限制，未认定CSP为唯一根因 | 用户原文+指定目录无文件；HTTP摘要与61测试保留 | 部分完成，浏览器待策略处理 |
 
 | 2026-09-06 | GPT-6 Astra / Root | Chrome策略确认及API CPU配额 | Chrome下载详情只读确认组织屏蔽；Compose api新增cpus:2，保留现有数据和开关 | 无绕过策略/新API/架构/扫描/模型调用 | 内核200000/100000，短时4进程节流41次并正常退出；旧Git/Qwen四格式摘要各通过 | CPU任务完成；真实下载与P0冻结未完成，发布见进度19节 |
+
+| 2026-09-06 | GPT-6 Astra / Root | API Python间接依赖锁定及真实下载诊断 | 既有pyproject记录15包精确闭包，Docker --no-deps及pip check；普通Chrome操作与用户保存真实JSON | 无新文件/依赖升级/接口/扫描；不修改安全策略或传输路径；组织提示具体原因未证实 | 重新安装/15包集合一致、API健康/2CPU保持、旧Git/Qwen四SHA各通过；JSON落盘SHA一致 | 依赖锁定完成，四格式验收见进度20节 |
+
+| 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：真实四格式下载验收完成 | 用户通过正常Chrome保存原HTML/JSON/CSV/资源清单，Root逐文件核对 | 不改变浏览器保护或传输；历史拦截触发原因未证实，撤回确定组织策略归因 | 四SHA等于原Git receipt；JSON任务ID、两CSV7列9行通过 | 本机下载与API依赖锁定完成，完整P0未完成 |

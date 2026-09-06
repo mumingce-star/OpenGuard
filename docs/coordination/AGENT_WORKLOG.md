@@ -3921,3 +3921,16 @@
 ### [20260906-RootAstra-CPUDownload-Published] PARTIAL
 
 - GPT-6 Astra / Root；d70a1e55e89b0f903f68416823658d33ba3b7517已推送fix/a7-api-cpu-limit，远端完整哈希一致。6个既有文件；CPU配置与运行验收完成，Chrome下载仍阻塞，未合并main或Release。随后仅追加发布绑定。
+
+### [20260906-RootAstra-PythonLock] START
+
+- GPT-6 Astra / Root；基线1d11d01，开工干净，分支fix/a7-api-python-lock，Root单写。用户要求锁定API Python间接依赖并继续真实下载排障。沿用既有pyproject保存当前API版本闭包，Docker构建消费并pip check，不生成重复requirements文件、不升级依赖；验证重建包版本、旧Git/Qwen报告与2CPU限额。
+- Chrome工具明确拒绝chrome://policy且禁止绕道，已请求用户手动查看下载相关策略；不改设置/Blob/文件名规避，不将“组织屏蔽”提示外推为具体规则已查明。预计修改pyproject、Dockerfile及既有部署/资源/安全/进度/AI/日志，估算6k–12k，本次运行精确 token 数不可获得。无新接口/队列/模型/扫描。
+
+### [20260906-RootAstra-PythonLock-Close] COMPLETE
+
+- GPT-6 Astra / Root；API Python间接依赖锁定和真实Chrome下载本轮两项完成。既有pyproject的api-lock记录15个原版本，Docker从空venv --no-deps安装、直接声明包含检查与pip check；安装层真实重建成功，运行15包集合严格相等、pip check通过（非root缓存不可写warning仅禁缓存），2CPU保持。原Git/ZIP-Qwen两组receipt四SHA各verify通过，不扫描/推理。
+- 下载更正：工具拒绝chrome://policy并明确禁止绕道，用户自行查看后回复没有下载相关政策。普通Chrome操作在原报告页出现正常保存框，用户完成四种原文件保存。JSON28846/HTML6722/CSV2024/资源清单2024字节，四SHA等于原Gitreceipt，JSON真实ID且两CSV7列9资源行通过。没有修改保护、组织配置、Blob/传输/文件名，也没有通过命令行生成这些下载文件。历史“组织策略为原因”结论撤回，具体历史触发机制未证明；失败记录保留，当前Mac下载已通过，不外推其他环境。
+- UI初次typeText丢失标点，改paste准确地址；保存目录选择与原生点击未稳定，用户完成正常保存，真实文件独立核验，未把自动点击当成功。只提交8个既有项目文件，不提交用户演示/真实报告；无新API/Schema/依赖升级/文件/架构。API版本锁定不等于所有发行物hash、Dev/ScanCode或Debian系统包冻结。
+- 部署README、third_party、安全、进度、AI及共享日志同步。下一任务可限定Debian Git构建可复现性；人工、其他隔离/资源门禁和异机仍待完成。检查后Root推送fix/a7-api-python-lock，不合并main或Release。
+- 本次运行精确 token 数不可获得；开工6k–12k，本轮范围完成，实际token区间不可确认；无范围扩大。

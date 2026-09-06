@@ -172,3 +172,13 @@ Chrome打开 `http://127.0.0.1:8080/app/new-scan`。可用receipt中的scan_id�
 API服务现沿用独立scanner的`cpus: 2`，只改变原Compose一项配置。保持Git/AI/Docker-host原开关重建API，私有数据卷未变，健康检查通过。Docker NanoCpus=2000000000；容器cgroup v2 `cpu.max=200000 100000`。4个自建Python忙循环各运行约4秒后正常退出，cpu.stat增量nr_periods=41、nr_throttled=41、usage_usec=8272191，证明实际发生节流；无目标代码执行或新扫描。内存4GiB、128PID、UID10001、只读根、cap_drop ALL及no-new-privileges保持。
 
 原Git和ZIP/Qwen两份receipt各执行一次`deploy/smoke.py --verify`，四格式摘要均保持。该检查证明配额与原报告留存，不声称已复跑真实扫描性能或完成所有资源隔离。Chrome下载详情本轮直接显示“贵组织屏蔽了此文件，因为它不符合安全政策”，无正常保存入口，真实四格式浏览器落盘仍待合规策略环境验收；没有改策略、改传输路径或借演示文件替代。
+
+## 2026-09-06 API Python 运行依赖锁定
+
+复用backend/pyproject.toml的`tool.openguard.api-lock.requirements`保存已验收API环境的15个直接/间接运行包精确版本，适用CPython3.12/Linux amd64；project.dependencies保持原5个直接依赖，不把间接包改为业务直接依赖。API镜像从空venv按该列表以`--no-deps`安装，构建先要求全部直接精确声明被包含，再运行`pip check`，缺失/不兼容闭包使构建失败，不静默解析新间接版本。后续升级必须同步更新原列表并重建验证，不新增平行requirements文件。
+
+本次安装层重新执行成功；重建容器实际15包集合与锁定列表严格相等，运行pip check通过（非root缓存目录不可写仅导致pip禁用缓存，未sudo或放宽权限）。Git和旧ZIP/Qwen两组receipt各verify四格式SHA保持，cpu.max仍200000 100000，API健康。不重新扫描或推理。pip自身沿用固定Python基础镜像的venv引导版本；此项是API运行依赖版本锁定，不宣称新增发行包hash校验、Dev/ScanCode环境锁定或Debian系统包快照锁定。
+
+### 真实 Chrome 四格式落盘通过（2026-09-06，AMENDMENT）
+
+用户手动查看后报告没有下载相关政策；此前仅据“组织屏蔽”文案归因过早。普通Chrome原生页面操作可以弹出保存对话框，用户完成原文件保存；没有更改安全设置、传输路径、Blob或文件名。原Git任务scn_fed61b87-fc58-4e70-a7af-0d0e5ead9330的HTML6722字节、JSON28846字节、CSV和资源清单各2024字节均实际落盘，SHA与本文件既有Git验收记录全部一致。JSON可解析且任务ID一致，两CSV均7列/9资源行。具体历史拦截触发机制未被证明，不宣称所有浏览器环境已修复；当前Mac四格式正常下载已通过，旧阻塞状态由此结果更正。文件留在用户下载目录，不上传Git，不重复生成扫描。

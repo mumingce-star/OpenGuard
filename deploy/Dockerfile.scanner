@@ -32,7 +32,8 @@ ENV PYTHONPATH=/app/backend
 WORKDIR /app
 COPY backend/pyproject.toml /app/backend/pyproject.toml
 RUN /usr/local/bin/python -m venv /opt/api \
-    && /opt/api/bin/python -c 'import subprocess,tomllib; d=tomllib.load(open("backend/pyproject.toml","rb")); subprocess.check_call(["/opt/api/bin/python","-m","pip","install","--no-cache-dir",*d["project"]["dependencies"]])' \
+    && /opt/api/bin/python -c 'import subprocess,tomllib; d=tomllib.load(open("backend/pyproject.toml","rb")); pins=d["tool"]["openguard"]["api-lock"]["requirements"]; assert set(d["project"]["dependencies"]) <= set(pins), "API lock must include all direct pins"; subprocess.check_call(["/opt/api/bin/python","-m","pip","install","--no-cache-dir","--no-deps",*pins])' \
+    && /opt/api/bin/python -m pip check \
     && install -d -m 0700 -o 10001 -g 10001 /var/lib/openguard
 ENV PATH=/opt/api/bin:/opt/scancode/venv/bin:/opt/syft:$PATH
 COPY backend/app /app/backend/app
