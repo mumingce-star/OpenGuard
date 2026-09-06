@@ -3966,3 +3966,7 @@
 - 本机pnpm build和Docker web构建通过；pnpm test 20/20；只更新web，HTTP200/HTML引用/4618字节/四许可全文逐字一致通过，SHA fb50515ff9316032a876ad16ef1e8dc36a2e7cd46a5dc62c3250a6b82bdf6d25。首次命令路径和node PATH错误已修正后通过。Chrome插件打开附件ERR_BLOCKED_BY_CLIENT保留，不绕过，不把HTTP等同浏览器验收。此前四真实报告下载结论保持。
 - 本轮技术核验和缺失声明修复完成；全P0仍待安全、异机、人工及发布方式最终门禁，不宣称法律审定或所有OS/工具传递许可已核验。下一步Root限定核清P0既有安全表的网络/磁盘/fd缺口。Root检查后推送任务分支，不合并main/Release。
 - 本次运行精确 token 数不可获得；开工估算6k–12k，本轮完成，实际区间不可确认；范围内增加原Vite配置以修必要声明，无新架构。
+
+### [20260906-RootAstra-ResourceAudit-Published] COMPLETE
+
+- GPT-6 Astra / Root；702931556f83e457c5c5cbe2de400699fc07cb6c已推送docs/a8-runtime-resource-audit，远端完整哈希一致；6个既有文件，无新增源码文件。当前核验和必要声明修复完成，完整P0未完成，未合并main或Release。随后仅追加此发布绑定。
