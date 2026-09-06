@@ -3982,3 +3982,7 @@
 - Compose config有效、API重建healthy、/proc/1/limits和Docker一致256/256、2CPU保持。API和禁网tools分别通过真实两工具小样例及fd边界：6+250=256后EMFILE、释放恢复、提升hard被拒绝；首次253假设失败，/proc查明Rosetta额外3fd后改为实际初始数计数，未改256上限。通过真实run_json_tool验证受控子进程耗尽failed/scanner_failed、子进程回收、父fd不增、下一次complete。未耗尽API主进程、未重跑模型，旧Git/ZIP-Qwen各四SHA verify通过。
 - 本项完成不等于所有NEG-A2-028或整个A2完成；网络deny-egress、任务磁盘配额及其他安全、人工/异机仍未验收。下一步Root只修P0工作目录临时磁盘硬上限及失败清理，保留原网络待办。检查后推送fix/a2-nofile-limit，不合并main/Release。
 - 本次运行精确 token 数不可获得；开工6k–12k，范围完成、无调整，实际是否在区间不可确认。运行临时证据留仓库外，不上传容器/用户数据。
+
+### [20260906-RootAstra-Nofile-Published] COMPLETE
+
+- GPT-6 Astra / Root；06e3e54318811c2c93b5c7c115c59e17585f8acc已推送fix/a2-nofile-limit，远端完整哈希一致；7个既有文件，无新增文件。fd配置及本轮边界验收完成，全P0未完成，未合并main或Release。随后仅追加此发布绑定。
