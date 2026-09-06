@@ -190,6 +190,69 @@ def check_bench_cases(args, get, create):
     print(json.dumps(result["metrics"], indent=2))
 
 
+def check_public_git(args, get, opener):
+    """Accept one public Git scan through the existing JSON API and reports."""
+    assert args.public_git == "https://github.com/pypa/sampleproject.git", "use the reviewed small public sample"
+    for source in ("http://github.com/pypa/sampleproject.git", "https://127.0.0.1/repo", "https://169.254.169.254/repo", "https://github.com/pypa/sampleproject.git?token=fixture"):
+        request = urllib.request.Request(args.url + "/api/v1/scans", data=json.dumps({"source_type": "git", "source": source}).encode(), headers={"Content-Type": "application/json"})
+        try:
+            opener.open(request, timeout=15)
+        except urllib.error.HTTPError as error:
+            assert error.code == 422, source
+        else:
+            raise AssertionError("unsafe Git URL accepted")
+    if args.scan_id:
+        scan_id = args.scan_id
+    else:
+        request = urllib.request.Request(args.url + "/api/v1/scans", data=json.dumps({"source_type": "git", "source": args.public_git, "idempotency_key": str(uuid.uuid4())}).encode(), headers={"Content-Type": "application/json"})
+        with opener.open(request, timeout=15) as response:
+            assert response.status == 202
+            scan_id = json.load(response)["scan_id"]
+    (args.output / "accepted.json").write_text(json.dumps({"scan_id": scan_id}))
+    print("Git scan:", scan_id, flush=True)
+    deadline = time.monotonic() + 600
+    while True:
+        status = json.loads(get(f"/api/v1/scans/{scan_id}"))
+        (args.output / "status.json").write_text(json.dumps(status, indent=2))
+        if status["status"] not in {"queued", "running"}:
+            break
+        assert time.monotonic() < deadline, "Git scan wait exceeded 600 seconds"
+        time.sleep(1)
+    assert status["status"] == "completed", status
+    raw = get(f"/api/v1/scans/{scan_id}/report?format=json&download=true")
+    (args.output / "report.json").write_bytes(raw)
+    run = json.loads(raw)["scan_run"]
+    assert not run["errors"] and run["project"]["source"] == args.public_git
+    revision = run["project"]["revision"]
+    assert revision and len(revision) in {40, 64} and all(c in "0123456789abcdef" for c in revision)
+    if args.expected_revision:
+        assert revision == args.expected_revision, "public branch moved; inspect recorded revision"
+    assert run["project"]["root_digest"] == run["provenance"]["inventory_digest"]
+    assert run["provenance"]["input_digest"]["value"] == hashlib.sha256(args.public_git.encode()).hexdigest()
+    versions = {p["name"]: p["version"] for p in run["provenance"]["tool_versions"]}
+    assert versions["scancode"] == "32.5.0" and versions["syft"] == "1.51.0" and versions["git-client"]
+    evidence = {e["id"]: e for e in run["evidence"]}
+    licenses = {x["id"]: x for x in run["licenses"]}
+    assert any(e["producer"]["name"] == "scancode" and e["locator"] == "LICENSE.txt" for e in evidence.values())
+    assert any(c["name"] == "peppercorn" for c in run["components"])
+    for component in run["components"]:
+        assert component["evidence_ids"] and set(component["evidence_ids"]) <= evidence.keys()
+        if component["name"] == "peppercorn":
+            assert licenses[component["license_expression_id"]]["expression"] == "NOASSERTION"
+    assert run["findings"] and all(f["evidence_ids"] and set(f["evidence_ids"]) <= evidence.keys() for f in run["findings"])
+    hashes = {}
+    for fmt in ("html", "json", "csv", "resource_inventory"):
+        data = get(f"/api/v1/scans/{scan_id}/report?format={fmt}&download=true")
+        link = json.loads(get(f"/api/v1/scans/{scan_id}/report?format={fmt}"))
+        hashes[fmt] = hashlib.sha256(data).hexdigest()
+        assert hashes[fmt] == link["content_hash"]["value"] and b"peppercorn" in data
+        (args.output / ("report." + fmt)).write_bytes(data)
+    receipt = {"scan_id": scan_id, "source": args.public_git, "revision": revision, "reports": hashes,
+               "components": len(run["components"]), "evidence": len(evidence), "findings": len(run["findings"]), "tool_versions": versions}
+    (args.output / "receipt.json").write_text(json.dumps(receipt, indent=2))
+    print(json.dumps(receipt, indent=2), flush=True)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default="http://127.0.0.1:8080")
@@ -198,9 +261,11 @@ def main():
     parser.add_argument("--external-scanners", action="store_true")
     parser.add_argument("--ai-assets", action="store_true")
     parser.add_argument("--bench-cases", type=Path, help="Run teammate static-asset cases through deployed ZIP API; requires AI off")
+    parser.add_argument("--public-git", help="Reviewed PyPA public Git HTTP acceptance")
+    parser.add_argument("--expected-revision", help="Verify the public Git HEAD captured before acceptance")
     parser.add_argument("--public-zip", type=Path, help="Fixed smolagents a3df1a21 ZIP acceptance")
     parser.add_argument("--expect-ai", action="store_true")
-    parser.add_argument("--scan-id", help="Validate an existing Chrome-created public sample scan")
+    parser.add_argument("--scan-id", help="Validate an existing Chrome-created public ZIP or Git scan")
     parser.add_argument("--compare-to", type=Path, help="AI-disabled report.json for deterministic fact comparison")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -251,6 +316,10 @@ def main():
             data = get(f"/api/v1/scans/{scan_id}/report?format={format_name}&download=true")
             assert hashlib.sha256(data).hexdigest() == digest, format_name
         print("PASS: persisted scan and four report byte hashes after restart/recreation")
+        return
+
+    if args.public_git:
+        check_public_git(args, get, opener)
         return
 
     if args.public_zip:

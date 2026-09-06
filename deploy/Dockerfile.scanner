@@ -26,6 +26,8 @@ CMD ["python", "/opt/openguard/tool-smoke.py"]
 
 FROM tools AS api
 USER root
+RUN apt-get update && apt-get install -y --no-install-recommends git \
+    && rm -rf /var/lib/apt/lists/*
 ENV PYTHONPATH=/app/backend
 WORKDIR /app
 COPY backend/pyproject.toml /app/backend/pyproject.toml

@@ -47,3 +47,9 @@ https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041
 Qwen2.5-Coder、FLUX.1-dev及两个HF数据集仅为该输入中的明确引用，不是OpenGuard新增运行依赖，
 未下载权重或数据集，授权未知保留NOASSERTION/pending；不能套用仓库根许可证。
 实际建议生成复用此前登记的本机Qwen3 4B/Ollama，不新增模型或工具依赖。
+
+## 2026-09-06 公开 Git 最小部署
+
+API镜像新增[Debian bookworm Git](https://packages.debian.org/bookworm/git)发行包，实测1:2.39.5-0+deb12u3/运行Git2.39.5；包内copyright及发行版来源保留，最终分发义务逐项复核归资源冻结。仅作为既有安全无checkout摄取工具，不修改Git，不新增Python依赖或下载目标项目依赖。
+
+[PyPA sampleproject](https://github.com/pypa/sampleproject)作为公开静态扫描输入，实测commit621e4974ca25ce531773def586ba3ed8e736b3fc，根LICENSE.txt为MIT。源码/归档不复制进作品仓库、不安装/执行；根许可不自动继承给peppercorn等依赖。独立归档SHA b3eccda9bfb92813e361eed4f074b97165233eb94ebc60166608ce5412d08a07，仅存本机临时验收目录。运行命令见deploy/README.md。

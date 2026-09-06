@@ -15,12 +15,13 @@ from app.pipeline.dependency_plan import (
     DependencyPlanState,
     READ_LIMITS,
     build_dependency_plan,
-    consume_dependencies,
     fail,
     is_pristine,
     replace_run,
 )
 from app.pipeline.worker import PipelineError, PipelinePlan
+from app.pipeline.local_zip import _consume_dependencies
+from app.pipeline.external_scans import collect_external_scans
 from app.security.errors import IngestionSecurityError
 
 
@@ -36,10 +37,11 @@ def build_public_git_dependency_plan(
     ai_provider: Provider | None = None,
     ai_enabled: bool = False,
     ai_timeout_seconds: float = 10.0,
+    external_scanners: bool = False,
 ) -> PipelinePlan:
-    """Build a real HTTPS Git→inventory→B1→partial-report plan."""
+    """Build a real HTTPS Git plan using the existing ZIP fact and report chain."""
 
-    if type(source) is not str or not source or not isinstance(workspace_root, Path) or not callable(clock):
+    if type(external_scanners) is not bool or type(source) is not str or not source or not isinstance(workspace_root, Path) or not callable(clock):
         raise PipelineError("pipeline_invalid_argument") from None
     factory = ingestion_factory or (lambda root: GitIngestionService(root))
     if not callable(factory):
@@ -59,10 +61,16 @@ def build_public_git_dependency_plan(
         result = None
         try:
             service = factory(workspace_root)
+            options = {}
+            if external_scanners:
+                def scan_tree(tree, inventory):
+                    state.external = collect_external_scans(tree, inventory, clock)
+                options["tree_consumer"] = scan_tree
             result = service.ingest_with_consumer(
                 source,
-                lambda session: consume_dependencies(session, clock),
+                lambda session: _consume_dependencies(session, clock),
                 read_limits=READ_LIMITS,
+                **options,
             )
         except IngestionSecurityError as error:
             if error.code == "scanner_timeout":

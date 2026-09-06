@@ -3845,3 +3845,19 @@
 
 - GPT-6 Astra / Root；2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。
 - 推送前检查组员cases字节一致、公共backend/frontend/schemas零变更、append-only、新增行敏感/绝对路径、diff与文件清单全部通过。后续提交仅追加发布记录，不重复扫描或改写历史。
+
+### [20260906-RootAstra-PublicGitDeploy] START
+
+- GPT-6 Astra / Root；用户批准继续公开Git现有接线与部署安全验收，基线0dcca39，开工干净，分支feat/a7-public-git-deploy-acceptance。复核执行书P0第15节、既有A2 TrustedEgress规格、当前进度15节及新增日志；复用历史约束，不重做ZIP/Qwen/Bench。估算8k–16k，本次运行精确 token 数不可获得。
+- 已证实缺口：API镜像无Git包，Compose公开Git固定关闭；Git plan只消费B1，尚未调用已有manifest许可证/AI资产和两外部工具。范围限定复用既有封印树能力和公共阶段、把原开关传入Git runtime，安装发行版Git、真实公开HTTPS样例与容器安全/清理/报告验收。无新API/Schema/队列/Git恢复/图谱/P1/P2，不执行目标代码或安装目标依赖。
+- 分工：Root负责默认factory/部署/真实HTTP与Chrome/独立验收/治理/发布；受限实现子任务仅Git ingestion tree callback、Git plan、Git runtime和限定Git测试，停写后Root统一复核。验收安全边界原断言、Git真实revision与工具来源、证据报告、容器权限/资源限制、失败清理、重建留存，保留原始失败。共享日志仅Root追加。
+
+### [20260906-RootAstra-PublicGitDeploy-Accept] COMPLETE（技术验收，发布绑定随后追加）
+
+- GPT-6 Astra / Root；受限同模型子任务完成git_stream/public_git/git_scan及既有Git测试，停止写入；Root完成默认factory、镜像/Compose、既有smoke与说明。仅复用TrustedTreeScan及local_zip现有消费函数，内部工具开关strictbool/defaultFalse，外部API/Schema/网络策略不改，不复制检测器或引入Git恢复。所有修改在原文件，无新实现文件。
+- 子任务74 passed/1 loopback skip；首个新增断言使用不存在normalized_expression字段，按冻结expression字段更正，未修改业务断言规避失败。Root开启受控回环完整1221 passed/2 skipped/2既有warning（59.82秒）；可选公网/真实模型skip不算通过，本次公网另有下述实跑。OpenAPI与0dcca39等值，Schema无变更。镜像复用原工具层，在API层安装Debian官方git1:2.39.5-0+deb12u3；构建成功，实际Git2.39.5。
+- EVD-A7-PUBLIC-GIT-DEPLOY-001：Chrome真实输入pypa/sampleproject.git，scan scn_fed61b87-fc58-4e70-a7af-0d0e5ead9330，revision621e4974ca25ce531773def586ba3ed8e736b3fc与事前HEAD一致；13.838659秒，9组件、11Evidence、9待核验提示，completed/无errors。Git2.39.5/ScanCode32.5.0/Syft1.51.0 provenance通过。独立同commit归档SHA b3eccda9bfb92813e361eed4f074b97165233eb94ebc60166608ce5412d08a07，全部11条Evidence与原文件SHA一致。只读源码、不执行/安装，无目标源码/ZIP进入Git。
+- 四报告SHA：HTML6f6e6bfcfcf2de44be8ee1453740d3d85532bca7bdbafc1faa3e772f094aee4a；JSONe5af6091ec26877045d7b8c8b68f0d92c422bb5b17ae08667f94ef789fc6a73a；CSV/resource_inventory均c18e7c339836fb7140834af8fab05e7cdf29f59247bcd4ec118d43de8c6d4a86。保持Git=1并恢复AI=1/Docker-host=1重建后原四SHA通过，旧scn_58822f0b-c0c5-47f2-825d-2206103cd597的Qwen四SHA也通过，Ollama0.33.3可读。Chrome刷新原报告仍9提示，页面保留。首次按AX checkbox定位Git输入失败，按实际DOM button角色操作通过；没有改前端或重复创建成功任务。
+- 部署安全：HTTP、回环IP、元数据IP、query在接收前422；保留.invalid域名负例scn_8713935b-837a-4b05-8b59-eff6a7810110为failed/ingestion/invalid_source，报告409、零资源/证据，成功失败workspaces均空。实际UID10001、cap0、NoNewPrivs1、Seccomp2、只读写入失败、4GiB/128PID、noexec临时区与0700数据目录。首次HostConfig.Binds零值断言忽略了named volume，依据实际Mounts.Type验证无host bind后通过，未放宽挂载/权限。API子进程共用容器网络，未声称完整隔离或所有攻击面已验收。
+- 本轮Git关闭AI以独立验收确定性链，不宣称Git已生成新Qwen建议。既有ZIP/Qwen/Bench保留；剩余陌生机/浏览器下载确认、最终安全资源冻结与标签人工复核，下一任务只用原部署脚本做陌生机最小复现。无P1/P2、新API/队列/图谱。README、部署说明、A2规格、来源、AI记录、进度16节同步；待最终清单检查和功能分支推送，不合并main或Release。
+- 本次运行精确 token 数不可获得；开工8k–16k，任务范围内技术完成，无范围扩大，实际token是否在区间不可确认。

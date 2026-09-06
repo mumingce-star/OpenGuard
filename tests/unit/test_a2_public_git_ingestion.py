@@ -334,3 +334,163 @@ def test_trusted_egress_connects_only_validated_address_and_counts_tunnel_bytes(
         assert proxy.ledger.used == 8
         assert proxy.evidence[0].dialed_address == "93.184.216.34"
         assert proxy.evidence[0].tls_server_name == "example.org"
+
+
+@pytest.fixture
+def local_git_service(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    """Replace transport only; exercise real Git objects, sessions and cleanup."""
+    import shutil
+    import app.ingestion.git_stream as module
+
+    repository = _repository(tmp_path / "source", {
+        "package.json": '{"dependencies":{"react":"19.2.0"}}',
+        "package-lock.json": '{"name":"fixture","lockfileVersion":3,"packages":{"":{"dependencies":{"react":"19.2.0"}},"node_modules/react":{"version":"19.2.0","license":"MIT"}}}',
+        "README.md": "Model: https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct\n",
+    })
+
+    class Transport:
+        proxy_url = "http://127.0.0.1:1"
+        evidence = (object(),)
+        failure_reason = None
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            pass
+
+    def clone(_self, source, destination, **kwargs):
+        shutil.copytree(repository, destination)
+
+    monkeypatch.setattr(module, "TrustedEgressProxy", Transport)
+    monkeypatch.setattr(GitProcessRunner, "clone_no_checkout", clone)
+    root = _private(tmp_path / "git-workspaces")
+    service = module.GitIngestionService(root)
+    yield service, root
+    service.close()
+
+
+@pytest.mark.parametrize("behavior", ["complete", "exception", "tamper"])
+def test_git_trusted_tree_lifetime_integrity_and_cleanup(local_git_service, behavior):
+    service, root = local_git_service
+    captured = {}
+
+    def consumer(session):
+        captured["session"] = session
+        return session.inventory.root_digest
+
+    def tree_consumer(tree, inventory):
+        captured["tree"] = tree
+        assert inventory is captured["session"].inventory
+        assert captured["session"].read_bytes("README.md", max_bytes=512).startswith(b"Model:")
+        fd = tree._directory_fd
+        captured["fd"] = fd
+        assert os.stat("README.md", dir_fd=fd).st_size > 0
+        if behavior == "exception":
+            raise ValueError("scanner failed")
+        if behavior == "tamper":
+            target = os.open("README.md", os.O_WRONLY | os.O_TRUNC, dir_fd=fd)
+            try:
+                os.write(target, b"changed")
+            finally:
+                os.close(target)
+
+    if behavior == "complete":
+        result = service.ingest_with_consumer("https://github.com/example/repo", consumer, tree_consumer=tree_consumer)
+        assert result.consumer_result == result.inventory.root_digest
+    else:
+        with pytest.raises(IngestionSecurityError) as error:
+            service.ingest_with_consumer("https://github.com/example/repo", consumer, tree_consumer=tree_consumer)
+        assert error.value.code == "scanner_failed"
+        if behavior == "exception":
+            assert error.value.reason == "scan_consumer_failed"
+        else:
+            assert error.value.reason != "scan_consumer_failed"
+    assert not captured["tree"]._active
+    with pytest.raises(OSError):
+        os.fstat(captured["fd"])
+    with pytest.raises(IngestionSecurityError):
+        captured["tree"].proc_target()
+    with pytest.raises(IngestionSecurityError):
+        captured["session"].read_bytes("README.md", max_bytes=512)
+    assert list(root.iterdir()) == []
+
+
+@pytest.mark.parametrize("external_enabled", [False, True])
+def test_git_existing_runtime_reaches_assets_license_risk_and_reports(local_git_service, tmp_path, monkeypatch, external_enabled):
+    """Real materialization and production pipeline; external binary seam only."""
+    import app.pipeline.public_git as module
+    from app.pipeline.external_scans import ExternalScanFacts
+
+    service, root = local_git_service
+    calls = []
+
+    def external(tree, inventory, clock):
+        assert tree._active and os.fstat(tree._directory_fd)
+        calls.append(inventory.root_digest)
+        return ExternalScanFacts()
+
+    monkeypatch.setattr(module, "collect_external_scans", external)
+    registry = SQLiteScanRunRegistry(tmp_path / "git-run.sqlite")
+    store = ReportArtifactStore(_private(tmp_path / "git-reports"))
+    runtime = GitScanRuntime(registry, workspace_root=root,
+        ingestion_factory=lambda _: service, external_scanners=external_enabled,
+        report_publisher=PipelineReportPublisher(store))
+    try:
+        with TestClient(create_app(registry, git_runtime=runtime, report_store=store)) as client:
+            response = client.post("/api/v1/scans", json={"source_type": "git", "source": "https://github.com/example/repo"})
+            assert response.status_code == 202
+            run = registry.get(response.json()["scan_id"]).run
+            assert run.status.value == "completed", run.errors
+            assert not run.errors
+            assert calls == ([run.provenance.inventory_digest.value] if external_enabled else [])
+            assert {asset.name for asset in run.ai_assets} == {"Qwen/Qwen2.5-Coder-32B-Instruct"}
+            assert any(item.expression == "MIT" for item in run.licenses)
+            assert run.findings and all(item.evidence_ids for item in run.findings)
+            assert len(run.report_links) == 4
+            for format in ("json", "html", "csv", "resource_inventory"):
+                report = client.get(f"/api/v1/scans/{run.id}/report", params={"format": format, "download": "true"})
+                assert report.status_code == 200
+                assert b"Qwen" in report.content
+            assert list(root.iterdir()) == []
+    finally:
+        registry.close()
+
+
+@pytest.mark.parametrize("value", [0, 1, "1", None])
+def test_git_external_scanners_requires_boolean(tmp_path, value):
+    from app.pipeline.public_git import build_public_git_dependency_plan
+    from app.pipeline.worker import PipelineError
+
+    clock = lambda: datetime.now(timezone.utc)
+    with pytest.raises(PipelineError):
+        build_public_git_dependency_plan("https://github.com/example/repo", tmp_path, clock=clock, external_scanners=value)
+    registry = SQLiteScanRunRegistry(tmp_path / "boolean.sqlite")
+    try:
+        with pytest.raises(ValueError, match="invalid Git runtime"):
+            GitScanRuntime(registry, workspace_root=tmp_path, external_scanners=value)
+    finally:
+        registry.close()
+
+
+def test_git_tree_close_failure_poisoned_and_cleaned(local_git_service, monkeypatch):
+    from app.ingestion.zip_stream import TrustedTreeScan
+
+    service, root = local_git_service
+    original = TrustedTreeScan.close
+
+    def fail_close(tree):
+        original(tree)
+        raise OSError("close failure")
+
+    monkeypatch.setattr(TrustedTreeScan, "close", fail_close)
+    with pytest.raises(IngestionSecurityError):
+        service.ingest_with_consumer("https://github.com/example/repo", lambda session: None,
+                                     tree_consumer=lambda tree, inventory: None)
+    assert list(root.iterdir()) == []
+    with pytest.raises(IngestionSecurityError) as error:
+        service.ingest_with_consumer("https://github.com/example/repo", lambda session: None)
+    assert error.value.reason == "workspace_cleanup_failed"

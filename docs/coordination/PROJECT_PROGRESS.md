@@ -398,3 +398,28 @@ EVD-A8-SCANNER-BENCH-001：固定5例不改源片段或expected；当前detector
 本次运行精确 token 数不可获得。开工8k–16k非硬估算，本轮范围确定为组员首批Bench集成验收并完整收口，未扩P1/P2；实际是否落入区间不可确认。分支feat/a8-scanner-bench-acceptance，发布绑定随后追加。
 
 发布绑定：2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。 上表本轮待发布项现为已推送功能分支；随后提交仅补发布事实。
+
+## 16. 公开 Git 最小接线与部署验收（2026-09-06）
+
+基线0dcca39，分支feat/a7-public-git-deploy-acceptance。按用户批准的下一任务和执行书P0输入DoD，只补三个缺口：API镜像Git包、Compose默认关闭但可显式开启、Git复用既有ZIP许可证/AI资产/真实工具处理。没有新接口/Schema、复制检测器、Git恢复/重试、图谱或P1/P2。
+
+| 用户任务 | 累计状态 | 本轮完成／累计能力 | 尚未完成、未开始或待验证 | 责任角色 | 验证证据／发布 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 六API/领域保持 | 持续兼容 | 用户/Root | OpenAPI与0dcca39等值、Schema无diff；既有发布 |
+| A2 | 进行中（Git/ZIP本机门禁通过） | Git实际HTTPS/对象物化/封印树；拒绝非法URL、失败清理 | 最终安全清单冻结、陌生机复验 | 用户/Root，受限实现子任务 | 真实公网+容器控制+Git边界测试；本轮分支待绑定 |
+| A3 | 已完成（单机范围） | Git沿用原任务机制、ZIP成果保留 | Git中断自动恢复明确不在本任务范围 | 用户/Root | 原终态及报告重建后恢复；无新队列 |
+| A4 | 已完成（P0样例链范围） | Git复用现有manifest许可/AI引用/真实两工具；9组件/11证据/9提示到报告 | 更广识别覆盖不由本样例证明；最终冻结待完成 | 用户/Root，复用组员输入 | 11条Evidence与独立同revision源文件SHA全部一致；本轮分支 |
+| A5 | 已完成（本机ZIP链） | Git沿用原Provider参数，恢复本机AI配置 | 本次Git AI关闭，未宣称Git新增实测建议；质量评测仍未完成 | 用户/Root | 旧Qwen四格式SHA保持、Ollama0.33.3可用 |
+| A6 | 已完成（本机报告链） | Chrome Git报告及四格式、重建留存通过 | Chrome下载落盘确认待验 | 用户/Root | Git及旧ZIP四格式字节保持；本轮分支 |
+| A7 | 进行中（本机Git/ZIP部署完成） | Debian Git包、现有容器控制、显式开关 | 陌生机复现未开始 | 用户/Root | UID10001/只读/cap0/NoNewPrivs/Seccomp/4GiB/128进程；未Release |
+| A8 | 进行中 | 运行说明、来源、测试与证据同步；既有首批Bench保留 | 资源/安全清单冻结、标签人工复核 | 用户/Root | 1221 passed/2 skipped/2既有warning；待功能分支发布 |
+
+EVD-A7-PUBLIC-GIT-DEPLOY-001：Chrome创建scn_fed61b87-fc58-4e70-a7af-0d0e5ead9330，公开PyPA sampleproject实际revision621e4974ca25ce531773def586ba3ed8e736b3fc，与事先ls-remote记录相同。13.838659秒，completed/无errors，Git2.39.5、ScanCode32.5.0、Syft1.51.0。9资源/11Evidence/9待核验提示不等于9个已确认违规；根MIT不继承给peppercorn等依赖。实际调用仍跟随公开默认分支，没有暗增pin参数或声称URL永久固定。
+
+HTTP/回环IP/元数据IP/query四类URL接收前422；example.invalid产生scn_8713935b-837a-4b05-8b59-eff6a7810110，failed/ingestion/invalid_source，报告409，工作目录为空。只允许named volume而非宿主目录；系统包来自Debian官方，具体版本与限额进入现有provenance。容器子进程仍共享API网络，不冒充逐进程网络隔离或完整攻击语料验收。
+
+当前可独立演示Git和ZIP→真实扫描→资源/待核验风险/Evidence→Web报告；模型/数据集/API已有样例，ZIP本机Qwen和首批Bench已有证据。本次Git实跑关闭AI，保留原Qwen成果。完整P0尚须两包：①陌生机启动/扫描/下载复现及Chrome保存确认；②最终资源和安全清单冻结、标签人工复核。不再计入已完成Git接线，不开展P1/P2。下一任务优先①，先利用现有部署说明和验收脚本，不新造部署框架。
+
+条件估计仍需约2–4有效工程小时用于复现与冻结准备，另加陌生机可用和人工复核等待；不能保证日历完工时间，遇实际阻断按缺口重估，不混入完整材料或竞争力实验。报名/参赛仍由Owner核对资格、平台及权属；完整作品另需报告/视频/匿名/正式发布；竞争力需更广真实案例、误差分析和对照，不由单案例推断。
+
+本次运行精确 token 数不可获得；开工8k–16k非硬估算，任务范围内技术交付完成，无产品范围扩大，实际是否落入区间不可确认。发布绑定随后追加。

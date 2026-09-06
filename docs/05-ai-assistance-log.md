@@ -168,3 +168,5 @@
 | 2026-09-06 | GPT-6 Astra / Root及限定只读审查 | 扫描组员5例Bench接入当前P0 | 精准复用1c7239e/89c8ba2样例、runner/evaluator，版本从实际producer读取并绑定样例SHA；保留detector0.1.1，未整支覆盖 | 无业务API/Schema/扫描器改动，无新依赖，无P1批量评测；只读审查修正负例409及报告绑定预期 | 159相关测试；4正例/1负例真实ZIP与HTTP；Chrome API Evidence；原Qwen报告保留；合成指标TP4/FP0/FN0不外推总体准确率 | 是（本任务接入完成，P0及人工复核未完成；发布见进度15节） |
 
 | 2026-09-06 | GPT-6 Astra / Root | AMENDMENT：首批Bench发布绑定 | 2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。 | 无新增实现范围 | 远端完整哈希一致，159相关测试及真实5例记录保留 | 是（本任务交付，P0未完成） |
+
+| 2026-09-06 | GPT-6 Astra / Root及限定实现子任务 | 公开Git复用现有ZIP事实和报告链 | 内部tree callback保持封印/失效/清理，直接复用已验收消费者；GitRuntime严格bool开关；API镜像Debian Git，Compose默认0显式启用 | 无新API/Schema/检测器/队列/Git恢复/P1/P2；不执行源码或安装目标依赖 | 1221 passed/2 skipped；Chrome真实公网9组件/11证据/9提示，全部Evidence SHA独立核对、失败清理、容器控制和重建报告通过；AI关闭，旧Qwen保留 | 是（本机Git部署验收完成；陌生机和最终冻结未完成，发布见进度16节） |

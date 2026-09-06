@@ -52,12 +52,14 @@ class GitScanRuntime:
         ai_provider: Provider | None = None,
         ai_enabled: bool = False,
         ai_timeout_seconds: float = 10.0,
+        external_scanners: bool = False,
     ) -> None:
         if (
             not isinstance(registry, SQLiteScanRunRegistry)
             or (clock is not None and not callable(clock))
             or (report_publisher is not None and type(report_publisher) is not PipelineReportPublisher)
             or (ingestion_factory is not None and not callable(ingestion_factory))
+            or type(external_scanners) is not bool
             or type(ai_enabled) is not bool
             or type(ai_timeout_seconds) not in {int, float}
             or isinstance(ai_timeout_seconds, bool)
@@ -73,6 +75,7 @@ class GitScanRuntime:
         self._ingestion_factory = ingestion_factory
         self._ai_provider = ai_provider
         self._ai_enabled = ai_enabled
+        self._external_scanners = external_scanners
         self._ai_timeout_seconds = float(ai_timeout_seconds)
 
     def submit(
@@ -96,6 +99,7 @@ class GitScanRuntime:
             ai_provider=self._ai_provider,
             ai_enabled=self._ai_enabled,
             ai_timeout_seconds=self._ai_timeout_seconds,
+            external_scanners=self._external_scanners,
         )
         publisher = self._report_publisher
         ScanPipelineWorker(

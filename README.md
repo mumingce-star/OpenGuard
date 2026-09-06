@@ -8,11 +8,11 @@
 
 ## 当前可运行状态（2026-09-06）
 
-最新验收已跑通固定 smolagents ZIP → 真实 ScanCode/Syft → 许可证／待复核风险与证据 → 本机 Qwen3 建议 → 现有 Web 报告：227 个软件组件、4 个模型／数据集引用、283 条证据、231 条提示及 231 条待人工复核 AI 建议。关闭 AI 耗时约 29 秒，开启 AI 约 16 分钟；AI 开关前后确定性事实相同，API 容器重建后四格式报告字节不变。Chrome 已显示真实建议及引用来源。运行命令与固定输入摘要见[部署说明](deploy/README.md)。这不是许可证授权确认或完整准确率评测；公开 Git 部署、陌生机复现和 P0 指标冻结仍待验收。
+最新验收已跑通固定 smolagents ZIP → 真实 ScanCode/Syft → 许可证／待复核风险与证据 → 本机 Qwen3 建议 → 现有 Web 报告：227 个软件组件、4 个模型／数据集引用、283 条证据、231 条提示及 231 条待人工复核 AI 建议。关闭 AI 耗时约 29 秒，开启 AI 约 16 分钟；AI 开关前后确定性事实相同，API 容器重建后四格式报告字节不变。Chrome 已显示真实建议及引用来源。运行命令与固定输入摘要见[部署说明](deploy/README.md)。这不是许可证授权确认或完整准确率评测；公开 Git 最小部署现已验收；陌生机复现和 P0 最终冻结仍待完成。
 
 现在已经可以独立跑通六层真实扫描底座纵切：**本地 ZIP → 安全校验与临时物化 → 文件级 SHA-256 inventory → 稳定 JSON**，**生命周期绑定只读会话 → Python/JavaScript manifest**，**声明与 npm lock v2/v3 → P0 `Component`/`Evidence`**，**Python/JavaScript 两种稳定依赖 JSON CLI**，**显式本地 ZIP Pipeline → durable P0 依赖聚合**，以及 **ZIP multipart HTTP 创建 → 进程内后台 A4-1 → 状态/资源/证据查询**。解析器只按 inventory 白名单读取小文件，读取结束后能力立即失效；这些流程不会联网、不会执行 ZIP 中的代码，也不会安装其中的依赖。
 
-任务主线还已具备 SQLite durable `ScanRun` 注册表、六路由 FastAPI API，以及显式七阶段 A4-0 Pipeline Worker。A4-1 已把 A2 与既有 Python/JavaScript 依赖解析公共接口接到该 worker；A3-2 接入 ZIP multipart，A2-3a 又接入需管理员显式启用的公开 HTTPS Git。两种输入都能通过 BackgroundTask 执行依赖纵切并持久化组件、证据、摘要及四种报告链接。A4-2 已原样消费组员 B5 的 15 条证据门控许可证规则；当 `ScanRun` 已含有效许可证事实时，规则阶段可生成并持久化义务、风险与确定性整改。ZIP 现已可从 npm lock v2/v3 的精确依赖记录提取显式许可证声明，经组员 SPDX 标准化进入 B5 待核验提示并完成报告；声明始终 pending，不等于授权已核验。没有可绑定许可证的 ZIP 与当前 Git 路径仍为 `partial/rules/70`、错误码 `rules_stage_not_connected`。这里的 `partial` 表示“依赖结果可用，许可证事实尚未进入规则阶段”，不是输入或依赖扫描失败；I2现已提供显式启用的单机ZIP持久派发、queued恢复与中断running零重放收敛，见[运行说明](backend/README.md)；不包含Git恢复或多机调度。
+任务主线还已具备 SQLite durable `ScanRun` 注册表、六路由 FastAPI API，以及显式七阶段 A4-0 Pipeline Worker。A4-1 已把 A2 与既有 Python/JavaScript 依赖解析公共接口接到该 worker；A3-2 接入 ZIP multipart，A2-3a 又接入需管理员显式启用的公开 HTTPS Git。两种输入都能通过 BackgroundTask 执行依赖纵切并持久化组件、证据、摘要及四种报告链接。A4-2 已原样消费组员 B5 的 15 条证据门控许可证规则；当 `ScanRun` 已含有效许可证事实时，规则阶段可生成并持久化义务、风险与确定性整改。ZIP 现已可从 npm lock v2/v3 的精确依赖记录提取显式许可证声明，经组员 SPDX 标准化进入 B5 待核验提示并完成报告；声明始终 pending，不等于授权已核验。没有可绑定许可证且未启用工具事实接线的输入仍可为 `partial/rules/70`、错误码 `rules_stage_not_connected`。这里的 `partial` 表示“依赖结果可用，许可证事实尚未进入规则阶段”，不是输入或依赖扫描失败；I2现已提供显式启用的单机ZIP持久派发、queued恢复与中断running零重放收敛，见[运行说明](backend/README.md)；不包含Git恢复或多机调度。
 
 A2-3a 不执行 checkout，而是让固定 Git 通过任务级 TrustedEgress CONNECT 代理获取浅克隆对象；代理逐连接用固定 TLS DoH 解析、拒绝任一非公网地址并立即拨号已验证 IP，Git 自己继续完成端到端 TLS/SNI。随后只用 `ls-tree`/`cat-file` 把普通 blob 流式写入受控目录并生成 revision/inventory。公开 Git 默认关闭，设置 `OPENGUARD_ENABLE_PUBLIC_GIT=1` 后才启用；团队仓库默认分支当前没有受支持 manifest，会在 A2 成功后诚实停为 `failed/scan/35`，真实纵切演示使用官方 PyPA sampleproject。
 
@@ -23,7 +23,7 @@ A5-0 还提供了可独立调用的 local/remote AI Provider 边界：给定已�
 Ollama `0.33.3` 与锁定 Qwen3 模型：manifest/blob 摘要一致，真实结构化推理 3/3 成功，冷轮约
 4.34 秒、热轮约 2.73 秒，候选整改保持 `pending` 且不改变确定性事实。A5-1c 已把 Provider 接到
 Pipeline `AI_ASSIST`：默认关闭；管理员精确设置 `OPENGUARD_ENABLE_AI=1` 后，B5 产生的未绑定
-整改 finding 会调用本机 Ollama，失败则保留规则结果并继续生成带脱敏诊断的报告。具有可绑定 npm 许可证声明的 ZIP 现在可到达该阶段；无声明 ZIP 与当前 Git 路径仍保持原部分结果。
+整改 finding 会调用本机 Ollama，失败则保留规则结果并继续生成带脱敏诊断的报告。具有可绑定 npm 许可证声明的 ZIP 现在可到达该阶段；无可绑定事实的输入仍保持原部分结果。
 
 A6-0 已提供确定性报告导出核心：对一个已验证的 `completed` 或 `partial` `ScanRun`，可生成稳定
 JSON、竞赛七字段 UTF-8 CSV/资源清单和安全静态 HTML。A6-1 可把这些产物以私有权限、内容
@@ -36,7 +36,9 @@ A6-2 已把 publisher 接到 Pipeline 首次终态提交边界：ZIP HTTP 主链
 
 团队集成分支 `integration/p0` 汇合了前端组员的 React/Vite 应用壳和扫描组员的 ScanCode/Syft Adapter。本功能分支复用核心页面与适配器，已完成真实 ZIP→ScanCode/Syft→资源/待核验风险/Evidence→四格式报告及刷新恢复，默认 API，演示需主动选择；未自动合并团队集成线。
 
-最新 ZIP 接线还可识别 README 等有限文本中的明确模型／数据集引用。例如 Qwen3 官方模型链接能进入 AIAsset、待核验风险、来源证据及四格式报告；无需推理或权重下载。只发现引用，不证明实际使用或授权，模型保留 NOASSERTION/pending。Git AI 资产接线、自动远程许可证绑定、完整识别覆盖率和 P0 总验收尚未完成。可运行样例见[部署说明](deploy/README.md)。
+最新 ZIP 接线还可识别 README 等有限文本中的明确模型／数据集引用。例如 Qwen3 官方模型链接能进入 AIAsset、待核验风险、来源证据及四格式报告；无需推理或权重下载。只发现引用，不证明实际使用或授权，模型保留 NOASSERTION/pending。Git 现已复用同一静态资产接线；自动远程许可证绑定、完整识别覆盖率和 P0 总验收尚未完成。可运行样例见[部署说明](deploy/README.md)。
+
+公开 Git 最小部署已通过：在 Chrome 提交 PyPA sampleproject，现有HTTPS TrustedEgress→Git对象物化→两扫描工具→风险/证据→四格式报告完成，实际revision被记录，9组件/11证据/9待核验提示，约13.84秒。容器非root/只读/资源限制、错误输入拒绝及成功失败清理均有实跑证据；Git默认关闭，启用方法见[部署说明](deploy/README.md)。本次Git样例关闭AI，既有ZIP/Qwen成果保持。
 
 首批 P0 Bench 已复用扫描组员的5个合成样例，并在当前0.1.1检测器及部署的ZIP HTTP路径验收：4个正例正确识别、1个普通链接负例无误识别，指标TP=4/FP=0/FN=0。Chrome已能展示API引用的资源、待核验风险和代码行证据。它不代表真实项目总体准确率或独立人工双标注完成；来源、结果和命令见[Bench实测记录](benchmarks/static-ai-assets-evidence.md)。
 

@@ -22,6 +22,7 @@ from app.ingestion.read_session import (
 from app.ingestion.trusted_egress import Connector, EgressConnectionEvidence, TrustedEgressProxy
 from app.ingestion.url_policy import parse_public_git_url
 from app.ingestion.workspace import WorkspaceManager
+from app.ingestion.zip_stream import TrustedTreeScan
 from app.security.address_policy import Resolver
 from app.security.errors import IngestionSecurityError
 from app.security.limits import GitSafetyLimits, ZipSafetyLimits
@@ -72,6 +73,7 @@ class GitIngestionService:
         consumer: Callable[[ReadOnlyScanSession], T],
         *,
         read_limits: ScanReadLimits | None = None,
+        tree_consumer: Callable[[TrustedTreeScan, Inventory], object] | None = None,
     ) -> GitScanSessionResult[T]:
         if getattr(self._consumer_local, "active", False):
             raise IngestionSecurityError("scanner_failed", "scan_session_reentrant")
@@ -138,6 +140,18 @@ class GitIngestionService:
             self._consumer_local.active = True
             try:
                 result = consumer(session)
+                if tree_consumer is not None:
+                    validate()
+                    tree = TrustedTreeScan(workspace.open_directory(("tree",)))
+                    try:
+                        tree_consumer(tree, inventory)
+                    finally:
+                        try:
+                            tree.close()
+                        except OSError:
+                            with self._state_lock:
+                                self._poisoned = True
+                            raise IngestionSecurityError("scanner_failed", "scan_file_read_failed") from None
             except BaseException as error:
                 primary = error
             finally:

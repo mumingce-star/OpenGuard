@@ -1,6 +1,6 @@
 # 最小本机部署
 
-当前提供两个常驻容器：`web`（生产静态文件与同源代理）、`api`（现有单进程 FastAPI、ZIP dispatcher、SQLite、报告）。API 复用 Dockerfile.scanner 的工具阶段，在现有 ZIP 生命周期内执行 ScanCode/Syft；scanner 保留为按需独立工具检查。当前 Compose 只启用 ZIP；AI、公开 Git 关闭。
+当前提供两个常驻容器：`web`（生产静态文件与同源代理）、`api`（现有单进程 FastAPI、ZIP dispatcher、SQLite、报告）。API 复用 Dockerfile.scanner 的工具阶段，在现有 ZIP 生命周期内执行 ScanCode/Syft；scanner 保留为按需独立工具检查。Compose 默认启用 ZIP；AI、公开 Git 默认关闭，可按下文显式启用。
 
 ## 启动
 
@@ -111,3 +111,26 @@ python3 deploy/smoke.py --public-zip /tmp/smolagents.zip --expect-ai --compare-t
 ## 扫描组员首批 P0 样例
 
 复用现有验收脚本的 `--bench-cases benchmarks/cases/static-ai-assets-v1.json`，从真实 ZIP HTTP 接口验证4个正例与1个无资源负例；`--verify`复核原任务，不重复扫描。先关闭AI，输出放仓库外。完整命令及限制见[Bench实测记录](../benchmarks/static-ai-assets-evidence.md)。负例按当前契约failed且无报告，不把它包装成空扫描成功。
+
+## 公开 Git 的最小部署验收
+
+API 镜像使用 Debian bookworm 官方 `git` 包；本次实测 `1:2.39.5-0+deb12u3`，运行版本 `2.39.5`。发行版来源见[Debian Git 包](https://packages.debian.org/bookworm/git)，许可证及来源说明随包保留在 `/usr/share/doc/git/copyright`；系统包尚不是完整离线锁。Python API/扫描工具版本沿用既有配置。
+
+```bash
+# 首次构建包含 Git 的 API；默认仍不开放 Git 输入执行。
+OPENGUARD_ENABLE_PUBLIC_GIT=1 docker compose -f deploy/compose.yaml up -d --build --wait
+# Chrome -> 新建扫描 -> GitHub仓库 -> 提交真实扫描：
+# https://github.com/pypa/sampleproject.git
+python3 deploy/smoke.py --public-git https://github.com/pypa/sampleproject.git --scan-id <Chrome任务ID> --output /tmp/openguard-public-git
+# 省略 --scan-id 会新建一次扫描；不要重复提交同一验收任务。
+OPENGUARD_ENABLE_PUBLIC_GIT=1 docker compose -f deploy/compose.yaml up -d --force-recreate --no-deps --wait api
+python3 deploy/smoke.py --output /tmp/openguard-public-git --verify
+```
+
+若要保留此前本机Qwen3连接，在每次Compose up前同时设置 `OPENGUARD_ENABLE_AI=1 OPENGUARD_OLLAMA_DOCKER_HOST=1`；否则沿用默认AI关闭。公开Git与ZIP均复用原manifest许可证、明确AI引用、真实ScanCode/Syft和报告阶段。没有增加Git队列恢复或新接口；不要在Git运行中重建API，进程中断后的Git自动恢复不在本任务范围。
+
+2026-09-06 Chrome实测PyPA sampleproject的实际revision为 `621e4974ca25ce531773def586ba3ed8e736b3fc`：13.84秒，9组件/11证据/9待核验提示，四格式报告通过。本批AI关闭，没有生成新的Qwen建议。`--expected-revision`可验证预先记录的HEAD；API仍读取公开默认分支，未来分支变更应检查新revision，不能称URL已永久锁定。
+
+11条Evidence与同revision独立归档原文件SHA一致；HTTP、回环/元数据IP、query URL在接收前拒绝，保留域名 `.invalid` 摄取失败且无报告，成功/失败后工作目录为空。容器实际UID10001、cap=0、NoNewPrivs=1、Seccomp=2、只读根、4GiB内存/128进程、私有named volume与noexec临时区通过。初次检查把Docker HostConfig.Binds中的named volume误当宿主目录，随后依据Mounts.Type核实未挂载宿主目录；未修改容器权限。
+
+这些证据只证明当前Mac上的Linux Compose最小部署。工具子进程仍使用API容器网络，不宣称逐子进程网络隔离、所有攻击语料或陌生机验收完成；pending提示不等于违规确认或授权通过。

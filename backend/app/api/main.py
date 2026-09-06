@@ -513,6 +513,7 @@ def create_default_app() -> FastAPI:
             report_publisher=PipelineReportPublisher(report_store),
             ai_provider=ai_provider,
             ai_enabled=ai_enabled == "1",
+            external_scanners=external_scanners == "1",
         )
         if git_enabled == "1"
         else None

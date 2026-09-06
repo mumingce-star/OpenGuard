@@ -1,6 +1,6 @@
 # A2-3a 公开 Git 安全摄取与 TrustedEgress 规格
 
-状态：`implemented-and-bounded`（2026-09-04）
+状态：`implemented-and-bounded`（2026-09-06；新增当前Linux Compose验证）
 
 责任范围：项目负责人 A2 输入安全、A3/A4/A6 主链接线
 
@@ -26,8 +26,7 @@
   -> A6 四格式阶段性报告
 ```
 
-当前 B5 许可证规则尚未接入，因此有受支持 manifest 的仓库应诚实终止为
-`partial/rules/70`，而不是伪造“合规通过”。摄取阶段的安全失败必须终止为
+原2026-09-04纵切尚未接许可证事实，以`partial/rules/70`作为当时诚实结果。2026-09-06已复用ZIP的manifest许可证/AI资产消费与外部工具事实；有足够事实时可完成规则和报告，仍保持待核验，绝不称为“合规通过”。摄取阶段的安全失败必须终止为
 `failed/ingestion/5`，不得发布阶段性报告。
 
 ## 2. 输入契约
@@ -120,3 +119,11 @@ Python/JavaScript manifest，故 A2 摄取成功后在扫描阶段终止为 `fai
 
 因此 `EVD-A2-PUBLIC-GIT-EGRESS-001` 只证明本机 macOS/POSIX 的公开 HTTPS Git P0
 纵切，不能外推为 A2 总门禁、Linux 隔离或完整竞赛作品。
+
+## 7. 2026-09-06 最小部署增量
+
+GitIngestionService复用既有TrustedTreeScan，在原只读session与同inventory后验校验范围内执行受限tree_consumer。Git plan直接复用现有ZIP消费函数、collect_external_scans和共同报告阶段；external_scanners默认False且严格布尔。现有default factory把同一管理员工具开关传给GitRuntime；Compose公开Git从固定0变为默认0的显式环境开关。公共API/Schema及网络策略未变，没有Git恢复/重试。
+
+EVD-A7-PUBLIC-GIT-DEPLOY-001：当前Linux Compose使用Git2.39.5、ScanCode32.5.0、Syft1.51.0，Chrome提交公开PyPA样例revision621e4974ca25ce531773def586ba3ed8e736b3fc到completed，9组件/11Evidence/9待复核提示；独立同revision归档核对全部Evidence SHA，四格式报告通过。公开HTTPS/DoH/TLS主链真实运行，非法URL拒绝；DNS失败持久化failed/ingestion、无报告且工作目录清理。完整回归1221 passed/2 skipped/2既有warning；跳过的可选公网/模型测试不能冒充通过，本批公网链另有真实证据。
+
+第6节的B5/两工具/前端旧未接线状态由本节与进度16节更新；逐进程网络namespace等增强隔离、陌生机和完整攻击语料仍未验收。持久Git恢复、私有仓库、多分支/完整历史是本轮明确不做的范围，不自动加入P0剩余工期。部署命令与运行限制见deploy/README.md。
