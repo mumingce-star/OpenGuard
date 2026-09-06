@@ -38,6 +38,8 @@ A6-2 已把 publisher 接到 Pipeline 首次终态提交边界：ZIP HTTP 主链
 
 最新 ZIP 接线还可识别 README 等有限文本中的明确模型／数据集引用。例如 Qwen3 官方模型链接能进入 AIAsset、待核验风险、来源证据及四格式报告；无需推理或权重下载。只发现引用，不证明实际使用或授权，模型保留 NOASSERTION/pending。Git AI 资产接线、自动远程许可证绑定、完整识别覆盖率和 P0 总验收尚未完成。可运行样例见[部署说明](deploy/README.md)。
 
+首批 P0 Bench 已复用扫描组员的5个合成样例，并在当前0.1.1检测器及部署的ZIP HTTP路径验收：4个正例正确识别、1个普通链接负例无误识别，指标TP=4/FP=0/FN=0。Chrome已能展示API引用的资源、待核验风险和代码行证据。它不代表真实项目总体准确率或独立人工双标注完成；来源、结果和命令见[Bench实测记录](benchmarks/static-ai-assets-evidence.md)。
+
 使用 Python 3.12 环境，在项目根目录运行：
 
 ```bash

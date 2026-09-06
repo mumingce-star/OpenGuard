@@ -111,6 +111,85 @@ def check_public_sample(args, get, create):
     print(json.dumps(receipt, indent=2), flush=True)
 
 
+def check_bench_cases(args, get, create):
+    """Run the five teammate snippets through the deployed ZIP API, without AI."""
+    from benchmarks.evaluate import evaluate_cases
+    document = json.loads(args.bench_cases.read_text())
+    saved = json.loads((args.output / "bench-http.json").read_text()) if args.verify else None
+    if saved:
+        if "case_sha256" in saved:
+            assert saved["case_sha256"] == hashlib.sha256(args.bench_cases.read_bytes()).hexdigest(), "case input changed"
+        assert [(c["id"], c["expected"]) for c in saved["cases"]] == [(c["id"], c["expected"]) for c in document["cases"]]
+    previous = {c["id"]: c for c in saved["cases"]} if saved else {}
+    rows = []
+    for case in document["cases"]:
+        started = time.monotonic()
+        if args.verify:
+            old = previous[case["id"]]
+            scan_id = old["scan_id"]
+            status = json.loads(get(f"/api/v1/scans/{scan_id}"))
+            digest = old["input_sha256"]
+        else:
+            scan_id, status, zipped = create(case["files"], wait_seconds=180)
+            digest = hashlib.sha256(zipped).hexdigest()
+        row = {"id": case["id"], "scan_id": scan_id, "expected": case["expected"],
+               "status": status, "input_sha256": digest}
+        rows.append(row)
+        def save():
+            if not args.verify:
+                (args.output / "bench-http.json").write_text(json.dumps({"version": document["version"], "case_sha256": hashlib.sha256(args.bench_cases.read_bytes()).hexdigest(), "cases": rows}, indent=2))
+        save()
+        if not case["expected"]:
+            assert status["status"] == "failed" and [e["code"] for e in status["errors"]] == ["dependency_manifest_not_found"]
+            assert status["summary"]["ai_asset_count"] == status["summary"]["component_count"] == 0
+            try:
+                get(f"/api/v1/scans/{scan_id}/resources")
+            except urllib.error.HTTPError as error:
+                assert error.code == 409 and json.load(error)["error"]["code"] == "scan_not_ready"
+            else:
+                raise AssertionError("failed scan exposed a resource snapshot")
+            row["predicted"] = []
+            row["validation_elapsed_seconds"] = round(time.monotonic() - started, 2)
+            save()
+            continue
+        raw = get(f"/api/v1/scans/{scan_id}/report?format=json&download=true")
+        (args.output / (case["id"] + ".json")).write_bytes(raw)
+        run = json.loads(raw)["scan_run"]
+        row["predicted"] = sorted(f"{a['asset_type']}:{a['provider']}:{a['name']}" for a in run["ai_assets"])
+        row["validation_elapsed_seconds"] = round(time.monotonic() - started, 2)
+        save()
+        assert not run["provenance"]["ai_enabled"], "bench requires AI disabled"
+        assert run["provenance"]["input_digest"]["value"] == row["input_sha256"]
+        assert row["predicted"] == sorted(case["expected"])
+        if case["expected"]:
+            assert run["status"] == "completed" and not run["errors"], run["errors"]
+            assets = {a["id"]: a for a in run["ai_assets"]}
+            evidence = {e["id"]: e for e in run["evidence"]}
+            licenses = {x["id"]: x for x in run["licenses"]}
+            for asset in assets.values():
+                assert asset["authorization_status"] == "pending"
+                assert licenses[asset["license_expression_id"]]["expression"] == "NOASSERTION"
+                for eid in asset["evidence_ids"]:
+                    item = evidence[eid]
+                    assert item["content_hash"]["value"] == hashlib.sha256(case["files"][item["locator"]].encode()).hexdigest()
+                    assert item["start_line"] == item["end_line"] == 1
+                assert any(f["resource_id"] == asset["id"] and f["outcome"] == "review_required" and f["evidence_ids"] for f in run["findings"])
+            row["reports"] = {}
+            for fmt in ("html", "json", "csv", "resource_inventory"):
+                data = get(f"/api/v1/scans/{scan_id}/report?format={fmt}&download=true")
+                link = json.loads(get(f"/api/v1/scans/{scan_id}/report?format={fmt}"))
+                row["reports"][fmt] = hashlib.sha256(data).hexdigest()
+                assert row["reports"][fmt] == link["content_hash"]["value"]
+                assert all(a["name"].encode() in data for a in assets.values())
+            if args.verify and "reports" in old:
+                assert row["reports"] == old["reports"], "persisted report bytes changed"
+        save()
+    result = {"version": document["version"], "case_sha256": hashlib.sha256(args.bench_cases.read_bytes()).hexdigest(),
+              "metrics": evaluate_cases(rows), "cases": rows}
+    (args.output / "bench-http.json").write_text(json.dumps(result, indent=2))
+    print(json.dumps(result["metrics"], indent=2))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default="http://127.0.0.1:8080")
@@ -118,6 +197,7 @@ def main():
     parser.add_argument("--verify", action="store_true")
     parser.add_argument("--external-scanners", action="store_true")
     parser.add_argument("--ai-assets", action="store_true")
+    parser.add_argument("--bench-cases", type=Path, help="Run teammate static-asset cases through deployed ZIP API; requires AI off")
     parser.add_argument("--public-zip", type=Path, help="Fixed smolagents a3df1a21 ZIP acceptance")
     parser.add_argument("--expect-ai", action="store_true")
     parser.add_argument("--scan-id", help="Validate an existing Chrome-created public sample scan")
@@ -158,6 +238,10 @@ def main():
                 return scan_id, status, zipped
             time.sleep(0.25)
         raise AssertionError(f"scan did not finish within {wait_seconds} seconds")
+
+    if args.bench_cases:
+        check_bench_cases(args, get, create)
+        return
 
     if args.verify:
         receipt = json.loads((args.output / "receipt.json").read_text())

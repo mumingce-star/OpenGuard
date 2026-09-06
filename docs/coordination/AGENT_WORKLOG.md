@@ -3825,3 +3825,18 @@
 
 - GPT-6 Astra / Root；实现提交48f6267a27df792c8c248b45d54f4bc8b311346a已推送feat/a7-public-zip-qwen-acceptance，git ls-remote完整哈希与本地一致。19个源码/测试/既有说明文件；未合并main或Release。EVD-A7-PUBLIC-ZIP-QWEN-001绑定该实现，任务点完整交付，P0父任务仍进行中。
 - 推送前diff --check、文件清单、工作日志append-only、保护路径与新增行敏感信息检查通过；收口未改业务代码，不重复全量。此次仅追加发布事实，原失败与未完成门禁完整保留。
+
+### [20260906-RootAstra-ScannerBench] START
+
+- GPT-6 Astra / Root；用户要求结合扫描组员GitHub代码按技术说明书推进。fetch后组员分支codex/p0-external-tools-sync仍为89c8ba2，增量实现1c7239e提供5个源代码片段样例、实测runner/evaluator和结果。原业务检测器0.1.1与前轮真实ZIP/Qwen成果保留，开工干净，基线be1b4f4，新分支feat/a8-scanner-bench-acceptance。
+- 对照执行书第3/5/6/15节：B7由组员提供首批3–5个case，用户A8负责集成验收，AI资源需模型/数据集/API带Evidence演示。当前缺口为组员Bench未接当前版本及产品ZIP链；本轮限定复用这5例并校验真实输出，不做P1批量Bench/图谱，不开展其他P0包。组员旧0.1.0结果不冒充当前版本结果，不整支覆盖。
+- 计划精准导入组员bench/evaluator/测试原路径，修正版本证据并在现有ZIP集成测试与验收入口补实跑；仅更新既有治理文档。Root单写，验收检测器标签/证据/真实ZIP风险报告与指标、负例不虚构成功；来源绑定及发布检查后推送功能分支。开工估算8k–16k，本次运行精确 token 数不可获得；精确实现范围随原增量缺口确定。
+
+### [20260906-RootAstra-ScannerBench-Accept] COMPLETE（技术验收，发布绑定随后追加）
+
+- GPT-6 Astra / Root，基线be1b4f4，分支feat/a8-scanner-bench-acceptance，EVD-A8-SCANNER-BENCH-001。用户明确确认89c8ba2就是目标分支。复用组员1c7239e的runner/evaluator、5例、说明和测试原路径；未导入旧0.1.0检测器或手写预测smoke文件。检测器/公共API/Schema/前端完全未改。当前producer0.1.1、case SHA与实际JSON绑定；生成结果SHA a66320164f14741b843341e42d5e3c2c5d575199d6af3d3b5cb02c861731bd0f。TP4/FP0/FN0，micro P/R/F1=1.0，只限5个合成样例，不声称人工双标注或真实总体准确率。
+- 原期望标签不传入detect_ai_assets；修改expected不影响predicted回归通过，非满分计数测试通过。新增动态5例走既有ZIP→SQLite worker→report publisher，159相关测试通过（首次误用test_p0_domain.py文件名无测试执行，核实后改用已有test_p0_domain_models.py；没有修改断言绕过失败）。没有业务源码变化，故不重复前轮1200全量或16分钟推理。
+- 真实Linux Compose五例：model-huggingface=scn_903f7384-5638-4c08-abf6-7ee5eb28bc3c；dataset=scn_034089ff-e8df-4ddb-a81e-c7f297054c0c；API=scn_6107e0b2-27ab-468c-b9f2-8634977df878；ModelScope=scn_1a96de5b-1a67-4249-a012-8cbb198e2a5b；negative=scn_2113cf04-b032-474c-88cb-370eeb6776ff。4正例completed/无errors、pending/NOASSERTION、原文SHA/行1、四格式下载摘要通过；负例failed/scan/dependency_manifest_not_found/零资源summary，无报告。HTTP verifier首次误假设resources返回空数组，实际409；按冻结scan_not_ready契约修正后--verify复核原ID通过，无重新POST。负例不包装成功。
+- 限定只读审查初稿遗漏实际409差异，主代理实跑指出后审查更正；按建议补saved case SHA检查、旧报告摘要对比及verify失败不覆盖旧receipt。最终HTTP verify通过；恢复原AI=1/Docker-host=1，旧成功Qwen报告verify四SHA通过；只读复核无新推理。Chrome extension新标签页真实显示API openai、待核验提示与src/client.py:1/openai.responses，未改用户当前mock标签页。
+- 既有README/Bench说明/部署说明/进度/AI/来源记录同步。只提交团队合成检测器结果，HTTP报告和ZIP留在仓库外。首批代码已齐，无需组员重复交付；独立人工标签复核、公开Git部署安全、陌生机与P0最终冻结仍待做。下一任务由Root核清公开Git现有缺口；不引入图谱/新接口/队列或P1/P2。
+- 本次运行精确 token 数不可获得；开工8k–16k，任务确定为本批Bench集成并技术收口，无产品范围扩大，实际消耗是否在区间不可确认。待文件清单、append-only和敏感/保护路径检查后推送功能分支，不合并main或Release。

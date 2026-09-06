@@ -107,3 +107,7 @@ python3 deploy/smoke.py --public-zip /tmp/smolagents.zip --expect-ai --compare-t
 脚本最多等待30分钟，不改变单次推理限额或增加自动重试。模型不可用时仍保留确定性扫描和报告。
 
 2026-09-06 实测：AI 关闭 29.33 秒；锁定 Qwen3 开启 963.30 秒，227 组件、4 引用资产、283 证据、231 待核验提示和 231 待复核建议。确定性事实对照、Chrome 正文及容器重建后的四格式 SHA 均通过。整批模型输出曾因非法 JSON Pointer 降级；只改提示词引导，原校验与原子降级保留。实际建议质量尚未经 golden 标注评测，不能将结构校验通过解释为语义全部准确。
+
+## 扫描组员首批 P0 样例
+
+复用现有验收脚本的 `--bench-cases benchmarks/cases/static-ai-assets-v1.json`，从真实 ZIP HTTP 接口验证4个正例与1个无资源负例；`--verify`复核原任务，不重复扫描。先关闭AI，输出放仓库外。完整命令及限制见[Bench实测记录](../benchmarks/static-ai-assets-evidence.md)。负例按当前契约failed且无报告，不把它包装成空扫描成功。

@@ -226,3 +226,40 @@ def test_evidence_hash_mismatch_fails_closed_without_fake_assets(tmp_path: Path,
         assert not list(workspace.iterdir())
     finally:
         registry.close()
+
+
+_BENCH_CASES = json.loads((Path(__file__).resolve().parents[2] / "benchmarks/cases/static-ai-assets-v1.json").read_text())["cases"]
+
+
+@pytest.mark.parametrize("case", _BENCH_CASES, ids=lambda case: case["id"])
+def test_teammate_golden_cases_through_real_zip_and_reports(tmp_path, case):
+    _, registry, run, workspace, store = _run(tmp_path, case["files"], publisher=True)
+    try:
+        labels = sorted(f"{a.asset_type.value}:{a.provider}:{a.name}" for a in run.ai_assets)
+        assert labels == sorted(case["expected"])
+        assert not list(workspace.iterdir())
+        if not case["expected"]:
+            assert run.status is ScanStatus.FAILED
+            assert [e.code for e in run.errors] == ["dependency_manifest_not_found"]
+            assert not run.findings and not run.report_links
+            return
+        assert run.status is ScanStatus.COMPLETED and not run.errors
+        assert len(run.findings) == len(run.ai_assets) == 1
+        asset, finding = run.ai_assets[0], run.findings[0]
+        assert finding.resource_id == asset.id
+        assert finding.outcome is FindingOutcome.REVIEW_REQUIRED
+        evidence = {e.id: e for e in run.evidence}
+        assert set(finding.evidence_ids) <= evidence.keys()
+        for eid in asset.evidence_ids:
+            item = evidence[eid]
+            text = case["files"][item.locator]
+            assert item.content_hash.value == hashlib.sha256(text.encode()).hexdigest()
+            assert item.start_line == item.end_line == 1
+            assert item.verification_status.value == "pending"
+        assert asset.authorization_status.value == "pending"
+        assert next(l for l in run.licenses if l.id == asset.license_expression_id).expression == "NOASSERTION"
+        for fmt in ReportFormat:
+            content = store.get(run.id, fmt).content
+            assert asset.name.encode() in content
+    finally:
+        registry.close()

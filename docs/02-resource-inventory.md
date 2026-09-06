@@ -121,3 +121,5 @@ https://github.com/huggingface/smolagents/tree/a3df1a21db6045aa9be15b4bdf2067041
 Qwen2.5-Coder、FLUX.1-dev及两个HF数据集仅为该输入中的明确引用，不是OpenGuard新增运行依赖，
 未下载权重或数据集，授权未知保留NOASSERTION/pending；不能套用仓库根许可证。
 实际建议生成复用此前登记的本机Qwen3 4B/Ollama，不新增模型或工具依赖。
+
+2026-09-06：首批Bench复用本项目扫描组员1c7239e（分支89c8ba2）的5个团队合成片段，不新增外部软件/模型/数据依赖。虚构acme链接和API符号只作静态文本输入，不访问、执行或安装；标签来源及复核限制见benchmarks/static-ai-assets-evidence.md。
