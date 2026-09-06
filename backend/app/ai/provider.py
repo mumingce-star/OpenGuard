@@ -128,14 +128,14 @@ def _request_payload(run: ScanRun, finding: RiskFinding) -> tuple[str, set[str]]
 
     payload = {
         "schema_version": _INPUT_SCHEMA,
-        "language": "en",
+        "language": "zh-CN",
         "finding": finding.model_dump(mode="json"),
         "evidence": dump_evidence(finding_evidence),
         "licenses": [
             item.model_dump(mode="json") for item in sorted(licenses, key=lambda item: item.id)
         ],
         "license_evidence": dump_evidence(license_evidence),
-        "forbidden": "Do not add or modify resource, license, obligation, rule, outcome, or severity facts.",
+        "forbidden": "不得新增或修改资源、许可证、义务、规则、结果或严重度事实。",
     }
     return (
         json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")),

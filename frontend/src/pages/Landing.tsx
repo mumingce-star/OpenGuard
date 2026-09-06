@@ -70,7 +70,7 @@ export function Landing({
 
       <section id="capability" className="recognition-slice">
         <div>
-          <p className="eyebrow">EXPLAINABLE BY DESIGN</p>
+          <p className="eyebrow">为可解释性而设计</p>
           <h2>
             不止告诉你“有风险”，
             <br />
@@ -102,7 +102,7 @@ export function Landing({
 
       <section id="workflow" className="workflow-section">
         <div className="workflow-title">
-          <p className="eyebrow">ONE TRACEABLE FLOW</p>
+          <p className="eyebrow">一条可追溯的完整流程</p>
           <h2>从仓库到报告，一条证据链跑到底。</h2>
         </div>
         <div className="workflow-grid">

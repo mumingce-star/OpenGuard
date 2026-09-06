@@ -1,5 +1,5 @@
 import type { Scan } from "../types/domain";
-import { resourceTypes, handlingLabels } from "../types/domain";
+import { resourceTypes, resourceTypeLabels, handlingLabels } from "../types/domain";
 import { summarize, severityOrder } from "../services/model";
 import { Header, Panel, SeverityBadge, Empty } from "../components/ui";
 export function Overview({
@@ -20,7 +20,7 @@ export function Overview({
     <>
       <Header
         title="扫描概览"
-        eyebrow={"SCAN / " + scan.id}
+        eyebrow={"扫描任务 / " + scan.id}
         description={
           scan.project +
           " · " +
@@ -82,7 +82,7 @@ export function Overview({
                 className="og-bar-row"
                 onClick={() => go("resources", "type=" + type)}
               >
-                <span>{type}</span>
+                <span>{resourceTypeLabels[type]}</span>
                 <span className="og-bar">
                   <i
                     style={{

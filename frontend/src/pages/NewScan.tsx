@@ -76,7 +76,7 @@ export function NewScan({
   return (
     <div className="og-new-scan">
       <Header
-        eyebrow="START / A TRACEABLE SCAN"
+        eyebrow="开始 / 可追溯扫描"
         title="从一个项目开始"
         description="让资源、风险与每条证据在同一任务中保持一致。"
       />

@@ -60,6 +60,8 @@ def test_each_rule_fixture_produces_evidence_gated_review(case: dict[str, str]) 
     assert result.findings[0].severity.value == case["expected_severity"]
     assert result.findings[0].evidence_ids == [_EVIDENCE_ID]
     assert result.obligations[0].verification_status is VerificationStatus.PENDING
+    assert any("\u4e00" <= char <= "\u9fff" for char in result.findings[0].title)
+    assert any("\u4e00" <= char <= "\u9fff" for char in result.remediations[0].summary)
 
 
 def test_pending_license_is_not_promoted_to_license_rule() -> None:
@@ -67,6 +69,8 @@ def test_pending_license_is_not_promoted_to_license_rule() -> None:
     assert not result.obligations and not result.remediations
     assert result.findings[0].rule_id == "license-evidence-gate"
     assert result.findings[0].outcome.value == "review_required"
+    assert result.findings[0].title == "许可证证据需要核验"
+    assert result.findings[0].trigger == "许可证或佐证材料尚待核验"
 
 
 def test_unknown_license_and_missing_evidence_stay_unknown() -> None:
