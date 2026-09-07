@@ -1058,3 +1058,13 @@
 - 预计修改文件：仅追加本日志及必要的发布状态记录；不会上传任何未跟踪/环境文件。
 - 验收方法：`git push --set-upstream` 后以 `git ls-remote`、上游跟踪和 ahead/behind 验证确已落到 GitHub。
 - token 使用估算：1,500～3,000；系统未提供本轮精确 token 遥测。
+
+### [20260908-1130-Sol-重试发布收工] COMPLETE - 当前专用集成分支已上传 GitHub
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 11:30（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标与实际结果：DNS 已恢复至 GitHub 公网地址后，`git push --set-upstream origin codex/scan-reliability-integration` 成功。GitHub 已创建同名分支并把本地分支设置为跟踪 `origin/codex/scan-reliability-integration`；远端提示可从该分支创建 PR。此次推送包含当前分支完整可提交历史，未上传本机环境产物。
+- 修改文件：`docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`；未修改产品代码、公共接口、Schema、规则、Docker 安装包、虚拟环境或缓存。
+- 命令与验证：发布前 `git diff --check` 通过；推送输出 `new branch ... -> codex/scan-reliability-integration` 和 `branch ... set up to track`。最终提交和远端一致性将在本收工记录提交后再复核。
+- 已知风险与未完成项：远端 `main` 未被直接修改，仍须 Pull Request 审查/合并；Docker/WSL、Compose、A2-A7 集成和扫描性能改造均不是本次上传所完成的功能。
+- 下一步与责任：Root 提交本收工记录后复核 `origin` 的 HEAD/ahead-behind；CZ 可在 GitHub PR 页面审查分支，批准后按 main 的 PR 规则合并。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 1,500～3,000，已在范围内完成。
