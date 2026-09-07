@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import io
+import zipfile
 import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -26,9 +30,7 @@ from app.persistence import SQLiteScanRunRegistry
 from app.pipeline import (
     PipelineError,
     PipelinePlan,
-    PipelineStep,
     ScanPipelineWorker,
-    apply_license_rules,
     build_local_zip_dependency_plan,
     build_public_git_dependency_plan,
 )
@@ -205,57 +207,92 @@ def test_source_specific_plans_forward_ai_configuration(tmp_path: Path, source_t
     assert provider.calls[0][1] == 4.0
 
 
-def test_provider_failure_preserves_b5_and_still_publishes_a6_reports(tmp_path: Path) -> None:
-    provider = RecordingProvider(fail=True)
-    ai_handler = _plan(provider, enabled=True).steps[5].handler
-    queued = _rules_input(verified=False, queued=True)
-    registry = SQLiteScanRunRegistry(tmp_path / "runs.sqlite")
-    registry.create(queued)
-    store = ReportArtifactStore(_private(tmp_path / "reports"), clock=lambda: NOW)
-    stages = (
-        ScanStage.INGESTION,
-        ScanStage.INVENTORY,
-        ScanStage.SCAN,
-        ScanStage.NORMALIZE,
-        ScanStage.RULES,
-        ScanStage.AI_ASSIST,
-        ScanStage.REPORT,
-    )
-    plan = PipelinePlan(
-        steps=tuple(
-            PipelineStep(
-                stage,
-                apply_license_rules
-                if stage is ScanStage.RULES
-                else ai_handler
-                if stage is ScanStage.AI_ASSIST
-                else lambda run: run,
+@pytest.mark.parametrize("source_type", ["zip", "git"])
+def test_production_plans_preserve_facts_and_publish_partial_reports_on_ai_failure(
+    tmp_path: Path, source_type: str,
+) -> None:
+    """Exercise every production stage; only the Git transport and model are fixtures."""
+    from app.ingestion import ZipIngestionService
+    from app.ingestion.git_runner import GitRuntimeIdentity
+
+    stream = io.BytesIO()
+    with zipfile.ZipFile(stream, "w") as archive:
+        archive.writestr("package.json", '{"dependencies":{"react":"19.2.0"}}')
+        archive.writestr("package-lock.json", json.dumps({"lockfileVersion": 3, "packages": {
+            "": {"dependencies": {"react": "19.2.0"}},
+            "node_modules/react": {"version": "19.2.0", "license": "MIT"},
+        }}))
+    archive_bytes = stream.getvalue()
+    archive_path = tmp_path / "project.zip"
+    archive_path.write_bytes(archive_bytes)
+    source = archive_path.name if source_type == "zip" else "https://github.com/example/project.git"
+
+    class GitFixture:
+        def __init__(self, root: Path) -> None:
+            self.service = ZipIngestionService(root)
+
+        def ingest_with_consumer(self, actual_source, consumer, *, read_limits):
+            assert actual_source == source
+            result = self.service.ingest_with_consumer(
+                io.BytesIO(archive_bytes), consumer, read_limits=read_limits,
             )
-            for stage in stages
-        )
-    )
+            return SimpleNamespace(inventory=result.inventory, consumer_result=result.consumer_result,
+                revision="a" * 40, runtime_identity=GitRuntimeIdentity("2.50.1", "b" * 64),
+                egress_evidence=(object(),))
 
-    result = ScanPipelineWorker(
-        registry,
-        clock=lambda: NOW,
-        terminal_publisher=PipelineReportPublisher(store).publish,
-    ).run(queued.id, plan)
+        def close(self) -> None:
+            self.service.close()
 
-    assert (result.run.status, result.run.stage, result.run.progress) == (
-        ScanStatus.COMPLETED,
-        ScanStage.COMPLETED,
-        100,
-    )
-    assert [error.code for error in result.run.errors] == ["ai_provider_unavailable"]
-    assert result.run.findings[0].rule_id == "license-evidence-gate"
-    assert result.run.findings[0].remediation_id is None
-    assert result.run.remediations == []
-    assert result.run.provenance.ai_model == provider.producer
-    assert [link.format for link in result.run.report_links] == list(ReportFormat)
-    report = json.loads(store.get(result.run.id, ReportFormat.JSON).content)
-    assert report["scan_run"]["errors"][0]["code"] == "ai_provider_unavailable"
-    assert "provider-private-detail" not in json.dumps(report)
-    registry.close()
+    value = _rules_input(verified=False, queued=True).model_dump(mode="json")
+    for field in ("components", "ai_assets", "licenses", "evidence", "obligations", "findings",
+                  "remediations", "errors", "report_links"):
+        value[field] = []
+    value["summary"].update(component_count=0, ai_asset_count=0, evidence_count=0)
+    value["project"].update(source_type=source_type, source=source, root_digest=None, revision=None)
+    value["provenance"].update(inventory_digest=None, tool_versions=[], ai_enabled=False, ai_model=None,
+        input_digest={"algorithm": "sha256", "value": hashlib.sha256(
+            archive_bytes if source_type == "zip" else source.encode()).hexdigest()})
+    queued = ScanRun.model_validate(value)
+    results = []
+    for failing in (False, True):
+        root = _private(tmp_path / ("failure" if failing else "baseline"))
+        registry = SQLiteScanRunRegistry(root / "runs.sqlite")
+        try:
+            registry.create(queued)
+            provider = RecordingProvider(fail=failing)
+            store = ReportArtifactStore(_private(root / "reports"), clock=lambda: NOW)
+            options = dict(clock=lambda: NOW, ai_enabled=True, ai_provider=provider)
+            if source_type == "zip":
+                plan = build_local_zip_dependency_plan(archive_path, _private(root / "workspace"), **options)
+            else:
+                plan = build_public_git_dependency_plan(source, _private(root / "workspace"),
+                    ingestion_factory=GitFixture, **options)
+            run = ScanPipelineWorker(registry, clock=lambda: NOW,
+                terminal_publisher=PipelineReportPublisher(store).publish).run(queued.id, plan).run
+            results.append(run)
+            assert provider.calls and run.findings
+            assert len(run.report_links) == 4
+            for format_ in ReportFormat:
+                artifact = store.get(run.id, format_)
+                assert artifact.content
+            report = json.loads(store.get(run.id, ReportFormat.JSON).content)["scan_run"]
+            if failing:
+                assert (run.status, run.stage, run.progress) == (ScanStatus.PARTIAL, ScanStage.REPORT, 95)
+                assert {error.code for error in run.errors} == {"ai_provider_unavailable", "scan_incomplete"}
+                assert not run.remediations and all(f.remediation_id is None for f in run.findings)
+                assert report["status"] == "partial"
+                assert {e["code"] for e in report["errors"]} == {"ai_provider_unavailable", "scan_incomplete"}
+                assert "provider-private-detail" not in json.dumps(report)
+            else:
+                assert run.status is ScanStatus.COMPLETED and not run.errors
+                assert run.remediations
+        finally:
+            registry.close()
+    baseline, failed = results
+    for field in ("project", "components", "ai_assets", "licenses", "evidence", "obligations", "summary"):
+        assert getattr(failed, field) == getattr(baseline, field)
+    assert [f.model_dump(exclude={"remediation_id"}) for f in failed.findings] == [
+        f.model_dump(exclude={"remediation_id"}) for f in baseline.findings]
 
 
 def test_enabled_ai_requires_a_provider_and_valid_timeout() -> None:

@@ -207,13 +207,23 @@ def map_javascript_manifest_result(result: JavascriptManifestParseResult, *, roo
             has_source_evidence = False
             lock_version: str | None = None
             lock_url: str | None = None
+            source_paths: set[str] = set()
+            lock_paths: set[str] = set()
+            lock_fields: set[tuple[str, str]] = set()
+            all_lock_versions: set[str] = set()
+            all_lock_urls: set[str] = set()
+            declaration_conflict = any(d.code == "dependency_declaration_conflict"
+                and d.manifest_path == declaration.source_manifest
+                and _pointer_tokens(d.field_locator or "", d.manifest_path) in
+                    {(field, declaration.normalized_name) for field in _SOURCE_FIELDS}
+                for d in result.diagnostics)
             for draft in declaration.evidence:
                 if type(draft) is not JavascriptEvidenceDraft or draft.manifest_path not in paths or not _valid_locator(draft.field_locator, draft.manifest_path) or not _SHA256.fullmatch(draft.content_sha256) or paths[draft.manifest_path].content_sha256 != draft.content_sha256 or type(draft.excerpt) is not str or not draft.excerpt or len(draft.excerpt) > 512 or _SENSITIVE.search(draft.excerpt):
                     raise _error()
                 tokens = _pointer_tokens(draft.field_locator, draft.manifest_path)
                 if tokens is None:
                     raise _error()
-                if draft.manifest_path == declaration.source_manifest:
+                if paths[draft.manifest_path].kind is JavascriptManifestKind.PACKAGE_JSON:
                     if len(tokens) != 2 or tokens[0] not in _SOURCE_FIELDS or tokens[1] != declaration.normalized_name:
                         raise _error()
                     try:
@@ -222,8 +232,9 @@ def map_javascript_manifest_result(result: JavascriptManifestParseResult, *, roo
                         raise _error()
                     if _compact_string(excerpt_value) != draft.excerpt or not _selector(excerpt_value):
                         raise _error()
-                    has_source_evidence = True
-                elif draft.manifest_path == declaration.lock_manifest:
+                    source_paths.add(draft.manifest_path)
+                    has_source_evidence |= draft.manifest_path == declaration.source_manifest
+                elif paths[draft.manifest_path].kind is JavascriptManifestKind.PACKAGE_LOCK:
                     expected_package = "node_modules/" + declaration.normalized_name
                     if len(tokens) != 3 or tokens[:2] != ("packages", expected_package) or tokens[2] not in {"version", "resolved"}:
                         raise _error()
@@ -233,14 +244,23 @@ def map_javascript_manifest_result(result: JavascriptManifestParseResult, *, roo
                         raise _error()
                     if _compact_string(excerpt_value) != draft.excerpt:
                         raise _error()
+                    key = (draft.manifest_path, tokens[2])
+                    if key in lock_fields:
+                        raise _error()
+                    lock_fields.add(key)
+                    lock_paths.add(draft.manifest_path)
                     if tokens[2] == "version":
-                        if _exact(excerpt_value) != excerpt_value or lock_version is not None:
+                        if _exact(excerpt_value) != excerpt_value:
                             raise _error()
-                        lock_version = excerpt_value
+                        all_lock_versions.add(excerpt_value)
+                        if draft.manifest_path == declaration.lock_manifest:
+                            lock_version = excerpt_value
                     else:
-                        if _canonical_url(excerpt_value) != excerpt_value or lock_url is not None:
+                        if _canonical_url(excerpt_value) != excerpt_value:
                             raise _error()
-                        lock_url = excerpt_value
+                        all_lock_urls.add(excerpt_value)
+                        if draft.manifest_path == declaration.lock_manifest:
+                            lock_url = excerpt_value
                 else:
                     raise _error()
                 evidence_id = _uuid("evd", ["javascript-evidence", root_digest, draft.field_locator, draft.content_sha256, draft.excerpt])
@@ -249,7 +269,14 @@ def map_javascript_manifest_result(result: JavascriptManifestParseResult, *, roo
                     raise _error()
                 evidence_by_id[evidence_id] = evidence
                 ids.append(evidence_id)
-            if not has_source_evidence or (lock_version is not None and declaration.resolved_version != lock_version) or (lock_url is not None and declaration.resolved_url != lock_url):
+            if any(path.removesuffix("package-lock.json") + "package.json" not in source_paths for path in lock_paths):
+                raise _error()
+            if declaration_conflict and (declaration.resolved_version is not None or declaration.resolved_url is not None):
+                raise _error()
+            if not declaration_conflict and (any(value != declaration.resolved_version for value in all_lock_versions)
+                    or any(value != declaration.resolved_url for value in all_lock_urls)):
+                raise _error()
+            if not has_source_evidence or (not declaration_conflict and ((lock_version is not None and declaration.resolved_version != lock_version) or (lock_url is not None and declaration.resolved_url != lock_url))):
                 raise _error()
             version = declaration.resolved_version
             component_id = _uuid("cmp", ["javascript-component", root_digest, declaration.normalized_name, declaration.scope.value, declaration.requested_spec, version, declaration.resolved_url])

@@ -18,6 +18,16 @@ from app.security.limits import GitSafetyLimits
 
 
 _VERSION = re.compile(r"^git version ([0-9A-Za-z.+() _-]{1,90})$")
+# ScanCode 32.5.0 commoncode.ignore.ignores_VCS. Its case-insensitive
+# segment patterns and */_MTN, */_darcs, */{arch} ancestor patterns reduce
+# to these names for normalized relative paths under an absolute scan root.
+_SCANCODE_VCS_IGNORED_PARTS = frozenset({
+    ".bzr", ".bzrignore", ".git", ".gitignore", ".gitattributes", ".hg", ".hgignore",
+    ".repo", ".svn", ".svnignore", ".tfignore", "vssver.scc", "cvs", ".cvsignore",
+    "_mtn", "_darcs", "{arch}",
+})
+_SCANCODE_VCS_SUPPLEMENT_MAX = 8
+
 _FIXED_CONFIG = (
     "protocol.allow=never",
     "protocol.https.allow=always",
@@ -49,7 +59,7 @@ def _kill_process_group(process: subprocess.Popen[bytes]) -> None:
 
 
 class GitProcessRunner:
-    def __init__(self, executable: Path, limits: GitSafetyLimits) -> None:
+    def __init__(self, executable: Path, limits: GitSafetyLimits, *, bounded: bool = False) -> None:
         if not isinstance(executable, Path) or not executable.is_absolute() or type(limits) is not GitSafetyLimits:
             raise ValueError("invalid Git process configuration")
         try:
@@ -61,6 +71,7 @@ class GitProcessRunner:
             raise ValueError("Git executable is not trusted")
         self.executable = resolved
         self.limits = limits
+        self.bounded = bounded
         version_output = self.capture(("--version",), cwd=resolved.parent, home=resolved.parent, deadline=time.monotonic() + 5, output_max=256)
         try:
             rendered = version_output.decode("ascii").strip()
@@ -91,6 +102,17 @@ class GitProcessRunner:
                     "file_count_max": limits.file_count_max,
                     "single_file_max_bytes": limits.single_file_max_bytes,
                 },
+                "bounded": ({"clone_filter": "blob:none", "small_tree_files": 4096,
+                    "large_tree_files": 512, "fetch_batch_files": 256,
+                    "selection": "shallow-metadata-directory-paired-source-v1",
+                    "materialized_bytes": limits.scan_total_read_max_bytes,
+                    "single_file_bytes": limits.scan_single_file_read_max_bytes,
+                    "manifest_budget": {"count": 64, "python_single": 262144,
+                        "python_total": 4194304, "javascript_single": 2097152,
+                        "javascript_total": 8388608},
+                    "scancode_vcs": {"version": "32.5.0", "ignored_parts": sorted(_SCANCODE_VCS_IGNORED_PARTS),
+                        "case_sensitive": False, "supplement_files": _SCANCODE_VCS_SUPPLEMENT_MAX},
+                    "offline_protocols": "deny-all"} if bounded else False),
                 "version": version,
             },
             sort_keys=True,
@@ -130,6 +152,8 @@ class GitProcessRunner:
                 ALL_PROXY="",
                 all_proxy="",
             )
+        else:
+            environment["GIT_NO_LAZY_FETCH"] = "1"
         return environment
 
     def _argv(self, arguments: tuple[str, ...], *, proxy_url: str | None = None) -> list[str]:
@@ -138,6 +162,9 @@ class GitProcessRunner:
             argv.extend(("-c", setting))
         if proxy_url is not None:
             argv.extend(("-c", f"http.proxy={proxy_url}"))
+        else:
+            # Offline object commands must never trigger promisor lazy fetch.
+            argv.extend(("-c", "protocol.https.allow=never", "-c", "remote.origin.promisor=false"))
         argv.extend(arguments)
         return argv
 
@@ -163,6 +190,8 @@ class GitProcessRunner:
             source,
             str(destination),
         )
+        if self.bounded:
+            arguments = (*arguments[:1], "--filter=blob:none", *arguments[1:])
         process = self._spawn(
             self._argv(arguments, proxy_url=proxy_url),
             cwd=destination.parent,
@@ -178,6 +207,49 @@ class GitProcessRunner:
             raise IngestionSecurityError("scanner_timeout", "git_fetch_timeout") from error
         if process.returncode != 0:
             raise IngestionSecurityError("invalid_source", "git_fetch_failed")
+
+    def fetch_objects(self, repository: Path, object_ids: tuple[str, ...], *, home: Path,
+                      proxy_url: str, deadline: float) -> None:
+        """Fetch only selected blobs through the same bounded trusted proxy."""
+        if not object_ids or len(object_ids) > 256 or any(re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", oid) is None for oid in object_ids):
+            raise ValueError("invalid selected Git objects")
+        remaining = self._remaining(deadline)
+        process = self._spawn(self._argv(("-c", "fetch.negotiationAlgorithm=noop", "-C", str(repository), "fetch", "--quiet", "--no-tags",
+            "--no-recurse-submodules", "--no-write-fetch-head", "--filter=blob:none", "--stdin", "origin"), proxy_url=proxy_url),
+            cwd=repository.parent, home=home, proxy_url=proxy_url, stdout=subprocess.DEVNULL, stdin=subprocess.PIPE)
+        try:
+            process.communicate(("\n".join(object_ids) + "\n").encode("ascii"), timeout=remaining)
+        except subprocess.TimeoutExpired as error:
+            _kill_process_group(process)
+            process.wait()
+            raise IngestionSecurityError("scanner_timeout", "git_fetch_timeout") from error
+        if process.returncode:
+            raise IngestionSecurityError("invalid_source", "git_fetch_failed")
+
+    def object_sizes(self, repository: Path, object_ids: tuple[str, ...], *, home: Path,
+                     deadline: float) -> dict[str, int]:
+        if len(object_ids) > 4096:
+            raise ValueError("invalid selected Git objects")
+        remaining = self._remaining(deadline)
+        process = self._spawn(self._argv(("-C", str(repository), "cat-file", "--batch-check")),
+            cwd=repository.parent, home=home, proxy_url=None, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        try:
+            output, _ = process.communicate(("\n".join(object_ids) + "\n").encode("ascii"), timeout=remaining)
+        except subprocess.TimeoutExpired as error:
+            _kill_process_group(process)
+            process.wait()
+            raise IngestionSecurityError("scanner_timeout", "git_process_timeout") from error
+        if process.returncode or len(output) > 1024 * 1024:
+            raise IngestionSecurityError("invalid_source", "git_object_invalid")
+        sizes = {}
+        for line in output.decode("ascii").splitlines():
+            fields = line.split()
+            if len(fields) != 3 or fields[0] not in object_ids or fields[1] != "blob" or not fields[2].isdigit():
+                raise IngestionSecurityError("invalid_source", "git_object_invalid")
+            sizes[fields[0]] = int(fields[2])
+        if set(sizes) != set(object_ids):
+            raise IngestionSecurityError("invalid_source", "git_object_invalid")
+        return sizes
 
     def capture(
         self,

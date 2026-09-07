@@ -251,6 +251,14 @@ def _render_html(run: ScanRun) -> bytes:
         empty="当前结果没有可展示的规则风险；这不等于项目已通过许可证合规核验。",
     )
     errors = _html_table(("阶段", "错误码", "说明", "可恢复"), error_rows, empty="无结构化错误。")
+    coverage_ids = {evidence_id for error in run.errors if error.code == "git_scan_coverage_partial"
+                    for evidence_id in error.evidence_ids}
+    coverage_rows = [(item.locator, item.excerpt or "") for item in sorted(run.evidence, key=lambda item: item.locator)
+                     if item.id in coverage_ids]
+    coverage = ""
+    if coverage_rows:
+        coverage = '<h2>扫描覆盖范围：未扫描条目</h2><p>以下条目未纳入本次扫描；本报告不能用于证明整个仓库均已完成核验。</p>' + _html_table(
+            ("仓库路径", "未覆盖原因与 Git 对象"), coverage_rows, empty="无未覆盖记录。")
     title = escape(f"OpenGuard 报告 - {run.project.name}")
     project_name = escape(run.project.name)
     source = escape(run.project.source)
@@ -283,6 +291,7 @@ def _render_html(run: ScanRun) -> bytes:
   {findings}
   <h2>运行状态与未完成项</h2>
   {errors}
+  {coverage}
   <h2>复现信息</h2>
   <p>OpenGuard {escape(run.provenance.run_environment.openguard_version)}；契约 {escape(run.contract_version)}；规则集 {escape(run.provenance.ruleset_version)}；输入摘要 {escape(run.provenance.input_digest.value)}。</p>
   <footer>{disclaimer}</footer>

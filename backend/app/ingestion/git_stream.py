@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TypeVar
 
-from app.ingestion.git_materializer import MaterializedGitTree, materialize_git_tree
+from app.ingestion.git_materializer import GitOmission, MaterializedGitTree, materialize_git_tree, materialize_bounded_git_tree
 from app.ingestion.git_runner import GitProcessRunner, GitRuntimeIdentity
 from app.ingestion.inventory import Inventory, build_inventory_snapshot
 from app.ingestion.read_session import (
@@ -36,6 +36,8 @@ class GitScanSessionResult(ScanSessionResult[T]):
     revision: str
     runtime_identity: GitRuntimeIdentity
     egress_evidence: tuple[EgressConnectionEvidence, ...]
+    omissions: tuple[GitOmission, ...] = ()
+    discovered_entries: int = 0
 
 
 class GitIngestionService:
@@ -49,10 +51,14 @@ class GitIngestionService:
         git_executable: Path = Path("/usr/bin/git"),
         resolver: Resolver | None = None,
         connector: Connector | None = None,
+        bounded: bool = False,
     ) -> None:
         self.limits = limits or GitSafetyLimits()
         self._workspaces = WorkspaceManager(workspace_root, _workspace_limits(self.limits))
-        self._runner = GitProcessRunner(git_executable, self.limits)
+        if type(bounded) is not bool:
+            raise ValueError("invalid bounded Git mode")
+        self._bounded = bounded
+        self._runner = GitProcessRunner(git_executable, self.limits, bounded=bounded)
         self._resolver = resolver
         self._connector = connector
         self._consumer_local = threading.local()
@@ -112,6 +118,9 @@ class GitIngestionService:
                         proxy_url=proxy.proxy_url,
                         deadline=deadline,
                     )
+                    if self._bounded:
+                        materialized = materialize_bounded_git_tree(self._runner, repository, workspace,
+                            home=home, limits=self.limits, deadline=deadline, proxy_url=proxy.proxy_url)
                 except IngestionSecurityError as error:
                     reason = proxy.failure_reason
                     if reason is not None:
@@ -121,14 +130,11 @@ class GitIngestionService:
                 egress_evidence = proxy.evidence
             if not egress_evidence:
                 raise IngestionSecurityError("invalid_source", "source_connection_failed")
-            materialized = materialize_git_tree(
-                self._runner,
-                repository,
-                workspace,
-                home=home,
-                limits=self.limits,
-                deadline=deadline,
-            )
+            if materialized is None:
+                materialized = materialize_git_tree(
+                    self._runner, repository, workspace, home=home,
+                    limits=self.limits, deadline=deadline,
+                )
             snapshot = build_inventory_snapshot(workspace, ("tree",))
             inventory = snapshot.inventory
 
@@ -171,6 +177,8 @@ class GitIngestionService:
                 revision=materialized.revision,
                 runtime_identity=self._runner.identity,
                 egress_evidence=egress_evidence,
+                omissions=materialized.omissions,
+                discovered_entries=materialized.discovered_entries,
             )
         finally:
             if session is not None:

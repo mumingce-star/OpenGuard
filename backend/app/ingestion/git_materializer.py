@@ -7,10 +7,11 @@ import re
 import subprocess
 import threading
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
-from app.ingestion.git_runner import GitProcessRunner, _kill_process_group
+from app.ingestion.git_runner import (GitProcessRunner, _kill_process_group,
+    _SCANCODE_VCS_IGNORED_PARTS, _SCANCODE_VCS_SUPPLEMENT_MAX)
 from app.security.archive_path import normalize_member_path
 from app.security.errors import IngestionSecurityError
 from app.security.limits import GitSafetyLimits, ZipSafetyLimits
@@ -32,10 +33,19 @@ class GitTreeEntry:
 
 
 @dataclass(frozen=True)
+class GitOmission:
+    path: str
+    reason: str
+    object_id: str
+
+
+@dataclass(frozen=True)
 class MaterializedGitTree:
     revision: str
     file_count: int
     total_bytes: int
+    omissions: tuple[GitOmission, ...] = ()
+    discovered_entries: int = 0
 
 
 def _reject(reason: str) -> None:
@@ -145,6 +155,149 @@ def inspect_git_tree(
     )
     return revision, _parse_tree(listing, limits)
 
+
+
+def _selection_priority(entry: GitTreeEntry) -> tuple[int, int, bytes]:
+    name = entry.parts[-1].lower()
+    if name.startswith(("license", "licence", "copying", "notice")):
+        priority = 0
+    elif name in {"pyproject.toml", "package.json", "setup.py", "setup.cfg", "cargo.toml", "go.mod", "pom.xml"} or name.startswith("requirements"):
+        priority = 1
+    elif name in {"uv.lock", "poetry.lock", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "cargo.lock", "go.sum"}:
+        priority = 2
+    elif name.startswith("readme"):
+        priority = 3
+    elif name.endswith((".py", ".js", ".ts", ".tsx", ".jsx", ".json", ".yaml", ".yml", ".toml")):
+        priority = 4
+    else:
+        priority = 5
+    # Shallow project metadata comes before hundreds of vendored package
+    # LICENSE files. Within a directory keep license + manifest together.
+    depth = len(entry.parts)
+    tier = 0 if priority <= 3 and depth <= 3 else 1 if priority <= 1 else priority
+    directory = "/".join(entry.parts[:-1]).encode("utf-8")
+    return tier, depth, directory + b"\0" + bytes([priority]) + entry.parts[-1].encode("utf-8")
+
+
+def inspect_bounded_git_tree(runner: GitProcessRunner, repository: Path, *, home: Path,
+                             limits: GitSafetyLimits, deadline: float
+                             ) -> tuple[str, tuple[GitTreeEntry, ...], tuple[GitOmission, ...], int]:
+    revision = runner.capture(("-C", str(repository), "rev-parse", "--verify", "HEAD^{commit}"),
+        cwd=repository.parent, home=home, deadline=deadline, output_max=128).decode("ascii").strip()
+    if _OBJECT_ID.fullmatch(revision) is None:
+        _reject("git_object_invalid")
+    # Deliberately omit -l: looking up sizes would lazy-fetch all missing blobs.
+    data = runner.capture(("-C", str(repository), "ls-tree", "-r", "-z", "--full-tree", "HEAD"),
+        cwd=repository.parent, home=home, deadline=deadline,
+        output_max=limits.file_count_max * (limits.path_utf8_bytes_max + 128))
+    records = data.split(b"\0")
+    if records[-1] or len(records) - 1 > limits.file_count_max:
+        raise IngestionSecurityError("scanner_failed", "git_file_count_limit_exceeded")
+    entries, omitted = [], []
+    files, directories = set(), set()
+    path_limits = _path_limits(limits)
+    for record in records[:-1]:
+        try:
+            metadata, raw_path = record.split(b"\t", 1)
+            mode, kind, oid = metadata.decode("ascii").split()
+            name = raw_path.decode("utf-8")
+            path = normalize_member_path(name, is_directory=False, limits=path_limits)
+        except (ValueError, UnicodeDecodeError, IngestionSecurityError):
+            _reject("git_entry_unsafe")
+        if _OBJECT_ID.fullmatch(oid) is None or any(p.casefold() == ".git" for p in path.parts):
+            _reject("git_entry_unsafe")
+        if path.collision_key in files or path.collision_key in directories:
+            _reject("git_entry_unsafe")
+        for i in range(1, len(path.parts)):
+            parent = "/".join(path.parts[:i]).casefold()
+            if parent in files:
+                _reject("git_entry_unsafe")
+            directories.add(parent)
+        files.add(path.collision_key)
+        if (mode, kind) in {("120000", "blob"), ("160000", "commit")}:
+            omitted.append(GitOmission(path.relative_path, "symlink_not_followed" if mode == "120000" else "submodule_not_fetched", oid))
+            continue
+        if mode not in _ALLOWED_MODES or kind != "blob":
+            _reject("git_entry_unsafe")
+        entries.append(GitTreeEntry(mode, oid, 0, path.parts, path.relative_path, path.collision_key))
+    entries.sort(key=_selection_priority)
+    maximum = 4096 if len(entries) <= 4096 else 512
+    for entry in entries[maximum:]:
+        omitted.append(GitOmission(entry.relative_path, "bounded_file_selection", entry.object_id))
+    return revision, tuple(entries[:maximum]), tuple(omitted), len(records) - 1
+
+
+def materialize_bounded_git_tree(runner: GitProcessRunner, repository: Path, workspace: SecureWorkspace,
+                                 *, home: Path, limits: GitSafetyLimits, deadline: float, proxy_url: str
+                                 ) -> MaterializedGitTree:
+    revision, candidates, initial_omissions, discovered = inspect_bounded_git_tree(
+        runner, repository, home=home, limits=limits, deadline=deadline)
+    omitted = list(initial_omissions)
+    selected = []
+    total = 0
+    manifest_counts = {"python": 0, "javascript": 0}
+    manifest_bytes = {"python": 0, "javascript": 0}
+    # Match existing parser budgets; excluding an over-budget manifest is
+    # explicit coverage loss, never an excuse to disable its safety checks.
+    def lane_for(entry: GitTreeEntry) -> str | None:
+        if any(p in {".git", ".hg", ".svn", ".venv", "venv", "__pycache__", "site-packages", "node_modules"} for p in entry.parts[:-1]):
+            return None
+        name = entry.parts[-1]
+        if name == "pyproject.toml" or (name.startswith("requirements") and name.endswith(".txt")):
+            return "python"
+        return "javascript" if name in {"package.json", "package-lock.json"} else None
+    admitted = []
+    vcs_supplements = 0
+    for candidate in candidates:
+        lane = lane_for(candidate)
+        if lane and manifest_counts[lane] >= 64:
+            omitted.append(GitOmission(candidate.relative_path, f"bounded_{lane}_manifest_count", candidate.object_id))
+            continue
+        needs_supplement = any(part.lower() in _SCANCODE_VCS_IGNORED_PARTS for part in candidate.parts)
+        if needs_supplement and vcs_supplements >= _SCANCODE_VCS_SUPPLEMENT_MAX:
+            omitted.append(GitOmission(candidate.relative_path, "bounded_scancode_vcs_budget", candidate.object_id))
+            continue
+        if lane:
+            manifest_counts[lane] += 1
+        if needs_supplement:
+            vcs_supplements += 1
+        admitted.append(candidate)
+    candidates = tuple(admitted)
+    # Keep small SDKs complete when they fit the existing 16 MiB read budget.
+    byte_limit = min(limits.materialized_max_bytes, limits.scan_total_read_max_bytes)
+    fetched = set()
+    for start in range(0, len(candidates), 256):
+        batch = candidates[start:start + 256]
+        if total >= byte_limit:
+            omitted.extend(GitOmission(e.relative_path, "bounded_byte_budget", e.object_id) for e in candidates[start:])
+            break
+        ids = tuple(dict.fromkeys(e.object_id for e in batch if e.object_id not in fetched))
+        if ids:
+            runner.fetch_objects(repository, ids, home=home, proxy_url=proxy_url, deadline=deadline)
+            fetched.update(ids)
+        sizes = runner.object_sizes(repository, tuple(dict.fromkeys(e.object_id for e in batch)), home=home, deadline=deadline)
+        for entry in batch:
+            size = sizes[entry.object_id]
+            lane = lane_for(entry)
+            single_manifest_limit = 262144 if lane == "python" else 2 * 1024 * 1024
+            total_manifest_limit = 4 * 1024 * 1024 if lane == "python" else 8 * 1024 * 1024
+            if lane and (size > single_manifest_limit or manifest_bytes[lane] + size > total_manifest_limit):
+                omitted.append(GitOmission(entry.relative_path, f"bounded_{lane}_manifest_bytes", entry.object_id))
+            elif size > min(limits.single_file_max_bytes, limits.scan_single_file_read_max_bytes):
+                omitted.append(GitOmission(entry.relative_path, "bounded_single_file_budget", entry.object_id))
+            elif total + size > byte_limit:
+                omitted.append(GitOmission(entry.relative_path, "bounded_byte_budget", entry.object_id))
+            else:
+                selected.append(replace(entry, size=size))
+                total += size
+                if lane:
+                    manifest_bytes[lane] += size
+    if not selected:
+        workspace.make_directory(("tree",))
+    else:
+        materialize_git_blobs(runner, repository, workspace, tuple(selected), home=home, deadline=deadline)
+    return MaterializedGitTree(revision, len(selected), total,
+        tuple(sorted(omitted, key=lambda e: e.path.encode("utf-8"))), discovered)
 
 def materialize_git_blobs(
     runner: GitProcessRunner,

@@ -73,6 +73,94 @@ class FakeProvider:
         return _response(payload)
 
 
+def _review_run(*, distinct_context=False):
+    value = _run(two_findings=True).model_dump(mode="json")
+    value["obligations"] = []
+    for f in value["findings"]:
+        f.update(rule_id="license-evidence-gate", obligation_ids=[], evidence_ids=[EVIDENCE_ID])
+    component = copy.deepcopy(value["components"][0])
+    component.update(id="cmp_223e4567-e89b-12d3-a456-426614174000", name="second", purl=None,
+                     evidence_ids=["evd_423e4567-e89b-12d3-a456-426614174000"])
+    if distinct_context:
+        component["ecosystem"] = "npm"
+    value["components"].append(component)
+    evidence = copy.deepcopy(value["evidence"][0])
+    evidence["id"] = component["evidence_ids"][0]
+    evidence["locator"] = "second.txt"
+    value["evidence"].append(evidence)
+    value["findings"][1].update(resource_id=component["id"], evidence_ids=component["evidence_ids"])
+    value["summary"]["component_count"] = 2
+    value["summary"]["evidence_count"] = len(value["evidence"])
+    return ScanRun.model_validate(value)
+
+
+def _plan_reply(payload):
+    from app.ai.provider import REVIEW_PLAN_SUMMARY
+    request = json.loads(payload)
+    return json.dumps({"schema_version": "openguard.ai-review-plan/v1", "plan_id": request["plan_id"],
+                       "summary": REVIEW_PLAN_SUMMARY,
+                       "steps": ["查找对应版本的许可原文和来源。", "对照拟定使用和分发方式核对许可要求。", "保存原文、版本及人工核验记录。"]}, ensure_ascii=False)
+
+
+def test_review_plan_shares_workflow_but_never_another_resources_evidence():
+    run = _review_run()
+    provider = FakeProvider(replies=[_plan_reply])
+    provider.review_plan_mode = True
+    result = apply_ai_remediations(run, provider)
+    assert result.status == "generated" and len(provider.calls) == 1
+    assert len(result.run.remediations) == 2
+    for f in result.run.findings:
+        remediation = next(m for m in result.run.remediations if m.finding_id == f.id)
+        assert remediation.evidence_ids == f.evidence_ids
+        assert "同类风险" in remediation.summary and remediation.verification_status.value == "pending"
+    _assert_deterministic_facts_preserved(run, result.run)
+    request = provider.calls[0][0]
+    assert "evidence" not in request and "finding" not in request
+    assert "second.txt" not in json.dumps(request)
+
+
+def test_review_plans_separate_contexts_and_keep_success_when_one_group_fails():
+    run = _review_run(distinct_context=True)
+    provider = FakeProvider(replies=[_plan_reply, RuntimeError("secret")])
+    provider.review_plan_mode = True
+    result = apply_ai_remediations(run, provider)
+    assert len(provider.calls) == 2 and result.status == "degraded"
+    assert len(result.run.remediations) == 1
+    assert result.run.findings[0].remediation_id and result.run.findings[1].remediation_id is None
+    assert result.run.errors[-1].code == "ai_provider_unavailable"
+    assert "secret" not in result.run.model_dump_json()
+    _assert_deterministic_facts_preserved(run, result.run)
+
+
+@pytest.mark.parametrize("change", [
+    {"summary": "已经合规，可以商用。"}, {"plan_id": "wrong"},
+    {"steps": ["Review license."] * 3},
+    {"steps": ["查找许可原文。", "记录核验结果。"]},
+    {"steps": ["该资源可商用，无需进一步核验。", "必须删除资源才能完成合规。", "保留授权核验的相关记录。"]},
+    {"steps": ["核验 review the license and confirm all distribution conditions.", "对照 compare your intended use and deployment scope.", "记录 keep evidence and a review decision."]},
+    {"steps": ["将原文和NOASSERTION对照。", "核对具体使用方式。", "记录核验结果和依据。"]},
+    {"evidence_ids": [EVIDENCE_ID]},
+])
+def test_invalid_shared_plan_is_rejected_once_without_fake_success(change):
+    def reply(payload):
+        data = json.loads(_plan_reply(payload)); data.update(change); return json.dumps(data)
+    provider = FakeProvider(replies=[reply]); provider.review_plan_mode = True
+    result = apply_ai_remediations(_review_run(), provider)
+    assert result.status == "degraded" and not result.run.remediations
+    assert len(provider.calls) == 1 and result.run.errors[-1].code == "ai_response_invalid"
+
+
+def test_individual_failure_cannot_discard_successful_shared_plan():
+    value = _review_run().model_dump(mode="json")
+    value["findings"][1]["rule_id"] = "special-review"
+    run = ScanRun.model_validate(value)
+    provider = FakeProvider(replies=[_plan_reply, TimeoutError("offline")]); provider.review_plan_mode = True
+    result = apply_ai_remediations(run, provider)
+    assert result.status == "degraded" and len(result.run.remediations) == 1
+    assert result.run.findings[0].remediation_id and result.run.findings[1].remediation_id is None
+    _assert_deterministic_facts_preserved(run, result.run)
+
+
 def _assert_deterministic_facts_preserved(before: ScanRun, after: ScanRun) -> None:
     for field in (
         "project",

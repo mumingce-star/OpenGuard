@@ -262,6 +262,8 @@ def build_dependency_plan(
             fail("ai_asset_scan_incomplete", "AI reference scanning was incomplete.", recoverable=True)
         if state.external is not None and state.external.errors:
             fail("external_scan_incomplete", "External scanning was incomplete.", recoverable=True)
+        if run.errors:
+            fail("scan_incomplete", "Some scan results are incomplete; review the recorded errors and coverage.", recoverable=True)
         return ScanRun.model_validate(run.model_dump(mode="python"))
 
     return PipelinePlan(

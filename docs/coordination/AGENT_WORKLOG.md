@@ -4223,3 +4223,46 @@
 
 
 [20260907-1649-RootAstra-OpenaiScanCoverage-Publish] 发布绑定：修复提交`1df7cca`已普通推送至`origin/integration/p0`，远端由`f2040b5`前进至该提交。上传26个既有源代码/测试/部署与治理文档，无新分支、force push、main合并或组员分支操作。实测通过任务`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`及四SHA见进度36节；工作区仅原用户output未跟踪。AMENDMENT：上条COMPLETE中的spec文档数量应为4份，其余文件范围不变。
+
+
+### [20260907-1719-RootAstra-P0PerformanceReliability] START
+
+- GPT-6 Astra / Root: user requests AI speed/reliability and public Git compatibility, with before/after evidence. Baseline integration/p0@a65a940, only user output untracked. Estimate 20k-35k tokens; exact telemetry unavailable.
+- Root is sole writer; independent agent audits Git read-only. Reuse provider/ollama, Git ingestion and existing tests/docs. Group only equivalent license-review contexts into explicitly labeled Chinese AI plans with per-finding evidence binding; special rules retain individual generation. Do not label deterministic fallbacks as AI success.
+- Test same-revision facts and timings, user repositories litellm/autogen/llama_index, malformed concatenated URL, existing Git safety boundaries, full regression, Docker and Chrome, four report hashes. No teammate branch edits, no new services/interfaces/P1/P2. Inaccessible or unsafe inputs cannot be promised successful.
+
+### [20260907-1800-RootAstra-P0PerformanceReliability] AMENDMENT
+
+- 用户明确选择大型仓库有界扫描、显示未覆盖内容，优先速度和稳定性。完整报告不得伪装全覆盖成功。
+- 分离写入范围：Root 修改 AI provider/transport 及对应测试和共享文档；Git 子代理负责 Git 获取、物化、现有 Pipeline 覆盖证据及 HTML 报告附录和对应测试；AI 子代理只读独立审核。禁止并发写相同文件、组员分支和独立推送。
+- 独立 AI 审核发现并已修复：混合规则失败丢弃成功建议、两步骤通过、明确授权断言通过、英文伪装中文。复核107项通过，独立失败反例保留1条成功建议且事实不变。额外传输 Schema 绑定测试通过。
+- 同一既有 openai-python 报告的真实模型复测：145条风险、7次调用、12.933秒、145条pending建议、零AI错误，组件/AI资产/许可/证据/义务保持不变。此为AI阶段隔离测量，尚不代表Docker全链交付。中间测量脚本字段名误写assets导致断言脚本退出；改为真实ai_assets字段后原样复测通过，未更改产品以适配脚本。
+
+### [20260907-1750-RootAstra-P0PerformanceReliability] AMENDMENT / 候选回归
+
+- Root额外最小修复既有JS parser/mapper：跨package同名依赖合并后保留各manifest和成对lock证据；冲突不选择任意版本。独立审核指出secondary锁版本/URL需全量一致性校验，已补反例并修复，相关71项通过。属于A线集成修复，扫描负责人后续复核，不操作B线分支。
+- Git独立审核发现有界选择后无资源时遗漏证据丢失，已在ingestion持久化覆盖记录，并对该明确场景复用partial四报告路径；0资源保持0。原失败反例保留，修复后通过。
+- 首轮全量测试加载了修复中的无资源旧路径，1268通过/1失败/3跳过；文件冻结后完整原样复跑1270通过/3声明跳过/2既有警告。额外受控loopback Git42通过，前端22通过且tsc/Vite构建通过；宿主npm不可用，按package.json使用既有Node直接运行对应命令，没有安装新依赖。
+- Git128批次真实openai获取曾有一次网络失败，256批次冻结后同revision1953文件/0遗漏30.35秒，LiteLLM512文件/10083遗漏12.82秒；这些是获取/consumer测量，不冒充全链。
+- 活动任务为0后重建API并保留全部三个真实开关；双服务healthy，关键运行源码SHA与工作区一致。Chrome新建任务abd52930正进行真实整链，原历史记录不删除。
+
+### [20260907-1800-RootAstra-P0TerminalCoverage] AMENDMENT
+
+- openai-python同revision实扫abd52930完整通过，332.58秒对811.80秒，全部组件/资产/许可/证据/义务/风险剔除时间与整改关联后相同，CSV字节完全一致；Chrome100%及风险详情通过。
+- LiteLLM真实18fb99b8暴露终态漏检：1407风险/1407真实AI、10083遗漏及四报告存在，但共享report步骤只检查外部工具/AI资源错误，错误地completed。验收主动失败，历史任务和附件保留，未修改数据库状态或宣称通过。
+- 最小修复既有dependency_plan.report：已记录错误统一按recoverable scan_incomplete收敛为partial，保留详细原错误；包括有界覆盖及AI生成失败。新增有真实许可、能走到报告阶段的coverage反例（旧无许可fixture提前rules partial，未覆盖最终成功路径）。完整回归1271通过/3声明跳过/2既有警告，活动为0后再次重建部署，继续真实三仓验收。
+
+### [20260907-1816-RootAstra-P0VcsCoverage] AMENDMENT
+
+- AutoGen92076aab首次整链生成2412条真实AI但ScanCode撤回；安装源码与1833文件inventory确认26个默认VCS忽略项，超过8补扫门。Git有界选择现按锁定工具规则保留最多8，超额逐路径标明bounded_scancode_vcs_budget；不放宽工具完整性/时限。动态26项保留8遗漏18，54个路径与安装版规则零差异，openai原3命中不会新增遗漏。正在真实重验eb6253c0。
+- 追加真正Git/ZIP生产计划的AI异常回归，正常模型基线completed，异常partial/report/95且4报告、事实保持。最后完整suite1274通过/3声明跳过/2既有警告；前端22项及构建维持通过，无前端修改。
+- LiteLLM34e7f56e重验partial、1407风险/1407AI、10083遗漏、4SHA通过、无工具或AI错误；LlamaIndexca2913c3约60秒、441风险/441AI、9525遗漏、4SHA通过。两者保留真实parser partial提示。
+- Chrome已核验openai100%与详情、LiteLLM大型报告和覆盖提示/四下载入口。浏览器扩展全AX结果超过64MiB工具传输限制，改用原生Chrome可访问性核验显示正常；真实JSON可触发保存框，但自动保存按钮disabled，已取消，不将本轮Chrome自动落盘记为通过。四格式API附件均已实际落盘并核对元数据SHA；未改浏览器安全设置。
+
+### [20260907-1830-RootAstra-P0PerformanceReliability] COMPLETE
+
+- Root完成本轮授权的有界Git/AI效率修复。AutoGen最终eb6253c0：375.73秒、2412风险/2412真实AI、24遗漏，ScanCode51/Syft2368证据，无工具或AI错误；四库最终结果、固定revision、前后事实对照及四SHA见进度37。
+- 最后ZIP fc3127e4完成，真实工具/4条AI/本风险证据/四SHA及安全失败路径通过。首次smoke被旧写死ai_enabled=False断言中止；仅按既有--expect-ai参数修正后完整重跑通过，另独立检查真实AI及Evidence绑定。
+- 源码、既有spec/资源台账/部署smoke和相关测试变更；无新HTTP接口/外部Schema/规则/P1/P2。全部修改文件由本轮Git diff清单固定，不含用户output。测试1274通过/3显式跳过/2既有警告，前端22及tsc/Vite通过；API运行源码6个SHA匹配、双服务healthy、active=0/workspaces空。Chrome验收边界见上条，不夸大自动下载。
+- 已知边界：有界与解析partial、外部网络/模型故障不保证成功、AutoGen工具阶段仍约6分钟。历史失败保留；组员分支未改。下一步本人组织人工AI质量及异机回执，最终资源/安全冻结，持久数据累计预算仍待关闭。发布暂待Root普通提交/push integration/p0绑定，不扩大任务。
+- 精确token数不可获得，原估算20k–35k不能替代实测用量。

@@ -381,7 +381,7 @@ def main():
             item = evidence_map[key]
             assert item["locator"] == "README.md" and item["start_line"] == 3
             assert item["content_hash"]["value"] == hashlib.sha256(files["README.md"].encode()).hexdigest()
-        assert scan["provenance"]["ai_enabled"] is False
+        assert scan["provenance"]["ai_enabled"] is args.expect_ai
         assert asset["id"] in json.dumps(risks)
     for evidence in scan["evidence"]:
         assert json.loads(get(f'/api/v1/scans/{scan_id}/evidence/{evidence["id"]}'))

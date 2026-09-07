@@ -527,3 +527,297 @@ def test_git_tree_close_failure_poisoned_and_cleaned(local_git_service, monkeypa
     with pytest.raises(IngestionSecurityError) as error:
         service.ingest_with_consumer("https://github.com/example/repo", lambda session: None)
     assert error.value.reason == "workspace_cleanup_failed"
+
+
+@pytest.mark.parametrize('source', [
+    'https://github.com/openai/openai-python/',
+    'https://github.com/openai/openai-python.git/',
+])
+def test_github_root_url_accepts_one_trailing_slash(source: str) -> None:
+    assert parse_public_git_url(source).canonical == source[:-1]
+
+
+@pytest.mark.parametrize('source', [
+    'https://github.com/microsoft/autogenhttps://github.com/run-llama/llama_index',
+    'https://github.com/openai/openai-python/tree/main',
+    'https://github.com/openai/openai-python/blob/main/README.md',
+    'https://github.com/openai/openai-python//',
+])
+def test_github_non_repository_and_joined_urls_fail_before_network(source: str) -> None:
+    with pytest.raises(IngestionSecurityError):
+        parse_public_git_url(source)
+
+
+def test_bounded_tree_records_symlink_and_gitlink_without_following(tmp_path: Path) -> None:
+    from app.ingestion.git_materializer import inspect_bounded_git_tree
+    repository = _repository(tmp_path / 'repo', {'requirements.txt': 'packaging==25.0'})
+    revision = _git(repository, 'rev-parse', 'HEAD').decode().strip()
+    (repository / 'outside').symlink_to('/etc/passwd')
+    _git(repository, 'add', 'outside')
+    _git(repository, 'update-index', '--add', '--cacheinfo', f'160000,{revision},subproject')
+    _git(repository, 'commit', '--quiet', '-m', 'special entries')
+    limits = GitSafetyLimits()
+    runner = GitProcessRunner(Path(PYTHON), limits, bounded=True)
+    _, selected, omitted, discovered = inspect_bounded_git_tree(runner, repository,
+        home=_private(tmp_path / 'home'), limits=limits, deadline=time.monotonic() + 10)
+    assert discovered == 3
+    assert [e.relative_path for e in selected] == ['requirements.txt']
+    assert {(e.path, e.reason) for e in omitted} == {
+        ('outside', 'symlink_not_followed'), ('subproject', 'submodule_not_fetched')}
+
+
+def test_bounded_large_tree_selects_root_manifests_before_deep_sources() -> None:
+    from app.ingestion.git_materializer import inspect_bounded_git_tree
+    names = [f'src/deep/file_{i:05d}.py' for i in range(4500)] + ['README.md', 'LICENSE', 'pyproject.toml']
+    class Runner:
+        def capture(self, args, **kwargs):
+            if 'rev-parse' in args:
+                return b'a' * 40 + b'\n'
+            assert '-l' not in args
+            return b''.join(b'100644 blob ' + b'a' * 40 + b'\t' + name.encode() + b'\0' for name in names)
+    _, selected, omitted, discovered = inspect_bounded_git_tree(Runner(), Path('/unused'),
+        home=Path('/unused'), limits=GitSafetyLimits(), deadline=time.monotonic() + 10)
+    assert discovered == len(names)
+    assert len(selected) == 512
+    assert [e.relative_path for e in selected[:3]] == ['LICENSE', 'pyproject.toml', 'README.md']
+    assert len(omitted) == len(names) - 512
+    assert {e.path for e in omitted} | {e.relative_path for e in selected} == set(names)
+
+
+def test_offline_object_commands_deny_promisor_network() -> None:
+    runner = GitProcessRunner(Path(PYTHON), GitSafetyLimits(), bounded=True)
+    offline = runner._argv(('cat-file', '--batch-check'))
+    assert offline.index('protocol.https.allow=never') > offline.index('protocol.https.allow=always')
+    assert 'remote.origin.promisor=false' in offline
+    assert runner._environment(Path('/unused'))['GIT_NO_LAZY_FETCH'] == '1'
+    online = runner._argv(('fetch', 'origin'), proxy_url='http://127.0.0.1:12345')
+    assert 'protocol.https.allow=never' not in online
+    assert 'http.proxy=http://127.0.0.1:12345' in online
+
+
+@pytest.mark.parametrize("licensed", [False, True])
+def test_bounded_coverage_survives_pipeline_and_report_with_complete_paths(tmp_path: Path, monkeypatch, licensed: bool) -> None:
+    from app.ingestion.git_materializer import GitOmission
+    if licensed:
+        def licensed_archive():
+            stream = io.BytesIO()
+            with zipfile.ZipFile(stream, 'w') as archive:
+                archive.writestr('package.json', '{"dependencies":{"react":"19.2.0"}}')
+                archive.writestr('package-lock.json', '{"lockfileVersion":3,"packages":{"":{"dependencies":{"react":"19.2.0"}},"node_modules/react":{"version":"19.2.0","license":"MIT"}}}')
+            return stream.getvalue()
+        monkeypatch.setitem(_FakeGitIngestion.ingest_with_consumer.__globals__, '_archive', licensed_archive)
+    class BoundedFixture(_FakeGitIngestion):
+        def ingest_with_consumer(self, *args, **kwargs):
+            result = super().ingest_with_consumer(*args, **kwargs)
+            result.omissions = (GitOmission('docs/<untrusted>.bin', 'bounded_byte_budget', 'c' * 40),
+                                GitOmission('submodule', 'submodule_not_fetched', 'd' * 40))
+            result.discovered_entries = 4
+            return result
+    os.chmod(tmp_path, 0o700)
+    registry = SQLiteScanRunRegistry(tmp_path / 'scans.sqlite')
+    store = ReportArtifactStore(_private(tmp_path / 'reports'))
+    runtime = GitScanRuntime(registry, workspace_root=_private(tmp_path / 'workspaces'),
+        report_publisher=PipelineReportPublisher(store), ingestion_factory=lambda root: BoundedFixture(root, []))
+    try:
+        with TestClient(create_app(registry, git_runtime=runtime, report_store=store)) as client:
+            accepted = client.post('/api/v1/scans', json={'source_type':'git', 'source':'https://github.com/example/repo'})
+            assert accepted.status_code == 202
+            run = registry.get(accepted.json()['scan_id']).run
+            assert run.status.value == 'partial'
+            if licensed:
+                assert run.stage.value == 'report'
+                assert any(e.code == 'scan_incomplete' for e in run.errors)
+            error = next(e for e in run.errors if e.code == 'git_scan_coverage_partial')
+            coverage = [e for e in run.evidence if e.id in error.evidence_ids]
+            assert {e.locator for e in coverage} == {'docs/<untrusted>.bin', 'submodule'}
+            assert all('Git revision=' + 'a' * 40 in e.excerpt for e in coverage)
+            assert all(e.content_hash is None for e in coverage)
+            assert run.summary.evidence_count == len(run.evidence)
+            html = client.get(f'/api/v1/scans/{run.id}/report?format=html&download=true').text
+            assert '扫描覆盖范围：未扫描条目' in html
+            assert 'docs/&lt;untrusted&gt;.bin' in html and 'submodule_not_fetched' in html
+            assert 'docs/<untrusted>.bin' not in html
+    finally:
+        registry.close()
+
+
+def test_bounded_many_licenses_do_not_starve_project_manifests() -> None:
+    from app.ingestion.git_materializer import inspect_bounded_git_tree
+    names = [f'integrations/packages/pkg{i:05d}/LICENSE' for i in range(4500)] + [
+        'core/pyproject.toml', 'core/LICENSE', 'README.md']
+    class Runner:
+        def capture(self, args, **kwargs):
+            if 'rev-parse' in args:
+                return b'a' * 40 + b'\n'
+            return b''.join(b'100644 blob ' + b'a' * 40 + b'\t' + name.encode() + b'\0' for name in names)
+    _, selected, _, _ = inspect_bounded_git_tree(Runner(), Path('/unused'), home=Path('/unused'),
+        limits=GitSafetyLimits(), deadline=time.monotonic() + 10)
+    assert {'core/pyproject.toml', 'core/LICENSE', 'README.md'} <= {e.relative_path for e in selected[:3]}
+
+
+def test_bounded_materialization_omits_oversize_blob_without_fabricated_file(tmp_path: Path, monkeypatch) -> None:
+    from app.ingestion.git_materializer import materialize_bounded_git_tree
+    from app.ingestion.inventory import build_inventory
+    repository = _repository(tmp_path / 'repo', {'large.txt': 'x' * (4 * 1024 * 1024 + 1),
+                                                'requirements.txt': 'packaging==25.0'})
+    limits = GitSafetyLimits()
+    runner = GitProcessRunner(Path(PYTHON), limits, bounded=True)
+    # Local fixture objects already exist: test the real object reader/materializer.
+    monkeypatch.setattr(runner, 'fetch_objects', lambda *args, **kwargs: None)
+    manager = WorkspaceManager(_private(tmp_path / 'work'), ZipSafetyLimits())
+    workspace = manager.create()
+    try:
+        result = materialize_bounded_git_tree(runner, repository, workspace,
+            home=_private(tmp_path / 'home'), limits=limits, deadline=time.monotonic() + 10,
+            proxy_url='http://127.0.0.1:1')
+        inventory = build_inventory(workspace)
+        assert result.file_count == 1
+        assert [(e.relative_path, e.size_bytes) for e in inventory.entries] == [('requirements.txt', 15)]
+        assert [(e.path, e.reason) for e in result.omissions] == [('large.txt', 'bounded_single_file_budget')]
+    finally:
+        manager.cleanup(workspace)
+        manager.close()
+
+
+def test_offline_missing_promisor_blob_cannot_hydrate_from_origin(tmp_path: Path) -> None:
+    source = _repository(tmp_path / 'source', {'payload.txt': 'must not be hydrated'})
+    _git(source, 'config', 'uploadpack.allowFilter', 'true')
+    oid = _git(source, 'rev-parse', 'HEAD:payload.txt').decode().strip()
+    target = tmp_path / 'partial'
+    subprocess.run([PYTHON, 'clone', '--quiet', '--no-checkout', '--filter=blob:none',
+                    source.as_uri(), str(target)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    packs_before = sorted((target / '.git/objects/pack').iterdir())
+    runner = GitProcessRunner(Path(PYTHON), GitSafetyLimits(), bounded=True)
+    with pytest.raises(IngestionSecurityError):
+        runner.object_sizes(target, (oid,), home=_private(tmp_path / 'home'), deadline=time.monotonic() + 5)
+    assert sorted((target / '.git/objects/pack').iterdir()) == packs_before
+
+
+def test_bounded_selection_respects_python_manifest_candidate_budget(tmp_path: Path, monkeypatch) -> None:
+    from app.ingestion.git_materializer import materialize_bounded_git_tree
+    from app.ingestion.inventory import build_inventory
+    repository = _repository(tmp_path / 'repo', {f'pkg{i:03d}/pyproject.toml': '[project]\nname="example"\n' for i in range(65)})
+    limits = GitSafetyLimits()
+    runner = GitProcessRunner(Path(PYTHON), limits, bounded=True)
+    monkeypatch.setattr(runner, 'fetch_objects', lambda *args, **kwargs: None)
+    manager = WorkspaceManager(_private(tmp_path / 'work'), ZipSafetyLimits())
+    workspace = manager.create()
+    try:
+        result = materialize_bounded_git_tree(runner, repository, workspace,
+            home=_private(tmp_path / 'home'), limits=limits, deadline=time.monotonic() + 10,
+            proxy_url='http://127.0.0.1:1')
+        assert len(build_inventory(workspace).entries) == 64
+        assert [(e.path, e.reason) for e in result.omissions] == [('pkg064/pyproject.toml', 'bounded_python_manifest_count')]
+    finally:
+        manager.cleanup(workspace)
+        manager.close()
+
+
+def test_bounded_omissions_survive_no_dependency_failure_and_remain_reportable(tmp_path: Path, monkeypatch) -> None:
+    from app.ingestion.git_materializer import GitOmission
+    def only_readme():
+        stream = io.BytesIO()
+        with zipfile.ZipFile(stream, 'w') as archive:
+            archive.writestr('README.md', 'No supported dependency declarations here.')
+        return stream.getvalue()
+    monkeypatch.setitem(_FakeGitIngestion.ingest_with_consumer.__globals__, '_archive', only_readme)
+    class BoundedFixture(_FakeGitIngestion):
+        def ingest_with_consumer(self, *args, **kwargs):
+            result = super().ingest_with_consumer(*args, **kwargs)
+            result.omissions = (GitOmission('omitted/source.bin', 'bounded_single_file_budget', 'c' * 40),)
+            result.discovered_entries = 2
+            return result
+    os.chmod(tmp_path, 0o700)
+    registry = SQLiteScanRunRegistry(tmp_path / 'scans.sqlite')
+    store = ReportArtifactStore(_private(tmp_path / 'reports'))
+    runtime = GitScanRuntime(registry, workspace_root=_private(tmp_path / 'workspaces'),
+        report_publisher=PipelineReportPublisher(store), ingestion_factory=lambda root: BoundedFixture(root, []))
+    try:
+        with TestClient(create_app(registry, git_runtime=runtime, report_store=store)) as client:
+            accepted = client.post('/api/v1/scans', json={'source_type':'git', 'source':'https://github.com/example/repo'})
+            assert accepted.status_code == 202
+            run = registry.get(accepted.json()['scan_id']).run
+            assert run.status.value == 'partial', run.model_dump_json()
+            assert not run.components and not run.ai_assets and not run.findings
+            assert {e.code for e in run.errors} >= {'git_scan_coverage_partial', 'dependency_manifest_not_found'}
+            assert [e.locator for e in run.evidence] == ['omitted/source.bin']
+            assert len(run.report_links) == 4
+            html = client.get(f'/api/v1/scans/{run.id}/report?format=html&download=true').text
+            assert 'omitted/source.bin' in html and 'bounded_single_file_budget' in html
+    finally:
+        registry.close()
+
+
+def test_bounded_blob_fetch_batches_are_capped_at_256_unique_objects(tmp_path: Path, monkeypatch) -> None:
+    from app.ingestion.git_materializer import materialize_bounded_git_tree
+    repository = _repository(tmp_path / 'repo', {f'src/file{i:03d}.txt': str(i) for i in range(258)})
+    runner = GitProcessRunner(Path(PYTHON), GitSafetyLimits(), bounded=True)
+    calls = []
+    monkeypatch.setattr(runner, 'fetch_objects', lambda repository, ids, **kwargs: calls.append(ids))
+    manager = WorkspaceManager(_private(tmp_path / 'work'), ZipSafetyLimits())
+    workspace = manager.create()
+    try:
+        result = materialize_bounded_git_tree(runner, repository, workspace,
+            home=_private(tmp_path / 'home'), limits=GitSafetyLimits(), deadline=time.monotonic() + 10,
+            proxy_url='http://127.0.0.1:1')
+        assert [len(batch) for batch in calls] == [256, 2]
+        assert result.file_count == 258 and not result.omissions
+    finally:
+        manager.cleanup(workspace)
+        manager.close()
+
+
+def test_bounded_scancode_vcs_budget_records_all_26_ignored_paths(tmp_path: Path, monkeypatch) -> None:
+    from app.ingestion.git_materializer import materialize_bounded_git_tree
+    from app.ingestion.git_runner import _SCANCODE_VCS_IGNORED_PARTS
+    from app.ingestion.inventory import build_inventory
+    ignored_paths = [
+        '.gitignore', '.gitattributes', 'one/.hgignore', 'two/.bzrignore',
+        'three/.svnignore', 'four/.tfignore', 'five/vssver.scc', 'six/.cvsignore',
+        'nested/CVS/payload', 'nested/_MTN/payload', 'nested/_darcs/payload',
+        'nested/{arch}/payload', '.repo/item', '.bzr/item', '.svn/item', '.hg/item',
+        *[f'pkg{i}/.GITIGNORE' for i in range(10)],
+    ]
+    assert len(ignored_paths) == 26
+    source_files = {path: 'fixture' for path in ignored_paths}
+    source_files.update({'README.md': 'example', 'requirements.txt': 'packaging==25.0'})
+    repository = _repository(tmp_path / 'repo', source_files)
+    runner = GitProcessRunner(Path(PYTHON), GitSafetyLimits(), bounded=True)
+    fetched = []
+    monkeypatch.setattr(runner, 'fetch_objects', lambda repository, ids, **kwargs: fetched.extend(ids))
+    manager = WorkspaceManager(_private(tmp_path / 'work'), ZipSafetyLimits())
+    workspace = manager.create()
+    try:
+        result = materialize_bounded_git_tree(runner, repository, workspace,
+            home=_private(tmp_path / 'home'), limits=GitSafetyLimits(), deadline=time.monotonic() + 10,
+            proxy_url='http://127.0.0.1:1')
+        actual = {e.relative_path for e in build_inventory(workspace).entries}
+        excluded = {e.path for e in result.omissions}
+        assert len(actual & set(ignored_paths)) == 8
+        assert len(excluded) == 18
+        assert {e.reason for e in result.omissions} == {'bounded_scancode_vcs_budget'}
+        assert actual.isdisjoint(excluded)
+        assert actual | excluded == set(source_files)
+        assert all(any(part.lower() in _SCANCODE_VCS_IGNORED_PARTS for part in path.split('/')) for path in excluded)
+    finally:
+        manager.cleanup(workspace)
+        manager.close()
+
+
+def test_bounded_three_vcs_files_remain_fully_scanned(tmp_path: Path, monkeypatch) -> None:
+    from app.ingestion.git_materializer import materialize_bounded_git_tree
+    repository = _repository(tmp_path / 'repo', {
+        '.gitignore': 'fixture', '.inline-snapshot/external/.gitignore': 'fixture',
+        'api_reference/.gitattributes': 'fixture', 'requirements.txt': 'packaging==25.0'})
+    runner = GitProcessRunner(Path(PYTHON), GitSafetyLimits(), bounded=True)
+    monkeypatch.setattr(runner, 'fetch_objects', lambda *args, **kwargs: None)
+    manager = WorkspaceManager(_private(tmp_path / 'work'), ZipSafetyLimits())
+    workspace = manager.create()
+    try:
+        result = materialize_bounded_git_tree(runner, repository, workspace,
+            home=_private(tmp_path / 'home'), limits=GitSafetyLimits(), deadline=time.monotonic() + 10,
+            proxy_url='http://127.0.0.1:1')
+        assert result.file_count == 4 and not result.omissions
+    finally:
+        manager.cleanup(workspace)
+        manager.close()

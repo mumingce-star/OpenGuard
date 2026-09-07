@@ -913,3 +913,61 @@ openai-python 的 ScanCode 独立复现：1953 文件，固定入口触发 scann
 
 
 [20260907-1649-RootAstra-OpenaiScanCoverage-Publish] 发布绑定：修复提交`1df7cca`已普通推送至`origin/integration/p0`，远端由`f2040b5`前进至该提交。上传26个既有源代码/测试/部署与治理文档，无新分支、force push、main合并或组员分支操作。实测通过任务`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`及四SHA见进度36节；工作区仅原用户output未跟踪。AMENDMENT：上条COMPLETE中的spec文档数量应为4份，其余文件范围不变。
+
+
+## 37. 2026-09-07 P0 Git 有界扫描与 AI 效率实测交付
+
+用户批准大型仓库采用有界扫描并明确未覆盖内容。当前 integration/p0，基线 a65a940；仅复用现有获取、AI、报告及测试，无新服务、HTTP接口、图谱、队列、P1/P2，不操作组员分支。
+
+| 仓库 | 任务 | 固定 revision | 全链秒数 | 终态 | 风险/AI建议 | 未覆盖路径数 |
+|---|---|---|---:|---|---:|---:|
+| openai-python | `scn_abd52930-829d-438a-a36d-79717dee3990` | `be928151372e4b62adb4a1571cda52ad759b38be` | 332.58 | completed | 145/145 | 0 |
+| litellm | `scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8` | `168a0055a244acdcf97c330c52e085ab40b1424c` | 254.28 | partial | 1407/1407 | 10083 |
+| autogen | `scn_eb6253c0-ce35-4405-8e2d-84910f3c4790` | `027ecf0a379bcc1d09956d46d12d44a3ad9cee14` | 375.73 | partial | 2412/2412 | 24 |
+| llama_index | `scn_ca2913c3-6b7c-43da-8593-eb0df4f6e0db` | `d2ac544a27c73d2a68e9c57efec4b2ac0ef99892` | 59.87 | partial | 441/441 | 9525 |
+
+四库最终均无 ScanCode、Syft、AI 调用/输出错误，四种附件通过真实API落盘及元数据SHA核验，风险关联证据、建议关联本风险证据且pending。大库的partial是有界覆盖及原解析限制的真实提示，不是全库无遗漏成功。LiteLLM含JS/Python partial，AutoGen和LlamaIndex含Python partial。通用策略没有按这四个仓库白名单特判；私有、无权限、拼接错误、不安全地址及网络/硬预算失败仍不能承诺扫描成功。拼接autogen与llama_index地址验收422，分别合法地址如上通过。
+
+同revision openai-python：上轮3cdfb3ab全链811.803秒，本轮332.582秒，缩短59.03%；AI从145次逐条调用、约8分38秒变成7个等价核验上下文调用、约14秒（独立同事实AI测量12.933秒）。组件、资产、许可、证据、义务、风险剔除时间/整改关联后完全一致，CSV及资源清单字节一致。不是145次独立事实判定被压缩：明确标注同类风险AI核验建议、未逐项确认许可；各风险仍有自身Evidence关联，模型只提供3条中文工作步骤，不得确定授权。其他规则仍走逐条生成，失败不冒充AI成功，并保留已成功组。
+
+有界Git：同一可信出口及256MiB/120秒硬预算，blob过滤和显式批取，禁止隐式联网；大库优先512文件，4MiB单文件/16MiB文本总量，保留解析器既有预算。锁定ScanCode忽略路径最多8个补扫候选，超额逐路径显示遗漏原因，未放宽扫描工具完整性校验。所有遗漏作为既有Evidence和HTML附录保存；没有资源也可报告真实零资源。跨manifest JS合并保留成对锁证据且验证全部版本/URL，不随机选冲突值。报告阶段任何已记录错误统一partial，不再误标completed。
+
+验证：冻结源码全量后端1274 passed、3显式opt-in skipped、2既有警告（63.47秒）；额外受控Git loopback42 passed；前端22 passed、TypeScript及Vite构建通过，无前端产品改动。最后ZIP scn_fc3127e4-91d4-40ce-b48a-d338728406cb completed，4条真实AI及本风险Evidence绑定、真实ScanCode/Syft、AI资源、四SHA、缺声明、恶意ZIP拒绝和404通过。smoke原AI资源断言写死False，与--expect-ai冲突；已改为按该既有参数验证，完整重跑通过，原失败保留。
+
+Docker双服务healthy、active=0、工作目录空；六个关键运行源码SHA与工作区一致，最终镜像manifest f4853ebfd8dd36407aa9052baaf2bdf5e67a84966b63630fc64582df1dd268fd。Chrome实查openai100%、风险详情与中文AI、LiteLLM报告和覆盖提示。大报告扩展AX传输超过64MiB工具限制，原生Chrome可访问性仍正常；保存框可打开但自动保存disabled，已取消，本轮不声称Chrome自动落盘通过。API四格式实际落盘已通过。历史失败任务及中间失败证据保留，没有改历史任务状态。
+
+| 本人任务 | 本轮/累计状态 | 未完成与下一步 | 负责人 | 发布 |
+|---|---|---|---|---|
+| A1数据模型、A3 API | 保留已接通契约，回归通过 | 最终契约冻结 | 本人，Root验收 | 本轮待绑定提交 |
+| A2 Git/ZIP、A4 Pipeline | 四Git及ZIP真实链通过；有界partial可解释 | 网络不可用/权限/硬预算不保证成功 | 本人，Root集成 | 本轮待绑定提交 |
+| A5 AI解释整改 | 真实分组建议及失败保留，145风险无事实变化 | 人工质量复核；非等价规则仍逐条 | 本人，Root实现 | 本轮待绑定提交 |
+| A6 Report | 四库四附件SHA通过，覆盖附录明确 | 人工权属/证据复核 | 本人，Root验收 | 本轮待绑定提交 |
+| A7 Docker、A8 Integration | 本机健康、清理及前后对照通过 | 异机结果、持久数据累计预算、最终资源/安全/发布冻结 | 本人负责最终交付 | 本轮待绑定提交 |
+
+本机可独立演示真实Git/ZIP至现有前端报告；整体P0仍需以上门禁，不扩大为P1/P2。报名资格及权属由Owner确认，正式提交与获奖质量不能由运行通过替代。精确剩余工期需异机和人工回执后确定，不以本轮技术通过宣称全P0完成。本次运行精确token数不可获得；开工20k–35k估算因实际JS、终态及VCS缺口扩大，无法判定实际用量是否落入区间。
+
+四格式SHA-256（下载内容与现有API元数据一致）：
+
+openai-python:
+- json: `ef0ad44027da9c57e689ec749f13ca90fb26e59ce364e6364123cf410613aa98`
+- html: `548f24e7a491566af178c67de60b08df0bfc22a77e80a0c63f2457e2765ee677`
+- csv: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+- resource_inventory: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+
+litellm:
+- json: `e92e13ee42fe964819a3cb31b891dcb5c2ce97fe135b2c26a2d4ea008cb1d860`
+- html: `351f51a781fb549e5877638e6098b94ce56c336760a423621b9181a1a75ba8d7`
+- csv: `4d17d816004e49ade55a94f2f97e3949c408e75d228dc17a8a132b6af1bdc656`
+- resource_inventory: `4d17d816004e49ade55a94f2f97e3949c408e75d228dc17a8a132b6af1bdc656`
+
+autogen:
+- json: `e022da9243cf547999d94b1d1938a45f2a3c6918ff9c955270f3f6a85893ed60`
+- html: `aa4ba466da7ed925ab188cf359070674fc140ce9b938f4f204a1f1e2cec3857a`
+- csv: `3db1ba9a194e3cb9cba9a1a76cf19ace5698bc5e43ab2fa3eedc5170fb253ab6`
+- resource_inventory: `3db1ba9a194e3cb9cba9a1a76cf19ace5698bc5e43ab2fa3eedc5170fb253ab6`
+
+llama_index:
+- json: `bda3fd9e85400d74a0e0a63c426f3a654e4b439890249ddc23be5be609b2040e`
+- html: `0baddf755ff2481ff1e42222de20f70d689da4ac8ae560492e4299cc5d0e3ae1`
+- csv: `ce85173bda859580eeb7a66ba47adc067c6a898b5b228e6794e2e582f921d7d7`
+- resource_inventory: `ce85173bda859580eeb7a66ba47adc067c6a898b5b228e6794e2e582f921d7d7`

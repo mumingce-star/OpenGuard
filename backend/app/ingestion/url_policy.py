@@ -97,13 +97,17 @@ def parse_public_git_url(value: str) -> PublicGitUrl:
     if len(ascii_host) > 253 or any(_DNS_LABEL.fullmatch(label) is None for label in ascii_host.split(".")):
         _reject("host_invalid")
 
-    raw_segments = parsed.path.split("/")[1:]
+    path = parsed.path[:-1] if parsed.path.endswith("/") else parsed.path
+    raw_segments = path.split("/")[1:]
     if not raw_segments or any(not segment for segment in raw_segments):
         _reject("path_invalid")
     for segment in raw_segments:
         _validate_segment(segment)
 
-    canonical = urlunsplit(("https", ascii_host, parsed.path, "", ""))
+    if ascii_host == "github.com":
+        if len(raw_segments) != 2 or any(":" in unquote(segment) for segment in raw_segments):
+            _reject("github_repository_url_required")
+    canonical = urlunsplit(("https", ascii_host, path, "", ""))
     return PublicGitUrl(canonical=canonical, host=ascii_host)
 
 

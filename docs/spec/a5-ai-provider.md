@@ -1,6 +1,10 @@
 # A5-0 AI Provider 与确定性降级规格
 
 状态：冻结 v1（Sol，2026-09-04）
+
+2026-09-07 性能修订：Ollama 的可选 `review_plan_mode=True` 对无义务的 `license-evidence-gate` 同类上下文生成共享核验流程，细节见 `a5-ollama-transport.md` 最新修订。外部模型不新增字段；每项风险仍有自己的 pending Remediation 和 Evidence 关联，明确标记共享建议、未逐项确认许可。失败只影响相应上下文，保留其他成功建议并返回 degraded；不具备该能力的 Provider 仍保留本文原整批撤回语义。禁止把固定模板标为模型生成结果；固定摘要只表达既有不确定性，三条实际行动必须来自通过校验的模型响应。
+
+生产 Git/ZIP 共用的 dependency plan 在报告阶段检查持久错误；AI错误、有界覆盖或解析不完整均保留原错误并收敛为partial，不再仅因为后续步骤返回就标completed。通用worker仍尊重调用方提供的plan；此修复位于真实生产计划，不改其状态契约。
 范围：项目负责人 A5/S4 的最小可执行纵切
 依赖：P0 contract `0.1.1`、既有 `RiskFinding` / `Evidence` / `LicenseExpression` / `Remediation` / `ScanRun`
 

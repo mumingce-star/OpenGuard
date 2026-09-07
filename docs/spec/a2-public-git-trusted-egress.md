@@ -2,6 +2,14 @@
 
 状态：`implemented-and-bounded`（2026-09-06；新增当前Linux Compose验证）
 
+2026-09-07 用户确认的生产有界扫描修订：生产 Pipeline 显式启用 bounded 模式，底层服务默认仍保留原严格完整物化行为。先浅克隆 Git 树（blob:none），按浅层许可/清单/锁文件/README优先选择文件，再经同一 TrustedEgress 获取选定对象；所有网络仍受原120秒与256MiB传输上限约束。离线列树/读对象禁用隐式 promisor 网络获取，不执行仓库代码、hook、LFS 或子模块。
+
+普通文件不超过4096时尽量完整选择，超过时选择最多512个候选；物化按原16MiB总读取、4MiB单文件上限进一步收敛。依赖清单同时遵守原解析器64候选及 Python 256KiB/4MiB、JavaScript 2MiB/8MiB单文件/总量预算。超额、符号链接、子模块均记录原路径、Git对象与具体未覆盖原因。清单Hash仅描述实际物化文件，Git revision指向原仓库提交；不得把该Hash当完整仓库文件覆盖证明。
+
+发生遗漏时，沿既有 ScanError/Evidence 输出 `git_scan_coverage_partial` 和完整 metadata 证据，HTML包含全部未扫描条目附录，JSON保留全部关联。扫描结果为partial，可下载已生成报告；不是完整扫描成功。路径穿越、碰撞、私网目标、无法获取对象等仍拒绝；任意私有、无效或超过硬传输边界的链接不保证可扫描。GitHub入口接受仓库根URL及尾斜杠，拒绝tree/blob页面和多个URL粘连。
+
+同轮AutoGen实测发现26个文件命中ScanCode32.5.0默认VCS忽略规则，超过原8文件补扫上限。bounded选择现在最多保留8个需补扫普通文件，超额以`bounded_scancode_vcs_budget`逐路径声明；规则覆盖祖先目录和大小写，17个名称及工具版本写入Git配置摘要，54个路径与已安装工具匹配结果一致。ScanCode主扫/补扫仍共用360秒，完整性检查与8文件上限均未放宽。openai-python已有3个命中，因此1953文件对比基线保持。
+
 责任范围：项目负责人 A2 输入安全、A3/A4/A6 主链接线
 
 证据候选：`EVD-A2-PUBLIC-GIT-EGRESS-001`

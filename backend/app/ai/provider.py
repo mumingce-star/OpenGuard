@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 import re
 import uuid
@@ -25,6 +26,7 @@ from app.domain.models import (
 
 _INPUT_SCHEMA = "openguard.ai-remediation-input/v1"
 _OUTPUT_SCHEMA = "openguard.ai-remediation/v1"
+REVIEW_PLAN_SUMMARY = "现有证据尚未完成许可核验，不能据此判定授权有效或无效。"
 _MAX_RESPONSE_BYTES = 64 * 1024
 _NAMESPACE = uuid.UUID("92e3059e-f59c-4b2b-960d-44d9e91c0b51")
 _SENSITIVE_FRAGMENT = re.compile(
@@ -66,6 +68,7 @@ class _ProviderSnapshot:
     mode: Literal["local", "remote"]
     producer: ProducerRef
     generate: Any
+    review_plan_mode: bool = False
 
 
 def _fail(code: str) -> None:
@@ -93,9 +96,56 @@ def _snapshot_provider(provider: object) -> _ProviderSnapshot:
         if not callable(generate):
             raise ValueError
         producer_snapshot = ProducerRef.model_validate(producer.model_dump(mode="python"))
+        review_plan_mode = getattr(provider, "review_plan_mode", False) is True
     except Exception:
         _fail("ai_invalid_argument")
-    return _ProviderSnapshot(mode=mode, producer=producer_snapshot, generate=generate)
+    return _ProviderSnapshot(mode=mode, producer=producer_snapshot, generate=generate,
+                             review_plan_mode=review_plan_mode)
+
+
+def _review_context(run: ScanRun, finding: RiskFinding) -> dict[str, Any] | None:
+    """Share a workflow, never a resource-specific factual assessment."""
+    if finding.rule_id != "license-evidence-gate" or finding.obligation_ids:
+        return None
+    resource = next(r for r in [*run.components, *run.ai_assets] if r.id == finding.resource_id)
+    license_ = next((l for l in run.licenses if l.id == resource.license_expression_id), None)
+    if license_ is None or not finding.evidence_ids:
+        return None
+    evidence = {e.id: e for e in run.evidence}
+    return {
+        "rule_id": finding.rule_id, "rule_version": finding.rule_version,
+        "outcome": finding.outcome.value, "severity": finding.severity.value,
+        "resource_kind": finding.resource_kind,
+        "resource_type": getattr(resource, "asset_type", getattr(resource, "ecosystem", "unknown")),
+        "license_expression": license_.expression,
+        "license_status": license_.verification_status.value,
+        "evidence_kinds": sorted({evidence[i].kind.value for i in finding.evidence_ids}),
+        "evidence_statuses": sorted({evidence[i].verification_status.value for i in finding.evidence_ids}),
+    }
+
+
+def _decode_review_plan(raw: str, plan_id: str) -> dict[str, Any]:
+    if type(raw) is not str or len(raw.encode("utf-8")) > _MAX_RESPONSE_BYTES:
+        raise ValueError("invalid plan")
+    value = json.loads(raw, object_pairs_hook=_reject_duplicate_keys)
+    if type(value) is not dict or set(value) != {"schema_version", "plan_id", "summary", "steps"}:
+        raise ValueError("invalid plan shape")
+    if value["schema_version"] != "openguard.ai-review-plan/v1" or value["plan_id"] != plan_id:
+        raise ValueError("invalid plan identity")
+    if value["summary"] != REVIEW_PLAN_SUMMARY:
+        raise ValueError("plan must preserve uncertainty")
+    if type(value["steps"]) is not list or len(value["steps"]) != 3:
+        raise ValueError("invalid plan steps")
+    texts = [value["summary"], *value["steps"]]
+    if any(_unsafe_text(t) or not 5 <= len(t) <= 200 or not re.search(r"[\u4e00-\u9fff]", t) for t in texts):
+        raise ValueError("invalid Chinese plan text")
+    if len(set(value["steps"])) != len(value["steps"]):
+        raise ValueError("duplicate plan steps")
+    if any(len(re.findall(r"[\u4e00-\u9fff]", t)) < len(re.findall(r"[A-Za-z]", t)) for t in texts):
+        raise ValueError("plan must be primarily Chinese")
+    if any(re.search(r"NOASSERTION|pending|license_expression|已获授权|已经合规|保证合规|可(?:以)?商用|必须删除|(?:无需|不用|不必).{0,12}(?:核验|复核|确认)", t, re.I) for t in value["steps"]):
+        raise ValueError("plan confuses status with license evidence")
+    return value
 
 
 def _unsafe_text(value: object) -> bool:
@@ -267,11 +317,49 @@ def apply_ai_remediations(
         return AIProviderResult(status="skipped", run=run)
 
     remediations: list[Remediation] = []
+    plans: dict[str, dict[str, Any] | None] = {}
+    plan_errors: set[str] = set()
     for finding in eligible:
+        context = _review_context(run, finding) if provider_snapshot.review_plan_mode else None
+        if context is not None:
+            canonical = json.dumps(context, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            plan_id = "plan_" + hashlib.sha256(canonical.encode()).hexdigest()[:24]
+            if plan_id not in plans:
+                request = json.dumps({"schema_version": "openguard.ai-review-plan-input/v1",
+                                      "plan_id": plan_id, "context": context}, ensure_ascii=False)
+                try:
+                    raw = provider_snapshot.generate(request, float(timeout_seconds))
+                except Exception:
+                    plan_errors.add("ai_provider_unavailable")
+                    plans[plan_id] = None
+                    continue
+                try:
+                    plans[plan_id] = _decode_review_plan(raw, plan_id)
+                except Exception:
+                    plan_errors.add("ai_response_invalid")
+                    plans[plan_id] = None
+                    continue
+            plan = plans[plan_id]
+            if plan is None:
+                continue
+            # The model supplies a shared workflow. Bind only this finding's
+            # actual references, never copy another resource's evidence IDs.
+            response = {"summary": "【同类风险AI核验建议，未逐项确认许可】" + plan["summary"],
+                        "steps": plan["steps"], "evidence_ids": sorted(finding.evidence_ids)[:3]}
+            identity = json.dumps([finding.id, provider_snapshot.producer.model_dump(mode="json"),
+                                   plan_id, response], ensure_ascii=False, sort_keys=True)
+            remediations.append(Remediation(
+                id=f"rem_{uuid.uuid5(_NAMESPACE, identity)}", finding_id=finding.id,
+                summary=response["summary"], steps=response["steps"], evidence_ids=response["evidence_ids"],
+                generated_by=provider_snapshot.producer, verification_status=VerificationStatus.PENDING))
+            continue
         request, allowed_evidence_ids = _request_payload(run, finding)
         try:
             raw_response = provider_snapshot.generate(request, float(timeout_seconds))
         except Exception:
+            if provider_snapshot.review_plan_mode:
+                plan_errors.add("ai_provider_unavailable")
+                continue
             return _degraded(run, provider_snapshot, "ai_provider_unavailable")
         try:
             response = _decode_response(
@@ -297,6 +385,9 @@ def apply_ai_remediations(
                 )
             )
         except Exception:
+            if provider_snapshot.review_plan_mode:
+                plan_errors.add("ai_response_invalid")
+                continue
             return _degraded(run, provider_snapshot, "ai_response_invalid")
 
     payload = _with_ai_provenance(run, provider_snapshot.producer)
@@ -314,4 +405,6 @@ def apply_ai_remediations(
         generated = ScanRun.model_validate(payload)
     except Exception:
         return _degraded(run, provider_snapshot, "ai_response_invalid")
-    return AIProviderResult(status="generated", run=generated)
+    for code in sorted(plan_errors):
+        generated = _degraded(generated, provider_snapshot, code).run
+    return AIProviderResult(status="degraded" if plan_errors else "generated", run=generated)

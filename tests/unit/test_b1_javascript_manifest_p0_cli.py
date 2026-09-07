@@ -78,6 +78,31 @@ def test_partial_lock_diagnostics_and_safe_rejections() -> None:
         assert parsed.status.value == "partial"
 
 
+@pytest.mark.parametrize("second_version", ["1.0.0", "1.1.0"])
+def test_monorepo_shared_dependency_preserves_each_manifest_and_lock(second_version: str) -> None:
+    values = {}
+    for directory, version in (("a", "1.0.0"), ("b", second_version)):
+        values[directory + "/package.json"] = json.dumps({"dependencies": {"shared": "^1.0.0"}})
+        values[directory + "/package-lock.json"] = json.dumps({"lockfileVersion": 3,
+            "packages": {"": {"dependencies": {"shared": "^1.0.0"}},
+                         "node_modules/shared": {"version": version, "resolved": "https://registry.npmjs.org/shared/-/shared-" + version + ".tgz"}}})
+    result = _mapped(values)
+    assert len(result.components) == 1 and len(result.evidence) == 6
+    assert len(result.components[0].evidence_ids) == 6
+    assert result.components[0].version == ("1.0.0" if second_version == "1.0.0" else None)
+    assert {e.locator.split(":/")[0] for e in result.evidence} == set(values)
+    assert any(d.code == ("dependency_duplicate" if second_version == "1.0.0" else "dependency_declaration_conflict") for d in result.diagnostics)
+    if second_version == "1.0.0":
+        parsed = _parsed(values)
+        declaration = parsed.dependencies[0]
+        for field, value in (("version", "9.0.0"), ("resolved", "https://registry.npmjs.org/shared/-/wrong.tgz")):
+            forged = tuple(replace(e, excerpt=json.dumps(value)) if e.manifest_path == "b/package-lock.json" and e.field_locator.endswith("/" + field) else e
+                           for e in declaration.evidence)
+            with pytest.raises(IngestionSecurityError, match="javascript_p0_mapper_failed"):
+                map_javascript_manifest_result(replace(parsed, dependencies=(replace(declaration, evidence=forged),)),
+                    root_digest="0" * 64, observed_at=datetime(2026, 1, 1, tzinfo=timezone.utc))
+
+
 def test_limits_invalid_shapes_and_tampered_mapper_input_fail_closed() -> None:
     with pytest.raises(IngestionSecurityError, match="javascript_manifest_limit_exceeded"):
         _parsed({"package.json": "{" + '"x":"' + "a" * 8193 + '"}'})

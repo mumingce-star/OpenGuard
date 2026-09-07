@@ -17,6 +17,8 @@ from app.ai.ollama import (
     MODEL_NAME,
     OLLAMA_VERSION,
     OUTPUT_SCHEMA,
+    PLAN_OUTPUT_SCHEMA,
+    PLAN_SYSTEM_PROMPT,
     SYSTEM_PROMPT,
 )
 from app.domain.models import ScanRun
@@ -117,6 +119,24 @@ def _run() -> ScanRun:
     value["findings"][0]["remediation_id"] = None
     value["remediations"] = []
     return ScanRun.model_validate(value)
+
+
+def test_review_plan_transport_binds_context_schema_without_mutating_template() -> None:
+    original = copy.deepcopy(PLAN_OUTPUT_SCHEMA)
+    payload = json.dumps({
+        "schema_version": "openguard.ai-review-plan-input/v1",
+        "plan_id": "plan_context123",
+        "context": {"rule_id": "license-evidence-gate"},
+    })
+    provider, opener = _provider()
+    provider.generate(payload, 30)
+    body = json.loads(opener.calls[-1][0].data)
+    assert body["system"] == PLAN_SYSTEM_PROMPT
+    assert body["format"]["properties"]["plan_id"]["const"] == "plan_context123"
+    assert body["format"]["properties"]["steps"]["minItems"] == 3
+    assert body["format"]["properties"]["steps"]["maxItems"] == 3
+    assert body["prompt"] == payload
+    assert PLAN_OUTPUT_SCHEMA == original
 
 
 @pytest.mark.parametrize(
