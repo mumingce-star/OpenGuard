@@ -912,6 +912,13 @@
 - 下一步与责任：CZ提供2–3个成功/失败链接、任务ID和时间；Terra按审查方案先建立可观测性与URL预检，再经PR实现并发/预算/缓存；Luna在Linux AMD64、Windows Docker、Apple silicon三台干净机器执行固定验收矩阵。GitHub发布：本轮仅诊断日志待Root提交推送。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算8,000～14,000，本轮在该范围内完成。
 
+### [20260908-1020-Sol-扫描诊断网络证据] AMENDMENT - GitHub SSH 推送被 Fake-IP 网络路径阻断
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 10:20（Asia/Shanghai）。
+- 更正发布状态：诊断日志提交 `34f898c` 已在本地创建，但 `git push origin codex/p0-external-tools-sync` 失败，远端未更新；当前分支为 ahead 1（本条 amendment 尚未提交）。
+- 原始受控现象：Git 输出 `Connection closed by 198.18.0.19 port 22` 与 `Could not read from remote repository`。`198.18.0.0/15` 是 benchmark/Fake-IP 保留网段，和公开 Git TrustedEgress 设计中拒绝 Fake-IP 的情形一致；这证明当前网络/DNS/代理路径本身足以解释部分链接或发布失败，不能将其归因于扫描业务代码。
+- 处置：未重试、未切换不受控代理、未修改 Git host/SSH 配置或安全策略；需由网络管理员修正 DNS/代理，或在经批准、能解析真实 GitHub 公网地址的网络环境中重试。
+
 ### [20260906-1025-Sol-真实样例与评测证据收工] COMPLETE - 已提交可复现样例、实际输出和评测链路
 
 - 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-06 10:25（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
