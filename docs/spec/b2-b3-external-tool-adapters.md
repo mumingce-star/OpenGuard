@@ -19,3 +19,7 @@
 runner 增量读取 stdout，最多 8 MiB 加一个判定字节；超时、超限和退出均清理进程组并回收直接子进程。ScanCode 以受控 fd 目录为 cwd 扫描 `.`，返回文件集合须覆盖 inventory。Syft 根相对路径只在 source 精确匹配受控目标时接受，最终均须对应 inventory。Evidence.content_hash 绑定封印文件 SHA。
 
 A4 保留 manifest Component ID 和许可证声明绑定，给精确匹配组件追加 Syft 证据。ScanCode 文件候选单独标准化并保持 pending，不将根 LICENSE 分给依赖。无声明组件为 NOASSERTION。默认开关关闭，Compose 启用；工具不完整时保留可用事实并返回 partial/report/95。公开 Schema、API、worker 和 B5 规则语义不变。
+
+## 2026-09-07：ScanCode大仓库实测预算
+
+openai-python固定revision `be928151372e4b62adb4a1571cda52ad759b38be`有1953文件，原120秒超时；固定原命令在受控诊断中约280秒返回554174字节，无scan_errors，另有3个既有VCS排除文件需按原流程补扫。ScanCode编排现共享360秒总deadline，主扫描与补扫扣同一预算，8MiB输出总限额不变。低层工具默认120秒、Syft120秒、Git获取120秒不变；扫描子进程仍禁网、单进程、2CPU/4GiB、受控fd和只读目录。超时继续清理进程组，不绕过安全隔离或改写失败结果。

@@ -186,9 +186,10 @@ def test_default_opener_is_built_with_an_explicit_empty_proxy_map(monkeypatch) -
         observed["proxies"] = proxies
         return sentinel_handler
 
-    def opener_builder(handler: object, redirect: object) -> FakeOpener:
+    def opener_builder(handler: object, redirect: object, http_handler: object) -> FakeOpener:
         observed["handler"] = handler
         assert isinstance(redirect, module._NoRedirect)
+        assert isinstance(http_handler, module._ConnectRetryHTTPHandler)
         return sentinel_opener
 
     monkeypatch.setattr(module, "ProxyHandler", proxy_handler)
@@ -237,6 +238,7 @@ def test_real_remediation_request_binds_identity_and_evidence_without_mutating_s
     body = json.loads(opener.calls[-1][0].data)
     assert body["format"]["properties"]["finding_id"] == {"type": "string", "const": finding.id}
     assert body["format"]["properties"]["evidence_ids"]["items"] == {"type": "string", "enum": sorted(allowed)}
+    assert body["format"]["properties"]["evidence_ids"]["maxItems"] == min(3, len(allowed))
     assert body["prompt"] == payload
     assert json.dumps(OUTPUT_SCHEMA, sort_keys=True) == original
 
@@ -397,3 +399,56 @@ def test_transport_failure_flows_through_a5_as_sanitized_degradation() -> None:
     assert result.run.findings[0].remediation_id is None
     assert result.run.errors[-1].code == "ai_provider_unavailable"
     assert "do-not-leak" not in result.run.model_dump_json()
+
+
+
+def test_generation_timeout_is_never_replayed():
+    provider, opener = _provider(_replace_response(2, TimeoutError('generation timeout')))
+    with pytest.raises(OllamaTransportError):
+        provider.generate('{}', 30)
+    assert [r.method for r, _ in opener.calls] == ['GET', 'GET', 'POST']
+
+
+def test_tcp_retry_precedes_any_http_bytes_and_spends_same_deadline(monkeypatch):
+    import app.ai.ollama as transport
+    clock = [0.0]
+    monkeypatch.setattr(transport.time, 'monotonic', lambda:clock[0])
+    calls, writes, timeouts = [], [], []
+    class Socket:
+        def settimeout(self, value): timeouts.append(value)
+        def setsockopt(self, *args): pass
+        def makefile(self, *args):
+            import io
+            return io.BytesIO(b'HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\n{}')
+        def sendall(self, value): writes.append(value)
+        def close(self): pass
+    def connect(address, timeout, source_address):
+        calls.append(timeout)
+        if len(calls) == 1:
+            clock[0] += 3
+            raise TimeoutError('before request')
+        return Socket()
+    conn = transport._ConnectRetryHTTPConnection('127.0.0.1',11434,timeout=30)
+    conn._create_connection = connect
+    conn.request('POST','/api/generate',body=b'one request')
+    assert calls == [3.0,3.0]
+    assert timeouts == [27.0]
+    assert b''.join(writes).count(b'POST /api/generate') == 1
+    assert b''.join(writes).count(b'one request') == 1
+    assert conn.getresponse().read() == b'{}'
+    conn.close()
+
+
+@pytest.mark.parametrize('budget,expected', [(30,3),(2,1)])
+def test_tcp_retry_attempt_and_total_deadline_limits(monkeypatch,budget,expected):
+    import app.ai.ollama as transport
+    clock=[0.0];calls=[]
+    monkeypatch.setattr(transport.time,'monotonic',lambda:clock[0])
+    def connect(address,timeout,source_address):
+        calls.append(timeout);clock[0]+=timeout
+        raise TimeoutError('no connection')
+    conn=transport._ConnectRetryHTTPConnection('127.0.0.1',11434,timeout=budget)
+    conn._create_connection=connect
+    with pytest.raises(TimeoutError):conn.request('POST','/api/generate',body=b'never sent')
+    assert len(calls)==expected
+    assert sum(calls)<=budget

@@ -120,7 +120,9 @@ def test_payload_contains_only_bound_license_facts_and_allows_their_evidence() -
     assert [item["id"] for item in payload["licenses"]] == [
         "lic_123e4567-e89b-12d3-a456-426614174000"
     ]
-    assert [item["id"] for item in payload["license_evidence"]] == [LICENSE_EVIDENCE_ID]
+    references = [item["id"] for item in payload["evidence"] + payload["license_evidence"]]
+    assert references.count(LICENSE_EVIDENCE_ID) == 1
+    assert LICENSE_EVIDENCE_ID in payload["licenses"][0]["evidence_ids"]
     assert result.run.remediations[0].evidence_ids == [LICENSE_EVIDENCE_ID]
 
 

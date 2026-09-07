@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import http.client
 import ipaddress
 import json
 import math
@@ -10,7 +11,7 @@ import time
 from collections.abc import Callable
 from typing import Any
 from urllib.parse import urlsplit
-from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
+from urllib.request import HTTPHandler, HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
 from app.domain.models import ProducerRef, ProducerType
 
@@ -34,7 +35,8 @@ SYSTEM_PROMPT = (
     "path, license, obligation, rule, outcome, severity, or other factual claims. Do not make legal "
     "conclusions. Write brief actionable steps, not a restatement of the finding. In summary and "
     "steps, do not repeat file paths, JSON pointers, URLs, hashes or credentials; cite sources "
-    "only through evidence_ids. Return exactly one JSON object matching the supplied schema and no other text."
+    "only through evidence_ids. Cite one to three relevant evidence IDs, not the entire list. "
+    "Return exactly one JSON object matching the supplied schema and no other text."
 )
 OUTPUT_SCHEMA: dict[str, Any] = {
     "type": "object",
@@ -101,6 +103,7 @@ def _bound_output_schema(payload: str) -> dict[str, Any]:
     schema = json.loads(json.dumps(OUTPUT_SCHEMA))
     schema["properties"]["finding_id"] = {"type": "string", "const": finding_id}
     schema["properties"]["evidence_ids"]["items"] = {"type": "string", "enum": ids}
+    schema["properties"]["evidence_ids"]["maxItems"] = min(3, len(ids))
     return schema
 
 
@@ -116,6 +119,39 @@ def _reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 class _NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         _fail()
+
+
+class _ConnectRetryHTTPConnection(http.client.HTTPConnection):
+    """Retry only TCP setup, before HTTP headers or a generation body exist."""
+
+    def connect(self) -> None:
+        deadline = time.monotonic() + self.timeout
+        for attempt in range(3):
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("connection deadline exceeded")
+            self.timeout = min(3.0, remaining)
+            try:
+                super().connect()
+            except OSError:
+                if self.sock is not None:
+                    self.sock.close()
+                    self.sock = None
+                if attempt == 2:
+                    raise
+                continue
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                self.close()
+                raise TimeoutError("connection deadline exceeded")
+            self.timeout = remaining
+            self.sock.settimeout(remaining)
+            return
+
+
+class _ConnectRetryHTTPHandler(HTTPHandler):
+    def http_open(self, request):
+        return self.do_open(_ConnectRetryHTTPConnection, request)
 
 
 def _validate_origin(value: object, *, docker_host: bool = False) -> str:
@@ -170,7 +206,7 @@ class OllamaProvider:
             _fail()
 
         self._origin = _validate_origin(origin, docker_host=docker_host)
-        self._opener = opener if opener is not None else build_opener(ProxyHandler({}), _NoRedirect())
+        self._opener = opener if opener is not None else build_opener(ProxyHandler({}), _NoRedirect(), _ConnectRetryHTTPHandler())
         self._clock = clock
         self.producer = ProducerRef(
             type=ProducerType.AI,
@@ -193,6 +229,7 @@ class OllamaProvider:
                         "runtime_version": OLLAMA_VERSION,
                         "model_id": MODEL_ID,
                         "options": _OPTIONS,
+                        "tcp_connect": {"timeout_seconds": 3, "max_attempts": 3},
                     }
                 ),
             },

@@ -298,6 +298,17 @@ class ReadOnlyScanSession:
     def _get_internal_failure(self) -> IngestionSecurityError | None:
         return self._failure
 
+    @property
+    def remaining_read_bytes(self) -> int:
+        """Expose remaining quota, never paths or a way to replenish it."""
+        if not self._active:
+            raise IngestionSecurityError("scanner_failed", "scan_session_expired")
+        if threading.get_ident() != self._owner:
+            self._fail("scan_session_thread_violation")
+        if self._failure is not None:
+            raise self._failure
+        return self._total - self._used
+
     def _expire(self) -> None:
         self._active = False
 
@@ -333,6 +344,10 @@ class ReadOnlyScanSession:
             self._fail(error.reason)
 
     def read_bytes(self, relative_path: str, *, max_bytes: int | None = None) -> bytes:
+        return self.read_many_bytes((relative_path,), max_bytes=max_bytes)[relative_path]
+
+    def read_many_bytes(self, relative_paths: tuple[str, ...], *, max_bytes: int | None = None) -> dict[str, bytes]:
+        """Return a bounded batch only after every file and the tree validate."""
         if not self._active:
             raise IngestionSecurityError("scanner_failed", "scan_session_expired")
         if threading.get_ident() != self._owner:
@@ -342,21 +357,28 @@ class ReadOnlyScanSession:
         if max_bytes is not None and (type(max_bytes) is not int or max_bytes <= 0 or max_bytes > self._single):
             self._fail("scan_read_limit_invalid")
 
+        if (type(relative_paths) is not tuple or len(relative_paths) > 4096
+                or any(type(path) is not str for path in relative_paths)):
+            self._fail("scan_path_not_in_inventory")
+        if len(set(relative_paths)) != len(relative_paths):
+            self._fail("scan_read_limit_invalid")
         try:
-            file_seal = _resolve_file_seal(self._snapshot, relative_path, self._limits)
+            seals = [_resolve_file_seal(self._snapshot, path, self._limits) for path in relative_paths]
         except IngestionSecurityError:
             self._fail("scan_path_not_in_inventory")
         allowed = self._single if max_bytes is None else max_bytes
-        if file_seal.size > allowed or self._used + file_seal.size > self._total:
+        size = sum(seal.size for seal in seals)
+        if any(seal.size > allowed for seal in seals) or self._used + size > self._total:
             self._fail("scan_read_limit_exceeded")
 
-        # Reserve before opening; a failed retry never restores quota.
-        self._used += file_seal.size
+        # Reserve the entire batch before opening; failures never refund quota.
+        self._used += size
         self._reading = True
         try:
             self._run_validation()
             try:
-                data = read_snapshot_file(self._workspace, self._snapshot, relative_path, self._limits)
+                data = {path: read_snapshot_file(self._workspace, self._snapshot, path, self._limits)
+                        for path in relative_paths}
             except _DeferredCloseError as error:
                 self._deferred_closes.extend(error.descriptors)
                 self._fail(error.reason)

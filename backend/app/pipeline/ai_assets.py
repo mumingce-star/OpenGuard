@@ -10,9 +10,9 @@ from app.domain.models import AIAsset, Evidence, ScanError, ScanRun
 from app.ingestion import ReadOnlyScanSession
 from app.licenses import normalize_license
 
-_MAX_FILE = 512 * 1024
-_MAX_TOTAL = 2 * 1024 * 1024
-_MAX_FILES = 128
+_MAX_FILE = 4 * 1024 * 1024
+_MAX_TOTAL = 16 * 1024 * 1024
+_MAX_FILES = 4096
 _SUFFIXES = {".md", ".py", ".js", ".jsx", ".ts", ".tsx", ".json", ".yaml", ".yml", ".toml"}
 _DEPENDENCY_FILES = {"package.json", "package-lock.json", "pyproject.toml"}
 
@@ -29,17 +29,22 @@ def collect_ai_assets(session: ReadOnlyScanSession, observed_at: datetime, *, to
     selected = [item for path, item in sorted(entries.items())
                 if PurePosixPath(path).suffix.lower() in _SUFFIXES
                 and PurePosixPath(path).name not in _DEPENDENCY_FILES]
-    # B1 reads selected manifests once; license enrichment can reread locks.
-    # Twice all inventory bytes conservatively reserves both existing passes.
-    available = min(_MAX_TOTAL, max(0, total_read_budget - 2 * sum(item.size_bytes for item in entries.values())))
+    # The earlier parsers have already spent their quota. Repository bytes
+    # are not bytes read: reserving the entire tree twice starves this pass.
+    available = min(_MAX_TOTAL, total_read_budget, session.remaining_read_bytes)
     files = {}
+    readable = []
     incomplete = False
     for index, item in enumerate(selected):
         if index >= _MAX_FILES or item.size_bytes > min(_MAX_FILE, available):
             incomplete = True
             continue
         available -= item.size_bytes
-        data = session.read_bytes(item.relative_path, max_bytes=_MAX_FILE)
+        readable.append(item)
+    # No bytes escape to the detector before the entire batch is validated.
+    batch = session.read_many_bytes(tuple(item.relative_path for item in readable), max_bytes=_MAX_FILE)
+    for item in readable:
+        data = batch[item.relative_path]
         if len(data) != item.size_bytes or hashlib.sha256(data).hexdigest() != item.sha256:
             raise ValueError("AI reference source did not match inventory")
         try:

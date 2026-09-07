@@ -30,7 +30,7 @@ def scan_sealed_tree(
 ) -> ScanCodePipelineResult:
     """Run the fixed ScanCode command and map its bounded JSON output."""
 
-    deadline = time.monotonic() + 120
+    deadline = time.monotonic() + 360
     remaining_bytes = 8 * 1024 * 1024
 
     def invoke(relative_file=None):

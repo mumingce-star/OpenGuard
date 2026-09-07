@@ -29,7 +29,7 @@ class GitSafetyLimits:
     path_depth_max: int = 32
     path_utf8_bytes_max: int = 1_024
     cleanup_retry_max: int = 3
-    scan_single_file_read_max_bytes: int = 2 * MIB
+    scan_single_file_read_max_bytes: int = 4 * MIB
     scan_total_read_max_bytes: int = 16 * MIB
 
     def __post_init__(self) -> None:
@@ -95,7 +95,7 @@ class ZipSafetyLimits:
         """Resolve the omitted A2-2 limit without widening an older ZIP cap."""
 
         configured = self.scan_single_file_read_max_bytes
-        return min(2 * MIB, self.single_file_max_bytes) if configured is None else configured
+        return min(4 * MIB, self.single_file_max_bytes) if configured is None else configured
 
 
 @dataclass

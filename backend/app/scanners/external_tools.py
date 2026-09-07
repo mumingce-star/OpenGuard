@@ -254,7 +254,7 @@ def run_scancode_license_scan(
     _validate_proc_target(target, pass_fds)
     if (
         type(timeout_seconds) not in {int, float} or not math.isfinite(timeout_seconds)
-        or not 0 < timeout_seconds <= 120
+        or not 0 < timeout_seconds <= 360
         or type(max_output_bytes) is not int or not 0 < max_output_bytes <= _MAX_OUTPUT_BYTES
         or (relative_file is not None and _relative_path(relative_file) is None)
     ):

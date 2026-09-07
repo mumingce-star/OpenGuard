@@ -38,7 +38,7 @@ from app.scanners import (
 )
 
 
-READ_LIMITS = ScanReadLimits(single_file_max_bytes=2 * 1024 * 1024, total_max_bytes=12 * 1024 * 1024)
+READ_LIMITS = ScanReadLimits(single_file_max_bytes=4 * 1024 * 1024, total_max_bytes=16 * 1024 * 1024)
 ZERO_FINDINGS = {outcome: 0 for outcome in FindingOutcome}
 
 

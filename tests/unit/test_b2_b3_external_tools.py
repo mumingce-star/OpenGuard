@@ -70,7 +70,7 @@ def test_missing_file_supplements_rebind_only_matching_hashes_under_shared_budge
     assert [e.locator for e in result.mapping.evidence] == paths
     assert all(e.content_hash.value == "a" * 64 for e in result.mapping.evidence)
     assert [call[2]["relative_file"] for call in calls] == [None, *paths]
-    assert [call[2]["timeout_seconds"] for call in calls] == [120, 116, 112]
+    assert [call[2]["timeout_seconds"] for call in calls] == [360, 356, 352]
     assert [call[2]["max_output_bytes"] for call in calls] == [
         8 * 1024 * 1024, 8 * 1024 * 1024 - outputs[0], 8 * 1024 * 1024 - sum(outputs[:2])]
     assert all(call[1] == "/proc/self/fd/9" and call[2]["pass_fds"] == (9,) for call in calls)
@@ -127,7 +127,7 @@ def test_total_scancode_budget_is_not_reset_for_supplements(monkeypatch, exhaust
         if kwargs["relative_file"] is None:
             raw = b'{"files":[]}'
             if exhaust == "time":
-                clock[0] = 121
+                clock[0] = 361
             else:
                 raw += b" " * (8 * 1024 * 1024 - len(raw))
             return ToolExecution(tool, "complete", raw)

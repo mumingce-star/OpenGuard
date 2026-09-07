@@ -4186,3 +4186,37 @@
 
 
 [20260907-1345-RootAstra-GitScanRepair-Publish] 发布绑定：修复提交 `894153f` 已普通推送至 `origin/integration/p0`（远端由 `d19bb62` 前进至该提交，同时上传原有本地 `4c56c1d`）。上传范围为既有后端/前端代码、测试、部署说明及治理记录；无 force push、main 合并或组员分支操作。最终 active=0、workspaces 为空；工作区仅原用户 output 未跟踪。完整扫描覆盖仍 PARTIAL，见上述验收边界。
+
+### [20260907-1532-RootAstra-OpenaiScanCoverage] START
+
+- GPT-6 Astra / Root；用户要求修复Chrome任务scn_5985936a-cbc9-43b8-9b5e-25a3b41baf92残留扫描错误。integration/p0=f2040b5，仅用户output未跟踪，无其他在途写入；本轮单写集成线，保留组员分支。
+- 真实根因：ScanCode120秒不足（关闭逐文件线程后仍超时）；AI扫描按全仓库字节预留两遍，14MB仓库可用额度为0；Python显式dependency-groups未支持且Hatch构建配置被笼统降级。本轮修复原扫描器/编排/限额计算及对应测试、原规范和部署说明，不新增HTTP接口/图谱/队列/模型。
+- 拟对样例所需读取规模设定明确有界预算并实测，不移除限额、隔离或超限失败。ScanCode先独立测试300秒预算确定实际耗时；Python增加静态字符串dependency-groups支持，保留复杂未支持声明的partial；AI仍只读取封印文件和校验Hash。内部parser枚举/locator兼容扩展需同步规范，不伪称无内部契约调整。
+- 验收：定向parser/mapper/扫描限额/安全与完整回归；实际Git扫描至终态、AI和四报告SHA、Chrome核对。预计12k–22k token，精确遥测不可获得。此前只读诊断未改产品代码。
+
+### [20260907-1558-RootAstra-OpenaiScanCoverage] AMENDMENT / 实跑中间证据
+
+- 首次部署修复后，Chrome提交任务`scn_bfaa9958-0257-44f9-adb7-4d356c362e32`已消除原3类扫描错误，得到144组件/1API资产/227证据/145风险，但新增资产35条证据触发AI JSON输出截断，0条建议；未将其当作最终验收通过，历史结果保留。
+- 同次运行还暴露逐文件读取触发全仓库重复校验。Root复用原封印读取器增加有界批次：批次前后全树验证、每文件原Hash/fd门禁、预扣总量、失败整批不返回。140文件只执行两次全树验证，已读文件被后续篡改的反例拒绝且清理通过。没有放宽整树验证的最终通过条件。
+- AI输入将相同证据只传一次，完整finding/许可证引用ID及报告证据保留；生成限定最多3条引用，避免32个长UUID耗尽原1024 token输出预算。原失败finding实测由43329降为23666字符、8.39秒通过原校验。模型/上下文/单条30秒/整批失败规则不变。
+- 全量回归1236通过、3声明跳过、2既有warning；构建通过、active=0后更新API，最终Chrome实扫`scn_dc870fed-023e-49a1-885d-737927df3290`已提交，等待完整终态。估算范围因上述真实阻断扩展到批次读取与AI去重，未引入新服务/HTTP接口/依赖/P1/P2。
+
+### [20260907-1610-RootAstra-OpenaiScanCoverage] AMENDMENT / 只读AI探测连接
+
+- dc870fed整链在约280秒进入AI，原3类扫描错误已消失，之后AI服务探测中断，不能宣称最终通过。日志末尾生成成功、version200，随后tags未完成；宿主与容器即时探测均正常，疑似短暂连接阻塞而非已证明模型故障。
+- 仅GET身份探测采用5秒超时/最多两次网络尝试，原总deadline不重置；HTTP和内容校验失败不重试，POST生成不重放。82项传输定向测试通过，正在复跑全量及重建。未改变模型、上下文、生成预算、端口或安全策略，未重启Ollama或删除数据。
+
+### [20260907-1634-RootAstra-OpenaiScanCoverage] AMENDMENT / TCP建连定位
+
+- dadfe87b实扫同样无扫描器错误，但20次成功AI后连接失败。复用其报告进行连续调用，捕获GET tags与POST generate的完整异常栈，均停在socket.connect，HTTP头及请求体尚未发送；不是模型推理超时。只读GET重连未覆盖POST建连，故撤下该临时实现。
+- 最终候选在原urllib的HTTPConnection.connect层对TCP建连最多3次、每次最多3秒，共享原单条剩余时限；请求已经发送后的接收/生成失败不重放。禁代理、禁重定向、原localhost/显式Docker地址、模型摘要和严格响应校验保持。测试实际HTTPConnection请求验证：首次连接失败后只发送一份POST头与body、响应仍可读取；耗尽总时限停止、最多3次。65项传输测试通过，完整回归和构建在途。
+
+### [20260907-1648-RootAstra-OpenaiScanCoverage] COMPLETE
+
+- 作者：GPT-6 Astra / Root；目标为修复用户openai-python真实链报错，最终任务`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`完整通过，811.80秒、100%、零错误、144组件/1资产/227证据/145风险/145AI，四报告SHA及Chrome通过。历史bfaa9958、dc870fed、dadfe87b失败均保留。
+- 修改现有backend/app下AI provider/ollama、ingestion/read_session、pipeline/ai_assets及dependency_plan、scanners的ScanCode预算与Python解析/mapper、security/limits；对应7个既有测试文件，deploy说明、资源台账、5份spec和3份治理记录。无新产品文件或前端改动。跨B线parser适配仅在A线integration/p0集成修复，后续可由扫描负责人复核，不改其分支。
+- 验证：全量pytest1240 passed、3 opt-in skipped、2既有warning；65项传输定向通过，Docker API构建/部署通过；active=0、workspaces空、双服务healthy，运行关键代码SHA一致。发送前TCP故障负例验证只发送一次POST，失败整批/封印/Hash/配额安全测试保持。完整运行结果与上一轮同revision确定性事实相同，仅AI建议补全。
+- 重要决策/接口：外部API/Schema/规则不变，内部development scope/locator及只读批次能力兼容扩展；明确预算详见进度36节与spec。无身份或响应校验豁免、无已发送模型请求重放、无队列/图谱/P1/P2。未重启Ollama或改系统安全设置。
+- 边界：本任务完成不代表P0整体冻结；复杂include、大仓库通用覆盖、异机、持久累计预算及人工质量仍保留待验收。下一步Root只接收异机/人工回执并按原P0清单复核，不自动扩功能。
+- Git：integration/p0；现有源代码、测试和文档将普通提交推送，具体SHA后续绑定；保留用户output且不上传临时报告/日志或组员分支。
+- 本次运行精确token数不可获得；开工估算12k–22k，真实阻断扩大范围，无法核实实际是否在原估算内。

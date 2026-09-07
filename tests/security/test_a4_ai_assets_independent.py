@@ -160,7 +160,8 @@ def test_invalid_utf8_keeps_existing_facts_partial_and_cleanup(tmp_path: Path):
         registry.close()
 
 
-def test_single_ai_file_over_512k_keeps_existing_facts_partial(tmp_path: Path):
+def test_single_ai_file_over_512k_keeps_existing_facts_partial(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(ai_assets_pipeline, "_MAX_FILE", 512 * 1024)
     files = {"requirements.txt": "requests==2.32.5\n", "model.md": "x" * (512 * 1024 + 1)}
     _, registry, run, workspace, _ = _run(tmp_path, files, 11)
     try:
@@ -172,7 +173,8 @@ def test_single_ai_file_over_512k_keeps_existing_facts_partial(tmp_path: Path):
         registry.close()
 
 
-def test_ai_file_count_limit_is_independent_of_total_byte_limit(tmp_path: Path):
+def test_ai_file_count_limit_is_independent_of_total_byte_limit(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(ai_assets_pipeline, "_MAX_FILES", 128)
     files = {"requirements.txt": "requests==2.32.5\n", **{f"f{i}.md": "x" for i in range(129)}}
     _, registry, run, workspace, _ = _run(tmp_path, files, 12)
     try:
@@ -184,7 +186,8 @@ def test_ai_file_count_limit_is_independent_of_total_byte_limit(tmp_path: Path):
         registry.close()
 
 
-def test_ai_total_two_megabyte_limit_is_independent_of_file_count(tmp_path: Path):
+def test_ai_total_two_megabyte_limit_is_independent_of_file_count(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(ai_assets_pipeline, "_MAX_TOTAL", 2 * 1024 * 1024)
     files = {"requirements.txt": "requests==2.32.5\n", **{f"f{i}.md": "x" * 500_000 for i in range(5)}}
     _, registry, run, workspace, _ = _run(tmp_path, files, 13)
     try:
@@ -261,5 +264,34 @@ def test_teammate_golden_cases_through_real_zip_and_reports(tmp_path, case):
         for fmt in ReportFormat:
             content = store.get(run.id, fmt).content
             assert asset.name.encode() in content
+    finally:
+        registry.close()
+
+
+def test_large_repository_uses_actual_read_quota_and_finds_late_reference(tmp_path: Path):
+    # Non-text inventory must not consume a parser's byte quota. The API
+    # description also exceeds the old 512 KiB per-file profile.
+    files = {"archive.bin": b"x" * (7 * 1024 * 1024),
+             "api.yml": "# " + "x" * (3 * 1024 * 1024),
+             **{f"src/f{i:03}.py": "# no asset\n" for i in range(140)},
+             "z-model.md": MODEL}
+    _, registry, run, workspace, _ = _run(tmp_path, files, 31)
+    try:
+        assert run.status is ScanStatus.COMPLETED
+        assert len(run.ai_assets) == 1
+        assert run.ai_assets[0].name == "Qwen/Qwen3-0.6B"
+        assert run.evidence[0].locator == "z-model.md"
+        assert not list(workspace.iterdir())
+    finally:
+        registry.close()
+
+
+def test_production_single_file_limit_remains_bounded(tmp_path: Path):
+    _, registry, run, workspace, _ = _run(tmp_path, {"requirements.txt": "requests==2.32.5\n", "large.md": b"x" * (4 * 1024 * 1024 + 1)}, 32)
+    try:
+        assert run.status is ScanStatus.PARTIAL
+        assert not run.ai_assets
+        assert "ai_asset_scan_incomplete" in {e.code for e in run.errors}
+        assert not list(workspace.iterdir())
     finally:
         registry.close()

@@ -122,6 +122,10 @@ def _request_payload(run: ScanRun, finding: RiskFinding) -> tuple[str, set[str]]
     )
     license_evidence = [evidence_by_id[item_id] for item_id in license_evidence_ids]
     allowed_evidence_ids = {item.id for item in [*finding_evidence, *license_evidence]}
+    # Shared license/finding references point to the same immutable evidence.
+    # Send each object once; all original reference IDs remain in the payload.
+    finding_ids = {item.id for item in finding_evidence}
+    license_evidence = [item for item in license_evidence if item.id not in finding_ids]
 
     def dump_evidence(items: list[Evidence]) -> list[dict[str, Any]]:
         return [item.model_dump(mode="json") for item in sorted(items, key=lambda item: item.id)]

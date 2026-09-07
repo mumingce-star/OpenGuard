@@ -877,3 +877,36 @@ openai-python 的 ScanCode 独立复现：1953 文件，固定入口触发 scann
 
 
 [20260907-1345-RootAstra-GitScanRepair-Publish] 发布绑定：修复提交 `894153f` 已普通推送至 `origin/integration/p0`（远端由 `d19bb62` 前进至该提交，同时上传原有本地 `4c56c1d`）。上传范围为既有后端/前端代码、测试、部署说明及治理记录；无 force push、main 合并或组员分支操作。最终 active=0、workspaces 为空；工作区仅原用户 output 未跟踪。完整扫描覆盖仍 PARTIAL，见上述验收边界。
+
+
+## 36. openai-python完整扫描与Docker到Ollama连接修复（2026-09-07）
+
+作者：GPT-6 Astra / Root。Owner范围：A线P0真实扫描集成；没有修改组员分支、main或前端，没有新增服务/依赖/HTTP接口/P1/P2。起点integration/p0@f2040b5，提交及推送绑定见后续记录。
+
+用户原任务`scn_5985936a-cbc9-43b8-9b5e-25a3b41baf92`的3类不完整诊断均已复现并修复：ScanCode120秒不足、AI资源读取以整个仓库两倍体积预留导致额度耗尽、静态dependency-groups未解析。实跑随后发现全树反复Hash、长证据JSON截断、Docker到Ollama TCP建连超时；已逐项保留失败并修复，未清除历史错误冒充成功。
+
+最终Chrome真实Git任务：`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`，输入https://github.com/openai/openai-python，固定解析revision `be928151372e4b62adb4a1571cda52ad759b38be`。16:32:32至16:46:04，811.80秒。completed/100、errors=[]；144软件组件、1API资产、227证据、145风险、145AI整改。每条风险关联有效证据及对应整改，AI均为pending，不能解释为许可已核验。JSON/HTML/CSV/资源清单HTTP下载与SHA-256均一致，Chrome显示7/7、100%、报告及AI文本且无错误条。
+
+| A线项目 | 状态 | 本轮验证 | 剩余边界/下一步 |
+|---|---|---|---|
+| 真实Git→工具→资源→风险/证据 | COMPLETED（本样例） | 原3类扫描错误消失；ScanCode/Syft真实输出 | 不承诺任意大仓库或复杂依赖组覆盖 |
+| AI解释与整改集成 | COMPLETED（本样例） | 全145条通过原严格校验；TCP失败仅在请求发送前恢复 | 人工质量复核仍需Owner验收 |
+| 现有报告与Web联调 | COMPLETED | Chrome真实页面与4格式SHA；无前端源码改动 | 旧任务不会自动重扫 |
+| Docker部署 | COMPLETED（本机） | 双服务healthy、active=0、工作目录为空、容器代码SHA与工作区一致 | 异机复现仍待回执 |
+| P0最终交付 | PARTIAL | 累计真实Git/ZIP、规则、证据、AI、报告、Web成果保留 | 持久累计预算、异机、人工质量及资源/安全/发布冻结 |
+
+实现边界：ScanCode主扫/补扫共享360秒；Syft/Git各120秒不变。文本读取4MiB/文件、16MiB总量、4096文件，仍受封印和实际余量约束。批次前后整树+逐文件Hash校验，不返回未完整验证的批次。开发依赖仅静态字符串、development内部scope，复杂include仍partial；外部Schema不变。模型输入共享重复Evidence，输出引用最多3条，原报告保留全部证据。Ollama TCP建连最多3次、每次最多3秒，消耗原30秒单条时限；已发送的生成请求绝不自动重放。模型/8192上下文/1024输出及安全校验不变。
+
+与上一轮同revision、已完整扫描但AI失败的dadfe87b报告比较，去除observed_at/remediation_id后components/ai_assets/licenses/evidence/findings/obligations全部相等。AI没有改变扫描事实。原133组件/0资产/165证据的报告缺少覆盖，不能要求修复后的事实数量仍等于它。
+
+回归：`PYTHONPATH=backend python -m pytest -q -rs -p no:cacheprovider tests`：1240 passed、3显式opt-in skipped、2既有fork warnings（60.61秒）；65项传输定向测试通过。`docker compose -f deploy/compose.yaml build api`及带真实Git/AI/Docker宿主三个既有开关的up --no-build --wait通过；git diff --check通过。前端未修改，本轮用真实Chrome验收，不将旧前端测试冒充新执行。
+
+本轮可独立演示本样例完整真实链，尚不能保证任意仓库全覆盖、秒级AI、自动人工核验或异机结果。可报名资格及权属仍由Owner确认；完整提交需上述P0门禁，获奖竞争力仍需对照、误差和人工质量证据。本次只关闭该仓库的实际阻断，不自动扩大后续开发范围。
+
+本次运行精确token数不可获得；开工估算12k–22k，范围因实测暴露的批次读取、AI输入及TCP故障扩大，无法据此判定实际用量是否落入原区间。
+
+下载SHA-256：
+- json: `e4fb87439276fc1d8d96bc234045ecea7744d5f08f21e02857f832313b012864`
+- html: `22dc30a19006ba1cf4862b2510b6a387c438a43dc42d8d0328d677af1fefab4a`
+- csv: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+- resource_inventory: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`

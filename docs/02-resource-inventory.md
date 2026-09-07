@@ -148,3 +148,7 @@ API镜像新增[Debian bookworm Git](https://packages.debian.org/bookworm/git)�
 ## 2026-09-06 运行资源核验更新
 
 前节间接依赖和Debian Git漂移项已分别关闭，见进度20、21节。本轮实际15个API包及9个前端运行/构建资源的固定版本与官方PyPI/npm许可证元数据一致，原文/用途/声明位置已补入 `third_party/README.md`，不另建清单。补齐前端实际发布产物的四份完整许可证；更正ScanCode软件Apache-2.0、数据CC-BY-4.0及内嵌组件独立许可。工具许可证/NOTICE仍在镜像；完整镜像逐包再分发审查、人工及服务条款确认未关闭。历史选型表不是安装清单，也不据此新增P0依赖。
+
+## 2026-09-07 SDK扫描覆盖修复
+
+本轮没有引入新第三方依赖、模型或扫描工具版本。Python静态dependency-groups解析复用锁定packaging与stdlib tomllib，ScanCode/Qwen仍使用原锁定二进制及模型；变更的是受控读取、工具时限和AI提示/输出约束。具体预算、未支持格式和验收见原spec与进度记录，现有许可证/NOTICE发布路径保持。
