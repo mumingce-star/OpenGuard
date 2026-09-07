@@ -1039,3 +1039,13 @@
 - 预计修改文件：仅追加共享日志、AI 协作记录和进度台账的发布结果；产品代码、接口、Schema、规则与测试不在本轮修改范围。
 - 验收方法：`git diff --check`、待上传清单、敏感信息扫描、`git push --set-upstream origin codex/scan-reliability-integration` 与远端跟踪/ahead-behind 复核。
 - token 使用估算：2,000～4,000；系统未提供本轮精确 token 遥测。
+
+### [20260908-1110-Sol-发布当前成果收工] PARTIAL - 本地发布候选已冻结，GitHub SSH 被 Fake-IP 阻断
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 11:10（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标与实际结果：已核对项目现状并审查上传范围；`git diff --check` 通过，受限敏感信息扫描未发现凭据格式命中。已创建本地提交 `2014b01`（发布前检查日志）。执行 `git push --set-upstream origin codex/scan-reliability-integration` 时，SSH 连接被 `198.18.0.19:22` 关闭，Git 返回“Could not read from remote repository”；远端未写入，因而不能称已上传。
+- 修改文件：`docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`；未修改或纳入产品代码、Docker 安装器、虚拟环境、缓存、本机绝对路径或密钥。
+- 已解决/可用：Python 3.12.10 与项目 `.venv` 已恢复，`backend[dev]` 与 pytest 可运行；B2/B3/B4/B5/B6/B7 定向回归此前为 11 passed；pnpm 10.30.0 已安装可用；扫描不稳定/长耗时、异机运行风险及 A2-A7 集成冲突已完成可复核诊断和隔离，未擅自覆盖 B4-B7。
+- 未关闭项：Docker Desktop/WSL 2、Docker Compose 验收仍需管理员终端与重启；项目的公开 Git、持久任务、Pipeline、真实前端 API 和 Compose 分支尚未安全整合；GitHub 上传需先恢复 GitHub 域名正常解析（不可使用 Fake-IP）或由项目负责人配置经授权的 HTTPS 认证后重试。
+- 下一步与责任：CZ 恢复网络/DNS/代理后，Root 以同一命令重推 `2014b01` 及本收工记录；CZ 在管理员 Windows Terminal 启用 WSL 并重启后，Root 安装/验证 Docker 并执行 A7 Compose 验收。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 2,000～4,000，已在范围内完成上传前审查和真实推送尝试，但因外部网络阻断未能完成远端发布。
