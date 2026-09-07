@@ -899,6 +899,19 @@
 - 验收方法：固定样例、实际 detector 输出 JSON、评测器读取该输出、定向 pytest、差异与敏感信息检查。
 - token 使用估算：8,000～14,000；系统未提供本轮精确 token 遥测。
 
+### [20260908-1015-Sol-扫描与异机诊断收工] COMPLETE - 完成只读问题定位与修复方案
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 10:15（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
+- 任务目标与实际结果：未修改扫描代码、配置或部署文件。当前分支前端明确为 `MOCK MODE`，GitHub URL 输入无 API 调用，开始扫描仅跳转演示进度；当前后端仅提供 ZIP CLI，公开 Git/API/Compose 位于未合并的远端功能分支。因此，当前分支不能产生“某链接扫描成功、某链接失败”的真实结果。
+- 关键诊断：远端 `feat/a2-public-git-egress` 的真实 Git 输入只接受严格 HTTPS DNS URL；HTTP/SSH/IP/私有仓库、凭据、端口非443、query/fragment、末尾斜杠、编码分隔符等会拒绝；GitHub `tree/blob` 页面 URL 即使通过语法也不是 clone 根，固定零重定向 clone 会失败。固定 DoH/公网地址校验会拒绝本机代理 Fake-IP 和私网地址；在受限网络中可造成按链接不同的失败。该分支 Git 总时限为120秒。
+- 耗时诊断：远端 `feat/a4-real-zip-scanners` 串行执行 ScanCode 和 Syft；每个真实扫描沿用120秒超时，且每个工具先做最多20秒版本探测。仅工具阶段最坏约280秒，加 Git 摄取可到400秒以上，故用户观察到4–5分钟与当前设计吻合，不应先判为机器故障。
+- 异机诊断：本机 `docker`、`pnpm` 不存在，Python 3.12/`.venv` 已失效；当前分支没有 `deploy/compose.yaml`。未合并的 A7 Compose 虽提供 Linux 容器方案，但默认关闭公开 Git、scanner 是独立 tools profile 且未接入 Web pipeline，文档也明确尚未由陌生机器复现；web 绑定127.0.0.1，默认不能被另一台机器访问。故异机验收结论为“未通过/尚未执行”，不是通过。
+- 命令与验证：完整阅读必读文档并执行 Git/源码/远端分支树/环境探针；`docker=NOT_FOUND`、`pnpm=NOT_FOUND`、`py -3.12` 与 `.venv` 均失败；仅日志文件被修改，`git diff --check` 通过。没有运行网络扫描、没有伪造耗时或异机结果。
+- 接口、Schema、规则和重要决策：不改变任何接口、Schema、规则或风险语义。建议先以 PR 顺序整合 A2公开Git→A3持久任务→A4外部扫描→A5前端真实API→A7Compose，逐次执行回归；随后增加安全分类错误、阶段耗时与全局deadline观测，并将外部工具并发/超时/缓存策略建立在基准数据而非直接降超时。
+- 已知风险与未完成项：没有用户提供的具体失败链接、请求ID、任务ID、时间段或日志，不能将某一链接失败归因于网络、URL格式、私有权限、限额或工具超时中的任一种；公开Git/A4/A5/A7尚未合入当前分支，所有跨分支分析只作为候选实现审查。
+- 下一步与责任：CZ提供2–3个成功/失败链接、任务ID和时间；Terra按审查方案先建立可观测性与URL预检，再经PR实现并发/预算/缓存；Luna在Linux AMD64、Windows Docker、Apple silicon三台干净机器执行固定验收矩阵。GitHub发布：本轮仅诊断日志待Root提交推送。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算8,000～14,000，本轮在该范围内完成。
+
 ### [20260906-1025-Sol-真实样例与评测证据收工] COMPLETE - 已提交可复现样例、实际输出和评测链路
 
 - 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-06 10:25（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
@@ -946,3 +959,12 @@
 - 实际结果：刷新 `origin` 后，本地 `HEAD` 和上游均为 `5215739`；`git rev-list --left-right --count 'HEAD...@{upstream}'` 为 `0 0`，工作区干净（本条日志追加前）。
 - 修改文件：仅本共享日志；未改接口、Schema、规则或产品代码。建议：当前分支已一致；其他远端功能分支不等于已合并到当前分支。
 - token 使用说明：本次运行精确 token 数不可获得；只读核对，未单独估算 token。
+
+### [20260908-0900-Sol-扫描与异机诊断] START - 诊断链接失败、耗时和异机运行风险
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 09:00（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
+- 任务目标：仅分析用户报告的链接扫描成功率不一致、4–5 分钟耗时与跨机器可运行性；不修改扫描代码、配置、依赖或部署文件。
+- 开始前已确认：已完整阅读 README、共享工作日志、进度台账和 Sol 交接文档，检查 Git 分支/状态/最近提交；未发现其他模型的在途记录或用户未提交改动。
+- 预计修改文件：仅本共享日志的 START/收工诊断记录；其余操作为只读源码、配置、测试和环境能力检查。
+- 验收方法：梳理 URL 输入与网络边界、扫描编排和外部工具超时路径；核对 Docker/依赖锁定/运行说明，并以现有测试和环境探针区分已验证事实与推断。
+- token 使用估算：8,000～14,000；系统未提供本轮精确 token 遥测。
