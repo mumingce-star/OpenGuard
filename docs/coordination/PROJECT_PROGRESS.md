@@ -874,3 +874,6 @@ openai-python 的 ScanCode 独立复现：1953 文件，固定入口触发 scann
   - html: `6724853fa4518a33dd50073ef4e5e3dc925cf800478788f609db07deab5fb1a8`
   - csv: `39388afa03e403bef5108d674ed4ad7d59617c0e700feac8f4295de6a763fcd9`
   - resource_inventory: `39388afa03e403bef5108d674ed4ad7d59617c0e700feac8f4295de6a763fcd9`
+
+
+[20260907-1345-RootAstra-GitScanRepair-Publish] 发布绑定：修复提交 `894153f` 已普通推送至 `origin/integration/p0`（远端由 `d19bb62` 前进至该提交，同时上传原有本地 `4c56c1d`）。上传范围为既有后端/前端代码、测试、部署说明及治理记录；无 force push、main 合并或组员分支操作。最终 active=0、workspaces 为空；工作区仅原用户 output 未跟踪。完整扫描覆盖仍 PARTIAL，见上述验收边界。

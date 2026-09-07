@@ -4183,3 +4183,6 @@
 - 仍未完成：openai-python 1953文件ScanCode在原120秒预算超时，独立原工具入口已复现；两库静态AI资产/Python解析覆盖仍partial。不能把本轮判为完整扫描成功。下一步由Root核对预算内工作和明确支持边界，不自动抬限额；原P0异机/持久累计预算/人工与冻结门禁仍保留。
 - 验证：PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python -m pytest -q -rs -p no:cacheprovider tests：1224 passed/3 opt-in skipped/2 warnings；node --test tests/model.test.mjs：22通过；原Dockerfile TypeScript/Vite及镜像构建通过。初次直接npm命令因宿主无npm未运行，后用既有Node及Docker构建完成；一次中间构建发现可选reportFormats，修正后通过。双服务healthy，重建前无活动任务。
 - 当前 integration/p0，待本轮修复提交和普通推送，随后追加发布绑定。Git历史/数据均保留。本次运行精确token数不可获得；开工未记录数值估算，不事后补造。
+
+
+[20260907-1345-RootAstra-GitScanRepair-Publish] 发布绑定：修复提交 `894153f` 已普通推送至 `origin/integration/p0`（远端由 `d19bb62` 前进至该提交，同时上传原有本地 `4c56c1d`）。上传范围为既有后端/前端代码、测试、部署说明及治理记录；无 force push、main 合并或组员分支操作。最终 active=0、workspaces 为空；工作区仅原用户 output 未跟踪。完整扫描覆盖仍 PARTIAL，见上述验收边界。
