@@ -910,3 +910,6 @@ openai-python 的 ScanCode 独立复现：1953 文件，固定入口触发 scann
 - html: `22dc30a19006ba1cf4862b2510b6a387c438a43dc42d8d0328d677af1fefab4a`
 - csv: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
 - resource_inventory: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+
+
+[20260907-1649-RootAstra-OpenaiScanCoverage-Publish] 发布绑定：修复提交`1df7cca`已普通推送至`origin/integration/p0`，远端由`f2040b5`前进至该提交。上传26个既有源代码/测试/部署与治理文档，无新分支、force push、main合并或组员分支操作。实测通过任务`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`及四SHA见进度36节；工作区仅原用户output未跟踪。AMENDMENT：上条COMPLETE中的spec文档数量应为4份，其余文件范围不变。

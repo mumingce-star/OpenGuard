@@ -4220,3 +4220,6 @@
 - 边界：本任务完成不代表P0整体冻结；复杂include、大仓库通用覆盖、异机、持久累计预算及人工质量仍保留待验收。下一步Root只接收异机/人工回执并按原P0清单复核，不自动扩功能。
 - Git：integration/p0；现有源代码、测试和文档将普通提交推送，具体SHA后续绑定；保留用户output且不上传临时报告/日志或组员分支。
 - 本次运行精确token数不可获得；开工估算12k–22k，真实阻断扩大范围，无法核实实际是否在原估算内。
+
+
+[20260907-1649-RootAstra-OpenaiScanCoverage-Publish] 发布绑定：修复提交`1df7cca`已普通推送至`origin/integration/p0`，远端由`f2040b5`前进至该提交。上传26个既有源代码/测试/部署与治理文档，无新分支、force push、main合并或组员分支操作。实测通过任务`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`及四SHA见进度36节；工作区仅原用户output未跟踪。AMENDMENT：上条COMPLETE中的spec文档数量应为4份，其余文件范围不变。
