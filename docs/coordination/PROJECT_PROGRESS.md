@@ -971,3 +971,6 @@ llama_index:
 - html: `0baddf755ff2481ff1e42222de20f70d689da4ac8ae560492e4299cc5d0e3ae1`
 - csv: `ce85173bda859580eeb7a66ba47adc067c6a898b5b228e6794e2e582f921d7d7`
 - resource_inventory: `ce85173bda859580eeb7a66ba47adc067c6a898b5b228e6794e2e582f921d7d7`
+
+
+[20260907-1835-RootAstra-P0PerformanceReliability-Publish] 发布绑定：修复提交 `306fb76` 已普通推送 `origin/integration/p0`（a65a940→306fb76），26个既有文件，无新分支、force push、main合并、组员分支操作或用户output上传。源码已在本机Docker验收运行；四Git/ZIP结果及边界见进度37。本条发布回执随随后文档提交上传。

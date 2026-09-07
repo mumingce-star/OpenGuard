@@ -4266,3 +4266,6 @@
 - 源码、既有spec/资源台账/部署smoke和相关测试变更；无新HTTP接口/外部Schema/规则/P1/P2。全部修改文件由本轮Git diff清单固定，不含用户output。测试1274通过/3显式跳过/2既有警告，前端22及tsc/Vite通过；API运行源码6个SHA匹配、双服务healthy、active=0/workspaces空。Chrome验收边界见上条，不夸大自动下载。
 - 已知边界：有界与解析partial、外部网络/模型故障不保证成功、AutoGen工具阶段仍约6分钟。历史失败保留；组员分支未改。下一步本人组织人工AI质量及异机回执，最终资源/安全冻结，持久数据累计预算仍待关闭。发布暂待Root普通提交/push integration/p0绑定，不扩大任务。
 - 精确token数不可获得，原估算20k–35k不能替代实测用量。
+
+
+[20260907-1835-RootAstra-P0PerformanceReliability-Publish] 发布绑定：修复提交 `306fb76` 已普通推送 `origin/integration/p0`（a65a940→306fb76），26个既有文件，无新分支、force push、main合并、组员分支操作或用户output上传。源码已在本机Docker验收运行；四Git/ZIP结果及边界见进度37。本条发布回执随随后文档提交上传。
