@@ -946,6 +946,14 @@
 - 验收：每个合并点运行 diff 删除审查、定向后端/安全测试和前端构建；最终运行 Compose config/工具 smoke。公网真实 Git、外部工具性能和异机运行仅在受控网络/Docker条件满足后声明。
 - token 估算：20,000～35,000；系统未提供精确 token 遥测。
 
+### [20260908-1240-Sol-扫描可靠性实施收工] PARTIAL - 完成环境恢复，识别并隔离跨分支架构冲突
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；分支：`codex/scan-reliability-integration`。
+- 已完成：建立专用集成分支；恢复 Python 3.12.10/.venv/pytest；扫描相关 `11 passed` 与编译检查通过。
+- 合并结果：尝试以 `--no-commit` 合并 A2 时发现其捆绑 A3–A6 早期实现，和当前后续 B2/B3、B4–B7 在 ingestion/scanners/external_tools、规则、Bench、台账等核心面发生冲突；已安全 `git merge --abort`，无产品文件改动或丢失。
+- 未完成：A2→A7 不能按整分支盲合并，需将其拆为可审查的提交或由原作者提供建立在当前 `codex/p0-external-tools-sync` 的重放分支；Docker/pnpm 安装和 Compose 需在网络正常后继续。
+- 下一步：Root/Terra 建立“只含 A2 Git intake”的干净重放分支，再逐步引入 A3/A4/A5/A7；每步以当前 B4–B7 回归作为不可回退门禁。
+
 ### [20260906-1025-Sol-真实样例与评测证据收工] COMPLETE - 已提交可复现样例、实际输出和评测链路
 
 - 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-06 10:25（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
