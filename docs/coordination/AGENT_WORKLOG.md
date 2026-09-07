@@ -1030,3 +1030,12 @@
 - 下一步与责任：CZ/本机管理员完成 WSL 提升操作和重启后，Root 复核 Docker Desktop、Compose 与 A7 分支的静态/启动验证；pnpm 已可供后续 A5 前端真实 API 分支使用。
 - 关联 GitHub：本地分支 `codex/scan-reliability-integration` 无新增产品提交或远端推送；既有 GitHub SSH 解析至 Fake-IP 的网络问题仍未解除。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 3,000～6,000，因 Docker 官方安装包下载与 Windows 管理员门禁，未能完整关闭 Docker 安装，范围内完成 pnpm 安装、Docker 下载启动和阻塞诊断。
+
+### [20260908-1100-Sol-发布当前成果] START - 审查并上传当前专用集成分支
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 11:00（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标：向用户说明本地已解决与尚未解决的问题；复核待提交范围、格式与敏感信息后，将当前专用集成分支推送至 GitHub。不会上传 Docker 安装器、虚拟环境、缓存、本机路径、密钥或其他环境产物。
+- 开始前已确认：已完整阅读 README、共享日志、进度台账和 Sol 交接文档，检查 Git 状态、近期提交和远端；工作区干净，当前分支有本地提交且尚未设置上游。未见其他模型在途记录。
+- 预计修改文件：仅追加共享日志、AI 协作记录和进度台账的发布结果；产品代码、接口、Schema、规则与测试不在本轮修改范围。
+- 验收方法：`git diff --check`、待上传清单、敏感信息扫描、`git push --set-upstream origin codex/scan-reliability-integration` 与远端跟踪/ahead-behind 复核。
+- token 使用估算：2,000～4,000；系统未提供本轮精确 token 遥测。
