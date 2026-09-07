@@ -938,6 +938,14 @@
 - GitHub 状态：当前已有本地诊断提交 `34f898c`、`1ec9dc2` 尚未推送；本条日志待本地提交，禁止使用 Fake-IP 旁路推送。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算12,000～20,000，实际完成范围缩小为运行时恢复、回归和集成审查。
 
+### [20260908-1200-Sol-扫描可靠性实施] START - 建立集成分支并实施扫描可靠性主链
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；范围：按用户明确授权建立集成分支，依序整合 A2→A3→A4→A5→A7，保留 B4–B7，补齐 URL 预检、耗时/错误观测、预算与工具并行，并恢复 Docker/pnpm 后进行部署验证。
+- 开始前确认：已完整阅读 README、共享日志、进度台账、Sol 交接和 frontend-design 规范；当前工作区干净，基础分支有3个因 Fake-IP 未推送的诊断日志提交。
+- 预计修改：Git 合并产生的后端/前端/deploy/测试/文档；可靠性代码和测试；协作台账。禁止放宽公网 Git SSRF/TrustedEgress 限制、执行目标项目代码或覆盖 B4–B7。
+- 验收：每个合并点运行 diff 删除审查、定向后端/安全测试和前端构建；最终运行 Compose config/工具 smoke。公网真实 Git、外部工具性能和异机运行仅在受控网络/Docker条件满足后声明。
+- token 估算：20,000～35,000；系统未提供精确 token 遥测。
+
 ### [20260906-1025-Sol-真实样例与评测证据收工] COMPLETE - 已提交可复现样例、实际输出和评测链路
 
 - 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-06 10:25（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
