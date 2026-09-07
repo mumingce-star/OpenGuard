@@ -1010,3 +1010,23 @@
 - 预计修改文件：仅本共享日志的 START/收工诊断记录；其余操作为只读源码、配置、测试和环境能力检查。
 - 验收方法：梳理 URL 输入与网络边界、扫描编排和外部工具超时路径；核对 Docker/依赖锁定/运行说明，并以现有测试和环境探针区分已验证事实与推断。
 - token 使用估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+
+### [20260908-1015-Sol-Docker-pnpm安装] START - 安装本机容器与前端包管理工具
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 10:15（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标：按用户授权安装 Docker Desktop（WSL 2 后端）与 pnpm，并验证 Docker CLI、Docker Compose 和 pnpm 命令是否可用；不改产品代码、接口、Schema、规则或扫描逻辑。
+- 开始前已确认：已完整阅读 README、共享工作日志、项目进度台账和 Sol 交接文档，并检查当前 Git 分支、工作区和近期提交；未见其他模型在途记录。环境探针显示 Docker、pnpm 均未安装，WSL 提示尚未安装；Node.js 已存在，但 PowerShell 执行策略阻止 `npm.ps1`，将使用受 Node 官方安装支持的 `npm.cmd`，不修改系统执行策略。
+- 预计修改文件：仅追加共享日志、项目进度台账和 AI 协作记录；安装产物为本机环境，不纳入 Git。
+- 验收方法：核对 `pnpm --version`、`docker --version`、`docker compose version` 与 WSL 状态；如 Windows 要求重启或 Docker Desktop 首次启动，明确记录为环境门禁。
+- token 使用估算：3,000～6,000；系统未提供本轮精确 token 遥测。
+
+### [20260908-1045-Sol-Docker-pnpm安装收工] PARTIAL - pnpm 已安装；Docker 受 Windows 管理员/重启前置阻塞
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 10:45（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标与实际结果：已通过 Node.js 的 `npm.cmd` 全局安装 pnpm 10.30.0，并以用户级 `pnpm.cmd --version` 验证。Docker Desktop 官方安装程序正在由 Docker 官方地址下载；截至收工复核为 227,660,843 字节且下载进程仍在运行，故未运行未完整安装包。系统的 `wsl --install --no-distribution` 没有启用 WSL；以 DISM 启用 `Microsoft-Windows-Subsystem-Linux` 与 `VirtualMachinePlatform` 时返回 Error 740（需要提升的管理员权限）。
+- 修改文件：`docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`；未修改产品代码、接口、Schema、规则、扫描器或 Compose 配置。本机安装产物不纳入 Git。
+- 命令与验证：`C:\\Program Files\\nodejs\\npm.cmd install --global pnpm@10.30.0` 成功；`C:\\Users\\cz180\\AppData\\Roaming\\npm\\pnpm.cmd --version` 输出 `10.30.0`；`wsl --status` 显示未安装；两项 DISM 命令均 Error 740；Docker 安装器下载进程通过本机代理仍在运行。`git diff --check` 通过。
+- 已知风险与解除条件：Docker CLI、Docker Compose 与本机 Compose 启动验收尚未完成，不能声称 Docker 已安装或项目可 Compose 运行。请在“以管理员身份运行”的 Windows Terminal 执行 `wsl --install --no-distribution`（或启用上述两个可选组件）并重启；待官方安装器下载完成后运行 Docker Desktop 安装器，首次启动接受 Docker 条款并完成 WSL 2 初始化，再执行 `docker version`、`docker compose version`。当前项目分支本身尚未合入 A7 Compose，工具安装不等于部署功能已完成。
+- 下一步与责任：CZ/本机管理员完成 WSL 提升操作和重启后，Root 复核 Docker Desktop、Compose 与 A7 分支的静态/启动验证；pnpm 已可供后续 A5 前端真实 API 分支使用。
+- 关联 GitHub：本地分支 `codex/scan-reliability-integration` 无新增产品提交或远端推送；既有 GitHub SSH 解析至 Fake-IP 的网络问题仍未解除。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 3,000～6,000，因 Docker 官方安装包下载与 Windows 管理员门禁，未能完整关闭 Docker 安装，范围内完成 pnpm 安装、Docker 下载启动和阻塞诊断。

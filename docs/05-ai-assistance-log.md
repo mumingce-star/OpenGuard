@@ -5,6 +5,7 @@
 | 日期 | 模型/工具 | 用途与输入范围 | 产生内容 | 团队修改 | 验证方式 | 是否纳入作品 |
 |---|---|---|---|---|---|---|
 | 2026-09-06 | GPT-5.6 Sol / Codex Root | 在用户授权范围内，将扫描组交付要求转为最小可复现样例、实际 B6 输出和 Bench 评测；不读取或再分发第三方内容 | 5 个虚构 URL 的源代码 case、人工预期/证据位置台账、实际 JSON、结果哈希、运行器与回归；修复数据集 URL 被重复报为模型 | 仅维护离线静态检测和 Bench；未知许可证/授权保留 `unknown`/`pending`；未改 P0 Schema、模型权重或部署 | Python 3.12.10、生成的 JSON、评测器与 pytest 定向回归；Windows 不宣称 POSIX ZIP 全链路 | 是 |
+| 2026-09-08 | GPT-5.6 Sol / Codex Root | 按用户授权配置本机开发工具；输入仅为现有 Node/Windows 环境探针与 Docker 官方下载地址 | 安装 pnpm 10.30.0；记录 Docker Desktop 与 WSL 2 的前置状态 | 未改作品代码、公共契约或部署定义；未绕过 PowerShell 执行策略或 Windows UAC。Docker 安装器仍在下载，WSL 组件因非提升终端未启用 | `pnpm.cmd --version` 为 10.30.0；`wsl --status`、DISM 前置检查及下载进程状态已记录；Docker/Compose 验收待管理员启用 WSL、下载完成及必要重启 | 是 |
 | 2026-08-31 | GPT-5.6 Sol | 竞赛规则、架构和评分拆解 | 项目总体框架初稿 | 团队后续确认范围 | 对照正式附件逐项核对 | 是 |
 | 2026-09-01 | GPT-5.6 Sol / Codex Root | 解析技术执行书并与正式材料、既有架构交叉核对 | P0 领域与 API 契约 v0.1.0 | 项目负责人需审核公共字段；Terra/Luna分别做实现与独立验证 | Markdown/敏感信息检查，后续以 Pydantic、JSON Schema 和负面 fixture 交叉验证 | 是 |
 | 2026-09-01 | GPT-5.6 Terra | 仅使用冻结的 P0 契约 v0.1.0 实现领域模型、Schema、样例和单测 | Pydantic v2 领域模型、导出 JSON Schema、合成扫描样例与 11 项聚焦测试 | 未改变公共字段、枚举、风险语义或契约；AI 建议/候选保持待核验 | Pydantic、独立 JSON Schema、pytest、差异与敏感信息检查 | 是 |

@@ -7,6 +7,7 @@
 | B6 | 进行中 | 5 个版本化源代码样例（模型、数据集、API、ModelScope、负样例）；真实 detector 输出含 AIAsset、Evidence locator 与 SHA-256；已修复 HF 数据集 URL 被重复识别为模型的问题 | AST、误报基线、人工许可/授权核验与 A4 接入 |
 | B7 | 进行中 | `benchmarks/run_static_assets.py` 从 case 运行 detector，`evaluate_scan_result` 从实际 JSON 计算 TP/FP/FN；记录输出哈希与运行命令 | 3–5 个独立项目或固定公开提交、双人标注、Linux ZIP 全链路、规模化公开仓库 |
 | Python 运行时 | 已完成 | 本机 Python 3.12.10 与 `.venv` 已恢复，`backend[dev]` / pytest 8.4.2 可运行 | 不纳入 Git；使用 `py -3.12` 或 `.venv\\Scripts\\python.exe` |
+| 本机开发工具 | 进行中 | pnpm 10.30.0 已通过 Node.js 全局安装并可执行；Docker Desktop 官方安装器正在下载 | Docker Desktop 仍须下载完成；当前会话无 Windows 管理员提升权限，WSL/VirtualMachinePlatform 启用与重启后 Docker daemon/Compose 验收尚未关闭 |
 
 更新时间：2026-09-04 10:45（Asia/Shanghai）
 
