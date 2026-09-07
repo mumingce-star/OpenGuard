@@ -919,6 +919,25 @@
 - 原始受控现象：Git 输出 `Connection closed by 198.18.0.19 port 22` 与 `Could not read from remote repository`。`198.18.0.0/15` 是 benchmark/Fake-IP 保留网段，和公开 Git TrustedEgress 设计中拒绝 Fake-IP 的情形一致；这证明当前网络/DNS/代理路径本身足以解释部分链接或发布失败，不能将其归因于扫描业务代码。
 - 处置：未重试、未切换不受控代理、未修改 Git host/SSH 配置或安全策略；需由网络管理员修正 DNS/代理，或在经批准、能解析真实 GitHub 公网地址的网络环境中重试。
 
+### [20260908-1100-Sol-扫描可靠性整合] START - 处理无需外部样本的已知扫描与部署缺口
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；范围：整合已发布且依赖明确的 A2/A3/A4/A5/A7 功能、恢复本机 Python 运行环境、补充静态可验证的 URL/耗时/异机准备度保障。
+- 开始前确认：已按要求阅读 README、完整日志、进度台账和 Sol 交接；前轮诊断日志的两个本地提交尚未推送，原因是 Fake-IP 网络路径；用户明确授权解决不依赖新增样本的事项。
+- 预计修改：Git 分支合并带来的后端/前端/deploy/测试/文档；必要时仅增加确定性测试和安全错误可观测性，不放宽公开 Git 安全策略。
+- 验收：先审查 `origin/integration/p0` 是否为完整、可追溯集成基线；恢复 Python 后运行相应 pytest、前端构建和 Compose 静态配置检查。真实公网 Git 与陌生机 Docker 验收仍明确留为后续外部环境门禁。
+- token 估算：12,000～20,000；系统未提供精确 token 遥测。
+
+### [20260908-1140-Sol-扫描可靠性整合收工] PARTIAL - 恢复本机运行时并完成安全集成审查
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 11:40（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
+- 实际结果：已恢复 Python 3.12.10，重建 `.venv` 并安装项目 `backend[dev]`；扫描相关定向回归 `11 passed`，`compileall backend benchmarks` 与 `git diff --check` 通过。未改扫描代码、配置或 UI 行为。
+- 集成裁决：审查 `origin/integration/p0` 后确认其不包含 A2 公网 Git、A5、A7，且相对当前分支会删除 B4/B5/B6/B7、真实 Bench 与相关测试；不能直接合并，避免以“修复”为名回退已有成果。A2/A3/A4/A5/A7 必须建立专门集成分支，按依赖顺序逐项合并并在每步运行冲突/接口/安全回归。
+- 修改文件：仅追加本日志；`.venv` 为 Git 忽略的本机环境。接口、Schema、规则、风险语义均未改变。
+- 未完成和阻塞：Docker/pnpm 仍未安装，当前网络仍将 GitHub SSH 指向 Fake-IP，故日志的本地提交仍无法推送；真实 Git 链接、陌生机 Compose 与外部工具性能验收必须在网络修复和 Docker 可用后执行。没有用户样本时不能验证特定链接的权限、仓库规模或网络行为。
+- 下一步：Root 建立 `codex/scan-reliability-integration`，逐项整合 A2→A3→A4→A5→A7，保留 B4–B7；Terra 实现 URL 预检、阶段计时、安全错误分类与有预算的并发工具调用；Luna 执行三机复现矩阵。
+- GitHub 状态：当前已有本地诊断提交 `34f898c`、`1ec9dc2` 尚未推送；本条日志待本地提交，禁止使用 Fake-IP 旁路推送。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算12,000～20,000，实际完成范围缩小为运行时恢复、回归和集成审查。
+
 ### [20260906-1025-Sol-真实样例与评测证据收工] COMPLETE - 已提交可复现样例、实际输出和评测链路
 
 - 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-06 10:25（Asia/Shanghai）；分支：`codex/p0-external-tools-sync`。
