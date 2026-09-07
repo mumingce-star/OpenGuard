@@ -1049,3 +1049,12 @@
 - 未关闭项：Docker Desktop/WSL 2、Docker Compose 验收仍需管理员终端与重启；项目的公开 Git、持久任务、Pipeline、真实前端 API 和 Compose 分支尚未安全整合；GitHub 上传需先恢复 GitHub 域名正常解析（不可使用 Fake-IP）或由项目负责人配置经授权的 HTTPS 认证后重试。
 - 下一步与责任：CZ 恢复网络/DNS/代理后，Root 以同一命令重推 `2014b01` 及本收工记录；CZ 在管理员 Windows Terminal 启用 WSL 并重启后，Root 安装/验证 Docker 并执行 A7 Compose 验收。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 2,000～4,000，已在范围内完成上传前审查和真实推送尝试，但因外部网络阻断未能完成远端发布。
+
+### [20260908-1120-Sol-重试发布] START - DNS恢复后重试上传当前分支
+
+- 作者模型与角色：GPT-5.6 Sol / Codex Root Coordinator；时间：2026-09-08 11:20（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标：用户请求再次上传；在不改变远端、认证或网络安全配置的前提下，复核 GitHub DNS 后重试推送当前已审查分支。
+- 开始前已确认：完整阅读 README、共享日志、进度台账和 Sol 交接文档，工作区干净、HEAD 为 `4b74b7f`；`github.com` 目前解析为公开地址 `20.205.243.166`，不同于此前 Fake-IP，适合进行一次受控重试。
+- 预计修改文件：仅追加本日志及必要的发布状态记录；不会上传任何未跟踪/环境文件。
+- 验收方法：`git push --set-upstream` 后以 `git ls-remote`、上游跟踪和 ahead/behind 验证确已落到 GitHub。
+- token 使用估算：1,500～3,000；系统未提供本轮精确 token 遥测。
