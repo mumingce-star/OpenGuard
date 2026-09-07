@@ -14,6 +14,9 @@ export function Progress({
   const notify = useNotice();
   const completed = scan.status === "completed";
   const active = ["queued", "running"].includes(scan.status);
+  const partial = scan.status === "partial";
+  const reported = partial && (scan.reportFormats?.length ?? 0) > 0 && scan.stageIndex === scan.stages.length - 1;
+  const endedStages = reported ? scan.stages.length : scan.stageIndex;
   function action(fn: () => void) {
     try {
       fn();
@@ -48,34 +51,47 @@ export function Progress({
       >
         <div className="og-progress-summary">
           <strong>
-            {scan.stageIndex}
+            {endedStages}
             <small> / {scan.stages.length} 个阶段</small>
           </strong>
           <span>{statusLabels[scan.status]}</span>
         </div>
         <progress
           aria-label="扫描阶段进度"
-          max={scan.stages.length}
-          value={scan.stageIndex}
+          max={scan.mode === "api" ? 100 : scan.stages.length}
+          value={scan.mode === "api" ? scan.progress : scan.stageIndex}
         />
+        {scan.mode === "api" && (
+          <p className="og-muted" role="status">
+            {scan.status === "partial"
+              ? (scan.reportFormats?.length ?? 0) > 0
+                ? "本次扫描已结束，已有结果和报告可以查看；部分内容未完成，请核对错误说明。无需等待进度达到 100%。"
+                : "本次扫描已结束，已有部分结果，但报告尚不可用；请核对错误说明。无需等待进度达到 100%。"
+              : active && scan.stageIndex === 0
+                ? "正在获取仓库并执行受控扫描工具；该阶段可能持续数分钟，页面每 2.5 秒查询状态。"
+                : active && scan.stageIndex === 5
+                  ? "正在逐条生成 AI 建议，风险较多时耗时会增加；页面每 2.5 秒查询状态。"
+                  : "进度来自后端实际状态。"}
+          </p>
+        )}
         <ol className="og-stages">
           {scan.stages.map((stage, i) => (
             <li
               key={i}
               className={
-                i < scan.stageIndex
+                i < endedStages
                   ? "done"
                   : i === scan.stageIndex && active
                     ? "running"
                     : ""
               }
             >
-              <span>{i < scan.stageIndex ? "✓" : i + 1}</span>
+              <span>{i < endedStages ? "✓" : i + 1}</span>
               <div>
                 <strong>{stage}</strong>
                 <small>
-                  {i < scan.stageIndex
-                    ? "已完成"
+                  {i < endedStages
+                    ? reported && i === scan.stages.length - 1 ? "报告已生成" : partial ? "已结束（详见提示）" : "已完成"
                     : i === scan.stageIndex
                       ? active
                         ? "等待/执行中"

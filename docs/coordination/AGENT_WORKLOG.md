@@ -4166,3 +4166,20 @@
 - Chrome真实产品路径：Root输入`https://github.com/andreped/chatbot-streamlit-demo`，任务`scn_eac4fbff-99de-4c3e-9849-a81a8416c789`在46.30秒内从5%到85%再到100%，7/7完成；revision`e32b3e6...57bac`、8组件、10证据、8风险、8条Qwen3建议、零错误。HTML/JSON/CSV/资源清单均200，字节与SHA已记录于进度34节。
 - Docker验收：API/Web healthy；Git/AI/Ollama开关为1，锁定Qwen3标签/摘要可见；API只读根、drop ALL、no-new-privileges、2 CPU、4GiB、128 PID、nofile 256、工作目录1GiB tmpfs保持。工作目录清空。重建时遗漏活动任务检查导致旧`smolagents`执行线程中断；已按现有worker语义保留80组件/6 AI资源并收敛`partial/85%`、发布四报告，未重放；最终active=0。既定范围下不新增Git恢复/lease/队列，后续重建前先检查active=0。
 - 当前Mac的汉化前P0产品链恢复可用；仍缺持久累计预算、Windows异机、AI人工质量/规模裁决及资源/安全/发布最终冻结。实现与治理修改待形成提交并推送`integration/p0`，`output/`及两条组员分支未修改。本次运行精确token数不可获得；开工8k–14k，本轮目标完成，额外仅处理本轮重建造成的明确阻断，未扩产品架构。
+
+
+### [20260907-1314-Root-GitScanRepair] START / 当前诊断记录
+
+- 用户要求修复 smolagents 与 openai-python 真实 Git 扫描；当前 integration/p0 为 4c56c1d，仅 output/ 未跟踪。Docker 开始时未运行，已启动原有容器，保留数据卷及 Git/AI/扫描器开关。
+- 当前 smolagents 新任务已到 AI_ASSIST，80组件/6资产/156证据；历史两仓库有 partial 报告，不能当作 Git 获取失败。
+- Root 单写当前集成线的既有前端服务、进度页和测试，修复报告后重复逐条读取Evidence及进度/终态误解；不修改组员分支。此记录补记在初步前端修改之后，非声称已在修改前落盘。预计测试前端及两仓库实际扫描、报告摘要和Chrome结果。不开新接口，不绕过安全上限。
+
+
+### [20260907-1342-RootAstra-GitScanRepair] PARTIAL
+
+- GPT-6 Astra / Root；修复 Git 实扫后的 AI 错误和前端慢读取，Docker原数据卷及开关恢复。修改既有 ai/ollama.py、api/main.py、前端 services/scans.ts、Progress/App、原测试、部署/前端/AI规范和三份治理记录。无新接口、依赖、规则和P1/P2；组员分支及 output 未改。
+- 实测导致范围增加：11279字符AI输入原输出身份错配，调整生成Schema按请求绑定ID、8192上下文、生产30秒单条预算；同输入13.42秒通过原校验。未减风险数、未补写模型输出、未重试。需要后续独立人工质量复核。
+- 两库新任务94080cf0/9b16cf5c终态partial/report/95，分别437.39/694.1秒，86/133条AI全部校验通过；四报告SHA和引用通过，Chrome真实报告已显示。同revision确定性字段与修复前一致。完整ID、revision及SHA见进度35节。
+- 仍未完成：openai-python 1953文件ScanCode在原120秒预算超时，独立原工具入口已复现；两库静态AI资产/Python解析覆盖仍partial。不能把本轮判为完整扫描成功。下一步由Root核对预算内工作和明确支持边界，不自动抬限额；原P0异机/持久累计预算/人工与冻结门禁仍保留。
+- 验证：PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=backend python -m pytest -q -rs -p no:cacheprovider tests：1224 passed/3 opt-in skipped/2 warnings；node --test tests/model.test.mjs：22通过；原Dockerfile TypeScript/Vite及镜像构建通过。初次直接npm命令因宿主无npm未运行，后用既有Node及Docker构建完成；一次中间构建发现可选reportFormats，修正后通过。双服务healthy，重建前无活动任务。
+- 当前 integration/p0，待本轮修复提交和普通推送，随后追加发布绑定。Git历史/数据均保留。本次运行精确token数不可获得；开工未记录数值估算，不事后补造。

@@ -251,3 +251,17 @@ docker compose -f deploy/compose.yaml exec -T api python -c 'import runpy; print
 ```
 
 本轮实际workspaces挂载中六种读取绕行均被内核拒绝，当前输入可读不可写、私有temp可写、fork后代受限，退出工作目录为空。最终镜像ScanCode识别apache-2.0，Syft识别pkg:npm/is-number@7.0.0；155相关回归通过。旧Git/Qwen两组四报告SHA保持，API健康；本轮不重复公开扫描或推理。该边界不等于所有文件元数据操作、Unix IPC或完整P0安全矩阵均已隔离。宿主未配置沙箱的开发运行仍不具备本节保障。
+
+## 真实 Git 扫描的运行与等待（2026-09-07）
+
+Docker Desktop 必须处于运行状态。使用 Git 和本机 Qwen 时，重建、启动都应保留原有三个开关：
+
+```bash
+OPENGUARD_ENABLE_PUBLIC_GIT=1 OPENGUARD_ENABLE_AI=1 OPENGUARD_OLLAMA_DOCKER_HOST=1 docker compose -f deploy/compose.yaml up -d --build --wait
+```
+
+执行上面的重建命令前，应确认没有 queued/running 任务；现有公开 Git 任务不支持重启后续跑。该命令不删除数据卷。API/Web 健康不代表宿主 Ollama 和锁定模型必然可用，仍须完成一次真实扫描确认。
+
+Git 获取和外部工具执行共用现有 ingestion 阶段，因此 5% 可能持续数分钟；AI 阶段逐条生成建议，风险数量较多时 85% 也会持续数分钟。生产入口现为每条建议最多 30 秒、Qwen 上下文 8192，输出仍经过原身份及证据校验。没有设置只处理前几条的上限，也没有后台重试。上下文增大会增加模型内存占用，本机实测约 3.9 GB。
+
+终态 partial 表示扫描已经结束并保留部分结果，不能等同于卡住，也不能当作完整扫描成功；报告已生成时可直接查看四种报告，具体未完成内容见提示。前端复用当前任务报告内的 Evidence 快照，缺少的证据才通过原接口补取。

@@ -315,9 +315,25 @@ export async function getScan(id: string, mode: Mode, signal?: AbortSignal): Pro
     ...resourceItems.flatMap(w => object(w.resource).evidence_ids ?? []), ...riskItems.flatMap(r => r.evidence_ids ?? []),
     ...(run ? list(object(run).evidence).map(e => e.id) : [])
   ])];
-  const evidence = [];
-  // Bound concurrency and use the frozen evidence endpoint for actual excerpts.
-  for (let i = 0; i < ids.length; i += 8) evidence.push(...await Promise.all(ids.slice(i, i + 8).map(e => request(path + "/evidence/" + encodeURIComponent(e), {}, signal))));
+  // The persisted JSON report already contains the immutable evidence snapshot.
+  // Check its task identity before reusing it; fetch only genuinely missing IDs.
+  const snapshot = run ? object(run) : null;
+  if (snapshot && (snapshot.id !== id || snapshot.status !== status.status)) throw new Error("报告与当前任务不一致。");
+  const evidence = snapshot ? [...list(snapshot.evidence)] : [];
+  const seen = new Set<string>();
+  for (const item of evidence) {
+    if (!text(item.id) || !item.id || seen.has(item.id)) throw new Error("报告证据编号无效或重复。");
+    seen.add(item.id);
+  }
+  const missing = ids.filter(id => !seen.has(id));
+  for (let i = 0; i < missing.length; i += 8) {
+    const batch = missing.slice(i, i + 8);
+    evidence.push(...await Promise.all(batch.map(async e => {
+      const item = object(await request(path + "/evidence/" + encodeURIComponent(e), {}, signal));
+      if (item.id !== e) throw new Error("证据与请求编号不一致。");
+      return item;
+    })));
+  }
   return adaptApiScan(id, status, resources, risks, evidence, run, available);
 }
 export function skipDemo(id: string) {

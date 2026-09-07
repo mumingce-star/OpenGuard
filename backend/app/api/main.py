@@ -500,6 +500,7 @@ def create_default_app() -> FastAPI:
         report_publisher=PipelineReportPublisher(report_store),
         ai_provider=ai_provider,
         ai_enabled=ai_enabled == "1",
+        ai_timeout_seconds=30.0,
         dispatch_store=dispatch_store,
         external_scanners=external_scanners == "1",
     )
@@ -513,6 +514,7 @@ def create_default_app() -> FastAPI:
             report_publisher=PipelineReportPublisher(report_store),
             ai_provider=ai_provider,
             ai_enabled=ai_enabled == "1",
+            ai_timeout_seconds=30.0,
             external_scanners=external_scanners == "1",
         )
         if git_enabled == "1"
@@ -527,6 +529,7 @@ def create_default_app() -> FastAPI:
             report_publisher=PipelineReportPublisher(report_store),
             ai_provider=ai_provider,
             ai_enabled=ai_enabled == "1",
+            ai_timeout_seconds=30.0,
             external_scanners=external_scanners == "1",
         )
         if dispatch_store is not None

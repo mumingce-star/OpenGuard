@@ -281,7 +281,7 @@ export function App() {
             <main id="workspace-main" className="og-content">
               {scan?.error && (
                 <div className="og-error" role="alert">
-                  <strong>任务未完整成功：</strong>
+                  <strong>{["queued", "running"].includes(scan.status) ? "扫描仍在执行，已有提示：" : scan.status === "partial" ? "扫描已结束，部分内容未完成：" : "任务未完整成功："}</strong>
                   {scan.error} <button onClick={reload}>重新查询</button>
                 </div>
               )}

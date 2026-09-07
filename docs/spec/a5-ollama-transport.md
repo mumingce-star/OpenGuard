@@ -1,6 +1,10 @@
 # A5-1a Qwen3/Ollama 本地 Transport 规格
 
-状态：冻结 v1（Sol，2026-09-04）
+状态：冻结 v1（Sol，2026-09-04）；2026-09-07 生产调用修复如下。
+
+生产工厂对 Git、ZIP 和持久 ZIP dispatcher 统一使用每次 30 秒共享调用预算，不重试，保留批次失败降级与事实保持语义。固定 options 新增 `num_ctx=8192`，模型名称、版本、完整摘要及其余 options 不变；上下文增大会增加模型内存占用及首次加载耗时。
+
+对已有整改输入，生成 Schema 将 finding_id 固定为请求编号，evidence_ids 限定为请求现有证据编号。只约束生成，不改写返回内容；Provider 原有编号、证据及敏感文本校验继续执行。绑定策略版本计入 prompt_schema_digest，options 计入 config_digest。smolagents 最长风险输入在原配置下单次约9.95秒且返回错误风险编号，修复后同一输入13.42秒并通过原校验；该单条验证不代表整体质量验收。
 
 范围：项目负责人 A5/S4 的本地模型传输纵切
 

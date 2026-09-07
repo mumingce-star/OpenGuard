@@ -224,6 +224,45 @@ test("queued/running/failed/cancelled only read status; terminal then reads resu
     assert.equal(scan.resources.length,0); assert.equal(scan.createdAt,null);
   }
 });
+test("large terminal reports reuse evidence without hundreds of HTTP requests", async () => {
+  const r = runtime(), s = r.load("services/scans.ts"), calls = [];
+  const snapshot = { ...run, status: "partial", evidence: Array.from({ length: 700 }, (_, i) => ({ ...evidence[0], id: i ? `evd_${i}` : "evd_a" })) };
+  r.setFetch(async url => {
+    calls.push(url);
+    if (url.endsWith("/resources")) return Response.json(resources);
+    if (url.endsWith("/risks")) return Response.json(risks);
+    if (url.includes("/evidence/")) throw new Error("redundant evidence fetch");
+    if (url.includes("download=true")) return Response.json({ scan_run: snapshot });
+    if (url.includes("/report?")) return Response.json({ format: new URL(url, "http://localhost").searchParams.get("format") });
+    return Response.json(state("partial"));
+  });
+  const scan = await s.getScan("real", "api");
+  assert.equal(scan.evidence.length, 700);
+  assert.equal(scan.status, "partial");
+  assert.equal(scan.resultsReady, true);
+  assert.equal(calls.length, 8);
+  snapshot.id = "other";
+  await assert.rejects(s.getScan("real", "api"), /不一致/);
+  snapshot.id = "real";
+  snapshot.evidence.push(snapshot.evidence[0]);
+  await assert.rejects(s.getScan("real", "api"), /重复/);
+});
+test("incomplete report snapshot fetches only missing evidence and checks identity", async () => {
+  const r = runtime(), s = r.load("services/scans.ts"), calls = [];
+  let wrong = false;
+  r.setFetch(async url => {
+    if (url.endsWith("/resources")) return Response.json(resources);
+    if (url.endsWith("/risks")) return Response.json(risks);
+    if (url.includes("/evidence/")) { calls.push(url); return Response.json({ ...evidence[0], id: wrong ? "wrong" : "evd_a" }); }
+    if (url.includes("download=true")) return Response.json({ scan_run: { ...run, evidence: [] } });
+    if (url.includes("/report?")) return Response.json({ format: new URL(url, "http://localhost").searchParams.get("format") });
+    return Response.json(state());
+  });
+  assert.equal((await s.getScan("real", "api")).evidence[0].id, "evd_a");
+  assert.deepEqual(calls, ["/api/v1/scans/real/evidence/evd_a"]);
+  wrong = true;
+  await assert.rejects(s.getScan("real", "api"), /不一致/);
+});
 test("partial without generated reports retains facts; storage errors are not hidden", async () => {
   const r = runtime(), s = r.load("services/scans.ts");
   let responseStatus=409, code="report_not_ready", reason="not_generated";

@@ -220,10 +220,25 @@ def test_valid_generate_uses_version_tags_generate_and_frozen_body() -> None:
         "stream": False,
         "format": OUTPUT_SCHEMA,
         "think": False,
-        "options": {"temperature": 0, "seed": 0, "num_predict": 1024},
+        "options": {"temperature": 0, "seed": 0, "num_predict": 1024, "num_ctx": 8192},
     }
     assert opener.calls[-1][0].headers["Content-type"] == "application/json"
     assert opener.calls[-1][0].headers["Accept"] == "application/json"
+
+
+def test_real_remediation_request_binds_identity_and_evidence_without_mutating_schema() -> None:
+    from app.ai.provider import _request_payload
+    provider, opener = _provider()
+    run = _run()
+    finding = run.findings[0]
+    payload, allowed = _request_payload(run, finding)
+    original = json.dumps(OUTPUT_SCHEMA, sort_keys=True)
+    provider.generate(payload, 30)
+    body = json.loads(opener.calls[-1][0].data)
+    assert body["format"]["properties"]["finding_id"] == {"type": "string", "const": finding.id}
+    assert body["format"]["properties"]["evidence_ids"]["items"] == {"type": "string", "enum": sorted(allowed)}
+    assert body["prompt"] == payload
+    assert json.dumps(OUTPUT_SCHEMA, sort_keys=True) == original
 
 
 @pytest.mark.parametrize(

@@ -829,3 +829,48 @@ API/Web均healthy；公开Git、AI和Docker宿主Ollama开关为1；容器能读
 当前Mac可独立运行和演示汉化前版本的公开Git/ZIP扫描、ScanCode/Syft、资源/许可证风险与证据、Qwen3建议及四格式报告；合规规模的公开Git仓库已重新实跑通过。当前不具备超过512MiB物化上限的仓库扫描、运行中安全重启自动恢复、Windows异机、AI人工质量、持久累计预算及最终资源/安全/发布冻结。
 
 可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需关闭上述P0门禁并完成材料、视频、匿名和正式成果链接；具备获奖竞争力仍需真实对照、误差分析和人工质量证据。下一任务回到P0主线：核对持久上传与报告累计占用，只修明确缺口。本次运行精确token数不可获得；开工估算8k–14k，本轮根因修复、Docker重建、Chrome真实扫描、Qwen和四报告验收完整完成；额外发现并安全收敛一条由本轮重建中断的旧任务，未扩展产品架构。
+
+
+## 35. Git 真实扫描、AI 长输入与报告读取修复（2026-09-07）
+
+本轮 GPT-6 Astra / Root 在用户 A 线集成分支修复，未操作 cz/xzb 分支。开始时 Docker 未运行；恢复原数据卷、API/Web及原真实模式开关。修复前两仓库均能获取，但分别出现 AI provider 不可用与 response identity mismatch，不能据此认定 Sol 改坏 Git 获取。
+
+前端复用同任务 JSON 报告的 Evidence 快照，校验任务、状态与证据 ID，只补取缺失项；历史两仓库真实 HTTP 适配读取各 8 次请求、约 125/124 ms，避免逐条重复读取证据。进度使用实际百分比；partial/report 明示已结束、报告已生成，不伪装 completed 或 100%。
+
+AI 最大样例输入 11279 字符，原配置实际触发 response identity mismatch。现有输出 Schema 按请求约束 finding/evidence ID，生产单条预算 10→30 秒，上下文 4096→8192；原严格校验和整批失败语义保留，不补写编号、不重试、不截断前几条。相同输入修复后 13.42 秒通过原校验。原锁定模型不变，本机模型占用约 3.9 GB。两仓库全部建议通过后，下列真实扫描终态均仍为 partial/report/95，因为扫描器覆盖限制未解决。
+
+| 真实仓库 | 任务 | 固定 revision | 耗时 | 组件/资产/证据/风险/AI建议 |
+|---|---|---|---|---|
+| https://github.com/huggingface/smolagents | scn_94080cf0-f2dd-4389-8f9c-1d3b5a102770 | 30bb1161095dbae2271e6bc3cc4c219cc3897a57 | 437.39 秒 | 80/6/156/86/86 |
+| https://github.com/openai/openai-python | scn_9b16cf5c-864d-4afd-a49c-9ad7d5f9a656 | be928151372e4b62adb4a1571cda52ad759b38be | 694.1 秒 | 133/0/165/133/133 |
+
+两次四格式 HTTP 下载、SHA-256及证据引用核验均通过；Chrome 真实报告页面显示结果和下载入口。与各自同 revision 的修复前报告比较，去除 observed_at/remediation_id 后 components/ai_assets/licenses/evidence/findings/obligations 全部相等。AI 没有改变确定性扫描事实。
+
+openai-python 的 ScanCode 独立复现：1953 文件，固定入口触发 scanner_timeout（工具预算 120 秒）；不提升既有工具资源限额。两库还存在 ai_asset_scan_incomplete、python_dependency_scan_partial；无 AI 降级错误。不能宣称两个仓库已完整扫描或 P0 已冻结。
+
+| 用户 A 线任务 | 状态 | 验证 | 未完成/下一步 | 发布 |
+|---|---|---|---|---|
+| Git/API/Docker真实链 | 本轮修复验证通过 | 两库取得固定 revision，双容器 healthy | 异机验收仍待组员执行 | integration/p0 本次修复提交 |
+| AI解释与整改接线 | 本轮219条通过严格校验 | smolagents 86、openai-python 133；无事实漂移 | 逐条耗时与人工质量复核 | 同上 |
+| 前端联调/四格式报告 | 本轮通过 | Chrome 两库报告、8次HTTP适配读取、四SHA | 解析覆盖和工具超时不能靠UI消除 | 同上 |
+| P0最终交付 | PARTIAL | 既有主链成果保留 | 持久累计预算、异机、人工质量及资源/安全/发布冻结 | 未宣布完成 |
+
+回归：后端 1224 passed、3 opt-in skipped、2 warnings；前端 22 passed，TypeScript/Vite及Docker Web生产构建通过。没有新增依赖、API、Schema字段、规则、队列、图谱或P1/P2功能。生产重建先确认 active=0，保留数据和用户 output 文件。
+
+当前可以独立演示上述真实 Git→事实/风险/证据→AI建议→报告→Web 路径，不能保证大仓库工具全覆盖、秒级逐条AI或Windows复现。可参赛的资格/权属仍由Owner确认；完整作品提交还需原P0门禁和材料，竞争力仍需真实对照、误差与人工质量证据。下一步最小范围是核对ScanCode预算内的有效工作与大仓库支持边界，不能自动提高预算或扩P1/P2。
+
+本次运行精确 token 数不可获得；开工记录未给出数值区间，不能事后伪造。范围从页面重复读取扩展到实测确认的AI长输入阻断；这些修复已验证，完整扫描覆盖仍未完成。
+
+下载摘要（真实输出，不是新增基准样例）：
+
+- `scn_94080cf0-f2dd-4389-8f9c-1d3b5a102770`
+  - json: `82304e6bae5f6a27f0768b00629546c724f3453fcf0b05737b23c147a8d4ed9b`
+  - html: `93f78b9e1de31d140b937342562a0b48ecd80f8ec886eb927e5103f421b00ad1`
+  - csv: `7c309967613005684b29b363c8a8f1ccde46c3d2183d7013bd6259b4129c44c1`
+  - resource_inventory: `7c309967613005684b29b363c8a8f1ccde46c3d2183d7013bd6259b4129c44c1`
+
+- `scn_9b16cf5c-864d-4afd-a49c-9ad7d5f9a656`
+  - json: `8ffd03da19a66d14ab54d18fd0c7630bf148bad1e015dc0ce7667c448a3eafab`
+  - html: `6724853fa4518a33dd50073ef4e5e3dc925cf800478788f609db07deab5fb1a8`
+  - csv: `39388afa03e403bef5108d674ed4ad7d59617c0e700feac8f4295de6a763fcd9`
+  - resource_inventory: `39388afa03e403bef5108d674ed4ad7d59617c0e700feac8f4295de6a763fcd9`

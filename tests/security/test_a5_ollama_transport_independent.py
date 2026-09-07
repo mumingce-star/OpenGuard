@@ -246,7 +246,7 @@ def test_real_tcp_version_tags_generate_order_and_frozen_request_contract() -> N
     assert request["stream"] is False
     assert request["think"] is False
     assert request["format"] == EXPECTED_FORMAT
-    assert request["options"] == {"temperature": 0, "seed": 0, "num_predict": 1024}
+    assert request["options"] == {"temperature": 0, "seed": 0, "num_predict": 1024, "num_ctx": 8192}
     system = request["system"]
     assert isinstance(system, str)
     assert "untrusted" in system.lower()
