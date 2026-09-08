@@ -16,6 +16,25 @@ from datetime import datetime
 from pathlib import Path
 
 
+def wait_for_terminal(args, get, scan_id, default_seconds):
+    """Bound acceptance observation; do not cancel or replay the product task."""
+    limit = args.wait_seconds if args.wait_seconds is not None else default_seconds
+    started = time.monotonic()
+    while True:
+        status = json.loads(get(f"/api/v1/scans/{scan_id}"))
+        elapsed = time.monotonic() - started
+        (args.output / "status.json").write_text(json.dumps(status, indent=2))
+        (args.output / "wait.json").write_text(json.dumps({
+            "scan_id": scan_id, "limit_seconds": limit,
+            "observed_seconds": round(elapsed, 3), "status": status["status"],
+            "within_limit": elapsed <= limit,
+        }, indent=2))
+        assert elapsed <= limit, f"scan {scan_id} exceeded {limit} seconds; preserve output, do not resubmit"
+        if status["status"] not in {"queued", "running"}:
+            return status
+        time.sleep(min(0.25, max(0, limit - elapsed)))
+
+
 def check_public_sample(args, get, create):
     """Verify the unmodified pinned public sample; this is not a benchmark score."""
     zipped = args.public_zip.read_bytes()
@@ -24,13 +43,7 @@ def check_public_sample(args, get, create):
     started = time.monotonic()
     if args.scan_id:
         scan_id = args.scan_id
-        deadline = time.monotonic() + 1800
-        while True:
-            status = json.loads(get(f"/api/v1/scans/{scan_id}"))
-            if status["status"] not in {"queued", "running"}:
-                break
-            assert time.monotonic() < deadline, "scan did not finish within 1800 seconds"
-            time.sleep(1)
+        status = wait_for_terminal(args, get, scan_id, 1800)
     else:
         scan_id, status, _ = create(zipped=zipped, wait_seconds=1800)
     (args.output / "status.json").write_text(json.dumps(status, indent=2))
@@ -210,14 +223,7 @@ def check_public_git(args, get, opener):
             scan_id = json.load(response)["scan_id"]
     (args.output / "accepted.json").write_text(json.dumps({"scan_id": scan_id}))
     print("Git scan:", scan_id, flush=True)
-    deadline = time.monotonic() + 600
-    while True:
-        status = json.loads(get(f"/api/v1/scans/{scan_id}"))
-        (args.output / "status.json").write_text(json.dumps(status, indent=2))
-        if status["status"] not in {"queued", "running"}:
-            break
-        assert time.monotonic() < deadline, "Git scan wait exceeded 600 seconds"
-        time.sleep(1)
+    status = wait_for_terminal(args, get, scan_id, 600)
     assert status["status"] == "completed", status
     raw = get(f"/api/v1/scans/{scan_id}/report?format=json&download=true")
     (args.output / "report.json").write_bytes(raw)
@@ -267,7 +273,10 @@ def main():
     parser.add_argument("--expect-ai", action="store_true")
     parser.add_argument("--scan-id", help="Validate an existing Chrome-created public ZIP or Git scan")
     parser.add_argument("--compare-to", type=Path, help="AI-disabled report.json for deterministic fact comparison")
+    parser.add_argument("--wait-seconds", type=int, help="Acceptance wait per task, 1..3600 seconds; does not change backend limits")
     args = parser.parse_args()
+    if args.wait_seconds is not None and not 1 <= args.wait_seconds <= 3600:
+        parser.error("--wait-seconds must be between 1 and 3600")
     args.output.mkdir(parents=True, exist_ok=True)
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
@@ -294,15 +303,10 @@ def main():
         with opener.open(request, timeout=15) as response:
             assert response.status == 202
             scan_id = json.load(response)["scan_id"]
-        deadline = time.monotonic() + wait_seconds
         print("Accepted:", scan_id, flush=True)
         (args.output / "accepted.json").write_text(json.dumps({"scan_id": scan_id}))
-        while time.monotonic() < deadline:
-            status = json.loads(get(f"/api/v1/scans/{scan_id}"))
-            if status["status"] not in {"queued", "running"}:
-                return scan_id, status, zipped
-            time.sleep(0.25)
-        raise AssertionError(f"scan did not finish within {wait_seconds} seconds")
+        status = wait_for_terminal(args, get, scan_id, wait_seconds)
+        return scan_id, status, zipped
 
     if args.bench_cases:
         check_bench_cases(args, get, create)
