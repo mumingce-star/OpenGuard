@@ -319,3 +319,80 @@ def test_default_factory_creates_a_private_runnable_registry(tmp_path: Path, mon
 
 def stat_mode(path: Path) -> int:
     return path.stat().st_mode & 0o777
+
+
+def test_persistent_capacity_rejects_git_zip_before_read_and_preserves_get(harness, tmp_path):
+    from app.api.main import _PersistentCapacity
+    existing = _create(harness)
+    guard = _PersistentCapacity(tmp_path, harness.registry, limit_bytes=1024, reserve_bytes=512, free_floor_bytes=1)
+    app = create_app(harness.registry, persistent_capacity=guard)
+    before = harness.registry.get(existing)
+    with TestClient(app) as client:
+        for headers, body in [({'content-type': 'application/json'}, b'not-json'),
+                              ({'content-type': 'multipart/form-data; boundary=x'}, b'not-multipart')]:
+            response = client.post('/api/v1/scans', headers=headers, content=body)
+            assert response.status_code == 503
+            assert response.json()['error']['details']['reason'] == 'persistent_capacity_exceeded'
+        assert client.get('/api/v1/scans/' + existing).status_code == 200
+    assert harness.registry.get(existing) == before
+    assert harness.registry.active_count() == 1
+    assert not (tmp_path / 'uploads').exists()
+
+
+def test_capacity_queued_reservation_survives_new_guard_and_failure_releases_lock(harness, tmp_path):
+    from app.api.main import _PersistentCapacity
+    mib = 1024**2
+    guard = _PersistentCapacity(tmp_path, harness.registry, limit_bytes=3*mib, reserve_bytes=mib, free_floor_bytes=1)
+    with TestClient(create_app(harness.registry, persistent_capacity=guard)) as client:
+        assert client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE}).status_code == 202
+        assert client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE}).status_code == 202
+        rejected = client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE})
+        assert rejected.status_code == 503
+        assert not guard.lock.locked()
+    reopened = SQLiteScanRunRegistry(tmp_path / 'scans.db')
+    again = _PersistentCapacity(tmp_path, reopened, limit_bytes=3*mib, reserve_bytes=mib, free_floor_bytes=1)
+    with TestClient(create_app(reopened, persistent_capacity=again)) as client:
+        assert client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE}).status_code == 503
+    reopened.close()
+
+
+def test_capacity_inventory_counts_same_disk_workspace_unknown_files_and_fails_closed(harness, tmp_path, monkeypatch):
+    from app.api.main import _PersistentCapacity
+    from app.api.service import ApiError
+    from types import SimpleNamespace
+    mib = 1024**2
+    guard = _PersistentCapacity(tmp_path, harness.registry, limit_bytes=4*mib, reserve_bytes=mib, free_floor_bytes=mib)
+    workspace = tmp_path / 'workspaces'; workspace.mkdir()
+    with (workspace / 'temporary').open('wb') as f: f.truncate(8*mib)
+    with pytest.raises(ApiError): guard.check()
+    (workspace / 'temporary').unlink()
+    guard.check()
+    unexpected = tmp_path / 'retained-old-report'
+    with unexpected.open('wb') as f: f.truncate(4*mib)
+    with pytest.raises(ApiError): guard.check()
+    unexpected.unlink()  # This isolated test owns the dummy file, not user reports.
+    (tmp_path / 'unsafe-link').symlink_to(workspace)
+    with pytest.raises(OSError): guard.check()
+    (tmp_path / 'unsafe-link').unlink()
+    monkeypatch.setattr(os, 'statvfs', lambda _: SimpleNamespace(f_bavail=1, f_frsize=1))
+    with pytest.raises(ApiError): guard.check()
+    monkeypatch.setattr(os, 'statvfs', lambda _: (_ for _ in ()).throw(OSError('private path')))
+    with TestClient(create_app(harness.registry, persistent_capacity=guard)) as client:
+        response=client.post('/api/v1/scans',json={'source_type':'git','source':VALID_SOURCE})
+        assert response.status_code == 503 and 'private path' not in response.text
+    assert not guard.lock.locked()
+
+
+def test_capacity_concurrent_request_busy_does_not_create_record(harness, tmp_path):
+    from app.api.main import _PersistentCapacity
+    guard=_PersistentCapacity(tmp_path,harness.registry)
+    guard.lock.acquire()
+    try:
+        with TestClient(create_app(harness.registry,persistent_capacity=guard)) as client:
+            r=client.post('/api/v1/scans',json={'source_type':'git','source':VALID_SOURCE})
+            assert r.status_code==503 and r.json()['error']['details']['reason']=='persistent_capacity_busy'
+        assert harness.registry.active_count()==0
+    finally:
+        guard.lock.release()
+    with TestClient(create_app(harness.registry,persistent_capacity=guard)) as client:
+        assert client.post('/api/v1/scans',json={'source_type':'git','source':VALID_SOURCE}).status_code==202

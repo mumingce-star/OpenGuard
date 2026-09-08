@@ -4269,3 +4269,21 @@
 
 
 [20260907-1835-RootAstra-P0PerformanceReliability-Publish] 发布绑定：修复提交 `306fb76` 已普通推送 `origin/integration/p0`（a65a940→306fb76），26个既有文件，无新分支、force push、main合并、组员分支操作或用户output上传。源码已在本机Docker验收运行；四Git/ZIP结果及边界见进度37。本条发布回执随随后文档提交上传。
+
+### [20260908-2004-RootAstra-P0CloseoutDay1] START
+
+- GPT-6 Astra / Root：用户完成grilling最终确认，执行三天P0收尾；北京时间2026-09-08 20:04至2026-09-11 20:04。逾期有阻断则如实交付未通过，不自动延期。
+- 第一任务核对持久容量并落实安全准入；保留旧报告，拒绝容量不足的新扫描，不增加队列/API/自动Git重试。复用既有注册表、报告、上传和文档。预计12k–22k token，精确值不可获得。
+- 基线integration/p0@f6d3bd6，仅原output未跟踪；远端一致，无活动扫描。持久reports126601541字节、DB86179840字节、shm32768字节，uploads/dispatch空；workspaces是另挂tmpfs，不计持久预算。
+- 独立只读capacity_audit检查写入上限与并发；Root唯一写入者。准备四类各3条真实来源候选，不将机器提取当作人工标签；组员两台Windows、至少一台Qwen结果待用户回执。
+- 验收：已有数据保留、超限拒绝且无创建副作用、并发/失败路径、实际生产接线、相关回归；受控隔离容量，不填满用户磁盘。范围不包含图谱、SSE、账户、企业架构或组员分支修改。
+
+### [20260908-2040-RootAstra-P0CloseoutDay1] COMPLETE - 容量准入子任务与候选准备
+
+- GPT-6 Astra / Root：已实现默认API持久容量准入并部署；新增503语义明确记录，未新增HTTP路径、依赖或队列。物理硬quota及P0总验收没有宣布完成。
+- 修改10个既有文件：API main、registry active_count、API单测、Bench spec、部署说明、API规格、安全表、AI记录、进度和本日志；用户output与组员分支未改。
+- 首次全量1278通过/3跳过；独立审核纠正普通workspace漏计后再次全量1278通过/3显式跳过/2既有警告（64.15秒）。27项API定向通过。并发独立ASGI探针确认202后锁释放、active预留保持。OpenAPI503已声明，入口幂等重放可能被水位拒绝明确记录。
+- 隔离实际factory HTTP容量测试通过：ZIP completed→四SHA→稀疏占位触发Git/ZIP503且无新增记录→旧报告SHA不变→释放占位再202。首次脚本字段archive误写导致422，改成既有file后原流程通过，未改产品适配脚本。隔离容器已停止自动回收，未触及正式data卷。
+- 活动0后部署，双服务healthy，运行main/registry源码SHA一致。正式ZIP78837347完成，真实工具/AI资源/四SHA/缺声明/恶意ZIP/404通过，旧openai四报告再次校验。未改前端，其测试不冒充本轮新运行。API镜像d1002e8dc736040c20c25e47943c7451665a57a10a8a3584e0e103d54261a985。
+- R01–R12固定真实源Hash通过，无人工标签；最初候选httpx不在该快照，按实际记录选择pycparser，未伪造缺失资源。候选抽自检出集合，不作为召回率样本。下一步Root核定验收样例/等待预算；用户+cz人工标注及两台Windows回执待用户提供。
+- 开工估算12k–22k，精确token数不可获得，不能确认实际是否落在估算区间。发布待随后的正常提交/push绑定。

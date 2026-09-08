@@ -79,3 +79,7 @@ bytes 执行。Root 仅在本纵切内完成最小修复，未新增路由、错
 通过。全量仍有 1 条 Starlette TestClient/AnyIO 第三方弃用 warning；该 warning 未被过滤，
 但不影响本纵切断言。真实 Uvicorn 仅绑定 `127.0.0.1` 临时端口，验证 POST 202、GET queued、
 停止后 SQLite 重开和 0700/0600 权限，不代表公网部署或扫描已执行。
+
+### 2026-09-08 P0 capacity admission amendment
+
+POST /api/v1/scans adds a documented 503 response using the existing ErrorEnvelope, code scan_capacity_unavailable, and reasons persistent_capacity_exceeded/busy/unavailable (full names use the persistent_capacity_ prefix). Git and ZIP are checked before input consumption. Existing route and domain shapes remain unchanged; this explicitly extends error semantics, not an unchanged-contract claim. Factory enables a 2GiB admission watermark, 256MiB per active/proposed scan and 512MiB filesystem reserve. Read routes are unaffected. Idempotent POST may also be refused; existing task GET remains usable. See deploy/README.md for single-process and non-hard-quota boundaries.

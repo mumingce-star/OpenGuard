@@ -418,6 +418,21 @@ class SQLiteScanRunRegistry:
                 connection.execute("INSERT INTO scan_runs (scan_id, revision, idempotency_key, idempotency_fingerprint, created_at, status, contract_version, run_json) VALUES (?, 1, ?, ?, ?, ?, ?, ?)", (validated.id, key, idempotency_fingerprint, payload["created_at"], payload["status"], payload["contract_version"], canonical))
                 return StoredScanRun(validated, 1)
 
+    def active_count(self) -> int:
+        """Count reservations without loading potentially large snapshots."""
+        with self._activity():
+            connection = self._connect()
+            try:
+                self._verify_schema(connection)
+                return int(connection.execute("SELECT COUNT(*) FROM scan_runs WHERE status IN ('queued', 'running')").fetchone()[0])
+            except sqlite3.OperationalError as error:
+                self._sqlite_failure(error)
+            except sqlite3.DatabaseError:
+                _fail("registry_corrupt")
+            finally:
+                connection.close()
+        raise AssertionError("unreachable")
+
     def get(self, scan_id: str) -> StoredScanRun:
         with self._activity():
             valid_id = _validate_scan_id(scan_id)

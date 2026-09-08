@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import stat
+import threading
 from base64 import b64encode
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -15,6 +16,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from fastapi.responses import JSONResponse, Response
+from starlette.concurrency import run_in_threadpool
 from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -80,7 +82,7 @@ def _router() -> APIRouter:
         "/scans",
         status_code=status.HTTP_202_ACCEPTED,
         response_model=ScanCreateAccepted,
-        responses=_ERROR_RESPONSES,
+        responses={**_ERROR_RESPONSES, 503: {"model": ErrorEnvelope}},
         openapi_extra={
             "requestBody": {
                 "required": True,
@@ -279,6 +281,62 @@ def _router() -> APIRouter:
     return router
 
 
+class _PersistentCapacity:
+    """Single-process admission watermark, not a filesystem hard quota.
+
+    The request lock bridges upload parsing and durable record creation. After
+    202, queued/running rows retain their headroom, including after restart.
+    """
+
+    def __init__(self, root: Path, registry: SQLiteScanRunRegistry, *,
+                 limit_bytes: int = 2 * 1024**3, reserve_bytes: int = 256 * 1024**2,
+                 free_floor_bytes: int = 512 * 1024**2) -> None:
+        if any(type(v) is not int or v <= 0 for v in (limit_bytes, reserve_bytes, free_floor_bytes)):
+            raise ValueError("invalid persistent capacity budget")
+        if reserve_bytes > limit_bytes:
+            raise ValueError("persistent capacity reserve exceeds budget")
+        self.root, self.registry = root, registry
+        self.limit_bytes, self.reserve_bytes, self.free_floor_bytes = limit_bytes, reserve_bytes, free_floor_bytes
+        self.lock = threading.Lock()
+
+    def check(self) -> None:
+        root_info = self.root.lstat()
+        if not stat.S_ISDIR(root_info.st_mode) or root_info.st_uid != os.geteuid() or root_info.st_mode & 0o077:
+            raise OSError("invalid capacity root")
+        pending = [self.root]
+        seen: set[tuple[int, int]] = set()
+        used = 0
+        entries = 0
+        while pending:
+            directory = pending.pop()
+            for path in directory.iterdir():
+                info = path.lstat()
+                # Only the separate Compose workspace mount is excluded.
+                # A same-filesystem local workspace consumes persistent space.
+                if path == self.root / "workspaces" and stat.S_ISDIR(info.st_mode) and info.st_dev != root_info.st_dev:
+                    continue
+                entries += 1
+                if entries > 100_000:
+                    raise OSError("capacity inventory limit")
+                if stat.S_ISDIR(info.st_mode):
+                    if info.st_dev != root_info.st_dev:
+                        raise OSError("unexpected capacity mount")
+                    pending.append(path)
+                elif stat.S_ISREG(info.st_mode):
+                    identity = (info.st_dev, info.st_ino)
+                    if identity not in seen:
+                        used += max(info.st_size, info.st_blocks * 512)
+                        seen.add(identity)
+                else:
+                    raise OSError("unexpected capacity entry")
+        reservation = (self.registry.active_count() + 1) * self.reserve_bytes
+        fs = os.statvfs(self.root)
+        if used + reservation > self.limit_bytes or fs.f_bavail * fs.f_frsize < self.free_floor_bytes + reservation:
+            raise ApiError(status_code=503, code="scan_capacity_unavailable",
+                           message="持久存储容量不足，已保留历史报告。请由负责人检查存储后再提交扫描。",
+                           reason="persistent_capacity_exceeded")
+
+
 def create_app(
     registry: SQLiteScanRunRegistry,
     *,
@@ -287,6 +345,7 @@ def create_app(
     report_store: ReportArtifactStore | None = None,
     close_registry: bool = False,
     zip_dispatcher: ZipDispatcher | None = None,
+    persistent_capacity: _PersistentCapacity | None = None,
 ) -> FastAPI:
     if zip_dispatcher is not None:
         # Durable lifecycle ownership is deliberately all-or-nothing.  An
@@ -379,6 +438,25 @@ def create_app(
 
             request._receive = receive
         return await call_next(request)
+
+    @app.middleware("http")
+    async def persistent_capacity_admission(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
+        if persistent_capacity is None or request.method != "POST" or request.url.path.rstrip("/") != "/api/v1/scans":
+            return await call_next(request)
+        if not persistent_capacity.lock.acquire(blocking=False):
+            return _error_response(request, ApiError(status_code=503, code="scan_capacity_unavailable",
+                message="扫描提交正在受理，请稍后重试。", reason="persistent_capacity_busy"))
+        try:
+            try:
+                await run_in_threadpool(persistent_capacity.check)
+            except ApiError as error:
+                return _error_response(request, error)
+            except Exception:
+                return _error_response(request, ApiError(status_code=503, code="scan_capacity_unavailable",
+                    message="无法核实持久存储容量，已暂停新扫描；历史报告保留。", reason="persistent_capacity_unavailable"))
+            return await call_next(request)
+        finally:
+            persistent_capacity.lock.release()
 
     @app.middleware("http")
     async def add_request_id(
@@ -542,6 +620,7 @@ def create_default_app() -> FastAPI:
         report_store=report_store,
         close_registry=True,
         zip_dispatcher=dispatcher,
+        persistent_capacity=_PersistentCapacity(data_dir, registry),
     )
 
 
