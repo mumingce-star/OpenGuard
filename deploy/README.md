@@ -103,8 +103,7 @@ python3 deploy/smoke.py --public-zip /tmp/smolagents.zip --expect-ai --compare-t
 也可在 Chrome 上传同一ZIP，然后将任务ID传入上述脚本的 `--scan-id`，避免重复扫描。
 脚本校验四个明确模型/数据集引用、来源SHA/行号、软件依赖、未知授权、AI身份/证据引用与四格式报告；
 临时输出包含任务ID、原始报告和SHA receipt，失败记录不覆盖为成功。`--verify`可复核重建后的四格式字节。
-此验收不是完整识别准确率评测。现有A5逐条生成且一条失败会整体降级，较多依赖会增加耗时；
-脚本最多等待30分钟，不改变单次推理限额或增加自动重试。模型不可用时仍保留确定性扫描和报告。
+此验收不是完整识别准确率评测。2026-09-07 起 A5 按等价上下文共享生成，原逐条耗时属于下方历史记录；模型失败仍明确降级并保留确定性扫描和报告。当前 Windows 验收等待上限见后文，不改变后端单次推理限额或增加自动重试。
 
 2026-09-06 实测：AI 关闭 29.33 秒；锁定 Qwen3 开启 963.30 秒，227 组件、4 引用资产、283 证据、231 待核验提示和 231 待复核建议。确定性事实对照、Chrome 正文及容器重建后的四格式 SHA 均通过。整批模型输出曾因非法 JSON Pointer 降级；只改提示词引导，原校验与原子降级保留。实际建议质量尚未经 golden 标注评测，不能将结构校验通过解释为语义全部准确。
 
@@ -135,29 +134,85 @@ python3 deploy/smoke.py --output /tmp/openguard-public-git --verify
 
 这些证据只证明当前Mac上的Linux Compose最小部署。工具子进程仍使用API容器网络，不宣称逐子进程网络隔离、所有攻击语料或陌生机验收完成；pending提示不等于违规确认或授权通过。
 
-## 另一台设备的最小复现（待实际设备验收）
+## 两台 Windows 的共同验收（2026-09-08，等待实测回执）
 
-2026-09-06 用户确认目前没有另一台设备，因此本门禁尚未执行。同一Mac的新容器、重建镜像或测试通过不能代替异机结果。以下复用已有脚本；不需要新框架、账号、API密钥或复制开发机数据卷。先准备Docker的Linux容器环境、Git及Python 3，使用macOS/Linux或已配置Docker的WSL终端。
+两台机器分别独立执行；都验证 AI 关闭的真实 Git、ZIP、证据和报告，至少一台再验证真实 Qwen。Mac 实测不代替 Windows 通过。以下使用 **Windows PowerShell**，准备 Git、Python 3 和处于 Linux containers 模式的 Docker Desktop；先确认 `docker version` 同时有 Client/Server，`docker compose version`、`py -3 --version` 可用。安装中涉及管理员认证、WSL 或重启，由设备操作者完成，不关闭系统防护。已有目录不要覆盖，首次使用新目录：
 
-在另一台设备的新目录获取已验收版本，避免从仍为早期基线的main开始：
-
-```bash
-git clone --branch feat/a7-public-git-deploy-acceptance https://github.com/mumingce-star/OpenGuard.git OpenGuard
-git -C OpenGuard checkout --detach 341dc348670a558fae35d699b204e4d927f898fb
+```powershell
+git clone --branch integration/p0 https://github.com/mumingce-star/OpenGuard.git OpenGuard
 cd OpenGuard
-OPENGUARD_ENABLE_PUBLIC_GIT=1 OPENGUARD_ENABLE_AI=0 OPENGUARD_OLLAMA_DOCKER_HOST=0 docker compose -f deploy/compose.yaml up -d --build --wait
-python3 deploy/smoke.py --external-scanners --ai-assets --output /tmp/openguard-other-zip
-python3 deploy/smoke.py --public-git https://github.com/pypa/sampleproject.git --output /tmp/openguard-other-git
-OPENGUARD_ENABLE_PUBLIC_GIT=1 OPENGUARD_ENABLE_AI=0 OPENGUARD_OLLAMA_DOCKER_HOST=0 docker compose -f deploy/compose.yaml up -d --force-recreate --no-deps --wait api
-python3 deploy/smoke.py --output /tmp/openguard-other-zip --verify
-python3 deploy/smoke.py --output /tmp/openguard-other-git --verify
+git checkout --detach b86658e37286f132bf098f0e7642bf25e557ffa9
+git rev-parse HEAD
+$env:OPENGUARD_ENABLE_PUBLIC_GIT = "1"
+$env:OPENGUARD_ENABLE_AI = "0"
+$env:OPENGUARD_OLLAMA_DOCKER_HOST = "0"
+docker compose -f deploy/compose.yaml up -d --build --wait
+docker compose -f deploy/compose.yaml ps
+$Evidence = Join-Path $env:TEMP ("openguard-acceptance-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
+New-Item -ItemType Directory -Path $Evidence
 ```
 
-两个初始命令各创建一个任务；`--verify`只复核原任务。PyPA默认分支可能变化，以输出receipt的实际revision为准；如果验收失败，保留原输出，不反复创建任务。此首轮关闭AI，不要求另一台设备额外安装模型，也不据此声称异机AI已通过。
+固定提交包含容量准入及等待检查；后续说明更新不代表必须改用分支最新代码。不要从仍为早期基线的 main 开始，不复制 Mac 镜像或 data 卷。每条命令成功后才继续；失败保留输出，不通过重复提交覆盖失败。构建与下载耗时不计入扫描时间；环境准备失败单独记为部署阻断。
 
-Chrome打开 `http://127.0.0.1:8080/app/new-scan`。可用receipt中的scan_id打开现有任务 `/app/scans/实际scan_id/report?mode=api`，确认真实接口、资源/风险/Evidence；通过四个下载链接各保存一次。文件名为 `openguard-实际scan_id.html`、`.json`、`.csv`和`.resources.csv`（以浏览器实际名称为准）。核对文件SHA与同一任务receipt中的对应reports摘要；不要与开发机不同任务的摘要比较，也不要把HTTP下载代替浏览器落盘。
+### 固定输入及最长等待
 
-回传最小证据即可：设备系统与CPU架构、Docker/Compose版本、代码commit、两个命令的原始成功或失败输出、两个receipt.json、重建后两条PASS，以及Chrome实际文件的格式/字节数/SHA。不要回传用户名、主机名、完整环境变量、凭据、Docker账户或个人目录内容。只在上述结果实际取得后更新异机状态；准备好文档本身不算验收完成。
+| 用例 | 配置 | 从创建任务被接受起的最长观察等待 |
+|---|---|---|
+| 已有小 ZIP 安全冒烟（含缺声明、恶意 ZIP 子任务） | AI 关闭 | 每个子任务 900 秒 |
+| PyPA sampleproject 默认分支，记录实际 revision | AI 关闭 | 900 秒 |
+| 上文固定 smolagents ZIP，完整 SHA 必须相同 | AI 关闭 | 900 秒 |
+| 同一 smolagents ZIP 与本机 AI 关闭报告对照 | 真实 Qwen | 1200 秒 |
+
+预算依据：现有 ScanCode 总预算 360 秒、Syft 120 秒，Git 获取另有预算；900 秒为这些阶段及文件处理、报告收尾保留余量，AI 用例额外留 300 秒。AI 仍按等价上下文共享生成，每次调用 30 秒，不因风险数量逐条扩展。**这些是本批样例的验收观察上限，不是后端全链路硬超时，也不是每次都应耗时这么久的性能目标。** 单次状态 HTTP 读取最多 15 秒，遇到网络错误可更早失败；超时检查可能在正在进行的读取返回后才打印，但超时后收到 completed 仍判失败。
+
+不得自行延长上限、排队多个验收任务或用 `--scan-id` 重新起算失败任务的等待时间。超过上限仍 running、失败后执行进程残留、持续阻塞后续正常任务，均不通过。脚本只记录失败，不取消、重放或清除后台任务。
+
+### 两台都执行：AI 关闭
+
+从上文固定提交链接下载 ZIP 至 `$Evidence\smolagents.zip`；不要下载默认分支 ZIP。以下下载与 SHA 不一致应停止，不改验收摘要：
+
+```powershell
+Invoke-WebRequest -Uri "https://github.com/huggingface/smolagents/archive/a3df1a21db6045aa9be15b4bdf2067041100e96a.zip" -OutFile "$Evidence\smolagents.zip"
+if ((Get-FileHash "$Evidence\smolagents.zip" -Algorithm SHA256).Hash.ToLower() -ne "c486d41688b937e208393b95e70fc7293c555b046f4284a8fca7a925fe6ef4a9") { throw "ZIP SHA mismatch" }
+py -3 deploy/smoke.py --external-scanners --ai-assets --wait-seconds 900 --output "$Evidence\small-zip"
+$Revision = ((git ls-remote https://github.com/pypa/sampleproject.git HEAD) -split "\s+")[0]
+if ($Revision -notmatch '^[0-9a-f]{40}$') { throw "Cannot capture Git revision" }
+py -3 deploy/smoke.py --public-git https://github.com/pypa/sampleproject.git --expected-revision $Revision --wait-seconds 900 --output "$Evidence\git"
+py -3 deploy/smoke.py --public-zip "$Evidence\smolagents.zip" --wait-seconds 900 --output "$Evidence\zip-noai"
+```
+
+Git 是默认分支实扫，记录 `$Revision` 和 receipt 的实际 revision；两台不同时运行导致上游变更时交回差异审核，不假称同一输入。固定 ZIP 则必须完全相同。小 ZIP 脚本会创建多个安全子任务；receipt 绑定正常主任务，accepted/status/wait 可能对应最后一个子任务，回执时保持整个目录。
+
+没有 queued/running 任务后，保持上述三个开关，重建 API 并确认旧报告保留：
+
+```powershell
+docker compose -f deploy/compose.yaml up -d --force-recreate --no-deps --wait api
+py -3 deploy/smoke.py --output "$Evidence\git" --verify
+py -3 deploy/smoke.py --output "$Evidence\zip-noai" --verify
+```
+
+`--verify` 不新建扫描。若任务超时，先保留 `accepted.json`、`status.json`、`wait.json`（已有者）及终端错误，再收集 `docker compose -f deploy/compose.yaml logs --tail 100 api` 和 `docker compose -f deploy/compose.yaml top api`。不要重建来掩盖超时或先杀进程再声称无残留；负责人依据这些证据安排恢复及后续正常任务检查。进程列表本身不足以证明任务归属，有疑义记待核验。
+
+### 至少一台追加：真实 Qwen
+
+按 [A5 模型运行规格](../docs/spec/a5-ollama-transport.md) 准备官方 Ollama **0.33.3**、`qwen3:4b-instruct-2507-q4_K_M`，完整模型摘要必须为 `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。版本/模型不符应记录阻断，不解除身份校验。模型准备与首次下载不计扫描等待；不使用模拟建议替代真实 Qwen。Windows 上模型安装与 Docker 到宿主的连接尚待该机器验证，无法连接时回传脱敏错误，不开放公网端口或关闭防火墙。
+
+无活动任务时，在同一 PowerShell 中执行：
+
+```powershell
+$env:OPENGUARD_ENABLE_AI = "1"
+$env:OPENGUARD_OLLAMA_DOCKER_HOST = "1"
+docker compose -f deploy/compose.yaml up -d --no-deps --wait api
+py -3 deploy/smoke.py --public-zip "$Evidence\smolagents.zip" --expect-ai --compare-to "$Evidence\zip-noai\report.json" --wait-seconds 1200 --output "$Evidence\zip-ai"
+```
+
+必须检查真实 AI 身份、建议关联本风险 Evidence、AI 前后确定性事实相同和四报告摘要。脚本结构检查不代替 12 条人工质量复核。模型失败的 partial 报告可以保留，但不算本项 AI 成功。
+
+### Chrome 实际保存与回传
+
+在 Chrome 打开 `http://127.0.0.1:8080/app/scans/实际scan_id/report?mode=api`，scan_id 来自 git 或 zip-noai 的 receipt。确认真实接口模式，检查资源、风险与原文件 Evidence；分别保存 HTML、JSON、CSV、资源清单到明确目录。以 `Get-FileHash -Algorithm SHA256 -LiteralPath "实际文件路径"` 核对**同一任务** receipt 的 `reports` 对应摘要，并记录字节数。浏览器被拦截记阻断，不关闭保护；HTTP 下载不算 Chrome 保存成功。不要重新扫描只为下载报告。
+
+每台回传：系统版本/CPU架构、Docker/Compose/Python版本、固定代码 SHA、三次 AI 关闭命令的输出及整个输出目录、重建后两条 PASS、Chrome 四文件 SHA/字节数及页面截图；AI 那台追加模型版本/摘要、AI 命令输出和 zip-ai 目录。失败也原样回传，不只发成功截图。排除账号、令牌、完整环境变量及个人目录内容；负责人汇总后由 Root 判定通过/失败/待核验。两台结果、人工复核和最终冻结未齐前，不宣布 P0 通过。
 
 ## Chrome 下载排障记录（2026-09-06）
 

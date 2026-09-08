@@ -4289,3 +4289,19 @@
 - 开工估算12k–22k，精确token数不可获得，不能确认实际是否落在估算区间。发布待随后的正常提交/push绑定。
 
 [20260908-2045-RootAstra-P0Capacity-Publish] 实现cca70a4已普通推送origin/integration/p0，10个既有文件；本地运行验收完成，未操作main/组员分支/用户output。敏感模式与本机路径检查无命中，active=0。随后仅上传本发布绑定记录。
+
+
+### [20260908-2326-RootAstra-WindowsAcceptance] START
+
+- GPT-6 Astra / Root：复用deploy/smoke.py和deploy/README.md，核定两台Windows共用输入、版本、配置、等待上限及回执；修正失效旧分支说明。仅验收脚本及原协调/AI记录，不改产品API、扫描预算、组员分支或运行容器。
+- 基线integration/p0@0f46b68，仅output未跟踪；双容器healthy。预计6k–10k token，精确用量不可获得。验证CLI参数、超时留证、终态判断、已有真实报告复核；Windows实测仍待真人，不将Mac检查替代异机验收。
+
+
+### [20260908-2340-RootAstra-WindowsAcceptance] COMPLETE
+
+- GPT-6 Astra / Root：本轮完成共同验收协议，不代表Windows验收完成。deploy/README替换失效旧分支/旧无设备说明，固定源码b86658e37286f132bf098f0e7642bf25e557ffa9，PowerShell环境、固定ZIP、Git revision、两机无AI/至少一机Qwen、四浏览器下载和回执明确。900/1200秒是样例观察上限，不是新增后端硬deadline。
+- deploy/smoke.py复用三条轮询路径，--wait-seconds限定1..3600，记录status/wait；晚到completed也拒绝，失败不取消/重放任务。旧默认值保留，Windows命令显式指定；无产品API/Schema/规则/依赖/扫描器变更，无容器重建或新真实扫描。
+- 验证：5种终态/超时留证探针通过，3种非法参数拒绝通过；真实CLI经隔离HTTP 202/running后1秒超时，accepted/status/wait保留通过。现存真实PyPA Git fed61b87的完整既有验证和四SHA通过；容量验收ZIP78837347的--verify通过。Compose config与diff检查通过。本轮未重跑无改动的后端/前端全量测试，不冒充新全量结果。
+- 初次误用性能验收的嵌套receipt调用smoke --verify，触发json断言；独立核验其四附件/本地文件/接口元数据与嵌套sha256全部一致，属两种验收回执格式不同，未修改报告或放宽脚本。随后使用smoke自己的receipt通过。
+- 修改5个既有文件：smoke、deploy说明、AI记录、本日志、进度39；output未动。源码提交b86658e，随后文档正常提交并统一推送integration/p0；不操作main/组员分支。Windows、人工12条、安全资源最终签收仍待回执。
+- 下一任务本人完成12条记录的人工复核协助与证据一致性复审，收到两机回执后逐项判定。估算6k–10k；本次运行精确token数不可获得，无法判断实耗是否在范围内；范围未扩展。
