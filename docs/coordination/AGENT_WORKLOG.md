@@ -1068,3 +1068,20 @@
 - 已知风险与未完成项：远端 `main` 未被直接修改，仍须 Pull Request 审查/合并；Docker/WSL、Compose、A2-A7 集成和扫描性能改造均不是本次上传所完成的功能。
 - 下一步与责任：Root 提交本收工记录后复核 `origin` 的 HEAD/ahead-behind；CZ 可在 GitHub PR 页面审查分支，批准后按 main 的 PR 规则合并。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 1,500～3,000，已在范围内完成。
+
+### [20260909-1531-GPT6-GitHub连接] START - 核验现有远端与 SSH 仓库访问
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-09 15:31（Asia/Shanghai）；分支：`codex/scan-reliability-integration`，HEAD `be855ac`。
+- 目标与范围：用户要求关联 GitHub；现有 origin 已为指定仓库，验证 SSH 仓库读取即可，无需重配远端或合并代码。
+- 开始前确认：已阅读 README、完整共享日志、进度表、沿用 Sol 职责交接与 AGENTS；工作区干净，未见其他模型当前冲突修改。
+- 预计文件与验收：仅协作记录；`git remote -v`、`git ls-remote`、Git 分支跟踪状态和 diff 检查；无接口、Schema、规则或第三方依赖变更。
+- token 估算：2,000～4,000（执行部分，完整历史日志阅读另计）；本次运行精确 token 数不可获得。
+
+### [20260909-1535-GPT6-GitHub连接验收] COMPLETE - 通过 SSH 443 恢复项目连接
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-09 15:35（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 结果：origin 已是用户指定的 GitHub 仓库。默认 SSH 22 连接被代理地址关闭；SSH 443 和 HTTPS 读取均成功。已在仓库级 `core.sshCommand` 保存 `ssh.github.com:443`，保留 `StrictHostKeyChecking=yes`、`HostKeyAlias=github.com` 和 15 秒连接超时。普通 `git ls-remote --heads origin codex/scan-reliability-integration` 随后成功，远端为 `be855ac`，与本轮起始本地 HEAD 一致。
+- 修改：本地 Git 配置（不入库）、本日志、PROJECT_PROGRESS、AI 协作记录；未修改产品文件、接口、Schema、规则，无新增第三方依赖。本轮为连接验证，不运行产品测试。
+- 验证与发布：SSH 实际仓库读取通过；本轮仅三份协作记录待检查并提交、推送到同名功能分支，最终 SHA 以 Git 输出为准；没有合并其他分支。
+- 已知限制与下一步：该连接设置仅适用于本机当前仓库；Docker/跨平台运行、完整扫描集成及竞赛验收状态沿用既有台账，本轮未复验。后续 Root 可使用普通 git fetch/push 操作当前 origin。
+- token：本次运行精确 token 数不可获得；执行部分估算 2,000～4,000，完成范围增加仓库级 SSH 443 配置；是否落在估算范围无法精确确认，全文历史阅读另计。

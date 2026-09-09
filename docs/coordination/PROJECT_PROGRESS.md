@@ -1,5 +1,10 @@
 # OpenGuard 项目进度台账
 
+## 2026-09-09 GitHub 连接复核
+
+- Root（GPT-6）：当前仓库 origin 已关联 `git@github.com:mumingce-star/OpenGuard.git`。默认 SSH 22 连接失败，改用仓库级 GitHub SSH 443 后实际读取通过，严格主机密钥校验保留。
+- 分支 `codex/scan-reliability-integration` 的本轮起始本地/远端 HEAD 均为 `be855ac`；本轮上传范围仅连接验收的工作日志、进度与 AI 记录。产品实现和竞赛门禁沿用下方历史记录，本轮未复验。
+
 ## 2026-09-06 真实样例与评测证据更新
 
 | 工作包 | 状态 | 新增可复现证据 | 仍未关闭的门禁 |
