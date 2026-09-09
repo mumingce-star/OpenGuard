@@ -25,8 +25,15 @@ Historical scan results identify candidates only; final acceptance must bind the
 | R07 | 数据集 | smolagents/GAIA-annotated | [smolagents / examples/open_deep_research/README.md / line 64](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/examples/open_deep_research/README.md) | `f66031c51430af60d61e42177b3e48d84c6ae23d483cfee2eb406b084e992732` |
 | R08 | 数据集 | smolagents-benchmark/benchmark-v1 | [smolagents / examples/smolagents_benchmark/run.py / line 46](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/examples/smolagents_benchmark/run.py) | `a1db747335affe27b9c28f99c6fda13c614ba047f2ff8a47486ae4339d420da2` |
 | R09 | 数据集 | m-ric/agents_medium_benchmark_2 | [smolagents / README.md / line 258](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/README.md) | `131628d2669b4ee983c715002b57ea4b375b62c8502f6354b8d9fdf3fbc39f8d` |
-| R10 | API | anthropic | [litellm / pyproject.toml:project.optional-dependencies.proxy-runtime[2] / line field/lock record](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/pyproject.toml) | `7b7bc74a7437896e3cdc9eb4f793a28b81ec7ee0be13b30b0c1c595b95bde4ca` |
+| R10 | API | anthropic | [litellm / litellm/anthropic_interface/readme.md / line 49](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/anthropic_interface/readme.md#L49) | `649aa8e07ccf2154fa5f6a41884f37cfd7bb1f1c569962b7d6dc056db8440cf7` |
 | R11 | API | google | [litellm / litellm/google_genai/Readme.md / line 27](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/google_genai/Readme.md) | `05eb67a90e2c711d42d1d6e17a380e41f6bd67fcf51f6e08900166c72123333a` |
-| R12 | API | openai | [litellm / pyproject.toml:project.dependencies[2] / line field/lock record](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/pyproject.toml) | `7b7bc74a7437896e3cdc9eb4f793a28b81ec7ee0be13b30b0c1c595b95bde4ca` |
+| R12 | API | openai | [litellm / litellm/router.py / line 974](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/router.py#L974) | `3ad43f8503791ea9bee2db8d2953c0f13edaab65ab0aab6f8372ffc6aa9fea57` |
 
 Per review: reviewer/date/prior exposure; cited source field or line; reference vs license declaration vs authorization; uncertainty; final disagreement resolution. Only after independent notes compare system risk/evidence and AI steps. Findings of evidence mix-up, fabrication, unsupported authorization claims or unusable reports block signoff until fixed and retested. No human review is yet recorded by this candidate list.
+
+
+### 2026-09-09 核对与纠正
+
+复核入口：[12条真实记录复核表](real-resource-review.md)。R10/R12旧候选整理按名字优先匹配了同名软件组件，误把pyproject依赖字段列为API证据；本表已按实际api资产ID纠正。历史扫描报告未修改。R01–R03存在同名多版本，复核表固定资源ID及版本/约束，不可只按名称匹配。
+
+以现存可下载报告为输入，12条Resource→Risk→AI关联、34次Evidence引用及25个固定源文件Hash核验通过。属于机器预核对，不是双人标注通过或准确率评分。smolagents与litellm报告本身为partial；候选可供原文复核，不将整次扫描宣称completed。两名真人每人12条判断尚待提交，最新代码的最终签收仍须结合约定回执。
