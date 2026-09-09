@@ -65,6 +65,7 @@ class ScanRunStatusView(P0Model):
     started_at: datetime | None = None
     finished_at: datetime | None = None
     ai_progress: dict | None = None
+    work_progress: dict[str, int | str] | None = None
 
 
 class ResourceView(P0Model):

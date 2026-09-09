@@ -9,6 +9,7 @@ from typing import Callable
 
 from app.domain.models import ReportFormat, ScanError, ScanRun, ScanStage, ScanStatus
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError, StoredScanRun
+from app.work_progress import activate as activate_work_progress, deactivate as deactivate_work_progress, observe as observe_work_progress
 
 
 _STAGES = (
@@ -254,12 +255,29 @@ class ScanPipelineWorker:
                 _fail("pipeline_not_claimable")
             _fail("pipeline_registry_failure")
 
+        progress_token = activate_work_progress(scan_id)
+        try:
+            return self._run_claimed(current, plan, started_at)
+        finally:
+            deactivate_work_progress(scan_id, progress_token)
+
+    def _run_claimed(self, current: StoredScanRun, plan: PipelinePlan, started_at: datetime) -> StoredScanRun:
         for index, (step, (stage, progress)) in enumerate(zip(plan.steps, _STAGES, strict=True)):
             if index:
                 staged = self._with_control(current.run, status=ScanStatus.RUNNING, stage=stage, progress=progress, started_at=started_at, finished_at=None)
                 current = self._replace(staged, expected_revision=current.revision)
                 if current.run.status is ScanStatus.CANCELLED:
                     return current
+            operation = {
+                ScanStage.INVENTORY: "正在核对文件清单",
+                ScanStage.SCAN: "正在整理扫描结果",
+                ScanStage.NORMALIZE: "正在标准化许可证信息",
+                ScanStage.RULES: "正在应用许可证规则",
+                ScanStage.AI_ASSIST: "正在生成 AI 分组建议",
+                ScanStage.REPORT: "正在生成扫描报告",
+            }.get(stage)
+            if operation is not None:
+                observe_work_progress(progress, operation)
             try:
                 candidate = step.handler(current.run)
                 if type(candidate) is not ScanRun:

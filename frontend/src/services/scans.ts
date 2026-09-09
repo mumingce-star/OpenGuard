@@ -272,6 +272,17 @@ function grouping(value: unknown, risks: Scan["risks"]): RiskGrouping | undefine
   if (raw.finding_count !== risks.length || used.size !== risks.length || raw.resource_count !== new Set(parsed.flatMap(g => g.resource_ids)).size) throw new Error("后端分组计数不符合契约。");
   return { version: raw.version, finding_count: raw.finding_count, resource_count: raw.resource_count, groups: parsed };
 }
+function workProgress(value: unknown): Scan["workProgress"] {
+  if (value === undefined || value === null) return undefined;
+  const raw = object(value);
+  if (!Number.isFinite(raw.percent) || raw.percent < 0 || raw.percent >= 100 || !text(raw.operation)) throw new Error("后端工作进度不符合契约。");
+  return { percent: raw.percent, operation: raw.operation };
+}
+export function scanPercent(scan: Scan): number {
+  const raw = scan.mode === "api" ? scan.progress ?? 0 : scan.stageIndex / scan.stages.length * 100;
+  const active = ["queued", "running"].includes(scan.status);
+  return Math.max(0, Math.min(active ? 99 : 100, active && scan.workProgress ? Math.max(raw, scan.workProgress.percent) : raw));
+}
 function aiProgress(value: unknown): Scan["aiProgress"] {
   if (value === undefined || value === null) return undefined;
   const raw = object(value), nums = ["groups_total", "groups_done", "requests", "cache_hits", "successful_groups", "elapsed_seconds"];
@@ -320,7 +331,7 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
     // backwards-compatible fallback for older API responses.
     createdAt: timestamp(state.created_at, run?.created_at), startedAt: timestamp(state.started_at, run?.started_at), finishedAt: timestamp(state.finished_at, run?.finished_at),
     status: state.status, stages, stageIndex: state.stage === "completed" ? stages.length : Math.max(0, stageKeys.indexOf(state.stage)), progress: state.progress,
-    aiProgress: aiProgress(state.ai_progress), diagnostics: errors.map(e => ({ ...e, code: e.code, message: e.message })),
+    workProgress: workProgress(state.work_progress), aiProgress: aiProgress(state.ai_progress), diagnostics: errors.map(e => ({ ...e, code: e.code, message: e.message })),
     error: errors.length ? errors.map(e => `${e.code}: ${e.message}`).join("；") : null,
     resources, risks, evidence, grouping: grouping(object(riskRaw).grouping, risks), resultsReady: ["completed", "partial"].includes(state.status), completeness: "full", snapshotVersion: run?.contract_version ?? "P0 API", reportFormats: available };
 }

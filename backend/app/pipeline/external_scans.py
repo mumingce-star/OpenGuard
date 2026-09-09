@@ -11,6 +11,7 @@ from app.licenses import normalize_license
 from app.scanners.external_tools import parse_json_output, run_json_tool
 from app.scanners.scancode_pipeline import scan_sealed_tree as scan_licenses
 from app.scanners.syft_pipeline import scan_sealed_tree as scan_components
+from app.work_progress import observe as observe_work_progress
 
 
 @dataclass
@@ -29,6 +30,7 @@ def collect_external_scans(tree: TrustedTreeScan, inventory: Inventory,
         ("syft", "/opt/syft/syft", "1.51.0", scan_components),
     ):
         try:
+            observe_work_progress(40 if name == "scancode" else 55, f"正在执行 {name} 扫描")
             result = run_json_tool(
                 executable, ("--version",) if name == "scancode" else ("version", "-o", "json"),
                 timeout_seconds=20, max_output_bytes=65536,
@@ -49,6 +51,7 @@ def collect_external_scans(tree: TrustedTreeScan, inventory: Inventory,
             facts.evidence.extend(mapping.evidence)
             if name == "syft":
                 facts.components.extend(mapping.components)
+            observe_work_progress(55 if name == "scancode" else 65, f"{name} 扫描已完成")
         except Exception:
             facts.errors.append(ScanError(code=f"{name}_scan_incomplete", stage="scan",
                 message=f"{name} scan could not be completed.", recoverable=True))

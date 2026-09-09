@@ -848,7 +848,19 @@
   accent-color: #9383f0;
   border-radius: 20px;
 }
-.og-app progress.og-progress-active { transition: value 300ms ease; }
+/* The fill tracks confirmed work; the separate light band only signals activity. */
+.og-progress-summary .og-progress-percent { font-size: 48px; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.og-progress-summary .og-progress-percent small { font-size: 22px; margin-left: 5px; color: #aebed8; }
+.og-scan-meter { position: relative; height: 16px; width: 100%; overflow: hidden; border: 1px solid #42526b; border-radius: 999px; background: #202d40; }
+.og-scan-meter-fill { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, #7964ee, #a58af4 55%, #39c9d8); }
+.og-scan-meter-sweep { position: absolute; inset: 0 auto 0 0; width: 100%; background: linear-gradient(100deg, transparent 36%, #e5fbff88 48%, transparent 60%); animation: og-scan-sweep 2s linear infinite; pointer-events: none; }
+.og-scan-meter.is-failed .og-scan-meter-fill { background: #dd7c99; }
+.og-progress-activity { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: #b5e6ec; margin: 12px 0 8px; }
+.og-progress-activity > span { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: #41cada; }
+.og-progress-activity.is-active > span { animation: og-scan-pulse 1.5s ease-in-out infinite; }
+.og-progress-activity small { color: var(--og-muted); }
+@keyframes og-scan-sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes og-scan-pulse { 50% { box-shadow: 0 0 0 5px #41cada30; opacity: .55; } }
 .og-group-advice { margin: 10px 0; padding: 10px 12px; border-left: 3px solid #7c78bf; background: #17223a; }
 .og-resource-section { margin: 0 0 22px; }
 .og-resource-section h3 { margin: 0 0 8px; color: #dce5ff; }
@@ -858,7 +870,7 @@
 .og-report-table { display: grid; gap: 5px; margin: 12px 0; }
 .og-report-table > div { display: grid; grid-template-columns: minmax(160px, 1fr) 1fr 1fr; gap: 8px; padding: 8px; background: #eef3f9; font-size: 12px; }
 .og-report-disclaimer { padding: 10px; background: #edf0ff; border-left: 3px solid #5c66ad; }
-@media (prefers-reduced-motion: reduce) { .og-app progress.og-progress-active { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .og-scan-meter-sweep, .og-progress-activity > span { animation: none !important; } .og-scan-meter-sweep { display: none; } }
 .og-stages {
   list-style: none;
   padding: 0;

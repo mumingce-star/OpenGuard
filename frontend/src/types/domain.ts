@@ -89,6 +89,7 @@ export interface Scan {
   risks: Risk[];
   evidence: Evidence[];
   progress?: number;
+  workProgress?: { percent: number; operation: string };
   aiProgress?: { groupsTotal: number; groupsDone: number; requests: number; cacheHits: number; successfulGroups: number; elapsedSeconds: number; etaSeconds: [number, number] | null; etaScope: "ai_stage" };
   reportFormats?: ReportFormat[];
   grouping?: RiskGrouping;

@@ -4386,3 +4386,19 @@
 - 修复文件仅frontend/src/services/scans.ts与原model.test.mjs，原记录追加本日志/PROJECT_PROGRESS/AI log。前端33测试与tsc通过；新Web bundle index-D_2_yJ7V.js与本地源码构建/HTTP字节一致。后端未改，上一5261596全量1313通过/3跳过/2警告；本次最终提交回归结果另保留本机验收日志，不将旧版本结果合并计数。
 - 未完成：浏览器四格式落盘、完整打印的长页体验、冷启动/真实断网矩阵、真人建议质量及两Windows/12条复核。保留明确PARTIAL，不宣布P0通过。当前无需增加P1/P2功能。下一步Root在安全允许的Chrome下载路径拿到原文件SHA回执，用户汇总Windows/人工结果。
 - 本次运行精确token数不可获得；本段开工估算8k–16k，无法核定实耗；仅上述部署验收和发现的时间显示缺口，未改变扫描事实或工具预算。普通推送integration/p0；main与cz/xzb分支未操作，本机output不上传。
+
+
+### [20260909-2310-RootAstra-ProgressFeedback] START
+
+- GPT-6 Astra / Root：用户指出5%长阶段仍静止；本轮仅修真实进度反馈，基线322efba。查到CSS transition:value无有效动效，主数字仍阶段计数，内部耗时步骤缺进度事件。Root独占前端/CSS/文档/集成，Terra限定后端可选工作进度事件和测试；不改事实、工具限额、新增路由或队列。接入已有步骤完成事件及AI完成组计数，百分比只依真实事件增长，未知工作量提供持续活动动效，不靠定时器假增百分比。预计8k–18k token；Chrome实际连续采样及最终回归，部署前必须活动0，沿用本轮已经明确的空闲维护授权。
+
+
+### [20260909-2325-RootAstra-ProgressFeedback] COMPLETE
+
+- GPT-6 Astra / Root完成本轮进度反馈窄修；GPT-5.6 Terra负责后端实际事件，Root实现前端/契约/回归并实际部署验收。修复原生progress样式及无效transition:value，主数字改0–100百分比；渐变填充与活动光带分离，真实事件才推进百分比。无事件仅活动动效，不固定每秒增加，不提前100。
+- 复用现有Git/ZIP/扫描器步骤与AI组计数，现有状态接口仅加可选work_progress，临时观测上限128且worker finally清理。新增中立app/work_progress.py避免ingestion/pipeline循环导入；不改原stage/progress/事实/安全限额，不增队列或新路由。前端保留partial/failed/减少动画与查询失败冻结。
+- 更新前再查活动扫描0，授权更新API/Web保留卷。Chrome从首页创建Express/Flask/Requests：Express534862c4 completed100，Flask7f47c312 partial95，Requests0ac38f93 partial95；限制仍显著显示。Requests97帧实际采样记录5→15→40→91→92→95及活动光带，刷新后恢复真实进度；Express完成100。原始帧/GIF/操作记录在本机原output下progress-feedback，不上传。GIF加速采样不是扫描实耗。
+- Express同revision逐字段比较组件/AI资源/许可/义务相同，发现仅AI关联不同，证据仅采集时间不同。没有以进度改动提高风险等级或丢失报告。原有队员分支未操作。
+- 前端36测试/tsc通过；首轮全回归1319通过+1失败，仅queued状态精确字段断言需接纳新增可空work_progress，保留失败记录并补null断言后相关61通过。新增4项AI组数映射与原run不变测试。最终提交全量另记录本机证据；检查构建/源码和diff，Root统一普通推送integration/p0。
+- 完成范围仅进度反馈；无法从不提供内部计数的ScanCode推断逐文件百分比，因此执行时显示活动光带和当前工具，数值停留到下一真实事件。本轮未改为时间猜测进度。Windows/真实断网矩阵、下载策略及P0人工签收仍是既有待验项。交付入口统一首页，禁止下次默认给任务深链接。
+- 精确token数不可获得，开工8k–18k无法核定实耗；范围未扩大。本机可演示P0真实链，但报名条件未重新评估，完整作品/竞争力仍需既有人工/异机/下载门禁，不能据此宣称P0全通过。

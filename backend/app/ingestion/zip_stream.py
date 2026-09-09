@@ -23,6 +23,7 @@ from app.ingestion.zip_preflight import VerifiedZipMember, preflight_zip
 from app.security.errors import IngestionSecurityError
 from app.security.limits import ZipExtractionBudget, ZipSafetyLimits
 from app.security.secure_dir import SecureWorkspace
+from app.work_progress import observe as observe_work_progress
 
 
 _CHUNK_SIZE = 64 * 1024
@@ -131,9 +132,12 @@ class ZipIngestionService:
         recovery_failure: IngestionSecurityError | None = None
         inventory: Inventory | None = None
         try:
+            observe_work_progress(5, "正在接收压缩包")
             _materialize_archive(workspace, archive_stream, self.limits)
+            observe_work_progress(25, "压缩包已安全物化")
             snapshot = build_inventory_snapshot(workspace, _TREE_PARTS)
             inventory = snapshot.inventory
+            observe_work_progress(30, "文件清单已建立")
 
             def validate() -> None:
                 validate_inventory_snapshot(workspace, snapshot)
@@ -143,6 +147,7 @@ class ZipIngestionService:
             self._consumer_local.active = True
             try:
                 result = consumer(session)
+                observe_work_progress(40, "依赖清单解析已完成")
                 if tree_consumer is not None:
                     validate()
                     tree = TrustedTreeScan(workspace.open_directory(_TREE_PARTS))

@@ -23,6 +23,7 @@ from app.ingestion.trusted_egress import Connector, EgressConnectionEvidence, Tr
 from app.ingestion.url_policy import parse_public_git_url
 from app.ingestion.workspace import WorkspaceManager
 from app.ingestion.zip_stream import TrustedTreeScan
+from app.work_progress import observe as observe_work_progress
 from app.security.address_policy import Resolver
 from app.security.errors import IngestionSecurityError
 from app.security.limits import GitSafetyLimits, ZipSafetyLimits
@@ -111,6 +112,7 @@ class GitIngestionService:
             )
             with proxy:
                 try:
+                    observe_work_progress(5, "正在获取公开 Git 仓库")
                     self._runner.clone_no_checkout(
                         parsed.canonical,
                         repository,
@@ -118,6 +120,7 @@ class GitIngestionService:
                         proxy_url=proxy.proxy_url,
                         deadline=deadline,
                     )
+                    observe_work_progress(15, "正在读取仓库文件")
                     if self._bounded:
                         materialized = materialize_bounded_git_tree(self._runner, repository, workspace,
                             home=home, limits=self.limits, deadline=deadline, proxy_url=proxy.proxy_url)
@@ -135,8 +138,10 @@ class GitIngestionService:
                     self._runner, repository, workspace, home=home,
                     limits=self.limits, deadline=deadline,
                 )
+            observe_work_progress(25, "正在建立文件清单")
             snapshot = build_inventory_snapshot(workspace, ("tree",))
             inventory = snapshot.inventory
+            observe_work_progress(30, "正在解析依赖清单")
 
             def validate() -> None:
                 validate_inventory_snapshot(workspace, snapshot)
@@ -146,6 +151,7 @@ class GitIngestionService:
             self._consumer_local.active = True
             try:
                 result = consumer(session)
+                observe_work_progress(40, "依赖清单解析已完成")
                 if tree_consumer is not None:
                     validate()
                     tree = TrustedTreeScan(workspace.open_directory(("tree",)))

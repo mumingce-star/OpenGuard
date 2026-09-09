@@ -438,3 +438,30 @@ test("AI progress is optional and never required for an old status response", ()
   assert.deepEqual(scan.aiProgress.etaSeconds, [20, 34]);
   assert.throws(() => s.adaptApiScan("real", {...state("running"), ai_progress: {groups_total: 1}}, {items: [], total: 0}, {items: [], total: 0}, []), /AI 进度/);
 });
+
+test("work milestones advance workflow percentage without altering stage progress", () => {
+  const s = runtime().load("services/scans.ts");
+  const live = s.adaptApiScan("real", { ...state("running"), stage: "ingestion", progress: 5,
+    work_progress: { percent: 40, operation: "ScanCode 许可证扫描" } }, {items: [], total: 0}, {items: [], total: 0}, []);
+  assert.equal(live.progress, 5);
+  assert.equal(s.scanPercent(live), 40);
+  assert.equal(live.workProgress.operation, "ScanCode 许可证扫描");
+  for (let i = 0; i < 100; i++) assert.equal(s.scanPercent(live), 40);
+  const later = {...live, stageIndex: 2, progress: 35};
+  assert.equal(s.scanPercent(later), 40);
+});
+test("terminal percentages ignore obsolete live milestones and active never reaches 100", () => {
+  const s = runtime().load("services/scans.ts");
+  const live = {...fixture(), mode: "api", progress: 85, status: "running", workProgress: {percent: 92, operation: "AI"}};
+  assert.equal(s.scanPercent(live), 92);
+  assert.equal(s.scanPercent({...live, progress: 100}), 99);
+  assert.equal(s.scanPercent({...live, status: "partial", progress: 95}), 95);
+  assert.equal(s.scanPercent({...live, status: "failed", progress: 5}), 5);
+  assert.equal(s.scanPercent({...live, status: "completed", progress: 100}), 100);
+});
+test("old status still works and invalid milestone metadata is rejected", () => {
+  const s = runtime().load("services/scans.ts");
+  const adapt = work => s.adaptApiScan("real", {...state("running"), progress: 5, work_progress: work}, {items: [],total: 0}, {items: [],total: 0}, []);
+  assert.equal(s.scanPercent(adapt(undefined)), 5);
+  for (const invalid of [{percent: 100, operation: "AI"}, {percent: -1, operation: "AI"}, {percent: 20}, {percent: NaN, operation: "AI"}]) assert.throws(() => adapt(invalid), /工作进度/);
+});

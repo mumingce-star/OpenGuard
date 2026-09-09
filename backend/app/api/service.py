@@ -287,6 +287,18 @@ class ScanApiService:
     def status(self, scan_id: str) -> ScanRunStatusView:
         run = self._get_run(scan_id)
         from app.ai.group_plan import get_group_progress
+        from app.work_progress import get as get_work_progress
+        work_progress = get_work_progress(run.id) if run.status.value == "running" else None
+        ai_progress = get_group_progress(run.id) if run.status.value == "running" and run.stage.value == "ai_assist" else None
+        if work_progress is not None:
+            percent = max(run.progress, int(work_progress["percent"]))
+            if ai_progress is not None:
+                total = ai_progress.get("groups_total")
+                done = ai_progress.get("groups_done")
+                if type(total) is int and total > 0 and type(done) is int:
+                    percent = max(percent, min(94, 85 + (max(0, min(done, total)) * 9 // total)))
+                    work_progress["operation"] = "AI 分组建议处理中" if done < total else "AI 分组建议已完成"
+            work_progress["percent"] = min(99, percent)
         return ScanRunStatusView(
             scan_id=run.id,
             status=run.status,
@@ -295,7 +307,8 @@ class ScanApiService:
             summary=run.summary,
             errors=run.errors,
             created_at=run.created_at, started_at=run.started_at, finished_at=run.finished_at,
-            ai_progress=get_group_progress(run.id) if run.status.value == "running" and run.stage.value == "ai_assist" else None,
+            ai_progress=ai_progress,
+            work_progress=work_progress,
         )
 
     def resources(self, scan_id: str, filters: ResourceFilters) -> ResourcesResponse:

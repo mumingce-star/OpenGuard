@@ -23,6 +23,7 @@ from app.pipeline.dependency_plan import (
 from app.pipeline.ai_assets import collect_ai_assets
 from app.pipeline.external_scans import collect_external_scans
 from app.pipeline.worker import PipelineError, PipelinePlan
+from app.work_progress import observe as observe_work_progress
 from app.pipeline.manifest_licenses import collect_manifest_licenses
 from app.scanners import (
     JavascriptP0MappingResult,
@@ -141,6 +142,7 @@ def build_local_zip_dependency_plan(
             fail("input_digest_mismatch", "Local ZIP input digest did not match.")
 
         state.consumer_result = result.consumer_result
+        observe_work_progress(70, "输入处理与扫描已完成")
         state.root_digest = result.inventory.root_digest
         digest = HashValue(algorithm="sha256", value=state.root_digest)
         project = Project.model_validate({**run.project.model_dump(mode="python"), "root_digest": digest})

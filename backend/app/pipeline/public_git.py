@@ -24,6 +24,7 @@ from app.pipeline.worker import PipelineError, PipelinePlan, PipelineStageFailur
 from app.pipeline.local_zip import _consume_dependencies
 from app.pipeline.external_scans import collect_external_scans
 from app.security.errors import IngestionSecurityError
+from app.work_progress import observe as observe_work_progress
 
 
 GitIngestionFactory = Callable[[Path], GitIngestionService]
@@ -105,6 +106,7 @@ def build_public_git_dependency_plan(
                     fail("scanner_failed", "Public Git ingestion failed.")
         if result is None or type(result.consumer_result) is not DependencyConsumerResult:
             fail("scanner_failed", "Public Git ingestion failed.")
+        observe_work_progress(70, "输入处理与扫描已完成")
         if hashlib.sha256(source.encode("utf-8")).hexdigest() != run.provenance.input_digest.value:
             fail("input_digest_mismatch", "Public Git input digest did not match.")
 

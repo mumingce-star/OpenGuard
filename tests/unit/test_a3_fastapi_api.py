@@ -16,6 +16,7 @@ from app.api import create_app, create_default_app
 from app.api.service import ScanApiService
 from app.domain.models import ScanRun
 from app.persistence import SQLiteScanRunRegistry
+from app.work_progress import activate as activate_work_progress, deactivate as deactivate_work_progress, observe as observe_work_progress
 
 
 FIXED_TIME = datetime(2026, 9, 3, 2, 0, tzinfo=timezone.utc)
@@ -225,6 +226,7 @@ def test_status_reads_the_persisted_snapshot_and_missing_is_stable(harness: ApiH
         "started_at": None,
         "finished_at": None,
         "ai_progress": None,
+        "work_progress": None,
         "status": "queued",
         "stage": "queued",
         "progress": 0,
@@ -236,6 +238,26 @@ def test_status_reads_the_persisted_snapshot_and_missing_is_stable(harness: ApiH
         },
         "errors": [],
     }
+
+
+def test_status_exposes_only_active_event_driven_work_progress(harness: ApiHarness) -> None:
+    scan_id = _create(harness)
+    queued = harness.registry.get(scan_id)
+    running = ScanRun.model_validate({
+        **queued.run.model_dump(mode="json"),
+        "status": "running", "stage": "scan", "progress": 35,
+        "started_at": FIXED_TIME.isoformat(),
+    })
+    harness.registry.replace(running, expected_revision=queued.revision)
+    token = activate_work_progress(scan_id)
+    try:
+        observe_work_progress(55, "scancode 扫描已完成")
+        body = harness.client.get(f"/api/v1/scans/{scan_id}").json()
+        assert body["work_progress"] == {"percent": 55, "operation": "scancode 扫描已完成"}
+        assert body["progress"] == 35
+    finally:
+        deactivate_work_progress(scan_id, token)
+    assert harness.client.get(f"/api/v1/scans/{scan_id}").json()["work_progress"] is None
     missing = harness.client.get(f"/api/v1/scans/{MISSING_SCAN_ID}")
     _assert_error(missing, status_code=404, code="scan_not_found", reason="not_found")
 
@@ -400,3 +422,24 @@ def test_capacity_concurrent_request_busy_does_not_create_record(harness, tmp_pa
         guard.lock.release()
     with TestClient(create_app(harness.registry,persistent_capacity=guard)) as client:
         assert client.post('/api/v1/scans',json={'source_type':'git','source':VALID_SOURCE}).status_code==202
+
+@pytest.mark.parametrize("done,expected", [(0, 85), (1, 86), (3, 89), (6, 94)])
+def test_live_ai_group_counts_drive_work_progress_without_mutating_run(harness, monkeypatch, done, expected):
+    scan_id = _create(harness)
+    stored = harness.registry.get(scan_id)
+    payload = stored.run.model_dump(mode="python")
+    payload.update(status="running", stage="ai_assist", progress=85, started_at=FIXED_TIME)
+    running = ScanRun.model_validate(payload)
+    harness.registry.replace(running, expected_revision=stored.revision)
+    import app.ai.group_plan as group_plan
+    monkeypatch.setattr(group_plan, "get_group_progress", lambda _: {"groups_total": 6, "groups_done": done})
+    token = activate_work_progress(scan_id)
+    try:
+        observe_work_progress(70, "输入处理已结束")
+        response = harness.client.get(f"/api/v1/scans/{scan_id}")
+        assert response.status_code == 200
+        assert response.json()["progress"] == 85
+        assert response.json()["work_progress"]["percent"] == expected
+        assert harness.registry.get(scan_id).run == running
+    finally:
+        deactivate_work_progress(scan_id, token)

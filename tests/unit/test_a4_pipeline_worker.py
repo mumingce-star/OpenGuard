@@ -12,6 +12,7 @@ import pytest
 from app.domain.models import ScanRun, ScanStage, ScanStatus
 from app.persistence import SQLiteScanRunRegistry
 from app.pipeline import PipelineError, PipelinePlan, PipelineStageFailure, PipelineStep, ScanPipelineWorker
+from app.work_progress import get as get_work_progress
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -91,6 +92,24 @@ def test_pos_a4_001_002_003_full_plan_persists_completed_across_restart(tmp_path
     registry.close()
     reopened = _registry(tmp_path)
     assert reopened.get(queued.run.id).run == result.run
+
+
+def test_worker_binds_event_progress_only_while_the_scan_is_active(tmp_path: Path) -> None:
+    registry = _registry(tmp_path)
+    queued = registry.create(_run())
+    observed: list[dict[str, int | str] | None] = []
+
+    def handler(run: ScanRun) -> ScanRun:
+        observed.append(get_work_progress(run.id))
+        return run
+
+    plan = PipelinePlan(steps=tuple(
+        PipelineStep(stage, handler)
+        for stage in (ScanStage.INGESTION, ScanStage.INVENTORY, ScanStage.SCAN, ScanStage.NORMALIZE, ScanStage.RULES, ScanStage.AI_ASSIST, ScanStage.REPORT)
+    ))
+    ScanPipelineWorker(registry, clock=lambda: BASE_TIME + timedelta(days=1)).run(queued.run.id, plan)
+    assert [item["percent"] for item in observed if item is not None] == [0, 15, 35, 55, 70, 85, 95]
+    assert get_work_progress(queued.run.id) is None
 
 
 def test_pos_a4_004_recoverable_failure_with_aggregate_is_partial(tmp_path: Path) -> None:

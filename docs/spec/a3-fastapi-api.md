@@ -90,3 +90,7 @@ POST /api/v1/scans adds a documented 503 response using the existing ErrorEnvelo
 本轮没有新增路由、写接口或持久模型迁移。状态响应在原字段之外可选返回 `created_at`、`started_at`、`finished_at`（UTC ISO 时间，未知为 null）和 `ai_progress`。后者仅在当前进程执行 AI 阶段时提供组工作量 `groups_total/groups_done`、实际 `requests/cache_hits/successful_groups`、AI阶段 `elapsed_seconds` 和 `eta_seconds` 区间，`eta_scope=ai_stage`。没有两个实际请求耗时样本、重启后无观测或估计超时则没有 ETA；可有 `estimate_insufficient=true`。这不是整链剩余时间，也不是资源覆盖率，不能用它重写终态或原 progress。历史任务依靠持久时间和原进度读取。
 
 风险列表在原 `items/total` 之外返回可选 `grouping`；筛选先作用于原发现再生成投影。`openguard.grouping/v1` 的每条 finding_id 有唯一主组，resource_count 是 ID 并集。组包含真实规则/版本、许可/证据/范围等 context、成员 ID、严重度数量及 advice。advice.kind 区分 group_ai、rule、historical、unavailable。旧客户端可忽略新增字段，新前端对缺失字段兼容；旧原始对象/CSV 不变。前端只投影和筛选已载入数据，分段展示不宣称后端分页。
+
+### 真实步骤进度补充（2026-09-09）
+
+现有状态响应可选 `work_progress: {percent, operation}`，仅运行中且当前进程有观测时非null。`percent` 为已执行流程步骤的权重（0≤值<100），不是文件覆盖率、耗时比例或许可证通过率；`operation` 为当前实际操作。Git/ZIP输入读取、文件清单、依赖解析、ScanCode/Syft结束事件驱动5/15/25/30/40/55/65/70等流程节点，后续按原阶段推进；AI按真实已完成组数在85至94之间推进。没有新事件时百分比不自行增长，界面活动光带仅说明仍在执行。原始 `progress`、`stage`、终态与持久报告不变；completed仍100，partial/failed按原值展示，终态清除临时观测。单进程128项有界观测，不新增队列、路由、定时任务或数据迁移；历史/旧接口缺字段时正常回退原进度。

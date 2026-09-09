@@ -25,6 +25,7 @@ from app.ingestion.trusted_egress import TrustedEgressProxy
 from app.ingestion.url_policy import parse_public_git_url
 from app.ingestion.workspace import WorkspaceManager
 from app.persistence import SQLiteScanRunRegistry
+from app.work_progress import activate as activate_work_progress, deactivate as deactivate_work_progress, get as get_work_progress
 from app.reporting import PipelineReportPublisher, ReportArtifactStore
 from app.security.address_policy import resolve_and_require_public
 from app.security.doh_resolver import _parse_dns, _query
@@ -450,6 +451,21 @@ def test_git_trusted_tree_lifetime_integrity_and_cleanup(local_git_service, beha
     with pytest.raises(IngestionSecurityError):
         captured["session"].read_bytes("README.md", max_bytes=512)
     assert list(root.iterdir()) == []
+
+
+def test_git_ingestion_emits_real_work_milestones(local_git_service):
+    service, _root = local_git_service
+    token = activate_work_progress("scan-git")
+    observed = []
+    try:
+        service.ingest_with_consumer(
+            "https://github.com/example/repo",
+            lambda _session: observed.append(get_work_progress("scan-git")),
+        )
+        assert observed == [{"percent": 30, "operation": "正在解析依赖清单"}]
+        assert get_work_progress("scan-git") == {"percent": 40, "operation": "依赖清单解析已完成"}
+    finally:
+        deactivate_work_progress("scan-git", token)
 
 
 @pytest.mark.parametrize("external_enabled", [False, True])

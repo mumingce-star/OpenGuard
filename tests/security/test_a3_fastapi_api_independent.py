@@ -446,6 +446,7 @@ def test_queued_status_and_result_routes_never_fake_scan_results(harness: ApiHar
         "started_at": None,
         "finished_at": None,
         "ai_progress": None,
+        "work_progress": None,
         "status": "queued",
         "stage": "queued",
         "progress": 0,
