@@ -248,6 +248,11 @@ function collection(value: unknown) {
   if (dto.total !== items.length) throw new Error("后端列表不完整，不能展示为完整结果。");
   return items;
 }
+function timestamp(primary: unknown, fallback: unknown): string | null {
+  if (text(primary) && Number.isFinite(Date.parse(primary))) return primary;
+  if (text(fallback) && Number.isFinite(Date.parse(fallback))) return fallback;
+  return null;
+}
 function scanRoute(id: string) { return "/scans/" + encodeURIComponent(id); }
 export function reportDownloadUrl(id: string, format: ReportFormat) {
   if (!formats.includes(format)) throw new Error("未知报告格式。");
@@ -310,7 +315,10 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
   const errors = list(state.errors);
   if (errors.some(e => !text(e.code) || !text(e.message))) throw new Error("后端诊断不符合冻结 API 契约。");
   return { id, mode: "api", project: run?.project?.name ?? "扫描任务", revision: typeof run?.project?.revision === "string" ? run.project.revision : null, input: run?.project?.source ?? "未提供",
-    createdAt: run?.created_at ?? null, startedAt: run?.started_at ?? null, finishedAt: run?.finished_at ?? null,
+    // Status is the live source while a scan runs.  A JSON report is only
+    // available after it reaches a terminal state, so retain it as a
+    // backwards-compatible fallback for older API responses.
+    createdAt: timestamp(state.created_at, run?.created_at), startedAt: timestamp(state.started_at, run?.started_at), finishedAt: timestamp(state.finished_at, run?.finished_at),
     status: state.status, stages, stageIndex: state.stage === "completed" ? stages.length : Math.max(0, stageKeys.indexOf(state.stage)), progress: state.progress,
     aiProgress: aiProgress(state.ai_progress), diagnostics: errors.map(e => ({ ...e, code: e.code, message: e.message })),
     error: errors.length ? errors.map(e => `${e.code}: ${e.message}`).join("；") : null,

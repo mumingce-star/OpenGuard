@@ -176,6 +176,30 @@ test("unavailable report does not invent licenses or timestamps; cancelled remai
   assert.equal(scan.resources[0].license, null);
   assert.equal(scan.resources[0].licenseStatus, "unknown");
 });
+test("live status timestamps drive elapsed time before a report exists", () => {
+  const s = runtime().load("services/scans.ts");
+  const live = s.adaptApiScan("real", {
+    ...state("running"),
+    created_at: "2026-09-09T12:00:00Z",
+    started_at: "2026-09-09T12:00:03Z",
+    finished_at: null,
+  }, { items: [], total: 0 }, { items: [], total: 0 }, []);
+  assert.equal(live.createdAt, "2026-09-09T12:00:00Z");
+  assert.equal(live.startedAt, "2026-09-09T12:00:03Z");
+  assert.equal(live.finishedAt, null);
+});
+test("terminal status timestamps take precedence over stale report timestamps", () => {
+  const s = runtime().load("services/scans.ts");
+  const scan = s.adaptApiScan("real", {
+    ...state(),
+    created_at: "2026-09-09T12:00:00Z",
+    started_at: "2026-09-09T12:00:03Z",
+    finished_at: "2026-09-09T12:00:08Z",
+  }, resources, risks, evidence, run);
+  assert.equal(scan.createdAt, "2026-09-09T12:00:00Z");
+  assert.equal(scan.startedAt, "2026-09-09T12:00:03Z");
+  assert.equal(scan.finishedAt, "2026-09-09T12:00:08Z");
+});
 test("API create uses frozen JSON and multipart body fields, not header or scopes", async () => {
   const r = runtime(), s = r.load("services/scans.ts"), calls = [];
   r.setFetch(async (url, options) => { calls.push({ url, ...options }); return Response.json({ scan_id: "real", status: "queued", status_url: "/api/v1/scans/real" }, { status: 202 }); });

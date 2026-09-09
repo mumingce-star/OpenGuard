@@ -4370,3 +4370,19 @@
 
 
 [20260909-2038-RootAstra-GroupV2-CodeValidation] 源码候选78127c8整套1313 passed/3 skipped/2 warnings（66.55秒），前端31 passed、tsc/Vite通过；两镜像核心源码及前端bundle与候选一致。3项跳过为显式网络/真实模型/受控回环门禁，不能冒称已运行。独立HTML Chrome完整打印预览已验证折叠明细展开，完整证据版179页，不等同摘要。运行服务保持旧版，本轮维护确认尚待，新三页/动态进度/真实整链/新四附件下载验收仍PARTIAL。普通推送候选分支不代表部署或最终签收；output证据保留本机，不操作组员分支。
+
+
+### [20260909-2046-RootAstra-GroupV2-Deploy] START
+
+- 用户已明确本轮维护确认；Root复核5261596工作区仅原output、活动扫描0后更新API/Web，保留数据卷。继续同任务实际Chrome三页、进度刷新/ETA、新四报告及公开样例验收；新增Flask/Requests/Express获用户授权。根代码已过同提交全量回归，不重新规划。独立子任务仅核对运行源码/旧报告SHA与新事实，Root独占实际扫描和浏览器/文档。预计本段8k–16k token，精确用量不可得。
+
+
+### [20260909-2104-RootAstra-GroupV2-Deploy] PARTIAL
+
+- GPT-6 Astra / Root：收到本轮维护授权后再次核验活动扫描0，更新API/Web且保留数据卷。GPT-5.6 Terra限定修复运行中状态时间戳适配并增2测试，Root独立复核；独立代理只读验证运行源码、原附件SHA与新事实。再次0活动后仅更新Web，未重启扫描中的服务。
+- Chrome实际提交openai-python/Flask/Express：依次completed100/partial95/completed100；总耗时364.385/88.733/57.352秒；AI22.224641/17.613938/5.470518秒，实际请求9/6/2，缓存0/0/1，成功组9/6/3。Flask保留14条parser限制及scan_incomplete。Requests本轮未新增扫描，避免无目标重复运行。openai与旧同revision及文件树digest，整链略慢于旧353.201秒，不宣称整链提速。
+- 新旧openai的资源/许可/发现(除AI关联)/证据(除采集时间)逐项相同；9组覆盖145发现恰好一次，145整改绑定各自证据。旧四附件字节及SHA不变；新四格式HTTP/元数据/SHA核验通过。浏览器自动下载JSON并保存仍被组织策略拦截，实际落盘未通过，未绕过安全策略。
+- 三页已在Chrome显示并保存前后截图：风险大类/9子组、资源类型144+1、报告摘要/紧凑明细。anyio筛选3/145，60成员组按25分段，144组件按25分段。实际进度采样5→63.5009→84.8879→85，真实终态100；历史failed5、Flaskpartial95如实展示。刷新恢复已确认。Flask实时原生UI曾显示AI3/6、预计7–14秒；逐秒API留证，冷启动/断网重连/估计超界的完整真实UI矩阵尚未完成。
+- 修复文件仅frontend/src/services/scans.ts与原model.test.mjs，原记录追加本日志/PROJECT_PROGRESS/AI log。前端33测试与tsc通过；新Web bundle index-D_2_yJ7V.js与本地源码构建/HTTP字节一致。后端未改，上一5261596全量1313通过/3跳过/2警告；本次最终提交回归结果另保留本机验收日志，不将旧版本结果合并计数。
+- 未完成：浏览器四格式落盘、完整打印的长页体验、冷启动/真实断网矩阵、真人建议质量及两Windows/12条复核。保留明确PARTIAL，不宣布P0通过。当前无需增加P1/P2功能。下一步Root在安全允许的Chrome下载路径拿到原文件SHA回执，用户汇总Windows/人工结果。
+- 本次运行精确token数不可获得；本段开工估算8k–16k，无法核定实耗；仅上述部署验收和发现的时间显示缺口，未改变扫描事实或工具预算。普通推送integration/p0；main与cz/xzb分支未操作，本机output不上传。
