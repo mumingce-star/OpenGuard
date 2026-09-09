@@ -1159,3 +1159,24 @@
 - 修改及验收：仅本日志、进度表和AI记录，无业务文件、接口、Schema、规则或依赖变更。临时Chrome已结束，既有Vite继续运行；没有关闭证书检查、防火墙或全局HTTPS保护。未重复产品单测。
 - 限制/下一步：页面仍为本机Mock演示；若用户原窗口继续访问HTTPS，应改用已打开的HTTP窗口。Root后续负责真实集成与异机验收，竞赛资格/材料/质量门禁沿用此前报告。本轮三份文档检查后发布当前功能分支，实际提交见Git回执。
 - token：本次运行精确token数不可获得；估算1,500～3,000，完成原定排障范围，无法精确确认实际用量。
+
+### [20260909-2125-GPT6-按说明书部署] START - 读取安装手册并执行真实部署
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-09 21:25（Asia/Shanghai）；当前分支codex/scan-reliability-integration，HEAD70212df。
+- 开工确认：沿用本对话已完整阅读的README/共享日志/进度/Sol交接及AGENTS，复读当前最新记录与Git状态；工作区干净，无冲突修改。
+- 范围：读取用户提供的PDF作为安装步骤参考；核验其代码版本，在隔离目录准备部署源码，配置Docker/WSL等必需环境并执行Compose/HTTP/扫描验证。原开发工作区和用户数据保留；不上传原始PDF、安装器、密钥或缓存。
+- 预计文件：协作记录与必要的部署复现文档；临时PDF工具、部署副本和运行输出置于已忽略目录。涉及Windows组件需管理员/UAC或重启时明确报告，不绕过系统权限。
+- 验收：按手册逐项执行，固定源码SHA、环境版本、Compose config/健康、真实请求及输出；未完成项据实标记，不以Mock代替。
+- token估算：10,000～20,000；本次运行精确token数不可获得。
+
+### [20260909-2145-GPT6-按说明书部署收工] PARTIAL - 安装与配置通过，等待Windows重启
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-09 21:45（Asia/Shanghai）；工作分支codex/scan-reliability-integration，部署副本detached450b8eb。
+- 结果：完整读取用户七页PDF v1.0，固定450b8ebe3381a6a27ca333ed78c9a7ad572ba65b；独立worktree无修改。实测Windows11Home64-bit/build26200、15.3GiB内存、固件虚拟化开启、磁盘充足。Docker官方安装器签名Valid；用户级尝试未生成安装，后续正常UAC标准安装成功退出0。已安装Desktop4.90.0.238679、Docker CLI29.7.2、Compose5.5.1。
+- WSL前置：正常UAC调用DISM启用Microsoft-Windows-Subsystem-Linux和VirtualMachinePlatform，日志显示Installed、Reboot required=yes；重启由用户保存工作后执行，没有自动重启。
+- 验证：三个手册环境开关下Compose config退出0、services为api/web；Docker Desktop状态stopped，后端明确Virtual Machine Platform not enabled / No virtualization available。hello-world最终退出1（Linux Engine _ping500），没有容器成功证据；该客户端已退出，无悬挂探针。Windows组件仍待重启生效，不能继续完成镜像构建/真实HTTP/扫描。
+- 说明书差异：scanner是tools profile的一次性检查，默认生产扫描在api运行，不要求第三个常驻scanner。保持说明书固定版本与原安全限制，未擅自替换新版。
+- 文件：新增部署回执，更新进度/AI/第三方台账与本日志，共五份公开文档；本机额外PDF读取助手/pypdf6.18.0、源码worktree和首次部署cmd均置于忽略.tools。原PDF、安装器、本机路径/数据/密钥不上传。无产品代码、API、Schema或规则变更；本轮未重复单元测试。
+- 收尾与发布：diff检查通过，副本SHA和干净状态已确认；五份文档审查后普通推送当前功能分支，提交以Git回执为准，不修改main。Windows安装产物和配置仅本机有效。
+- 未完成/下一步：用户重启并打开Docker Desktop后，Root检查WSL版本/Linux引擎、hello-world、Compose构建健康、8080真实页面、Git/ZIP与四报告及持久化；如WSL运行时仍缺失按官方步骤继续安装。AI保持关闭。当前5173Mock与此前局部测试不代表正式部署，报名/权属、完整交付和竞争力门禁仍待各自验收。
+- token：本次运行精确token数不可获得；估算10,000～20,000，范围包含手册读取、安装、独立副本和复现助手；无法精确确认实际用量。环境安装取得进展，完整部署因必要系统重启未完成。

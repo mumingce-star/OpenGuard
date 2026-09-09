@@ -10,3 +10,10 @@
 | Anchore Syft | 外部 SBOM 扫描器（可选部署工具） | 1.51.0；Windows amd64 包 SHA-256 `fc5ffaeffb993576ece9c791da5a688fb2c8969a1479bbfe58583672c64da336` | https://github.com/anchore/syft/releases/tag/v1.51.0 | Apache-2.0 | 仅通过无 shell、超时和输出上限的适配器读取 JSON；不执行被扫描项目代码 | 部署时保留上游许可证、版本与校验；工具输出不猜测许可证 | OpenGuard 自研安全调用边界、相对定位校验、P0 Component/Evidence 映射与跨来源合并 | 已以官方 checksums 清单校验并运行 `syft version`（2026-09-02）；不随仓库分发 | 不在仓库存放或自动下载二进制 |
 
 所有依赖、模型、数据、框架、组件、工具、素材和第三方服务在首次引入时登记，不在提交前集中补录。
+
+## 2026-09-09 本机部署辅助工具（不随作品分发）
+
+| 名称 | 版本 | 来源与授权信息 | 使用与验证 | 分发范围 |
+|---|---|---|---|---|
+| Docker Desktop | 4.90.0.238679；CLI29.7.2；Compose5.5.1 | Docker官方Windows安装器；Docker Desktop Subscription Service Agreement，发行包各组件另依随包许可证 | 仅为本机容器环境；Docker Inc数字签名Valid，安装退出0，版本命令与Compose静态校验通过；引擎待Windows重启验收 | 不提交安装器/镜像/运行数据；团队自行确认适用订阅条件 |
+| pypdf | 6.18.0 | PyPI pypdf6.18.0，上游py-pdf/pypdf；发行包附带BSD条款LICENSE | 临时读取用户部署PDF的七页文字；不加入后端依赖，不上传原PDF或抽取全文 | 仅临时本机工具，不提交第三方实现 |

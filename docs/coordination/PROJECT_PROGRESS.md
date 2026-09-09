@@ -1,5 +1,16 @@
 # OpenGuard 项目进度台账
 
+## 2026-09-09 按说明书安装部署
+
+| 项目 | 实际状态 | 下一步/责任 |
+|---|---|---|
+| 说明书指定源码 | 已固定450b8ebe3381a6a27ca333ed78c9a7ad572ba65b，独立部署副本干净 | Root继续使用该版本，保留开发分支 |
+| Docker安装 | Desktop4.90.0、CLI29.7.2、Compose5.5.1已安装并验证；签名Valid | 用户保存工作并重启Windows |
+| WSL/虚拟机平台 | DISM启用成功，明确Reboot required=yes | 重启后Root复验WSL运行时与Linux引擎 |
+| Compose | 静态配置通过，默认api/web；引擎stopped，hello-world失败 | 引擎就绪后Root构建并验证真实扫描/报告 |
+
+详见[本轮部署回执](2026-09-09-manual-deployment.md)。当前8080正式服务尚未运行，不把5173演示页当作部署成功。本轮仅公开五份文档/台账，源码副本与安装产物保持忽略。
+
 2026-09-09 网页协议排障（Root/GPT-6）：HTTP localhost:5173/app/new-scan成功，Chrome独立环境实际渲染工作台，已用Edge打开正确HTTP地址；HTTPS同端口失败，Vite只提供HTTP。未改变浏览器安全策略或业务代码；真实API/异机验收未由本轮完成，三份协作记录发布当前功能分支。
 
 2026-09-09 本机演示启动（Root/GPT-6）：当前功能分支前端Vite已在 `http://127.0.0.1:5173/` 后台运行，首页与 `/app/new-scan` 实测HTTP200。仅Mock演示，非真实扫描或异机验收；无产品文件变更，本轮上传三份协作记录。
