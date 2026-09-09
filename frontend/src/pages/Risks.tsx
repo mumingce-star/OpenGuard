@@ -6,7 +6,7 @@ import {
   severityLabels,
   resourceTypes,
 } from "../types/domain";
-import { filterRisks } from "../services/model";
+import { filterRisks, groupRisks, riskCounts, severityOrder, aiSourceLabel } from "../services/model";
 import { updateHandling } from "../services/scans";
 import {
   Header,
@@ -29,6 +29,8 @@ export function Risks({
   open: (id: string) => void;
 }) {
   const rows = filterRisks(scan, query);
+  const groups = groupRisks(scan, rows);
+  const counts = riskCounts(rows);
   return (
     <>
       <Header
@@ -36,6 +38,17 @@ export function Risks({
         eyebrow={"FINDINGS / " + scan.id}
         description="筛选、处理与复扫验证分开记录。所有判断都应回到证据。"
       />
+      {!!scan.diagnostics?.length && <Panel title="扫描完整性" caption="以下是扫描执行的未覆盖内容或限制，不计入许可证发现数量。">
+        <details>
+          <summary>查看 {scan.diagnostics.length} 条扫描诊断</summary>
+          {scan.diagnostics.map((d, i) => <div key={i} className="og-source scanner">
+            <strong>{d.code}</strong>
+            <p style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{d.message}</p>
+            <small>{d.stage ? `阶段：${d.stage}` : ""}{d.tool ? ` · 工具：${d.tool}` : ""}</small>
+            {!!d.evidence_ids?.length && <p>证据引用：{d.evidence_ids.join("、")}</p>}
+          </div>)}
+        </details>
+      </Panel>}
       <div className="og-filters">
         <label className="og-field">
           搜索风险
@@ -92,7 +105,7 @@ export function Risks({
       </div>
       <Panel
         title={"筛选结果 · " + rows.length + " / " + scan.risks.length}
-        caption="点击风险查看它自己的资源、依据与原文"
+        caption="先筛选原始发现，再按问题分类。展开同类组可逐条核对，报告仍保留全部明细。"
       >
         {!rows.length ? (
           <Empty
@@ -100,28 +113,13 @@ export function Risks({
             detail="可以清空筛选，或返回概览查看本次任务。"
           />
         ) : (
-          rows.map((r) => (
-            <button
-              className="og-risk-preview"
-              key={r.id}
-              onClick={() => open(r.id)}
-            >
-              <SeverityBadge value={r.severity} />
-              <div>
-                <strong>{r.title}</strong>
-                <small>
-                  {r.id} · {r.outcome ?? "演示风险"} ·{" "}
-                  {scan.resources.find((x) => x.id === r.resourceId)?.name ??
-                    "待补充"}
-                </small>
-                <small>
-                  {verificationLabels[r.verification]} · {r.evidenceIds.length}{" "}
-                  个证据引用
-                </small>
-              </div>
-              <span>{handlingLabels[r.handling]} →</span>
-            </button>
-          ))
+          <div key={scan.id + query.toString()}>
+            <p>{counts.resources} 个唯一资源 · {counts.findings} 条发现</p>
+            <p>{severityOrder.map(v => `${severityLabels[v]} ${counts.counts[v]}`).join(" · ")}</p>
+            {groups.map(group => (
+              <RiskCategory key={group.title} group={group} scan={scan} open={open} />
+            ))}
+          </div>
         )}
       </Panel>
     </>
@@ -209,14 +207,9 @@ export function RiskDetail({
             </div>
             <div className="og-source ai">
               <span>
-                AI 解释 ·{" "}
-                {risk.ai.status === "ready"
-                  ? "辅助内容"
-                  : risk.ai.status === "failed"
-                    ? "生成失败"
-                    : "暂不可用"}
+                {aiSourceLabel(risk)}
               </span>
-              <p>
+              <p style={{ whiteSpace: "pre-wrap" }}>
                 {risk.ai.text ??
                   "没有可用 AI 解释。已提供的扫描事实与规则结果仍然可查看。"}
               </p>
@@ -255,7 +248,8 @@ export function RiskDetail({
               </button>
             }
           >
-            <p>{risk.remediation ?? "整改建议待补充"}</p>
+            {risk.remediation?.startsWith("【资源级AI解释】") && <p className="og-warning">来源说明：【资源级AI解释】为模型辅助解释；【扫描事实】【读取范围】【结论边界】及【证据定位】【事实导航】等步骤由程序依据扫描记录整理，不是模型原话，也不表示链接已核验授权。</p>}
+            <p style={{ whiteSpace: "pre-wrap" }}>{risk.remediation ?? "未提供生成建议，请依据已列出的原文进行人工复核。"}</p>
             <p className="og-warning">
               完成整改后仍需真实复扫；不预测风险降级或准备度分数。
             </p>
@@ -272,4 +266,41 @@ export function RiskDetail({
       </div>
     </>
   );
+}
+
+function RiskCategory({ group, scan, open }: { group: ReturnType<typeof groupRisks>[number]; scan: Scan; open: (id: string) => void }) {
+  const [expanded, setExpanded] = useState(false);
+  return <section className="og-risk-group">
+    <button className="og-risk-preview" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>
+      {group.highest && <SeverityBadge value={group.highest} />}
+      <div><strong>{group.title}</strong><small>{group.resources} 个唯一资源 · {group.findings} 条发现 · {group.groups.length} 个同类组 · 左侧为实际最高严重度</small>
+      <small>{severityOrder.filter(s => group.counts[s]).map(s => `${severityLabels[s]} ${group.counts[s]}`).join(" · ")}</small></div>
+      <span>{expanded ? "收起" : "展开"}</span>
+    </button>
+    {expanded && group.groups.map(g => <RiskMembers key={g.key} group={g} scan={scan} open={open} />)}
+  </section>;
+}
+function RiskMembers({ group, scan, open }: { group: ReturnType<typeof groupRisks>[number]["groups"][number]; scan: Scan; open: (id: string) => void }) {
+  const { title, rows } = group;
+  const [expanded, setExpanded] = useState(false);
+  const [limit, setLimit] = useState(25);
+  const counts = riskCounts(rows);
+  return <section style={{ paddingLeft: "1rem" }}>
+    <button className="og-risk-preview" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>
+      {counts.highest && <SeverityBadge value={counts.highest} />}
+      <div><strong>{title}</strong><small>{group.summary}</small><small>{counts.resources} 个唯一资源 · {counts.findings} 条发现</small></div>
+      <span>{expanded ? "收起明细" : "展开明细"}</span>
+    </button>
+    {expanded && <>
+      <p>原始规则：{group.rule}</p><p style={{overflowWrap: "anywhere"}}>触发说明：{group.trigger}</p>
+      <p>当前显示 {Math.min(limit, rows.length)} / {rows.length} 条原始发现</p>
+      {rows.slice(0, limit).map(r => <button className="og-risk-preview" key={r.id} onClick={() => open(r.id)}>
+        <SeverityBadge value={r.severity} />
+        <div><strong>{r.title}</strong><small>{r.id} · {scan.resources.find(x => x.id === r.resourceId)?.name ?? "待补充"}</small>
+        <small>{verificationLabels[r.verification]} · {r.evidenceIds.length} 个证据引用</small></div>
+        <span>{handlingLabels[r.handling]} →</span>
+      </button>)}
+      {limit < rows.length && <button onClick={() => setLimit(n => n + 25)}>继续显示后 25 条（剩余 {rows.length - limit} 条）</button>}
+    </>}
+  </section>;
 }

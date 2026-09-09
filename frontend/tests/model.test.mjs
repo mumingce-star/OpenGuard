@@ -295,3 +295,105 @@ test("route IDs, filters and invalid paths are handled explicitly", () => {
   r.shared.window.location = { pathname: "/app/overview", search: "" };
   assert.equal(route.readRoute().page, "new-scan");
 });
+test("risk aggregation preserves members, actual levels, and unique resource counts after filtering", () => {
+  const scan = fixture();
+  scan.risks = Array.from({length: 142}, (_, i) => ({...scan.risks[0], id: `r${i}`, ruleId: "license-evidence-gate", severity: "info"}));
+  let groups = model.groupRisks(scan, model.filterRisks(scan, new URLSearchParams()));
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].findings, 142);
+  assert.equal(groups[0].resources, 1);
+  assert.equal(groups[0].highest, "info");
+  assert.equal(groups[0].groups.flatMap(g => g.rows).length, 142);
+  scan.risks[1].severity = "high";
+  groups = model.groupRisks(scan, scan.risks);
+  assert.equal(groups[0].highest, "high");
+  assert.equal(groups[0].counts.info, 141);
+  assert.equal(groups[0].counts.high, 1);
+  groups = model.groupRisks(scan, model.filterRisks(scan, new URLSearchParams("severity=info")));
+  assert.equal(groups[0].highest, "info");
+  assert.equal(groups[0].findings, 141);
+  scan.risks[0].ruleId = "new-unknown-rule";
+  scan.risks[0].title = "GPL commercial conflict";
+  groups = model.groupRisks(scan, [scan.risks[0]]);
+  assert.equal(groups[0].title, "其他／未分类发现");
+  assert.equal(model.groupRisks(scan, []).length, 0);
+});
+test("adapter preserves rule identity and rejects illegal severity without downgrading", () => {
+  const s = runtime().load("services/scans.ts");
+  for (const severity of ["info", "low", "medium", "high"]) {
+    const input = {...risks, items: [{...risks.items[0], rule_id: "license-evidence-gate", severity}]};
+    const result = s.adaptApiScan("real", state(), resources, input, evidence, run);
+    assert.equal(result.risks[0].severity, severity);
+    assert.equal(result.risks[0].ruleId, "license-evidence-gate");
+  }
+  for (const severity of [null, "critical", "HIGH", "", "bogus"]) {
+    const input = {...risks, items: [{...risks.items[0], severity}]};
+    assert.throws(() => s.adaptApiScan("real", state(), resources, input, evidence, run), /契约/);
+  }
+});
+test("AI provenance distinguishes shared legacy, resource-level, and rule fallback", () => {
+  const risk = fixture().risks[0];
+  risk.ai = {status: "ready", text: "【同类风险AI核验建议，未逐项确认许可】test"};
+  assert.match(model.aiSourceLabel(risk), /旧版同类共享/);
+  risk.ai.text = "【资源级AI解释】test";
+  assert.match(model.aiSourceLabel(risk), /资源级 AI/);
+  risk.ai = {status: "unavailable", text: null};
+  assert.match(model.aiSourceLabel(risk), /规则回退/);
+  risk.ai = {status: "ready", text: "Old explanation"};
+  assert.match(model.aiSourceLabel(risk), /未标明/);
+});
+test("scan diagnostics preserve repeated codes and original causes outside finding counts", () => {
+  const s = runtime().load("services/scans.ts");
+  const errors = Array.from({length: 14}, (_, i) => ({code: "python_dependency_scan_partial", stage: "scan", tool: "python", message: `file${i}: unsupported declaration`, recoverable: true, evidence_ids: []}));
+  const scan = s.adaptApiScan("real", {...state("partial"), errors}, resources, risks, evidence);
+  assert.equal(scan.diagnostics.length, 14);
+  assert.equal(JSON.stringify(scan.diagnostics), JSON.stringify(errors));
+  assert.equal(scan.risks.length, 1);
+  assert.equal(scan.status, "partial");
+  assert.equal(model.groupRisks(scan, scan.risks)[0].findings, 1);
+});
+test("same title cannot merge different recorded licenses or usage triggers", () => {
+  const scan = fixture();
+  scan.resources[0].license = "MIT";
+  scan.resources[1].license = "GPL-3.0-only";
+  scan.risks = [
+    {...scan.risks[0], id: "a", ruleId: "license-evidence-gate", resourceId: scan.resources[0].id, fact: "distribution"},
+    {...scan.risks[0], id: "b", ruleId: "license-evidence-gate", resourceId: scan.resources[1].id, fact: "distribution"},
+    {...scan.risks[0], id: "c", ruleId: "license-evidence-gate", resourceId: scan.resources[0].id, fact: "internal use"},
+  ];
+  scan.resources[1].type = scan.resources[0].type;
+  const groups = model.groupRisks(scan, scan.risks);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].groups.length, 3);
+  assert.equal(groups[0].findings, 3);
+  assert.equal(groups[0].resources, 2);
+});
+test("resource AI prose does not absorb deterministic fact-navigation steps", () => {
+  const s = runtime().load("services/scans.ts");
+  const summary = "【资源级AI解释】This specific evidence is incomplete.\n【扫描事实】version=1.0\n【结论边界】not authorization";
+  const snapshot = {...run, remediations: [{...run.remediations[0], summary, steps: ["【事实导航】Look up the source"], generated_by: {type: "ai"}}]};
+  const scan = s.adaptApiScan("real", state(), resources, risks, evidence, snapshot);
+  assert.equal(scan.risks[0].ai.text, "【资源级AI解释】This specific evidence is incomplete.");
+  assert.ok(scan.risks[0].remediation.includes("【事实导航】"));
+  assert.ok(scan.risks[0].remediation.includes("【扫描事实】"));
+});
+test("group labels are factual Chinese and groups sort by actual maximum severity", () => {
+  const scan = fixture();
+  scan.resources[0].license = "MIT";
+  scan.resources[1].license = "NOASSERTION";
+  scan.resources[1].type = "Package";
+  const base = scan.risks[0];
+  scan.risks = [
+    {...base, id: "a", ruleId: "license-evidence-gate", severity: "info", outcome: "review_required", resourceId: scan.resources[0].id},
+    {...base, id: "b", ruleId: "license-evidence-gate", severity: "medium", outcome: "unknown", resourceId: scan.resources[1].id},
+    {...base, id: "c", ruleId: "LIC-GPL-3.0-ONLY-COPYLEFT", severity: "high", resourceId: scan.resources[0].id},
+  ];
+  const groups = model.groupRisks(scan, scan.risks);
+  assert.equal(groups[0].highest, "high");
+  assert.equal(groups[1].groups[0].highest, "medium");
+  assert.match(groups[1].groups[0].title, /软件依赖 · 许可待核验 · 判断依据不足/);
+  assert.match(groups[1].groups[1].title, /已记录许可 MIT/);
+  assert.equal(groups[1].groups[1].rule, "license-evidence-gate");
+  assert.equal(groups[1].groups[1].trigger, base.fact);
+  assert.equal(new Set(groups.flatMap(g => g.groups.map(s => s.key))).size, 3);
+});

@@ -339,3 +339,11 @@ POST can now return HTTP 503, existing ErrorEnvelope shape with code `scan_capac
 This is a single-API-process admission watermark and safety headroom, NOT an OS volume quota or a guaranteed per-scan write maximum. Already admitted work, external processes or unbounded registry snapshots can exceed the watermark. Do not deploy multiple API workers claiming the same concurrency protection. Reports and SQLite are not auto-pruned; Owner checks usage and handles retention manually, backing up before any separately authorized removal. Do not delete the data volume to free space. Full physical cumulative quota remains unverified, not silently marked passed.
 
 Before Docker update/deployment verify there are zero queued/running scans and no pending upload. Maintenance interrupts in-process Git work; it is not automatically replayed. Keep the task record and diagnose before any controlled state recovery. After maintenance start the original services, verify health and existing report hashes. Noninteractive `docker desktop update` can take default confirmation and restart immediately: never invoke it during active work. No automatic Git retries are introduced.
+
+## 2026-09-09 定向优化验收说明
+
+原Git/ZIP、Compose开关、模型版本、数据卷及安全限额保持。新报告将短AI核验重点与程序整理的事实导航分开；同类来源情境仍可有相同重点，不代表逐条完成授权审计。旧报告继续按原字节读取，旧AI建议在界面标为共享建议。
+
+固定Flask revision `d73fa1cdcbd8b1465c151db8924ba58b1dd14e35` 的新Chrome任务为 `scn_0b8c545a-8904-410e-908e-8dbeee4a9dc1`。本机真实全链115.786秒，142条AI有效；仍partial，因为5个Python文件单独解析成功后，合并产生5个重复声明与9个多约束诊断。不能通过隐藏诊断或把95改成100来算成功。旧版同revision任务74.242秒，旧共享AI独立约8.39秒；新版逐项证据输入AI独立41.406秒，并非比共享模板更快，满足本次60秒目标。该单次实测不保证其他设备/仓库同速。
+
+Windows仍使用本说明既有步骤：两台各跑无AI主链，至少一台跑真实Qwen；回执附checkout提交、环境、task ID、终态、实际等待和四报告SHA。不能将本机结果替代异机回执或人工许可复核。

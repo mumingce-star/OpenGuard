@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -140,6 +141,29 @@ def _producer_key(producer: ProducerRef) -> str:
     return json.dumps(producer.model_dump(mode="json"), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
+def _python_partial_messages(mapping: PythonP0MappingResult) -> list[str]:
+    """Expose validated parser reasons without declaration text or unsafe paths."""
+    messages: list[str] = []
+    for diagnostic in mapping.diagnostics:
+        path = diagnostic.manifest_path or ""
+        # Repository filenames can contain credentials or control characters too.
+        # Only a conservative relative display path crosses into the error message.
+        safe_path = (
+            len(path) <= 500
+            and re.fullmatch(r"[\w./ -]+", path) is not None
+            and not path.startswith("/")
+            and all(part not in {"", ".", ".."} for part in path.split("/"))
+        )
+        location = path if safe_path else "[path withheld]"
+        field = diagnostic.field_locator
+        if field and len(field) <= 250 and re.fullmatch(r"[A-Za-z0-9._%\[\]-]+", field):
+            location += f" ({field})"
+        elif diagnostic.start_line is not None:
+            location += f":{diagnostic.start_line}"
+        messages.append(f"Python dependency scan was partial: {diagnostic.code} at {location}. {diagnostic.message}")
+    return messages or ["Python dependency scan was partial."]
+
+
 def build_dependency_plan(
     ingestion: Callable[[ScanRun], ScanRun],
     state: DependencyPlanState,
@@ -214,13 +238,19 @@ def build_dependency_plan(
                 if type(mapping) is PythonP0MappingResult
                 else mapping.status is JavascriptParseStatus.PARTIAL
             ):
-                errors.append(
+                messages = (
+                    _python_partial_messages(mapping)
+                    if type(mapping) is PythonP0MappingResult
+                    else [f"{title} dependency scan was partial."]
+                )
+                errors.extend(
                     ScanError(
                         code=f"{lane.name}_dependency_scan_partial",
                         stage=ScanStage.SCAN,
-                        message=f"{title} dependency scan was partial.",
+                        message=message,
                         recoverable=True,
                     )
+                    for message in messages
                 )
 
         producers = {_producer_key(item.producer): item.producer for item in evidence}

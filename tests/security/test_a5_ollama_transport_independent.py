@@ -277,9 +277,11 @@ def test_real_tcp_valid_result_flows_through_a5_to_pending_remediation() -> None
     run = _clean_run()
     scenario = _Scenario()
     with _LoopbackFixture(scenario) as fixture:
+        provider = OllamaProvider(fixture.origin)
+        provider.resource_batch_mode = False  # Keep the original single-result protocol covered.
         result = apply_ai_remediations(
             run,
-            OllamaProvider(fixture.origin),  # type: ignore[arg-type]
+            provider,
             timeout_seconds=2.0,
         )
 
@@ -397,3 +399,90 @@ def test_transport_fixture_has_no_proxy_environment_side_effects(monkeypatch) ->
     monkeypatch.setenv("NO_PROXY", "")
     assert os.environ["HTTP_PROXY"] != before["HTTP_PROXY"]
     assert os.environ["NO_PROXY"] != before["NO_PROXY"]
+
+
+class _ResourceBatchScenario(_Scenario):
+    """Independent wire response; uses only the request's declared membership."""
+
+    def __init__(self, fault: str | None = None) -> None:
+        super().__init__()
+        self.fault = fault
+        self.batch_request: dict[str, Any] | None = None
+
+    def response(self, method: str, path: str, body: bytes) -> tuple[int, str, bytes]:
+        if (method, path) != ("POST", "/api/generate"):
+            return super().response(method, path, body)
+        wire = json.loads(body)
+        request = json.loads(wire["prompt"])
+        self.batch_request = request
+        contexts = [{**request.get("common", {}), **item} for item in request["items"]]
+        result = {
+            "batch_id": request["batch_id"],
+            "items": {str(item["i"]): f"核对{item['scope']}证据与对应版本许可原文的关联" for item in contexts},
+        }
+        if self.fault == "membership":
+            result["items"]["999"] = "核对声明证据与对应版本许可原文的关联"
+        elif self.fault == "identity":
+            result["batch_id"] = "wrong-batch"
+        elif self.fault == "generic":
+            result["items"]["0"] = "核对许可原文与实际使用条件"
+        response = "{broken" if self.fault == "json" else json.dumps(result, ensure_ascii=False)
+        return 200, "application/json", json.dumps({
+            "model": EXPECTED_MODEL_NAME, "done": True, "response": response,
+        }).encode()
+
+
+def test_default_resource_batch_over_real_tcp_preserves_facts_and_pending_references() -> None:
+    run = _clean_run()
+    before = run.model_dump(mode="json")
+    scenario = _ResourceBatchScenario()
+    with _LoopbackFixture(scenario) as fixture:
+        result = apply_ai_remediations(run, OllamaProvider(fixture.origin), timeout_seconds=2.0)
+    assert result.status == "generated"
+    assert len(result.run.remediations) == 1
+    remediation = result.run.remediations[0]
+    assert remediation.finding_id == KNOWN_FINDING_ID
+    assert remediation.evidence_ids == [KNOWN_EVIDENCE_ID, "evd_323e4567-e89b-12d3-a456-426614174000"]
+    assert remediation.evidence_ids == run.findings[0].evidence_ids
+    assert remediation.verification_status.value == "pending"
+    assert remediation.generated_by.model_id == EXPECTED_MODEL_ID
+    assert result.run.findings[0].remediation_id == remediation.id
+    request = scenario.batch_request
+    assert request is not None
+    assert request["schema_version"] == "openguard.ai-resource-batch-input/v1"
+    assert [item["i"] for item in request["items"]] == [0]
+    context = {**request.get("common", {}), **request["items"][0]}
+    assert context["scope"] == "声明"
+    resource = next(r for r in [*run.components, *run.ai_assets] if r.id == run.findings[0].resource_id)
+    assert context["name"] == resource.name
+    assert context["version"] == resource.version
+    assert [item["locator"] for item in context["evidence"]] == [
+        next(e.locator for e in run.evidence if e.id == evidence_id)
+        for evidence_id in run.findings[0].evidence_ids
+    ]
+    assert context["scope"] in remediation.summary
+    after = result.run.model_dump(mode="json")
+    for field in ("components", "ai_assets", "evidence", "licenses", "obligations", "project", "summary"):
+        assert after[field] == before[field]
+    after["findings"][0]["remediation_id"] = None
+    assert after["findings"] == before["findings"]
+    assert run.model_dump(mode="json") == before
+    assert [path for _, path, _ in scenario.requests] == ["/api/version", "/api/tags", "/api/generate"]
+    wire = json.loads(scenario.requests[-1][2])
+    assert wire["format"]["properties"]["batch_id"] == {"const": request["batch_id"]}
+    assert wire["format"]["properties"]["items"]["required"] == ["0"]
+
+
+@pytest.mark.parametrize("fault", ["membership", "identity", "generic", "json"])
+def test_real_tcp_resource_batch_invalid_output_degrades_without_remediation(fault: str) -> None:
+    run = _clean_run()
+    scenario = _ResourceBatchScenario(fault)
+    with _LoopbackFixture(scenario) as fixture:
+        result = apply_ai_remediations(run, OllamaProvider(fixture.origin), timeout_seconds=2.0)
+    assert result.status == "degraded"
+    assert result.run.remediations == []
+    assert result.run.findings[0].remediation_id is None
+    assert any(error.code == "ai_response_invalid" for error in result.run.errors)
+    assert result.run.evidence == run.evidence
+    assert result.run.components == run.components
+    assert result.run.findings == run.findings

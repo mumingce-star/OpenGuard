@@ -282,7 +282,10 @@ export function App() {
               {scan?.error && (
                 <div className="og-error" role="alert">
                   <strong>{["queued", "running"].includes(scan.status) ? "扫描仍在执行，已有提示：" : scan.status === "partial" ? "扫描已结束，部分内容未完成：" : "任务未完整成功："}</strong>
-                  {scan.error} <button onClick={reload}>重新查询</button>
+                  {scan.diagnostics?.length ? <>
+                    <span>{scan.diagnostics.length} 条扫描诊断。已有资源与发现不代表完整覆盖。</span>
+                    <details><summary>查看具体原因</summary>{scan.diagnostics.map((d, i) => <p key={i} style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{d.code}：{d.message}</p>)}</details>
+                  </> : scan.error} <button onClick={reload}>重新查询</button>
                 </div>
               )}
               {content}

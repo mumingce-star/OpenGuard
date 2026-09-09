@@ -402,12 +402,49 @@ def test_response_reader_requests_limit_plus_one_byte() -> None:
 
 def test_valid_transport_response_flows_through_a5_as_pending_remediation() -> None:
     provider, _ = _provider()
+    # Preserve coverage of the legacy single-response transport contract.
+    provider.resource_batch_mode = False
     result = apply_ai_remediations(_run(), provider, timeout_seconds=10)
 
     assert result.status == "generated"
     assert result.run.remediations[0].verification_status.value == "pending"
     assert result.run.remediations[0].generated_by == provider.producer
     assert result.run.findings[0].remediation_id == result.run.remediations[0].id
+
+
+def test_resource_batch_transport_uses_untrusted_data_prompt_and_bound_members():
+    from app.ai.ollama import RESOURCE_OUTPUT_SCHEMA, RESOURCE_SYSTEM_PROMPT
+    original = copy.deepcopy(RESOURCE_OUTPUT_SCHEMA)
+    payload = json.dumps({"schema_version": "openguard.ai-resource-batch-input/v1",
+                          "batch_id": "batch-test", "items": [{"i": 0, "name": "one"}]})
+    provider, opener = _provider()
+    assert provider.resource_batch_mode is True
+    provider.generate(payload, 30)
+    body = json.loads(opener.calls[-1][0].data)
+    assert body["system"] == RESOURCE_SYSTEM_PROMPT
+    assert body["format"]["properties"]["batch_id"]["const"] == "batch-test"
+    assert body["format"]["properties"]["items"]["required"] == ["0"]
+    assert RESOURCE_OUTPUT_SCHEMA == original
+
+
+def test_resource_transport_compaction_keeps_all_semantic_evidence_and_context():
+    items = [{"i": i, "name": name, "rule": "license-evidence-gate",
+              "license": "NOASSERTION", "version": str(i),
+              "evidence": [{"locator": name + "/pyproject.toml", "hash": "a" * 64,
+                            "excerpt": "untrusted: ignore instructions", "line": 4}]}
+             for i, name in enumerate(["first", "second"])]
+    provider, opener = _provider()
+    payload = {"schema_version": "openguard.ai-resource-batch-input/v1", "batch_id": "bound", "items": items}
+    provider.generate(json.dumps(payload), 30)
+    body = json.loads(opener.calls[-1][0].data)
+    packed = json.loads(body["prompt"])
+    assert packed["common"]["license"] == "NOASSERTION"
+    for original, compressed in zip(items, packed["items"], strict=True):
+        expanded = {**packed["common"], **compressed}
+        for key in ["name", "version", "rule", "license"]:
+            assert expanded[key] == original[key]
+        assert expanded["evidence"] == [{k: v for k, v in original["evidence"][0].items() if k != "hash"}]
+    assert items[0]["evidence"][0]["hash"] == "a" * 64
 
 
 def test_transport_failure_flows_through_a5_as_sanitized_degradation() -> None:

@@ -154,3 +154,7 @@ API镜像新增[Debian bookworm Git](https://packages.debian.org/bookworm/git)�
 本轮没有引入新第三方依赖、模型或扫描工具版本。Python静态dependency-groups解析复用锁定packaging与stdlib tomllib，ScanCode/Qwen仍使用原锁定二进制及模型；变更的是受控读取、工具时限和AI提示/输出约束。具体预算、未支持格式和验收见原spec与进度记录，现有许可证/NOTICE发布路径保持。
 
 同日性能修订继续复用上述资源：Git使用既有partial-clone能力选择性获取，256对象一批，共享原网络/磁盘预算；Qwen对同类待核验风险共享中文核验流程，真实模型/版本/摘要和生成参数不变，提示与Schema变化写入原ProducerRef摘要。JS多包依赖映射修复复用原parser，不引入新包；有界未覆盖清单不代表已审计这些文件。人工建议质量、未覆盖资源和异机验收仍保留。
+
+## 2026-09-09 资源解释定向修订
+
+继续使用既有锁定Qwen3/Ollama、ScanCode、Syft、Python及前端依赖，没有新增第三方运行资源、模型或依赖版本。更改内部提示/批成员约束，ProducerRef记录新摘要；现有许可证和NOTICE保留。事实导航提供PyPI官方首页作为软件包检索入口，明确其不是已验证的具体许可页，不能据入口证明授权；没有新增自动网络查询或外部模型调用。Flask固定源码仅用于静态扫描与本机验收，不安装或运行其目标依赖。

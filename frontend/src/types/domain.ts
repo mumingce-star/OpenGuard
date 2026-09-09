@@ -41,6 +41,7 @@ export interface Risk {
   ai: { status: "ready" | "failed" | "unavailable"; text: string | null };
   evidenceIds: string[];
   outcome?: string;
+  ruleId?: string;
 }
 export interface Resource {
   id: string;
@@ -63,6 +64,7 @@ export interface Scan {
   stageIndex: number;
   stages: string[];
   error: string | null;
+  diagnostics?: { code: string; message: string; stage?: string; tool?: string | null; recoverable?: boolean; evidence_ids?: string[] }[];
   resources: Resource[];
   risks: Risk[];
   evidence: Evidence[];

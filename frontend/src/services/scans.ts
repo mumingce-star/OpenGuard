@@ -274,9 +274,11 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
     const rem = remediations.find(x => x.id === r.remediation_id && x.finding_id === r.id);
     const advice = rem ? [rem.summary, ...rem.steps].join("\n") : null;
     const ai = rem?.generated_by?.type === "ai";
-    return { id: r.id, resourceId: r.resource_id, title: r.title, severity: r.severity, outcome: r.outcome,
+    const aiText = ai && typeof rem.summary === "string" && rem.summary.startsWith("【资源级AI解释】")
+      ? rem.summary.split("\n【扫描事实】")[0] : advice;
+    return { id: r.id, resourceId: r.resource_id, title: r.title, severity: r.severity, outcome: r.outcome, ruleId: typeof r.rule_id === "string" ? r.rule_id : undefined,
       handling: "open", verification: "unverified", fact: r.trigger, conclusion: r.description,
-      remediation: advice, ai: { status: ai ? "ready" : "unavailable", text: ai ? advice : null }, evidenceIds: r.evidence_ids };
+      remediation: advice, ai: { status: ai ? "ready" : "unavailable", text: ai ? aiText : null }, evidenceIds: r.evidence_ids };
   });
   const evidence: Scan["evidence"] = evidenceRaw.map(raw => {
     const e = object(raw);
@@ -286,9 +288,11 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
       ...(e.start_line ? { startLine: e.start_line } : {}), text: e.excerpt ?? null };
   });
   const errors = list(state.errors);
+  if (errors.some(e => !text(e.code) || !text(e.message))) throw new Error("后端诊断不符合冻结 API 契约。");
   return { id, mode: "api", project: run?.project?.name ?? "扫描任务", input: run?.project?.source ?? "未提供",
     createdAt: run?.created_at ?? null, finishedAt: run?.finished_at ?? null,
     status: state.status, stages, stageIndex: state.stage === "completed" ? stages.length : Math.max(0, stageKeys.indexOf(state.stage)), progress: state.progress,
+    diagnostics: errors.map(e => ({ ...e, code: e.code, message: e.message })),
     error: errors.length ? errors.map(e => `${e.code}: ${e.message}`).join("；") : null,
     resources, risks, evidence, resultsReady: ["completed", "partial"].includes(state.status), completeness: "full", snapshotVersion: run?.contract_version ?? "P0 API", reportFormats: available };
 }

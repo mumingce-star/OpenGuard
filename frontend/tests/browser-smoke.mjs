@@ -65,6 +65,11 @@ try {
   await page.getByRole('button', { name: /^风险中心/ }).click();
   const risks = (await api(prefix + '/risks')).items;
   assert.equal(risks.length, 2);
+  assert.equal(await page.locator('.og-risk-preview').filter({ hasText: 'demo-mit' }).count(), 0);
+  await page.getByRole('button', {name: /许可证据待核验/}).click();
+  const mitGroup = page.getByRole('button', {name: /软件依赖 · 已记录许可 MIT · 待人工核验/});
+  assert.equal(await mitGroup.count(), 1);
+  await mitGroup.click();
   await page.locator('.og-risk-preview').filter({ hasText: 'demo-mit' }).click();
   await page.getByRole('heading', { name: /License evidence requires verification/ }).waitFor();
   await visible('提示');
@@ -116,6 +121,7 @@ try {
   const failed = await api('/api/v1/scans/' + invalidId);
   assert.equal(failed.status, 'failed');
   assert.ok(failed.errors.length > 0);
+  await page.getByText('查看具体原因', { exact: true }).click();
   await page.getByText(/zip_ingestion_failed/).first().waitFor();
   passed('invalid ZIP asynchronous failure is shown without fake resources');
   await page.goto(base + '/app/scans/scn_00000000-0000-0000-0000-000000000000/overview?mode=api');

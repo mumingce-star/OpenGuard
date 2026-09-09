@@ -4327,3 +4327,24 @@
 - 预计6k–12k token，本次运行精确token数不可获得，无法判定实耗范围。准备与预核对完成，双人复核仍PARTIAL；普通发布待下方绑定，不操作main。
 
 [20260909-1705-RootAstra-Real12Review-Publish] 发布绑定：9056787已普通推送origin/integration/p0，5个复核/协作文档；业务代码、原报告及组员分支未改，用户output未上传。人工答案和P0总验收仍待回执。
+
+### [20260909-1753-RootAstra-FourTargeted] START
+
+- GPT-6 Astra / Root：用户确认四项定向优化；基线 integration/p0@186527c，只有原 output 未跟踪。Flask d73fa1cdcbd8b1465c151db8924ba58b1dd14e35，142 个 info/license-evidence-gate，2 套共享 AI 步骤，Python partial。
+- Root 唯一修改 AI/集成/文档；risk_ui_targeted 唯一修改 frontend 协助 xzb；partial_parser_targeted 唯一修改 Python parser/mapper/dependency_plan 和相关测试协助 cz。各自先只读调查，由本记录统一开工，互不覆盖，Root 统一发布。
+- 旧四报告已保存在仓库外并核对 SHA；运行 AI provider 与源码 SHA 相同，双容器 healthy。首个路径探针误用 /opt 路径，后按 import 实际 /app 路径确认；原记录保留，不归为产品缺陷。
+- 无新 API/外部 Schema 字段、依赖、服务、限额、队列或目标代码执行，不修改历史报告及组员分支。部署前确认无活动任务，不更新 Docker/模型环境。Flask AI 60 秒为优化目标，加载计入且不复用旧答案；9月11日20:04 如实交付。
+- 验收：保存基线、最小改动、相关及整套测试、同 revision 真实对照、四报告和 Chrome。人工质量与 Windows 待真人，不代签。预计25k–45k token，精确数不可获得。
+
+
+### [20260909-1854-RootAstra-FourTargeted] PARTIAL
+
+- GPT-6 Astra / Root：四项代码与本机真实链路验证完成，浏览器落盘和人工质量验收尚未通过，故不宣称整体COMPLETE。基线186527c，integration/p0，Root统一验收发布，不操作main/组员分支；原output保留不提交。
+- 修改：AI provider/ollama、dependency_plan诊断及对应单元/独立TCP测试；7份既有前端源码/测试；原部署说明、资源台账、AI日志、2份AI规格、进度41、本日志。无新服务、依赖、外部Schema/API、规则严重度、扫描预算或目标代码执行，旧报告不改。
+- 实际Qwen旧共享8.394秒→资源上下文41.406秒，13调用142/142有效；模型已加载，无旧答案缓存。新真实Chrome Git Flask固定d73fa1c，总115.786秒（旧74.242秒）；不声称全链提速。142组件/191证据/142info保留，10情境重点中84锁文件相同，不能当142深度独立分析。确定性导航与模型原文分别标识。
+- Python5清单单独完整，merge有5duplicate+9multiple_constraints；只定位透传，没有隐藏partial或修改parser算法。严重度原规则和API/UI枚举保持，缺证据info不能制造高危。
+- 后端1300 passed/3 skipped/2 warnings；最后输出约束变更后123 AI相关测试通过；前端29 passed、tsc/Vite通过；compileall/diff通过。最初整套1个旧TCP fixture失败后保留legacy协议测试并增加默认新协议真实HTTP验证，不删除断言。AI多次格式/泛化失败保留在仓库外探针记录，最终协议真实验证通过；不把实验失败版本部署。
+- Chrome真实提交、状态、筛选、折叠、全142访问、证据/建议来源、15诊断、既有completed/failed通过；headless browser-smoke仅更新/语法检查未运行全套。Docker应用容器healthy，后端SHA一致；无Docker Desktop/模型更新。
+- 四报告HTTP及metadata SHA通过，旧四报告未变化；Chrome JSON点击保存后出现“已被您的组织屏蔽”，未找到落盘，保留阻塞，不绕过策略；另三种浏览器保存本轮未通过。具体任务ID、摘要、前后对照及本人任务表在进度41。
+- 下一步Root带本人独立试用一条新建议，并收浏览器正常落盘回执；原12双人复核/两Windows/资源安全签收待用户汇总，9月11日20:04期限不变，不能据此称P0通过。提交/推送待下方绑定。
+- 本次运行精确token数不可获得；开工估算25k–45k，无法核定实耗，范围未扩大；验收尚存明确阻塞。

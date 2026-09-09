@@ -556,3 +556,32 @@ def test_qwen_reference_keeps_npm_license_and_does_not_inherit_it(tmp_path):
     assert licenses[run.components[0].license_expression_id] == "MIT"
     assert licenses[run.ai_assets[0].license_expression_id] == "NOASSERTION"
     assert len(run.findings) == 2
+
+
+def test_python_partial_reports_each_reason_and_preserves_all_facts(tmp_path: Path) -> None:
+    archive = _archive(tmp_path, {
+        "requirements.txt": "a==1\n-r missing.txt\n-e https://example.com/project\n",
+        "nested/pyproject.toml": "[project]\ndependencies=['a==1']\n",
+    })
+    _, result = _run(tmp_path, archive, _queued(archive))
+    diagnostics = [error for error in result.run.errors if error.code == "python_dependency_scan_partial"]
+    assert result.run.status is ScanStatus.PARTIAL
+    assert len(diagnostics) == 3
+    assert any("requirement_include_unsupported at requirements.txt:2" in item.message for item in diagnostics)
+    assert any("requirement_editable_unsupported at requirements.txt:3" in item.message for item in diagnostics)
+    assert any("dependency_duplicate" in item.message for item in diagnostics)
+    assert all("https://example.com" not in item.message for item in diagnostics)
+    assert len(result.run.components) == 1
+    assert len(result.run.components[0].evidence_ids) == 2
+
+
+def test_python_partial_does_not_expose_credential_filename(tmp_path: Path) -> None:
+    archive = _archive(tmp_path, {
+        "token=private-value/requirements.txt": "a==1\n-r missing.txt\n",
+    })
+    _, result = _run(tmp_path, archive, _queued(archive))
+    diagnostics = [error for error in result.run.errors if error.code == "python_dependency_scan_partial"]
+    assert len(diagnostics) == 1
+    assert "requirement_include_unsupported" in diagnostics[0].message
+    assert "[path withheld]:2" in diagnostics[0].message
+    assert "private-value" not in diagnostics[0].message
