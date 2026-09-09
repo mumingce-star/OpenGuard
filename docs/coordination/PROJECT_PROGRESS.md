@@ -1,5 +1,15 @@
 # OpenGuard 项目进度台账
 
+## 2026-09-09 前后端与异机核查
+
+| 范围 | 状态与证据 | 下一步/责任 |
+|---|---|---|
+| 当前开发分支 `d2ffe4c` | 真实接线未完成：Mock前端构建通过，HTTP API路径返回HTML；后端67项局部回归通过，但正常ZIP受Windows POSIX门禁拒绝 | Root/主线实现审查集成差异；测试通过不等于HTTP闭环 |
+| 团队集成版 `5ad0073` | 代码已含真实API、前端请求及Compose；共同验收源码固定 `b86658e`，本轮仅静态审查 | 使用该固定源码独立部署，避免从旧本地分支验收 |
+| 异机运行 | 阻塞：本机Docker/WSL未就绪，第二机器执行条件/回执尚缺 | 设备操作者准备环境；Root核验实际Git/ZIP、报告及重建回执 |
+
+本轮仅发布四份协作/诊断文档，详情见[联调与异机报告](2026-09-09-connectivity-portability-audit.md)。未改变产品代码或main，未将远端历史实测算作本轮异机通过。
+
 ## 2026-09-09 GitHub 连接复核
 
 - Root（GPT-6）：当前仓库 origin 已关联 `git@github.com:mumingce-star/OpenGuard.git`。默认 SSH 22 连接失败，改用仓库级 GitHub SSH 443 后实际读取通过，严格主机密钥校验保留。
