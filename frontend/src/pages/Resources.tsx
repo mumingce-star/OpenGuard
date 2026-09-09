@@ -28,6 +28,7 @@ export function Resources({
     notify = useNotice();
   const rows = filterResources(scan, query),
     resource = scan.resources.find((r) => r.id === selected);
+  const sections = resourceTypes.map(type => ({ type, rows: rows.filter(r => r.type === type) })).filter(section => section.rows.length);
   return (
     <>
       <Header
@@ -104,34 +105,7 @@ export function Resources({
           <Empty title="没有符合条件的资源" detail="尝试调整搜索和筛选条件。" />
         ) : (
           <div className="og-resource-list">
-            {rows.map((r) => (
-              <button
-                className="og-resource-row"
-                key={r.id}
-                onClick={() => setSelected(r.id)}
-              >
-                <div>
-                  <strong>{r.name}</strong>
-                  <small>
-                    {r.version ?? "版本待补充"} · {r.id}
-                  </small>
-                </div>
-                <span>{r.type}</span>
-                <span>{r.origin ?? "来源待补充"}</span>
-                <span>
-                  {r.license ?? "许可证未知"}
-                  <small>
-                    {r.licenseStatus === "confirmed"
-                      ? "许可已核验"
-                      : "许可待确认"}
-                  </small>
-                </span>
-                <span>
-                  {scan.risks.filter((x) => x.resourceId === r.id).length}{" "}
-                  个风险 →
-                </span>
-              </button>
-            ))}
+            {sections.map(section => <ResourceSection key={section.type} type={section.type} rows={section.rows} scan={scan} select={setSelected}/>)}
           </div>
         )}
       </Panel>
@@ -172,4 +146,9 @@ export function Resources({
       )}
     </>
   );
+}
+function ResourceSection({ type, rows, scan, select }: { type: string; rows: Scan["resources"]; scan: Scan; select: (id: string) => void }) {
+  const [open, setOpen] = useState(false), [limit, setLimit] = useState(25), visible = open ? rows.slice(0, limit) : [];
+  const label = ({ Package: "代码组件", Model: "模型", Dataset: "数据集", API: "接口", Service: "服务", Asset: "素材" } as Record<string, string>)[type];
+  return <section className="og-resource-section"><button className="og-risk-preview" aria-expanded={open} onClick={() => setOpen(v => !v)}><div><strong>{label}</strong><small>{rows.length} 项资源 · 默认按需显示</small></div><span>{open ? "收起" : "展开"}</span></button>{open && <><div className="og-resource-head"><span>名称 / 版本</span><span>许可状态</span><span>来源</span><span>关联发现</span></div>{visible.map(r => <button className="og-resource-row" key={r.id} onClick={() => select(r.id)}><div><strong>{r.name}</strong><small>{r.version ?? "版本未知"}</small></div><span>{r.license ?? "许可证未知"}<small>{r.licenseStatus === "confirmed" ? "许可已核验" : "许可待确认"}</small></span><span>{r.origin ?? "未提供来源网址"}<small>{scan.evidence.filter(e => r.evidenceIds.includes(e.id)).map(e => e.path ?? e.url ?? e.label).join("；") || "证据位置未知"}</small></span><span>{scan.risks.filter(x => x.resourceId === r.id).length} 个风险 →</span></button>)}<p>当前显示 {visible.length} / {rows.length} 项资源</p>{limit < rows.length && <div className="og-actions"><button onClick={() => setLimit(n => n + 25)}>继续显示后 25 项</button><button onClick={() => setLimit(rows.length)}>显示全部</button></div>}</>}</section>;
 }

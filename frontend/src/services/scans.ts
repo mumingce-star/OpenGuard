@@ -1,4 +1,4 @@
-import type { Scan, Mode, Handling, ScanInput, ReportFormat, ResourceType } from "../types/domain";
+import type { Scan, Mode, Handling, ScanInput, ReportFormat, ResourceType, RiskGrouping } from "../types/domain";
 import { createSnapshot, type Scenario } from "../mocks/data";
 import { validateGithub, validateZip } from "./model";
 export const defaultMode: Mode =
@@ -253,6 +253,26 @@ export function reportDownloadUrl(id: string, format: ReportFormat) {
   if (!formats.includes(format)) throw new Error("未知报告格式。");
   return base + scanRoute(id) + "/report?format=" + format + "&download=true";
 }
+function grouping(value: unknown, risks: Scan["risks"]): RiskGrouping | undefined {
+  if (value === undefined || value === null) return undefined;
+  const raw = object(value), groups = list(raw.groups);
+  if (!text(raw.version) || !Number.isInteger(raw.finding_count) || !Number.isInteger(raw.resource_count)) throw new Error("后端分组不符合契约。");
+  const ids = new Set(risks.map(r => r.id)); const used = new Set<string>();
+  const parsed = groups.map(g => {
+    if (!text(g.id) || !text(g.category_id) || !text(g.category_name) || !text(g.title) || !text(g.summary) || !strings(g.finding_ids) || !strings(g.resource_ids) || !record(g.severity_counts) || !record(g.advice) || !["group_ai", "historical", "rule", "unavailable"].includes(String(g.advice.kind)) || !text(g.advice.summary) || !strings(g.advice.steps)) throw new Error("后端分组不符合契约。");
+    if (g.finding_ids.some(id => !ids.has(id) || used.has(id))) throw new Error("后端分组成员不符合契约。");
+    g.finding_ids.forEach(id => used.add(id));
+    return g as unknown as RiskGrouping["groups"][number];
+  });
+  if (raw.finding_count !== risks.length || used.size !== risks.length || raw.resource_count !== new Set(parsed.flatMap(g => g.resource_ids)).size) throw new Error("后端分组计数不符合契约。");
+  return { version: raw.version, finding_count: raw.finding_count, resource_count: raw.resource_count, groups: parsed };
+}
+function aiProgress(value: unknown): Scan["aiProgress"] {
+  if (value === undefined || value === null) return undefined;
+  const raw = object(value), nums = ["groups_total", "groups_done", "requests", "cache_hits", "successful_groups", "elapsed_seconds"];
+  if (!nums.every(key => Number.isFinite(raw[key]) && Number(raw[key]) >= 0) || raw.eta_scope !== "ai_stage" || !(raw.eta_seconds === null || (Array.isArray(raw.eta_seconds) && raw.eta_seconds.length === 2 && raw.eta_seconds.every(x => Number.isFinite(x) && x >= 0)))) throw new Error("后端 AI 进度不符合契约。");
+  return { groupsTotal: Number(raw.groups_total), groupsDone: Number(raw.groups_done), requests: Number(raw.requests), cacheHits: Number(raw.cache_hits), successfulGroups: Number(raw.successful_groups), elapsedSeconds: Number(raw.elapsed_seconds), etaSeconds: raw.eta_seconds as [number, number] | null, etaScope: "ai_stage" };
+}
 export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknown, riskRaw: unknown, evidenceRaw: unknown[], runRaw: unknown = null, available: ReportFormat[] = []): Scan {
   const state = object(statusRaw);
   if (state.scan_id !== id || !one(state.status, ["queued", "running", "completed", "partial", "failed", "cancelled"]) || !Number.isInteger(state.progress) || state.progress < 0 || state.progress > 100 || !["queued", "completed", ...stageKeys].includes(state.stage)) throw new Error("后端状态不符合冻结 API 契约。");
@@ -289,12 +309,12 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
   });
   const errors = list(state.errors);
   if (errors.some(e => !text(e.code) || !text(e.message))) throw new Error("后端诊断不符合冻结 API 契约。");
-  return { id, mode: "api", project: run?.project?.name ?? "扫描任务", input: run?.project?.source ?? "未提供",
-    createdAt: run?.created_at ?? null, finishedAt: run?.finished_at ?? null,
+  return { id, mode: "api", project: run?.project?.name ?? "扫描任务", revision: typeof run?.project?.revision === "string" ? run.project.revision : null, input: run?.project?.source ?? "未提供",
+    createdAt: run?.created_at ?? null, startedAt: run?.started_at ?? null, finishedAt: run?.finished_at ?? null,
     status: state.status, stages, stageIndex: state.stage === "completed" ? stages.length : Math.max(0, stageKeys.indexOf(state.stage)), progress: state.progress,
-    diagnostics: errors.map(e => ({ ...e, code: e.code, message: e.message })),
+    aiProgress: aiProgress(state.ai_progress), diagnostics: errors.map(e => ({ ...e, code: e.code, message: e.message })),
     error: errors.length ? errors.map(e => `${e.code}: ${e.message}`).join("；") : null,
-    resources, risks, evidence, resultsReady: ["completed", "partial"].includes(state.status), completeness: "full", snapshotVersion: run?.contract_version ?? "P0 API", reportFormats: available };
+    resources, risks, evidence, grouping: grouping(object(riskRaw).grouping, risks), resultsReady: ["completed", "partial"].includes(state.status), completeness: "full", snapshotVersion: run?.contract_version ?? "P0 API", reportFormats: available };
 }
 export async function getScan(id: string, mode: Mode, signal?: AbortSignal): Promise<Scan> {
   if (mode === "mock") return demoSnapshot(id);

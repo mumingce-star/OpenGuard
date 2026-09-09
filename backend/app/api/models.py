@@ -61,6 +61,10 @@ class ScanRunStatusView(P0Model):
     progress: int = Field(ge=0, le=100)
     summary: ScanSummary
     errors: list[ScanError]
+    created_at: datetime | None = None
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
+    ai_progress: dict | None = None
 
 
 class ResourceView(P0Model):
@@ -95,6 +99,7 @@ class ResourcesResponse(P0Model):
 class RisksResponse(P0Model):
     items: list[RiskFinding]
     total: int = Field(ge=0)
+    grouping: dict | None = None
 
 
 class ErrorBody(P0Model):

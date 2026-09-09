@@ -1,202 +1,28 @@
+import { useEffect, useState, type ReactNode } from "react";
+import { flushSync } from "react-dom";
 import { reportDownloadUrl } from "../services/scans";
-import type { Scan, ReportFormat } from "../types/domain";
-import {
-  statusLabels,
-  handlingLabels,
-  verificationLabels,
-} from "../types/domain";
-import { reportPayload, summarize } from "../services/model";
+import type { Scan, ReportFormat, Risk, Resource } from "../types/domain";
+import { statusLabels, severityLabels } from "../types/domain";
+import { groupRisks, reportPayload, riskCounts, summarize } from "../services/model";
 import { Header, download, useNotice } from "../components/ui";
-const chapters = [
-  "执行摘要",
-  "风险清单",
-  "第三方资源",
-  "模型与数据集",
-  "整改建议",
-  "证据附录",
-];
-export function Report({ scan }: { scan: Scan }) {
-  const notify = useNotice(),
-    s = summarize(scan);
-  return (
-    <>
-      <Header
-        title="可复核的扫描报告"
-        description="报告来自当前任务快照；不重新推断风险，也不生成准备度评分。"
-        action={
-          <div className="og-actions">
-            {scan.mode === "api" ? (scan.reportFormats?.length ? scan.reportFormats.map(format => <a key={format} href={reportDownloadUrl(scan.id, format)} download>{({ html: "下载 HTML", json: "下载 JSON", csv: "下载 CSV", resource_inventory: "下载资源清单" } as Record<ReportFormat, string>)[format]}</a>) : <span>当前任务没有已发布报告</span>) : <button
-              onClick={() =>
-                download(
-                  scan.id + "-report.json",
-                  JSON.stringify(reportPayload(scan), null, 2),
-                  "application/json;charset=utf-8",
-                  notify,
-                )
-              }
-            >
-              导出演示 JSON
-            </button>}
-            <button onClick={() => window.print()}>打印 / 保存 PDF</button>
-          </div>
-        }
-      />
-      <div className="og-report-layout">
-        <nav className="og-report-nav" aria-label="报告目录">
-          {chapters.map((c, i) => (
-            <a href={"#report-" + i} key={c}>
-              {String(i + 1).padStart(2, "0")} / {c}
-            </a>
-          ))}
-        </nav>
-        <article className="og-report">
-          <header>
-            <p>OPENGUARD / EVIDENCE FIRST</p>
-            <h1>
-              {scan.project}
-              <br />
-              合规信息与风险提示报告
-            </h1>
-            <p>
-              {scan.mode === "mock"
-                ? "演示数据 · 合成示例 · 非真实扫描"
-                : "真实接口数据"}{" "}
-              · {statusLabels[scan.status]}
-            </p>
-          </header>
-          <dl className="og-report-meta">
-            <dt>任务编号</dt>
-            <dd>{scan.id}</dd>
-            <dt>扫描开始时间</dt>
-            <dd>{scan.createdAt ? new Date(scan.createdAt).toLocaleString() : "后端未提供"}</dd>
-            <dt>完成时间</dt>
-            <dd>
-              {scan.finishedAt
-                ? new Date(scan.finishedAt).toLocaleString()
-                : "尚未完成"}
-            </dd>
-            <dt>快照版本</dt>
-            <dd>{scan.snapshotVersion}</dd>
-          </dl>
-          <section id="report-0">
-            <h2>01 / 执行摘要</h2>
-            <p>
-              当前快照包含 {s.resources} 项资源、{s.risks} 个风险提示。其中{" "}
-              {s.pending} 个处于待处理或复核中，{s.unknown}{" "}
-              项资源的许可尚待确认。
-            </p>
-            {scan.error && <p>任务错误：{scan.error}</p>}
-            <p>
-              “已处理”为人工工作记录，不代表复扫验证通过。没有风险提示不等于已经核验所有许可。
-            </p>
-          </section>
-          <section id="report-1">
-            <h2>02 / 风险清单</h2>
-            {!scan.risks.length ? (
-              <p>当前快照没有风险条目，请结合任务状态理解。</p>
-            ) : (
-              scan.risks.map((r) => (
-                <div className="og-report-block" key={r.id}>
-                  <h3>
-                    {r.id} · {r.title}
-                  </h3>
-                  <p>扫描事实：{r.fact ?? "待补充"}</p>
-                  <p>规则判断：{r.conclusion ?? "待补充"}</p>
-                  <p>
-                    AI 解释：
-                    {r.ai.text ??
-                      (r.ai.status === "failed" ? "生成失败" : "暂不可用")}
-                  </p>
-                  <p>
-                    处理：{handlingLabels[r.handling]} / 验证：
-                    {verificationLabels[r.verification]}
-                  </p>
-                  <p>
-                    关联资源：{r.resourceId} / 证据：
-                    {r.evidenceIds.join("、") || "待补充"}
-                  </p>
-                </div>
-              ))
-            )}
-          </section>
-          <section id="report-2">
-            <h2>03 / 第三方资源</h2>
-            {scan.resources.length ? (
-              scan.resources.map((r) => (
-                <div className="og-report-block" key={r.id}>
-                  <h3>
-                    {r.name} · {r.type}
-                  </h3>
-                  <p>
-                    {r.id} / 版本：{r.version ?? "待补充"} / 来源：
-                    {r.origin ?? "待补充"}
-                  </p>
-                  <p>
-                    许可证：{r.license ?? "未知"} /{" "}
-                    {r.licenseStatus === "confirmed" ? "已核验" : "待确认"}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p>暂无资源数据。</p>
-            )}
-          </section>
-          <section id="report-3">
-            <h2>04 / 模型与数据集</h2>
-            {scan.resources.filter((r) => ["Model", "Dataset"].includes(r.type))
-              .length ? (
-              scan.resources
-                .filter((r) => ["Model", "Dataset"].includes(r.type))
-                .map((r) => (
-                  <p key={r.id}>
-                    {r.name}：来源 {r.origin ?? "待补充"}；许可{" "}
-                    {r.license ?? "待确认"}；证据{" "}
-                    {r.evidenceIds.join("、") || "待补充"}。
-                  </p>
-                ))
-            ) : (
-              <p>本次未提供模型或数据集条目。</p>
-            )}
-          </section>
-          <section id="report-4">
-            <h2>05 / 整改建议</h2>
-            {scan.risks.length ? (
-              scan.risks.map((r) => (
-                <p key={r.id}>
-                  {r.id}：{r.remediation ?? "待补充"}
-                </p>
-              ))
-            ) : (
-              <p>暂无整改条目。</p>
-            )}
-          </section>
-          <section id="report-5">
-            <h2>06 / 证据附录</h2>
-            {scan.evidence.map((e) => (
-              <div className="og-report-block" key={e.id}>
-                <h3>
-                  {e.id} · {e.label}
-                </h3>
-                <p>
-                  来源：{e.source} / 位置：{e.path ?? e.url ?? "待补充"}
-                  {e.startLine ? " 第 " + e.startLine + " 行起" : ""}
-                </p>
-                <pre>{e.text ?? "原文待补充"}</pre>
-              </div>
-            ))}
-            {[...new Set(scan.risks.flatMap((r) => r.evidenceIds))]
-              .filter((id) => !scan.evidence.some((e) => e.id === id))
-              .map((id) => (
-                <p key={id}>{id}：原始证据待补充。</p>
-              ))}
-            {!scan.evidence.length && <p>暂无可展示的证据原文。</p>}
-          </section>
-          <footer>
-            OpenGuard
-            仅提供合规信息整理与风险提示，不构成法律意见；请由负责人核对许可原文及适用场景。
-          </footer>
-        </article>
-      </div>
-    </>
-  );
+const chapters = ["执行摘要", "风险清单", "第三方资源", "模型与数据集", "整改建议", "证据附录"];
+const adviceLabel: Record<string, string> = { group_ai: "组级 AI 建议", historical: "历史成员建议", rule: "规则说明", unavailable: "AI 建议暂不可用" };
+function Paginated<T>({ rows, label, render, printing }: { rows: T[]; label: string; render: (row: T) => ReactNode; printing: boolean }) {
+ const [open, setOpen] = useState(false); const [limit, setLimit] = useState(25); const shown = printing ? rows : open ? rows.slice(0, limit) : [];
+ return <details open={open || printing} onToggle={e => { if (!printing) setOpen((e.target as HTMLDetailsElement).open); }}>
+   <summary>{label}（{printing ? "打印完整" : open ? `显示 ${shown.length}/${rows.length}` : "展开"}）</summary>
+   {shown.map(render)}
+   {open && !printing && limit < rows.length && <div className="og-actions"><button onClick={() => setLimit(n => n + 25)}>继续显示后 25 条</button><button onClick={() => setLimit(rows.length)}>显示全部</button></div>}
+ </details>;
 }
+function RiskRows({ rows, scan, printing }: { rows: Risk[]; scan: Scan; printing: boolean }) { return <Paginated rows={rows} printing={printing} label={`原始发现 ${rows.length} 条`} render={r => { const resource = scan.resources.find(x => x.id === r.resourceId); return <div className="og-report-row" key={r.id}><strong>{resource?.name ?? r.resourceId}</strong><span>{resource?.version ?? "版本未知"} · {resource?.origin ?? "来源未知"} · {resource?.license ?? "许可未知"} · {severityLabels[r.severity]}</span><span>证据位置：{scan.evidence.filter(e => r.evidenceIds.includes(e.id)).map(e => e.path ?? e.url ?? e.label).join("；") || "未提供"}；触发：{r.fact ?? "未知"}</span><a href={`/app/scans/${encodeURIComponent(scan.id)}/risks/${encodeURIComponent(r.id)}?mode=${scan.mode}`}>查看原详情与证据（{r.evidenceIds.length}）</a></div>; }}/>; }
+function ResourceRows({ rows, printing }: { rows: Resource[]; printing: boolean }) { return <Paginated rows={rows} printing={printing} label={`资源明细 ${rows.length} 项`} render={r => <div className="og-report-row" key={r.id}><strong>{r.name}</strong><span>{r.version ?? "版本未知"} · {r.type} · {r.license ?? "许可未知"}</span><span>来源：{r.origin ?? "未知"}</span><span>资源 ID：{r.id}</span></div>}/>; }
+export function Report({ scan }: { scan: Scan }) { const notify = useNotice(), s = summarize(scan), groups = groupRisks(scan, scan.risks), counts = riskCounts(scan.risks), [printing, setPrinting] = useState(false); useEffect(() => { const before = () => flushSync(() => setPrinting(true)), after = () => setPrinting(false); addEventListener("beforeprint", before); addEventListener("afterprint", after); return () => { removeEventListener("beforeprint", before); removeEventListener("afterprint", after); }; }, []); const contexts = groups.reduce((n, g) => n + g.groups.length, 0), dataTime = scan.finishedAt ?? scan.createdAt;
+ const action = <div className="og-actions">{scan.mode === "api" ? (scan.reportFormats?.length ? scan.reportFormats.map(format => <a key={format} href={reportDownloadUrl(scan.id, format)} download>{({ html: "下载 HTML", json: "下载 JSON", csv: "下载 CSV", resource_inventory: "下载资源清单" } as Record<ReportFormat, string>)[format]}</a>) : <span>当前任务没有已发布报告</span>) : <button onClick={() => download(scan.id + "-report.json", JSON.stringify(reportPayload(scan), null, 2), "application/json;charset=utf-8", notify)}>导出演示 JSON</button>}<button onClick={() => window.print()}>打印完整报告 / 保存 PDF</button></div>;
+ return <><Header title="可复核的扫描报告" description="按后端分组投影渲染；原始发现、资源和证据保持可展开。" action={action}/><div className="og-report-layout"><nav className="og-report-nav" aria-label="报告目录">{chapters.map((c, i) => <a href={'#report-' + i} key={c}>{String(i + 1).padStart(2, "0")} / {c}</a>)}</nav><article className="og-report"><header><p>OPENGUARD / EVIDENCE FIRST</p><h1>{scan.project}<br/>合规信息与风险提示报告</h1><p>{scan.mode === "mock" ? "演示数据 · 合成示例" : "真实接口数据"} · {statusLabels[scan.status]}</p></header><dl className="og-report-meta"><dt>任务编号</dt><dd>{scan.id}</dd><dt>数据日期</dt><dd>{dataTime ? new Date(dataTime).toLocaleString() : "后端未提供"}</dd><dt>修订版本</dt><dd>{scan.revision ?? "后端未提供"}</dd><dt>快照版本</dt><dd>{scan.snapshotVersion}</dd><dt>渲染版本</dt><dd>frontend-report-v2 · {scan.grouping?.version ?? "兼容投影"}</dd></dl><p className="og-report-disclaimer">历史附件保持不变；此页面仅以当前数据日期和渲染版本预览。OpenGuard 不构成法律意见。</p>
+ <section id="report-0"><h2>01 / 执行摘要</h2><p>终态：{statusLabels[scan.status]}。{s.resources} 项资源、{s.risks} 条发现、{counts.resources} 项受影响资源；{groups.length} 个问题大类、{contexts} 个等价情境组。</p><p>严重度：{Object.entries(counts.counts).filter(([, n]) => n).map(([level, n]) => `${severityLabels[level as keyof typeof severityLabels]} ${n}`).join(" · ")}。</p></section>
+ <section id="report-1"><h2>02 / 风险清单</h2>{groups.map(category => <div className="og-report-block" key={category.title}><h3>{category.title} · {category.findings} 条发现</h3>{category.groups.map(g => <div className="og-report-group" key={g.key}><h4>{g.title}</h4><p>{g.summary}</p><p>{g.advice?.kind === "group_ai" ? "共同情境建议未逐项审阅；完整建议见第05章。" : `${adviceLabel[g.advice?.kind ?? "rule"]}：${g.advice?.summary ?? "请按逐项证据核对。"}`}</p><RiskRows rows={g.rows} scan={scan} printing={printing}/></div>)}</div>)}</section>
+ <section id="report-2"><h2>03 / 第三方资源</h2><ResourceRows rows={scan.resources.filter(r => !["Model", "Dataset"].includes(r.type))} printing={printing}/></section>
+ <section id="report-3"><h2>04 / 模型与数据集</h2><ResourceRows rows={scan.resources.filter(r => r.type === "Model" || r.type === "Dataset")} printing={printing}/></section>
+ <section id="report-4"><h2>05 / 整改建议</h2>{groups.flatMap(c => c.groups).map(g => <div className="og-report-block" key={g.key}><h3>{g.title}（适用于 {g.findings} 条发现）</h3><p><strong>{adviceLabel[g.advice?.kind ?? "rule"]}</strong>：{g.advice?.summary ?? "请按逐项证据核对。"}</p>{g.advice?.steps?.map((step: string, i: number) => <p key={i}>{i + 1}. {step}</p>)}</div>)}</section>
+ <section id="report-5"><h2>06 / 证据附录</h2><Paginated rows={scan.evidence} printing={printing} label={`证据 ${scan.evidence.length} 条`} render={e => <div className="og-report-block" key={e.id}><h3>{e.label}</h3><p>{e.id} · {e.source} · {e.path ?? e.url ?? "位置未知"}</p><pre>{e.text ?? "原文待补充"}</pre></div>}/></section><footer>原始成员与证据完整保留，打印时展开全部明细。</footer></article></div></>; }

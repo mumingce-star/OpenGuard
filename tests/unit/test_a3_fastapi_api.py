@@ -221,6 +221,10 @@ def test_status_reads_the_persisted_snapshot_and_missing_is_stable(harness: ApiH
     assert response.status_code == 200
     assert response.json() == {
         "scan_id": scan_id,
+        "created_at": "2026-09-03T02:00:00Z",
+        "started_at": None,
+        "finished_at": None,
+        "ai_progress": None,
         "status": "queued",
         "stage": "queued",
         "progress": 0,

@@ -286,6 +286,7 @@ class ScanApiService:
 
     def status(self, scan_id: str) -> ScanRunStatusView:
         run = self._get_run(scan_id)
+        from app.ai.group_plan import get_group_progress
         return ScanRunStatusView(
             scan_id=run.id,
             status=run.status,
@@ -293,6 +294,8 @@ class ScanApiService:
             progress=run.progress,
             summary=run.summary,
             errors=run.errors,
+            created_at=run.created_at, started_at=run.started_at, finished_at=run.finished_at,
+            ai_progress=get_group_progress(run.id) if run.status.value == "running" and run.stage.value == "ai_assist" else None,
         )
 
     def resources(self, scan_id: str, filters: ResourceFilters) -> ResourcesResponse:
@@ -322,7 +325,8 @@ class ScanApiService:
             and (filters.resource_kind is None or finding.resource_kind == filters.resource_kind)
         ]
         items.sort(key=lambda finding: finding.id)
-        return RisksResponse(items=items, total=len(items))
+        from app.domain.grouping import build_grouping
+        return RisksResponse(items=items, total=len(items), grouping=build_grouping(run, {item.id for item in items}))
 
     def evidence(self, scan_id: str, evidence_id: str) -> Evidence:
         run = self._ready_run(scan_id)

@@ -281,7 +281,8 @@ function RiskCategory({ group, scan, open }: { group: ReturnType<typeof groupRis
   </section>;
 }
 function RiskMembers({ group, scan, open }: { group: ReturnType<typeof groupRisks>[number]["groups"][number]; scan: Scan; open: (id: string) => void }) {
-  const { title, rows } = group;
+  const { title } = group;
+  const rows = group.rows as import("../types/domain").Risk[];
   const [expanded, setExpanded] = useState(false);
   const [limit, setLimit] = useState(25);
   const counts = riskCounts(rows);
@@ -292,6 +293,8 @@ function RiskMembers({ group, scan, open }: { group: ReturnType<typeof groupRisk
       <span>{expanded ? "收起明细" : "展开明细"}</span>
     </button>
     {expanded && <>
+      <p>分组说明：{group.summary}</p>
+      {group.advice && <div className="og-group-advice"><strong>{({ group_ai: "组级 AI 建议", historical: "历史成员建议", rule: "规则说明", unavailable: "AI 建议暂不可用" } as Record<string, string>)[group.advice.kind]}</strong><p>{group.advice.summary}</p>{group.advice.steps.map((step: string, i: number) => <p key={i}>{i + 1}. {step}</p>)}</div>}
       <p>原始规则：{group.rule}</p><p style={{overflowWrap: "anywhere"}}>触发说明：{group.trigger}</p>
       <p>当前显示 {Math.min(limit, rows.length)} / {rows.length} 条原始发现</p>
       {rows.slice(0, limit).map(r => <button className="og-risk-preview" key={r.id} onClick={() => open(r.id)}>
@@ -301,6 +304,7 @@ function RiskMembers({ group, scan, open }: { group: ReturnType<typeof groupRisk
         <span>{handlingLabels[r.handling]} →</span>
       </button>)}
       {limit < rows.length && <button onClick={() => setLimit(n => n + 25)}>继续显示后 25 条（剩余 {rows.length - limit} 条）</button>}
+      {limit < rows.length && <button onClick={() => setLimit(rows.length)}>显示全部 {rows.length} 条</button>}
     </>}
   </section>;
 }

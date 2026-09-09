@@ -278,6 +278,7 @@ def test_real_tcp_valid_result_flows_through_a5_to_pending_remediation() -> None
     scenario = _Scenario()
     with _LoopbackFixture(scenario) as fixture:
         provider = OllamaProvider(fixture.origin)
+        provider.group_plan_mode = False
         provider.resource_batch_mode = False  # Keep the original single-result protocol covered.
         result = apply_ai_remediations(
             run,
@@ -432,12 +433,14 @@ class _ResourceBatchScenario(_Scenario):
         }).encode()
 
 
-def test_default_resource_batch_over_real_tcp_preserves_facts_and_pending_references() -> None:
+def test_legacy_resource_batch_over_real_tcp_preserves_facts_and_pending_references() -> None:
     run = _clean_run()
     before = run.model_dump(mode="json")
     scenario = _ResourceBatchScenario()
     with _LoopbackFixture(scenario) as fixture:
-        result = apply_ai_remediations(run, OllamaProvider(fixture.origin), timeout_seconds=2.0)
+        provider = OllamaProvider(fixture.origin)
+        provider.group_plan_mode = False  # Explicit compatibility path; group protocol tested separately.
+        result = apply_ai_remediations(run, provider, timeout_seconds=2.0)
     assert result.status == "generated"
     assert len(result.run.remediations) == 1
     remediation = result.run.remediations[0]
@@ -478,7 +481,9 @@ def test_real_tcp_resource_batch_invalid_output_degrades_without_remediation(fau
     run = _clean_run()
     scenario = _ResourceBatchScenario(fault)
     with _LoopbackFixture(scenario) as fixture:
-        result = apply_ai_remediations(run, OllamaProvider(fixture.origin), timeout_seconds=2.0)
+        provider = OllamaProvider(fixture.origin)
+        provider.group_plan_mode = False  # Explicit compatibility path; group protocol tested separately.
+        result = apply_ai_remediations(run, provider, timeout_seconds=2.0)
     assert result.status == "degraded"
     assert result.run.remediations == []
     assert result.run.findings[0].remediation_id is None

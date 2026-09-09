@@ -155,7 +155,7 @@ export function App() {
         detail="按任务编号恢复状态，不会创建新任务。"
       />
     );
-  else if (error)
+  else if (error && !scan)
     content = (
       <Empty title="无法读取当前任务" detail={error}>
         <div className="og-actions">
@@ -177,6 +177,7 @@ export function App() {
         scan={scan}
         reload={reload}
         onResults={() => navigate("overview")}
+        pollingError={error}
       />
     );
   else if (active)

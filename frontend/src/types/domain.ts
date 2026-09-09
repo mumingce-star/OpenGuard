@@ -53,12 +53,32 @@ export interface Resource {
   licenseStatus: "confirmed" | "review_required" | "unknown";
   evidenceIds: string[];
 }
+export type GroupAdviceKind = "group_ai" | "historical" | "rule" | "unavailable";
+export interface RiskGroupingGroup {
+  id: string;
+  category_id: string;
+  category_name: string;
+  title: string;
+  summary: string;
+  finding_ids: string[];
+  resource_ids: string[];
+  severity_counts: Record<Severity, number>;
+  advice: { kind: GroupAdviceKind; summary: string; steps: string[] };
+}
+export interface RiskGrouping {
+  version: string;
+  finding_count: number;
+  resource_count: number;
+  groups: RiskGroupingGroup[];
+}
 export interface Scan {
   id: string;
   mode: Mode;
   project: string;
+  revision?: string | null;
   input: string;
   createdAt: string | null;
+  startedAt?: string | null;
   finishedAt: string | null;
   status: ScanStatus;
   stageIndex: number;
@@ -69,7 +89,9 @@ export interface Scan {
   risks: Risk[];
   evidence: Evidence[];
   progress?: number;
+  aiProgress?: { groupsTotal: number; groupsDone: number; requests: number; cacheHits: number; successfulGroups: number; elapsedSeconds: number; etaSeconds: [number, number] | null; etaScope: "ai_stage" };
   reportFormats?: ReportFormat[];
+  grouping?: RiskGrouping;
   resultsReady?: boolean;
   // This frontend contract requires complete snapshots; reject paginated fragments.
   completeness: "full";

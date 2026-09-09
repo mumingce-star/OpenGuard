@@ -403,6 +403,7 @@ def test_response_reader_requests_limit_plus_one_byte() -> None:
 def test_valid_transport_response_flows_through_a5_as_pending_remediation() -> None:
     provider, _ = _provider()
     # Preserve coverage of the legacy single-response transport contract.
+    provider.group_plan_mode = False
     provider.resource_batch_mode = False
     result = apply_ai_remediations(_run(), provider, timeout_seconds=10)
 

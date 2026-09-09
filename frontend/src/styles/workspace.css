@@ -848,6 +848,17 @@
   accent-color: #9383f0;
   border-radius: 20px;
 }
+.og-app progress.og-progress-active { transition: value 300ms ease; }
+.og-group-advice { margin: 10px 0; padding: 10px 12px; border-left: 3px solid #7c78bf; background: #17223a; }
+.og-resource-section { margin: 0 0 22px; }
+.og-resource-section h3 { margin: 0 0 8px; color: #dce5ff; }
+.og-resource-head { display: grid; grid-template-columns: 1.2fr 1fr 1fr .6fr; gap: 12px; padding: 10px 14px; color: var(--og-muted); font-size: 12px; }
+.og-report-group { padding: 14px 0; border-top: 1px solid #d5deea; }
+.og-report-group h4 { margin: 0 0 7px; }
+.og-report-table { display: grid; gap: 5px; margin: 12px 0; }
+.og-report-table > div { display: grid; grid-template-columns: minmax(160px, 1fr) 1fr 1fr; gap: 8px; padding: 8px; background: #eef3f9; font-size: 12px; }
+.og-report-disclaimer { padding: 10px; background: #edf0ff; border-left: 3px solid #5c66ad; }
+@media (prefers-reduced-motion: reduce) { .og-app progress.og-progress-active { transition: none; } }
 .og-stages {
   list-style: none;
   padding: 0;

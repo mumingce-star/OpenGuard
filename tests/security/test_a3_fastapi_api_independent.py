@@ -442,6 +442,10 @@ def test_queued_status_and_result_routes_never_fake_scan_results(harness: ApiHar
     assert status_response.status_code == 200
     assert status_response.json() == {
         "scan_id": scan_id,
+        "created_at": harness.registry.get(scan_id).run.model_dump(mode="json")["created_at"],
+        "started_at": None,
+        "finished_at": None,
+        "ai_progress": None,
         "status": "queued",
         "stage": "queued",
         "progress": 0,
@@ -520,13 +524,19 @@ def test_risks_evidence_and_report_read_from_one_completed_snapshot(harness: Api
         params={"outcome": "review_required", "severity": "high", "resource_kind": "component"},
     )
     assert risks.status_code == 200
-    assert risks.json() == {"items": [fixture.finding.model_dump(mode="json")], "total": 1}
+    payload = risks.json()
+    grouping = payload.pop("grouping")
+    assert payload == {"items": [fixture.finding.model_dump(mode="json")], "total": 1}
+    assert grouping["finding_count"] == 1
+    assert [fid for group in grouping["groups"] for fid in group["finding_ids"]] == [fixture.finding.id]
 
     empty_risks = harness.client.get(
         f"/api/v1/scans/{fixture.run.id}/risks", params={"outcome": "pass"}
     )
     assert empty_risks.status_code == 200
-    assert empty_risks.json() == {"items": [], "total": 0}
+    empty = empty_risks.json()
+    assert empty.pop("grouping") == {"version":"openguard.grouping/v1","finding_count":0,"resource_count":0,"groups":[]}
+    assert empty == {"items": [], "total": 0}
 
     evidence = harness.client.get(f"/api/v1/scans/{fixture.run.id}/evidence/{fixture.evidence.id}")
     assert evidence.status_code == 200

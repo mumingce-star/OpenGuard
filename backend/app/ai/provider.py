@@ -73,6 +73,7 @@ class _ProviderSnapshot:
     generate: Any
     review_plan_mode: bool = False
     resource_batch_mode: bool = False
+    group_plan_mode: bool = False
 
 
 def _fail(code: str) -> None:
@@ -105,7 +106,8 @@ def _snapshot_provider(provider: object) -> _ProviderSnapshot:
         _fail("ai_invalid_argument")
     return _ProviderSnapshot(mode=mode, producer=producer_snapshot, generate=generate,
                              review_plan_mode=review_plan_mode,
-                             resource_batch_mode=getattr(provider, "resource_batch_mode", False) is True)
+                             resource_batch_mode=getattr(provider, "resource_batch_mode", False) is True,
+                             group_plan_mode=getattr(provider, "group_plan_mode", False) is True)
 
 
 def _review_context(run: ScanRun, finding: RiskFinding) -> dict[str, Any] | None:
@@ -484,9 +486,12 @@ def apply_ai_remediations(
     remediations: list[Remediation] = []
     plans: dict[str, dict[str, Any] | None] = {}
     plan_errors: set[str] = set()
-    if provider_snapshot.resource_batch_mode:
+    if provider_snapshot.group_plan_mode:
+        from app.ai.group_plan import generate_groups
+        remediations, plan_errors, _ = generate_groups(run, eligible, provider_snapshot, float(timeout_seconds), _unsafe_text, _reject_duplicate_keys)
+    elif provider_snapshot.resource_batch_mode:
         remediations, plan_errors = _resource_batches(run, eligible, provider_snapshot, float(timeout_seconds))
-    for finding in ([] if provider_snapshot.resource_batch_mode else eligible):
+    for finding in ([] if provider_snapshot.resource_batch_mode or provider_snapshot.group_plan_mode else eligible):
         context = _review_context(run, finding) if provider_snapshot.review_plan_mode else None
         if context is not None:
             canonical = json.dumps(context, ensure_ascii=False, sort_keys=True, separators=(",", ":"))

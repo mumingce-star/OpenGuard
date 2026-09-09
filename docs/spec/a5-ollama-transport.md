@@ -145,3 +145,8 @@ API 版本为 `0.33.3`；tags digest 与磁盘 manifest 原始字节 SHA-256 均
 同轮整链复验`scn_dc870fed-023e-49a1-885d-737927df3290`工具/解析无错误，但模型信息读取阶段发生30秒连接等待：宿主日志显示16:06:00生成成功、version=200，其后未见tags完成；即时宿主/容器version、tags、ps探测均正常。无法据此认定模型损坏。只对GET身份探测设置5秒单次网络超时，并允许网络/OSError后最多一次重连；仍共享原30秒总deadline，不重试HTTP错误、身份/JSON/内容校验失败，更不重放生成POST。测试覆盖一次恢复、两次硬上限、到期不能续期、生成失败只调用一次；该例外替代旧“完全无重连”的描述，不是扫描任务或AI生成业务重试。
 
 最终TCP定位修正：连续调用栈确认失败在`socket.connect`，请求尚未发送，且GET和POST均可能发生。因此上段GET级重连被替换为HTTPConnection的建连处理：每次最多3秒、最多3次、扣除原请求剩余deadline；只有连接成功才发送HTTP请求。不会重新发送任何已发送的POST，不重试HTTP/JSON/身份错误；成功响应后仍执行原完整校验。该处理记录于config_digest的tcp_connect配置；原生成时限与限额不变。
+
+
+## 2026-09-09 V2 组级默认协议
+
+默认 `group_plan_mode=True` 在原 Ollama /api/generate 传输及原安全预算内工作。输入 `openguard.ai-group-plan-input/v1` 只含 group_id 和共同条件的中文投影；输出 schema 约束该 group_id 与简短中文 summary、steps 对象（locate/source/record）、limitations。对象步骤适配已锁定 Ollama 的结构化输出支持，不使用其不支持的 array prefixItems。旧逐条/资源批模式仍由明确关闭 group_plan_mode 的协议回归测试覆盖，并非默认新增调用。ProducerRef提示摘要包含新的组提示和输出Schema，模型/温度/token预算未变。

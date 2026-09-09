@@ -83,3 +83,10 @@ bytes 执行。Root 仅在本纵切内完成最小修复，未新增路由、错
 ### 2026-09-08 P0 capacity admission amendment
 
 POST /api/v1/scans adds a documented 503 response using the existing ErrorEnvelope, code scan_capacity_unavailable, and reasons persistent_capacity_exceeded/busy/unavailable (full names use the persistent_capacity_ prefix). Git and ZIP are checked before input consumption. Existing route and domain shapes remain unchanged; this explicitly extends error semantics, not an unchanged-contract claim. Factory enables a 2GiB admission watermark, 256MiB per active/proposed scan and 512MiB filesystem reserve. Read routes are unaffected. Idempotent POST may also be refused; existing task GET remains usable. See deploy/README.md for single-process and non-hard-quota boundaries.
+
+
+## 2026-09-09 V2 分组与进度兼容扩展
+
+本轮没有新增路由、写接口或持久模型迁移。状态响应在原字段之外可选返回 `created_at`、`started_at`、`finished_at`（UTC ISO 时间，未知为 null）和 `ai_progress`。后者仅在当前进程执行 AI 阶段时提供组工作量 `groups_total/groups_done`、实际 `requests/cache_hits/successful_groups`、AI阶段 `elapsed_seconds` 和 `eta_seconds` 区间，`eta_scope=ai_stage`。没有两个实际请求耗时样本、重启后无观测或估计超时则没有 ETA；可有 `estimate_insufficient=true`。这不是整链剩余时间，也不是资源覆盖率，不能用它重写终态或原 progress。历史任务依靠持久时间和原进度读取。
+
+风险列表在原 `items/total` 之外返回可选 `grouping`；筛选先作用于原发现再生成投影。`openguard.grouping/v1` 的每条 finding_id 有唯一主组，resource_count 是 ID 并集。组包含真实规则/版本、许可/证据/范围等 context、成员 ID、严重度数量及 advice。advice.kind 区分 group_ai、rule、historical、unavailable。旧客户端可忽略新增字段，新前端对缺失字段兼容；旧原始对象/CSV 不变。前端只投影和筛选已载入数据，分段展示不宣称后端分页。

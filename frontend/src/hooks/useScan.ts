@@ -31,12 +31,12 @@ export function useScan(id: string, mode: Mode) {
           timer = window.setTimeout(load, mode === "mock" ? 500 : 2500);
       } catch (e) {
         if (!ctrl.signal.aborted)
-          setState({
+          setState(previous => ({
             key,
-            scan: null,
+            scan: previous.key === key ? previous.scan : null,
             error: e instanceof Error ? e.message : "读取任务失败",
             loading: false,
-          });
+          }));
       }
     }
     void load();

@@ -397,3 +397,20 @@ test("group labels are factual Chinese and groups sort by actual maximum severit
   assert.equal(groups[1].groups[1].trigger, base.fact);
   assert.equal(new Set(groups.flatMap(g => g.groups.map(s => s.key))).size, 3);
 });
+test("backend grouping is the single visible projection and filters its original members", () => {
+  const s = runtime().load("services/scans.ts");
+  const backendGrouping = { version: "openguard.grouping/v1", finding_count: 1, resource_count: 1, groups: [{ id: "G1", category_id: "license-evidence", category_name: "许可证据待核验", title: "锁文件 · 许可待核验 · npm", summary: "后端确定的共同条件。", finding_ids: ["rsk_a"], resource_ids: ["cmp_a"], severity_counts: {critical: 0, high: 0, medium: 0, low: 0, info: 1}, advice: {kind: "group_ai", summary: "共享建议", steps: ["核对原文"]} }] };
+  const scan = s.adaptApiScan("real", state(), resources, {...risks, grouping: backendGrouping}, evidence, run);
+  const groups = model.groupRisks(scan, scan.risks);
+  assert.equal(scan.grouping.groups[0].id, "G1");
+  assert.equal(groups[0].title, "许可证据待核验");
+  assert.equal(groups[0].groups[0].title, "锁文件 · 许可待核验 · npm");
+  assert.equal(groups[0].groups[0].advice.kind, "group_ai");
+  assert.equal(model.groupRisks(scan, []).length, 0);
+});
+test("AI progress is optional and never required for an old status response", () => {
+  const s = runtime().load("services/scans.ts");
+  const scan = s.adaptApiScan("real", {...state("running"), stage: "ai_assist", ai_progress: {groups_total: 7, groups_done: 2, requests: 2, cache_hits: 1, successful_groups: 2, elapsed_seconds: 11, eta_seconds: [20, 34], eta_scope: "ai_stage"}}, {items: [], total: 0}, {items: [], total: 0}, []);
+  assert.deepEqual(scan.aiProgress.etaSeconds, [20, 34]);
+  assert.throws(() => s.adaptApiScan("real", {...state("running"), ai_progress: {groups_total: 1}}, {items: [], total: 0}, {items: [], total: 0}, []), /AI 进度/);
+});

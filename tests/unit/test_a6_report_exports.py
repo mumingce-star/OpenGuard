@@ -66,6 +66,8 @@ def test_json_export_is_stable_and_round_trips_the_frozen_scan() -> None:
     assert payload["version"] == REPORT_VERSION
     assert payload["completeness"] == "complete"
     assert payload["disclaimer"] == REPORT_DISCLAIMER
+    assert payload["grouping"]["version"] == "openguard.grouping/v1"
+    assert payload["grouping"]["finding_count"] == len(run.findings)
     assert ScanRun.model_validate(payload["scan_run"]) == run
     assert payload["scan_run"]["contract_version"] == CONTRACT_VERSION
 
@@ -121,6 +123,48 @@ def test_html_escapes_untrusted_values_and_has_no_active_script() -> None:
     assert "<script>" not in html
     assert "Content-Security-Policy" in html
     assert REPORT_DISCLAIMER in html
+
+
+def test_html_is_grouped_complete_offline_and_prints_all_details() -> None:
+    run = _sample()
+    html = render_report(run, ReportFormat.HTML).content.decode("utf-8")
+
+    assert all(f'id="report-{index}"' in html for index in range(6))
+    assert "其他规则发现" in html
+    assert "pydantic" in html
+    assert "2.13.4" in html
+    assert "pyproject.toml:project.dependencies[0]" in html
+    assert "license.notice.review@0.1.0" in html
+    assert html.count("原文摘录") == 1
+    assert 'href="#evidence-evd_123e4567-e89b-12d3-a456-426614174000"' in html
+    assert 'id="evidence-evd_123e4567-e89b-12d3-a456-426614174000"' in html
+    assert "分组技术依据" in html
+    assert "details::details-content" in html
+    assert "展开 2 项资源完整清单" in html
+    assert "展开 3 条证据完整附录" in html
+    assert "以下条目复用第三方资源清单" in html
+    assert "适用范围：" in html
+    assert "完整离线明细" in html
+    assert "打印或保存 PDF 时将显示全部成员明细" in html
+    assert "@media print" in html
+    assert "details &gt;" not in html
+    assert html.count(REPORT_DISCLAIMER) == 1
+
+
+def test_html_escapes_group_context_and_member_specific_evidence() -> None:
+    run = _sample()
+    payload = run.model_dump(mode="python")
+    payload["findings"][0]["trigger"] = "<b>trigger</b>"
+    payload["findings"][0]["description"] = "<img src=x onerror=alert(1)>"
+    payload["evidence"][0]["excerpt"] = "<em>evidence</em>"
+    changed = ScanRun.model_validate(payload)
+
+    html = render_report(changed, ReportFormat.HTML).content.decode("utf-8")
+
+    assert "&lt;b&gt;trigger&lt;/b&gt;" in html
+    assert "&lt;img src=x onerror=alert(1)&gt;" in html
+    assert "&lt;em&gt;evidence&lt;/em&gt;" in html
+    assert "<b>trigger</b>" not in html
 
 
 def test_partial_report_discloses_missing_rules_without_inventing_findings() -> None:
