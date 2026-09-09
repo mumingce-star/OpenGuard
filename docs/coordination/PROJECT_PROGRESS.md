@@ -1,5 +1,7 @@
 # OpenGuard 项目进度台账
 
+2026-09-09 网页协议排障（Root/GPT-6）：HTTP localhost:5173/app/new-scan成功，Chrome独立环境实际渲染工作台，已用Edge打开正确HTTP地址；HTTPS同端口失败，Vite只提供HTTP。未改变浏览器安全策略或业务代码；真实API/异机验收未由本轮完成，三份协作记录发布当前功能分支。
+
 2026-09-09 本机演示启动（Root/GPT-6）：当前功能分支前端Vite已在 `http://127.0.0.1:5173/` 后台运行，首页与 `/app/new-scan` 实测HTTP200。仅Mock演示，非真实扫描或异机验收；无产品文件变更，本轮上传三份协作记录。
 
 2026-09-09 Git拉取复核（Root/GPT-6）：截图在父级独立master仓库执行，未使用子项目已配置的SSH443。进入实际OpenGuard仓库执行 `git pull --ff-only` 成功，当前分支与上游0/0；父级仓库保留。团队integration/p0已更新至e323509，本轮未合并/复验其产品功能；仅上传三份协作记录。

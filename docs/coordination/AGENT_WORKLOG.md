@@ -1144,3 +1144,18 @@
 
 - 作者：GPT-6 / Root Coordinator；时间：2026-09-09 19:20（Asia/Shanghai）。AMENDMENT：1919收工因补丁匹配到旧的相同token行，被插入此前记录附近；保留历史，此处补记正式末尾收工。网页运行事实不变，二次HTTP检查200且进程26224存活。
 - 三份文档已以12b9c38推送当前功能分支；业务文件、接口、Schema及依赖未变。只供本机Mock演示，真实部署和竞赛验收仍按前述门禁；后续由Root继续。精确token数不可获得，估算及范围说明沿用1919记录。
+
+### [20260909-1929-GPT6-网页协议排障] START - 核验HTTP并打开本机作品
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-09 19:29（Asia/Shanghai）。沿用已完整阅读的协作资料，复核当前工作区干净及最新日志；当前分支codex/scan-reliability-integration。
+- 用户要求修复ERR_SSL_PROTOCOL_ERROR。实测127.0.0.1和localhost的HTTP5173均200且无HTTPS重定向；HTTPS5173连接失败，当前Vite未配置TLS。浏览器地址栏及自动升级策略未读取，不武断认定具体升级来源。
+- 计划：在浏览器显式打开HTTP，使用独立临时浏览器环境验证页面内容；保留已运行服务，不改用户浏览器安全设置或产品代码。仅协作记录，验收以HTTP及实际页面内容为准。
+- token估算1,500～3,000；本次运行精确token数不可获得。
+
+### [20260909-1931-GPT6-网页协议排障验收] COMPLETE - 正确HTTP页面已验证并打开
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-09 19:31（Asia/Shanghai）；分支codex/scan-reliability-integration。
+- 实际结果：HTTP localhost/127.0.0.1:5173均200，HTTPS同端口失败。独立临时Chrome执行真实页面JavaScript，DOM含MOCK MODE与CREATE SCAN，不含ERR_SSL_PROTOCOL_ERROR；已通过Edge新窗口打开http://localhost:5173/app/new-scan。独立浏览器验证不能推断原用户配置的自动升级原因，但正确协议的网页已实测可用。
+- 修改及验收：仅本日志、进度表和AI记录，无业务文件、接口、Schema、规则或依赖变更。临时Chrome已结束，既有Vite继续运行；没有关闭证书检查、防火墙或全局HTTPS保护。未重复产品单测。
+- 限制/下一步：页面仍为本机Mock演示；若用户原窗口继续访问HTTPS，应改用已打开的HTTP窗口。Root后续负责真实集成与异机验收，竞赛资格/材料/质量门禁沿用此前报告。本轮三份文档检查后发布当前功能分支，实际提交见Git回执。
+- token：本次运行精确token数不可获得；估算1,500～3,000，完成原定排障范围，无法精确确认实际用量。
