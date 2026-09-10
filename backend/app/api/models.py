@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Literal
 
 from pydantic import Field, field_validator
+from app.domain.usage import UsageDeclaration
 
 from app.domain.models import (
     AIAsset,
@@ -27,6 +28,7 @@ class GitScanCreateRequest(P0Model):
     source_type: Literal["git"]
     source: str = Field(min_length=1, max_length=2048)
     idempotency_key: str | None = Field(default=None, min_length=1, max_length=200)
+    usage: UsageDeclaration | None = None
 
     @field_validator("source", "idempotency_key")
     @classmethod
@@ -39,6 +41,7 @@ class GitScanCreateRequest(P0Model):
 class ZipScanCreateFields(P0Model):
     source_type: Literal["zip"]
     idempotency_key: str | None = Field(default=None, min_length=1, max_length=200)
+    usage: UsageDeclaration | None = None
 
     @field_validator("idempotency_key")
     @classmethod

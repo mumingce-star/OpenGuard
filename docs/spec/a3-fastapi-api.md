@@ -94,3 +94,39 @@ POST /api/v1/scans adds a documented 503 response using the existing ErrorEnvelo
 ### 真实步骤进度补充（2026-09-09）
 
 现有状态响应可选 `work_progress: {percent, operation}`，仅运行中且当前进程有观测时非null。`percent` 为已执行流程步骤的权重（0≤值<100），不是文件覆盖率、耗时比例或许可证通过率；`operation` 为当前实际操作。Git/ZIP输入读取、文件清单、依赖解析、ScanCode/Syft结束事件驱动5/15/25/30/40/55/65/70等流程节点，后续按原阶段推进；AI按真实已完成组数在85至94之间推进。没有新事件时百分比不自行增长，界面活动光带仅说明仍在执行。原始 `progress`、`stage`、终态与持久报告不变；completed仍100，partial/failed按原值展示，终态清除临时观测。单进程128项有界观测，不新增队列、路由、定时任务或数据迁移；历史/旧接口缺字段时正常回退原进度。
+
+
+## 2026-09-10 V4 兼容扩展契约（开发中，未部署）
+
+负责人授权项目用途评估及本地问答。ScanRun/既有报告仍是不可变扫描事实，不重写旧库。原注册表严格核对表集合，因此附加状态使用同私有数据目录的独立 SQLite `assessment.db`，不在 scans.db 增表。开发隔离启用，生产更新另行确认。
+
+|方法|路径（均在 /api/v1/scans/{scan_id} 下）|输入/输出|副作用与幂等|
+|---|---|---|---|
+|POST|原 /api/v1/scans|兼容可选 usage（ZIP为JSON字符串）；省略为用途未知|保留原扫描幂等；不同用途冲突不静默覆盖|
+|GET|/assessments|已保存版本列表及声明用途|只读；无评估返回空，不生成|
+|POST|/assessments|usage、request_id；返回版本与生成状态|显式基于既有事实生成；同请求同输入复用，不重扫|
+|GET|/assessments/{assessment_id}|正式快照与AI状态|只读；核对任务归属|
+|GET|/assessments/{assessment_id}/report|format=html/json|读取创建时保存的版本报告，旧四格式入口不变|
+|GET|/chat|持久消息/当前生成状态/容量|只读；按scan隔离|
+|POST|/chat|assessment_id、request_id、message|有界后台生成；重复键复用，异内容409|
+|DELETE|/chat|confirmed=true|明确清空本任务消息与派生缓存，代际令牌拒绝迟到写入；不删评估/报告|
+
+统一 ErrorEnvelope；404归属不存在、409状态/重复键冲突、422输入无效、503容量/忙碌/未启用。模型工作不占事件循环；GET无生成副作用。新增写路由校验同源Origin及JSON，请求不接收Token或外部模型地址。用途细节为用户声明，不能提升Evidence核验状态。评估/聊天失败与scan终态分离。
+
+最小决策表：完整归集所有资源/发现/义务/覆盖缺口；优先支持经来源核对的有限许可语义。正向结论要求已核验许可与证据、版本/范围明确、对应维度无关键缺口；任何review_required不直接映射许可允许。范围不明/复杂AND OR WITH/独立模型数据API条款均保留未知。已知限制与未知并列；义务列要求及待核实状态，不声称已履行。规则说明来源、版本和已支持范围随评估保存。
+
+### V4 实现核对（2026-09-10，隔离开发，尚未部署）
+
+- 默认关闭 `OPENGUARD_ENABLE_ASSESSMENTS`；显式值1启用路由和新扫描终态评估。AI另由既有`OPENGUARD_ENABLE_AI`控制。V4启用后新扫描不再先运行旧组级生成；历史组级结果、调用实现和旧报告不变。
+- 原Git JSON接受可选`usage`对象；ZIP multipart接受可选`usage` JSON字符串（最多2048字符）。未提供时Project旧序列化不新增键，旧幂等指纹不变。用途预设不会补齐布尔细节；用户声明时间单独保存，缓存不依赖时间戳。
+- `/api/v1/scans/{scan_id}/assessments` GET返回20条版本、offset/has_more、usage及pending_job；POST显式创建，request_id幂等，202返回持久任务。GET `/assessments/jobs/{request_id}`查询完成/失败；GET `/assessments/{assessment_id}`与`/report?format=html|json`读取同份已保存结果，报告带X-Content-SHA256。前端当前版本选择展示最近20版；更早版本可用带ID的GET读取，后续界面分页尚待完善。
+- `/chat` GET返回本扫描历史、generation、limits；POST需assessment_id/request_id/message/generation，202并后台生成；DELETE需confirmed=true及当前generation。跨扫描assessment拒绝；清空不删评估与旧报告，迟到响应不能恢复已清空聊天。备份副本不随清空删除。
+- POST/DELETE校验Origin/Sec-Fetch-Site。开发可设置`OPENGUARD_WEB_ORIGINS`为明确回环来源列表；POST只收JSON且请求体16KiB上限。兼容无Origin本机CLI；不是多用户认证体系。
+- 新`assessment.db`与旧`scans.db`分离，不改变旧表结构；独立SQLite事务/私有权限/报告摘要核验。正式快照追加；成功缓存复用，fallback显式新请求可产生新版本，旧回退产物保留。启动将未完成评估/聊天标记中断失败，不自动重放模型。
+- 默认配置：单评估8MiB，附加库128MiB，保留磁盘512MiB；聊天单条2000字符、每任务50轮/256KiB、全局32MiB。参数由AssessmentStore/ChatStore构造配置；容量不足拒绝新写入，不删历史。物理页上限保留，准入计入可复用空闲页。单进程最多2个在途V4任务、模型共享1路，正在扫描时问答拒绝忙碌；不支持以多worker绕过本机并发预算。
+- 项目问答输入12000 UTF-8字节、输出1024 token/最多1500字符、单次30秒、无自动生成重试；V4专用上下文16384，旧扫描配置不变。聚合全部资源的条件/限制/缺口及义务，再按问题取最多4条证据/资源和最近6轮同评估历史；超预算明确失败，不默默截全项目结论。
+- 结构、任务/引用身份、有限矛盾措辞校验不能证明所有自然语言语义正确；AI不修改正式维度/扫描事实。人工抽查仍是交付门禁。
+
+
+### 2026-09-11 Git执行能力关闭行为修正
+未配置GitScanRuntime时，Git创建请求返回503、git_scanning_unavailable、reason=git_runtime_disabled，包含中文不可用说明；不再只建queued任务。已配置执行器的202执行契约不变。测试专用的记录创建替身不代表产品执行能力。

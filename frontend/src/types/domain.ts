@@ -99,6 +99,7 @@ export interface Scan {
   snapshotVersion: string;
 }
 export interface ScanInput {
+  usage?: import("../services/assessments").Usage;
   kind: "github" | "zip";
   url?: string;
   file?: File;

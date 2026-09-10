@@ -73,6 +73,7 @@ class _PreClaimRegistry(SQLiteScanRunRegistry):
         wait_busy: Callable[[float], bool],
     ) -> None:
         self._delegate = registry
+        self.assessment_observer = getattr(registry, "assessment_observer", None)
         self._scan_id = queued.run.id
         self._revision = queued.revision
         self._pre_claim = True

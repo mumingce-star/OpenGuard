@@ -29,6 +29,12 @@ from app.api.zip_scan import ZipScanRuntime
 from app.domain.models import ScanStage, ScanStatus
 from app.persistence import SQLiteScanRunRegistry
 
+class RecordOnlyGitTestRuntime:
+    """Explicit persistence-only test double; production requires a real executor."""
+    def submit(self, request, service, background_tasks):
+        return service.create_git_scan(request)
+
+
 
 @dataclass
 class ApiHarness:
@@ -52,7 +58,7 @@ def harness(tmp_path: Path) -> Iterator[ApiHarness]:
         upload_root=upload_root,
         workspace_root=workspace_root,
     )
-    app = create_app(registry, zip_runtime=runtime)
+    app = create_app(registry, zip_runtime=runtime, git_runtime=RecordOnlyGitTestRuntime())
     with TestClient(app, raise_server_exceptions=False) as client:
         yield ApiHarness(client, registry, upload_root, workspace_root, runtime)
     registry.close()
@@ -331,8 +337,9 @@ def test_neg_a3zip_006_unconfigured_zip_runtime_rejects_zip_but_preserves_git_js
                 "/api/v1/scans",
                 json={"source_type": "git", "source": "https://github.com/example/openguard-a3-2"},
             )
-            assert git.status_code == 202
-            assert git.json()["status"] == "queued"
+            assert git.status_code == 503
+            assert git.json()["error"]["code"] == "git_scanning_unavailable"
+            assert registry.active_count() == 0
     finally:
         registry.close()
 

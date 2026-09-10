@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+import json
 import time
 
 from app.ingestion import TrustedTreeScan
@@ -12,6 +13,7 @@ from app.security.errors import IngestionSecurityError
 from app.domain.models import HashValue
 
 from .external_tools import ScanCodeMappingResult, map_scancode_output, parse_json_output, run_scancode_license_scan
+from .external_tools import _PINNED_SCANCODE, _run_scancode_supplements
 
 
 @dataclass(frozen=True)
@@ -33,23 +35,51 @@ def scan_sealed_tree(
     deadline = time.monotonic() + 360
     remaining_bytes = 8 * 1024 * 1024
 
-    def invoke(relative_file=None):
+    def invoke(relative_file=None, *, batch=None):
         nonlocal remaining_bytes
         remaining_seconds = deadline - time.monotonic()
         if remaining_seconds <= 0:
             raise IngestionSecurityError("scanner_failed", "scanner_timeout")
         if remaining_bytes <= 0:
             raise IngestionSecurityError("scanner_failed", "tool_output_limit_exceeded")
-        execution = run_scancode_license_scan(
-            executable, tree.proc_target(), pass_fds=tree.inherited_fds,
-            relative_file=relative_file, timeout_seconds=remaining_seconds,
-            max_output_bytes=remaining_bytes,
-        )
+        if batch is None:
+            execution = run_scancode_license_scan(
+                executable, tree.proc_target(), pass_fds=tree.inherited_fds,
+                relative_file=relative_file, timeout_seconds=remaining_seconds,
+                max_output_bytes=remaining_bytes,
+            )
+        else:
+            execution = _run_scancode_supplements(
+                tree.proc_target(), batch, pass_fds=tree.inherited_fds,
+                timeout_seconds=remaining_seconds, max_output_bytes=remaining_bytes,
+            )
         remaining_bytes -= len(execution.stdout or b"")
         if remaining_bytes < 0:
             raise IngestionSecurityError("scanner_failed", "tool_output_limit_exceeded")
         if time.monotonic() > deadline:
             raise IngestionSecurityError("scanner_failed", "scanner_timeout")
+        if batch is not None:
+            if execution.status != "complete" or execution.stdout is None:
+                raise IngestionSecurityError("scanner_failed", execution.error_code or "external_scanner_invalid_output")
+            # Exactly one whole JSON document per single-file CLI, in order.
+            # Never promote a successful prefix from a failed/truncated batch.
+            try:
+                text = execution.stdout.decode("utf-8")
+                decoder = json.JSONDecoder()
+                offset = 0
+                results = []
+                for _ in batch:
+                    while offset < len(text) and text[offset].isspace():
+                        offset += 1
+                    value, offset = decoder.raw_decode(text, offset)
+                    if not isinstance(value, dict):
+                        raise ValueError("invalid supplement document")
+                    results.append(value)
+                if text[offset:].strip():
+                    raise ValueError("extra supplement output")
+                return results
+            except (UnicodeError, ValueError) as error:
+                raise IngestionSecurityError("scanner_failed", "external_scanner_invalid_output") from error
         result = parse_json_output(execution)
         if result is None:
             raise IngestionSecurityError("scanner_failed", execution.error_code or "external_scanner_invalid_output")
@@ -77,8 +107,12 @@ def scan_sealed_tree(
         # ScanCode excludes VCS-related names during its recursive walk. A
         # bounded single-file root scan covers those files without weakening
         # the inventory, path, scan-error or content-hash gates.
-        for path in missing:
-            supplement = invoke(path).get("files")
+        supplements = (
+            invoke(batch=missing) if executable == _PINNED_SCANCODE and len(missing) > 1
+            else (invoke(path) for path in missing)
+        )
+        for path, payload_part in zip(missing, supplements, strict=True):
+            supplement = payload_part.get("files")
             if not isinstance(supplement, list) or len(supplement) != 1:
                 raise ValueError("invalid single-file observation")
             item = supplement[0]

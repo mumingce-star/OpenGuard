@@ -52,6 +52,12 @@ from app.domain.models import (
 )
 from app.persistence import SQLiteScanRunRegistry
 
+class RecordOnlyGitTestRuntime:
+    """Explicit persistence-only test double; production requires a real executor."""
+    def submit(self, request, service, background_tasks):
+        return service.create_git_scan(request)
+
+
 
 BASE_TIME = datetime(2026, 9, 3, 3, 0, tzinfo=timezone.utc)
 VALID_SOURCE = "https://github.com/example/OpenGuard"
@@ -70,7 +76,7 @@ def harness(tmp_path: Path) -> Iterator[ApiHarness]:
     os.chmod(tmp_path, 0o700)
     database_path = tmp_path / "scans.sqlite"
     registry = SQLiteScanRunRegistry(database_path)
-    app = create_app(registry)
+    app = create_app(registry, git_runtime=RecordOnlyGitTestRuntime())
     with TestClient(app, raise_server_exceptions=False) as client:
         yield ApiHarness(client=client, registry=registry, database_path=database_path)
     registry.close()
@@ -574,7 +580,7 @@ def test_unexpected_exception_is_sanitized_and_has_matching_request_id() -> None
         def get(self, _: str) -> None:
             raise RuntimeError("/private/api/project token=do-not-leak")
 
-    app = create_app(ExplodingRegistry())  # type: ignore[arg-type]
+    app = create_app(ExplodingRegistry(), git_runtime=RecordOnlyGitTestRuntime())  # type: ignore[arg-type]
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get(f"/api/v1/scans/{MISSING_SCAN_ID}")
     _assert_error(response, status_code=500, code="internal_error", reason="unexpected_failure")
@@ -602,7 +608,7 @@ def _wait_for_uvicorn(process: subprocess.Popen[bytes], port: int) -> None:
     raise AssertionError("uvicorn did not listen on loopback within the timeout")
 
 
-def test_real_uvicorn_loopback_persists_the_queued_scan(tmp_path: Path) -> None:
+def test_real_uvicorn_disabled_git_rejects_without_queued_scan(tmp_path: Path) -> None:
     os.chmod(tmp_path, 0o700)
     data_dir = tmp_path / "uvicorn-data"
     port = _free_loopback_port()
@@ -610,6 +616,7 @@ def test_real_uvicorn_loopback_persists_the_queued_scan(tmp_path: Path) -> None:
     environment = os.environ.copy()
     environment["PYTHONPATH"] = str(project_root / "backend")
     environment["OPENGUARD_DATA_DIR"] = str(data_dir)
+    environment["OPENGUARD_ENABLE_PUBLIC_GIT"] = "0"
     process = subprocess.Popen(
         [
             sys.executable,
@@ -645,18 +652,9 @@ def test_real_uvicorn_loopback_persists_the_queued_scan(tmp_path: Path) -> None:
             )
             response = connection.getresponse()
             body = json.loads(response.read().decode("utf-8"))
-            assert response.status == 202
-            assert body["status"] == "queued"
-            assert body["status_url"] == f"/api/v1/scans/{body['scan_id']}"
+            assert response.status == 503
+            assert body["error"]["code"] == "git_scanning_unavailable"
             assert response.getheader("X-Request-ID", "").startswith("req_")
-            scan_id = body["scan_id"]
-
-            connection.request("GET", body["status_url"], headers={"Accept": "application/json"})
-            status_response = connection.getresponse()
-            status_body = json.loads(status_response.read().decode("utf-8"))
-            assert status_response.status == 200
-            assert status_body["scan_id"] == scan_id
-            assert status_body["status"] == "queued"
         finally:
             connection.close()
     finally:
@@ -673,10 +671,6 @@ def test_real_uvicorn_loopback_persists_the_queued_scan(tmp_path: Path) -> None:
     assert stat.S_IMODE(database_path.stat().st_mode) == 0o600
     registry = SQLiteScanRunRegistry(database_path)
     try:
-        persisted = registry.get(scan_id)
-        assert persisted.revision == 1
-        assert persisted.run.status is ScanStatus.QUEUED
-        assert persisted.run.stage is ScanStage.QUEUED
-        assert persisted.run.progress == 0
+        assert registry.active_count() == 0
     finally:
         registry.close()

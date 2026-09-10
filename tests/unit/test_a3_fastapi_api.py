@@ -16,6 +16,12 @@ from app.api import create_app, create_default_app
 from app.api.service import ScanApiService
 from app.domain.models import ScanRun
 from app.persistence import SQLiteScanRunRegistry
+
+class RecordOnlyGitTestRuntime:
+    """Explicit persistence-only test double; production requires a real executor."""
+    def submit(self, request, service, background_tasks):
+        return service.create_git_scan(request)
+
 from app.work_progress import activate as activate_work_progress, deactivate as deactivate_work_progress, observe as observe_work_progress
 
 
@@ -35,7 +41,7 @@ def harness(tmp_path: Path) -> Iterator[ApiHarness]:
     os.chmod(tmp_path, 0o700)
     registry = SQLiteScanRunRegistry(tmp_path / "scans.db")
     ids = count(1)
-    app = create_app(registry)
+    app = create_app(registry, git_runtime=RecordOnlyGitTestRuntime())
     app.state.scan_api_service = ScanApiService(
         registry,
         clock=lambda: FIXED_TIME,
@@ -325,7 +331,7 @@ def test_unexpected_failures_do_not_expose_internal_context(tmp_path: Path) -> N
         def get(self, _: str) -> None:
             raise RuntimeError("/Users/private/project token=do-not-leak")
 
-    app = create_app(ExplodingRegistry())  # type: ignore[arg-type]
+    app = create_app(ExplodingRegistry(), git_runtime=RecordOnlyGitTestRuntime())  # type: ignore[arg-type]
     with TestClient(app, raise_server_exceptions=False) as client:
         response = client.get(f"/api/v1/scans/{MISSING_SCAN_ID}")
     _assert_error(response, status_code=500, code="internal_error", reason="unexpected_failure")
@@ -351,7 +357,7 @@ def test_persistent_capacity_rejects_git_zip_before_read_and_preserves_get(harne
     from app.api.main import _PersistentCapacity
     existing = _create(harness)
     guard = _PersistentCapacity(tmp_path, harness.registry, limit_bytes=1024, reserve_bytes=512, free_floor_bytes=1)
-    app = create_app(harness.registry, persistent_capacity=guard)
+    app = create_app(harness.registry, git_runtime=RecordOnlyGitTestRuntime(), persistent_capacity=guard)
     before = harness.registry.get(existing)
     with TestClient(app) as client:
         for headers, body in [({'content-type': 'application/json'}, b'not-json'),
@@ -369,7 +375,7 @@ def test_capacity_queued_reservation_survives_new_guard_and_failure_releases_loc
     from app.api.main import _PersistentCapacity
     mib = 1024**2
     guard = _PersistentCapacity(tmp_path, harness.registry, limit_bytes=3*mib, reserve_bytes=mib, free_floor_bytes=1)
-    with TestClient(create_app(harness.registry, persistent_capacity=guard)) as client:
+    with TestClient(create_app(harness.registry, git_runtime=RecordOnlyGitTestRuntime(), persistent_capacity=guard)) as client:
         assert client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE}).status_code == 202
         assert client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE}).status_code == 202
         rejected = client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE})
@@ -377,7 +383,7 @@ def test_capacity_queued_reservation_survives_new_guard_and_failure_releases_loc
         assert not guard.lock.locked()
     reopened = SQLiteScanRunRegistry(tmp_path / 'scans.db')
     again = _PersistentCapacity(tmp_path, reopened, limit_bytes=3*mib, reserve_bytes=mib, free_floor_bytes=1)
-    with TestClient(create_app(reopened, persistent_capacity=again)) as client:
+    with TestClient(create_app(reopened, git_runtime=RecordOnlyGitTestRuntime(), persistent_capacity=again)) as client:
         assert client.post('/api/v1/scans', json={'source_type':'git','source':VALID_SOURCE}).status_code == 503
     reopened.close()
 
@@ -403,7 +409,7 @@ def test_capacity_inventory_counts_same_disk_workspace_unknown_files_and_fails_c
     monkeypatch.setattr(os, 'statvfs', lambda _: SimpleNamespace(f_bavail=1, f_frsize=1))
     with pytest.raises(ApiError): guard.check()
     monkeypatch.setattr(os, 'statvfs', lambda _: (_ for _ in ()).throw(OSError('private path')))
-    with TestClient(create_app(harness.registry, persistent_capacity=guard)) as client:
+    with TestClient(create_app(harness.registry, git_runtime=RecordOnlyGitTestRuntime(), persistent_capacity=guard)) as client:
         response=client.post('/api/v1/scans',json={'source_type':'git','source':VALID_SOURCE})
         assert response.status_code == 503 and 'private path' not in response.text
     assert not guard.lock.locked()
@@ -414,13 +420,13 @@ def test_capacity_concurrent_request_busy_does_not_create_record(harness, tmp_pa
     guard=_PersistentCapacity(tmp_path,harness.registry)
     guard.lock.acquire()
     try:
-        with TestClient(create_app(harness.registry,persistent_capacity=guard)) as client:
+        with TestClient(create_app(harness.registry, git_runtime=RecordOnlyGitTestRuntime(),persistent_capacity=guard)) as client:
             r=client.post('/api/v1/scans',json={'source_type':'git','source':VALID_SOURCE})
             assert r.status_code==503 and r.json()['error']['details']['reason']=='persistent_capacity_busy'
         assert harness.registry.active_count()==0
     finally:
         guard.lock.release()
-    with TestClient(create_app(harness.registry,persistent_capacity=guard)) as client:
+    with TestClient(create_app(harness.registry, git_runtime=RecordOnlyGitTestRuntime(),persistent_capacity=guard)) as client:
         assert client.post('/api/v1/scans',json={'source_type':'git','source':VALID_SOURCE}).status_code==202
 
 @pytest.mark.parametrize("done,expected", [(0, 85), (1, 86), (3, 89), (6, 94)])

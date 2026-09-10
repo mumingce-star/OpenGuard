@@ -1,8 +1,10 @@
 """FastAPI application factory for the frozen OpenGuard P0 routes."""
 
 from __future__ import annotations
+from app.domain.usage import UsageDeclaration
 
 import os
+import json
 import stat
 import threading
 from base64 import b64encode
@@ -95,6 +97,7 @@ def _router() -> APIRouter:
                                 "source_type": {"type": "string", "const": "git"},
                                 "source": {"type": "string", "minLength": 1, "maxLength": 2048},
                                 "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 200},
+                                "usage": {"anyOf": [UsageDeclaration.model_json_schema(), {"type": "null"}]},
                             },
                             "additionalProperties": False,
                         },
@@ -107,6 +110,7 @@ def _router() -> APIRouter:
                                 "source_type": {"type": "string", "const": "zip"},
                                 "file": {"type": "string", "format": "binary"},
                                 "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 200},
+                                "usage": {"type": "string", "maxLength": 2048, "description": "Optional UsageDeclaration JSON; omission preserves legacy behavior"},
                             },
                             "additionalProperties": False,
                         }
@@ -133,7 +137,7 @@ def _router() -> APIRouter:
                 ) from None
             runtime: GitScanRuntime | None = request.app.state.git_scan_runtime
             if runtime is None:
-                return service.create_git_scan(body)
+                raise ApiError(status_code=503, code="git_scanning_unavailable", message="当前环境未启用 Git 扫描，请使用已启用扫描服务的入口。", reason="git_runtime_disabled")
             return runtime.submit(body, service, background_tasks)
 
         if media_type == "multipart/form-data":
@@ -155,15 +159,20 @@ def _router() -> APIRouter:
                 )
             reservation = runtime.reserve_upload_capacity()
             try:
-                async with request.form(max_files=1, max_fields=2, max_part_size=64 * 1024 * 1024) as form:
+                async with request.form(max_files=1, max_fields=3, max_part_size=64 * 1024 * 1024) as form:
                     grouped: dict[str, list[object]] = {}
                     for key, value in form.multi_items():
                         grouped.setdefault(key, []).append(value)
-                    if set(grouped) - {"source_type", "idempotency_key", "file"}:
+                    if set(grouped) - {"source_type", "idempotency_key", "file", "usage"}:
                         raise ValueError
                     if len(grouped.get("source_type", [])) != 1 or len(grouped.get("file", [])) != 1:
                         raise ValueError
                     if len(grouped.get("idempotency_key", [])) > 1:
+                        raise ValueError
+                    if len(grouped.get("usage", [])) > 1:
+                        raise ValueError
+                    usage = grouped.get("usage", [None])[0]
+                    if usage is not None and (not isinstance(usage, str) or len(usage)>2048):
                         raise ValueError
                     source_type = grouped["source_type"][0]
                     idempotency = grouped.get("idempotency_key", [None])[0]
@@ -175,6 +184,7 @@ def _router() -> APIRouter:
                     fields = ZipScanCreateFields(
                         source_type=source_type,
                         idempotency_key=idempotency,
+                        usage=json.loads(usage) if usage is not None else None,
                     )
                     return await runtime.submit(upload, fields, service, background_tasks, reservation=reservation)
             except ApiError:
@@ -346,6 +356,7 @@ def create_app(
     close_registry: bool = False,
     zip_dispatcher: ZipDispatcher | None = None,
     persistent_capacity: _PersistentCapacity | None = None,
+    assessment_service=None,
 ) -> FastAPI:
     if zip_dispatcher is not None:
         # Durable lifecycle ownership is deliberately all-or-nothing.  An
@@ -390,6 +401,31 @@ def create_app(
     app.state.zip_scan_runtime = zip_runtime
     app.state.git_scan_runtime = git_runtime
     app.state.zip_dispatcher = zip_dispatcher
+    app.state.assessment_service = assessment_service
+
+    @app.middleware("http")
+    async def v4_write_boundary(request: Request, call_next):
+        path = request.url.path
+        if assessment_service is not None and request.method in {"POST", "DELETE"} and ("/assessments" in path or path.endswith("/chat")):
+            from urllib.parse import urlsplit
+            configured = os.environ.get("OPENGUARD_WEB_ORIGINS", "http://127.0.0.1:8080,http://localhost:8080")
+            allowed = configured.split(",")
+            origin = request.headers.get("origin")
+            if any(urlsplit(x).hostname not in {"127.0.0.1", "localhost", "::1"} or urlsplit(x).scheme != "http" for x in allowed):
+                return _error_response(request, ApiError(status_code=503,code="origin_configuration_invalid",message="本地来源配置不可用。",reason="origin_configuration_invalid"))
+            if (origin is not None and origin not in allowed) or request.headers.get("sec-fetch-site") == "cross-site":
+                return _error_response(request, ApiError(status_code=403,code="origin_rejected",message="仅允许本地产品页面提交此操作。",reason="origin_rejected"))
+            if request.method == "POST":
+                if request.headers.get("content-type", "").split(";")[0] != "application/json":
+                    return _error_response(request, ApiError(status_code=422,code="request_invalid",message="请求必须为JSON。",reason="request_invalid"))
+                chunks=[]; size=0
+                async for chunk in request.stream():
+                    size += len(chunk)
+                    if size > 16384:
+                        return _error_response(request, ApiError(status_code=413,code="request_too_large",message="问题内容超过请求容量。",reason="request_too_large"))
+                    chunks.append(chunk)
+                request._body = b"".join(chunks)
+        return await call_next(request)
 
     @app.middleware("http")
     async def limit_zip_request_body(
@@ -518,6 +554,9 @@ def create_app(
         )
 
     app.include_router(_router())
+    if assessment_service is not None:
+        from app.api.assessment import router as assessment_router
+        app.include_router(assessment_router())
     return app
 
 
@@ -571,13 +610,17 @@ def create_default_app() -> FastAPI:
         if durable_zip_enabled == "1"
         else None
     )
+    v4_enabled = os.environ.get("OPENGUARD_ENABLE_ASSESSMENTS", "0")
+    if v4_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_ASSESSMENTS")
+    scan_ai_enabled = ai_enabled == "1" and v4_enabled != "1"
     runtime = ZipScanRuntime(
         registry,
         upload_root=upload_root,
         workspace_root=workspace_root,
         report_publisher=PipelineReportPublisher(report_store),
         ai_provider=ai_provider,
-        ai_enabled=ai_enabled == "1",
+        ai_enabled=scan_ai_enabled,
         ai_timeout_seconds=30.0,
         dispatch_store=dispatch_store,
         external_scanners=external_scanners == "1",
@@ -591,7 +634,7 @@ def create_default_app() -> FastAPI:
             workspace_root=workspace_root,
             report_publisher=PipelineReportPublisher(report_store),
             ai_provider=ai_provider,
-            ai_enabled=ai_enabled == "1",
+            ai_enabled=scan_ai_enabled,
             ai_timeout_seconds=30.0,
             external_scanners=external_scanners == "1",
         )
@@ -606,13 +649,21 @@ def create_default_app() -> FastAPI:
             workspace_root=workspace_root,
             report_publisher=PipelineReportPublisher(report_store),
             ai_provider=ai_provider,
-            ai_enabled=ai_enabled == "1",
+            ai_enabled=scan_ai_enabled,
             ai_timeout_seconds=30.0,
             external_scanners=external_scanners == "1",
         )
         if dispatch_store is not None
         else None
     )
+    assessment_service = None
+    if v4_enabled == "1":
+        from app.assessment.service import AssessmentService
+        from app.assessment.store import AssessmentStore
+        assessment_service = AssessmentService(registry, AssessmentStore(data_dir / "assessment.db"), ai_provider)
+        assessment_service.initialize()
+        # Optional terminal observation is separate from report publication and ScanRun CAS.
+        registry.assessment_observer = assessment_service.on_terminal
     return create_app(
         registry,
         zip_runtime=runtime,
@@ -621,6 +672,7 @@ def create_default_app() -> FastAPI:
         close_registry=True,
         zip_dispatcher=dispatcher,
         persistent_capacity=_PersistentCapacity(data_dir, registry),
+        assessment_service=assessment_service,
     )
 
 

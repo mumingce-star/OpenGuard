@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { Mode } from "../types/domain";
 import { defaultMode } from "../services/scans";
 export type Page =
+  | "assessment"
+  | "chat"
   | "overview"
   | "new-scan"
   | "progress"
@@ -24,7 +26,7 @@ export function readRoute() {
   if (pathname === "/app/new-scan")
     return { page: "new-scan" as Page, scanId: "", riskId: "", query, mode };
   const m = pathname.match(
-    /^\/app\/scans\/([^/]+)\/(overview|progress|risks|resources|report)(?:\/([^/]+))?\/?$/,
+    /^\/app\/scans\/([^/]+)\/(assessment|chat|overview|progress|risks|resources|report)(?:\/([^/]+))?\/?$/,
   );
   if (m && (!m[3] || m[2] === "risks")) {
     try {

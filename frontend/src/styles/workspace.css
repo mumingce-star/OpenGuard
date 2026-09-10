@@ -1325,3 +1325,35 @@
     widows: 3;
   }
 }
+
+/* Project assessment reuses existing workspace panels and evidence styling. */
+.og-assessment { display: grid; gap: 1.25rem; }
+.og-assessment-grid, .og-usage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.og-assessment .og-actions { flex-wrap: wrap; }
+.og-assessment pre, .og-chat-turn p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.og-assessment pre { max-height: 24rem; overflow: auto; }
+.og-chat-history { max-height: 36rem; overflow: auto; }
+.og-chat-turn { padding: 1rem; margin-block: .75rem; border: 1px solid var(--border, #334155); border-radius: .75rem; }
+.og-usage { border: 1px solid var(--border, #334155); border-radius: .75rem; padding: 1rem; margin-block: 1rem; min-width: 0; }
+.og-conclusion.unknown, .og-conclusion.restricted { color: #fbbf24; }
+.og-conclusion.conditional { color: #7dd3fc; }
+.og-historical-report > summary, .og-sidebar nav summary { cursor: pointer; padding: 1rem; }
+.og-assessment textarea { width: 100%; min-height: 6rem; resize: vertical; }
+@media (max-width: 760px) { .og-assessment-grid, .og-usage-grid { grid-template-columns: 1fr; } }
+.og-assessment-layout { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 1fr); gap: 1.25rem; align-items: start; }
+.og-assessment-layout.chat-collapsed { grid-template-columns: minmax(0, 1fr) auto; }
+.og-assessment-main { min-width: 0; display: grid; gap: 1rem; }
+.og-assessment-chat { min-width: 0; position: sticky; top: 1rem; display: grid; gap: .75rem; max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain; }
+.og-assessment-chat .og-chat-history { max-height: 45vh; }
+.og-assessment details > summary { cursor: pointer; padding-block: .5rem; }
+.og-evidence-ref { display: block; max-width: 100%; overflow-wrap: anywhere; text-align: left; margin-block: .25rem; font-size: .8rem; }
+@media (max-width: 1150px) { .og-assessment-layout, .og-assessment-layout.chat-collapsed { grid-template-columns: 1fr; } .og-assessment-chat { position: static; max-height: none; overflow: visible; } }
+.og-assessment > .og-page-header { margin-bottom: 0; padding-bottom: 0; }
+.og-assessment > .og-page-header h1 { font-size: clamp(1.5rem, 2.5vw, 2rem); }
+.og-assessment { gap: .75rem; }
+.og-assessment-main > p { margin: .25rem 0; }
+.og-assessment-technical { font-size: .85rem; overflow-wrap: anywhere; }
+.og-assessment-grid .og-panel { padding: 1rem; }
+.og-assessment-grid .og-panel p { margin: .5rem 0; }
+.og-assessment-grid .og-panel h2 { font-size: 1rem; }
+.og-assessment-summary { font-size: .95rem; }

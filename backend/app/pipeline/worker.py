@@ -257,7 +257,14 @@ class ScanPipelineWorker:
 
         progress_token = activate_work_progress(scan_id)
         try:
-            return self._run_claimed(current, plan, started_at)
+            result = self._run_claimed(current, plan, started_at)
+            observer = getattr(self._registry, "assessment_observer", None)
+            if observer is not None:
+                try:
+                    observer(result.run)
+                except Exception:
+                    pass  # Assessment failure never rewrites a scan terminal.
+            return result
         finally:
             deactivate_work_progress(scan_id, progress_token)
 

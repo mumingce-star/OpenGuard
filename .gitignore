@@ -67,3 +67,6 @@ models/
 # Local competition source documents (keep outside public commits)
 /*.pdf
 /*.docx
+
+# Private local acceptance receipts, runtime data and backups
+/output/

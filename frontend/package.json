@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test tests/model.test.mjs",
+    "test": "node --test tests/model.test.mjs tests/assessment.test.mjs",
     "test:browser": "node tests/browser-smoke.mjs"
   },
   "dependencies": {

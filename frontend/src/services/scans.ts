@@ -127,8 +127,8 @@ export function validateSnapshot(raw: unknown, mode: Mode, id?: string): Scan {
   // Missing evidence references intentionally remain visible as "待补充".
   return raw as unknown as Scan;
 }
-class ApiError extends Error { constructor(public status: number, message: string, public code?: string, public reason?: string) { super(message); } }
-async function request(
+export class ApiError extends Error { constructor(public status: number, message: string, public code?: string, public reason?: string) { super(message); } }
+export async function request(
   path: string,
   options: RequestInit = {},
   signal?: AbortSignal,
@@ -417,10 +417,11 @@ export async function createApiScan(input: ScanInput, requestId: string): Promis
     form.append("source_type", "zip");
     form.append("idempotency_key", requestId);
     form.append("file", input.file!);
+    if (input.usage) form.append("usage", JSON.stringify(input.usage));
     body = form;
   } else {
     headers["Content-Type"] = "application/json";
-    body = JSON.stringify({ source_type: "git", source: input.url?.trim(), idempotency_key: requestId });
+    body = JSON.stringify({ source_type: "git", source: input.url?.trim(), idempotency_key: requestId, ...(input.usage ? { usage: input.usage } : {}) });
   }
   const accepted = object(await request("/scans", { method: "POST", headers, body }));
   if (!text(accepted.scan_id) || !accepted.scan_id || !one(accepted.status, ["queued", "running", "completed", "partial", "failed", "cancelled"]) || accepted.status_url !== "/api/v1/scans/" + accepted.scan_id) throw new Error("创建响应不符合冻结 API 契约。");

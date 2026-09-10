@@ -8,6 +8,7 @@ import ipaddress
 import json
 import math
 import time
+import threading
 from collections.abc import Callable
 from typing import Any
 from urllib.parse import urlsplit
@@ -21,6 +22,8 @@ OLLAMA_VERSION = "0.33.3"
 MODEL_NAME = "qwen3:4b-instruct-2507-q4_K_M"
 MANIFEST_DIGEST = "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0"
 MODEL_ID = f"{MODEL_NAME}@sha256:{MANIFEST_DIGEST}"
+
+_MODEL_SLOT = threading.BoundedSemaphore(1)
 
 _MAX_INPUT_BYTES = 256 * 1024
 _MAX_VERSION_BYTES = 4 * 1024
@@ -392,6 +395,55 @@ class OllamaProvider:
         return value
 
     def generate(self, payload: str, timeout_seconds: float) -> str:
+        # A single local model budget is shared with project assessment/chat.
+        if type(timeout_seconds) not in {int, float} or isinstance(timeout_seconds, bool) or not math.isfinite(timeout_seconds) or not 0 < timeout_seconds <= _MAX_TIMEOUT_SECONDS:
+            _fail()
+        remaining = float(timeout_seconds)
+        if not _MODEL_SLOT.acquire(blocking=False):
+            started = time.monotonic()
+            if not _MODEL_SLOT.acquire(timeout=remaining):
+                _fail()
+            remaining -= time.monotonic() - started
+        try:
+            if remaining <= 0:
+                _fail()
+            return self._generate_unlocked(payload, remaining)
+        finally:
+            _MODEL_SLOT.release()
+
+    def generate_project(self, payload: str, timeout_seconds: float = 30.0) -> str:
+        """Local-only V4 structured explanation; never changes a ScanRun."""
+        from app.ai.project import PROJECT_PROMPT, bound_schema
+        if type(payload) is not str or len(payload.encode("utf-8")) > 12000:
+            _fail()
+        if type(timeout_seconds) not in {int, float} or isinstance(timeout_seconds, bool) or not math.isfinite(timeout_seconds) or not 0 < timeout_seconds <= 30:
+            _fail()
+        schema = bound_schema(payload)
+        # Interactive work never builds an unbounded model queue.
+        if not _MODEL_SLOT.acquire(blocking=False):
+            _fail()
+        try:
+            deadline = self._now() + timeout_seconds
+            version = self._request_json("/api/version", deadline=deadline, limit=_MAX_VERSION_BYTES)
+            tags = self._request_json("/api/tags", deadline=deadline, limit=_MAX_TAGS_BYTES)
+            matches = [m for m in tags.get("models", []) if isinstance(m, dict) and m.get("name") == MODEL_NAME]
+            if version.get("version") != OLLAMA_VERSION or len(matches) != 1 or matches[0].get("digest") != MANIFEST_DIGEST:
+                _fail()
+            generated = self._request_json("/api/generate", deadline=deadline,
+                body={"model": MODEL_NAME, "system": PROJECT_PROMPT, "prompt": payload,
+                      "stream": False, "format": schema, "think": False, "options": {**_OPTIONS, "num_ctx": 16384}},
+                limit=_MAX_GENERATE_BYTES)
+            answer = generated.get("response")
+            if generated.get("model") != MODEL_NAME or generated.get("done") is not True or not isinstance(answer, str) or not answer or len(answer.encode("utf-8")) > _MAX_MODEL_RESPONSE_BYTES:
+                _fail()
+            if generated.get("done_reason") not in (None, "stop"):
+                _fail()
+            self.last_project_metrics = {k: generated.get(k) for k in ("prompt_eval_count", "eval_count", "total_duration", "load_duration")}
+            return answer
+        finally:
+            _MODEL_SLOT.release()
+
+    def _generate_unlocked(self, payload: str, timeout_seconds: float) -> str:
         """Return only Ollama's structured response string, or one sanitized error."""
 
         try:

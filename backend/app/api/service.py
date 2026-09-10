@@ -114,7 +114,7 @@ class ScanApiService:
         created_at = self._clock()
         source_digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
         fingerprint_payload = json.dumps(
-            {"source": source, "source_type": "git"},
+            {"source": source, "source_type": "git", **({"usage": request.usage.model_dump(mode="json", exclude={"declared_at"})} if request.usage else {})},
             ensure_ascii=True,
             sort_keys=True,
             separators=(",", ":"),
@@ -131,6 +131,7 @@ class ScanApiService:
                 name=_project_name(source),
                 source_type=SourceType.GIT,
                 source=source,
+                usage=request.usage,
                 created_at=created_at,
             ),
             summary=ScanSummary(
@@ -219,7 +220,7 @@ class ScanApiService:
         created_at = self._clock()
         candidate_id = f"scn_{self._id_factory()}"
         fingerprint_payload = json.dumps(
-            {"input_digest": input_digest, "source_type": "zip"},
+            {"input_digest": input_digest, "source_type": "zip", **({"usage": request.usage.model_dump(mode="json", exclude={"declared_at"})} if request.usage else {})},
             ensure_ascii=True,
             sort_keys=True,
             separators=(",", ":"),
@@ -236,6 +237,7 @@ class ScanApiService:
                 name=project_name,
                 source_type=SourceType.ZIP,
                 source=staged_name,
+                usage=request.usage,
                 created_at=created_at,
             ),
             summary=ScanSummary(

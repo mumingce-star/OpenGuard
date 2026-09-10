@@ -4402,3 +4402,82 @@
 - 前端36测试/tsc通过；首轮全回归1319通过+1失败，仅queued状态精确字段断言需接纳新增可空work_progress，保留失败记录并补null断言后相关61通过。新增4项AI组数映射与原run不变测试。最终提交全量另记录本机证据；检查构建/源码和diff，Root统一普通推送integration/p0。
 - 完成范围仅进度反馈；无法从不提供内部计数的ScanCode推断逐文件百分比，因此执行时显示活动光带和当前工具，数值停留到下一真实事件。本轮未改为时间猜测进度。Windows/真实断网矩阵、下载策略及P0人工签收仍是既有待验项。交付入口统一首页，禁止下次默认给任务深链接。
 - 精确token数不可获得，开工8k–18k无法核定实耗；范围未扩大。本机可演示P0真实链，但报名条件未重新评估，完整作品/竞争力仍需既有人工/异机/下载门禁，不能据此宣称P0全通过。
+
+
+### [20260910-1121-RootAstra-ScannerV3] START
+
+- GPT-6 Astra / Root: confirmed V3, integration/p0@5611c00; preserve existing output. No commit, push, branch change, production data edits or service restarts. Read-only agents reviewed all 4404 log lines and both cz branches; no active writer conflicts. Scanner product logic already integrated; new branch differences are documentation.
+- Root sole writer: isolated benchmarks/profile_scan.py timing harness, only measured worthwhile scanner patches, existing coordination records. Fixed Flask/openai Git revision and existing smolagents ZIP; serial three baseline runs then three candidate runs if a worthwhile candidate exists. AI separately measured; unchanged sandbox, inventory/hash/coverage, evidence and budgets. No candidate is an acceptable diagnostic outcome.
+- Planned checks: tool starts, stage wall times, fact graph/inventory equality, errors/cleanup, four reports, relevant regressions. Pipeline profiling is not HTTP/browser end-to-end. No cold/warm claims without evidence. Estimated 20k-40k tokens; exact usage unavailable. Initial log append failed due to shell Python encoding; retry here restores the START record before executing benchmarks.
+
+
+### [20260910-1223-RootAstra-ScannerV3] PARTIAL
+
+- GPT-6 Astra / Root完成cz成果复核、固定条件测量、窄补丁和独立验证；两位只读协作任务分别核验分支差异/ScanCode行为及18份receipt，Root唯一写者。integration/p0@5611c00不变，未提交/推送/merge/reset，不操作cz/xzb分支。原output/历史报告保留。
+- 生产修改仅backend/app/scanners/external_tools.py、scancode_pipeline.py：固定工具2–8个补扫文件在同任务一个`python -I`子进程内顺序调用原单文件CLI，复用初始化。360秒共享deadline/8MiB原始输出上限、禁网沙箱、只读fd、路径/Hash/覆盖/错误和进程清理不变。任一CLI失败拒绝整组。零/一文件或非固定路径保留原行为。无模型/API/Schema/规则/前端变化。
+- 新增benchmarks/profile_scan.py opt-in真实Pipeline计时工具及tests/unit/test_scancode_supplement_batch.py 36项安全/绑定/失败测试；原spec、PROJECT_PROGRESS、AI log与本日志追加记录。本机证据在原output/scanner-v3-evidence，含18有效主轮、2额外获取失败、4真实AI轮、四报告字节、源码SHA、原始时间和验证脚本。未建新服务；候选仅临时PYTHONPATH独立进程，线上镜像保持不变。
+- Flask/openai/固定ZIP各前3后3串行，无CPU回归并行。总中位66.590→57.526秒、340.452→327.945秒、29.921→29.951秒；ZIP无加速。三文件补扫10.7→3.66秒，7→5工具进程；整树约44/286秒仍慢。总差值含Git物化/网络波动，约7.1秒补扫减少才是明确改动收益。第一轮和重复轮全部记录，OS缓存未清空，不冒称冷启动。
+- 18份inventory和资源/许可/义务/发现/整改/错误逐字段一致，Evidence仅排除observed_at，ID/Hash/引用不变；Flask保留partial，其余completed；四报告链接/实生成SHA匹配、workspace清理。主轮报告实体临时清理，receipt留存，不等于下载验收。真实AI四轮均6请求/6组成功/0缓存/142自身证据关联；同8192热模型一对AI15.022→15.207秒、整链80.684→72.899秒，AI收益不混入扫描。16份真实AI报告原字节/SHA额外保留。
+- 最终`PYTHONPATH=backend .../venv/bin/python -m pytest -q`1360 passed/3 skipped/2 warnings(66.39s)；`node --test frontend/tests/model.test.mjs`36 passed；diff检查通过。三跳过是显式网络/回环/真实模型专项，单独实测不冒充专项已通过。初期121/35目标测试仅过程记录，不累加。当前API/Web healthy，活动0，未发现本轮profile/ScanCode残留进程。
+- PARTIAL原因：用户要求维护前确认，本轮没有更新运行环境或重启服务，因此网页尚未用上候选，线上HTTP/Chrome验收待确认后Root执行；无自动提交/推送。另保留公网获取失败/大型树ScanCode成本/Flask解析限制；既有Windows、下载、12条双人复核和最终P0签收门禁未关闭。不新增P1/P2、不宣称报名/完整作品或获奖竞争力已达标。
+- 精确token数不可获得，开工20k–40k无法核定实耗。按确认范围完成源码和本机隔离验收；额外AI2组用于排除初始化差异，未每种AI样例各做3轮，主要扫描条件3+3已齐。下一安全动作是用户确认后再次查活动0，仅更新API并保留卷/历史报告，再验证真实HTTP/Chrome链路；首页仍http://127.0.0.1:8080/。
+
+
+### [20260910-1555-RootAstra-ScannerV3Maintenance] START
+
+- Root收到用户限定API更新/真实Chrome Git+ZIP验收授权。先只读复核Git、已测候选Hash、部署说明、Docker/Chrome和实际进程；若启动引擎等超出API维护范围，先报告并等待确认。保留全部数据、output和未提交补丁，不提交/推送。预计本段4k–8k token，精确用量不可获得。
+
+### [20260910-1555-RootAstra-ScannerV3Maintenance] BLOCKED
+
+- 更新之前发现Docker引擎不可用：docker version仅Client，desktop status不能取状态，desktop-linux与default两处socket均不存在，未见Docker引擎进程；Chrome首页ERR_CONNECTION_REFUSED，8080无监听。不能沿用12:23的healthy/活动0结论。尚未构建或更新API，无回退，无删除/迁移/重启。
+- HEAD仍5611c00；两生产文件SHA与final-validation.json完全一致。实际产品补丁SHA256 c3a578eb62ca1a770cc6a853e3f60a85f2a66fe25f77139e88effa30d054983b。历史镜像记录不冒称当前镜像已核验；引擎恢复前无法读取挂载、队列/dispatcher、卷内任务与报告，也无法完成卷备份。
+- 宿主另有既有uvicorn进程56829，cwd为本仓库、监听参数127.0.0.1:8000，与目标Compose不同；未中断或修改。新Git/ZIP任务均未创建，网页功能/历史数据未重新验收。Windows/人工/P0签收门禁不变。
+- 需用户确认是否允许启动现有Docker Desktop引擎（不更新、不重装），其可能恢复其他容器，超出此次仅API容器更新边界；恢复后先查所有活动/待派发和实际执行再决定维护，不能直接开始重建。精确token不可获得；4k–8k开工估算无法核定实耗，当前仅只读预检与协调记录。
+
+
+### [20260910-1600-RootAstra-ScannerV3Deploy] START
+
+- 用户另授权启动Docker引擎；start返回already running，随后引擎与原API恢复。空闲记录/上传/dispatch/workspace均0、无扫描子进程，Root仅维护API并保留Web/模型/数据卷。候选源码全Hash一致，旧镜像及配置/补丁另存output/scanner-v3-evidence/deployment-20260910。先停空闲API阻止新提交并备份卷，再构建API、核验历史数据和Chrome两样例；不推送、不迁移。预计8k–16k token，精确数不可获得。
+
+
+### [20260910-1611-RootAstra-ScannerV3Deploy] PARTIAL
+
+- Root按限定授权仅重建更新API；先查running/queued/上传/dispatch/workspace均0且无子进程，停空闲API禁止新提交，再对openguard_data做只读停机备份。93任务/653持久文件（648报告文件）及SQLite完整性通过；28,190,004字节归档、SHA和回退配置保留本机output/scanner-v3-evidence/deployment-20260910。旧镜像保留，无回退、无删除/迁移、无提交/推送。
+- HEAD5611c00未变；产品补丁SHA c3a578eb62ca1a770cc6a853e3f60a85f2a66fe25f77139e88effa30d054983b。旧镜像5d7f8b6335fa，新镜像8ffe27fbcd8f；完整ID与全部源码Hash在deployment.json/source-manifest.json，运行backend源码全部吻合已测候选。API环境值/资源/安全/挂载不变，Web容器ID不变，模型未重建。
+- Chrome首页真实提交Flask scn_fe051589-68bc-4a69-a3ce-ce358b1f013d：78.637857秒，partial95，142组件/142发现/191证据，6请求/6成功组/0缓存/142AI关联，AI18.981436秒；固定revision d73fa1cdcbd8b1465c151db8924ba58b1dd14e35。原15诊断保留。
+- 串行上传固定smolagents ZIP scn_7812bfa5-daa0-43ca-a92c-4e5f350c84fe：51.476562秒，completed100，227组件/4AI资源/231发现/283证据，9请求/9成功组/0缓存/231关联，AI21.418672秒；输入SHA c486d41688b937e208393b95e70fc7293c555b046f4284a8fca7a925fe6ef4a9。两任务树摘要及确定性事实与固定基线逐项一致，HTTP报告既有排序与原ScanRun顺序不同，在比较脚本按原canonical规则对齐后通过，未修改产品或放宽字段。
+- 两任务四格式真实HTTP原字节/ReportLink SHA及旧任务资源/风险/Evidence/四报告通过；所有93旧run_json及648旧报告文件Hash不变。现95任务、活动0、上传/dispatch/workspace空、API/Web healthy。只跑本轮两条真实产品扫描，没有重复18轮。源码未新增修改，复用已绑定1360后端通过/3跳过/2警告、36前端通过结果。
+- Chrome实际验收首页、新建Git/ZIP、进度刷新、AI组数/ETA、风险分类/展开/详情Evidence、资源分类、报告摘要/明细、概览；截图与每2秒API记录保留。Flask5→40刷新恢复→91(4/6、ETA5–14秒)→95；ZIP0→100终态。最终返回并保留首页。
+- 既有Chrome组织策略仍阻止JSON实际下载：正常保存对话框之后显示“已被您的组织屏蔽”，Downloads无目标文件。没有绕过策略；其余三格式浏览器落盘未重复尝试。故下载门禁仍PARTIAL；API部署与真实扫描链已完成，不虚报全部验收或P0通过。Windows两机/至少一台Qwen、12条双人复核、最终资源安全和冻结签收仍待。
+- 过程环境问题：授权启动前Docker不可用，另获授权后引擎恢复；本机git ls-remote曾SSL连接失败，但产品受控Git获取成功并固定版本；初次验证脚本误把报告外层当run、数组顺序不同均已修正验证器，不是产品失败。无新增产品故障。精确token数不可获得，8k–16k开工估算无法核定实耗；本轮没有自动发布。
+
+
+### [20260910-2004-RootAstra-V4] START
+
+- GPT-6 Astra / Root：用户明确授权V4四工作包，按新需求覆盖旧的两文件限制；不部署、不迁移真实卷、不重启、不提交推送。已读执行书/README/架构/Git，独立审计代理分段阅读完整工作日志和进度/远端内容；无当前产品写者冲突。
+- integration/p0@5611c00，保留V3补丁SHA c3a578eb62ca1a770cc6a853e3f60a85f2a66fe25f77139e88effa30d054983b及所有output。运行API镜像8ffe27fbcd8f，98终态、活动0，运行扫描源码匹配；首次读库路径误用/data仅只读报错，更正为挂载/var/lib/openguard后成功。
+- cz82c16d1相对89c8ba2仅文档，xzb bc131dc候选窄修为516bcff真实模式隐藏演示按钮，保留现有进度/分组/旧链接。
+- 工作包：用途/确定性评估/独立SQLite附加存储→中文页面与版本报告→共享本地Qwen预算/持久问答→隔离真实浏览器回归。沿用原扫描模型不迁移scan_runs；新增路径限backend/app评估/持久化/API/AI、frontend现有壳与新页、现有spec/测试/协调。模型不提高规则结论权限。
+- 单写者协调，Root最终复核；测试含旧报告字节、用途版本、未知/限制/义务、清空竞争/幂等/容量/隔离与真实Qwen/browser。预计40k–80k token，精确用量不可获得。阶段部署与Windows另列，不冒充P0通过。
+
+### [20260910-2004-RootAstra-V4] AMENDMENT / LOCAL DELIVERY
+
+- 执行协调澄清：核心代理和前端代理分别持有互斥文件包，完成后交回Root；无同文件并发覆盖，共享日志始终Root追加。Root负责API/AI、最终集成和实测。START“不重启”指生产服务；本轮仅启停自己创建的隔离8010预览，停前检查其scan/job/chat均无活动；生产8080/API镜像未更动。
+- 四包实现用途/有限确定性评估/独立assessment.db、中文同版报告、本地Qwen多轮问答和容量/幂等/清空/恢复、前端与部署开关准备。旧Project无usage仍原样序列化，旧扫描库结构不变，新扫描V4默认整体AI、不叠加旧组级AI。基础组件/证据/风险/覆盖保留。最近20版UI边界、更早API读取、单进程本地范围已记录。
+- 独立审计发现并修正回退缓存无法重试、2MiB记录容量、空闲页预算、义务/资源上下文、重复AI等。Root真实抽查另修“声明当原文”“未知当禁止”的有限拒绝；旧试验结果不删，v5候选仍需真人语义复核。中文目录的Vite隔离路径导致404已修正；问答长面板滚动已修正并实际发送成功。截图偶发CDP超时/空图保留过程证据，最终full截图已视觉复核。一次npm不在PATH改用既有Node执行相同scripts；未安装依赖。
+- 最终后端1399 passed/3 skipped/2 warnings，前端49 passed、tsc/Vite build通过；Git diff --check与Compose默认/8081来源配置通过。Flask6版9.539秒、smolagents4版9.407秒，各1模型请求/0缓存；两轮问答6.898/7.848秒；复用缓存0.017秒/0调用。模型已就绪，不声称冷启动或扫描器同条件提速。
+- 真实Chrome已验首页、评估、显式确认/生成后刷新恢复、Qwen发送/两任务隔离/证据/复制/版本历史、同版报告及旧报告折叠、受控清空确认。失败旧任务仍明确未就绪。受控新ZIP仅验用途/自动评估接线，不冒充ScanCode/Syft新实测；真实工具事实复用固定旧快照。保留98原run_json/688报告Hash、V3补丁及旧API镜像，生产活动检查0。HTML保存框已打开，实际落盘待用户确认，未绕过策略。
+- 所有本次回执在output/v4-evidence，最终代码文件Hash与运行预览见version-manifest.json；HEAD仍5611c00、未提交/推送。Windows、人工规则/12条复核、浏览器落盘、生产V4维护与P0签收均未关闭。40k–80k为开工估计，无法报告精确token实耗。
+
+### [20260911-RootAstra-V4GitRuntime] START
+- GPT-6 Astra / Root：用户授权修复关闭Git仍接收和V4真实扫描运行环境。本轮仅API拒绝保护、相关测试及隔离Docker配置/验收；保留8080生产及已有代码/输出，不提交推送。复用旧工具镜像建立独立数据副本，切换5174代理，旧queued不重放不改状态。预计6k–12k token，精确消耗不可获得。已读既有工作记录与交接，无其他在途写入。
+
+### [20260911-RootAstra-V4GitRuntime] PARTIAL
+- GPT-6 Astra / Root：本轮两项运行阻断已在本机修复并真实验收。Git runtime None返回503/git_scanning_unavailable，拒绝前不创建记录；原202路径保留。仅主API一处产品逻辑，旧四个A3测试文件显式注入记录型执行器，V4新增拒绝测试；真实uvicorn关闭Git用例验证不建queued。1400 passed/3 skipped/2 warnings（final-tests.log），git diff --check通过；首次44失败与修正日志保留。
+- 用户另行明确允许取消3条旧queued。完成SQLite一致备份、确认无running/待生成AI/执行子进程后停止原5174/8010；经registry.replace CAS取消，未直接SQL更新，未删除/重放。复制隔离数据至新openguard_v4_git_data，99其他旧run和696报告SHA不变。8080生产容器未修改。
+- 原工具镜像8ffe27fbcd8f只COPY当前backend生成c567d825d8bb；完整源码摘要、容器和镜像ID见output/v4-git-runtime/deployment.json。新API8011开Git/外部工具/durableZIP/V4/Qwen，沿用2CPU/4GiB/临时盘/no-new-privileges等限制，5174代理切8011。无升级依赖/放宽安全/新增产品服务架构；两个环境明确区分。初次FROM镜像ID被误当远端名失败，改本地标签构建通过，无数据影响。
+- Chrome从首页串行新建Flask scn_19bbb01c-8db4-4bce-9c36-1caf61c22838（59.260817秒partial95，142组件/142发现/191证据）与Express scn_65cc9c41-a8af-4bce-8a21-e0f332686130（46.114028秒completed100，53/53/71）。新整体AI分别9.583724秒/7.910738秒，各1请求成功；页面实际看到解释、证据链接与版本报告，截图保留。四格式各两任务HTTP字节/SHA验证通过，V4两格式可用。
+- 本次未自动提交推送，因此发布状态PARTIAL；两个要求的本地运行修复完成。正式V4上线/Windows/人工复核/Chrome落盘/P0签收未关闭。5174仍需本机Vite与Docker运行，没有安装自启动。精确token数不可获得，开工估计6k–12k，无法核定实际是否落在区间；未扩展性能或前端任务。
+
+### [20260911-RootAstra-PublishV4] START
+- GPT-6 Astra / Root：用户明确授权将最新修改提交GitHub；integration/p0@5611c00与远端无分叉。发布已验收V3提速、V4评估问答、Git未启用拒绝及相关测试文档，保留未提交成果，不含output/备份/数据库/模型。产品与测试文件SHA同上一轮已验收manifest。cz远端4c9e16b只fetch未合并。预计1k–4k token，精确数不可获得。

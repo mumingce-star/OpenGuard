@@ -273,6 +273,48 @@ def run_scancode_license_scan(
     )
 
 
+_PINNED_SCANCODE = "/opt/scancode/venv/bin/scancode"
+_SCANCODE_SUPPLEMENT_PROGRAM = """
+import sys
+from scancode.cli import scancode
+for path in sys.argv[1:]:
+    result = scancode.main(
+        args=['--processes', '0', '--license', '--info', '--strip-root',
+              '--json', '-', './' + path], standalone_mode=False)
+    if type(result) is not int or result != 0:
+        raise SystemExit(1)
+    sys.stdout.write('\\n')
+    sys.stdout.flush()
+"""
+
+
+def _run_scancode_supplements(
+    target: str, paths: Sequence[str], *, pass_fds: Sequence[int],
+    timeout_seconds: float, max_output_bytes: int,
+) -> ToolExecution:
+    """Reuse initialization only within one pinned, task-private child.
+
+    Each CLI call still has exactly one file root. Output streams through the
+    original bounded runner; any failed CLI stops the child and invalidates all
+    its output. No module state, temporary directory or answers cross tasks.
+    """
+    _validate_proc_target(target, pass_fds)
+    if (
+        not isinstance(paths, (list, tuple)) or not 2 <= len(paths) <= 8
+        or any(_relative_path(path) is None for path in paths)
+        or len(set(paths)) != len(paths)
+        or type(timeout_seconds) not in {int, float} or not math.isfinite(timeout_seconds)
+        or not 0 < timeout_seconds <= 360
+        or type(max_output_bytes) is not int or not 0 < max_output_bytes <= _MAX_OUTPUT_BYTES
+    ):
+        raise ValueError("invalid ScanCode supplement batch")
+    return run_json_tool(
+        "/opt/scancode/venv/bin/python", ("-I", "-c", _SCANCODE_SUPPLEMENT_PROGRAM, *paths),
+        timeout_seconds=timeout_seconds, max_output_bytes=max_output_bytes,
+        pass_fds=pass_fds, scancode_runtime=True, working_directory=target,
+    )
+
+
 def run_syft_sbom_scan(tool: str, target: str, *, pass_fds: Sequence[int]) -> ToolExecution:
     """Run fixed Syft JSON over a trusted proc-FD target."""
 

@@ -1,3 +1,5 @@
+import { UsageForm } from "../components/UsageForm";
+import { emptyUsage } from "../services/assessments";
 import { useRef, useState } from "react";
 import type { Mode, Scan, ScanInput } from "../types/domain";
 import {
@@ -22,6 +24,7 @@ export function NewScan({
     [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  const [usage, setUsage] = useState(emptyUsage);
   const [scenario, setScenario] = useState<Scenario>("standard");
   const picker = useRef<HTMLInputElement>(null),
     lock = useRef(false),
@@ -53,6 +56,7 @@ export function NewScan({
         kind: tab,
         url,
         file: file ?? undefined,
+        ...(mode === "api" ? { usage } : {}),
       };
       onCreated(
         mode === "mock"
@@ -214,6 +218,7 @@ export function NewScan({
               </p>
             </div>
           )}
+          {mode === "api" && <UsageForm value={usage} disabled={busy} onChange={value => { setUsage(value); changed(); }} />}
           <p className="og-muted">扫描现有依赖与明确的许可证声明；未核验内容保留待核验状态。</p>
           {mode === "mock" && (
             <label className="og-field">
@@ -237,9 +242,9 @@ export function NewScan({
             </p>
           )}
           <div className="og-form-footer">
-            <button type="button" disabled={busy} onClick={demo}>
+            {mode === "mock" && <button type="button" disabled={busy} onClick={demo}>
               载入固定演示
-            </button>
+            </button>}
             <button
               className="og-primary"
               disabled={busy}

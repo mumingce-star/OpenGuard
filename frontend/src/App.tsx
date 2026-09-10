@@ -16,9 +16,12 @@ import { Overview } from "./pages/Overview";
 import { Progress } from "./pages/Progress";
 import { Risks, RiskDetail } from "./pages/Risks";
 import { Resources } from "./pages/Resources";
+import { Assessment } from "./pages/Assessment";
 import { Report } from "./pages/Report";
 const items: [Page, string][] = [
   ["new-scan", "新建扫描"],
+  ["assessment", "项目评估"],
+  ["chat", "项目答疑"],
   ["overview", "扫描概览"],
   ["progress", "扫描进度"],
   ["risks", "风险中心"],
@@ -46,7 +49,7 @@ function Icon({ index }: { index: number }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d={paths[index]} />
+      <path d={paths[index % paths.length]} />
     </svg>
   );
 }
@@ -88,6 +91,9 @@ export function App() {
     }
   }
   function navigate(page: string, query = "", riskId?: string) {
+    if (!query && ["assessment", "chat", "report"].includes(page) && route.query.get("assessment_id")) {
+      const preserved = new URLSearchParams(); preserved.set("assessment_id", route.query.get("assessment_id")!); query = preserved.toString();
+    }
     if (page === "new-scan" || !route.scanId)
       go("/app/new-scan?mode=" + route.mode);
     else
@@ -111,26 +117,8 @@ export function App() {
       return !v;
     });
   }
-  const nav = (
-    <nav aria-label="工作台导航">
-      {items.map(([page, label], i) => (
-        <button
-          key={page}
-          className={page === route.page ? "active" : ""}
-          aria-current={page === route.page ? "page" : undefined}
-          disabled={page !== "new-scan" && !route.scanId}
-          onClick={() => {
-            setMobile(false);
-            navigate(page);
-          }}
-        >
-          <Icon index={i} />
-          {label}
-          {page === "risks" && scan && <em>{scan.risks.length}</em>}
-        </button>
-      ))}
-    </nav>
-  );
+  function navButton([page, label]: [Page, string], i: number) { return <button key={page} className={page === route.page ? "active" : ""} aria-current={page === route.page ? "page" : undefined} disabled={page !== "new-scan" && !route.scanId} onClick={() => { setMobile(false); navigate(page); }}><Icon index={i} />{label}{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>; }
+  const nav = <nav aria-label="工作台导航">{items.filter(([p]) => p !== "risks" && p !== "resources").map(navButton)}<details open={route.page === "risks" || route.page === "resources"}><summary>扫描明细</summary>{items.filter(([p]) => p === "risks" || p === "resources").map(navButton)}</details></nav>;
   const active = scan && ["queued", "running"].includes(scan.status);
   let content;
   if (route.page === "new-scan")
@@ -176,7 +164,7 @@ export function App() {
       <Progress
         scan={scan}
         reload={reload}
-        onResults={() => navigate("overview")}
+        onResults={() => navigate(scan.mode === "api" ? "assessment" : "overview")}
         pollingError={error}
       />
     );
@@ -188,6 +176,8 @@ export function App() {
     );
   else if (scan.mode === "api" && scan.resultsReady === false)
     content = <Empty title="结果尚未就绪" detail={scan.error ?? "任务尚未产生可读取的结果，请查看扫描进度。"}><button onClick={() => navigate("progress")}>查看扫描进度</button></Empty>;
+  else if (route.page === "assessment" || route.page === "chat")
+    content = <Assessment key={scan.mode + scan.id} scan={scan} query={route.query} selectVersion={id => filter("assessment_id", id)} />;
   else if (route.page === "overview")
     content = <Overview scan={scan} go={navigate} />;
   else if (route.page === "risks")
@@ -220,7 +210,7 @@ export function App() {
         openRisk={(id) => navigate("risks", "", id)}
       />
     );
-  else if (route.page === "report") content = <Report scan={scan} />;
+  else if (route.page === "report") content = <><Assessment key={scan.mode + scan.id + "report"} compact scan={scan} query={route.query} selectVersion={id => filter("assessment_id", id)} /><details className="og-historical-report"><summary>查看历史扫描报告、四种原始附件与全部明细</summary><Report key={scan.mode + scan.id} scan={scan} /></details></>;
   return (
     <NoticeContext.Provider value={notify}>
       {route.page === "home" ? (

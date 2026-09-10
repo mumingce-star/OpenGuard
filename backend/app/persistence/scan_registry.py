@@ -369,6 +369,8 @@ class SQLiteScanRunRegistry:
             return False
         if old.project.id != new.project.id or old.project.name != new.project.name or old.project.source_type != new.project.source_type or old.project.source != new.project.source or old.project.created_at != new.project.created_at:
             return False
+        if old.project.usage != new.project.usage:
+            return False
         if old.project.revision is not None and new.project.revision != old.project.revision:
             return False
         if old.project.root_digest is not None and new.project.root_digest != old.project.root_digest:
