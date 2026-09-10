@@ -1199,3 +1199,18 @@
 - 验收与发布：环境版本、DISM、签名、MSI退出0、Compose静态与端口/HTTP探针已执行；五份文档经diff、敏感模式及文件清单检查后由Root推送当前功能分支，实际提交以Git输出为准，不改main。
 - 未完成及下一步：Docker启动、hello-world、本机Compose构建健康、Git/ZIP与报告/持久化、第二机器仍待验证；需要用户配合安全模式/离线诊断，仅隔离阻塞的套接字目录，Root接续。现有Mock/局部测试不代表完整演示，报名资格/权属材料、完整交付闭环、独立评测质量门禁保持待验收。
 - token：本次运行精确token数不可获得；开工估算10,000～20,000，无法确认是否实际落在区间内。范围增加了必要的Docker系统故障诊断；本轮部分完成，未在估算范围内完整关闭部署目标。
+
+### [20260910-1948-GPT6-拉取代码] START - 安全同步当前分支并核对团队集成更新
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-10 19:48（Asia/Shanghai）；分支codex/scan-reliability-integration，起点f7308ed。
+- 开工检查：沿用已完整阅读的共享历史，重读README、进度、Sol交接和最新日志；工作区干净，无在途文件冲突。先获取远端引用，发现integration/p0有新提交；不将其他分支自动合入当前分支或覆盖固定手册副本。
+- 范围/验收：git fetch、当前上游pull --ff-only、分支/提交/ahead-behind验证；仅协作记录变更，无产品、接口、Schema或依赖修改，不重复业务测试。
+- token估算2,000～5,000（执行部分，不含既有长文档重读）；本次运行精确token数不可获得。
+
+### [20260910-1950-GPT6-拉取代码收工] COMPLETE - 当前上游一致，团队集成新提交已获取
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-10 19:50（Asia/Shanghai）；分支codex/scan-reliability-integration。
+- 结果/命令：git fetch origin成功，origin/integration/p0从e323509更新至5611c00；当前git pull --ff-only返回Already up to date，起点f7308ed与上游0/0。团队新提交含进度里程碑、实际扫描时间、分组建议及报告改动，仅获取引用，未切换或合并；固定手册副本保持不变。
+- 文件与验证：仅本日志、PROJECT_PROGRESS及AI记录；无产品代码、API、Schema、规则或依赖变更，因此不重复业务测试。三份协作记录经git diff --check、敏感模式与清单复核后提交推送当前分支，最终SHA见Git回执；不更新main。
+- 边界/下一步：本次完成Git同步，不代表团队新功能已通过本机验证；既有局部CLI/Mock能力和Docker套接字阻塞状态未复测。Root后续按用户选择切换或集成integration/p0；报名资格/权属、完整Web扫描报告与异机交付、独立评测竞争力门禁仍依进度台账待验收。
+- token：本次运行精确token数不可获得；开工执行部分估算2,000～5,000，任务范围已完成，无扩大实施范围，不能精确确认实际用量是否位于区间。
