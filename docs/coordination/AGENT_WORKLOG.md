@@ -1214,3 +1214,21 @@
 - 文件与验证：仅本日志、PROJECT_PROGRESS及AI记录；无产品代码、API、Schema、规则或依赖变更，因此不重复业务测试。三份协作记录经git diff --check、敏感模式与清单复核后提交推送当前分支，最终SHA见Git回执；不更新main。
 - 边界/下一步：本次完成Git同步，不代表团队新功能已通过本机验证；既有局部CLI/Mock能力和Docker套接字阻塞状态未复测。Root后续按用户选择切换或集成integration/p0；报名资格/权属、完整Web扫描报告与异机交付、独立评测竞争力门禁仍依进度台账待验收。
 - token：本次运行精确token数不可获得；开工执行部分估算2,000～5,000，任务范围已完成，无扩大实施范围，不能精确确认实际用量是否位于区间。
+
+### [20260910-1952-GPT6-Windows异机验收] START - 当前Windows作为异机测试团队集成版
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-10 19:52（Asia/Shanghai）；记录分支codex/scan-reliability-integration，HEADc0bb063。
+- 用户明确当前Windows就是异机，无需另一台机器或远程凭证；本轮验收团队已获取版本5611c00cdd214cf0b3c5cf545c918ea90be0f738，独立忽略worktree，保留当前开发分支与450b8eb手册副本。
+- 已读项目README、共享历史、进度和Sol交接并复核最新状态；无未提交业务改动或其他在途冲突。当前Docker Server管道缺失、8081拒绝连接，仅有本机Docker contexts。
+- 范围/文件：准备固定源码与复现命令，运行Compose静态和真实启动前置/HTTP探针，若就绪继续真实扫描/报告；不以本机历史或团队Mac实测代替本轮。仅必要协作/验收文档，不改业务代码，不重置Docker或修复系统。
+- 验收：固定commit、运行版本、命令退出码、服务健康、Git/ZIP与四报告/持久化证据；未到达项据实标未执行。token估算4,000～8,000；本次运行精确token数不可获得。
+
+### [20260910-1953-GPT6-Windows异机验收收工] BLOCKED - 当前Windows未通过部署前置门禁
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-10 19:53（Asia/Shanghai）；记录分支codex/scan-reliability-integration，测试副本detached5611c00cdd214cf0b3c5cf545c918ea90be0f738。
+- 实际结果：用户已确认本机即异机。Windows11家庭版64位10.0.26200、CLI29.7.2、Compose5.5.1；独立副本SHA核验且源码干净。Git开启/AI关闭/Ollama关闭/8081下config退出0、服务api/web；up -d --build --wait退出1（Linux Engine命名管道缺失）；原smoke.py真实HTTP入口退出1（首个/app/new-scan的WinError10061），未创建任务或成功receipt。
+- 原因/边界：本轮证据表明容器引擎不可用，扫描、工具输出和报告链未进入，不将其判为扫描逻辑失败。此前Desktop套接字1920仅作历史诊断，本轮未重新启动Desktop重现；不再要求额外设备或SSH。
+- 修改文件：新增Windows异机实测回执，更新本日志、PROJECT_PROGRESS和AI记录；无业务代码、API、Schema、规则或依赖变化，不执行系统修复/重置/删卷。源码副本和运行目录忽略，不发布个人路径；未运行单测替代部署验收。
+- 发布与校验：四份文档经diff、敏感模式与待提交清单检查后由Root提交推送当前功能分支，最终SHA见Git；main不变，不能标为产品部署完成。
+- 解除条件/下一步：本机Docker Engine恢复后Root按固定版本依次验证服务健康、小ZIP、PyPA Git、固定公开ZIP、四报告下载与重建持久化；用户配合本机启动/系统诊断。既有局部CLI/Mock能力不替代真实Web，报名资格/权属、完整交付、独立评测竞争力门禁仍待证据。
+- token：本次运行精确token数不可获得；估算4,000～8,000，无法精确核对实际消耗。执行范围由确认异机设备调整为当前Windows固定版本实测；完成前置测试，但完整目标因Engine不可用未完成。

@@ -1,5 +1,11 @@
 # OpenGuard 项目进度台账
 
+## 2026-09-10 Windows异机实测（19:53，Root/GPT-6）
+
+用户已确认当前Windows就是异机，无需再提供另一台设备。固定团队集成版5611c00独立副本，源码未改；Compose静态检查通过，真实up退出1（Docker Engine管道缺失），smoke退出1（首个网页请求10061），尚未提交扫描。异机验收状态为阻塞，不是通过；Git/ZIP、工具输出、报告及重建仍未执行。详见[异机实测回执](2026-09-10-windows-portability-acceptance.md)。
+
+累计Python/pnpm/WSL等工具可用不等于完整Web可演示；Root后续在引擎恢复后续测，用户仅需配合本机Docker恢复。报名资格/权属、完整交付闭环、独立评测竞争力门禁保持待验。四份验收/协作文档经审查发布当前功能分支，测试副本和环境产物不上传，main不变。
+
 ## 2026-09-10 代码同步（19:50，Root/GPT-6）
 
 - 本轮完成：fetch成功；当前codex/scan-reliability-integration在f7308ed执行pull --ff-only返回Already up to date，上游0/0。协作记录随后单独提交推送该分支。
