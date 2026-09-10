@@ -13,6 +13,8 @@
 
 ## 2026-09-09 本机部署辅助工具（不随作品分发）
 
+2026-09-10续配新增本机工具：微软WSL2.7.13.0官方MSI（Microsoft Corporation签名Valid，SHA见环境回执），作为Docker的WSL2运行环境，安装退出0；发行包及Linux内核等组件按各自随包授权使用，不作为自研代码或随仓库分发。微软Sysinternals Handle5.0来自官方download.sysinternals.com，Microsoft签名Valid，接受随包Sysinternals许可后仅用于只读目录占用诊断，不关闭句柄；工具和诊断日志留在忽略目录，不纳入作品依赖。Docker Engine仍未就绪，不能将工具安装算作部署成功。
+
 | 名称 | 版本 | 来源与授权信息 | 使用与验证 | 分发范围 |
 |---|---|---|---|---|
 | Docker Desktop | 4.90.0.238679；CLI29.7.2；Compose5.5.1 | Docker官方Windows安装器；Docker Desktop Subscription Service Agreement，发行包各组件另依随包许可证 | 仅为本机容器环境；Docker Inc数字签名Valid，安装退出0，版本命令与Compose静态校验通过；引擎待Windows重启验收 | 不提交安装器/镜像/运行数据；团队自行确认适用订阅条件 |
