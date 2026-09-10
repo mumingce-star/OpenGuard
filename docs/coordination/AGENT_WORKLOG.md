@@ -4481,3 +4481,7 @@
 
 ### [20260911-RootAstra-PublishV4] START
 - GPT-6 Astra / Root：用户明确授权将最新修改提交GitHub；integration/p0@5611c00与远端无分叉。发布已验收V3提速、V4评估问答、Git未启用拒绝及相关测试文档，保留未提交成果，不含output/备份/数据库/模型。产品与测试文件SHA同上一轮已验收manifest。cz远端4c9e16b只fetch未合并。预计1k–4k token，精确数不可获得。
+
+### [20260911-RootAstra-PublishV4] COMPLETE
+- GPT-6 Astra / Root：50文件已提交b7329cf并推送origin/integration/p0，GitHub远端接受5611c00→b7329cf。包含已验收V3/V4/Git拒绝保护；当前已测试源码Hash一致，复用1400后端通过/3跳过/2警告和49前端通过及构建，不重复运行无变更测试。暂存diff检查、文件清单和新增内容密钥/本机私有路径检查通过；output忽略且无历史报告/备份/数据库上传。
+- 本轮未合并main或组员分支、未更新运行容器。Windows/人工复核/正式V4上线/P0签收仍待。后续由负责人决定部署与验收；本条发布回执作为独立文档提交，产品提交b7329cf不变。精确token数不可获得，开工估计1k–4k，无法确认实耗区间。
