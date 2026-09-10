@@ -1232,3 +1232,49 @@
 - 发布与校验：四份文档经diff、敏感模式与待提交清单检查后由Root提交推送当前功能分支，最终SHA见Git；main不变，不能标为产品部署完成。
 - 解除条件/下一步：本机Docker Engine恢复后Root按固定版本依次验证服务健康、小ZIP、PyPA Git、固定公开ZIP、四报告下载与重建持久化；用户配合本机启动/系统诊断。既有局部CLI/Mock能力不替代真实Web，报名资格/权属、完整交付、独立评测竞争力门禁仍待证据。
 - token：本次运行精确token数不可获得；估算4,000～8,000，无法精确核对实际消耗。执行范围由确认异机设备调整为当前Windows固定版本实测；完成前置测试，但完整目标因Engine不可用未完成。
+
+### [20260910-2041-GPT6-Docker原因复核] START - 只读核查历史故障与当前状态
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-10 20:41（Asia/Shanghai）；分支codex/scan-reliability-integration，HEAD82c16d1。
+- 用户仅要求原因与方案；沿用已完整阅读的README/共享历史/进度/Sol交接，复核日志末尾与Git干净状态。使用systematic-debugging技能先检查实际状态，不实施系统修复或项目部署。
+- 预计修改仅本日志、进度和AI协作记录；验收为Docker Server/容器/HTTP与新旧日志对照。token估算2,000～5,000；本次运行精确token数不可获得。
+
+### [20260910-2042-GPT6-Docker状态更正] PARTIAL - 引擎现已可用，应用尚未部署
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-10 20:42（Asia/Shanghai）；分支codex/scan-reliability-integration。
+- AMENDMENT（时效更正，保留历史失败）：只读docker version现返回Server29.7.2、linux/amd64、WSL内核6.18.33.2；Docker日志20:34和20:40明确engine is running。下午套接字1920及19:53管道缺失仍是当时真实结果，但不能作为当前不可用结论。本轮没有启动或修复Docker，不知道中间是哪项操作促成恢复。
+- 当前验证：docker ps -a和compose ls为空，8081请求拒绝；说明当前没有已创建的应用容器，网页仍不可用不再归因于Engine。socket仍可呈零字节ReparsePoint，不能仅凭属性判损坏；最初不可访问的深层原因仍未证实。
+- 原因/方案：曾有WSL前置缺失，补齐后又有Desktop套接字初始化失败导致Engine无管道，应用未能启动；当前方案应改为从5611c00副本按8081及原开关构建启动并复验，不再建议立即安全模式/重装。仅给方案，本轮不执行；若同错复发先采集新日志，停止后窄范围备份目录，仍失败再升级诊断，禁止无备份reset/删卷。
+- 文件/验证/发布：仅本日志、PROJECT_PROGRESS及AI记录；未修改业务或系统配置，无接口/Schema/规则/依赖变化，不运行业务单测；diff与内容检查后保留本地诊断文档，本轮用户只要求说明，不推送外部更新。完整部署与真实扫描未验证，不能宣布异机通过。
+- 下一步：Root在获得部署执行指令后运行现有Compose和冒烟；本机可运行工具/Engine已确认，完整Web演示仍未具备。报名/权属、完整交付闭环、独立质量评测门禁依旧待验证。
+- token：本次运行精确token数不可获得；估算2,000～5,000，无法精确核对消耗；诊断范围转为引擎恢复后的原因澄清，未扩展实施或完整部署。
+
+### [20260910-2106-GPT6-扫描耗时分析] START - 只读分析集成版耗时机制
+
+- GPT-6 / Root；2026-09-10 21:06；分支codex/scan-reliability-integration。沿用已读README/共享历史/进度/Sol交接，保留上一轮三份未提交诊断记录；使用systematic-debugging技能。检查已获取集成版5611c00的工具、AI及部署代码和历史实测，不发起新扫描、不改代码。预计仅协作记录；估算2,000～5,000 token，精确值不可获得。
+
+### [20260910-2107-GPT6-扫描耗时分析收工] PARTIAL - 确认累积耗时机制，具体慢任务待定位
+
+- GPT-6 / Root；2026-09-10 21:07；分析对象5611c00。外部工具for循环依次执行ScanCode/Syft，每次扫描另做版本核验（各20秒上限）；ScanCode主扫和最多8个单文件补扫共用360秒预算。AI组循环顺序调用，生产单次30秒，128项内存缓存不跨进程重启；不能把单次预算当全链时限。Compose API限制2CPU/4GiB是性能约束，不是本机已发生节流的实证。
+- 历史部署记录含旧版smolagents无AI29.33秒/有AI963.30秒及后续Flask115.786秒、AI独立41.406秒；输入、版本与测量方式不同，不能外推为当前最新版或本机慢任务耗时。本轮docker ps没有运行容器，未获得用户所报任务的阶段日志、版本和AI开关，不能确定实际首要瓶颈。
+- 仅本日志、进度及AI记录追加诊断；无业务、接口、Schema、规则、依赖或系统修改，无新扫描/压力测试，未推送。diff检查后保留本地。下一步Root收集一条慢任务的版本、输入、阶段时间、group_ai_metrics和资源占用，区分Git网络、工具、AI及排队再安排定向优化；不删除校验或盲目提高并发。
+- 当前工具/Engine既有可用记录不等于完整Web演示；正式运行、异机完整交付、报名权属材料及独立质量评测门禁沿用待验状态。精确token数不可获得；估算2,000～5,000，未实施范围扩展；机制分析完成，具体慢任务归因未完成，无法精确核对用量。
+
+### [20260910-2137-GPT6-B4B7状态核查] START - 审查图片五项交付状态
+
+- GPT-6 / Root；2026-09-10 21:37；记录分支codex/scan-reliability-integration，检查已获取集成版5611c00。沿用已读README、完整共享历史、进度及Sol交接，保留三份既有未提交记录。图片“否”为职责分配，不是完成状态。
+- 范围：B4标准化、B5规则、B6资源检测、B7样例及前端真实API；读取实现/验收材料，运行可行的定向测试；不改业务逻辑、不启动新扫描或部署。仅协作记录，估算3,000～6,000 token，精确数不可获得。
+
+### [20260910-2145-GPT6-B4B7核查收工] PARTIAL - 基础实现存在，验收未全部闭合
+
+- GPT-6 / Root Coordinator；2026-09-10 21:45；记录分支codex/scan-reliability-integration，审查已获取integration/p0的5611c00隔离副本，未重新确认远端最新。当前工作分支不能与该集成副本混称。
+- B4已有别名和简单AND/OR标准化并接Pipeline；只读Python探测确认MIT/Apache别名和简单OR可用，括号/WITH尚不支持；15条B5规则中的AGPL-3.0-only不在标准化映射中。B5数据规则和每条fixture存在，规则提示不等于人工法律结论。B6已有HF/ModelScope/API静态检测、定位、SHA和去重回归。
+- B7已有5个合成case、真实检测生成的actual结果及评测器，不是手填predicted；小样例满分不能外推真实准确率。real-resource-review的12条独立人工复核仍待填。前端默认真实API并有代理部署配置，但本轮未完成本机浏览器到后端闭环。
+- 命令：PYTHONPATH=backend;.下pytest定向test_b5_license_rule_engine、test_b6_static_assets、test_benchmark_actual_static_assets、test_a4_b5_rule_integration，54 passed/1 failed；失败在SQLiteScanRunRegistry初始化调用Windows没有的os.geteuid，尚未执行持久化断言，非B5逻辑失败。node --test tests/model.test.mjs因隔离副本缺typescript在加载阶段退出，非前端断言失败。覆盖探测首次PowerShell引号导致SyntaxError，改为stdin执行成功，确认15规则及AGPL映射缺口。
+- 未修改项目业务文件；仅本日志、PROJECT_PROGRESS、AI辅助记录更新；无接口、Schema、规则或依赖变更。未提交或推送，本轮仅检查。建议Terra处理B4/B5衔接及Linux容器闭环，Luna补环境回归与人工复核证据，Sol审查许可语义。
+- 模块级回归可独立运行，团队历史有集成演示；本机完整演示未验证，不能宣布五项全部验收。报名仍需权属/规则材料核验；完整作品仍需容器/浏览器端到端和人工签收；竞争力仍需真实样本质量与性能评测。本次运行精确token数不可获得，开工估算3,000～6,000，范围未扩展，无法核定实耗是否落在区间。
+
+### [20260910-2305-GPT6-上传核查记录] START - 发布已审核的三份诊断记录
+
+- GPT-6 / Root Coordinator；2026-09-10 23:05；用户明确要求上传GitHub。分支codex/scan-reliability-integration，基线82c16d1；复读README/进度/Sol交接并沿用已完整阅读的共享历史，核对新增尾部、Git状态与最近提交，无新增并行文件占用。
+- 仅提交现有三份诊断/协作文档与本轮发布记录，保留历史结论及失败项；不修改产品、不合并integration/p0或main、不上传环境副本。验收：差异/敏感信息审查、明确暂存清单、普通推送及远端SHA核对；文档发布不重跑业务测试。估算2,000～5,000 token，精确数不可获得。
