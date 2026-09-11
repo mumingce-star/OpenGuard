@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from typing import Protocol, TypeVar
 
 from app.domain.models import FindingOutcome, ScanRun, ScanSummary
 from app.pipeline.worker import PipelineStageFailure
@@ -12,8 +13,27 @@ from app.rules import RuleEvaluationResult, RuleSet, evaluate, load_ruleset
 RuleEvaluator = Callable[..., RuleEvaluationResult]
 
 
+class _Identified(Protocol):
+    id: str
+
+
+_Item = TypeVar("_Item", bound=_Identified)
+
+
 def _fail(code: str, message: str, *, recoverable: bool = False) -> None:
     raise PipelineStageFailure(code, message, recoverable) from None
+
+
+def _deduplicate_identical(items: list[_Item]) -> list[_Item]:
+    """Share identical domain objects by ID while rejecting true collisions."""
+
+    by_id: dict[str, _Item] = {}
+    for item in items:
+        prior = by_id.get(item.id)
+        if prior is not None and prior != item:
+            _fail("license_rule_state_conflict", "License rule evaluation found conflicting results.")
+        by_id[item.id] = item
+    return list(by_id.values())
 
 
 def apply_license_rules(
@@ -60,9 +80,9 @@ def apply_license_rules(
     except Exception:
         _fail("license_rules_failed", "License rule evaluation failed.")
 
-    obligations = [item for result in results for item in result.obligations]
-    findings = [item for result in results for item in result.findings]
-    remediations = [item for result in results for item in result.remediations]
+    obligations = _deduplicate_identical([item for result in results for item in result.obligations])
+    findings = _deduplicate_identical([item for result in results for item in result.findings])
+    remediations = _deduplicate_identical([item for result in results for item in result.remediations])
     aggregate_ids = [item.id for item in [*obligations, *findings, *remediations]]
     if len(aggregate_ids) != len(set(aggregate_ids)):
         _fail("license_rule_state_conflict", "License rule evaluation found conflicting results.")

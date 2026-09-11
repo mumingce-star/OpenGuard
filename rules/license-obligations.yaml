@@ -1,5 +1,5 @@
 {
-  "ruleset_version": "2026.09.1",
+  "ruleset_version": "2026.09.2",
   "rules": [
     {
       "id": "LIC-MIT-NOTICE",

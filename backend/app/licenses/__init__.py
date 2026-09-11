@@ -1,5 +1,5 @@
 """SPDX normalization utilities used between scanners and the rule engine."""
 
-from .spdx import normalize_license
+from .spdx import ParsedLicenseExpression, normalize_license, parse_license_expression
 
-__all__ = ["normalize_license"]
+__all__ = ["ParsedLicenseExpression", "normalize_license", "parse_license_expression"]

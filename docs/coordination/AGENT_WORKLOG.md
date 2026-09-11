@@ -4485,3 +4485,29 @@
 ### [20260911-RootAstra-PublishV4] COMPLETE
 - GPT-6 Astra / Root：50文件已提交b7329cf并推送origin/integration/p0，GitHub远端接受5611c00→b7329cf。包含已验收V3/V4/Git拒绝保护；当前已测试源码Hash一致，复用1400后端通过/3跳过/2警告和49前端通过及构建，不重复运行无变更测试。暂存diff检查、文件清单和新增内容密钥/本机私有路径检查通过；output忽略且无历史报告/备份/数据库上传。
 - 本轮未合并main或组员分支、未更新运行容器。Windows/人工复核/正式V4上线/P0签收仍待。后续由负责人决定部署与验收；本条发布回执作为独立文档提交，产品提交b7329cf不变。精确token数不可获得，开工估计1k–4k，无法确认实耗区间。
+
+### [20260911-1615-GPT5-许可证高优修复] START - 修复B4/B5四项高优先级缺陷
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:15（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，基线 `c550651`（最新已获取 `origin/integration/p0`）。
+- 开工确认：已按顺序读取README、完整共享日志、项目进度及Sol交接，检查Git状态、最近提交和其他模型工作；新工作树干净，主工作树的人工标注/审计改动保持隔离，不覆盖。
+- 任务范围：修复AND/OR语义混同、标准化与规则覆盖衔接、证据/表达式一致性校验、共享LicenseExpression聚合冲突；新增失败回归、实现、变更说明和协作记录。不启动或停止服务，不安装新依赖，不处理其余四个中优问题。
+- 预计文件：`backend/app/licenses/spdx.py`、`backend/app/rules/engine.py`、`backend/app/pipeline/license_rules.py`、相关unit测试、`docs/coordination/change-requests.md`、本日志、进度和AI记录。验收：先红后绿的定向测试、许可证相关集成测试、全量可行回归、`git diff --check`。
+- 设计决策：在不改变冻结Schema的前提下，P0对含OR表达式保守输出“需要选择许可证”的复核提示且不生成必定义务；AND逐叶评估并显式报告未覆盖叶；共享许可证义务按完全相同内容去重，冲突内容仍失败。预计8,000～15,000 token，精确数不可获得。
+
+### [20260911-1640-GPT5-许可证高优修复收工] PARTIAL - 四项本地修复完成，Linux全量与发布待完成
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:40（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，基线 `c550651`。
+- 实际结果：实现受限表达式解析与AGPL映射；含OR时生成`license-choice-required`且不生成必定义务，纯AND逐叶执行并用`license-rule-coverage`显示未覆盖叶；缺失Evidence引用和expression/normalized_ids矛盾分别生成完整性unknown；聚合时相同ID/内容去重、相同ID/不同内容继续失败。规则执行版本升至`2026.09.2`，P0 Schema未改。
+- 文件：`backend/app/licenses/{__init__,spdx}.py`、`backend/app/rules/engine.py`、`backend/app/pipeline/license_rules.py`、`rules/{README.md,license-obligations.yaml}`、两个测试文件、change-requests、进度、AI记录和本日志。主工作树人工标注/审计文件未触碰；没有启动停止服务。
+- 测试：新增失败回归初始6失败/8通过；修复后许可证+B5+A4+AI provider/transport为149通过、1 deselected，compileall和diff检查通过。完整定向含持久化为25通过/1失败，失败在Windows缺`os.geteuid`；补齐锁定依赖后全量仍因`fcntl`及POSIX安全能力不能作为本轮绿灯。尝试筛选大范围用例时因README误入参数一次未运行，修正后为649通过/313失败/7跳过/36错误，失败以既有Windows/POSIX边界为主，未逐项归因，不能称全量回归通过。
+- 环境：使用清华PyPI镜像向既有`.venv`安装`backend[dev]`锁定依赖，环境不纳入Git。Docker Engine当前管道不存在，`wsl`命令在当前shell不可用；遵守用户要求未主动启动服务，故Linux持久化/全量回归未执行。
+- 接口/风险语义：新增内部`ParsedLicenseExpression`/`parse_license_expression`和4个诊断rule_id；OR语义为保守人工选择，不提供法律判断。相同共享义务去重是A4行为变化，真实碰撞仍拒绝。change request记录Sol/Terra/Luna复核要求。
+- 发布/未完成：本地代码目标完成，但未暂存、提交、推送，GitHub仍为`integration/p0@c550651`；完整括号/WITH/+、规则来源审核、场景条件、9条缺失fixture属中优后续。Sol复核语义，Terra复核实现，Luna复核测试，Root在Linux全量及用户授权后发布。
+- 项目状态：现有真实Git/ZIP、ScanCode/Syft、规则、AI、报告和Web历史演示能力沿用，但本轮未重新部署；可报名仍需权属/规则材料，可提交完整作品仍需Linux/异机端到端和人工签收，获奖竞争力仍需真实质量/性能/基线消融门禁。
+- 本次运行精确token数不可获得；开工估算8,000～15,000，四项实现完成，范围内额外补依赖和大范围回归但未启动服务；无法核定实际用量是否在区间。
+
+### [20260911-1645-GPT5-许可证高优修复发布] START - 复核、提交并推送任务分支
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:45（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，基线 `c550651`。
+- 用户已明确授权上传 GitHub。本轮只整理上一条记录列明的 B4/B5 四项高优修复、测试和必要协作文档；不合并 `main`，不修改运行服务，不纳入 `output`、虚拟环境、数据库、报告、密钥或本机私有文件。
+- 验收：复跑 149 项许可证/A4/AI 相关回归，执行 `compileall`、`git diff --check`、敏感信息与绝对路径扫描、暂存文件清单复核；通过后仅提交明确暂存文件并推送 `origin/codex/license-rule-p0-fixes`。预计 2,000～5,000 token，系统无精确遥测。

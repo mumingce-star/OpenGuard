@@ -19,7 +19,7 @@ from app.pipeline import (
     apply_license_rules,
 )
 from app.pipeline.dependency_plan import DependencyPlanState, build_dependency_plan
-from app.rules import load_ruleset
+from app.rules import RuleEvaluationResult, evaluate, load_ruleset
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -60,13 +60,13 @@ def test_verified_license_fact_produces_b5_aggregate_and_ruleset_provenance() ->
     assert result.findings[0].remediation_id == result.remediations[0].id
     assert result.remediations[0].generated_by.name == "openguard-license-rules"
     assert result.summary.finding_counts["review_required"] == 1
-    assert result.provenance.ruleset_version == "2026.09.1"
+    assert result.provenance.ruleset_version == "2026.09.2"
 
 
 def test_imported_ruleset_retains_fifteen_teammate_rules() -> None:
     ruleset = load_ruleset()
 
-    assert ruleset.version == "2026.09.1"
+    assert ruleset.version == "2026.09.2"
     assert len(ruleset.rules) == 15
 
 
@@ -131,7 +131,52 @@ def test_shared_dependency_plan_routes_license_facts_to_b5_adapter() -> None:
 
     assert plan.steps[4].stage is ScanStage.RULES
     assert result.findings[0].rule_id == "LIC-MIT-NOTICE"
-    assert result.provenance.ruleset_version == "2026.09.1"
+    assert result.provenance.ruleset_version == "2026.09.2"
+
+
+def test_shared_license_obligation_is_deduplicated_across_resources() -> None:
+    value = _rules_input(verified=True).model_dump(mode="python")
+    second = copy.deepcopy(value["components"][0])
+    second.update(
+        id="cmp_123e4567-e89b-12d3-a456-426614174099",
+        name="second-component",
+        purl="pkg:npm/second-component@1",
+    )
+    value["components"].append(second)
+    value["summary"]["component_count"] = 2
+
+    result = apply_license_rules(ScanRun.model_validate(value))
+
+    assert len(result.obligations) == 1
+    assert len(result.findings) == len(result.remediations) == 2
+    assert result.summary.finding_counts["review_required"] == 2
+
+
+def test_shared_license_rejects_same_id_with_different_content() -> None:
+    value = _rules_input(verified=True).model_dump(mode="python")
+    second = copy.deepcopy(value["components"][0])
+    second.update(
+        id="cmp_123e4567-e89b-12d3-a456-426614174098",
+        name="conflicting-component",
+        purl="pkg:npm/conflicting-component@1",
+    )
+    value["components"].append(second)
+    value["summary"]["component_count"] = 2
+
+    def conflicting_evaluator(resource, license_expression, evidence, *, ruleset):
+        result = evaluate(resource, license_expression, evidence, ruleset=ruleset)
+        if resource.name != "conflicting-component":
+            return result
+        changed = result.obligations[0].model_copy(update={"action": "conflicting_action"})
+        return RuleEvaluationResult((changed,), result.findings, result.remediations)
+
+    with pytest.raises(PipelineStageFailure) as raised:
+        apply_license_rules(
+            ScanRun.model_validate(value),
+            evaluator=conflicting_evaluator,
+        )
+
+    assert raised.value.code == "license_rule_state_conflict"
 
 
 def test_a4_worker_persists_verified_b5_result(tmp_path: Path) -> None:
