@@ -6,7 +6,7 @@
     "model": "GPT-6",
     "role": "Root Coordinator"
   },
-  "status": "ai_adjudicated_single_human_reconfirmation_required",
+  "status": "confirmed_single_human_review_ai_adjudicated",
   "purpose": "output_review",
   "review_table": {
     "source_commit": "5611c00",
@@ -47,7 +47,9 @@
     "reviewed_at": "2026-09-11T15:57:00+08:00",
     "ai_draft_seen": true,
     "independent_blind_review": false,
-    "second_independent_review_pending": true
+    "second_independent_review_pending": true,
+    "r05_amendment_confirmation_id": "hrv_20260911_user_01_r05_amendment",
+    "r05_amendment_reconfirmed": true
   },
   "online_source_checks": {
     "attempted": 12,
@@ -70,7 +72,8 @@
     "human_review": false,
     "result": "amendment_required",
     "amended_record": "R05",
-    "human_reconfirmation_required": true
+    "human_reconfirmation_required": false,
+    "human_reconfirmation_id": "hrv_20260911_user_01_r05_amendment"
   },
   "recall_benchmark": {
     "path": "real-source-recall-v1.json",
@@ -111,12 +114,20 @@
       "too_generic": 12
     }
   },
+  "adjudicated_judgment_counts": {
+    "resource": {"correct": 9, "partially_correct": 3},
+    "evidence": {"correct": 9, "partially_correct": 3},
+    "license": {"uncertain": 12},
+    "risk": {"accept": 8, "revise": 4},
+    "suggestion": {"too_generic": 12}
+  },
   "files": [
     "ai-draft.json",
     "source-checks.json",
     "README.md",
     "human-review.md",
     "human-confirmation.json",
+    "human-amendment-r05.json",
     "source-reverification.json",
     "second-ai-review.json",
     "evidence-audit.md",
