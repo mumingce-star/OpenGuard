@@ -1424,3 +1424,11 @@
 - 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:12（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线/远端 `4c9e16b`。
 - 用户明确要求上传GitHub。本轮拟发布`benchmarks/annotations/real-resource-20260911-ai-assisted/`、人工标注方案、许可证审计及三份相互引用的协作记录；先复核JSON、manifest、敏感信息、绝对路径、文件大小和`git diff --check`，只提交明确暂存文件。
 - 不上传`.tools`临时验证器、原始扫描输出、缓存、虚拟环境、数据库、密钥或个人信息；不修改产品代码、不合并`main`、不启动或停止服务。预计3,000～6,000 token，精确数不可获得。
+
+### [20260911-1714-GPT5-人工标签成果发布收工] COMPLETE - 标注成果已推送GitHub
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:14（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，成果提交 `2269f0c`。
+- 上传结果：GitHub接受`4c9e16b..2269f0c`；提交包含标注目录10个文件、人工标注方案、许可证审计和三份关联记录，共15个文件、2404行新增。未上传`.tools`验证器、原始扫描附件、缓存、虚拟环境、数据库、密钥或个人信息；未修改产品代码、`main`、`integration/p0`或其他任务分支。
+- 验证：7个JSON全部可解析；本地结构验证器核对manifest 9项、12条固定来源/11文件、12条AI复核、9个gold case并复算TP=11、FP=8、FN=39、Precision=0.578947、Recall=0.22、F1=0.318841；`git diff --check`和候选敏感信息/绝对路径/身份信息扫描通过，仅保留既有CRLF规范化警告。
+- 语义边界：一名真人确认与AI二次复核身份保持分离；R05真人重新确认、第二位独立真人、3份旧扫描JSON和13个额外Evidence直接复核仍待。发布只证明文件可获取，不等于人工标签最终冻结、P0通过或法律结论。
+- 本次运行精确token数不可获得；开工估算3,000～6,000，审核、提交和首轮推送已在范围内完成。发布回执作为后续纯文档提交继续推送同一分支。
