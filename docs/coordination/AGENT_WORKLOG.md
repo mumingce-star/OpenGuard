@@ -4511,3 +4511,26 @@
 - 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:45（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，基线 `c550651`。
 - 用户已明确授权上传 GitHub。本轮只整理上一条记录列明的 B4/B5 四项高优修复、测试和必要协作文档；不合并 `main`，不修改运行服务，不纳入 `output`、虚拟环境、数据库、报告、密钥或本机私有文件。
 - 验收：复跑 149 项许可证/A4/AI 相关回归，执行 `compileall`、`git diff --check`、敏感信息与绝对路径扫描、暂存文件清单复核；通过后仅提交明确暂存文件并推送 `origin/codex/license-rule-p0-fixes`。预计 2,000～5,000 token，系统无精确遥测。
+
+### [20260911-1653-GPT5-许可证高优修复发布收工] BLOCKED - 本地提交完成，GitHub认证未完成
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:53（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，提交 `7e01949`。
+- 实际结果：12个核定文件已按显式清单暂存并提交，`git diff --cached --check`及规则JSON读取通过；未纳入`output`、虚拟环境、数据库、报告或其他工作树内容。规则版本为`2026.09.2`，提交未合并`main`。
+- 测试证据：提交源码与紧邻上一轮取得`149 passed, 1 deselected`的源码一致；本轮复跑前发现原Python 3.12安装路径已不存在，关联虚拟环境无法创建进程，因此没有伪报新的测试通过。该环境故障不改变上一轮测试结果，但仍需恢复Python后复跑。
+- 推送结果：SSH通过仓库配置访问`ssh.github.com:443`时被当前网络代理`198.18.0.4`关闭；HTTPS可达但本机无已保存GitHub账户。已启动官方设备码认证，等待约数分钟仍未获用户侧确认，随后终止等待进程；未记录、输出或索取密码/令牌。
+- 阻塞解除：用户在本机完成一次GitHub Credential Manager设备登录后，Root重新执行`git push -u https://github.com/mumingce-star/OpenGuard.git codex/license-rule-p0-fixes`，再追加发布回执、更新进度并提交推送。当前GitHub尚未包含`7e01949`。
+- 本次运行精确token数不可获得；开工估算2,000～5,000，完成本地整理和提交，上传因认证阻塞；范围未扩展、项目服务未启动或停止。
+
+### [20260911-1700-GPT5-GitHub浏览器会话接续] START - 使用当前浏览器账号完成命令行授权和推送
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:00（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，待推送提交 `7e01949`。
+- 用户截图确认浏览器已登录账号 `zhengchen529` 且可见 `mumingce-star/OpenGuard`。浏览器Cookie与Git Credential Manager凭据相互独立，本轮仅重新发起官方设备认证、核验远端写权限并继续HTTPS推送。
+- 预计仅更新发布回执、进度与AI记录并提交推送，不修改产品代码、不合并`main`、不启动或停止服务。验收为远端分支引用读取等于本地提交；预计1,000～3,000 token，精确数不可获得。
+
+### [20260911-1701-GPT5-GitHub浏览器会话接续收工] COMPLETE - 任务分支已发布
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:01（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，产品提交 `7e01949`。
+- 用户确认浏览器已有GitHub会话后，首次纯设备码流程因网络保持连接被服务器关闭，随后改用Git Credential Manager浏览器回调；账号`zhengchen529`授权成功且具备目标仓库写权限。未读取、记录或上传用户密码/令牌。
+- HTTPS推送成功：远端新增`codex/license-rule-p0-fixes`并包含`7e01949`的12个核定文件。SSH原配置仍受当前网络代理关闭影响，但不妨碍本次HTTPS发布。未修改`main`、`integration/p0`或组员分支，未启动/停止项目服务。
+- 验证与边界沿用上一发布记录：静态清单、diff、规则JSON和敏感范围通过；紧邻代码回归149通过/1排除，本轮Python 3.12安装入口失效故未产生新的测试结果。Linux全量、Sol/Terra/Luna复核及中优规则问题仍待，发布不等于P0最终签收。
+- 本次运行精确token数不可获得；开工估算1,000～3,000，浏览器授权与产品分支推送已在范围内完成。发布回执及进度更新作为后续纯文档提交继续推送到同一分支。
