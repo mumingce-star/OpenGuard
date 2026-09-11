@@ -1285,3 +1285,142 @@
 - 文件：docs/05-ai-assistance-log.md、docs/coordination/AGENT_WORKLOG.md、docs/coordination/PROJECT_PROGRESS.md。差异清单、git diff --check及新增行敏感模式检查通过，未包含环境副本、缓存、密钥或本机绝对路径；纯文档发布未重跑业务测试，前轮54通过/1失败及前端依赖阻塞如实保留。无接口、Schema、规则、依赖或产品变更。
 - 本轮仅发布完成，不代表修复完成；模块级测试及历史团队演示证据仍有效，本机完整演示尚待验证。Terra下一步处理AGPL衔接和容器端到端，Luna负责回归与人工证据，Sol复核语义；报名权属材料、完整作品闭环/人工验收、竞争力真实质量/性能评测门禁仍待关闭。
 - 本次运行精确token数不可获得；开工估算2,000～5,000，任务范围未扩大，上传目标完成，无法核定实耗是否在范围内。
+
+### [20260911-1302-GPT6-人工标注指导] START - 核对人工标签入口与操作流程
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-11 13:02（Asia/Shanghai）；分支codex/scan-reliability-integration，HEAD4c9e16b。
+- 开工：已读取README、共享历史、进度及Sol职责交接并核对Git；工作区干净，未见新的同文件在途任务。历史进度存在旧状态，以带日期的核查和实际文件为准。
+- 范围：只读核查当前Bench与已获取integration/p0的12条真实资源复核表，提供标签建议、双人操作、证据与评测边界；不代替真人填写、不启动服务、不改产品。
+- 文件/验收：仅追加本日志；核对模板字段、固定来源、评测器输入及分支差异，git diff --check。不改变Schema或既有标签协议，不进行发布。
+- token估算：执行与答复4,000～8,000，必读长历史另计；本次运行精确token数不可获得。
+
+### [20260911-1305-GPT6-人工标注指导收工] COMPLETE - 完成现有标注流程核查与操作建议
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-11 13:05（Asia/Shanghai）；分支codex/scan-reliability-integration，基线4c9e16b。
+- 结果：核查已获取integration/p0@5611c00及其本机隔离副本，确认真实复核表为四类各3条、两名真人各12份，文件记录人工0/24；不推断线下进展。当前主工作树没有该表。提供先原文独立判断、后系统对照、保留分歧与冻结版本的操作建议，区分候选内容审查与完整召回率评测。
+- 文件：仅本共享日志追加；未修改项目产品文件，未填写人工答案，未启动或停止服务，未提交或推送。无接口、Schema、规则、依赖变更；建议字段仅供人工记录，不冒称产品已支持导入。
+- 验证：读取Git状态/近期提交/worktree及两个版本的Bench规范、复核表、评测器和实际生成器；核对SPDX官方package字段规范；git diff --check通过（仅CRLF规范化提示）。本轮为说明任务，不运行业务测试。
+- 限制与下一步：人工24份记录、争议处理、原文补证及完整项目漏检标注仍待真人完成；Luna协助数据整理/评测、Sol复核语义、Terra修复实测缺陷、Root核验后发布。当前模块CLI/合成Bench可复现，团队历史集成演示不等于本机完整Web验收；报名资格/权属、完整交付闭环、真实质量/基线/消融门禁保持待验。
+- token：本次运行精确token数不可获得；执行与答复开工估算4,000～8,000，必读长历史另计，无法确认实耗是否在区间；说明范围完成，未扩展为人工标注实施或产品开发。
+
+### [20260911-1357-GPT6-扫描结果标注方案] START - 编制人工标签详细设计
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-11 13:57（Asia/Shanghai）；分支codex/scan-reliability-integration，HEAD4c9e16b。沿用本对话已读完整历史、README、进度和Sol交接，复读新增记录及Git；保留上一轮日志变更，无新冲突。
+- 目标：根据现有扫描领域模型、Bench和集成版5611c00页面，产出可审阅的人工标签方案，覆盖操作、字典、数据、复核、评测、实施及验收。
+- 预计文件：docs/spec/scan-result-human-annotation-plan.md，进度、AI记录和共享日志。仅设计，不实施产品、不代填真人标签、不启动服务、不提交推送。
+- 验收：核对字段与现有契约、标明拟新增能力，检查流程/指标/版本关联一致性及diff。使用brainstorming技能，用户已明确要求生成详细方案，直接完成方案文档。
+- token估算6,000～10,000；精确数不可获得。
+
+### [20260911-1402-GPT6-扫描结果标注方案收工] COMPLETE - 详细设计文档已生成并核对
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-11 14:02（Asia/Shanghai）；分支codex/scan-reliability-integration，基线4c9e16b。
+- 实际结果：新增scan-result-human-annotation-plan.md，涵盖13节、五个评价维度、两阶段真人SOP、原结果与标签独立存储、状态/身份/并发/导出/复扫、8个拟新增接口、5个工作包和16项验收。方案任务完成，不将其计为标注系统实现完成。
+- 文件：docs/spec/scan-result-human-annotation-plan.md、PROJECT_PROGRESS、AI辅助记录与本日志；保留上一轮日志追加，无产品代码/Schema/规则变化，无新增第三方资源。拟新增契约需Sol复核、Terra实施，人工答案由真人提供。
+- 命令与验证：读取README/协作增量/交接、Git状态与最近提交；只读检查5611c00领域模型、Risks页面和API路由，确认真实API模式人工处理禁用；文档标题/占位符检查及git diff --check通过（CRLF规范化提示）。一次rg Windows通配路径参数不适用，其他明确目录检索成功；非产品故障。未运行业务测试、未启动/停止服务。
+- 发布/未完成：本轮四份文档仅本地，未暂存/提交/推送，main不变。真人24份记录、争议处理、Web/API/存储与质量评测仍待做；现有CLI/合成Bench可独立复现，团队历史演示不替代本机完整Web验收。
+- 下一步：真人负责人/Sol完成H1口径，双人执行H2；Terra与Luna分别接续H3/H4和H5，Root验收发布。报名资格权属、完整交付闭环、独立真实质量/基线消融仍待可验证证据。
+- token：本次运行精确token数不可获得；开工估算6,000～10,000，设计范围完整交付，未扩展为实施；无法确认实际消耗是否在区间内。
+
+### [20260911-1404-GPT6-扫描结果辅助初标] START - 为12条真实候选填写可审阅标签
+
+- 作者：GPT-6 / Root Coordinator；2026-09-11 14:04（Asia/Shanghai）；分支codex/scan-reliability-integration，HEAD4c9e16b。沿用已完整读取的README/共享历史/进度/Sol交接，复读新增状态，保留此前四份未提交文档。
+- 范围：基于既有12条真实复核候选核查固定原文，生成AI辅助初标、逐条理由、证据与不确定事项及真人待复核入口；不冒充真人、不回写原扫描或既有人工表。
+- 文件：benchmarks/annotations/real-resource-20260911-ai-assisted/下来源核查、标注和摘要，进度/AI记录/共享日志。无产品行为、接口或Schema修改，无服务启动和新扫描。
+- 验收：12个唯一记录、五维标签、原始ID/快照关联、AI作者/已接触系统输出披露、真人状态均pending、JSON可解析、来源hash与定位核对、diff检查。估算6,000～10,000 token，精确数不可获得。
+
+### [20260911-1412-GPT6-扫描结果辅助初标收工] PARTIAL - 12条初标完成，原文补证与真人签收待完成
+
+- 作者：GPT-6 / Root Coordinator；2026-09-11 14:12（Asia/Shanghai）；分支codex/scan-reliability-integration，基线4c9e16b。
+- 结果：基于固定复核表片段生成12条/60项AI辅助初标、详细理由、建议和真人待复核入口，明确系统输出已见；真人0份、所有签名/时间为空。资源引用10正确/2部分正确、风险摘要9接受/3修订、许可12不确定、AI建议12需具体化。R08/R11/R12优先复核，不能仅当前片段断言完整扫描误报。
+- 文件：benchmarks/annotations/real-resource-20260911-ai-assisted/下README.md、ai-draft.json、manifest.json、source-checks.json、human-review.md及三份协作记录；生成助手仅在忽略.tools内。保留上一轮方案和文档；原始扫描、固定表和产品源代码未改，无P0/规则/依赖变更，无新第三方资源。
+- 验证：Node断言12唯一ID、60个合法维度、原始对象/任务/报告关联、真人pending/null、JSON解析和固定表SHA未变；文档/敏感模式及git diff --check通过（CRLF提示）。原文12项Node fetch失败；web重试R08/R11/R12为Cache miss；未获取原JSON附件或全量额外Evidence，未声称上游hash复核通过。
+- 执行限制：项目.venv指向的Python不存在，依赖运行时工具未配置，改用现有Node完成数据生成验证；首次PowerShell管道中文编码导致正则失败，改ASCII解析及UTF8文件助手后成功。未安装运行时、未启动/停止服务、未重跑扫描或业务单测。
+- GitHub：上述新产物与协作记录仅本地，未暂存/提交/推送。不能以AI作者冒充真人，用户要求中的正式人工签收尚未完成。
+- 下一步与责任：真人补原文/附件并独立复核或披露AI辅助；Luna统计与裁决整理，Sol审查语义，Terra落实确认缺陷，Root验收发布。CLI/合成Bench保持既有可复现能力；本机完整Web、报名资格/权属、完整交付和独立真实评测竞争力门禁仍待证据。
+- token：本次运行精确token数不可获得；开工估算6,000～10,000，无法核定实际区间。初标交付完成，因原文获取失败和真人身份边界，未完整完成正式人工验收；未扩展产品实施范围。
+
+### [20260911-1557-GPT5-登记真人复核] START - 将用户复核确认登记为单人复核记录
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 15:57（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `4c9e16b`。
+- 开工确认：已读取 README、共享日志增量、项目进度、Sol 交接和现有人工标注批次；保留此前未提交方案、初标和协作记录，未发现新的同文件在途任务。
+- 用户输入：用户明确声明“真人复核无误”，授权完善现有12条人工标注。该确认发生在已展示AI初标之后，因此登记为一名真人的AI辅助复核，不登记为盲标或两名真人独立复核。
+- 范围与预计文件：保留 `ai-draft.json`，填写 `human-review.md`，新增结构化人类确认记录，更新批次 manifest、README、进度、AI记录和本日志；不修改原扫描、P0 Schema、规则或产品代码，不启动服务。
+- 验收：12条均保留初标内容并记录用户确认、真人身份边界和来源；JSON可解析，人工复核数为1，第二位复核仍待完成，差异和敏感信息检查通过。token估算3,000～6,000；本次运行精确token数不可获得。
+
+### [20260911-1602-GPT5-登记真人复核收工] COMPLETE - 第一位真人确认已正式落档
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:02（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `4c9e16b`。
+- 任务结果：按用户“真人复核无误”的明确确认，将现有12条、60维AI辅助初标登记为一份真人复核，12条均为 `confirmed_without_changes`，分歧0；批次状态更新为 `confirmed_single_human_review`。
+- 修改文件：新增 `benchmarks/annotations/real-resource-20260911-ai-assisted/human-confirmation.json`；更新同目录 `human-review.md`、`manifest.json`、`README.md`，并更新项目进度、AI记录与本日志。保留 `ai-draft.json` 的AI作者和创建时 `human_reviews_received=0` 快照，未覆盖原扫描或固定复核表。
+- 验证：Node解析4份JSON并核对12个唯一记录、60个维度、人工复核数1、批次状态和第二位复核待办；README中12条均显示第一位已确认；`git diff --check`与敏感模式检查通过，仅有既有CRLF规范化提示。未运行产品测试或启动服务，因为无产品逻辑变更。
+- 接口、Schema、规则与决策：未改变P0接口、Schema、规则或风险语义；新JSON仍为离线标注记录，不声称现有Web可导入。确认的是标签及不确定性边界，12条许可仍为 `uncertain`，风险摘要接受不代表整改或授权通过。
+- 风险和未完成项：这是已见AI初标与系统输出的一名身份自报真人复核，不是盲标或双人独立复核；固定原文在线获取、原始扫描附件、全部额外Evidence、第二名真人和完整召回率gold仍待处理。
+- GitHub与下一步：本轮及此前方案/初标文件均仅本地，未暂存、提交或推送。Luna可接续第二人复核与统计，Sol复核许可/风险语义，Terra仅在确认缺陷后实现；Root最终冻结与发布。现有CLI/合成Bench能力不变，本机完整Web、报名资格/权属、完整交付和真实质量/基线/消融门禁仍待证据。
+- token：本次运行精确token数不可获得；开工估算3,000～6,000，范围内完成单人确认落档，没有扩展为第二人签名、原文补证或产品开发。
+
+### [20260911-1603-GPT5-人工标签完整性检查] START - 审计人工标签是否全部完善
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:03（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `4c9e16b`。
+- 开工确认：已读取 README、共享日志增量、项目进度、Sol交接和当前标注批次；保留现有未提交方案、标注和协作记录，无并行文件冲突。
+- 范围：只读审计12条候选、60维标签、对象/任务/证据关联、真人回执、批次清单、来源复核、第二人门禁、评测适用性和Git发布状态；不修改标签结论或产品代码，不启动服务。
+- 预计文件与验收：仅追加本日志和必要的进度审计结论；运行结构化一致性、哈希、占位符、敏感信息、diff及Git状态检查。token估算2,000～4,000；本次运行精确token数不可获得。
+
+### [20260911-1604-GPT5-人工标签完整性检查收工] COMPLETE - 内容完整，最终验收仍有四类缺口
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:04（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `4c9e16b`。
+- 结论：标注内容层已完善：12个唯一ID、60维判断、理由和对象/任务/风险/主证据关联齐全；人类确认覆盖12/12、无分歧，真人表无占位符，manifest为1份真人确认。最终标注验收尚未全部完成。
+- 通过项：4份JSON可解析；12条均含五个合法维度及理由；12个真人回执均为 `confirmed_without_changes`；README有12处第一位确认；manifest列出的文件全部存在；固定复核表SHA与manifest/source-checks一致；12个许可标签仍为 `uncertain`。
+- 未关闭项：第二位独立真人复核；12/12固定上游原文重新核验；原始扫描附件与全部额外Evidence复核；完整范围gold/FN标注和召回率能力。标注目录及方案仍为Git未跟踪文件，尚未发布。
+- 边界解释：`ai-draft.json`内12条 `human_review_status=pending`及创建时 `human_reviews_received=0`属于保留的AI草稿快照，不与后续manifest/确认回执矛盾；若消费端只读草稿会误解状态，后续导入实现必须以批次manifest和回执为准。
+- 修改/验证：本轮仅追加PROJECT_PROGRESS和本日志，无标签、业务、接口、Schema、规则或依赖变更；运行Node结构审计、占位符扫描、固定表SHA核对、敏感模式、`git diff --check`和Git跟踪状态检查。格式检查通过，仅有既有CRLF提示；未运行产品测试或服务。
+- 下一步与责任：第二名真人补独立意见；Luna复核记录与统计；Sol核查许可和风险语义；Root补证后冻结并按Git流程发布。现有CLI/静态检测/合成Bench能力不变，本机完整Web、报名资格/权属、完整作品闭环和独立真实质量/基线/消融仍待证据。
+- token：本次运行精确token数不可获得；开工估算2,000～4,000，完整性审计已在原范围完成，无法精确核定实耗。
+
+### [20260911-1608-GPT6-许可证规则审计收工] COMPLETE - 问题清单和方案已交付，未实施修复
+
+- GPT-6 / Root Coordinator；2026-09-11 16:08；分支codex/scan-reliability-integration@4c9e16b，对照已获取5611c00；未确认远端最新。观察到GPT-5人工标签审计已收工，保留其新增记录与全部未提交标签产物。
+- 结果：新增docs/spec/2026-09-11-license-rule-audit.md，记录8组问题：AND/OR语义丢失；覆盖错位和部分覆盖遗漏；缺失证据引用/表达式ID不一致；共享许可聚合冲突；语法与模糊别名；规则来源审核元数据；未计算场景前提；逐规则测试不足。每组包含原因、位置、方案和验收。
+- 验证：本地B5为10 passed，B4/B6/B7混合扩展为5 passed；集成副本B5/A4纯逻辑17 passed、1 deselected（主动排除持久化）。最小内存探针复现OR=AND、AGPL缺映射、CDDL/LGPL缺规则、部分覆盖静默、model_validate后缺引用/表达式矛盾、共享许可license_rule_state_conflict。Python显式.venv本轮可用，普通python命令不可用；未修改环境。SPDX官方Annex D核对OR/AND/WITH语义。
+- AMENDMENT：上轮2145及用户答复“15条每条fixture”不准确，两个检查版本都只有6条verified_cases，缺9条逐规则正例；总数测试不等于逐规则测试。本条更正保留历史，不抹掉既有实测结果。
+- 文件与边界：新增审计文档，追加本日志、PROJECT_PROGRESS和AI记录；未修改产品代码、规则、Schema、依赖或人工标签。未启动停止服务，未暂存/提交/推送。公开接口防御缺口与完整ScanRun的已有引用校验明确区分，未声称所有问题已在真实用户任务触发。
+- 下一步：Terra修输入/共享对象/表达式，Luna加反例与逐规则覆盖，Sol/真人核对来源与场景语义；Root获实施授权后验收发布。已有模块回归可运行，本机完整Web未验；报名权属材料、完整作品端到端/人工门禁、竞争力真实质量/性能/消融仍待关闭。
+- 本次运行精确token数不可获得；开工估算5,000～9,000，审计方案范围已完成，未扩展实施，无法核定实际用量是否在范围内。
+### [20260911-1608-GPT6-关闭人工标注缺口] START - 补齐来源、证据与召回率评测
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-11 16:08（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `4c9e16b`。
+- 用户目标：尽可能关闭固定上游原文获取、原始扫描 JSON 与额外 Evidence 复核、完整漏检标注及召回率计算；用户当前不能安排第二位真人。
+- 边界与决策：AI 可以执行第二轮独立方法复核，但不得冒充第二位真人或伪造真人签名；若验收规则硬性要求两名真人，该门禁将如实保留。不会启动或停止项目服务。
+- 预计修改：`benchmarks/annotations/real-resource-20260911-ai-assisted/` 下补充来源复核、Evidence 审计、AI 二次复核和可计算召回率的完整真值集；同步更新 README、manifest、项目进度、AI 辅助记录与本日志。保留现有用户确认和 AI 草稿快照。
+- 验收方法：固定 commit 原文 SHA-256；扫描附件/Evidence 全量 ID 与内容核对；gold/prediction/FN 可追溯且指标脚本复算一致；JSON/Markdown 结构、占位符、敏感信息、`git diff --check` 和 Git 状态检查。
+- token 估算：10,000～20,000；本次运行精确 token 数不可获得。
+
+### [20260911-1630-GPT6-关闭人工标注缺口收工] PARTIAL - 来源与召回率已关闭，真人和旧附件受客观边界阻塞
+
+- 作者：GPT-6 / Root Coordinator；时间：2026-09-11 16:30（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `4c9e16b`。用户要求的四项中，固定原文和可计算召回率已完成；第二真人和缺失旧附件不能由AI诚实替代，因此状态为PARTIAL。
+- 固定来源：通过受控联网从 `openai/openai-python@be928151`、`huggingface/smolagents@30bb1161`、`BerriAI/litellm@168a0055` 拉取固定提交。12条记录对应11个唯一文件；对 `git show HEAD:<path>` 原始对象字节计算SHA-256，11/11文件、12/12记录与旧复核表一致。工作树受Windows `core.autocrlf` 影响的字节哈希不同，未将其误判为上游漂移。
+- 二次AI复核：新增 `second-ai-review.json`，明确作者为AI、已接触旧输出、不是盲审或真人。R01–R04、R06–R10维持，R11/R12维持部分正确；R05因第258行FLUX.1-dev链接与第262行实际FLUX.1-schnell参数不一致，修订为资源/证据部分正确、风险需修改。AI裁决分布为资源/证据9正确+3部分正确、风险8接受+4修订、许可12不确定、建议12过于笼统；第一位真人旧回执保留，R05需真人重新确认。
+- 召回率：新增 `real-source-recall-v1.json`，范围为八个固定完整文件和router.py第960–985行，逐项保留源、commit、行号和50个gold资源；系统规则实际预测19项，TP=11、FP=8、FN=39、Precision=0.578947、Recall=0.22、F1=0.318841。误报含HF docs/blog/papers链接，漏检含模型ID和数据集参数。该指标仅覆盖静态AI资源识别，gold作者为AI一人，不外推完整扫描器或独立人工质量。
+- 旧附件/Evidence：按三个已知SHA核查当前工作树、固定验收副本、Git历史和可访问本地目录，三份旧JSON未恢复；Docker引擎未运行，遵守规则未启动服务。25个去重Evidence ID已固定，12个主Evidence来源重新复核；13个额外Evidence对象只能关联2026-09-09历史机器核对回执，缺少旧JSON字节，不能本轮逐字段复算或冒充已直接复核。详情见 `evidence-audit.md`。
+- 文件：新增来源复核、二次AI复核、Evidence审计、真实来源gold四个文件；更新批次README/manifest/human-review、项目进度、AI辅助记录和本日志。保留 `ai-draft.json`、`human-confirmation.json`、旧失败 `source-checks.json` 为不可变历史，不修改产品代码、P0 Schema、规则或依赖；未启动/停止服务，未暂存、提交、推送。并行出现的许可证审计文档不在本任务修改范围。
+- 验证：`node .tools/verify-annotation-closure.cjs`通过，核对9个manifest文件、12条来源、11个文件SHA、12条AI复核、9个case，并逐字复现静态检测器六个正则后复算TP/FP/FN/Precision/Recall/F1；JSON均可解析。敏感模式扫描无命中；`git diff --check`通过，仅有既有CRLF规范化提示。Python解释器绑定到已删除路径，未用其冒充产品重跑。
+- 未完成门禁与下一步：第二位独立真人复核仍为0，AI复核不计入；R05新修订需真人确认；三份原扫描JSON和13个额外Evidence对象需从原报告存储/备份恢复后再复算。若竞赛规则硬性要求两名真人，在用户无法安排真人期间无法关闭。后续责任为Owner提供真人或调整正式验收规则，并恢复旧附件；Root可在取得字节后自动完成哈希和逐对象复核。
+- GitHub：全部本轮及此前未提交标注产物仅本地，未暂存、提交或推送；main和远端分支不变。
+- token：本次运行精确 token 数不可获得；开工估算10,000～20,000，范围扩大到完整来源gold、实际正则复算和本地附件恢复核查，无法确认实耗是否在估算区间内。
+
+### [20260911-1709-GPT5-人工标签发布状态核验] START - 核对本地与GitHub人工标注文件
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:09（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `4c9e16b`。
+- 范围：只读核对人工标注目录、标注方案、Git提交历史及GitHub两个相关分支；不上传尚待用户确认的数据，不修改标签结论或产品代码。预计1,000～2,000 token，精确数不可获得。
+
+### [20260911-1710-GPT5-人工标签发布状态核验收工] COMPLETE - 确认人工标签尚未上传
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:10（Asia/Shanghai）。远端实时引用：`codex/scan-reliability-integration@4c9e16b`、`codex/license-rule-p0-fixes@44367a7`。
+- 结论：`benchmarks/annotations/`下10个文件和`docs/spec/scan-result-human-annotation-plan.md`仍为本地主工作树未跟踪文件；两个相关远端分支的树中匹配文件数均为0，全部本地/远端提交历史中也无这些路径。因此人工标签相关代码与数据尚未上传。
+- 边界：现有三份协调文档和许可证审计文档也保留本地未发布状态；本轮仅追加本日志，没有暂存、提交或推送，没有启动/停止服务。上传前仍应复核人工确认、AI草稿快照、R05修订、敏感信息及允许公开范围。
+- 本次运行精确token数不可获得；开工估算1,000～2,000，状态核验已完成，范围未扩展。
+
+### [20260911-1712-GPT5-人工标签成果发布] START - 审核并上传本地标注成果
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:12（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线/远端 `4c9e16b`。
+- 用户明确要求上传GitHub。本轮拟发布`benchmarks/annotations/real-resource-20260911-ai-assisted/`、人工标注方案、许可证审计及三份相互引用的协作记录；先复核JSON、manifest、敏感信息、绝对路径、文件大小和`git diff --check`，只提交明确暂存文件。
+- 不上传`.tools`临时验证器、原始扫描输出、缓存、虚拟环境、数据库、密钥或个人信息；不修改产品代码、不合并`main`、不启动或停止服务。预计3,000～6,000 token，精确数不可获得。

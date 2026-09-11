@@ -1,0 +1,47 @@
+{
+  "schema_version": "human-confirmation/0.1",
+  "confirmation_id": "hrv_20260911_user_01",
+  "batch_id": "real-resource-20260911-ai-assisted",
+  "reviewer": {
+    "type": "human",
+    "role": "项目用户（身份自报）",
+    "display_name": null
+  },
+  "reviewed_at": "2026-09-11T15:57:00+08:00",
+  "source": "当前 Codex 对话中的用户明确确认：真人复核无误",
+  "exposure": {
+    "ai_draft_seen": true,
+    "system_output_seen": true,
+    "other_human_answer_seen": false,
+    "independent_blind_review": false
+  },
+  "decision": "confirm_ai_draft_without_changes",
+  "scope": "确认 ai-draft.json 中 R01-R12 的五维初标、理由、不确定项和建议操作无误。许可维度仍为 uncertain；本确认不新增许可证事实或授权结论。",
+  "records": [
+    {"record_id": "R01", "decision": "confirmed_without_changes"},
+    {"record_id": "R02", "decision": "confirmed_without_changes"},
+    {"record_id": "R03", "decision": "confirmed_without_changes"},
+    {"record_id": "R04", "decision": "confirmed_without_changes"},
+    {"record_id": "R05", "decision": "confirmed_without_changes"},
+    {"record_id": "R06", "decision": "confirmed_without_changes"},
+    {"record_id": "R07", "decision": "confirmed_without_changes"},
+    {"record_id": "R08", "decision": "confirmed_without_changes"},
+    {"record_id": "R09", "decision": "confirmed_without_changes"},
+    {"record_id": "R10", "decision": "confirmed_without_changes"},
+    {"record_id": "R11", "decision": "confirmed_without_changes"},
+    {"record_id": "R12", "decision": "confirmed_without_changes"}
+  ],
+  "record_count": 12,
+  "dimension_count": 60,
+  "disagreements": [],
+  "human_review_count_after_confirmation": 1,
+  "second_independent_human_review_required": true,
+  "status": "confirmed_single_human_review",
+  "limitations": [
+    "本记录依据用户在当前对话中的明确确认，未收集法定姓名或外部身份凭证。",
+    "复核发生在AI初标公开之后，不属于独立盲标。",
+    "没有第二名真人记录，不能声明双人独立复核完成。",
+    "原文在线重取、原始扫描附件和全部额外Evidence仍未由本轮重新核验。",
+    "确认的是现有标注内容及其不确定性边界，不代表相关许可证或授权已经核验通过。"
+  ]
+}
