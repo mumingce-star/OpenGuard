@@ -1,0 +1,136 @@
+{
+  "batch_id": "real-resource-20260911-ai-assisted",
+  "created_at": "2026-09-11T06:12:01.151Z",
+  "author": {
+    "type": "ai",
+    "model": "GPT-6",
+    "role": "Root Coordinator"
+  },
+  "status": "confirmed_single_human_review_ai_adjudicated",
+  "purpose": "output_review",
+  "review_table": {
+    "source_commit": "5611c00",
+    "path": "benchmarks/real-resource-review.md",
+    "sha256": "ac7f090c820406a64e9adba94550cc82d60f9c3ee567f9a41b9a033163b67852"
+  },
+  "reports": [
+    {
+      "project": "openai-python",
+      "scan_id": "scn_abd52930-829d-438a-a36d-79717dee3990",
+      "status": "completed",
+      "reported_attachment_sha256": "ef0ad44027da9c57e689ec749f13ca90fb26e59ce364e6364123cf410613aa98",
+      "attachment_reverified_this_run": false
+    },
+    {
+      "project": "smolagents",
+      "scan_id": "scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587",
+      "status": "partial",
+      "reported_attachment_sha256": "37cb487045c326b2663cf3016f13f487da8fc15f603b0e1661cf4f4686c893a7",
+      "attachment_reverified_this_run": false
+    },
+    {
+      "project": "litellm",
+      "scan_id": "scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8",
+      "status": "partial",
+      "reported_attachment_sha256": "e92e13ee42fe964819a3cb31b891dcb5c2ce97fe135b2c26a2d4ea008cb1d860",
+      "attachment_reverified_this_run": false
+    }
+  ],
+  "scope": "既有12条候选中的资源引用识别、主证据支持、许可信息、风险摘要和AI建议；不判断实际运行使用，不覆盖完整报告或漏检资源。",
+  "item_count": 12,
+  "human_reviews_received": 1,
+  "human_review": {
+    "confirmation_id": "hrv_20260911_user_01",
+    "record_count": 12,
+    "dimension_count": 60,
+    "decision": "confirm_ai_draft_without_changes",
+    "reviewed_at": "2026-09-11T15:57:00+08:00",
+    "ai_draft_seen": true,
+    "independent_blind_review": false,
+    "second_independent_review_pending": true,
+    "r05_amendment_confirmation_id": "hrv_20260911_user_01_r05_amendment",
+    "r05_amendment_reconfirmed": true
+  },
+  "online_source_checks": {
+    "attempted": 12,
+    "verified": 12,
+    "unavailable": 0,
+    "method": "fixed-commit-git-object-sha256",
+    "details": "source-reverification.json"
+  },
+  "additional_web_fetch": {
+    "records": [
+      "R08",
+      "R11",
+      "R12"
+    ],
+    "result": "cache_miss"
+  },
+  "counts_are": "AI初标分布，非人工准确率或评测结果",
+  "second_ai_review": {
+    "review_id": "air_20260911_full_source_02",
+    "human_review": false,
+    "result": "amendment_required",
+    "amended_record": "R05",
+    "human_reconfirmation_required": false,
+    "human_reconfirmation_id": "hrv_20260911_user_01_r05_amendment"
+  },
+  "recall_benchmark": {
+    "path": "real-source-recall-v1.json",
+    "scope_case_count": 9,
+    "true_positive": 11,
+    "false_positive": 8,
+    "false_negative": 39,
+    "precision": 0.5789473684210527,
+    "recall": 0.22,
+    "f1": 0.3188405797101449,
+    "gold_reviewers": {"ai": 1, "human": 0}
+  },
+  "original_attachment_audit": {
+    "attachments_recovered": 0,
+    "attachments_expected": 3,
+    "direct_evidence_objects_reverified": 0,
+    "unique_evidence_ids": 25,
+    "primary_sources_reverified": 12,
+    "details": "evidence-audit.md"
+  },
+  "judgment_counts": {
+    "resource": {
+      "correct": 10,
+      "partially_correct": 2
+    },
+    "evidence": {
+      "correct": 10,
+      "partially_correct": 2
+    },
+    "license": {
+      "uncertain": 12
+    },
+    "risk": {
+      "accept": 9,
+      "revise": 3
+    },
+    "suggestion": {
+      "too_generic": 12
+    }
+  },
+  "adjudicated_judgment_counts": {
+    "resource": {"correct": 9, "partially_correct": 3},
+    "evidence": {"correct": 9, "partially_correct": 3},
+    "license": {"uncertain": 12},
+    "risk": {"accept": 8, "revise": 4},
+    "suggestion": {"too_generic": 12}
+  },
+  "files": [
+    "ai-draft.json",
+    "source-checks.json",
+    "README.md",
+    "human-review.md",
+    "human-confirmation.json",
+    "human-amendment-r05.json",
+    "source-reverification.json",
+    "second-ai-review.json",
+    "evidence-audit.md",
+    "real-source-recall-v1.json"
+  ]
+}

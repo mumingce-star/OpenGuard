@@ -1,0 +1,39 @@
+{
+  "schema_version": "human-confirmation/0.1",
+  "confirmation_id": "hrv_20260911_user_01_r05_amendment",
+  "amends_confirmation_id": "hrv_20260911_user_01",
+  "batch_id": "real-resource-20260911-ai-assisted",
+  "reviewer": {
+    "type": "human",
+    "role": "项目用户（身份自报）",
+    "display_name": null
+  },
+  "reviewed_at": "2026-09-11T17:28:00+08:00",
+  "source": "当前Codex对话中的用户明确确认：已人工核对R05固定原文第258至265行，并同意五维修订",
+  "exposure": {
+    "ai_draft_seen": true,
+    "second_ai_review_seen": true,
+    "system_output_seen": true,
+    "other_human_answer_seen": false,
+    "independent_blind_review": false
+  },
+  "record_id": "R05",
+  "decision": "confirm_amendment",
+  "judgments": {
+    "resource": "partially_correct",
+    "evidence": "partially_correct",
+    "license": "uncertain",
+    "risk": "revise",
+    "suggestion": "too_generic"
+  },
+  "reason": "FLUX.1-dev链接与实际FLUX.1-schnell调用参数不一致。",
+  "source_locator": "huggingface/smolagents@30bb1161095dbae2271e6bc3cc4c219cc3897a57:docs/source/en/tutorials/tools.md#L258-L265",
+  "human_review_count_after_confirmation": 1,
+  "second_independent_human_review_required": true,
+  "status": "confirmed_by_existing_human_reviewer",
+  "limitations": [
+    "这是第一位复核人对新证据的补充确认，不新增第二位真人。",
+    "复核人已看到AI修订，不属于独立盲标。",
+    "许可仍为uncertain，不代表许可或授权已经通过。"
+  ]
+}

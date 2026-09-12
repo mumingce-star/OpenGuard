@@ -1,0 +1,32 @@
+{
+  "review_id": "air_20260911_full_source_02",
+  "reviewed_at": "2026-09-11T16:20:00+08:00",
+  "reviewer": {"type": "ai", "model": "GPT-6", "role": "Root Coordinator"},
+  "identity_boundary": "这是取得固定原文后的第二轮 AI 方法复核，不是真人复核，不计入 human_reviews_received，也不满足双真人门禁。复核模型已接触旧表与初标，不能宣称盲审或统计独立性。",
+  "inputs": ["source-reverification.json", "ai-draft.json", "human-confirmation.json", "固定 commit 的完整原文"],
+  "result": "amendment_required",
+  "records": [
+    {"record_id": "R01", "decision": "confirm", "reason": "完整 pyproject 仍支持开发依赖组中的 pydantic 范围声明；不支持安装、分发或许可结论。"},
+    {"record_id": "R02", "decision": "confirm", "reason": "完整 uv.lock 支持 pycparser 2.23 锁定项；许可仍无原文。"},
+    {"record_id": "R03", "decision": "confirm", "reason": "完整 uv.lock 支持 anyio 4.12.1 锁定项；许可仍无原文。"},
+    {"record_id": "R04", "decision": "confirm", "reason": "原文同时给出 Qwen 模型链接与 InferenceClientModel 使用情境。"},
+    {"record_id": "R05", "decision": "revise_resource_and_evidence_to_partially_correct", "reason": "第258行链接名为 FLUX.1-dev 并称为 Space，但实际 Tool.from_space 参数在第262行是 black-forest-labs/FLUX.1-schnell；候选不能证明实际调用对象就是 FLUX.1-dev。"},
+    {"record_id": "R06", "decision": "confirm", "reason": "完整脚本把 intfloat/multilingual-e5-large-instruct 注册为模型能力规则，链接用于 embedding 维度出处。"},
+    {"record_id": "R07", "decision": "confirm", "reason": "原文明确将处理结果上传到 smolagents/GAIA-annotated 数据集并提示需要申请访问。"},
+    {"record_id": "R08", "decision": "confirm_existing_revision", "reason": "URL 指向 smolagents-benchmark/benchmark-v1，但运行默认值为 smolagents/benchmark-v1，风险必须保留为需修改。"},
+    {"record_id": "R09", "decision": "confirm", "reason": "README 明确把 m-ric/agents_medium_benchmark_2 称为 benchmark 数据集。"},
+    {"record_id": "R10", "decision": "confirm", "reason": "完整文档不止有包装器符号，还包含 Anthropic SDK client.messages.create 示例；API 引用成立，但不证明生产调用。"},
+    {"record_id": "R11", "decision": "confirm_existing_partial", "reason": "完整文档描述 Google Generative AI API，但候选定位行仅是 google.genai 类型导入；主证据仍只能部分支持实际 API 使用。"},
+    {"record_id": "R12", "decision": "confirm_existing_partial", "reason": "定位行只是 OpenAI 兼容性注释，不能单独证明 OpenAI 服务调用；原部分正确标签应保留。"}
+  ],
+  "adjudicated_counts": {
+    "resource": {"correct": 9, "partially_correct": 3},
+    "evidence": {"correct": 9, "partially_correct": 3},
+    "license": {"uncertain": 12},
+    "risk": {"accept": 8, "revise": 4},
+    "suggestion": {"too_generic": 12}
+  },
+  "amendments": [
+    {"record_id": "R05", "resource": "partially_correct", "evidence": "partially_correct", "risk": "revise", "human_reconfirmation_required": true}
+  ]
+}

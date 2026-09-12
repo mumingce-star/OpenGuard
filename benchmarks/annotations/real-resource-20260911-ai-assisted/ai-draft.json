@@ -1,0 +1,966 @@
+{
+  "schema_version": "ai-assisted-review-draft/0.1",
+  "batch_id": "real-resource-20260911-ai-assisted",
+  "author": {
+    "type": "ai",
+    "model": "GPT-6",
+    "role": "Root Coordinator"
+  },
+  "status": "awaiting_human_review",
+  "purpose": "output_review",
+  "scope": "既有12条候选中的资源引用识别、主证据支持、许可信息、风险摘要和AI建议；不判断实际运行使用，不覆盖完整报告或漏检资源。",
+  "exposure": {
+    "system_output_seen": true,
+    "independent_blind_annotation": false
+  },
+  "human_reviews_received": 0,
+  "limitations": [
+    "依据固定验收副本中的真实复核表及其中保存的原文片段，未取得原始JSON附件。",
+    "本轮固定上游原文在线获取失败；source-checks.json记录失败，不声称重新验证上游文件哈希。",
+    "表内原始报告哈希和Evidence ID为既有记录引用，不代表本轮从原报告独立核对。",
+    "只评价所见主证据片段；额外AI所引Evidence未全部提供，完整引用集合的语义支持仍不确定。",
+    "所有判断为AI初标，未替代任何真人提交；不得用于宣称独立双人标注或生产准确率。",
+    "未查明各资源完整许可及具体使用授权，不作有效或无效授权结论。"
+  ],
+  "records": [
+    {
+      "record_id": "R01",
+      "name": "pydantic",
+      "resource_type": "software",
+      "version": ">=1.10.26,<2",
+      "version_status": "range",
+      "usage_context": [
+        "declaration"
+      ],
+      "fact": "dependency-groups.pydantic-v1列出pydantic版本范围；这是依赖组声明，不是确定安装版本，也不能单凭这一组判断生产直接依赖。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "所见字段明确命名pydantic；候选未声称固定版本。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "pyproject.toml第69行与dependency-groups.pydantic-v1[0]对应，支持声明存在，不支持安装或授权事实。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "依赖约束未包含该版本的许可原文；不能以根项目LICENSE替代。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "仅就表内许可待核验摘要，review_required/info与所见证据范围相符；不表示已存在违规。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "未区分依赖组与实际使用版本，且先保留材料、后查原文的顺序不便操作。"
+        }
+      },
+      "recommended_action": "先确认该依赖组是否纳入交付及实际锁定版本；再查对应发行版本的许可原文、记录适用场景，最后保存对照结果。",
+      "uncertainties": [
+        "实际安装/交付版本",
+        "依赖组用途",
+        "该资源许可原文",
+        "其余AI引用支持关系"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "cmp_03e95893-2932-52b3-8d9b-84c43d27ccd1",
+        "risk_id": "rsk_77ea981d-9516-5794-9b3c-665539c0c788",
+        "primary_evidence_id": "evd_3942961d-ac62-5a1a-ae71-b23920566b87",
+        "remediation_id": "rem_05f6da8c-62ea-5dcc-bcb7-9a54cc60e991",
+        "scan_id": "scn_abd52930-829d-438a-a36d-79717dee3990",
+        "reported_attachment_sha256": "ef0ad44027da9c57e689ec749f13ca90fb26e59ce364e6364123cf410613aa98",
+        "original_scan_status": "completed",
+        "source_url": "https://github.com/openai/openai-python/blob/be928151372e4b62adb4a1571cda52ad759b38be/pyproject.toml#L69",
+        "source_revision": "be928151372e4b62adb4a1571cda52ad759b38be",
+        "primary_locator": "pyproject.toml:dependency-groups.pydantic-v1[0]",
+        "reported_source_sha256": "a3190a42805422ecebc40fd522d2638a8c17c7149e79051451e8e24bb4a03258",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_3942961d-ac62-5a1a-ae71-b23920566b87",
+          "evd_d0d33b22-fd6a-5a1f-99ac-b9d3cfe94d16",
+          "evd_e73800f7-83c6-5e6a-8ecc-5a9a5ec52f0b"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R02",
+      "name": "pycparser",
+      "resource_type": "software",
+      "version": "2.23",
+      "version_status": "exact",
+      "usage_context": [
+        "lock_record"
+      ],
+      "fact": "uv.lock列出pycparser 2.23及包源，是锁文件条目；不单独证明已安装或本次构建确实包含。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "第1880～1882行明确给出名称、版本和源，匹配候选。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "主证据uv.lock与条目相符；行号来自复核导航，不冒充原始扫描定位字段。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "所见锁文件片段提供版本和分发文件信息，没有许可文本。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "许可尚待核验的提示与当前信息相容；仅评价表内摘要。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "应明确核验2.23发行物而不是泛指pypi资源；原步骤顺序需调整。"
+        }
+      },
+      "recommended_action": "核对pycparser 2.23对应的上游发行物与许可文件，明确交付是否包含该依赖并留存依据。",
+      "uncertainties": [
+        "实际纳入构建情况",
+        "直接或传递依赖关系",
+        "版本对应的许可文件"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "cmp_05c41686-f464-5cb5-a67d-8c22030b00b0",
+        "risk_id": "rsk_fa0f182f-6022-59dd-9c0e-4640c1e74ee7",
+        "primary_evidence_id": "evd_12ab606c-32c7-5a24-9ffd-d9ffafff742f",
+        "remediation_id": "rem_b3254298-1922-5199-80e6-8e2ae17c8e96",
+        "scan_id": "scn_abd52930-829d-438a-a36d-79717dee3990",
+        "reported_attachment_sha256": "ef0ad44027da9c57e689ec749f13ca90fb26e59ce364e6364123cf410613aa98",
+        "original_scan_status": "completed",
+        "source_url": "https://github.com/openai/openai-python/blob/be928151372e4b62adb4a1571cda52ad759b38be/uv.lock#L1880",
+        "source_revision": "be928151372e4b62adb4a1571cda52ad759b38be",
+        "primary_locator": "uv.lock",
+        "reported_source_sha256": "e70d75cd22a5411a38517060cce262d3ed7e07c353865d0c363c2235dec80a15",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_12ab606c-32c7-5a24-9ffd-d9ffafff742f"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R03",
+      "name": "anyio",
+      "resource_type": "software",
+      "version": "4.12.1",
+      "version_status": "exact",
+      "usage_context": [
+        "lock_record"
+      ],
+      "fact": "uv.lock第215～217行记录anyio 4.12.1及包源；属于锁定清单中的资源。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "名称和版本与候选一致。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "锁条目支持资源与版本存在；不能扩展为运行或许可证明。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "本段没有该版本的许可原文。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "许可证据不足时保留待核验提示合理；不作全报告认可。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "未指向4.12.1对应许可文件，也没有区分实际分发场景。"
+        }
+      },
+      "recommended_action": "定位anyio 4.12.1发行版本的许可文件，核对拟交付依赖集合与分发方式，再记录核验结果。",
+      "uncertainties": [
+        "实际安装/分发情况",
+        "依赖关系",
+        "对应版本许可"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "cmp_10924453-22fc-5c14-9918-626935fc135e",
+        "risk_id": "rsk_ad0acba4-24af-5958-b3b0-f28ee6cbb75e",
+        "primary_evidence_id": "evd_bd29b0ae-8bf8-5af0-9897-a3c843d02abd",
+        "remediation_id": "rem_449f6651-ab27-5ddd-82fd-e0c72b7dbc16",
+        "scan_id": "scn_abd52930-829d-438a-a36d-79717dee3990",
+        "reported_attachment_sha256": "ef0ad44027da9c57e689ec749f13ca90fb26e59ce364e6364123cf410613aa98",
+        "original_scan_status": "completed",
+        "source_url": "https://github.com/openai/openai-python/blob/be928151372e4b62adb4a1571cda52ad759b38be/uv.lock#L215",
+        "source_revision": "be928151372e4b62adb4a1571cda52ad759b38be",
+        "primary_locator": "uv.lock",
+        "reported_source_sha256": "e70d75cd22a5411a38517060cce262d3ed7e07c353865d0c363c2235dec80a15",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_bd29b0ae-8bf8-5af0-9897-a3c843d02abd"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R04",
+      "name": "Qwen/Qwen3-Next-80B-A3B-Thinking",
+      "resource_type": "model",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "example",
+        "documentation_reference"
+      ],
+      "fact": "示例文档介绍使用InferenceClientModel经HF推理API调用该模型，说明的是示例方案。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "模型链接和完整名称明确；在引用识别范围内正确。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "第39行支持模型引用与示例托管调用语境，不证明权重已下载或服务已调用。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "示例链接不是对应模型版本的许可原文，也没有实际服务商使用条款。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "所见摘要只要求核验，未给授权断言；接受范围限该摘要。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "只让查模型原许可，未先明确托管服务与权重分发的不同场景；额外引用未全部核查。"
+        }
+      },
+      "recommended_action": "先确认仅保留示例、实际托管调用还是分发权重；确定模型revision和实际供应方，再分别核验适用模型许可与服务条款。",
+      "uncertainties": [
+        "实际使用与供应方",
+        "模型revision",
+        "模型许可与服务条款",
+        "其余AI证据语义"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_ed486083-ffcb-5cbd-9fce-1d25dfcc7441",
+        "risk_id": "rsk_d4f369b3-8175-5e32-ad00-f2f6da4b108c",
+        "primary_evidence_id": "evd_d2bb69c9-a420-5070-9758-3b676f01a850",
+        "remediation_id": "rem_677cb5e8-84bd-5ea9-8f5f-6883f941bff2",
+        "scan_id": "scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587",
+        "reported_attachment_sha256": "37cb487045c326b2663cf3016f13f487da8fc15f603b0e1661cf4f4686c893a7",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/docs/source/en/examples/multiagents.md#L39",
+        "source_revision": "30bb1161095dbae2271e6bc3cc4c219cc3897a57",
+        "primary_locator": "docs/source/en/examples/multiagents.md",
+        "reported_source_sha256": "fe70642c6a64e55e32344edb12955abc09c5fab55857fb4986b3369a040ef8f7",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_28dbf37a-5ed9-54c9-b588-826aa62eb334",
+          "evd_34fcd494-6ad0-538c-b5b1-7cf7f81b00eb",
+          "evd_494394e9-f47d-5325-9cfb-e373789ad459"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R05",
+      "name": "black-forest-labs/FLUX.1-dev",
+      "resource_type": "model",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "example",
+        "documentation_reference"
+      ],
+      "fact": "工具教程用FLUX.1-dev链接介绍Space调用；链接指向模型标识，正文又描述Space，需区分模型与实际Space服务。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "模型引用名称和链接明确；仅确认引用，不认定已下载/运行模型。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "第258行支持模型引用，周边Tool.from_space语境不能独自确定具体服务配置。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "所见内容未给该模型许可，也未给实际Space的适用条款。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "许可待核验摘要可接受；不得进一步认定某种用途被允许。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "把模型文件核验作为唯一方向，未区分模型和Space服务的核验对象。"
+        }
+      },
+      "recommended_action": "补读Tool.from_space完整参数，确认Space ID、模型revision和实际使用方式，分别查对应许可/服务条件后留存。",
+      "uncertainties": [
+        "具体Space ID",
+        "是否实际调用",
+        "模型revision与适用许可",
+        "额外AI引用"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_ed8be940-6081-5fc8-a80d-955f509ed4a7",
+        "risk_id": "rsk_dc8f4b94-49a4-5dbb-ae77-a982ff65f952",
+        "primary_evidence_id": "evd_bbe71a36-1c7e-5bbb-82ce-06207b95c2a9",
+        "remediation_id": "rem_94c8da46-a19a-500d-9580-26a793db0fcd",
+        "scan_id": "scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587",
+        "reported_attachment_sha256": "37cb487045c326b2663cf3016f13f487da8fc15f603b0e1661cf4f4686c893a7",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/docs/source/en/tutorials/tools.md#L258",
+        "source_revision": "30bb1161095dbae2271e6bc3cc4c219cc3897a57",
+        "primary_locator": "docs/source/en/tutorials/tools.md",
+        "reported_source_sha256": "57b9f1deeb7448f456f74cbbd6401241313729f7741cbe24c6dc298cfb47de02",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_2b5652b0-73ed-5c09-9829-33c2bba50fc2",
+          "evd_bbe71a36-1c7e-5bbb-82ce-06207b95c2a9",
+          "evd_f2c50281-01ec-50b1-8258-5b7e1da069ec"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R06",
+      "name": "intfloat/multilingual-e5-large-instruct",
+      "resource_type": "model",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "documentation_reference"
+      ],
+      "fact": "模型同步脚本的_rule项列出模型标识，并以模型链接说明embedding维度；这是元数据配置引用。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "第137～139行明确模型标识和元数据，支持模型候选。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "主证据支持模型元数据引用，不支持推理已执行。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "维度说明和模型链接没有提供许可文本。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "仅就许可信息未定的摘要可接受；不能认定该配置必然产生许可冲突。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "没有针对元数据引用的场景，直接谈模型分发容易让用户核验错误对象。"
+        }
+      },
+      "recommended_action": "先确认该条只用于元数据同步，还是存在另外的模型使用路径；有实际使用时再确定revision和适用条款。",
+      "uncertainties": [
+        "配置后续用途",
+        "实际模型使用路径",
+        "许可原文"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_56cd95d3-b5ec-54db-994a-d9b6d6c6d4c4",
+        "risk_id": "rsk_1ab7ccfb-bb8e-5e87-af91-448422fa58c8",
+        "primary_evidence_id": "evd_454337bf-87f6-5a9c-9b56-1e25c52aaf02",
+        "remediation_id": "rem_3f5900ae-9a32-550a-9b06-7e69f441cd23",
+        "scan_id": "scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8",
+        "reported_attachment_sha256": "e92e13ee42fe964819a3cb31b891dcb5c2ce97fe135b2c26a2d4ea008cb1d860",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/scripts/sync_together_ai_models.py#L138",
+        "source_revision": "168a0055a244acdcf97c330c52e085ab40b1424c",
+        "primary_locator": "scripts/sync_together_ai_models.py",
+        "reported_source_sha256": "1ac3017acb5819e088d3645f711d9b87752dd40ef6f5e0753cc3bc11dc738c7f",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_454337bf-87f6-5a9c-9b56-1e25c52aaf02"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R07",
+      "name": "smolagents/GAIA-annotated",
+      "resource_type": "dataset",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "documentation_reference"
+      ],
+      "fact": "文档介绍处理后的数据上传到该数据集，并提示请求访问；没有展示实际账户申请结果。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "完整数据集链接明确，类别与引用名一致。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "第64行支持数据集引用和文档中的访问申请说明。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "访问申请说明不等于许可原文或当前用户的使用授权记录。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "保留待核验摘要合理，不能依据申请访问文字判断授权有效。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "泛化列出训练、推理和分发，未结合本例评测用途与访问条件。"
+        }
+      },
+      "recommended_action": "确认实际用途和版本，核查数据集说明、访问条件及来源数据约束；如需授权记录，仅保存脱敏核验结果。",
+      "uncertainties": [
+        "数据集revision",
+        "实际用途",
+        "访问条件和来源数据条款",
+        "用户授权记录"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_d1b55ffc-edff-5b47-80e3-60a3c1020037",
+        "risk_id": "rsk_d510cef2-9491-58da-8207-ad22b8f5133e",
+        "primary_evidence_id": "evd_9ceb6efd-f199-5a07-b65a-9bdc246dfdcb",
+        "remediation_id": "rem_eef72c0d-46ca-570b-9d6c-a31260486985",
+        "scan_id": "scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587",
+        "reported_attachment_sha256": "37cb487045c326b2663cf3016f13f487da8fc15f603b0e1661cf4f4686c893a7",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/examples/open_deep_research/README.md#L64",
+        "source_revision": "30bb1161095dbae2271e6bc3cc4c219cc3897a57",
+        "primary_locator": "examples/open_deep_research/README.md",
+        "reported_source_sha256": "f66031c51430af60d61e42177b3e48d84c6ae23d483cfee2eb406b084e992732",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_9ceb6efd-f199-5a07-b65a-9bdc246dfdcb"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R08",
+      "name": "smolagents-benchmark/benchmark-v1",
+      "resource_type": "dataset",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "comment_reference"
+      ],
+      "fact": "第46行注释链接为smolagents-benchmark/benchmark-v1，但第44行默认参数为smolagents/benchmark-v1，两者命名空间不同。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "候选准确对应注释中的链接；只确认引用，不确认实际加载对象。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "注释支持该数据集标识被提到；临近默认参数显示另一标识，应保留差异。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "需先确定实际数据集对象，再核验对应许可与访问条件。"
+        },
+        "risk": {
+          "value": "revise",
+          "reason": "待核验方向可保留，但应增加对象标识不一致提示；不能把注释对象直接当作实际加载对象。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "遗漏先核对数据集ID的前置步骤，可能引导核验错误数据集。"
+        }
+      },
+      "recommended_action": "补查参数名、load_dataset调用和是否有重定向/迁移说明，确认两标识关系；先解决对象定位，再查许可。",
+      "uncertainties": [
+        "两数据集标识是否相关",
+        "实际参数覆盖值",
+        "实际加载对象",
+        "许可与访问条件"
+      ],
+      "issue_codes": [
+        "wrong_context",
+        "suggestion_problem"
+      ],
+      "priority": "high",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_e04b4f3b-b432-57d0-9b68-b6bfdfea6f62",
+        "risk_id": "rsk_30707999-1fd6-5b8c-a151-5b86b95d967a",
+        "primary_evidence_id": "evd_e6019f33-6d11-5a5f-9656-3cb932e7483c",
+        "remediation_id": "rem_193e70a4-83fb-5118-b75b-a91ae98408f5",
+        "scan_id": "scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587",
+        "reported_attachment_sha256": "37cb487045c326b2663cf3016f13f487da8fc15f603b0e1661cf4f4686c893a7",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/examples/smolagents_benchmark/run.py#L46",
+        "source_revision": "30bb1161095dbae2271e6bc3cc4c219cc3897a57",
+        "primary_locator": "examples/smolagents_benchmark/run.py",
+        "reported_source_sha256": "a1db747335affe27b9c28f99c6fda13c614ba047f2ff8a47486ae4339d420da2",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_e6019f33-6d11-5a5f-9656-3cb932e7483c"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R09",
+      "name": "m-ric/agents_medium_benchmark_2",
+      "resource_type": "dataset",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "documentation_reference"
+      ],
+      "fact": "README将该链接描述为汇集多个benchmark问题的评测集，用于代理比较；这是文档陈述。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "数据集链接完整且与候选一致。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "第258行支持评测数据集引用和文档描述，不能据此认证实验确实执行。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "未提供当前数据集及来源benchmark的适用条款。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "许可待核验摘要符合所见信息，不等于确认混合数据具有统一许可。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "缺少组合数据来源核查，且未围绕评测用途提出步骤。"
+        }
+      },
+      "recommended_action": "核对数据集revision、组成来源和评测用途，分别记录可获得的条款及未解决限制。",
+      "uncertainties": [
+        "revision",
+        "组成来源与条款",
+        "实际使用范围"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_e3797863-c272-5d73-b32c-9666a9af0b72",
+        "risk_id": "rsk_d36e29fd-5f08-5c10-bf9c-130d6ab3dba1",
+        "primary_evidence_id": "evd_71294d6a-1166-5214-9913-054bf1c8b0d1",
+        "remediation_id": "rem_b51637b7-6030-5ba4-be49-28e145a788ff",
+        "scan_id": "scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587",
+        "reported_attachment_sha256": "37cb487045c326b2663cf3016f13f487da8fc15f603b0e1661cf4f4686c893a7",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/README.md#L258",
+        "source_revision": "30bb1161095dbae2271e6bc3cc4c219cc3897a57",
+        "primary_locator": "README.md",
+        "reported_source_sha256": "131628d2669b4ee983c715002b57ea4b375b62c8502f6354b8d9fdf3fbc39f8d",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_71294d6a-1166-5214-9913-054bf1c8b0d1"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R10",
+      "name": "anthropic",
+      "resource_type": "api",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "example",
+        "source_call"
+      ],
+      "fact": "文档示例经litellm.anthropic.messages.acreate调用接口，并出现anthropic模型标识；是示例调用表达式。",
+      "judgments": {
+        "resource": {
+          "value": "correct",
+          "reason": "调用表达式与模型标识支持anthropic相关API候选，不证明请求已发生。"
+        },
+        "evidence": {
+          "value": "correct",
+          "reason": "第49～52行支持示例API调用语境；不支持当前账户权限或付费关系。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "未展示实际端点、账户适用服务条款或授权信息。"
+        },
+        "risk": {
+          "value": "accept",
+          "reason": "待核验摘要不作授权断言，在示例引用范围内可接受。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "API应核查实际服务条款、供应方及数据用途，不能仅泛称查许可证和分发场景。"
+        }
+      },
+      "recommended_action": "先确认是否实际调用及端点供应方，再核对适用服务条款、数据发送范围和账户许可条件；不在标注表保存API密钥。",
+      "uncertainties": [
+        "实际端点",
+        "真实请求与供应方",
+        "适用服务条款",
+        "额外AI引用"
+      ],
+      "issue_codes": [
+        "suggestion_problem"
+      ],
+      "priority": "normal",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_0401bc9c-79b4-5952-b81c-5e767930f282",
+        "risk_id": "rsk_53f7192d-9ba5-5f2f-9731-66107755e10c",
+        "primary_evidence_id": "evd_2ce6aae7-02b1-5d08-92e3-23448cafa9dc",
+        "remediation_id": "rem_8050ee24-2ac7-536a-bf5f-3fb927c3c4f6",
+        "scan_id": "scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8",
+        "reported_attachment_sha256": "e92e13ee42fe964819a3cb31b891dcb5c2ce97fe135b2c26a2d4ea008cb1d860",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/anthropic_interface/readme.md#L49",
+        "source_revision": "168a0055a244acdcf97c330c52e085ab40b1424c",
+        "primary_locator": "litellm/anthropic_interface/readme.md",
+        "reported_source_sha256": "649aa8e07ccf2154fa5f6a41884f37cfd7bb1f1c569962b7d6dc056db8440cf7",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_2ce6aae7-02b1-5d08-92e3-23448cafa9dc",
+          "evd_46e3cec7-aa0e-5125-b763-7711fe260a92",
+          "evd_9064e7e9-6edf-5d56-ab2c-9fd5d5b3f40c"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R11",
+      "name": "google",
+      "resource_type": "api",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "example",
+        "type_import"
+      ],
+      "fact": "主定位第27行导入google.genai.types中的类型；周边导入LiteLLM生成函数，但片段未显示实际服务调用或端点。",
+      "judgments": {
+        "resource": {
+          "value": "partially_correct",
+          "reason": "存在Google GenAI相关引用，但主证据直接支持的是SDK类型导入；应标为API候选而非已使用服务。"
+        },
+        "evidence": {
+          "value": "partially_correct",
+          "reason": "定位与类型导入相符，但作为实际API服务使用证据不足；需要完整示例和端点上下文。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "SDK许可和服务条款对象不同，片段没有任一对象的完整条款。"
+        },
+        "risk": {
+          "value": "revise",
+          "reason": "先说明仅发现类型引用、实际服务使用未定，再给条件性核验提示，避免将SDK引用等同API使用。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "没有区分SDK许可、服务条款和仅类型导入的不同情境。"
+        }
+      },
+      "recommended_action": "补查完整示例的生成调用、端点与配置；若仅类型依赖则归入软件/SDK核验，有服务调用证据时再建立相应API关系。",
+      "uncertainties": [
+        "完整调用路径",
+        "实际端点/供应方",
+        "SDK版本",
+        "其余Evidence是否足以补证"
+      ],
+      "issue_codes": [
+        "wrong_context",
+        "suggestion_problem"
+      ],
+      "priority": "high",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_bc80712e-679f-5b40-9b70-27563095ba22",
+        "risk_id": "rsk_d8546fd1-5271-5531-ae1b-d8494023bcea",
+        "primary_evidence_id": "evd_3799c037-95ec-5ca2-bfb9-df3776696848",
+        "remediation_id": "rem_827e981a-9e7f-5e23-836b-d10f57866321",
+        "scan_id": "scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8",
+        "reported_attachment_sha256": "e92e13ee42fe964819a3cb31b891dcb5c2ce97fe135b2c26a2d4ea008cb1d860",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/google_genai/Readme.md#L27",
+        "source_revision": "168a0055a244acdcf97c330c52e085ab40b1424c",
+        "primary_locator": "litellm/google_genai/Readme.md",
+        "reported_source_sha256": "05eb67a90e2c711d42d1d6e17a380e41f6bd67fcf51f6e08900166c72123333a",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_3799c037-95ec-5ca2-bfb9-df3776696848",
+          "evd_417e942a-9b11-5a17-89c8-addabee6c106",
+          "evd_a73114b4-72fb-5156-b74e-61fabfa421b6"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    },
+    {
+      "record_id": "R12",
+      "name": "openai",
+      "resource_type": "api",
+      "version": null,
+      "version_status": "unfixed",
+      "usage_context": [
+        "comment_reference"
+      ],
+      "fact": "第974行注释说明Router.chat.completions.create与openai接口兼容；随后建立LiteLLM Chat包装对象，未提供实际供应方或请求证据。",
+      "judgments": {
+        "resource": {
+          "value": "partially_correct",
+          "reason": "openai接口名称确实出现，但兼容接口可以由不同服务实现；只能确认兼容性引用。"
+        },
+        "evidence": {
+          "value": "partially_correct",
+          "reason": "注释定位正确，但不能支持实际调用OpenAI服务；完整关联证据尚未取得。"
+        },
+        "license": {
+          "value": "uncertain",
+          "reason": "服务供应方、账户和条款都未确定，不能从接口命名推定授权。"
+        },
+        "risk": {
+          "value": "revise",
+          "reason": "应先标接口兼容性引用/供应方未知，再条件化提示；不应默认让用户核查特定供应方授权。"
+        },
+        "suggestion": {
+          "value": "too_generic",
+          "reason": "遗漏实际供应方与端点核对，泛指该API许可可能导致核验对象错误。"
+        }
+      },
+      "recommended_action": "追踪实际配置中的model、api_base和路由供应方，仅记录脱敏端点类型；确认真实服务后核验其条款，兼容注释自身保留引用标签。",
+      "uncertainties": [
+        "实际供应方与端点",
+        "是否真实调用",
+        "适用条款",
+        "其余Evidence语义"
+      ],
+      "issue_codes": [
+        "wrong_context",
+        "suggestion_problem"
+      ],
+      "priority": "high",
+      "human_review_status": "pending",
+      "human_reviewer": null,
+      "human_reviewed_at": null,
+      "source": {
+        "resource_id": "ast_eff857a0-0163-55be-94d5-d5658cab8a39",
+        "risk_id": "rsk_ef3079cc-748d-5034-a312-e742e2787f28",
+        "primary_evidence_id": "evd_16c7a251-ef25-5c6b-9fb1-dde7dd530fab",
+        "remediation_id": "rem_c75efd66-f41a-58f4-be6e-f2e456939e6a",
+        "scan_id": "scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8",
+        "reported_attachment_sha256": "e92e13ee42fe964819a3cb31b891dcb5c2ce97fe135b2c26a2d4ea008cb1d860",
+        "original_scan_status": "partial",
+        "source_url": "https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/router.py#L974",
+        "source_revision": "168a0055a244acdcf97c330c52e085ab40b1424c",
+        "primary_locator": "litellm/router.py",
+        "reported_source_sha256": "3ad43f8503791ea9bee2db8d2953c0f13edaab65ab0aab6f8372ffc6aa9fea57",
+        "source_reverification": "unavailable",
+        "assessment_basis": "existing_review_table_excerpt",
+        "complete_report_reviewed": false,
+        "additional_ai_evidence_support": "uncertain",
+        "ai_evidence_ids": [
+          "evd_16c7a251-ef25-5c6b-9fb1-dde7dd530fab",
+          "evd_670fc8a0-4d04-596a-bc02-145ce24551b8",
+          "evd_7fa652fc-d752-50e7-9261-955dbf0ed1c4"
+        ]
+      },
+      "system_snapshot": {
+        "license_expression": "NOASSERTION",
+        "outcome": "review_required",
+        "severity": "info",
+        "rule": "license-evidence-gate@2026.09.1",
+        "remediation_verification_status": "pending",
+        "snapshot_source": "existing_review_table"
+      },
+      "proposed_license_expression": null,
+      "decision_status": "ai_draft"
+    }
+  ]
+}

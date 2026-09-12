@@ -1,0 +1,75 @@
+{
+  "version": "real-source-recall/v1",
+  "created_at": "2026-09-11T16:25:00+08:00",
+  "gold_author": {"type": "ai", "model": "GPT-6"},
+  "scanner": "openguard-static-ai-detector/0.1.0",
+  "scope": "八个固定版本完整文件加 router.py 第960-985行。完整枚举明确的模型ID、数据集ID和受支持API符号；同一资源在同一case去重。泛称LLM、供应商名称和动态变量不计入。第三方原文不打包。",
+  "selection": "在读取系统预测前按固定文件范围建立资源清单；文件来自原12候选，但gold包含候选之外的全部范围内资源和漏检项。",
+  "execution_note": "项目Python解释器路径失效；predicted由Node逐字复现static_assets.py 0.1.0的六个正则并与源码人工抽查，不替代产品环境重跑。",
+  "reported_metrics": {"true_positive": 11, "false_positive": 8, "false_negative": 39, "precision": 0.5789473684210527, "recall": 0.22, "f1": 0.3188405797101449},
+  "cases": [
+    {
+      "id": "smolagents-multiagents-full",
+      "source": "huggingface/smolagents@30bb1161095dbae2271e6bc3cc4c219cc3897a57:docs/source/en/examples/multiagents.md",
+      "gold_locators": {"model:huggingface:Qwen/Qwen3-Next-80B-A3B-Thinking": [39, 45]},
+      "expected": ["model:huggingface:Qwen/Qwen3-Next-80B-A3B-Thinking"],
+      "predicted": ["model:huggingface:Qwen/Qwen3-Next-80B-A3B-Thinking", "model:huggingface:docs/inference-providers"]
+    },
+    {
+      "id": "smolagents-tools-full",
+      "source": "huggingface/smolagents@30bb1161095dbae2271e6bc3cc4c219cc3897a57:docs/source/en/tutorials/tools.md",
+      "gold_locators": {"dataset:huggingface:huggingface/documentation-images": [271, 296], "model:huggingface:Qwen/Qwen3-Next-80B-A3B-Thinking": [278, 326], "model:huggingface:black-forest-labs/FLUX.1-dev": [258]},
+      "expected": ["dataset:huggingface:huggingface/documentation-images", "model:huggingface:Qwen/Qwen3-Next-80B-A3B-Thinking", "model:huggingface:black-forest-labs/FLUX.1-dev"],
+      "predicted": ["dataset:huggingface:huggingface/documentation-images", "model:huggingface:black-forest-labs/FLUX.1-dev"]
+    },
+    {
+      "id": "smolagents-open-deep-research-full",
+      "source": "huggingface/smolagents@30bb1161095dbae2271e6bc3cc4c219cc3897a57:examples/open_deep_research/README.md",
+      "gold_locators": {"dataset:huggingface:smolagents/GAIA-annotated": [64], "model:openai:o1": [53]},
+      "expected": ["dataset:huggingface:smolagents/GAIA-annotated", "model:openai:o1"],
+      "predicted": ["dataset:huggingface:smolagents/GAIA-annotated", "model:huggingface:blog/open-deep-research"]
+    },
+    {
+      "id": "smolagents-benchmark-run-full",
+      "source": "huggingface/smolagents@30bb1161095dbae2271e6bc3cc4c219cc3897a57:examples/smolagents_benchmark/run.py",
+      "gold_locators": {"dataset:huggingface:smolagents-benchmark/benchmark-v1": [46], "dataset:huggingface:smolagents/answers": [86], "dataset:huggingface:smolagents/benchmark-v1": [44]},
+      "expected": ["dataset:huggingface:smolagents-benchmark/benchmark-v1", "dataset:huggingface:smolagents/answers", "dataset:huggingface:smolagents/benchmark-v1"],
+      "predicted": ["dataset:huggingface:smolagents-benchmark/benchmark-v1"]
+    },
+    {
+      "id": "smolagents-readme-full",
+      "source": "huggingface/smolagents@30bb1161095dbae2271e6bc3cc4c219cc3897a57:README.md",
+      "gold_locators": {"dataset:huggingface:huggingface/documentation-images": [29, 263], "dataset:huggingface:m-ric/agents_medium_benchmark_2": [258], "model:anthropic:anthropic/claude-4-sonnet-latest": [99], "model:huggingface:Qwen/Qwen3-Next-80B-A3B-Thinking": [141, 183], "model:huggingface:deepseek-ai/DeepSeek-R1": [87, 113, 263], "model:litellm:gpt-5": [200], "model:openai:openai/gpt-4o": [127]},
+      "expected": ["dataset:huggingface:huggingface/documentation-images", "dataset:huggingface:m-ric/agents_medium_benchmark_2", "model:anthropic:anthropic/claude-4-sonnet-latest", "model:huggingface:Qwen/Qwen3-Next-80B-A3B-Thinking", "model:huggingface:deepseek-ai/DeepSeek-R1", "model:litellm:gpt-5", "model:openai:openai/gpt-4o"],
+      "predicted": ["dataset:huggingface:huggingface/documentation-images", "dataset:huggingface:m-ric/agents_medium_benchmark_2", "model:huggingface:blog/inference-providers", "model:huggingface:blog/smolagents", "model:huggingface:docs/inference-providers", "model:huggingface:docs/smolagents", "model:huggingface:papers/2402.01030", "model:huggingface:papers/2411.01747"]
+    },
+    {
+      "id": "litellm-sync-together-full",
+      "source": "BerriAI/litellm@168a0055a244acdcf97c330c52e085ab40b1424c:scripts/sync_together_ai_models.py",
+      "gold_locator_lines": [90, 96, 98, 105, 109, 110, 111, 112, 114, 119, 125, 129, 131, 137, 142, 147, 150, 152, 158, 165, 171, 177, 181, 183, 187, 189, 198],
+      "expected": ["model:huggingface:intfloat/multilingual-e5-large-instruct", "model:together:MiniMaxAI/MiniMax-M3", "model:together:Prism-ML/Ternary-Bonsai-27B", "model:together:Qwen/Qwen3.5-9B", "model:together:Qwen/Qwen3.6-Plus", "model:together:Qwen/Qwen3.7-Max", "model:together:Qwen/Qwen3.7-Plus", "model:together:Qwen/Qwen3.8-2.4T-A95B", "model:together:arize-ai/qwen-2-1.5b-instruct", "model:together:deepseek-ai/DeepSeek-V4-Flash-0731", "model:together:deepseek-ai/DeepSeek-V4-Pro", "model:together:deepseek-ai/DeepSeek-V4-Pro-0813", "model:together:google/gemma-3n-E4B-it", "model:together:google/gemma-4-31B-it", "model:together:meta-llama/Llama-3.3-70B-Instruct-Turbo", "model:together:meta-llama/Llama-Guard-4-12B", "model:together:meta-models/Muse-Glimmer-30B", "model:together:moonshotai/Kimi-K2.7-Code", "model:together:moonshotai/Kimi-K3", "model:together:nvidia/nemotron-3-ultra-550b-a55b", "model:together:openai/gpt-oss-120b", "model:together:openai/gpt-oss-20b", "model:together:pearl-ai/gemma-4-31b-it", "model:together:thinkingmachines/Inkling", "model:together:thinkingmachines/Inkling-Small", "model:together:zai-org/GLM-5.2", "model:together:zai-org/GLM-5.3-Flash"],
+      "predicted": ["model:huggingface:intfloat/multilingual-e5-large-instruct"]
+    },
+    {
+      "id": "litellm-anthropic-readme-full",
+      "source": "BerriAI/litellm@168a0055a244acdcf97c330c52e085ab40b1424c:litellm/anthropic_interface/readme.md",
+      "gold_locators": {"api:anthropic:anthropic": [14, 49, 87], "model:anthropic:anthropic/claude-3-haiku-20240307": [17, 52, 94], "model:anthropic:claude-3-7-sonnet-20250219": [32], "model:anthropic:claude-3-7-sonnet-latest": [69]},
+      "expected": ["api:anthropic:anthropic", "model:anthropic:anthropic/claude-3-haiku-20240307", "model:anthropic:claude-3-7-sonnet-20250219", "model:anthropic:claude-3-7-sonnet-latest"],
+      "predicted": ["api:anthropic:anthropic"]
+    },
+    {
+      "id": "litellm-google-genai-readme-full",
+      "source": "BerriAI/litellm@168a0055a244acdcf97c330c52e085ab40b1424c:litellm/google_genai/Readme.md",
+      "gold_locators": {"api:google:google": [27, 50, 75, 96], "model:google:gemini-pro": [38, 61, 86, 107]},
+      "expected": ["api:google:google", "model:google:gemini-pro"],
+      "predicted": ["api:google:google"]
+    },
+    {
+      "id": "litellm-router-window-960-985",
+      "source": "BerriAI/litellm@168a0055a244acdcf97c330c52e085ab40b1424c:litellm/router.py#L960-L985",
+      "gold_locators": {"api:openai:openai": [974]},
+      "expected": ["api:openai:openai"],
+      "predicted": ["api:openai:openai"]
+    }
+  ]
+}

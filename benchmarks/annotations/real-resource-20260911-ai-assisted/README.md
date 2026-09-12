@@ -1,0 +1,337 @@
+> **2026-09-12 Benchmark-only 迁移说明**
+>
+> 本目录来自 `codex/scan-reliability-integration@c9dcbad633431328545a2ac6ab8d1a4e2ab3125a`，只用于离线标注与评测，不进入 Formal Assessment。
+> 下文与原 JSON 中的指标统一属于 **historical artifact metrics（历史产物指标）**，不是最新版 Detector 的 live performance。
+> 本次使用 `integration/p0` 基线的 `benchmarks/evaluate.py`，只对既存 expected/predicted 重算：9 个 case，TP=11、FP=8、FN=39，Precision=0.5789473684210527、Recall=0.22、F1=0.3188405797101449，与历史数值一致。
+> 历史 predicted 来自 Node 对旧版正则的复现；本次没有运行 Detector、重新取得固定源码或再次核验原始 Evidence。
+> 12 条人工/AI辅助标注只有一名真人，R05补充确认不增加复核人数；另一个9-case召回率gold仅有AI标注。全部许可证结论仍为 uncertain，不是 VERIFIED License。
+> 源目录原始 JSON、人工确认和修订记录保持字节不变；下文“当前”“本轮”均指2026-09-11历史记录。重算结果、文件摘要及边界见 [migration-receipt.json](migration-receipt.json)。
+>
+> 复算方式（仓库根目录执行）：
+> `PYTHONDONTWRITEBYTECODE=1 python3 -c 'from benchmarks.evaluate import evaluate_scan_result; print(evaluate_scan_result("benchmarks/annotations/real-resource-20260911-ai-assisted/real-source-recall-v1.json"))'`
+
+---
+
+# 12条扫描结果AI辅助初标
+
+作者：GPT-6；日期：2026-09-11；状态：第一位真人已确认原初标及R05后续修订；第二名独立真人复核仍未完成。
+
+本批为既有12条真实候选的辅助初标。用户已在当前Codex对话中确认初标无误，形成一份AI辅助的人类复核记录。它不是盲标或双人独立评测，原扫描与既有复核表均未改动。初标和复核人都已接触系统输出。
+
+## 证据边界
+
+- 已按三个固定commit重新取得11个唯一原文文件，覆盖12/12记录；Git对象SHA-256与复核表全部一致，见 `source-reverification.json`。旧 `source-checks.json` 保留第一次失败回执。
+- 未取得三份原始JSON附件；恢复范围、25个Evidence ID及历史核对链见 `evidence-audit.md`。
+- 表内原始报告哈希和Evidence ID为既有记录引用，不代表本轮从原报告独立核对。
+- 12个主Evidence已按完整固定原文复核；13个额外Evidence对象因旧附件缺失不能逐对象重算，历史机器回执不得冒充本轮直接复核。
+- 第一位真人先确认原AI初标，随后人工核对固定原文第258–265行并确认R05修订；补充回执见 `human-amendment-r05.json`。同一复核人仍只计一名真人。
+- 未查明各资源完整许可及具体使用授权，不作有效或无效授权结论。
+
+固定原文现已12/12重新认证。新增 `real-source-recall-v1.json` 对八个完整文件和一个固定窗口做全量gold枚举，得到TP=11、FP=8、FN=39、Precision≈0.5789、Recall=0.22、F1≈0.3188。误报主要来自把Hugging Face的docs/blog/papers链接当成模型；漏检主要来自未带目标URL的模型ID和数据集参数。该指标是AI单人gold的静态AI资源识别结果，不代表完整项目扫描器，也不能替代真人独立复核。
+
+## 初标概览
+
+| ID | 对象 | 资源 | 主证据 | 许可 | 风险 | AI建议 | 复核优先级 |
+|---|---|---|---|---|---|---|---|
+| R01 | pydantic | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R02 | pycparser | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R03 | anyio | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R04 | Qwen/Qwen3-Next-80B-A3B-Thinking | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R05 | black-forest-labs/FLUX.1-dev | 部分正确（AI修订） | 部分正确（AI修订） | 无法确定 | 需修改 | 过于笼统 | 优先 |
+| R06 | intfloat/multilingual-e5-large-instruct | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R07 | smolagents/GAIA-annotated | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R08 | smolagents-benchmark/benchmark-v1 | 正确（引用范围） | 正确（引用范围） | 无法确定 | 需修改 | 过于笼统 | 优先 |
+| R09 | m-ric/agents_medium_benchmark_2 | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R10 | anthropic | 正确（引用范围） | 正确（引用范围） | 无法确定 | 接受摘要 | 过于笼统 | 常规 |
+| R11 | google | 部分正确 | 部分正确 | 无法确定 | 需修改 | 过于笼统 | 优先 |
+| R12 | openai | 部分正确 | 部分正确 | 无法确定 | 需修改 | 过于笼统 | 优先 |
+
+完整原文裁决后，资源和主证据各9条正确、3条部分正确；风险摘要8条接受、4条建议修改；许可12条未确定；12条AI建议都需更具体。第一位真人已补充确认R05新修订。这是AI辅助单人复核分布；召回率仅使用另行定义的完整gold范围计算。
+
+优先核查R08数据集标识差异、R11类型导入、R12兼容性注释。R11/R12不应仅凭当前片段当成实际服务使用；这不证明完整报告不存在补充证据。
+
+## R01 · pydantic
+
+- 来源：[固定原文入口](https://github.com/openai/openai-python/blob/be928151372e4b62adb4a1571cda52ad759b38be/pyproject.toml#L69)；固定commit与文件SHA已复核。
+- 任务：`scn_abd52930-829d-438a-a36d-79717dee3990`；原终态：`completed`。
+- 对象：`cmp_03e95893-2932-52b3-8d9b-84c43d27ccd1`；风险：`rsk_77ea981d-9516-5794-9b3c-665539c0c788`。
+- 主证据：`evd_3942961d-ac62-5a1a-ae71-b23920566b87`；定位：`pyproject.toml:dependency-groups.pydantic-v1[0]`。
+- 事实与情境：dependency-groups.pydantic-v1列出pydantic版本范围；这是依赖组声明，不是确定安装版本，也不能单凭这一组判断生产直接依赖。
+- 版本：>=1.10.26,<2；原文支持范围：declaration。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 所见字段明确命名pydantic；候选未声称固定版本。 |
+| 主证据支持 | 正确（引用范围） | pyproject.toml第69行与dependency-groups.pydantic-v1[0]对应，支持声明存在，不支持安装或授权事实。 |
+| 许可信息 | 无法确定 | 依赖约束未包含该版本的许可原文；不能以根项目LICENSE替代。 |
+| 风险摘要 | 接受摘要 | 仅就表内许可待核验摘要，review_required/info与所见证据范围相符；不表示已存在违规。 |
+| AI建议 | 过于笼统 | 未区分依赖组与实际使用版本，且先保留材料、后查原文的顺序不便操作。 |
+
+**建议操作：** 先确认该依赖组是否纳入交付及实际锁定版本；再查对应发行版本的许可原文、记录适用场景，最后保存对照结果。
+
+**仍缺信息：** 实际安装/交付版本；依赖组用途；该资源许可原文；其余AI引用支持关系。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R02 · pycparser
+
+- 来源：[固定原文入口](https://github.com/openai/openai-python/blob/be928151372e4b62adb4a1571cda52ad759b38be/uv.lock#L1880)；固定commit与文件SHA已复核。
+- 任务：`scn_abd52930-829d-438a-a36d-79717dee3990`；原终态：`completed`。
+- 对象：`cmp_05c41686-f464-5cb5-a67d-8c22030b00b0`；风险：`rsk_fa0f182f-6022-59dd-9c0e-4640c1e74ee7`。
+- 主证据：`evd_12ab606c-32c7-5a24-9ffd-d9ffafff742f`；定位：`uv.lock`。
+- 事实与情境：uv.lock列出pycparser 2.23及包源，是锁文件条目；不单独证明已安装或本次构建确实包含。
+- 版本：2.23；原文支持范围：lock_record。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 第1880～1882行明确给出名称、版本和源，匹配候选。 |
+| 主证据支持 | 正确（引用范围） | 主证据uv.lock与条目相符；行号来自复核导航，不冒充原始扫描定位字段。 |
+| 许可信息 | 无法确定 | 所见锁文件片段提供版本和分发文件信息，没有许可文本。 |
+| 风险摘要 | 接受摘要 | 许可尚待核验的提示与当前信息相容；仅评价表内摘要。 |
+| AI建议 | 过于笼统 | 应明确核验2.23发行物而不是泛指pypi资源；原步骤顺序需调整。 |
+
+**建议操作：** 核对pycparser 2.23对应的上游发行物与许可文件，明确交付是否包含该依赖并留存依据。
+
+**仍缺信息：** 实际纳入构建情况；直接或传递依赖关系；版本对应的许可文件。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R03 · anyio
+
+- 来源：[固定原文入口](https://github.com/openai/openai-python/blob/be928151372e4b62adb4a1571cda52ad759b38be/uv.lock#L215)；固定commit与文件SHA已复核。
+- 任务：`scn_abd52930-829d-438a-a36d-79717dee3990`；原终态：`completed`。
+- 对象：`cmp_10924453-22fc-5c14-9918-626935fc135e`；风险：`rsk_ad0acba4-24af-5958-b3b0-f28ee6cbb75e`。
+- 主证据：`evd_bd29b0ae-8bf8-5af0-9897-a3c843d02abd`；定位：`uv.lock`。
+- 事实与情境：uv.lock第215～217行记录anyio 4.12.1及包源；属于锁定清单中的资源。
+- 版本：4.12.1；原文支持范围：lock_record。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 名称和版本与候选一致。 |
+| 主证据支持 | 正确（引用范围） | 锁条目支持资源与版本存在；不能扩展为运行或许可证明。 |
+| 许可信息 | 无法确定 | 本段没有该版本的许可原文。 |
+| 风险摘要 | 接受摘要 | 许可证据不足时保留待核验提示合理；不作全报告认可。 |
+| AI建议 | 过于笼统 | 未指向4.12.1对应许可文件，也没有区分实际分发场景。 |
+
+**建议操作：** 定位anyio 4.12.1发行版本的许可文件，核对拟交付依赖集合与分发方式，再记录核验结果。
+
+**仍缺信息：** 实际安装/分发情况；依赖关系；对应版本许可。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R04 · Qwen/Qwen3-Next-80B-A3B-Thinking
+
+- 来源：[固定原文入口](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/docs/source/en/examples/multiagents.md#L39)；固定commit与文件SHA已复核。
+- 任务：`scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587`；原终态：`partial`。
+- 对象：`ast_ed486083-ffcb-5cbd-9fce-1d25dfcc7441`；风险：`rsk_d4f369b3-8175-5e32-ad00-f2f6da4b108c`。
+- 主证据：`evd_d2bb69c9-a420-5070-9758-3b676f01a850`；定位：`docs/source/en/examples/multiagents.md`。
+- 事实与情境：示例文档介绍使用InferenceClientModel经HF推理API调用该模型，说明的是示例方案。
+- 版本：未固定；原文支持范围：example、documentation_reference。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 模型链接和完整名称明确；在引用识别范围内正确。 |
+| 主证据支持 | 正确（引用范围） | 第39行支持模型引用与示例托管调用语境，不证明权重已下载或服务已调用。 |
+| 许可信息 | 无法确定 | 示例链接不是对应模型版本的许可原文，也没有实际服务商使用条款。 |
+| 风险摘要 | 接受摘要 | 所见摘要只要求核验，未给授权断言；接受范围限该摘要。 |
+| AI建议 | 过于笼统 | 只让查模型原许可，未先明确托管服务与权重分发的不同场景；额外引用未全部核查。 |
+
+**建议操作：** 先确认仅保留示例、实际托管调用还是分发权重；确定模型revision和实际供应方，再分别核验适用模型许可与服务条款。
+
+**仍缺信息：** 实际使用与供应方；模型revision；模型许可与服务条款；其余AI证据语义。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R05 · black-forest-labs/FLUX.1-dev
+
+- 来源：[固定原文入口](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/docs/source/en/tutorials/tools.md#L258)；固定commit与文件SHA已复核，完整上下文显示链接名与实际 `Tool.from_space` 参数不一致。
+- 任务：`scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587`；原终态：`partial`。
+- 对象：`ast_ed8be940-6081-5fc8-a80d-955f509ed4a7`；风险：`rsk_dc8f4b94-49a4-5dbb-ae77-a982ff65f952`。
+- 主证据：`evd_bbe71a36-1c7e-5bbb-82ce-06207b95c2a9`；定位：`docs/source/en/tutorials/tools.md`。
+- 事实与情境：工具教程用FLUX.1-dev链接介绍Space调用；链接指向模型标识，正文又描述Space，需区分模型与实际Space服务。
+- 版本：未固定；原文支持范围：example、documentation_reference。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 部分正确（AI修订） | 第258行链接名是FLUX.1-dev，但第262行实际 `Tool.from_space` 参数是FLUX.1-schnell，不能把二者当成同一实际调用对象。 |
+| 主证据支持 | 部分正确（AI修订） | 第258行只支持文档提到FLUX.1-dev；不能支持后续代码实际调用该对象。 |
+| 许可信息 | 无法确定 | 所见内容未给该模型许可，也未给实际Space的适用条款。 |
+| 风险摘要 | 需修改 | 除许可待核验外，还应明确文档链接与实际Space参数不一致。 |
+| AI建议 | 过于笼统 | 把模型文件核验作为唯一方向，未区分模型和Space服务的核验对象。 |
+
+**建议操作：** 补读Tool.from_space完整参数，确认Space ID、模型revision和实际使用方式，分别查对应许可/服务条件后留存。
+
+**仍缺信息：** 具体Space ID；是否实际调用；模型revision与适用许可；额外AI引用。
+
+真人复核：第一位已人工核对第258–265行并确认上述修订，回执见 `human-amendment-r05.json`。第二位独立真人复核仍待完成。
+
+## R06 · intfloat/multilingual-e5-large-instruct
+
+- 来源：[固定原文入口](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/scripts/sync_together_ai_models.py#L138)；固定commit与文件SHA已复核。
+- 任务：`scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8`；原终态：`partial`。
+- 对象：`ast_56cd95d3-b5ec-54db-994a-d9b6d6c6d4c4`；风险：`rsk_1ab7ccfb-bb8e-5e87-af91-448422fa58c8`。
+- 主证据：`evd_454337bf-87f6-5a9c-9b56-1e25c52aaf02`；定位：`scripts/sync_together_ai_models.py`。
+- 事实与情境：模型同步脚本的_rule项列出模型标识，并以模型链接说明embedding维度；这是元数据配置引用。
+- 版本：未固定；原文支持范围：documentation_reference。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 第137～139行明确模型标识和元数据，支持模型候选。 |
+| 主证据支持 | 正确（引用范围） | 主证据支持模型元数据引用，不支持推理已执行。 |
+| 许可信息 | 无法确定 | 维度说明和模型链接没有提供许可文本。 |
+| 风险摘要 | 接受摘要 | 仅就许可信息未定的摘要可接受；不能认定该配置必然产生许可冲突。 |
+| AI建议 | 过于笼统 | 没有针对元数据引用的场景，直接谈模型分发容易让用户核验错误对象。 |
+
+**建议操作：** 先确认该条只用于元数据同步，还是存在另外的模型使用路径；有实际使用时再确定revision和适用条款。
+
+**仍缺信息：** 配置后续用途；实际模型使用路径；许可原文。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R07 · smolagents/GAIA-annotated
+
+- 来源：[固定原文入口](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/examples/open_deep_research/README.md#L64)；固定commit与文件SHA已复核。
+- 任务：`scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587`；原终态：`partial`。
+- 对象：`ast_d1b55ffc-edff-5b47-80e3-60a3c1020037`；风险：`rsk_d510cef2-9491-58da-8207-ad22b8f5133e`。
+- 主证据：`evd_9ceb6efd-f199-5a07-b65a-9bdc246dfdcb`；定位：`examples/open_deep_research/README.md`。
+- 事实与情境：文档介绍处理后的数据上传到该数据集，并提示请求访问；没有展示实际账户申请结果。
+- 版本：未固定；原文支持范围：documentation_reference。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 完整数据集链接明确，类别与引用名一致。 |
+| 主证据支持 | 正确（引用范围） | 第64行支持数据集引用和文档中的访问申请说明。 |
+| 许可信息 | 无法确定 | 访问申请说明不等于许可原文或当前用户的使用授权记录。 |
+| 风险摘要 | 接受摘要 | 保留待核验摘要合理，不能依据申请访问文字判断授权有效。 |
+| AI建议 | 过于笼统 | 泛化列出训练、推理和分发，未结合本例评测用途与访问条件。 |
+
+**建议操作：** 确认实际用途和版本，核查数据集说明、访问条件及来源数据约束；如需授权记录，仅保存脱敏核验结果。
+
+**仍缺信息：** 数据集revision；实际用途；访问条件和来源数据条款；用户授权记录。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R08 · smolagents-benchmark/benchmark-v1
+
+- 来源：[固定原文入口](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/examples/smolagents_benchmark/run.py#L46)；固定commit与文件SHA已复核。
+- 任务：`scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587`；原终态：`partial`。
+- 对象：`ast_e04b4f3b-b432-57d0-9b68-b6bfdfea6f62`；风险：`rsk_30707999-1fd6-5b8c-a151-5b86b95d967a`。
+- 主证据：`evd_e6019f33-6d11-5a5f-9656-3cb932e7483c`；定位：`examples/smolagents_benchmark/run.py`。
+- 事实与情境：第46行注释链接为smolagents-benchmark/benchmark-v1，但第44行默认参数为smolagents/benchmark-v1，两者命名空间不同。
+- 版本：未固定；原文支持范围：comment_reference。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 候选准确对应注释中的链接；只确认引用，不确认实际加载对象。 |
+| 主证据支持 | 正确（引用范围） | 注释支持该数据集标识被提到；临近默认参数显示另一标识，应保留差异。 |
+| 许可信息 | 无法确定 | 需先确定实际数据集对象，再核验对应许可与访问条件。 |
+| 风险摘要 | 需修改 | 待核验方向可保留，但应增加对象标识不一致提示；不能把注释对象直接当作实际加载对象。 |
+| AI建议 | 过于笼统 | 遗漏先核对数据集ID的前置步骤，可能引导核验错误数据集。 |
+
+**建议操作：** 补查参数名、load_dataset调用和是否有重定向/迁移说明，确认两标识关系；先解决对象定位，再查许可。
+
+**仍缺信息：** 两数据集标识是否相关；实际参数覆盖值；实际加载对象；许可与访问条件。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R09 · m-ric/agents_medium_benchmark_2
+
+- 来源：[固定原文入口](https://github.com/huggingface/smolagents/blob/30bb1161095dbae2271e6bc3cc4c219cc3897a57/README.md#L258)；固定commit与文件SHA已复核。
+- 任务：`scn_5cba3784-afe2-42e1-b2f0-5bd6230f8587`；原终态：`partial`。
+- 对象：`ast_e3797863-c272-5d73-b32c-9666a9af0b72`；风险：`rsk_d36e29fd-5f08-5c10-bf9c-130d6ab3dba1`。
+- 主证据：`evd_71294d6a-1166-5214-9913-054bf1c8b0d1`；定位：`README.md`。
+- 事实与情境：README将该链接描述为汇集多个benchmark问题的评测集，用于代理比较；这是文档陈述。
+- 版本：未固定；原文支持范围：documentation_reference。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 数据集链接完整且与候选一致。 |
+| 主证据支持 | 正确（引用范围） | 第258行支持评测数据集引用和文档描述，不能据此认证实验确实执行。 |
+| 许可信息 | 无法确定 | 未提供当前数据集及来源benchmark的适用条款。 |
+| 风险摘要 | 接受摘要 | 许可待核验摘要符合所见信息，不等于确认混合数据具有统一许可。 |
+| AI建议 | 过于笼统 | 缺少组合数据来源核查，且未围绕评测用途提出步骤。 |
+
+**建议操作：** 核对数据集revision、组成来源和评测用途，分别记录可获得的条款及未解决限制。
+
+**仍缺信息：** revision；组成来源与条款；实际使用范围。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R10 · anthropic
+
+- 来源：[固定原文入口](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/anthropic_interface/readme.md#L49)；固定commit与文件SHA已复核。
+- 任务：`scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8`；原终态：`partial`。
+- 对象：`ast_0401bc9c-79b4-5952-b81c-5e767930f282`；风险：`rsk_53f7192d-9ba5-5f2f-9731-66107755e10c`。
+- 主证据：`evd_2ce6aae7-02b1-5d08-92e3-23448cafa9dc`；定位：`litellm/anthropic_interface/readme.md`。
+- 事实与情境：文档示例经litellm.anthropic.messages.acreate调用接口，并出现anthropic模型标识；是示例调用表达式。
+- 版本：未固定；原文支持范围：example、source_call。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 正确（引用范围） | 调用表达式与模型标识支持anthropic相关API候选，不证明请求已发生。 |
+| 主证据支持 | 正确（引用范围） | 第49～52行支持示例API调用语境；不支持当前账户权限或付费关系。 |
+| 许可信息 | 无法确定 | 未展示实际端点、账户适用服务条款或授权信息。 |
+| 风险摘要 | 接受摘要 | 待核验摘要不作授权断言，在示例引用范围内可接受。 |
+| AI建议 | 过于笼统 | API应核查实际服务条款、供应方及数据用途，不能仅泛称查许可证和分发场景。 |
+
+**建议操作：** 先确认是否实际调用及端点供应方，再核对适用服务条款、数据发送范围和账户许可条件；不在标注表保存API密钥。
+
+**仍缺信息：** 实际端点；真实请求与供应方；适用服务条款；额外AI引用。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R11 · google
+
+- 来源：[固定原文入口](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/google_genai/Readme.md#L27)；固定commit与文件SHA已复核。
+- 任务：`scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8`；原终态：`partial`。
+- 对象：`ast_bc80712e-679f-5b40-9b70-27563095ba22`；风险：`rsk_d8546fd1-5271-5531-ae1b-d8494023bcea`。
+- 主证据：`evd_3799c037-95ec-5ca2-bfb9-df3776696848`；定位：`litellm/google_genai/Readme.md`。
+- 事实与情境：主定位第27行导入google.genai.types中的类型；周边导入LiteLLM生成函数，但片段未显示实际服务调用或端点。
+- 版本：未固定；原文支持范围：example、type_import。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 部分正确 | 存在Google GenAI相关引用，但主证据直接支持的是SDK类型导入；应标为API候选而非已使用服务。 |
+| 主证据支持 | 部分正确 | 定位与类型导入相符，但作为实际API服务使用证据不足；需要完整示例和端点上下文。 |
+| 许可信息 | 无法确定 | SDK许可和服务条款对象不同，片段没有任一对象的完整条款。 |
+| 风险摘要 | 需修改 | 先说明仅发现类型引用、实际服务使用未定，再给条件性核验提示，避免将SDK引用等同API使用。 |
+| AI建议 | 过于笼统 | 没有区分SDK许可、服务条款和仅类型导入的不同情境。 |
+
+**建议操作：** 补查完整示例的生成调用、端点与配置；若仅类型依赖则归入软件/SDK核验，有服务调用证据时再建立相应API关系。
+
+**仍缺信息：** 完整调用路径；实际端点/供应方；SDK版本；其余Evidence是否足以补证。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## R12 · openai
+
+- 来源：[固定原文入口](https://github.com/BerriAI/litellm/blob/168a0055a244acdcf97c330c52e085ab40b1424c/litellm/router.py#L974)；固定commit与文件SHA已复核。
+- 任务：`scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8`；原终态：`partial`。
+- 对象：`ast_eff857a0-0163-55be-94d5-d5658cab8a39`；风险：`rsk_ef3079cc-748d-5034-a312-e742e2787f28`。
+- 主证据：`evd_16c7a251-ef25-5c6b-9fb1-dde7dd530fab`；定位：`litellm/router.py`。
+- 事实与情境：第974行注释说明Router.chat.completions.create与openai接口兼容；随后建立LiteLLM Chat包装对象，未提供实际供应方或请求证据。
+- 版本：未固定；原文支持范围：comment_reference。
+
+| 维度 | 初标 | 依据 |
+|---|---|---|
+| 资源识别 | 部分正确 | openai接口名称确实出现，但兼容接口可以由不同服务实现；只能确认兼容性引用。 |
+| 主证据支持 | 部分正确 | 注释定位正确，但不能支持实际调用OpenAI服务；完整关联证据尚未取得。 |
+| 许可信息 | 无法确定 | 服务供应方、账户和条款都未确定，不能从接口命名推定授权。 |
+| 风险摘要 | 需修改 | 应先标接口兼容性引用/供应方未知，再条件化提示；不应默认让用户核查特定供应方授权。 |
+| AI建议 | 过于笼统 | 遗漏实际供应方与端点核对，泛指该API许可可能导致核验对象错误。 |
+
+**建议操作：** 追踪实际配置中的model、api_base和路由供应方，仅记录脱敏端点类型；确认真实服务后核验其条款，兼容注释自身保留引用标签。
+
+**仍缺信息：** 实际供应方与端点；是否真实调用；适用条款；其余Evidence语义。
+
+真人复核：第一位已确认，无修改；详细回执见 `human-confirmation.json`。第二位独立复核待完成。
+
+## 如何接续
+
+1. 阅读这些草稿后作出的真人复核须披露已看过AI初标；不能称为盲标。
+2. 使用[真人复核入口](human-review.md)逐条保留自己的判断、依据与修订理由。
+3. 补取固定原文和原始附件，先验证对象与哈希，再确认需要补查的其余Evidence。
+4. 需要独立盲评时，由尚未接触本草稿的真人使用仅原文材料另行标注。
+5. 两位真人答案与裁决完成后，另生成定稿版本；不把ai-draft的作者改成真人。
+
+本轮未新增依赖、未启动服务、未修改P0或扫描报告；未提交推送。JSON是审查草稿格式，尚非已实现的Web导入契约。
