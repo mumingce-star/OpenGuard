@@ -1567,3 +1567,11 @@
 - 作者：GPT-5 / Root Coordinator；时间：2026-09-13 10:10（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
 - 授权：用户已明确同意暂存并提交 Java 迁移相关文件，排除 `output/` 本机扫描结果。
 - 范围：`backend/java/`、Java 迁移规范、跨所有权请求、进度表和本工作日志；提交前复核测试、暂存差异、格式与敏感信息，随后推送当前功能分支，不修改 `main`。
+### [20260913-1020-GPT5-Java迁移发布] COMPLETE - Java 扫描纵切已提交并推送
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 10:20（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 结果：用户明确授权后，仅提交 Java 源码、JUnit 测试、迁移规范、治理文档、第三方台账和 Java `target/` 忽略规则；`output/` 本机扫描产物未暂存、未提交。
+- 验证：Java Maven 测试 1/1 通过；固定 Flask 真实扫描成功并输出 JSON/CSV/HTML；`git diff --cached --check` 通过，暂存差异敏感模式扫描无匹配。
+- 发布：提交 `18c76cb`（`feat(java): add read-only repository scan`）已成功推送至 `origin/codex/scan-reliability-integration`，远端范围 `c9dcbad..18c76cb`；未修改 `main`，需后续 PR 才可合并。
+- 已知边界：Java 纵切不等价于完整生产替换；Python 安全 ZIP、外部工具、完整规则/API/持久化迁移仍待后续门禁。
+- token：本次运行精确 token 数不可获得；提交与推送范围已完成。
