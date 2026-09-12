@@ -14,7 +14,7 @@ from app.domain.models import (
 )
 
 _NAMESPACE = uuid.UUID("e6047e12-66d2-5ebb-b78a-756e0ee05601")
-_PRODUCER = ProducerRef(type=ProducerType.PARSER, name="openguard-static-ai-detector", version="0.1.1")
+_PRODUCER = ProducerRef(type=ProducerType.PARSER, name="openguard-static-ai-detector", version="0.1.2")
 _PATTERNS = (
     (AIAssetType.MODEL, "huggingface", re.compile(r"https://huggingface\.co/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
     (AIAssetType.MODEL, "modelscope", re.compile(r"https://modelscope\.cn/models/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
@@ -35,12 +35,30 @@ def _identifier(prefix: str, *parts: str) -> str:
     return f"{prefix}_{uuid.uuid5(_NAMESPACE, '|'.join(parts))}"
 
 
+def _canonical_resource_url(url: str) -> str | None:
+    """Accept only HF roots or explicit revision/file paths; never fetch a URL."""
+    prefix = "https://huggingface.co/"
+    if not url.startswith(prefix):
+        return url
+    parts = url[len(prefix):].split("/")
+    root_size = 3 if parts[0] == "datasets" else 2
+    if any(part in {"", ".", ".."} or re.fullmatch(r"[A-Za-z0-9_.-]+", part) is None for part in parts):
+        return None
+    suffix = parts[root_size:]
+    if suffix and (len(suffix) < 3 or suffix[0] not in {"resolve", "blob"}):
+        return None
+    return prefix + "/".join(parts[:root_size])
+
+
 def _references(line: str):
-    # Match complete URL tokens, never a prefix of an authenticated, queried,
-    # suffixed or file-level URL. Unknown routes remain unrecognized.
+    # Preserve the complete observed URL as evidence. Only supported HF file
+    # paths may canonicalize to a resource root; unknown routes stay excluded.
     for token in _URL.finditer(line):
+        canonical = _canonical_resource_url(token.group())
+        if canonical is None:
+            continue
         for asset_type, provider, pattern in _PATTERNS[:3]:
-            match = pattern.fullmatch(token.group())
+            match = pattern.fullmatch(canonical)
             if match is None:
                 continue
             name = match.group(1)
@@ -49,7 +67,7 @@ def _references(line: str):
                 continue
             if provider == "huggingface" and asset_type == AIAssetType.MODEL and parts[0].lower() in _HF_ROUTES:
                 continue
-            yield asset_type, provider, name, match.group(), match.group()
+            yield asset_type, provider, name, canonical, token.group()
     for asset_type, provider, pattern in _PATTERNS[3:]:
         for match in pattern.finditer(line):
             yield asset_type, provider, provider, None, match.group()

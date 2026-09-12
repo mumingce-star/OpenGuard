@@ -29,7 +29,7 @@ def test_qwen_reference_is_pending_and_bound_to_entire_utf8_file():
     assert item.content_hash.value == hashlib.sha256(text.encode()).hexdigest()
     assert item.start_line == item.end_line == 2
     assert item.verification_status == VerificationStatus.PENDING
-    assert item.producer.version == "0.1.1"
+    assert item.producer.version == "0.1.2"
     assert "neighbor-private-value" not in item.model_dump_json()
 
 
@@ -60,7 +60,7 @@ def test_changed_content_changes_evidence_identity_but_not_asset_identity():
     "http://huggingface.co/Qwen/Qwen3-0.6B",
     "https://huggingface.co.evil.example/Qwen/Qwen3-0.6B",
     "https://user:secret@huggingface.co/Qwen/Qwen3-0.6B",
-    MODEL + "?token=secret", MODEL + "#private", MODEL + "/resolve/main/config.json",
+    MODEL + "?token=secret", MODEL + "#private",
     MODEL + "%2Fsecret", MODEL + "@evil.example", MODEL + "\\secret",
     "evilhttps://huggingface.co/Qwen/Qwen3-0.6B",
     "https://huggingface.co/docs/transformers", "https://huggingface.co/spaces/demo",
@@ -95,3 +95,47 @@ def test_existing_modelscope_reference():
     assets, _ = detect_ai_assets({"README.md": "https://modelscope.cn/models/Qwen/Qwen3-0.6B"}, observed_at=NOW)
     assert len(assets) == 1
     assert assets[0].provider == "modelscope"
+
+
+@pytest.mark.parametrize("kind,prefix", [("model", ""), ("dataset", "datasets/")])
+@pytest.mark.parametrize("suffix", ["", "/resolve/main/config.json", "/blob/main/README.md"])
+def test_hf_canonical_root_and_file_urls(kind, prefix, suffix):
+    root = f"https://huggingface.co/{prefix}org/resource"
+    url = root + suffix
+    assets, evidence = detect_ai_assets({"README.md": url}, observed_at=NOW)
+    assert len(assets) == len(evidence) == 1
+    assert assets[0].asset_type.value == kind
+    assert assets[0].name == "org/resource"
+    assert assets[0].source_url == root
+    assert assets[0].authorization_status == VerificationStatus.PENDING
+    assert assets[0].license_expression_id is None
+    assert evidence[0].excerpt == url
+    assert evidence[0].verification_status == VerificationStatus.PENDING
+    assert evidence[0].content_hash.value == hashlib.sha256(url.encode()).hexdigest()
+
+
+@pytest.mark.parametrize("route", ["docs", "blog", "papers", "spaces", "settings"])
+@pytest.mark.parametrize("suffix", ["", "/resolve/main/file.json", "/blob/main/README.md"])
+def test_hf_non_resource_routes_stay_excluded(route, suffix):
+    assert detect_ai_assets({"README.md": f"https://huggingface.co/{route}/item{suffix}"}, observed_at=NOW) == ([], [])
+
+
+@pytest.mark.parametrize("prefix", ["", "datasets/"])
+@pytest.mark.parametrize("suffix", [
+    "/random/path", "/resolve", "/resolve/main", "/blob/main", "/tree/main/file",
+    "/resolve//file", "/resolve/main/../file", "/blob/main/./file",
+    "/resolve/main/file?token=secret", "/blob/main/file#fragment",
+    "/resolve/main/file%2Fsecret", "/resolve/main/file\\secret",
+])
+def test_hf_file_urls_reject_ambiguous_suffixes(prefix, suffix):
+    assert detect_ai_assets({"README.md": f"https://huggingface.co/{prefix}org/resource{suffix}"}, observed_at=NOW) == ([], [])
+
+
+def test_hf_root_and_file_reference_share_asset_but_retain_original_evidence():
+    root = "https://huggingface.co/org/resource"
+    url = root + "/resolve/main/sub/config.json"
+    assets, evidence = detect_ai_assets({"README.md": root + "\n" + url}, observed_at=NOW)
+    assert len(assets) == 1 and len(evidence) == 2
+    assert assets[0].source_url == root
+    assert set(assets[0].evidence_ids) == {e.id for e in evidence}
+    assert {e.excerpt for e in evidence} == {root, url}
