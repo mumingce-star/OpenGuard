@@ -16,6 +16,7 @@ from urllib.parse import quote
 from app.domain.models import ScanRun
 from .engine import canonical_bytes, facts_digest
 from .models import Assessment
+from .review_groups import render_grouped_reviews
 
 
 class AssessmentStoreError(RuntimeError):
@@ -27,9 +28,7 @@ class AssessmentStoreError(RuntimeError):
 def render_assessment_html(assessment: Assessment, run: ScanRun | None = None) -> bytes:
     """Escape all untrusted text; no external scripts, images or model HTML."""
     esc = lambda value: html.escape(str(value), quote=True)
-    cards = "".join(f'<section><h2>{esc(d.title)}：{esc(d.conclusion)}</h2>'
-        + '<ul>' + ''.join(f'<li>{esc(x)}</li>' for x in [*d.conditions, *d.restrictions]) + '</ul>'
-        + (f'<p>待核验 {len(d.unknowns)} 项，见下方完整依据。</p>' if d.unknowns else '') + '</section>' for d in assessment.dimensions)
+    cards = render_grouped_reviews(assessment)
     unique_obligations = list(dict.fromkeys(o.requirement for o in assessment.obligations))
     obligations = ''.join(f'<li>{esc(x)}（履行状态：待核实）</li>' for x in unique_obligations[:5])
     if len(unique_obligations) > 5:

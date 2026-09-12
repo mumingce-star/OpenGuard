@@ -15,8 +15,9 @@ from app.domain.models import ScanRun, VerificationStatus, EvidenceKind, Produce
 from app.domain.usage import UsageDeclaration
 from app.rules.engine import load_ruleset
 from .models import Assessment, AssessmentObligation, DimensionAssessment, ResourceEvaluation, DIMENSIONS, LABELS
+from .project_facts import project_fact_view
 
-RULE_VERSION = "assessment-1.0"
+RULE_VERSION = "assessment-1.0-facts2"
 RULE_SOURCES = ["https://opensource.org/license/mit", "https://opensource.org/license/gpl-3.0"]
 _SCOPE_VALUES = {"project_code", "runtime_dependency", "development_dependency", "example", "model", "dataset", "api", "other"}
 
@@ -163,6 +164,8 @@ def build_assessment(run: ScanRun, usage: UsageDeclaration | None = None, *, ver
     restricted = any(d.status == "restricted" for d in dimensions)
     unknown = any(d.status == "unknown" for d in dimensions)
     summary = "当前用途存在明确前提下的限制，同时仍有未核验事项。" if restricted else "已有扫描事实，但关键授权或用途证据不足，暂不能确认整个项目可用于目标用途。" if unknown else "在已声明用途与已核验范围内，可按列明条件使用；义务履行仍须落实。"
+    # PROJECT_FACTS_STEP1: observations do not change permission states.
+    summary = project_fact_view(run)["summary"] + "\n\n" + summary
     return Assessment(id=f"asm_{uuid.uuid5(uuid.NAMESPACE_URL, key + ':' + str(version))}", version=version, scan_id=run.id,
         project_name=run.project.name, revision=run.project.revision, input_hash=run.provenance.input_digest.value,
         facts_hash=facts_hash, usage_hash=usage_hash, cache_key=key, generated_at=generated_at or datetime.now(timezone.utc), usage=usage,

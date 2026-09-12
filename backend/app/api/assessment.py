@@ -10,6 +10,7 @@ from pydantic import BaseModel,ConfigDict,Field
 from app.api.service import ApiError
 from app.assessment.service import ERRORS
 from app.assessment.store import AssessmentStoreError
+from app.assessment.review_groups import present_assessment
 from app.domain.usage import UsageDeclaration
 from app.persistence.scan_registry import ScanRegistryError
 
@@ -48,7 +49,7 @@ def router():
         svc=checked(scan_id,request)
         try:
             items=svc.store.list(scan_id,limit=20,offset=offset)
-            return {'items':items,'usage':svc.run(scan_id).project.usage,'offset':offset,'has_more':bool(svc.store.list(scan_id,limit=1,offset=offset+20)), 'pending_job': next((svc.job(scan_id,row[0]) for row in svc.store._read("SELECT request_id FROM assessment_jobs WHERE scan_id=? AND status='pending'",(scan_id,))),None)}
+            return {'items':[present_assessment(item) for item in items],'usage':svc.run(scan_id).project.usage,'offset':offset,'has_more':bool(svc.store.list(scan_id,limit=1,offset=offset+20)), 'pending_job': next((svc.job(scan_id,row[0]) for row in svc.store._read("SELECT request_id FROM assessment_jobs WHERE scan_id=? AND status='pending'",(scan_id,))),None)}
         except (AssessmentStoreError, sqlite3.Error, OSError) as e:failure(e)
 
     @r.post('/assessments',status_code=202)
@@ -73,7 +74,7 @@ def router():
         try:result=svc.store.get(scan_id,assessment_id)
         except (AssessmentStoreError, sqlite3.Error, OSError) as e:failure(e)
         if result is None:failure(AssessmentStoreError('assessment_not_found'))
-        return result
+        return present_assessment(result)
 
     @r.get('/assessments/{assessment_id}/report')
     def report(scan_id:str,assessment_id:str,request:Request,format:Literal['html','json']='html'):

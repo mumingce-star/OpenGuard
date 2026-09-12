@@ -45,7 +45,11 @@ def test_explicit_assessment_get_cache_and_old_facts(harness):
     for _ in range(3):
         a=c.get(base+'/assessments/'+aid).json();assert a['id']==aid
         report=c.get(base+'/assessments/'+aid+'/report?format=json');assert report.status_code==200
-        assert report.json()['assessment']==a
+        report_assessment=dict(report.json()['assessment']);api_assessment=dict(a)
+        report_review=report_assessment.pop('review_view',None);api_review=api_assessment.pop('review_view',None)
+        assert api_review is not None and api_review['formal'] is False
+        assert report_review is None or report_review==api_review
+        assert report_assessment==api_assessment
         assert c.get(base+'/chat').status_code==200
     assert p.calls==1;assert s.run(sid).model_dump_json()==before
     again=c.post(base+'/assessments',json={'request_id':rid,'usage':{'preset':'internal'}});assert again.status_code==202;assert p.calls==1
