@@ -227,3 +227,11 @@
 
 - R05补充确认及六份关联状态文件已提交为 `afd41f6`，普通推送至 `origin/codex/scan-reliability-integration`；本地HEAD与远端引用均为 `afd41f64d6cb25837758de1314582f886774e31f`。上一段“尚未提交或推送”保留为当时状态，由本回执更新。
 - 本次发布只关闭R05第一位真人重新确认门禁；第二位独立真人、三份旧扫描JSON和13个额外Evidence对象复核仍未关闭，未合并 `main` 或 `integration/p0`。
+## 2026-09-13 Java 后端迁移纵切
+
+| 工作包 | 状态 | 已验证证据 | 未关闭门禁 |
+| --- | --- | --- | --- |
+| Java 受限仓库扫描与报告 | 部分完成 | `backend/java` Maven 测试通过；对固定 Flask 检出 `d73fa1c` 真实只读扫描，输出 JSON/CSV/HTML，含 27 个组件、4 个 BSD-3-Clause 候选、31 条证据和 4 条 `review_required` 提示 | 不构成许可证法律结论；完整 P0 图、API/SQLite、外部工具隔离、完整 SPDX 与部署未迁移 |
+| Python 到 Java 运行时迁移 | 进行中 | 已审计 `backend/app` 的 security、ingestion、scanners、licenses、rules、detectors、domain 与 CLI；直接依赖、许可证候选、AI URL 与报告已有 Java 纵切 | 不删除 Python 基线；安全 ZIP 会话、完整 parser/mapper、ScanCode/Syft、规则 AST、AI 降级、API/持久化与流水线须逐段契约对照 |
+
+Java 真实扫描产物仅用于本机验收，未纳入 Git；当前分支未提交、未推送，`main` 未变更。

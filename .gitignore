@@ -55,6 +55,7 @@ logs/
 artifacts/
 reports/generated/
 benchmarks/results/local/
+/backend/java/target/
 
 # Local model weights and archives
 models/

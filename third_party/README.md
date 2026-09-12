@@ -19,3 +19,5 @@
 |---|---|---|---|---|
 | Docker Desktop | 4.90.0.238679；CLI29.7.2；Compose5.5.1 | Docker官方Windows安装器；Docker Desktop Subscription Service Agreement，发行包各组件另依随包许可证 | 仅为本机容器环境；Docker Inc数字签名Valid，安装退出0，版本命令与Compose静态校验通过；引擎待Windows重启验收 | 不提交安装器/镜像/运行数据；团队自行确认适用订阅条件 |
 | pypdf | 6.18.0 | PyPI pypdf6.18.0，上游py-pdf/pypdf；发行包附带BSD条款LICENSE | 临时读取用户部署PDF的七页文字；不加入后端依赖，不上传原PDF或抽取全文 | 仅临时本机工具，不提交第三方实现 |
+| Spring Boot | Java Web Framework | 4.1.1 | https://spring.io/projects/spring-boot | Apache-2.0 | Java 扫描纵切的本地 HTTP 运行时；当前 CLI 不需要启动服务 | 分发时保留上游版权与许可证；不执行或安装被扫描仓库依赖 | OpenGuard 自研只读扫描、证据模型、规则提示与报告；不复制框架实现 | 已在固定本地 Maven 仓库编译/测试验证（2026-09-13） | 仅以 Maven 依赖声明引用，不存储框架二进制 |
+| Jackson Databind | Java JSON serialization library | 2.21.5（由 Spring Boot 4.1.1 管理） | https://github.com/FasterXML/jackson-databind | Apache-2.0 | 仅序列化/解析 OpenGuard 自身结构化扫描报告和 `package.json`；不执行目标内容 | 分发时保留上游版权与许可证；输入解析仍受 OpenGuard 文件数和字节上限约束 | OpenGuard 自研文件边界、依赖发现、证据/风险语义及报告渲染 | 已在固定本地 Maven 仓库编译/测试验证（2026-09-13） | 仅以 Maven 依赖声明引用，不存储库二进制 |

@@ -1459,3 +1459,111 @@
 - 尚未关闭：第二位独立真人，三份旧扫描JSON和13个额外Evidence对象恢复复核。R05重新确认任务本身已完成；后续不得将本回执重复计算为第二人。
 - GitHub状态：任务分支已发布；main未合并。下一步由Owner安排第二真人或调整正式验收规则，并恢复旧附件；Root可继续机器核验。
 - token：本次运行精确token数不可获得；开工估算2,000～4,000，本地登记、验证、提交和首轮推送均已完成，无法精确判断实耗是否在估算范围内。
+
+### [20260912-0020-GPT5-许可证规则检测] START - 检测项目许可证规则实现与验收状态
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-12 00:20（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，起始 HEAD `c9dcbad`。
+- 任务目标：对当前工作分支的许可证标准化、义务规则、风险语义、规则来源、测试覆盖及主流程接入进行只读检测，复核既有许可证审计问题是否仍存在，并给出证据化结论；不实施修复、不启动或停止服务。
+- 开始前已确认：已按顺序读取 README、完整共享工作日志、PROJECT_PROGRESS 与 SOL_HANDOFF，检查当前分支、工作区和最近提交；工作区干净。历史中存在已发布的许可证审计与独立修复分支记录，当前未见其他模型正在修改本工作树的许可证文件。
+- 预计修改文件：仅向 `docs/coordination/AGENT_WORKLOG.md` 追加 START 与收工记录；产品代码、规则、Schema、测试数据和进度台账均不改动。
+- 验收方法：盘点许可证相关文件与分支差异；运行规则/标准化/管线定向测试；检查 15 条目标覆盖、逐规则 fixture、SPDX 表达式语义、证据引用、场景前提与来源审核元数据；执行 `git diff --check`。
+- token 使用估算：6,000～10,000；系统未提供本轮精确 token 遥测。
+
+### [20260912-0023-GPT5-许可证规则检测收工] COMPLETE - 当前分支规则缺口与修复分支状态已核清
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-12 00:23（Asia/Shanghai）；分支 `codex/scan-reliability-integration`，基线 `c9dcbad`。
+- 任务目标与实际结果：完成当前分支许可证标准化、15条规则、证据门禁、测试覆盖和主流程接入检测。确认当前分支仍存在既有审计的8组缺口；R1～R4高优问题已在独立分支 `codex/license-rule-p0-fixes@44367a7` 的产品提交 `7e01949` 中修复并发布，但该提交不在当前分支祖先中，故当前检出代码仍未修复。R5～R8（完整SPDX语法/模糊别名、规则来源审核元数据、场景条件计算、9条缺失逐规则fixture）在修复分支也仍列为后续事项。
+- 检测证据：当前规则文件可解析，规则数15、唯一许可ID数15；`verified_cases`仅6条，缺AGPL、BSD-2、CC0、EPL、GPL-2、ISC、LGPL-2.1、MPL、Unlicense九条逐规则正例。标准化表缺AGPL，却额外含无执行规则的CDDL-1.0和LGPL-3.0-only；规则引擎按`normalized_ids`集合求交，当前AND/OR行为不区分，缺失Evidence引用会被过滤，规则字段严格限制为七组且无官方来源/原文摘要/人工审核元数据，trigger仅复制到结果、不参与场景判定。当前分支也不存在`backend/app/pipeline/license_rules.py`，因此只具备独立规则能力，不能视为当前分支完整Pipeline接入。
+- 命令与测试：使用`rg`、PowerShell JSON解析和Git对象/分支检查完成静态一致性检测；`git diff --check`无格式错误，仅提示工作日志现有CRLF将规范为LF。尝试运行B4/B5定向pytest时，`.venv`指向已删除的Python 3.12，系统仅登记Python 3.10，进程未启动；未伪报新测试通过。可追溯历史证据为当前基线10+5通过；修复提交紧邻代码回归149通过、1排除，但本轮未复跑。
+- 修改文件：仅追加`docs/coordination/AGENT_WORKLOG.md`；未修改产品代码、规则、Schema、测试、进度台账或依赖，未启动/停止服务。
+- 接口、Schema、规则或决策：本轮无变更。检测结论继续采用风险提示口径，不构成法律意见；独立修复分支发布不等于已合入当前分支、`integration/p0`或`main`。
+- 已知风险与未完成项：当前分支若直接演示规则，会保留OR/AND误等价、覆盖静默遗漏、证据完整性和共享聚合问题；修复分支仍缺括号/WITH/or-later等完整表达式、官方来源与人工规则审核、场景三态和15/15逐规则fixture；Python 3.12运行环境需恢复后复跑固定测试，Linux/容器全链仍待验收。
+- 下一步与责任模型：Root先把`7e01949`以可审查方式重放/合入目标集成线并复跑；Sol/真人补规则来源和适用场景审核；Luna补9条fixture及表达式/覆盖反例；Terra完成目标Pipeline集成与Linux回归。
+- GitHub状态：当前分支`c9dcbad`与其远端一致；修复分支本地/远端均为`44367a7`，包含`7e01949`，但未进入当前分支或`main`。本轮日志未提交或推送。
+- token使用说明：本次运行精确token数不可获得；开工估算6,000～10,000，检测范围完整完成，未扩展为修复或发布，无法精确核定实际用量是否在区间内。
+
+### [20260912-0030-GPT5-许可证规则闭环] START - 合入高优修复并关闭R5至R8与Linux验收
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-12 00:30（Asia/Shanghai）；当前记录分支 `codex/scan-reliability-integration@c9dcbad`。
+- 任务目标：按用户要求，将已发布高优修复安全合入目标集成基线，完成R5～R8（SPDX语法与歧义、规则来源审核元数据、场景三态、15/15逐规则回归），恢复Python 3.12并复跑测试，最后完成Linux/Pipeline端到端验收。
+- 开始前已确认：已重新读取README、共享日志、PROJECT_PROGRESS和SOL_HANDOFF，检查分支、工作区与最近提交；当前唯一未提交内容为上一轮和本轮只追加工作日志。`7e01949`仅存在于`codex/license-rule-p0-fixes`，当前分支不包含；任务跨后端、规则、测试、文档和Linux运行门禁，按`orch-fix-defect`判为大型修复。
+- 预计修改文件：目标分支中的`backend/app/licenses/`、`backend/app/rules/`、`backend/app/pipeline/license_rules.py`、`rules/`、`tests/unit/`及必要的规格、变更请求、AI辅助记录、PROJECT_PROGRESS和本日志；Python/WSL/Docker环境产物不纳入Git。
+- 验收方法：遵循红→绿→重构；先建立R5～R8失败回归，再实现；恢复Python 3.12后运行许可证聚焦、Pipeline保护集和可行全量；在Linux/WSL或Docker中验证真实Pipeline输入→标准化→规则→ScanRun/报告事实，执行Schema、compileall、diff、敏感信息和文件清单检查。
+- 边界与门禁：不把规则输出称为法律结论；高风险规则的人工审核状态必须真实，不由AI代签。技能要求计划门禁和提交门禁：本轮先给出任务清单，用户确认前不写实现；完成代码后提交/推送前再次征求确认。不会主动启动长期服务。
+- token使用估算：20,000～35,000；系统未提供本轮精确token遥测。
+
+### [20260912-0054-GPT5-许可证规则闭环门禁] PARTIAL - Gate 1 计划完成，等待用户确认
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-12 00:54（Asia/Shanghai）；记录分支 `codex/scan-reliability-integration@c9dcbad`。
+- 任务目标与实际结果：完成高优修复合入、R5～R8、Python 3.12 恢复及 Linux/Pipeline 端到端验收的只读基线调查和实施计划；依照 `orch-fix-defect` 的 Gate 1 要求，尚未修改产品代码、规则、Schema、依赖或测试，等待用户批准后进入红测与实现。
+- 基线决策：当前分支与 `codex/license-rule-p0-fixes` 从较早提交分叉且分别含大量独有提交，当前树也缺少完整 Pipeline/Compose；不得整分支互并。批准后应在独立工作树以 `origin/integration/p0@c550651` 为基线、重放已发布产品修复 `7e01949`，或直接从等价提交起新建 `codex/license-rule-closure`，并先验证 patch 与 R1～R4/A4 保护集。
+- R5～R8 计划：R5 先为括号、嵌套 AND/OR、WITH、`+`/`or-later`、LicenseRef、非法和模糊表达式建立失败测试，再用锁定版本的成熟 SPDX 表达式解析器实现受限 AST 与失败关闭；R6 扩展来源 URL、章节、版本/摘要、规则种类和审核状态，未由真人核验者必须保持 `pending`；R7 复用 `UsageDeclaration` 三态上下文，并正式增加 `not_applicable` 语义及同步契约，禁止用 `pass` 冒充不适用；R8 建立 15/15 逐规则正例和 pending/missing/not-applicable/unknown/冲突反例与集合等值门禁。
+- 环境与验收计划：不放宽 `>=3.12,<3.13`，修复或重装官方 Python 3.12 后重建工作区虚拟环境，依赖优先使用国内镜像，运行 `pip check`、`compileall`、聚焦测试、Pipeline 保护集与全量 pytest；随后仅为本次验收临时启动 Docker/Compose，在 Linux 中执行全量测试、外部工具探针和 HTTP 输入到标准化、规则、ScanRun、四报告及重启校验，结束后执行非破坏性的 `down`，不删除卷。
+- 审查与门禁：实现后执行代码与安全审查，重点检查不可信表达式的长度/深度/令牌上限、loader 严格性、三态不推断、Evidence 和报告兼容；CRITICAL/HIGH 清零并复跑后进入 Gate 2，展示差异与拟提交清单，未经用户再次确认不提交或推送。
+- 文件、命令与测试：本阶段仅追加 `docs/coordination/AGENT_WORKLOG.md`；运行 Git 分支/状态/历史/差异检查、Python/Docker/WSL 只读探针、SPDX 官方规范与解析器官方资料核验，并执行 `git diff --check`。未启动或停止服务，未运行新的业务测试，未产生 Linux 验收回执。
+- 已知风险与未完成：R6 的真人法律/规则审核不能由 AI 代签；Docker Engine 当前只读探针显示未运行且当前 Shell 无可用 WSL 命令；没有真实 Linux 回执不能宣布端到端通过。环境探测协作者超时后已停止，其余两路只读调查完成且结论一致。
+- GitHub 状态与下一步：`codex/license-rule-p0-fixes@44367a7` 已发布且含 `7e01949`，但未进入 `main`；本阶段日志未提交/未推送。下一步由 Root 在用户批准 Gate 1 后实施，由真人负责 R6 审核签署，最终仍需 Gate 2 批准才可提交/推送任务分支。
+- token：本次运行精确 token 数不可获得；开工估算 20,000～35,000。本阶段只完成调查和 Gate 1，未在该估算范围内完整完成原实施目标，范围按技能门禁暂停，后续获批后继续计入同一任务。
+
+### [20260912-0110-GPT5-完整验收闭环] START - 完善容器浏览器报告与真人复核工作包
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-12 01:10（Asia/Shanghai）；记录分支 `codex/scan-reliability-integration@c9dcbad`。
+- 任务目标：将用户最新指令视为上一轮 Gate 1 的实施批准，在许可证闭环之外补齐完整容器与浏览器端到端、报告生成与持久化闭环、15 条规则真人审核工作包，以及第二位独立真人材料复核工作包。
+- 开始前已确认：重新读取 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF、`orch-fix-defect` 与共享编排流程，检查 Git 分支、状态、近期提交和工作树。当前主工作树仅有既有追加日志；目标实现应从含高优修复的 `44367a7` 建立独立任务工作树，避免与当前相距较远的审计分支互并或覆盖用户文件。
+- 预计修改文件：目标工作树内的后端 SPDX/规则/Pipeline/报告实现、公共 Schema、前端类型和浏览器 E2E、Compose/部署验收、规则与测试 fixtures、真人审核模板/校验器、第二真人复核材料、相关规格、第三方台账、AI 记录、进度与本日志；环境和运行产物不纳入 Git。
+- 验收方法：先复现 R5～R8 与报告/浏览器缺口的失败测试，再实现至绿色；恢复 Python 3.12，运行聚焦与全量测试；临时启停 Compose 完成 Linux、HTTP、浏览器与四报告端到端并保存脱敏回执；真人相关部分只验证材料完整性、身份独立性、哈希和签署流程，不由 AI 填写人工裁决。
+- 接口、Schema 与风险：：R7 计划新增 `not_applicable` 并同步所有消费者；规则审核元数据区分 `pending` 与真人 `verified`，模型不得代签。任务涉及不可信输入、文件路径、容器和公共契约，规模判定为 large，实施后必须完成代码与安全审查，并在提交前进入 Gate 2。
+- token 使用估算：在上一轮 20,000～35,000 基础上，新增浏览器/报告/真人工作包预计再需 18,000～30,000；系统未提供本轮精确 token 遥测。
+
+### [20260913-0900-GPT5-Java后端迁移] START - 审计并迁移可替换的 Python 后端能力
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 09:00（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 目标：按用户明确要求审计全部 `backend/app/**/*.py`，在不删除已验证 Python 基线的前提下建立 Java 主运行时，逐批迁移领域模型、受限扫描、依赖/许可证/AI 资源识别、规则结果和结构化报告。
+- 开工确认：已重新读取 README、完整共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支/状态/最近提交及既有 Java 迁移工作树；当前主工作树没有其他模型正在修改 backend，用户已有未提交 `output/` 产物，保持不触碰。已登记 CR-20260913-java-backend-migration。
+- 预计修改：`backend/java/`、`docs/spec/java-runtime-migration.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本日志；Python 仅作对照，不删除。
+- 验收：Maven 测试、冻结 Schema/样例、真实受信任检出仓库扫描与 JSON/CSV/HTML 输出；外部工具和生产切换单列门禁。
+- 规模与 token：large（跨模块、公开契约、文件路径与 Git 输入安全边界）；系统未提供精确 token 遥测，开工估算 20,000～35,000。
+
+### [20260913-0930-GPT5-Java后端迁移] PARTIAL - Java 真实扫描纵切已落地，安全关键模块待契约迁移
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 09:30（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 实际结果：新增 `backend/java/` Maven/Spring Boot Java 25 模块。已实现不可变扫描结果模型、受限受信任检出目录扫描、Python/Node 直接依赖发现、许可证候选、HF/Kaggle/ModelScope 静态 URL 发现、`review_required` 规则提示及 JSON/CSV/HTML 报告；未执行或安装被扫描项目内容。
+- 修改文件：`backend/java/pom.xml`、5 个 Java 主程序文件、1 个 JUnit 测试、`docs/spec/java-runtime-migration.md`、`docs/coordination/change-requests.md`、`PROJECT_PROGRESS.md` 与本日志。未修改或删除 Python 运行时；用户已有 `output/` 未提交产物未纳入版本控制。
+- 命令与验收：`mvn "-Dmaven.repo.local=F:\aic\OpenGuard\.tools\m2-java-migration" test` 通过（1/1）；使用固定 Flask 检出 `d73fa1cdcbd8b1465c151db8924ba58b1dd14e35` 执行 Java CLI，得到 `scn_25b912ee-4c9a-4a12-9055-5618c593c138`，状态 completed，27 components、4 个 BSD-3-Clause 候选、31 evidence、4 findings，JSON 可解析，JSON/CSV/HTML SHA-256 已本机复核；`git diff --check` 通过（仅既有 CRLF 提示）。
+- 接口/语义：Java CLI 仅接受 `--trusted-checkout <目录> <source> <output>`；许可证及 AI 结果均为 `pending`/`review_required`，不构成授权、许可证或法律结论。完整 P0 Schema、HTTP API、SQLite、SPDX AST、外部工具隔离和 AI 降级不在本纵切中。
+- 已知风险与未完成项：Python 的 ZIP descriptor 安全会话、完整 parser/mapper、ScanCode/Syft、规则引擎、流水线、持久化和生产替换尚未等价迁移；不得删除 Python 或将 Java CLI 宣布为生产后端。Windows/JDK 25 临时目录 `toRealPath` 会被拒绝，测试已改用受控 target fixture；真实受信任检出扫描可用。
+- 下一步与责任：Terra/Root 应为每个未迁移 Python 包建立 Java 契约测试并逐段替换；Sol 复核规则/Schema 语义；Luna 补齐 Java/Python 输出对照与安全回归。提交或推送前仍须 Gate 2、敏感信息检查和用户确认。
+- GitHub 与 token：当前变更未提交、未推送，`main` 未变更。本次运行精确 token 数不可获得；开工估算 20,000～35,000，本轮仅完成 Java 扫描纵切与审计，不在该范围内完成“全部后端替换”。
+### [20260913-0940-GPT5-Java真实扫描复核] START - 复现一仓真实仓库到结构化输出
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 09:40（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 目标：按用户要求检查 Java 后端是否可成功扫描一个真实仓库并输出可解析 JSON、CSV、HTML。
+- 开工确认：沿用本会话已完整阅读的 README、工作日志、项目进度、SOL 交接和分支状态；仅重跑已固定的受信任 Flask 检出，不联网、不执行目标代码、不启动服务。
+- 预计修改：仅追加本日志的开始与结束记录；扫描输出位于已忽略的 `output/`，不纳入 Git。
+- 验收：Java CLI 退出成功，输出三种报告，JSON 解析通过，输出计数与文件哈希可复核；估算 2,000～5,000 token，精确值不可获得。
+### [20260913-0950-GPT5-Java真实扫描复核] COMPLETE - 固定真实仓库成功扫描并生成结构化报告
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 09:50（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 结果：对固定 Flask 检出 `d73fa1cdcbd8b1465c151db8924ba58b1dd14e35` 完成一次新的 Java 只读扫描，未联网、未执行目标代码、未启动服务；成功产生 JSON、CSV、HTML 三类报告。
+- 命令与验证：Maven 测试 1/1 通过；CLI 产生 `scn_afdf9a02-661d-41af-8329-9a4b365aabb2`，状态 `completed`，27 components、4 个 BSD-3-Clause 候选、0 AI assets、31 evidence、4 findings；JSON 由 PowerShell `ConvertFrom-Json` 成功解析。SHA-256：JSON `9099DE26EEAFF25E99747A6FEC4DD818774178801894420138A7ECD6472E579A`，CSV `405941FF189C78902610C973F27F16CED4B3A6E27108639CCD617636773205CB`，HTML `4D6B3A476750EE900D841FDD3EE54B91A2D46AC46ADC6B26CC8F8A8D914BAE5C`；`git diff --check` 通过（仅既有 CRLF 提示）。
+- 文件/接口：新增本机输出 `output/java-real-scan-20260913-rerun/`，不纳入 Git；接口与许可证/AI 人工复核语义不变。
+- 风险与下一步：此项只证明 Java 纵切能成功扫描一仓并输出结构化结果，不证明完整生产后端或许可证结论；ScanCode/Syft、完整规则、ZIP 安全路径和 API/持久化仍待迁移与验收。
+- GitHub 与 token：未提交、未推送，`main` 未变更。本次运行精确 token 数不可获得；开工估算 2,000～5,000，复核范围已完成。
+### [20260913-1000-GPT5-Git提交核对] START - 核对暂存区和待发布范围
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 10:00（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 目标：按用户要求提交 GitHub 仓库；项目规则限定只处理已经暂存的文件。
+- 开工确认：已核对分支、最近提交、工作区、暂存区；预计仅写入本日志，提交及推送以前执行暂存清单、差异与敏感信息复核。
+
+### [20260913-1002-GPT5-Git提交核对] BLOCKED - 暂存区为空，不能擅自选择未暂存文件
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 10:02（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 结果：`git diff --cached --name-status` 无输出；当前仅存在未暂存的协调文档、Java 迁移模块、迁移规范及用户原有 `output/` 目录。按项目规则，提交请求只能处理已暂存内容，不能擅自暂存或提交未暂存文件。
+- 验证：已读取 Git 工作流规范并检查 `git status --short`、暂存区和最近五个提交；未执行 `git add`、`git commit` 或 `git push`。
+- 下一步：请用户明确指定要暂存的文件范围，或自行先暂存；随后执行 diff/敏感信息/测试复核、提交并推送当前功能分支，`main` 保持通过 PR 合并。
+- GitHub 与 token：未提交、未推送，`main` 未变更。本次运行精确 token 数不可获得；仅完成只读核对。
+### [20260913-1010-GPT5-Java迁移发布] START - 按用户授权暂存、提交并推送 Java 迁移纵切
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 10:10（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 授权：用户已明确同意暂存并提交 Java 迁移相关文件，排除 `output/` 本机扫描结果。
+- 范围：`backend/java/`、Java 迁移规范、跨所有权请求、进度表和本工作日志；提交前复核测试、暂存差异、格式与敏感信息，随后推送当前功能分支，不修改 `main`。
