@@ -1357,3 +1357,239 @@
 .og-assessment-grid .og-panel p { margin: .5rem 0; }
 .og-assessment-grid .og-panel h2 { font-size: 1rem; }
 .og-assessment-summary { font-size: .95rem; }
+
+
+/* STEP3 grouped assessment review */
+.og-review-overview {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 4px;
+}
+.og-review-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin: 0;
+  color: #dce5f5;
+}
+.og-review-summary strong {
+  color: #f3cf78;
+}
+.og-review-summary span {
+  color: var(--og-muted);
+  font-size: 12px;
+}
+.og-review-group-list {
+  display: grid;
+  gap: 8px;
+}
+.og-review-group {
+  border: 1px solid #33445d;
+  border-radius: 10px;
+  background: #0c1728;
+  padding: 0 12px;
+}
+.og-review-group > summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 0;
+  cursor: pointer;
+  color: #e5ebf8;
+}
+.og-review-group > summary span:last-child {
+  flex-shrink: 0;
+  color: #aebbd0;
+  font-size: 12px;
+}
+.og-review-group-note {
+  color: #aebbd0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.og-review-item {
+  padding: 8px 10px;
+  margin: 7px 0;
+  border-left: 2px solid #5d6d8c;
+  background: #101d31;
+  color: #cbd6e8;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .og-review-group > summary {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* STEP6 productized assessment projection */
+.og-assessment-conclusion {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 18px;
+  padding: 14px 16px;
+  border: 1px solid #354762;
+  border-left: 3px solid #7288ff;
+  border-radius: 12px;
+  background: #101c2f;
+}
+.og-assessment-conclusion > span {
+  color: var(--og-muted);
+  font-size: 12px;
+}
+.og-assessment-conclusion > strong {
+  color: #edf2fb;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.og-section-heading {
+  margin-bottom: 12px;
+}
+.og-section-heading h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+.og-section-heading p {
+  margin: 0;
+  color: var(--og-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.og-project-facts {
+  margin: 0 0 20px;
+}
+.og-project-fact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.og-project-fact {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid #30415a;
+  border-radius: 11px;
+  background: #0d192a;
+}
+.og-project-fact > span {
+  color: #9fadc3;
+  font-size: 12px;
+}
+.og-project-fact > strong {
+  color: #e7edf8;
+  overflow-wrap: anywhere;
+}
+.og-project-fact p,
+.og-project-fact small {
+  margin: 0;
+  color: #aebbd0;
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.og-dimension-review-summary {
+  display: grid;
+  gap: 5px;
+}
+.og-dimension-review-summary strong {
+  color: #f3cf78;
+}
+.og-dimension-review-summary span {
+  color: var(--og-muted);
+  font-size: 12px;
+}
+.og-shared-review {
+  margin: 22px 0;
+  padding: 16px;
+  border: 1px solid #30415a;
+  border-radius: 14px;
+  background: #0b1626;
+}
+.og-review-impact {
+  margin: 0 0 6px;
+  color: #c8d3e5;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.og-scan-coverage-notice {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 15px 16px;
+  border: 1px solid #7a6130;
+  border-radius: 12px;
+  background: #231d12;
+  color: #e9dfc7;
+}
+.og-scan-coverage-notice > strong {
+  color: #f3cf78;
+}
+.og-scan-coverage-notice > span {
+  color: #c9bea5;
+}
+.og-scan-diagnostic-list {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.og-scan-diagnostic-list li {
+  display: grid;
+  gap: 3px;
+  padding: 9px 11px;
+  border: 1px solid #4c432f;
+  border-radius: 9px;
+  background: #181710;
+}
+.og-scan-diagnostic-list li strong {
+  color: #e9dfc7;
+}
+.og-scan-diagnostic-list li span {
+  color: #bcb39d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.og-technical-diagnostics {
+  color: #aeb6c6;
+  font-size: 12px;
+}
+.og-technical-diagnostics summary {
+  cursor: pointer;
+  color: #c7d0df;
+}
+.og-technical-diagnostics p {
+  padding: 8px 10px;
+  border-left: 2px solid #596477;
+  background: #111724;
+}
+
+@media (max-width: 980px) {
+  .og-project-fact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Final assessment UX: coverage summary only; raw diagnostics stay at page top. */
+.og-assessment-coverage-note {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0 18px;
+  padding: 11px 13px;
+  border: 1px solid #5a4a29;
+  border-radius: 10px;
+  background: #171710;
+}
+
+.og-assessment-coverage-note strong {
+  color: #e8cc82;
+}
+
+.og-assessment-coverage-note span {
+  color: #aaa58f;
+  font-size: 12px;
+  line-height: 1.65;
+}

@@ -110,7 +110,7 @@ export const statusLabels: Record<ScanStatus, string> = {
   running: "执行中",
   completed: "已完成",
   failed: "失败",
-  partial: "部分结果",
+  partial: "扫描部分完成",
   cancelled: "已取消",
 };
 export const handlingLabels: Record<Handling, string> = {

@@ -4,15 +4,68 @@ export const usageFields = { commercial: '涉及商业使用', modified: '修改
 export type Usage = { preset: keyof typeof presets; declared_at?: string | null } & Partial<Record<keyof typeof usageFields, boolean | null>>;
 export const emptyUsage = (): Usage => ({ preset: 'unknown', ...Object.fromEntries(Object.keys(usageFields).map(k => [k, null])) });
 export type Dimension = { id: string; title: string; status: 'conditional' | 'restricted' | 'unknown' | 'not_applicable'; conclusion: string; conditions: string[]; restrictions: string[]; unknowns: string[]; resource_ids: string[]; finding_ids: string[]; evidence_ids: string[]; strength: string };
-export type Assessment = { id: string; version: number; scan_id: string; project_name: string; generated_at: string; usage: Usage; summary: string; ai_status: string; ai_summary: string | null; ai_evidence_ids?: string[]; dimensions: Dimension[]; coverage_issues: string[]; resource_ids: string[]; finding_ids: string[]; evidence_ids: string[]; rule_version: string; model_version: string; prompt_version: string; obligations: { id: string; action: string; requirement: string; trigger: string; fulfillment: string; resource_ids: string[]; evidence_ids: string[]; rule_id: string; rule_version: string }[] };
+export type ReviewItem = { text: string; resource_ids: string[] };
+export type ReviewGroup = {
+ id: string;
+ code: string;
+ title: string;
+ note: string;
+ items: ReviewItem[];
+ raw_count: number;
+ resource_ids: string[];
+ dimension_ids: string[];
+};
+export type ReviewDimension = {
+ id: string;
+ raw_count: number;
+ group_count: number;
+ groups: { group_id: string; unknown_indices: number[] }[];
+};
+export type ReviewView = {
+ view_version: string;
+ assessment_id: string;
+ formal: false;
+ groups: ReviewGroup[];
+ dimensions: ReviewDimension[];
+};
+export type Assessment = { review_view?: ReviewView; id: string; version: number; scan_id: string; project_name: string; generated_at: string; usage: Usage; summary: string; ai_status: string; ai_summary: string | null; ai_evidence_ids?: string[]; dimensions: Dimension[]; coverage_issues: string[]; resource_ids: string[]; finding_ids: string[]; evidence_ids: string[]; rule_version: string; model_version: string; prompt_version: string; obligations: { id: string; action: string; requirement: string; trigger: string; fulfillment: string; resource_ids: string[]; evidence_ids: string[]; rule_id: string; rule_version: string }[] };
 export type Job = { request_id: string; status: 'pending' | 'succeeded' | 'failed'; assessment_id?: string; error?: string | null };
 export type Turn = { request_id: string; assessment_id: string; question: string; answer: string | null; evidence_ids: string[]; status: Job['status']; error: string | null; created_at: string; elapsed_seconds?: number };
 export type Chat = { items: Turn[]; generation: number; limits: { max_message_chars: number; max_turns: number } };
 const obj = (x: unknown): x is Record<string, unknown> => !!x && typeof x === 'object' && !Array.isArray(x);
 const strs = (x: unknown): x is string[] => Array.isArray(x) && x.every(y => typeof y === 'string');
 const fail = (): never => { throw new Error('评估／问答数据不符合接口契约，请检查运行版本。'); };
+function validateReviewView(x: unknown, assessmentId: string): x is ReviewView {
+ if (!obj(x) || x.view_version !== 'review-groups/1' || x.assessment_id !== assessmentId || x.formal !== false || !Array.isArray(x.groups) || !Array.isArray(x.dimensions)) return false;
+ const itemOk = (item: unknown) => obj(item) && typeof item.text === 'string' && strs(item.resource_ids);
+ const groupOk = (group: unknown) => obj(group)
+  && typeof group.id === 'string' && group.id.startsWith('rg_')
+  && typeof group.code === 'string'
+  && typeof group.title === 'string'
+  && typeof group.note === 'string'
+  && Number.isInteger(group.raw_count) && Number(group.raw_count) >= 0
+  && strs(group.resource_ids) && strs(group.dimension_ids)
+  && Array.isArray(group.items) && group.items.every(itemOk)
+  && group.items.length === Number(group.raw_count);
+ if (!x.groups.every(groupOk)) return false;
+ const groupIds = new Set(x.groups.map(group => String((group as Record<string, unknown>).id)));
+ if (groupIds.size !== x.groups.length) return false;
+ const refOk = (ref: unknown) => obj(ref)
+  && typeof ref.group_id === 'string' && groupIds.has(ref.group_id)
+  && Array.isArray(ref.unknown_indices)
+  && ref.unknown_indices.every(value => Number.isInteger(value) && Number(value) >= 0);
+ return x.dimensions.every(dimension => obj(dimension)
+  && typeof dimension.id === 'string'
+  && Number.isInteger(dimension.raw_count) && Number(dimension.raw_count) >= 0
+  && Number.isInteger(dimension.group_count) && Number(dimension.group_count) >= 0
+  && Array.isArray(dimension.groups)
+  && dimension.groups.every(refOk)
+  && dimension.groups.length === Number(dimension.group_count)
+  && dimension.groups.flatMap(ref => (ref as Record<string, unknown>).unknown_indices as number[]).length === Number(dimension.raw_count));
+}
 export function validateAssessment(x: unknown, scanId: string): Assessment {
  if (!obj(x) || x.scan_id !== scanId || typeof x.id !== 'string' || !x.id || !Number.isInteger(x.version) || Number(x.version) < 1 || !obj(x.usage) || !(String(x.usage.preset) in presets) || typeof x.generated_at !== 'string' || !Number.isFinite(Date.parse(x.generated_at)) || typeof x.ai_status !== 'string' || !(x.ai_summary === null || typeof x.ai_summary === 'string') || (x.ai_evidence_ids !== undefined && !strs(x.ai_evidence_ids)) || typeof x.summary !== 'string' || !Array.isArray(x.dimensions) || !x.dimensions.every(d => obj(d) && typeof d.id === 'string' && typeof d.title === 'string' && typeof d.conclusion === 'string' && ['conditional','restricted','unknown','not_applicable'].includes(String(d.status)) && ['conditions','restrictions','unknowns','resource_ids','finding_ids','evidence_ids'].every(k => strs(d[k]))) || !['coverage_issues','resource_ids','finding_ids','evidence_ids'].every(k => strs(x[k])) || !Array.isArray(x.obligations) || !x.obligations.every(o => obj(o) && typeof o.id === 'string' && typeof o.action === 'string' && typeof o.requirement === 'string' && typeof o.trigger === 'string' && strs(o.evidence_ids))) return fail();
+ if (x.review_view !== undefined && !validateReviewView(x.review_view, x.id)) return fail();
  return x as Assessment;
 }
 export function validateChat(x: unknown): Chat {

@@ -3,6 +3,7 @@ import type { Scan } from "./types/domain";
 import { useRoute, scanPath, type Page } from "./hooks/useRoute";
 import { useScan } from "./hooks/useScan";
 import { createDemo } from "./services/scans";
+import { presentDiagnostic } from "./services/assessmentPresentation";
 import {
   NoticeContext,
   Empty,
@@ -177,7 +178,15 @@ export function App() {
   else if (scan.mode === "api" && scan.resultsReady === false)
     content = <Empty title="结果尚未就绪" detail={scan.error ?? "任务尚未产生可读取的结果，请查看扫描进度。"}><button onClick={() => navigate("progress")}>查看扫描进度</button></Empty>;
   else if (route.page === "assessment" || route.page === "chat")
-    content = <Assessment key={scan.mode + scan.id} scan={scan} query={route.query} selectVersion={id => filter("assessment_id", id)} />;
+    content = (
+      <Assessment
+        key={scan.mode + scan.id}
+        scan={scan}
+        query={route.query}
+        selectVersion={id => filter("assessment_id", id)}
+        initialChatOpen={route.page === "chat"}
+      />
+    );
   else if (route.page === "overview")
     content = <Overview scan={scan} go={navigate} />;
   else if (route.page === "risks")
@@ -271,12 +280,57 @@ export function App() {
             </div>
             <main id="workspace-main" className="og-content">
               {scan?.error && (
-                <div className="og-error" role="alert">
-                  <strong>{["queued", "running"].includes(scan.status) ? "扫描仍在执行，已有提示：" : scan.status === "partial" ? "扫描已结束，部分内容未完成：" : "任务未完整成功："}</strong>
-                  {scan.diagnostics?.length ? <>
-                    <span>{scan.diagnostics.length} 条扫描诊断。已有资源与发现不代表完整覆盖。</span>
-                    <details><summary>查看具体原因</summary>{scan.diagnostics.map((d, i) => <p key={i} style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{d.code}：{d.message}</p>)}</details>
-                  </> : scan.error} <button onClick={reload}>重新查询</button>
+                <div
+                  className={
+                    scan.status === "failed"
+                      ? "og-error"
+                      : "og-scan-coverage-notice"
+                  }
+                  role="alert"
+                >
+                  <strong>
+                    {["queued", "running"].includes(scan.status)
+                      ? "扫描仍在执行，当前已有覆盖提示。"
+                      : scan.status === "partial"
+                        ? `扫描部分完成：有 ${scan.diagnostics?.length ?? 1} 项覆盖限制。`
+                        : "任务未完整成功。"}
+                  </strong>
+
+                  {scan.diagnostics?.length ? (
+                    <>
+                      <span>
+                        已有资源与发现仍可查看，但当前结果不能视为完整覆盖。
+                      </span>
+
+                      <ul className="og-scan-diagnostic-list">
+                        {scan.diagnostics.map((diagnostic, index) => {
+                          const shown = presentDiagnostic(diagnostic);
+                          return (
+                            <li key={`${diagnostic.code}-${index}`}>
+                              <strong>{shown.title}</strong>
+                              <span>{shown.detail}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+
+                      <details className="og-technical-diagnostics">
+                        <summary>查看技术诊断</summary>
+                        {scan.diagnostics.map((diagnostic, index) => (
+                          <p
+                            key={`${diagnostic.code}-raw-${index}`}
+                            style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}
+                          >
+                            {diagnostic.code}：{diagnostic.message}
+                          </p>
+                        ))}
+                      </details>
+                    </>
+                  ) : (
+                    <span>{scan.error}</span>
+                  )}
+
+                  <button onClick={reload}>重新查询</button>
                 </div>
               )}
               {content}
