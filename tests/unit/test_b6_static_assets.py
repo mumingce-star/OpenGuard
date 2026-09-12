@@ -29,7 +29,7 @@ def test_qwen_reference_is_pending_and_bound_to_entire_utf8_file():
     assert item.content_hash.value == hashlib.sha256(text.encode()).hexdigest()
     assert item.start_line == item.end_line == 2
     assert item.verification_status == VerificationStatus.PENDING
-    assert item.producer.version == "0.1.2"
+    assert item.producer.version == "0.2.0"
     assert "neighbor-private-value" not in item.model_dump_json()
 
 

@@ -17,7 +17,7 @@ def test_static_asset_benchmark_uses_generated_scanner_output(tmp_path: Path) ->
     result = write_result(CASE_FILE, result_path)
     metrics = evaluate_scan_result(result_path)
 
-    assert result["scanner"] == "openguard-static-ai-detector/0.1.2"
+    assert result["scanner"] == "openguard-static-ai-detector/0.2.0"
     assert [case["id"] for case in result["cases"]] == [
         "model-huggingface", "dataset-huggingface", "api-openai",
         "model-modelscope", "negative-generic-url",
