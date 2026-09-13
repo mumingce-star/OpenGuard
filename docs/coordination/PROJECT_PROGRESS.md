@@ -1192,6 +1192,8 @@ A线本轮：关闭Git时503拒绝且不建任务；5174接独立完整工具Doc
 | Diff API / 匹配 | 同项目Gate；resource identity/instance双键；exact instance→unique identity；多候选ambiguous；无可靠身份unmatched；partial不误判removed | 只推导已存储P0事实，不fuzzy/LLM | READY FOR REVIEW |
 | 事实 / Assessment分区 | resource、license observation、verification/authorization、finding分区；Assessment Formal Diff独立；usage hash不同不可比；rule版本差异披露；AI文本排除 | 显式Assessment ID错scan拒绝；缺失仍为unavailable | PASS |
 | 只读 / 回归 | GET禁止scanner、Assessment create、Qwen、metadata、DB write；A03+Contract 109 passed，A02 24 passed，全unit 1068 passed/1 skipped，相关security 81 passed | 1 skipped是既有显式条件用例；Starlette有1条已知deprecation warning | PASS |
-| OpenAPI / 发布 | 基线11 paths→当前12；仅新增`GET /api/v1/scans/{target_scan_id}/diff`；既有paths及schemas语义相同 | 仅推送功能分支，不merge | 待本轮提交推送 |
+| OpenAPI / 发布 | 基线11 paths→当前12；仅新增`GET /api/v1/scans/{target_scan_id}/diff`；既有paths及schemas语义相同 | 仅推送功能分支，不merge | 已推送功能分支，等待负责人Review/Integration |
 
 评审者现可在功能分支上对两个已存储同项目scan调用Diff GET，获取通过Frozen `ScanDiffView 1.0` + ERRATUM-01的稳定派生视图。这不是运行环境上线或P1完成；A04以及后续Graph/Task/Report/UI/异机门禁仍未由本轮开始。P0状态沿用已批准交接结论，本轮不重新声称竞赛整体交付或获奖竞争力。精确token不可得；开工估算20k–40k，不以估算替代验收结果。
+
+发布状态核实（A03-DOC-01）：implementation commit 为 `66dfdd18bb07726eb8a18a6b8fd7d147a277668b`，已普通 push 至 `origin/feat/p1-history-diff`；本次文档收尾 preflight 已核实 local HEAD 与 remote 同为该提交。实施说明见 [A03 Scan Diff](../p1/a03-scan-diff.md)。未 force push、未 merge `integration/p1`、未 rebase、未 deploy、未操作 cz/xzb 分支、未开始 A04。状态仍为待评审，不标为 CLOSED。

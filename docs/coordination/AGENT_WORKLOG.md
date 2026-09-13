@@ -4500,3 +4500,13 @@
 - 已知风险与未完成项：遗留实现尚未完整测试，Assessment `facts_hash` 绑定、partial coverage、ambiguous matching、稳定排序/view_id 与 OpenAPI additive-only 均待代码级核实；本机系统 Python 不作为项目测试环境。预计本轮 20k–40k token，精确用量不可获得。
 - 下一步与责任模型：Root 作为唯一写者完成审计、最小修补和验收；成功后提交并普通 push `feat/p1-history-diff`，不 merge `integration/p1`、不部署、不真实扫描、不调用 Qwen、不开始 A04。
 - 关联提交/PR/Issue/evidence_id：基线/A02 `9822c8668683f0be475086b81642f2d8b41aa453`；A03 提交与远端绑定待完成。
+
+
+### [20260913-204540-RootAstra-A03DOC01] COMPLETE — A03 independent review documentation follow-up
+
+- 作者：GPT-6 Astra / Root；时间：2026-09-13 20:45:40 Asia/Shanghai。仅负责人 A 线文档收尾，不做功能开发。
+- 基线：`feat/p1-history-diff` / `origin/feat/p1-history-diff` 均核实为 `66dfdd18bb07726eb8a18a6b8fd7d147a277668b`，preflight 工作区干净。functional review PASS；Review 发现 missing implementation note 及 stale push status，本次补齐并纠正。
+- 文件：新增 `docs/p1/a03-scan-diff.md`；仅修改 `PROJECT_PROGRESS.md` 第 50 节；本日志仅追加本条，不改历史。说明覆盖 API、gates、双键匹配、partial、事实与 Assessment 分区、Evidence、只读、确定性、ERRATUM-01、既有测试/OpenAPI及限制，不新增权威 Contract。
+- 验证：文档内容与路径检查、进度第 50 节以外不变检查、允许文件范围检查及 `git diff --check` 通过。引用 implementation commit 的既有结果：A03+Contract 109 passed、A02 24 passed、all unit 1068 passed/1 skipped、related security 81 passed、Contract Schema 42 passed，Python 3.12.14；集合重叠，不相加。本轮未重跑产品测试，未声称 GitHub CI green 或 Production 通过。
+- 保护：无 backend/frontend/schema/rule/deploy/test 修改，无扫描、模型调用、部署、merge/rebase/force、cz/xzb 分支操作。`integration/p1` 保持 `9822c8668683f0be475086b81642f2d8b41aa453`。功能提交已推送；本条随独立文档提交 `docs(p1): complete A03 review notes` 发布，最终 push 结果和完整 SHA 以交付回执为准。
+- 后续：仅等待负责人最终 Review/Integration，A03 不标 CLOSED，不开始 A04。本次运行精确 token 数不可获得；未记录开工数值估算，不补造。
