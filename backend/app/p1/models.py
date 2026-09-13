@@ -147,3 +147,73 @@ class P1ScanDiffView(P1Model):
     assessment_diff: P1AssessmentDiff
     coverage: P1DiffCoverage
     provenance: P1HistoryProvenance
+
+
+class P1GraphFilter(P1Model):
+    resource_ids: list[Text]
+    resource_kinds: list[Literal['component', 'ai_asset']]
+
+
+class P1GraphNode(P1Model):
+    id: Text
+    kind: Literal['project', 'component', 'ai_asset', 'license_observation', 'evidence', 'finding', 'obligation']
+    source_id: Text
+    label: Text
+
+
+class P1SourcePointer(P1Model):
+    scan_id: Text
+    pointer: Annotated[str, Field(pattern=r'^/')]
+
+
+class P1GraphEdge(P1Model):
+    id: Text
+    type: Literal['PROJECT_HAS_RESOURCE', 'RESOURCE_HAS_LICENSE_OBSERVATION', 'RESOURCE_SUPPORTED_BY_EVIDENCE', 'RESOURCE_HAS_FINDING', 'FINDING_SUPPORTED_BY_EVIDENCE', 'FINDING_REFERENCES_OBLIGATION', 'LICENSE_HAS_RULE_OBLIGATION']
+    source: Text
+    target: Text
+    source_refs: Annotated[list[P1SourcePointer], Field(min_length=1)]
+
+
+class P1GraphCoverage(P1Model):
+    view_complete: Literal[True]
+    scope: Literal['all', 'filtered']
+    node_count: Annotated[int, Field(ge=0)]
+    edge_count: Annotated[int, Field(ge=0)]
+    scan_gaps: list[Text]
+
+
+class P1GraphCapacity(P1Model):
+    max_nodes: Annotated[int, Field(ge=1)]
+    max_edges: Annotated[int, Field(ge=1)]
+
+
+class P1ResourceGraphView(P1Model):
+    schema_version: Literal['1.0']
+    view_id: Text
+    formal: Literal[False]
+    scan_ref: P1ScanRef
+    filter: P1GraphFilter
+    nodes: list[P1GraphNode]
+    edges: list[P1GraphEdge]
+    coverage: P1GraphCoverage
+    capacity: P1GraphCapacity
+    provenance: P1HistoryProvenance
+
+
+class P1GraphCapacityDetails(P1Model):
+    reason: Literal['graph_capacity_exceeded']
+    count_basis: Literal['estimated', 'actual']
+    node_count: Annotated[int, Field(ge=0)]
+    edge_count: Annotated[int, Field(ge=0)]
+    configured_capacity: P1GraphCapacity
+
+
+class P1GraphCapacityErrorBody(P1Model):
+    code: Literal['graph_capacity_exceeded']
+    message: Text
+    request_id: Text
+    details: P1GraphCapacityDetails
+
+
+class P1GraphCapacityErrorEnvelope(P1Model):
+    error: P1GraphCapacityErrorBody

@@ -144,6 +144,17 @@ V1节点只含project/component/ai_asset/license_observation/evidence/finding/ob
 
 filter只选择resource_ids/resource_kinds；空数组表示全范围；选择资源时附带相关证据、finding、license、obligation及project的引用闭包。节点/边ID唯一，端点存在，计数与数组一致。配置capacity实际返回但不是扫描限额。超限响应规则见DECISION-08，无任何隐式截断。
 
+### Graph Filter / Request Semantics（负责人批准的A04 clarification）
+
+Contract Version 仍为 1.0；本节为 implementation clarification，不是 Schema Erratum。
+
+- 数组只用重复 query 参数：`resource_ids=A&resource_ids=B`、`resource_kinds=component&resource_kinds=ai_asset`。V1 不拆分逗号；`resource_ids=A,B` 是单个 ID，不存在则整个请求 `400 invalid_argument`。
+- 每个显式 resource ID 必须存在于当前 ScanRun 的 components 或 ai_assets；先校验存在性再做 kind 交集。任一未知 ID 整请求 400，不忽略、不部分成功，不回显输入；安全 reason 为 `resource_filter_invalid`。
+- 两数组分别去重、稳定排序，统一用于 response.filter、projection、view_id 和 parameters_hash；顺序或重复不改变视图语义。resource_ids 与 resource_kinds 同时存在时取交集。
+- 未提供或规范化为空数组的两个 filter 表示全范围，`scope=all`。合法非空 filter 交集为空时为 `scope=filtered`，返回 project-only、edges=[]、view_complete=true、node_count=1、edge_count=0，前提是容量允许 project node。
+- 显式空字符串及纯空白 ID/kind 返回 400。kind 只接受严格大小写 `component`、`ai_asset`，不 trim 后猜测。所有未定义 query 均返回 400，包括 cursor、limit、offset、page、page_size、next_cursor、assessment_id、severity；Graph V1 无分页。
+- completed/partial 可返回 Graph；queued/running 返回 `409 not_ready`；failed/cancelled 返回 `409 not_comparable`。partial 保留非空 scan_gaps；view_complete=true 仅表示已有事实在 selector 下完整，不代表 scan 完整。
+
 ## 8. Profile与cz接口
 
 resource_ref保留resource identity/instance双键。identity为事实投影，未知null。license_observations保留expression ID、relation scope、verification、Evidence；可解析SPDX不等于授权。authorization_fact只复制已有事实及source pointer；component无授权字段则null，不由根许可证合成。

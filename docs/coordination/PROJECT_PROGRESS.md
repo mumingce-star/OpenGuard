@@ -1197,3 +1197,17 @@ A线本轮：关闭Git时503拒绝且不建任务；5174接独立完整工具Doc
 评审者现可在功能分支上对两个已存储同项目scan调用Diff GET，获取通过Frozen `ScanDiffView 1.0` + ERRATUM-01的稳定派生视图。这不是运行环境上线或P1完成；A04以及后续Graph/Task/Report/UI/异机门禁仍未由本轮开始。P0状态沿用已批准交接结论，本轮不重新声称竞赛整体交付或获奖竞争力。精确token不可得；开工估算20k–40k，不以估算替代验收结果。
 
 发布状态核实（A03-DOC-01）：implementation commit 为 `66dfdd18bb07726eb8a18a6b8fd7d147a277668b`，已普通 push 至 `origin/feat/p1-history-diff`；本次文档收尾 preflight 已核实 local HEAD 与 remote 同为该提交。实施说明见 [A03 Scan Diff](../p1/a03-scan-diff.md)。未 force push、未 merge `integration/p1`、未 rebase、未 deploy、未操作 cz/xzb 分支、未开始 A04。状态仍为待评审，不标为 CLOSED。
+
+
+## 51. 2026-09-13 P1 A04 Resource Graph Backend（READY FOR REVIEW）
+
+负责人批准 A04 clarification，Contract 1.0 不变。当前 A03 已 CLOSED + INTEGRATED，基线为 integration/p1@5ad3b9622af444086023514e6a4fe8c3572be98f；第50节保留当时待评审历史，本节记录最新事实。
+
+| 负责人 A 线 | 本次状态 | 证据 / 剩余 |
+|---|---|---|
+| A01 / A02 / A03 | CLOSED；A02/A03 INTEGRATED | A02/A03/Contract 本次重跑通过 |
+| A04 Graph Backend | READY FOR REVIEW | 七节点七边、严格filter/closure、capacity413、formal=false、只读；430相关回归通过；仅负责人功能分支发布 |
+| A04 Integration / UI / Production | 未由本轮完成 | 等待负责人Review；未合并集成线或部署 |
+| A05及后续负责人任务 | 本轮未开始 | 不扩大范围 |
+
+实施说明：`docs/p1/a04-resource-graph.md`。Root接入并统一验收；Terra实现graph核心、Luna独立测试、Sol只读审计。无cz/xzb分支操作。提交及普通push结果以本节所属A04提交和Root最终回执为准；不代表整个P1或竞赛交付完成。

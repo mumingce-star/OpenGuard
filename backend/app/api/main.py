@@ -24,7 +24,8 @@ from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.p1.history import HistoryReader
-from app.p1.models import P1HistoryPage, P1ScanDiffView
+from app.p1.models import P1HistoryPage, P1ScanDiffView, P1ResourceGraphView, P1GraphCapacityErrorEnvelope
+from app.p1.graph import GraphReader, GraphCapacityError
 from app.p1.diff import DiffReader
 from app.ai import OllamaProvider
 from app.api.models import (
@@ -62,6 +63,13 @@ def _request_id(request: Request) -> str:
 
 def _error_response(request: Request, error: ApiError) -> JSONResponse:
     request_id = _request_id(request)
+    if isinstance(error, GraphCapacityError):
+        payload = P1GraphCapacityErrorEnvelope.model_validate({"error": {
+            "code": error.code, "message": error.message, "request_id": request_id,
+            "details": {"reason": error.reason, **error.capacity_details},
+        }})
+        return JSONResponse(status_code=413, content=payload.model_dump(mode="json"),
+                            headers={"X-Request-ID": request_id})
     payload = ErrorEnvelope(
         error=ErrorBody(
             code=error.code,
@@ -257,6 +265,30 @@ def _router() -> APIRouter:
                 reason="diff_reference_integrity",
             ) from None
 
+    @router.get("/scans/{scan_id}/graph", response_model=P1ResourceGraphView,
+                responses={**{code: {"model": ErrorEnvelope} for code in (400, 404, 409, 503)},
+                           413: {"model": P1GraphCapacityErrorEnvelope}})
+    def get_resource_graph(
+        scan_id: str,
+        request: Request,
+        resource_ids: Annotated[list[str] | None, Query()] = None,
+        resource_kinds: Annotated[list[str] | None, Query()] = None,
+    ) -> P1ResourceGraphView:
+        if set(request.query_params) - {"resource_ids", "resource_kinds"}:
+            raise ApiError(status_code=400, code="invalid_argument",
+                           message="资源筛选参数无效。", reason="resource_filter_invalid")
+        value = GraphReader(
+            request.app.state.scan_api_service._registry,
+            max_nodes=request.app.state.p1_graph_max_nodes,
+            max_edges=request.app.state.p1_graph_max_edges,
+        ).read(scan_id, resource_ids, resource_kinds)
+        try:
+            return P1ResourceGraphView.model_validate(value)
+        except ValidationError:
+            raise ApiError(status_code=503, code="upstream_unavailable",
+                           message="Stored facts cannot be represented by the Graph contract.",
+                           reason="graph_reference_integrity") from None
+
     @router.get("/scans/{scan_id}", response_model=ScanRunStatusView, responses=_ERROR_RESPONSES)
     def get_scan(
         scan_id: str,
@@ -447,6 +479,8 @@ def create_app(
     app.state.zip_dispatcher = zip_dispatcher
     app.state.assessment_service = assessment_service
     app.state.history_cursor_key = secrets.token_bytes(32)
+    app.state.p1_graph_max_nodes = 20_000
+    app.state.p1_graph_max_edges = 60_000
 
     @app.middleware("http")
     async def v4_write_boundary(request: Request, call_next):

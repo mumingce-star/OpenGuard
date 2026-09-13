@@ -103,13 +103,14 @@ def _assert_error(response: object, *, status_code: int, code: str, reason: str)
     assert set(payload) == {"error"}
 
 
-def test_openapi_preserves_p0_routes_with_additive_history_and_diff_get(harness: ApiHarness) -> None:
+def test_openapi_preserves_p0_routes_with_additive_history_diff_and_graph_get(harness: ApiHarness) -> None:
     response = harness.client.get("/openapi.json")
     assert response.status_code == 200
     paths = response.json()["paths"]
     assert {path: sorted(methods) for path, methods in paths.items()} == {
         "/api/v1/scans": ["get", "post"],
         "/api/v1/scans/{target_scan_id}/diff": ["get"],
+        "/api/v1/scans/{scan_id}/graph": ["get"],
         "/api/v1/scans/{scan_id}": ["get"],
         "/api/v1/scans/{scan_id}/evidence/{evidence_id}": ["get"],
         "/api/v1/scans/{scan_id}/report": ["get"],

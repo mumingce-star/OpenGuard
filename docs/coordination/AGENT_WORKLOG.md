@@ -4510,3 +4510,23 @@
 - 验证：文档内容与路径检查、进度第 50 节以外不变检查、允许文件范围检查及 `git diff --check` 通过。引用 implementation commit 的既有结果：A03+Contract 109 passed、A02 24 passed、all unit 1068 passed/1 skipped、related security 81 passed、Contract Schema 42 passed，Python 3.12.14；集合重叠，不相加。本轮未重跑产品测试，未声称 GitHub CI green 或 Production 通过。
 - 保护：无 backend/frontend/schema/rule/deploy/test 修改，无扫描、模型调用、部署、merge/rebase/force、cz/xzb 分支操作。`integration/p1` 保持 `9822c8668683f0be475086b81642f2d8b41aa453`。功能提交已推送；本条随独立文档提交 `docs(p1): complete A03 review notes` 发布，最终 push 结果和完整 SHA 以交付回执为准。
 - 后续：仅等待负责人最终 Review/Integration，A03 不标 CLOSED，不开始 A04。本次运行精确 token 数不可获得；未记录开工数值估算，不补造。
+
+
+### [20260913-A04-RootAstra-resume] START — A04 approved clarification implementation
+
+- GPT-6 Astra / Root：恢复负责人已批准 A04。开工核实分支 feat/p1-graph-api、HEAD 5ad3b9622af444086023514e6a4fe8c3572be98f、工作树 clean。
+- 仅 A04：Terra 独占 graph.py，Luna 独占独立安全测试，Sol 只读审计；Root 接入 API/DTO、单元测试及文档。先前 core/test 并行写入已开始，本条补记实际顺序，不倒填为写入前。
+- 验收：Frozen Schema、17项批准语义、七边真实指针、closure/capacity、只读、A02/A03/P0 回归和 OpenAPI semantic diff。仅普通 push 负责人功能分支，不触碰集成线、组员分支或生产。
+- 开工估算 12k–24k tokens，精确遥测不可获得。
+
+
+### [20260913-A04-RootAstra-gates] COMPLETE — A04 implementation and review gates
+
+- GPT-6 Astra / Root；负责人 A04；Terra 实现 graph.py、Luna 独立安全测试、Sol 只读终审 PASS。仅 feat/p1-graph-api，base 5ad3b9622af444086023514e6a4fe8c3572be98f。
+- 文件：graph.py、P1 models、API main；A04 unit/independent tests；三个既有 API/OpenAPI 路由集合测试仅新增 Graph 预期；Contract 窄 clarification、a04 supporting note、progress 与本追加日志。
+- 实现：真实只读 Graph GET，七节点七事实边及真实原索引 pointer；filter 去重排序/交集/严格错误；完整闭包+容量413（Graph 专用错误DTO，不放宽P0）；formal=false、assessment_refs=[]、partial gap；无推测关系。
+- 最终验收：Python 3.12.14，pytest -q -p no:cacheprovider，430 passed/0 failed/0 skipped，1条既有 Starlette/AnyIO deprecation warning。A04 42、A02 24、A03 67、Contract42、P0相关255；测试集合见 supporting note。首次 fixture 引用及413旧错误DTO接线失败已修并保留初始日志，最终全选定集合重跑通过。
+- OpenAPI：旧12 paths→13，仅新增 Graph GET 与 Graph/专用413类型；旧 methods/schemas 精确不变。Frozen P1/P0 Schema未改，git diff --check通过。性能仅合成内存facts projection，非生产/浏览器SLA；结果见说明。
+- 无新第三方依赖；AI参与仅开发协作，不调用产品Qwen。证据与tested-source SHA保留于ignored output/manual-fixes/a04-graph-20260913。未触碰数据库/报告/Production/Docker/扫描器，未操作cz/xzb分支，未merge/rebase。
+- 截至本条：实现与验收完成，待Root将本条及允许文件同一提交后普通push负责人功能分支；最终完整SHA/远端一致性由用户交付回执核实。P1集成仍5ad3b96、P0仍36d1b794。下一步仅负责人Review；不开始A05，不声称P1整体完成或生产验收。
+- 精确token不可获得；开工估算12k–24k，不能确认实际落入区间，范围未扩大。
