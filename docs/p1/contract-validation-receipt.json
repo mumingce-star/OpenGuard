@@ -1,31 +1,126 @@
 {
-  "task": "A-P1-01",
-  "status": "READY FOR REVIEW",
-  "created_at": "2026-09-13T06:32:29.687739+00:00",
-  "branch": "integration/p0",
-  "head": "36d1b794909bf2e655e5968e1a8b3eb03a27bc15",
-  "checks": [
-    "JSON parse and seven independent object examples: PASS",
-    "Seven draft namespaces and provenance present: PASS",
-    "History count consistency: PASS",
-    "Graph page edge endpoints and formal=false: PASS",
-    "Unknown authorization, missing NOTICE and versioned task sample: PASS",
-    "Partial comparison does not prove removal: PASS",
-    "Seven names and nine decisions documented: PASS",
-    "Draft files trailing whitespace: PASS",
-    "Git tracked worktree clean; HEAD unchanged; git diff --check: PASS"
-  ],
-  "limitations": [
-    "JSON examples only; no formal JSON Schema generated or validated",
-    "No runtime tests required: runtime untouched",
-    "No production/Windows re-acceptance",
-    "Branch creation approval pending; artifacts remain ignored output",
-    "No commit or push",
-    "Full P1 functionality not implemented"
-  ],
-  "files": {
-    "source-docx.txt": "a91a1d1364641074ac74cd38f91e1214be1e6f374914a8c1590664eb9ce9e4be",
-    "00-p1-contract.md": "633d62f1e5383615e5dea76ec60cce3b2b59e7ba1e2165501f0432e96a0601c8",
-    "object-examples.json": "a02159359c858c27c46d3eb9646c5c096a78cd645652fbae08e7dba3106a38dc"
+  "draft_validation": {
+    "task": "A-P1-01",
+    "status": "READY FOR REVIEW",
+    "created_at": "2026-09-13T06:32:29.687739+00:00",
+    "branch": "integration/p0",
+    "head": "36d1b794909bf2e655e5968e1a8b3eb03a27bc15",
+    "checks": [
+      "JSON parse and seven independent object examples: PASS",
+      "Seven draft namespaces and provenance present: PASS",
+      "History count consistency: PASS",
+      "Graph page edge endpoints and formal=false: PASS",
+      "Unknown authorization, missing NOTICE and versioned task sample: PASS",
+      "Partial comparison does not prove removal: PASS",
+      "Seven names and nine decisions documented: PASS",
+      "Draft files trailing whitespace: PASS",
+      "Git tracked worktree clean; HEAD unchanged; git diff --check: PASS"
+    ],
+    "limitations": [
+      "JSON examples only; no formal JSON Schema generated or validated",
+      "No runtime tests required: runtime untouched",
+      "No production/Windows re-acceptance",
+      "Branch creation approval pending; artifacts remain ignored output",
+      "No commit or push",
+      "Full P1 functionality not implemented"
+    ],
+    "files": {
+      "source-docx.txt": "a91a1d1364641074ac74cd38f91e1214be1e6f374914a8c1590664eb9ce9e4be",
+      "00-p1-contract.md": "633d62f1e5383615e5dea76ec60cce3b2b59e7ba1e2165501f0432e96a0601c8",
+      "object-examples.json": "a02159359c858c27c46d3eb9646c5c096a78cd645652fbae08e7dba3106a38dc"
+    }
+  },
+  "freeze_validation": {
+    "contract_version": "1.0",
+    "contract_commit": {
+      "reference": "containing_commit",
+      "resolution": "git log -1 --format=%H -- docs/p1/contract-validation-receipt.json",
+      "note": "The receipt and contract are committed together. A commit cannot contain its own SHA; resolve this recorded reference to the containing commit. The publication report provides its full SHA."
+    },
+    "review_commit": "646c678bb878cccb561aee56ec4abbaa9ea23fa5",
+    "p0_baseline": "36d1b794909bf2e655e5968e1a8b3eb03a27bc15",
+    "schema_paths": [
+      "schemas/p1/notice-draft.schema.json",
+      "schemas/p1/remediation-task.schema.json",
+      "schemas/p1/report-v2-snapshot.schema.json",
+      "schemas/p1/resource-graph-view.schema.json",
+      "schemas/p1/resource-profile.schema.json",
+      "schemas/p1/scan-diff-view.schema.json",
+      "schemas/p1/scan-history-item.schema.json"
+    ],
+    "shared_schema": "schemas/p1/common.schema.json",
+    "examples_validation": {
+      "schema_count": 7,
+      "passed": 7,
+      "schema_metaschema_validation": "7 object schemas plus common: PASS"
+    },
+    "negative_validation": {
+      "unknown_property": "PASS for all seven objects and nested metadata field",
+      "wrong_version": "PASS for all seven objects",
+      "task_missing_assessment_binding": "PASS: id/version/scan_id",
+      "task_missing_reason": "PASS: done/dismissed, missing/empty/whitespace",
+      "graph_pagination_field": "PASS: cursor/limit/next_cursor",
+      "metadata_raw_payload": "PASS",
+      "invented_graph_edge_or_formal_authority": "PASS"
+    },
+    "schema_tests": {
+      "command": "PYTHONPATH=backend python -m pytest -q -p no:cacheprovider tests/unit/test_p1_contract_schema.py",
+      "passed": 42,
+      "failed": 0
+    },
+    "git_diff_check": "PASS",
+    "p0_schema_unchanged": true,
+    "openapi_comparison": {
+      "baseline": "36d1b794909bf2e655e5968e1a8b3eb03a27bc15",
+      "baseline_sha256": "79534416ac792d8a70288c7af48cc5fad024cb91de05912150fe8c74ccfc45bf",
+      "current_sha256": "79534416ac792d8a70288c7af48cc5fad024cb91de05912150fe8c74ccfc45bf",
+      "semantic_equal": true,
+      "paths": [
+        "/api/v1/scans",
+        "/api/v1/scans/{scan_id}",
+        "/api/v1/scans/{scan_id}/assessments",
+        "/api/v1/scans/{scan_id}/assessments/jobs/{request_id}",
+        "/api/v1/scans/{scan_id}/assessments/{assessment_id}",
+        "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report",
+        "/api/v1/scans/{scan_id}/chat",
+        "/api/v1/scans/{scan_id}/evidence/{evidence_id}",
+        "/api/v1/scans/{scan_id}/report",
+        "/api/v1/scans/{scan_id}/resources",
+        "/api/v1/scans/{scan_id}/risks"
+      ],
+      "method": "Fresh isolated imports of baseline and current create_app(None,assessment_service=object()).openapi(); no lifespan or server; same installed dependencies",
+      "production_touched": false
+    },
+    "targeted_p0_tests": {
+      "command": "PYTHONPATH=backend python -m pytest -q -p no:cacheprovider --basetemp=<fresh isolated directory> tests/unit/test_p0_domain_models.py tests/unit/test_v4_assessment_core.py tests/unit/test_v4_assessment_api.py tests/test_assessment_review_groups.py",
+      "passed": 101,
+      "failed": 0,
+      "warnings": 1,
+      "warning_description": "Existing Starlette TestClient uses deprecated anyio.abc.BlockingPortal alias"
+    },
+    "environment": {
+      "python": "3.12.14",
+      "validation_dependencies": "Existing development environment; no new production dependency"
+    },
+    "runtime_modified": false,
+    "production_touched": false,
+    "p1_features_implemented": false,
+    "integration_p1_created": false,
+    "generated_at": "2026-09-13T08:05:39.865383+00:00",
+    "artifact_sha256": {
+      "docs/spec/p1-workspace-contract.md": "2ed56748b99c78d5639491cfb291afd1c4da8b608fbd21399f90c4e37cf34055",
+      "docs/p1/object-examples.json": "a1435cd5cdab3acd729188e3abe629834e5d6ddbd92b6ba1e257ec08602923bb",
+      "docs/p1/README.md": "61eeaf94facd12cbaf67ba4ec7c046c7c1059474734ffa03ee9f048f25cbb51b",
+      "schemas/p1/README.md": "a1176db191c52278c5d4ed8b7d74853e76586db3fe0f01b2d7438cec443588a8",
+      "schemas/p1/common.schema.json": "d1bf4203806a7be52327ec9c0b5001d622f2cd5dfd7c05e09aad400d3eb6e61c",
+      "schemas/p1/notice-draft.schema.json": "5f66b51481d6089214bff6d8e8c359b9574789e028fe32b0658d3e9ef2c06caa",
+      "schemas/p1/remediation-task.schema.json": "12eff470793e1f04b07b703e0575c3050e44b1b82920a5e02354fb7450459910",
+      "schemas/p1/report-v2-snapshot.schema.json": "e1ecb78fd23300810b3afd54f484e8aed567475ab5af8b7844477adb87b3315a",
+      "schemas/p1/resource-graph-view.schema.json": "f0bae9aca7c2fd21968454348fa42a5f38490d1db302463954b5a066f2c1b338",
+      "schemas/p1/resource-profile.schema.json": "d7fe1eef108b66f34550f94a1941a0acc1e748ba4870487f899f4b1eafd05e12",
+      "schemas/p1/scan-diff-view.schema.json": "bcd11cc6591f4c94165ab5546bca08d6672d7e71195ea205039827307592ffe1",
+      "schemas/p1/scan-history-item.schema.json": "ed7e5d7560c6cb7823e7c33af54286cc51b1bb4c11aa479038ec3c432622b7e6",
+      "tests/unit/test_p1_contract_schema.py": "daf9acd7afbabeb4d0aa6661ff12d171f5b4e384cace82dcbc952e3a16669815"
+    }
   }
 }

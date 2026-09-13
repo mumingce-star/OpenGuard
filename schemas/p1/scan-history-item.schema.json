@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:scan-history-item:1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "scan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_identity": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "method": {
+              "const": "canonical_github_repo_v1"
+            },
+            "key": {
+              "type": "string",
+              "pattern": "^github\\.com/[^/?#]+/[^/?#]+$"
+            },
+            "source_project_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "method",
+            "key",
+            "source_project_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "method": {
+              "const": "scan_only"
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_project_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "method",
+            "key",
+            "source_project_id"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "source_type": {
+      "enum": [
+        "git",
+        "zip",
+        "local"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "input_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "inventory_hash": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "completed",
+        "partial",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "stage": {
+      "enum": [
+        "queued",
+        "ingestion",
+        "inventory",
+        "scan",
+        "normalize",
+        "rules",
+        "ai_assist",
+        "report",
+        "completed"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "component_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ai_asset_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "finding_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "component_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ai_asset_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "finding_counts": {
+          "type": "object",
+          "properties": {
+            "pass": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "warning": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "review_required": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unknown": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "pass",
+            "warning",
+            "review_required",
+            "unknown"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "component_count",
+        "ai_asset_count",
+        "evidence_count",
+        "finding_counts"
+      ],
+      "additionalProperties": false
+    },
+    "latest_assessment": {
+      "anyOf": [
+        {
+          "$ref": "urn:openguard:p1:common:1.0#/$defs/AssessmentRef"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provenance": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "schema_version",
+    "scan_id",
+    "project_identity",
+    "source_type",
+    "source",
+    "revision",
+    "input_hash",
+    "inventory_hash",
+    "status",
+    "stage",
+    "created_at",
+    "finished_at",
+    "component_count",
+    "ai_asset_count",
+    "finding_count",
+    "summary",
+    "latest_assessment",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,471 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:scan-diff-view:1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "view_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "base": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/ScanRef"
+    },
+    "target": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/ScanRef"
+    },
+    "project_identity_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "added",
+              "not_observed_in_target",
+              "changed",
+              "ambiguous",
+              "unmatched"
+            ]
+          },
+          "before": {
+            "anyOf": [
+              {
+                "$ref": "urn:openguard:p1:common:1.0#/$defs/ResourceRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "after": {
+            "anyOf": [
+              {
+                "$ref": "urn:openguard:p1:common:1.0#/$defs/ResourceRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "field_changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "before": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "after": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "path",
+                "before",
+                "after"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+            }
+          },
+          "removal_confirmed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "before",
+          "after",
+          "field_changes",
+          "evidence_refs",
+          "removal_confirmed"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "license_observation_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_ids_before": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "source_ids_after": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "before": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "after": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+            }
+          }
+        },
+        "required": [
+          "source_ids_before",
+          "source_ids_after",
+          "path",
+          "before",
+          "after",
+          "evidence_refs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "verification_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_ids_before": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "source_ids_after": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "before": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "after": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+            }
+          }
+        },
+        "required": [
+          "source_ids_before",
+          "source_ids_after",
+          "path",
+          "before",
+          "after",
+          "evidence_refs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "finding_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_ids_before": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "source_ids_after": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "before": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "after": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+            }
+          }
+        },
+        "required": [
+          "source_ids_before",
+          "source_ids_after",
+          "path",
+          "before",
+          "after",
+          "evidence_refs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "assessment_diff": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "compared",
+            "not_comparable",
+            "unavailable"
+          ]
+        },
+        "base": {
+          "anyOf": [
+            {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/AssessmentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "anyOf": [
+            {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/AssessmentRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source_ids_before": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "source_ids_after": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "before": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "after": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "evidence_refs": {
+                "type": "array",
+                "items": {
+                  "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+                }
+              }
+            },
+            "required": [
+              "source_ids_before",
+              "source_ids_after",
+              "path",
+              "before",
+              "after",
+              "evidence_refs"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "status",
+        "base",
+        "target",
+        "reason",
+        "changes"
+      ],
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "base_complete": {
+          "type": "boolean"
+        },
+        "target_complete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "gaps",
+        "base_complete",
+        "target_complete"
+      ],
+      "additionalProperties": false
+    },
+    "provenance": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "schema_version",
+    "view_id",
+    "base",
+    "target",
+    "project_identity_key",
+    "resources",
+    "license_observation_changes",
+    "verification_changes",
+    "finding_changes",
+    "assessment_diff",
+    "coverage",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

@@ -1,20 +1,20 @@
 {
-  "sample_only": true,
-  "notice": "合成语义示例，非真实扫描、非生产响应、非正式JSON Schema验收。report payload展示片段，正式实现须保留完整Assessment。hash不证明任何实际授权。",
+  "contract_version": "1.0",
+  "description": "P1 Contract V1 examples. Synthetic schema-conforming examples, not actual scan facts, runtime fixtures, authorization evidence or downloadable artifacts. Capacity numbers are illustrative, not fixed contract limits.",
   "objects": {
     "ScanHistoryItem": {
-      "schema_version": "openguard.p1.history/0.1-draft",
-      "scan_id": "scn_sample",
+      "schema_version": "1.0",
+      "scan_id": "scn_example",
       "project_identity": {
-        "key": "example-key",
-        "method": "canonical_git_url_v1",
-        "source_project_id": "prj_sample"
+        "method": "canonical_github_repo_v1",
+        "key": "github.com/example/example",
+        "source_project_id": "prj_example"
       },
       "source_type": "git",
       "source": "https://github.com/example/example",
-      "revision": null,
-      "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-      "inventory_hash": null,
+      "revision": "example-revision",
+      "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+      "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
       "status": "partial",
       "stage": "report",
       "created_at": "2026-09-13T00:00:00Z",
@@ -34,621 +34,710 @@
         }
       },
       "latest_assessment": {
-        "assessment_id": "asm_sample",
+        "assessment_id": "asm_example",
         "version": 1,
-        "scan_id": "scn_sample",
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "rule_version": "synthetic-rule-version",
+        "scan_id": "scn_example",
+        "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+        "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
         "formal": true
       },
       "provenance": {
         "producer": {
           "name": "contract-example",
-          "version": "0.1-draft"
+          "version": "1.0"
         },
         "source_refs": [
           {
-            "scan_id": "scn_sample",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example",
+            "revision": "example-revision",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           }
         ],
         "assessment_refs": [
           {
-            "assessment_id": "asm_sample",
+            "assessment_id": "asm_example",
             "version": 1,
-            "scan_id": "scn_sample",
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "rule_version": "synthetic-rule-version",
+            "scan_id": "scn_example",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
             "formal": true
           }
         ],
         "generated_at": "2026-09-13T00:00:00Z",
-        "algorithm_version": "example-only/1",
-        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "algorithm_version": "p1-example/1.0",
+        "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
       }
     },
     "ScanDiffView": {
-      "schema_version": "openguard.p1.diff/0.1-draft",
-      "view_id": "dif_5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+      "schema_version": "1.0",
+      "view_id": "dif_example",
       "base": {
-        "scan_id": "scn_sample_base",
-        "revision": null,
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "inventory_hash": null,
+        "scan_id": "scn_example_base",
+        "revision": "example-revision",
+        "facts_hash": "0156d360121e9bfa9e3dcfbf9eb1a3fd8c38c115d0942c5e54909743c84c5c77",
+        "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+        "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
         "status": "partial",
-        "registry_revision": 1
+        "registry_revision": 3
       },
       "target": {
-        "scan_id": "scn_sample",
-        "revision": null,
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "inventory_hash": null,
+        "scan_id": "scn_example",
+        "revision": "example-revision",
+        "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+        "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+        "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
         "status": "partial",
-        "registry_revision": 1
+        "registry_revision": 3
       },
-      "project_match": {
-        "status": "matched",
-        "method": "canonical_git_url_v1",
-        "note": "仅合成的同source示例，没有实际请求该URL"
-      },
-      "facts_diff": {
-        "resources": {
-          "added": [],
-          "not_observed_in_target": [],
-          "changed": [],
-          "unmatched": []
-        },
-        "license_observation_changes": [],
-        "verification_changes": [],
-        "finding_changes": []
-      },
+      "project_identity_key": "github.com/example/example",
+      "resources": [
+        {
+          "kind": "changed",
+          "before": {
+            "scan_id": "scn_example_base",
+            "resource_kind": "component",
+            "resource_id": "cmp_example_base",
+            "resource_identity_key": "pkg:pypi/requests",
+            "resource_instance_key": "pkg:pypi/requests@2.31.0"
+          },
+          "after": {
+            "scan_id": "scn_example",
+            "resource_kind": "component",
+            "resource_id": "cmp_example",
+            "resource_identity_key": "pkg:pypi/requests",
+            "resource_instance_key": "pkg:pypi/requests@2.32.0"
+          },
+          "field_changes": [
+            {
+              "path": "version",
+              "before": "2.31.0",
+              "after": "2.32.0"
+            }
+          ],
+          "evidence_refs": [
+            {
+              "namespace": "scan",
+              "scan_id": "scn_example",
+              "evidence_id": "evd_example"
+            }
+          ],
+          "removal_confirmed": null
+        }
+      ],
+      "license_observation_changes": [],
+      "verification_changes": [],
+      "finding_changes": [],
       "assessment_diff": {
-        "status": "not_comparable",
+        "status": "unavailable",
         "base": null,
         "target": {
-          "assessment_id": "asm_sample",
+          "assessment_id": "asm_example",
           "version": 1,
-          "scan_id": "scn_sample",
-          "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-          "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-          "rule_version": "synthetic-rule-version",
+          "scan_id": "scn_example",
+          "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+          "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+          "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
           "formal": true
         },
-        "reason": "base assessment unavailable"
+        "reason": "Base assessment unavailable; no generation on read",
+        "changes": []
       },
       "coverage": {
-        "comparable": true,
-        "removal_confirmed": null,
         "gaps": [
-          "partial; no source deletion claim"
-        ]
+          "partial scan coverage"
+        ],
+        "base_complete": false,
+        "target_complete": false
       },
       "provenance": {
         "producer": {
           "name": "contract-example",
-          "version": "0.1-draft"
+          "version": "1.0"
         },
         "source_refs": [
           {
-            "scan_id": "scn_sample_base",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example_base",
+            "revision": "example-revision",
+            "facts_hash": "0156d360121e9bfa9e3dcfbf9eb1a3fd8c38c115d0942c5e54909743c84c5c77",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           },
           {
-            "scan_id": "scn_sample",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example",
+            "revision": "example-revision",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           }
         ],
         "assessment_refs": [
           {
-            "assessment_id": "asm_sample",
+            "assessment_id": "asm_example",
             "version": 1,
-            "scan_id": "scn_sample",
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "rule_version": "synthetic-rule-version",
+            "scan_id": "scn_example",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
             "formal": true
           }
         ],
         "generated_at": "2026-09-13T00:00:00Z",
-        "algorithm_version": "example-only/1",
-        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "algorithm_version": "p1-example/1.0",
+        "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
       }
     },
     "ResourceGraphView": {
-      "schema_version": "openguard.p1.graph/0.1-draft",
-      "view_id": "grv_5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+      "schema_version": "1.0",
+      "view_id": "grv_example",
       "formal": false,
       "scan_ref": {
-        "scan_id": "scn_sample",
-        "revision": null,
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "inventory_hash": null,
+        "scan_id": "scn_example",
+        "revision": "example-revision",
+        "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+        "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+        "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
         "status": "partial",
-        "registry_revision": 1
+        "registry_revision": 3
+      },
+      "filter": {
+        "resource_ids": [],
+        "resource_kinds": []
       },
       "nodes": [
         {
-          "id": "scn_sample:project:prj_sample",
+          "id": "scn_example:project:prj_example",
           "kind": "project",
-          "source_ref": {
-            "scan_id": "scn_sample",
-            "source_id": "prj_sample"
-          }
+          "source_id": "prj_example",
+          "label": "example"
         },
         {
-          "id": "scn_sample:component:cmp_sample",
+          "id": "scn_example:component:cmp_example",
           "kind": "component",
-          "source_ref": {
-            "scan_id": "scn_sample",
-            "source_id": "cmp_sample"
-          }
+          "source_id": "cmp_example",
+          "label": "requests"
         },
         {
-          "id": "scn_sample:evidence:evd_sample",
+          "id": "scn_example:evidence:evd_example",
           "kind": "evidence",
-          "source_ref": {
-            "namespace": "scan",
-            "scan_id": "scn_sample",
-            "evidence_id": "evd_sample"
-          }
+          "source_id": "evd_example",
+          "label": "requirements.txt"
+        },
+        {
+          "id": "scn_example:finding:rsk_example",
+          "kind": "finding",
+          "source_id": "rsk_example",
+          "label": "许可证待核对"
         }
       ],
       "edges": [
         {
-          "id": "edge_sample_1",
+          "id": "edge_example_0",
           "type": "PROJECT_HAS_RESOURCE",
-          "source": "scn_sample:project:prj_sample",
-          "target": "scn_sample:component:cmp_sample",
+          "source": "scn_example:project:prj_example",
+          "target": "scn_example:component:cmp_example",
           "source_refs": [
             {
-              "scan_id": "scn_sample",
+              "scan_id": "scn_example",
               "pointer": "/components/0"
             }
           ]
         },
         {
-          "id": "edge_sample_2",
+          "id": "edge_example_1",
           "type": "RESOURCE_SUPPORTED_BY_EVIDENCE",
-          "source": "scn_sample:component:cmp_sample",
-          "target": "scn_sample:evidence:evd_sample",
+          "source": "scn_example:component:cmp_example",
+          "target": "scn_example:evidence:evd_example",
           "source_refs": [
             {
-              "namespace": "scan",
-              "scan_id": "scn_sample",
-              "evidence_id": "evd_sample"
+              "scan_id": "scn_example",
+              "pointer": "/components/0/evidence_ids/0"
+            }
+          ]
+        },
+        {
+          "id": "edge_example_2",
+          "type": "RESOURCE_HAS_FINDING",
+          "source": "scn_example:component:cmp_example",
+          "target": "scn_example:finding:rsk_example",
+          "source_refs": [
+            {
+              "scan_id": "scn_example",
+              "pointer": "/findings/0/resource_id"
+            }
+          ]
+        },
+        {
+          "id": "edge_example_3",
+          "type": "FINDING_SUPPORTED_BY_EVIDENCE",
+          "source": "scn_example:finding:rsk_example",
+          "target": "scn_example:evidence:evd_example",
+          "source_refs": [
+            {
+              "scan_id": "scn_example",
+              "pointer": "/findings/0/evidence_ids/0"
             }
           ]
         }
       ],
       "coverage": {
-        "scan_status": "partial",
-        "view_complete": false,
-        "total_nodes": 4,
-        "omitted_nodes": 1,
-        "next_cursor": "synthetic-continuation",
-        "gaps": [
-          "示例页未包含Finding节点；扫描覆盖不足"
+        "view_complete": true,
+        "scope": "all",
+        "node_count": 4,
+        "edge_count": 4,
+        "scan_gaps": [
+          "扫描partial；图完整仅针对已有事实"
         ]
+      },
+      "capacity": {
+        "max_nodes": 500,
+        "max_edges": 1000
       },
       "provenance": {
         "producer": {
           "name": "contract-example",
-          "version": "0.1-draft"
+          "version": "1.0"
         },
         "source_refs": [
           {
-            "scan_id": "scn_sample",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example",
+            "revision": "example-revision",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           }
         ],
         "assessment_refs": [
           {
-            "assessment_id": "asm_sample",
+            "assessment_id": "asm_example",
             "version": 1,
-            "scan_id": "scn_sample",
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "rule_version": "synthetic-rule-version",
+            "scan_id": "scn_example",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
             "formal": true
           }
         ],
         "generated_at": "2026-09-13T00:00:00Z",
-        "algorithm_version": "example-only/1",
-        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "algorithm_version": "p1-example/1.0",
+        "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
       }
     },
     "ResourceProfile": {
-      "schema_version": "openguard.p1.profile/0.1-draft",
-      "profile_id": "rpf_5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+      "schema_version": "1.0",
+      "profile_id": "rpf_example",
       "scan_ref": {
-        "scan_id": "scn_sample",
-        "revision": null,
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "inventory_hash": null,
+        "scan_id": "scn_example",
+        "revision": "example-revision",
+        "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+        "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+        "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
         "status": "partial",
-        "registry_revision": 1
+        "registry_revision": 3
       },
       "resource_ref": {
-        "kind": "component",
-        "resource_id": "cmp_sample"
+        "scan_id": "scn_example",
+        "resource_kind": "component",
+        "resource_id": "cmp_example",
+        "resource_identity_key": "pkg:pypi/requests",
+        "resource_instance_key": "pkg:pypi/requests@2.32.0"
       },
       "identity": {
-        "name": "example-package",
-        "version": null,
+        "name": "requests",
+        "version": "2.32.0",
         "ecosystem": "pypi",
         "provider": null,
         "source_url": null
       },
       "license_observations": [],
       "authorization_fact": null,
-      "metadata_observations": [],
+      "metadata_observations": [
+        {
+          "observation_id": "obs_example",
+          "provider": "example",
+          "resource_identity_key": "pkg:pypi/requests",
+          "requested_revision": null,
+          "resolved_revision": null,
+          "source_url": "https://example.org/metadata",
+          "fetched_at": "2026-09-13T00:00:00Z",
+          "content_hash": "223ee7c78f14b4f37c5d139c861fd55a121e443a7dabd079fa813acf0d9ca990",
+          "parser_version": "example/1.0",
+          "bounded_excerpt": "Synthetic metadata example",
+          "fields": [
+            {
+              "name": "name",
+              "value": "requests",
+              "locator": "/name",
+              "verification_status": "pending"
+            }
+          ],
+          "verification_status": "pending",
+          "coverage_gaps": [
+            "Cannot fully replay original response"
+          ],
+          "producer": {
+            "name": "fixture-parser",
+            "version": "1.0"
+          },
+          "provenance": {
+            "producer": {
+              "name": "contract-example",
+              "version": "1.0"
+            },
+            "source_refs": [
+              {
+                "scan_id": "scn_example",
+                "revision": "example-revision",
+                "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+                "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+                "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
+                "status": "partial",
+                "registry_revision": 3
+              }
+            ],
+            "assessment_refs": [
+              {
+                "assessment_id": "asm_example",
+                "version": 1,
+                "scan_id": "scn_example",
+                "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+                "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+                "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
+                "formal": true
+              }
+            ],
+            "generated_at": "2026-09-13T00:00:00Z",
+            "algorithm_version": "p1-example/1.0",
+            "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          },
+          "full_response_replay_available": false
+        }
+      ],
       "coverage_gaps": [
-        "未取得资源级许可证；未抓取metadata"
+        "资源级授权未验证"
       ],
       "evidence_refs": [
         {
           "namespace": "scan",
-          "scan_id": "scn_sample",
-          "evidence_id": "evd_sample"
+          "scan_id": "scn_example",
+          "evidence_id": "evd_example"
         }
       ],
       "provenance": {
         "producer": {
           "name": "contract-example",
-          "version": "0.1-draft"
+          "version": "1.0"
         },
         "source_refs": [
           {
-            "scan_id": "scn_sample",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example",
+            "revision": "example-revision",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           }
         ],
         "assessment_refs": [
           {
-            "assessment_id": "asm_sample",
+            "assessment_id": "asm_example",
             "version": 1,
-            "scan_id": "scn_sample",
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "rule_version": "synthetic-rule-version",
+            "scan_id": "scn_example",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
             "formal": true
           }
         ],
         "generated_at": "2026-09-13T00:00:00Z",
-        "algorithm_version": "example-only/1",
-        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "algorithm_version": "p1-example/1.0",
+        "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
       }
     },
     "RemediationTask": {
-      "schema_version": "openguard.p1.task/0.1-draft",
-      "task_id": "tsk_sample",
-      "scan_id": "scn_sample",
+      "schema_version": "1.0",
+      "task_id": "tsk_example",
+      "scan_id": "scn_example",
       "assessment_ref": {
-        "assessment_id": "asm_sample",
+        "assessment_id": "asm_example",
         "version": 1,
-        "scan_id": "scn_sample",
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "rule_version": "synthetic-rule-version",
+        "scan_id": "scn_example",
+        "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+        "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
         "formal": true
       },
       "origin": {
         "kind": "gap",
         "source_pointer": "/resource_evaluations/0/gaps/0",
-        "source_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "source_hash": "9385f9e9721be7456dab116f5262b801b14c48a0efed1edb29095e95a88439dd"
       },
       "resource_ids": [
-        "cmp_sample"
+        "cmp_example"
       ],
       "evidence_refs": [
         {
           "namespace": "scan",
-          "scan_id": "scn_sample",
-          "evidence_id": "evd_sample"
+          "scan_id": "scn_example",
+          "evidence_id": "evd_example"
         }
       ],
-      "title": "核对资源级许可证与适用版本",
-      "status": "todo",
-      "note": "",
-      "version": 1,
+      "title": "核对资源级许可证",
+      "status": "done",
+      "note": "已记录待补材料清单；此工作流备注不是授权证据。",
+      "version": 2,
+      "superseded": false,
       "created_at": "2026-09-13T00:00:00Z",
       "updated_at": "2026-09-13T00:00:00Z",
       "provenance": {
         "producer": {
           "name": "contract-example",
-          "version": "0.1-draft"
+          "version": "1.0"
         },
         "source_refs": [
           {
-            "scan_id": "scn_sample",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example",
+            "revision": "example-revision",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           }
         ],
         "assessment_refs": [
           {
-            "assessment_id": "asm_sample",
+            "assessment_id": "asm_example",
             "version": 1,
-            "scan_id": "scn_sample",
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "rule_version": "synthetic-rule-version",
+            "scan_id": "scn_example",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
             "formal": true
           }
         ],
         "generated_at": "2026-09-13T00:00:00Z",
-        "algorithm_version": "example-only/1",
-        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "algorithm_version": "p1-example/1.0",
+        "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
       }
     },
     "NoticeDraft": {
-      "schema_version": "openguard.p1.notice/0.1-draft",
-      "draft_id": "ntc_sample",
-      "scan_id": "scn_sample",
-      "assessment_ref": {
-        "assessment_id": "asm_sample",
-        "version": 1,
-        "scan_id": "scn_sample",
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "rule_version": "synthetic-rule-version",
-        "formal": true
+      "schema_version": "1.0",
+      "draft_id": "ntc_example",
+      "binding": {
+        "scan_ref": {
+          "scan_id": "scn_example",
+          "revision": "example-revision",
+          "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+          "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+          "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
+          "status": "partial",
+          "registry_revision": 3
+        },
+        "assessment_ref": {
+          "assessment_id": "asm_example",
+          "version": 1,
+          "scan_id": "scn_example",
+          "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+          "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+          "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
+          "formal": true
+        },
+        "task_refs": [
+          {
+            "task_id": "tsk_example",
+            "version": 2
+          }
+        ],
+        "notice_refs": [],
+        "algorithm_refs": []
       },
       "created_at": "2026-09-13T00:00:00Z",
-      "generator_version": "example-only/1",
+      "generator_version": "notice/1.0",
       "entries": [
         {
-          "entry_id": "entry_sample",
+          "entry_id": "entry_example",
           "resource_ids": [
-            "cmp_sample"
+            "cmp_example"
           ],
           "license_expression_ids": [],
           "obligation_refs": [],
           "evidence_refs": [
             {
               "namespace": "scan",
-              "scan_id": "scn_sample",
-              "evidence_id": "evd_sample"
+              "scan_id": "scn_example",
+              "evidence_id": "evd_example"
             }
           ],
           "text": null,
           "missing": [
-            "许可证文本缺失，不自动补造"
+            "许可证文本缺失；不补造原文"
           ]
         }
       ],
       "coverage_gaps": [
-        "draft does not fulfill obligations"
+        "草稿生成不表示义务已履行"
       ],
       "provenance": {
         "producer": {
           "name": "contract-example",
-          "version": "0.1-draft"
+          "version": "1.0"
         },
         "source_refs": [
           {
-            "scan_id": "scn_sample",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example",
+            "revision": "example-revision",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           }
         ],
         "assessment_refs": [
           {
-            "assessment_id": "asm_sample",
+            "assessment_id": "asm_example",
             "version": 1,
-            "scan_id": "scn_sample",
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "rule_version": "synthetic-rule-version",
+            "scan_id": "scn_example",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
             "formal": true
           }
         ],
         "generated_at": "2026-09-13T00:00:00Z",
-        "algorithm_version": "example-only/1",
-        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "algorithm_version": "p1-example/1.0",
+        "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
       },
-      "content_hash": "5d01d2efffb3b4439f6754dd6816ff7009b21a07bfbf3020191776e4856fafe9"
+      "content_hash": "40cb014b961bae9cb570bcedcaa9a8f4549dba8e68867f776fbebb5a0e6bd6f5"
     },
     "ReportV2Snapshot": {
-      "schema_version": "openguard.p1.report/0.1-draft",
-      "snapshot_id": "rptv2_sample",
-      "scan_ref": {
-        "scan_id": "scn_sample",
-        "revision": null,
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "inventory_hash": null,
-        "status": "partial",
-        "registry_revision": 1
-      },
-      "assessment_ref": {
-        "assessment_id": "asm_sample",
-        "version": 1,
-        "scan_id": "scn_sample",
-        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-        "rule_version": "synthetic-rule-version",
-        "formal": true
+      "schema_version": "1.0",
+      "snapshot_id": "rptv2_example",
+      "binding": {
+        "scan_ref": {
+          "scan_id": "scn_example",
+          "revision": "example-revision",
+          "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+          "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+          "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
+          "status": "partial",
+          "registry_revision": 3
+        },
+        "assessment_ref": {
+          "assessment_id": "asm_example",
+          "version": 1,
+          "scan_id": "scn_example",
+          "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+          "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+          "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
+          "formal": true
+        },
+        "task_refs": [
+          {
+            "task_id": "tsk_example",
+            "version": 2
+          }
+        ],
+        "notice_refs": [
+          {
+            "draft_id": "ntc_example",
+            "content_hash": "40cb014b961bae9cb570bcedcaa9a8f4549dba8e68867f776fbebb5a0e6bd6f5"
+          }
+        ],
+        "algorithm_refs": [
+          {
+            "kind": "graph",
+            "version": "graph/1.0",
+            "content_hash": "e20cd8e6132b37bc4de61c197602048cc65f5c0646d1102d190166fc802d47af"
+          },
+          {
+            "kind": "profile",
+            "version": "profile/1.0",
+            "content_hash": "d038002f03f0711a273c88cbe4966da450eea02474963c3f861735b29abeb56e"
+          }
+        ]
       },
       "created_at": "2026-09-13T00:00:00Z",
-      "generator_version": "example-only/1",
+      "generator_version": "report/1.0",
       "sections": [
         {
           "authority": "formal_assessment",
           "schema_version": "1.0",
-          "source_refs": [
-            {
-              "assessment_id": "asm_sample",
-              "version": 1,
-              "scan_id": "scn_sample",
-              "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-              "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-              "rule_version": "synthetic-rule-version",
-              "formal": true
-            }
+          "source_ids": [
+            "asm_example"
           ],
-          "content_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-          "payload": {
-            "sample_excerpt_only": true,
-            "formal": true,
-            "dimensions": [
-              {
-                "id": "commercial",
-                "status": "unknown"
-              }
-            ]
-          }
+          "content_hash": "35f161d7edfa5dda59b9ded9901540b8a2bf6f080a593a1f23da7f51083241ae",
+          "snapshot_ref": "example:immutable-assessment:asm_example:1"
         },
         {
           "authority": "workflow",
-          "schema_version": "openguard.p1.task/0.1-draft",
-          "source_refs": [
-            {
-              "task_id": "tsk_sample",
-              "version": 1
-            }
+          "schema_version": "1.0",
+          "source_ids": [
+            "tsk_example"
           ],
-          "content_hash": "eaee75e08fe840e5b95fa9aed3cd0c0adafd50643ee53268cfbb5b9d7b54a877",
-          "payload": {
-            "schema_version": "openguard.p1.task/0.1-draft",
-            "task_id": "tsk_sample",
-            "scan_id": "scn_sample",
-            "assessment_ref": {
-              "assessment_id": "asm_sample",
-              "version": 1,
-              "scan_id": "scn_sample",
-              "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-              "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-              "rule_version": "synthetic-rule-version",
-              "formal": true
-            },
-            "origin": {
-              "kind": "gap",
-              "source_pointer": "/resource_evaluations/0/gaps/0",
-              "source_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
-            },
-            "resource_ids": [
-              "cmp_sample"
-            ],
-            "evidence_refs": [
-              {
-                "namespace": "scan",
-                "scan_id": "scn_sample",
-                "evidence_id": "evd_sample"
-              }
-            ],
-            "title": "核对资源级许可证与适用版本",
-            "status": "todo",
-            "note": "",
-            "version": 1,
-            "created_at": "2026-09-13T00:00:00Z",
-            "updated_at": "2026-09-13T00:00:00Z",
-            "provenance": {
-              "producer": {
-                "name": "contract-example",
-                "version": "0.1-draft"
-              },
-              "source_refs": [
-                {
-                  "scan_id": "scn_sample",
-                  "revision": null,
-                  "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-                  "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-                  "inventory_hash": null,
-                  "status": "partial",
-                  "registry_revision": 1
-                }
-              ],
-              "assessment_refs": [
-                {
-                  "assessment_id": "asm_sample",
-                  "version": 1,
-                  "scan_id": "scn_sample",
-                  "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-                  "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-                  "rule_version": "synthetic-rule-version",
-                  "formal": true
-                }
-              ],
-              "generated_at": "2026-09-13T00:00:00Z",
-              "algorithm_version": "example-only/1",
-              "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
-            }
-          }
+          "content_hash": "d7ca95a793a396d8e2ab2ff7300973005a10dee684e240177342b399241bd5d7",
+          "snapshot_ref": "example:immutable-task:tsk_example:2"
         }
       ],
-      "artifacts": [],
       "provenance": {
         "producer": {
           "name": "contract-example",
-          "version": "0.1-draft"
+          "version": "1.0"
         },
         "source_refs": [
           {
-            "scan_id": "scn_sample",
-            "revision": null,
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "inventory_hash": null,
+            "scan_id": "scn_example",
+            "revision": "example-revision",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "input_hash": "4728116ad6a1fda89a85509fa9990c6c0fe4b1a39af29027857336450839e6fd",
+            "inventory_hash": "04394dcc2bc71704ea52717b66362d002eeb3dfcd2181fdc246745a288fafb60",
             "status": "partial",
-            "registry_revision": 1
+            "registry_revision": 3
           }
         ],
         "assessment_refs": [
           {
-            "assessment_id": "asm_sample",
+            "assessment_id": "asm_example",
             "version": 1,
-            "scan_id": "scn_sample",
-            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
-            "rule_version": "synthetic-rule-version",
+            "scan_id": "scn_example",
+            "facts_hash": "d63f0cb77df1fe26e5b9d3c34334751fc19d7c89176c3a6a68e7f0a53f8445d4",
+            "usage_hash": "dea057427cdbe6174249f8d0dc47cb3dde09aaa53d251c47a14e4da2a5eefbe9",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:1797163f775120c78db093a065ee967fb3e14a70e4f543d6a857f997e66acb44",
             "formal": true
           }
         ],
         "generated_at": "2026-09-13T00:00:00Z",
-        "algorithm_version": "example-only/1",
-        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+        "algorithm_version": "p1-example/1.0",
+        "parameters_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
       },
-      "content_hash": "2b6798ae3d6c97bb23562ece31f5bafafcc5f202981be6c03fecda7d2b61df49"
+      "content_hash": "a9f5fee6ee2ee830b55fe842d3616ec2499b0a564bbf4cccf98b2795834ec12a",
+      "artifacts": [
+        {
+          "format": "html",
+          "content_hash": "d4c9fc48e38832e7a16f7534c489dbeca09a85c66e0e71cc87004bc2da683e56",
+          "size_bytes": 0,
+          "href": "/api/v1/scans/scn_example/assessments/asm_example/report-v2/rptv2_example?format=html"
+        },
+        {
+          "format": "json",
+          "content_hash": "9095e324e2d41b92ca8c9d2a83ccfb3cf19e739bcad630c2a5d37d654f8a3de7",
+          "size_bytes": 0,
+          "href": "/api/v1/scans/scn_example/assessments/asm_example/report-v2/rptv2_example?format=json"
+        }
+      ]
     }
   }
 }
