@@ -1,0 +1,654 @@
+{
+  "sample_only": true,
+  "notice": "合成语义示例，非真实扫描、非生产响应、非正式JSON Schema验收。report payload展示片段，正式实现须保留完整Assessment。hash不证明任何实际授权。",
+  "objects": {
+    "ScanHistoryItem": {
+      "schema_version": "openguard.p1.history/0.1-draft",
+      "scan_id": "scn_sample",
+      "project_identity": {
+        "key": "example-key",
+        "method": "canonical_git_url_v1",
+        "source_project_id": "prj_sample"
+      },
+      "source_type": "git",
+      "source": "https://github.com/example/example",
+      "revision": null,
+      "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+      "inventory_hash": null,
+      "status": "partial",
+      "stage": "report",
+      "created_at": "2026-09-13T00:00:00Z",
+      "finished_at": "2026-09-13T00:00:00Z",
+      "component_count": 1,
+      "ai_asset_count": 0,
+      "finding_count": 1,
+      "summary": {
+        "component_count": 1,
+        "ai_asset_count": 0,
+        "evidence_count": 1,
+        "finding_counts": {
+          "pass": 0,
+          "warning": 0,
+          "review_required": 1,
+          "unknown": 0
+        }
+      },
+      "latest_assessment": {
+        "assessment_id": "asm_sample",
+        "version": 1,
+        "scan_id": "scn_sample",
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "rule_version": "synthetic-rule-version",
+        "formal": true
+      },
+      "provenance": {
+        "producer": {
+          "name": "contract-example",
+          "version": "0.1-draft"
+        },
+        "source_refs": [
+          {
+            "scan_id": "scn_sample",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          }
+        ],
+        "assessment_refs": [
+          {
+            "assessment_id": "asm_sample",
+            "version": 1,
+            "scan_id": "scn_sample",
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "rule_version": "synthetic-rule-version",
+            "formal": true
+          }
+        ],
+        "generated_at": "2026-09-13T00:00:00Z",
+        "algorithm_version": "example-only/1",
+        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      }
+    },
+    "ScanDiffView": {
+      "schema_version": "openguard.p1.diff/0.1-draft",
+      "view_id": "dif_5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+      "base": {
+        "scan_id": "scn_sample_base",
+        "revision": null,
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "inventory_hash": null,
+        "status": "partial",
+        "registry_revision": 1
+      },
+      "target": {
+        "scan_id": "scn_sample",
+        "revision": null,
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "inventory_hash": null,
+        "status": "partial",
+        "registry_revision": 1
+      },
+      "project_match": {
+        "status": "matched",
+        "method": "canonical_git_url_v1",
+        "note": "仅合成的同source示例，没有实际请求该URL"
+      },
+      "facts_diff": {
+        "resources": {
+          "added": [],
+          "not_observed_in_target": [],
+          "changed": [],
+          "unmatched": []
+        },
+        "license_observation_changes": [],
+        "verification_changes": [],
+        "finding_changes": []
+      },
+      "assessment_diff": {
+        "status": "not_comparable",
+        "base": null,
+        "target": {
+          "assessment_id": "asm_sample",
+          "version": 1,
+          "scan_id": "scn_sample",
+          "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+          "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+          "rule_version": "synthetic-rule-version",
+          "formal": true
+        },
+        "reason": "base assessment unavailable"
+      },
+      "coverage": {
+        "comparable": true,
+        "removal_confirmed": null,
+        "gaps": [
+          "partial; no source deletion claim"
+        ]
+      },
+      "provenance": {
+        "producer": {
+          "name": "contract-example",
+          "version": "0.1-draft"
+        },
+        "source_refs": [
+          {
+            "scan_id": "scn_sample_base",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          },
+          {
+            "scan_id": "scn_sample",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          }
+        ],
+        "assessment_refs": [
+          {
+            "assessment_id": "asm_sample",
+            "version": 1,
+            "scan_id": "scn_sample",
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "rule_version": "synthetic-rule-version",
+            "formal": true
+          }
+        ],
+        "generated_at": "2026-09-13T00:00:00Z",
+        "algorithm_version": "example-only/1",
+        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      }
+    },
+    "ResourceGraphView": {
+      "schema_version": "openguard.p1.graph/0.1-draft",
+      "view_id": "grv_5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+      "formal": false,
+      "scan_ref": {
+        "scan_id": "scn_sample",
+        "revision": null,
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "inventory_hash": null,
+        "status": "partial",
+        "registry_revision": 1
+      },
+      "nodes": [
+        {
+          "id": "scn_sample:project:prj_sample",
+          "kind": "project",
+          "source_ref": {
+            "scan_id": "scn_sample",
+            "source_id": "prj_sample"
+          }
+        },
+        {
+          "id": "scn_sample:component:cmp_sample",
+          "kind": "component",
+          "source_ref": {
+            "scan_id": "scn_sample",
+            "source_id": "cmp_sample"
+          }
+        },
+        {
+          "id": "scn_sample:evidence:evd_sample",
+          "kind": "evidence",
+          "source_ref": {
+            "namespace": "scan",
+            "scan_id": "scn_sample",
+            "evidence_id": "evd_sample"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge_sample_1",
+          "type": "PROJECT_HAS_RESOURCE",
+          "source": "scn_sample:project:prj_sample",
+          "target": "scn_sample:component:cmp_sample",
+          "source_refs": [
+            {
+              "scan_id": "scn_sample",
+              "pointer": "/components/0"
+            }
+          ]
+        },
+        {
+          "id": "edge_sample_2",
+          "type": "RESOURCE_SUPPORTED_BY_EVIDENCE",
+          "source": "scn_sample:component:cmp_sample",
+          "target": "scn_sample:evidence:evd_sample",
+          "source_refs": [
+            {
+              "namespace": "scan",
+              "scan_id": "scn_sample",
+              "evidence_id": "evd_sample"
+            }
+          ]
+        }
+      ],
+      "coverage": {
+        "scan_status": "partial",
+        "view_complete": false,
+        "total_nodes": 4,
+        "omitted_nodes": 1,
+        "next_cursor": "synthetic-continuation",
+        "gaps": [
+          "示例页未包含Finding节点；扫描覆盖不足"
+        ]
+      },
+      "provenance": {
+        "producer": {
+          "name": "contract-example",
+          "version": "0.1-draft"
+        },
+        "source_refs": [
+          {
+            "scan_id": "scn_sample",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          }
+        ],
+        "assessment_refs": [
+          {
+            "assessment_id": "asm_sample",
+            "version": 1,
+            "scan_id": "scn_sample",
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "rule_version": "synthetic-rule-version",
+            "formal": true
+          }
+        ],
+        "generated_at": "2026-09-13T00:00:00Z",
+        "algorithm_version": "example-only/1",
+        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      }
+    },
+    "ResourceProfile": {
+      "schema_version": "openguard.p1.profile/0.1-draft",
+      "profile_id": "rpf_5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+      "scan_ref": {
+        "scan_id": "scn_sample",
+        "revision": null,
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "inventory_hash": null,
+        "status": "partial",
+        "registry_revision": 1
+      },
+      "resource_ref": {
+        "kind": "component",
+        "resource_id": "cmp_sample"
+      },
+      "identity": {
+        "name": "example-package",
+        "version": null,
+        "ecosystem": "pypi",
+        "provider": null,
+        "source_url": null
+      },
+      "license_observations": [],
+      "authorization_fact": null,
+      "metadata_observations": [],
+      "coverage_gaps": [
+        "未取得资源级许可证；未抓取metadata"
+      ],
+      "evidence_refs": [
+        {
+          "namespace": "scan",
+          "scan_id": "scn_sample",
+          "evidence_id": "evd_sample"
+        }
+      ],
+      "provenance": {
+        "producer": {
+          "name": "contract-example",
+          "version": "0.1-draft"
+        },
+        "source_refs": [
+          {
+            "scan_id": "scn_sample",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          }
+        ],
+        "assessment_refs": [
+          {
+            "assessment_id": "asm_sample",
+            "version": 1,
+            "scan_id": "scn_sample",
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "rule_version": "synthetic-rule-version",
+            "formal": true
+          }
+        ],
+        "generated_at": "2026-09-13T00:00:00Z",
+        "algorithm_version": "example-only/1",
+        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      }
+    },
+    "RemediationTask": {
+      "schema_version": "openguard.p1.task/0.1-draft",
+      "task_id": "tsk_sample",
+      "scan_id": "scn_sample",
+      "assessment_ref": {
+        "assessment_id": "asm_sample",
+        "version": 1,
+        "scan_id": "scn_sample",
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "rule_version": "synthetic-rule-version",
+        "formal": true
+      },
+      "origin": {
+        "kind": "gap",
+        "source_pointer": "/resource_evaluations/0/gaps/0",
+        "source_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      },
+      "resource_ids": [
+        "cmp_sample"
+      ],
+      "evidence_refs": [
+        {
+          "namespace": "scan",
+          "scan_id": "scn_sample",
+          "evidence_id": "evd_sample"
+        }
+      ],
+      "title": "核对资源级许可证与适用版本",
+      "status": "todo",
+      "note": "",
+      "version": 1,
+      "created_at": "2026-09-13T00:00:00Z",
+      "updated_at": "2026-09-13T00:00:00Z",
+      "provenance": {
+        "producer": {
+          "name": "contract-example",
+          "version": "0.1-draft"
+        },
+        "source_refs": [
+          {
+            "scan_id": "scn_sample",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          }
+        ],
+        "assessment_refs": [
+          {
+            "assessment_id": "asm_sample",
+            "version": 1,
+            "scan_id": "scn_sample",
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "rule_version": "synthetic-rule-version",
+            "formal": true
+          }
+        ],
+        "generated_at": "2026-09-13T00:00:00Z",
+        "algorithm_version": "example-only/1",
+        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      }
+    },
+    "NoticeDraft": {
+      "schema_version": "openguard.p1.notice/0.1-draft",
+      "draft_id": "ntc_sample",
+      "scan_id": "scn_sample",
+      "assessment_ref": {
+        "assessment_id": "asm_sample",
+        "version": 1,
+        "scan_id": "scn_sample",
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "rule_version": "synthetic-rule-version",
+        "formal": true
+      },
+      "created_at": "2026-09-13T00:00:00Z",
+      "generator_version": "example-only/1",
+      "entries": [
+        {
+          "entry_id": "entry_sample",
+          "resource_ids": [
+            "cmp_sample"
+          ],
+          "license_expression_ids": [],
+          "obligation_refs": [],
+          "evidence_refs": [
+            {
+              "namespace": "scan",
+              "scan_id": "scn_sample",
+              "evidence_id": "evd_sample"
+            }
+          ],
+          "text": null,
+          "missing": [
+            "许可证文本缺失，不自动补造"
+          ]
+        }
+      ],
+      "coverage_gaps": [
+        "draft does not fulfill obligations"
+      ],
+      "provenance": {
+        "producer": {
+          "name": "contract-example",
+          "version": "0.1-draft"
+        },
+        "source_refs": [
+          {
+            "scan_id": "scn_sample",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          }
+        ],
+        "assessment_refs": [
+          {
+            "assessment_id": "asm_sample",
+            "version": 1,
+            "scan_id": "scn_sample",
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "rule_version": "synthetic-rule-version",
+            "formal": true
+          }
+        ],
+        "generated_at": "2026-09-13T00:00:00Z",
+        "algorithm_version": "example-only/1",
+        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      },
+      "content_hash": "5d01d2efffb3b4439f6754dd6816ff7009b21a07bfbf3020191776e4856fafe9"
+    },
+    "ReportV2Snapshot": {
+      "schema_version": "openguard.p1.report/0.1-draft",
+      "snapshot_id": "rptv2_sample",
+      "scan_ref": {
+        "scan_id": "scn_sample",
+        "revision": null,
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "inventory_hash": null,
+        "status": "partial",
+        "registry_revision": 1
+      },
+      "assessment_ref": {
+        "assessment_id": "asm_sample",
+        "version": 1,
+        "scan_id": "scn_sample",
+        "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+        "rule_version": "synthetic-rule-version",
+        "formal": true
+      },
+      "created_at": "2026-09-13T00:00:00Z",
+      "generator_version": "example-only/1",
+      "sections": [
+        {
+          "authority": "formal_assessment",
+          "schema_version": "1.0",
+          "source_refs": [
+            {
+              "assessment_id": "asm_sample",
+              "version": 1,
+              "scan_id": "scn_sample",
+              "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+              "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+              "rule_version": "synthetic-rule-version",
+              "formal": true
+            }
+          ],
+          "content_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+          "payload": {
+            "sample_excerpt_only": true,
+            "formal": true,
+            "dimensions": [
+              {
+                "id": "commercial",
+                "status": "unknown"
+              }
+            ]
+          }
+        },
+        {
+          "authority": "workflow",
+          "schema_version": "openguard.p1.task/0.1-draft",
+          "source_refs": [
+            {
+              "task_id": "tsk_sample",
+              "version": 1
+            }
+          ],
+          "content_hash": "eaee75e08fe840e5b95fa9aed3cd0c0adafd50643ee53268cfbb5b9d7b54a877",
+          "payload": {
+            "schema_version": "openguard.p1.task/0.1-draft",
+            "task_id": "tsk_sample",
+            "scan_id": "scn_sample",
+            "assessment_ref": {
+              "assessment_id": "asm_sample",
+              "version": 1,
+              "scan_id": "scn_sample",
+              "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+              "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+              "rule_version": "synthetic-rule-version",
+              "formal": true
+            },
+            "origin": {
+              "kind": "gap",
+              "source_pointer": "/resource_evaluations/0/gaps/0",
+              "source_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+            },
+            "resource_ids": [
+              "cmp_sample"
+            ],
+            "evidence_refs": [
+              {
+                "namespace": "scan",
+                "scan_id": "scn_sample",
+                "evidence_id": "evd_sample"
+              }
+            ],
+            "title": "核对资源级许可证与适用版本",
+            "status": "todo",
+            "note": "",
+            "version": 1,
+            "created_at": "2026-09-13T00:00:00Z",
+            "updated_at": "2026-09-13T00:00:00Z",
+            "provenance": {
+              "producer": {
+                "name": "contract-example",
+                "version": "0.1-draft"
+              },
+              "source_refs": [
+                {
+                  "scan_id": "scn_sample",
+                  "revision": null,
+                  "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+                  "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+                  "inventory_hash": null,
+                  "status": "partial",
+                  "registry_revision": 1
+                }
+              ],
+              "assessment_refs": [
+                {
+                  "assessment_id": "asm_sample",
+                  "version": 1,
+                  "scan_id": "scn_sample",
+                  "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+                  "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+                  "rule_version": "synthetic-rule-version",
+                  "formal": true
+                }
+              ],
+              "generated_at": "2026-09-13T00:00:00Z",
+              "algorithm_version": "example-only/1",
+              "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+            }
+          }
+        }
+      ],
+      "artifacts": [],
+      "provenance": {
+        "producer": {
+          "name": "contract-example",
+          "version": "0.1-draft"
+        },
+        "source_refs": [
+          {
+            "scan_id": "scn_sample",
+            "revision": null,
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "input_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "inventory_hash": null,
+            "status": "partial",
+            "registry_revision": 1
+          }
+        ],
+        "assessment_refs": [
+          {
+            "assessment_id": "asm_sample",
+            "version": 1,
+            "scan_id": "scn_sample",
+            "facts_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "usage_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788",
+            "rule_version": "synthetic-rule-version",
+            "formal": true
+          }
+        ],
+        "generated_at": "2026-09-13T00:00:00Z",
+        "algorithm_version": "example-only/1",
+        "parameters_hash": "5d38626eee7b7933b8e73333681556ad59db5558ba52075a53272a14b0518788"
+      },
+      "content_hash": "2b6798ae3d6c97bb23562ece31f5bafafcc5f202981be6c03fecda7d2b61df49"
+    }
+  }
+}

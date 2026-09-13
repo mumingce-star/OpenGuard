@@ -1,0 +1,31 @@
+{
+  "task": "A-P1-01",
+  "status": "READY FOR REVIEW",
+  "created_at": "2026-09-13T06:32:29.687739+00:00",
+  "branch": "integration/p0",
+  "head": "36d1b794909bf2e655e5968e1a8b3eb03a27bc15",
+  "checks": [
+    "JSON parse and seven independent object examples: PASS",
+    "Seven draft namespaces and provenance present: PASS",
+    "History count consistency: PASS",
+    "Graph page edge endpoints and formal=false: PASS",
+    "Unknown authorization, missing NOTICE and versioned task sample: PASS",
+    "Partial comparison does not prove removal: PASS",
+    "Seven names and nine decisions documented: PASS",
+    "Draft files trailing whitespace: PASS",
+    "Git tracked worktree clean; HEAD unchanged; git diff --check: PASS"
+  ],
+  "limitations": [
+    "JSON examples only; no formal JSON Schema generated or validated",
+    "No runtime tests required: runtime untouched",
+    "No production/Windows re-acceptance",
+    "Branch creation approval pending; artifacts remain ignored output",
+    "No commit or push",
+    "Full P1 functionality not implemented"
+  ],
+  "files": {
+    "source-docx.txt": "a91a1d1364641074ac74cd38f91e1214be1e6f374914a8c1590664eb9ce9e4be",
+    "00-p1-contract.md": "633d62f1e5383615e5dea76ec60cce3b2b59e7ba1e2165501f0432e96a0601c8",
+    "object-examples.json": "a02159359c858c27c46d3eb9646c5c096a78cd645652fbae08e7dba3106a38dc"
+  }
+}
