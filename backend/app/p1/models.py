@@ -1,4 +1,4 @@
-"""History DTOs checked against the frozen P1 JSON Schema."""
+"""P1 projection DTOs checked against the frozen JSON Schemas."""
 from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field
 from app.domain.models import ScanStatus, ScanStage, SourceType, ScanSummary
@@ -83,3 +83,67 @@ class P1HistoryPage(P1Model):
     schema_version: Literal['1.0'] = '1.0'
     items: list[P1ScanHistoryItem]
     next_cursor: str | None
+
+
+class P1DiffResourceRef(P1Model):
+    scan_id: Text
+    resource_kind: Literal['component', 'ai_asset']
+    resource_id: Text
+    resource_identity_key: Text | None
+    resource_instance_key: Text | None
+
+
+class P1DiffEvidenceRef(P1Model):
+    namespace: Literal['scan'] = 'scan'
+    scan_id: Text
+    evidence_id: Text
+
+
+class P1DiffFieldChange(P1Model):
+    path: Text
+    before: str | None
+    after: str | None
+
+
+class P1DiffFactChange(P1DiffFieldChange):
+    source_ids_before: list[Text]
+    source_ids_after: list[Text]
+    evidence_refs: list[P1DiffEvidenceRef]
+
+
+class P1DiffResourceChange(P1Model):
+    kind: Literal['added', 'not_observed_in_target', 'changed', 'ambiguous', 'unmatched']
+    before: P1DiffResourceRef | None
+    after: P1DiffResourceRef | None
+    field_changes: list[P1DiffFieldChange]
+    evidence_refs: list[P1DiffEvidenceRef]
+    removal_confirmed: bool | None
+
+
+class P1AssessmentDiff(P1Model):
+    status: Literal['compared', 'not_comparable', 'unavailable']
+    base: P1AssessmentRef | None
+    target: P1AssessmentRef | None
+    reason: Text | None
+    changes: list[P1DiffFactChange]
+
+
+class P1DiffCoverage(P1Model):
+    gaps: list[Text]
+    base_complete: bool
+    target_complete: bool
+
+
+class P1ScanDiffView(P1Model):
+    schema_version: Literal['1.0'] = '1.0'
+    view_id: Text
+    base: P1ScanRef
+    target: P1ScanRef
+    project_identity_key: Text
+    resources: list[P1DiffResourceChange]
+    license_observation_changes: list[P1DiffFactChange]
+    verification_changes: list[P1DiffFactChange]
+    finding_changes: list[P1DiffFactChange]
+    assessment_diff: P1AssessmentDiff
+    coverage: P1DiffCoverage
+    provenance: P1HistoryProvenance

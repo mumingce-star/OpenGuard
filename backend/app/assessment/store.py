@@ -143,6 +143,15 @@ class AssessmentStore:
         rows = self._read("SELECT payload FROM assessments WHERE scan_id=? AND id=?", (scan_id, assessment_id))
         return Assessment.model_validate_json(rows[0][0]) if rows else None
 
+    def get_by_id(self, assessment_id: str) -> Assessment | None:
+        """Read an assessment without weakening its scan binding.
+
+        Cross-scan callers use this only to distinguish a missing explicit ID
+        from an ID bound to a different scan.  The database remains read-only.
+        """
+        rows = self._read("SELECT payload FROM assessments WHERE id=?", (assessment_id,))
+        return Assessment.model_validate_json(rows[0][0]) if rows else None
+
     def latest(self, scan_id: str) -> Assessment | None:
         rows = self.list(scan_id, limit=1)
         return rows[0] if rows else None

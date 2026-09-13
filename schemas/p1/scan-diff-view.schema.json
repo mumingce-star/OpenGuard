@@ -66,8 +66,7 @@
                 "before": {
                   "anyOf": [
                     {
-                      "type": "string",
-                      "minLength": 1
+                      "type": "string"
                     },
                     {
                       "type": "null"
@@ -77,8 +76,7 @@
                 "after": {
                   "anyOf": [
                     {
-                      "type": "string",
-                      "minLength": 1
+                      "type": "string"
                     },
                     {
                       "type": "null"
@@ -148,8 +146,7 @@
           "before": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -159,8 +156,7 @@
           "after": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -211,8 +207,7 @@
           "before": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -222,8 +217,7 @@
           "after": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -274,8 +268,7 @@
           "before": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -285,8 +278,7 @@
           "after": {
             "anyOf": [
               {
-                "type": "string",
-                "minLength": 1
+                "type": "string"
               },
               {
                 "type": "null"
@@ -378,8 +370,7 @@
               "before": {
                 "anyOf": [
                   {
-                    "type": "string",
-                    "minLength": 1
+                    "type": "string"
                   },
                   {
                     "type": "null"
@@ -389,8 +380,7 @@
               "after": {
                 "anyOf": [
                   {
-                    "type": "string",
-                    "minLength": 1
+                    "type": "string"
                   },
                   {
                     "type": "null"

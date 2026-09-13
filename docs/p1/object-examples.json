@@ -104,7 +104,7 @@
             "resource_kind": "component",
             "resource_id": "cmp_example_base",
             "resource_identity_key": "pkg:pypi/requests",
-            "resource_instance_key": "pkg:pypi/requests@2.31.0"
+            "resource_instance_key": null
           },
           "after": {
             "scan_id": "scn_example",
@@ -116,7 +116,7 @@
           "field_changes": [
             {
               "path": "version",
-              "before": "2.31.0",
+              "before": "",
               "after": "2.32.0"
             }
           ],

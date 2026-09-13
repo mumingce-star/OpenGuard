@@ -4485,3 +4485,18 @@
 ### [20260911-RootAstra-PublishV4] COMPLETE
 - GPT-6 Astra / Root：50文件已提交b7329cf并推送origin/integration/p0，GitHub远端接受5611c00→b7329cf。包含已验收V3/V4/Git拒绝保护；当前已测试源码Hash一致，复用1400后端通过/3跳过/2警告和49前端通过及构建，不重复运行无变更测试。暂存diff检查、文件清单和新增内容密钥/本机私有路径检查通过；output忽略且无历史报告/备份/数据库上传。
 - 本轮未合并main或组员分支、未更新运行容器。Windows/人工复核/正式V4上线/P0签收仍待。后续由负责人决定部署与验收；本条发布回执作为独立文档提交，产品提交b7329cf不变。精确token数不可获得，开工估计1k–4k，无法确认实耗区间。
+
+### [20260913-2011-RootAstra-A03ScanDiff] START - 恢复并完成 P1 A03 Scan Diff Backend
+
+- 作者：GPT-6 Astra / Codex Root Coordinator
+- 对话角色：项目负责人 A 线后端实现、契约审计与最终验收
+- 时间：2026-09-13 20:11（Asia/Shanghai）
+- 分支或工作区：`feat/p1-history-diff`；HEAD `9822c8668683f0be475086b81642f2d8b41aa453`；`origin/integration/p1` 与 `origin/feat/p1-history-diff` 已联网核验为同一 SHA。
+- 任务目标：仅恢复并完成 A03 Scan Diff Backend；保留上一对话草稿，应用已批准的 `ERRATUM-01 — Diff Empty String Preservation`，完成资源双键匹配、partial 语义、事实分区、Assessment Diff、无副作用 GET、Frozen Schema/OpenAPI/回归门禁，普通 push 当前 feature 后停止。
+- 开始前已确认：已完整阅读用户提供的 3508 行 V3 全量交接总册、根 `AGENTS.md`/`README.md`、共享日志与进度台账现状、Sol 交接和 A03 恢复要求；未发现当前同文件在途写者。现场分支/HEAD/远端符合总册，但未提交范围比“最后已知三文件”更大：ERRATUM 文档、schema、examples、receipt 及四个 A03/A3 测试文件也已有草稿；全部保留并逐项审计，不清理、不重写来源归属。
+- 预计修改文件：仅 A03 相关的 `backend/app/api/main.py`、`backend/app/p1/{models,diff}.py`、`docs/spec/p1-workspace-contract.md`、`schemas/p1/scan-diff-view.schema.json`、`docs/p1/{object-examples,contract-validation-receipt}.json`、A03/A3 相关 unit/security tests，以及按仓库规则仅追加本日志、必要时更新 `PROJECT_PROGRESS.md`。不修改 P0 domain/schema、cz/xzb 分支或后续 A04 文件。
+- 命令与测试：先审计所有草稿和权威 Contract/P0/Assessment read paths；随后运行 A03、A02、P1 Contract、相关 P0 domain/registry/FastAPI/Assessment/security 回归，OpenAPI semantic diff、`git diff --check`、待提交清单与敏感信息检查。GET 测试必须证明无 scanner、Assessment create、Qwen、metadata、report 或 DB write。
+- 接口、Schema、规则或决策：Contract 保持 `1.0`；仅 ScanDiffView 五类 scalar change-value 的 `before/after` string branch 允许空字符串，`""` 与 `null` 严格不同；不得放宽 path/ID/rule_version/common/P0 schema，不做 `"" -> null`。若再出现两种合理且无法无损实现的 Frozen Contract 解释，输出 `CONTRACT_IMPLEMENTATION_AMBIGUITY` 并停止。
+- 已知风险与未完成项：遗留实现尚未完整测试，Assessment `facts_hash` 绑定、partial coverage、ambiguous matching、稳定排序/view_id 与 OpenAPI additive-only 均待代码级核实；本机系统 Python 不作为项目测试环境。预计本轮 20k–40k token，精确用量不可获得。
+- 下一步与责任模型：Root 作为唯一写者完成审计、最小修补和验收；成功后提交并普通 push `feat/p1-history-diff`，不 merge `integration/p1`、不部署、不真实扫描、不调用 Qwen、不开始 A04。
+- 关联提交/PR/Issue/evidence_id：基线/A02 `9822c8668683f0be475086b81642f2d8b41aa453`；A03 提交与远端绑定待完成。

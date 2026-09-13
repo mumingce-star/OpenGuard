@@ -1181,3 +1181,17 @@ A线本轮：关闭Git时503拒绝且不建任务；5174接独立完整工具Doc
 用户已明确授权提交及推送 integration/p0。此次范围为此前已验收的V3扫描提速、V4评估/用途/问答/报告/前端，以及Git执行器关闭时拒绝创建任务。保留1400后端通过/3跳过、49前端通过、类型检查/构建与两仓库实际验收证据；代码文件与验收manifest一致。output、本地运行副本、数据库、报告、备份不上传；新增output忽略规则。组员分支不修改、不自动合并新成果。发布不代表部署变更、Windows通过或P0最终签收。具体提交以本节所属Git提交及Root发布回执为准。
 
 发布确认：产品提交 `b7329cf` 已推送 `origin/integration/p0`，共50文件。此后发布回执为文档提交，不改变产品代码。main与组员分支未修改；本机运行版本未因此自动重启。
+
+## 50. 2026-09-13 P1 A03 Scan Diff Backend（待评审）
+
+基线为`integration/p1`/`feat/p1-history-diff`@`9822c8668683f0be475086b81642f2d8b41aa453`。本轮仅完成A03及已批准ERRATUM-01，未合并`integration/p1`，未开始A04，未修改cz/xzb分支，未部署、真实扫描或调用Qwen。
+
+| A线工作包 | 已完成与证据 | 仍待 / 边界 | 当前状态 |
+|---|---|---|---|
+| Contract V1 Erratum | 仅放宽ScanDiffView五类change-value的10个string branch；`""`与`null`分离；其余P1/common及P0 schema不变 | 不构成全套P1重冻结 | PASS |
+| Diff API / 匹配 | 同项目Gate；resource identity/instance双键；exact instance→unique identity；多候选ambiguous；无可靠身份unmatched；partial不误判removed | 只推导已存储P0事实，不fuzzy/LLM | READY FOR REVIEW |
+| 事实 / Assessment分区 | resource、license observation、verification/authorization、finding分区；Assessment Formal Diff独立；usage hash不同不可比；rule版本差异披露；AI文本排除 | 显式Assessment ID错scan拒绝；缺失仍为unavailable | PASS |
+| 只读 / 回归 | GET禁止scanner、Assessment create、Qwen、metadata、DB write；A03+Contract 109 passed，A02 24 passed，全unit 1068 passed/1 skipped，相关security 81 passed | 1 skipped是既有显式条件用例；Starlette有1条已知deprecation warning | PASS |
+| OpenAPI / 发布 | 基线11 paths→当前12；仅新增`GET /api/v1/scans/{target_scan_id}/diff`；既有paths及schemas语义相同 | 仅推送功能分支，不merge | 待本轮提交推送 |
+
+评审者现可在功能分支上对两个已存储同项目scan调用Diff GET，获取通过Frozen `ScanDiffView 1.0` + ERRATUM-01的稳定派生视图。这不是运行环境上线或P1完成；A04以及后续Graph/Task/Report/UI/异机门禁仍未由本轮开始。P0状态沿用已批准交接结论，本轮不重新声称竞赛整体交付或获奖竞争力。精确token不可得；开工估算20k–40k，不以估算替代验收结果。

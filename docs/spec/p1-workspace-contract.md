@@ -4,6 +4,12 @@ Status: FROZEN — P1 CONTRACT V1
 
 Contract Version: 1.0
 
+## Contract V1 Errata
+
+### ERRATUM-01 — Diff Empty String Preservation
+
+`ScanDiffView` 的十个 Diff scalar change-value 位置（resources field changes、license observation changes、verification changes、finding changes、assessment changes 各自的 `before`/`after`）允许字符串为空。`""` 表示原字段存在且值为空，`null` 表示字段缺失或无值，两者不得互相转换。本修正只删除这些 change-value string branch 的 `minLength` 限制，不放宽 path、ID、source ID、reason、rule version 或其它字段，也不改变 Contract Version 1.0。
+
 Baseline: integration/p0
 
 36d1b794909bf2e655e5968e1a8b3eb03a27bc15

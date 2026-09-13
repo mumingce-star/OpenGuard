@@ -24,7 +24,8 @@ from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.p1.history import HistoryReader
-from app.p1.models import P1HistoryPage
+from app.p1.models import P1HistoryPage, P1ScanDiffView
+from app.p1.diff import DiffReader
 from app.ai import OllamaProvider
 from app.api.models import (
     ErrorBody,
@@ -232,6 +233,29 @@ def _router() -> APIRouter:
             assessment.store if assessment is not None else None,
             request.app.state.history_cursor_key,
         ).page(cursor=cursor, limit=limit, status=status, source_type=source_type, q=q, project_key=project_key)
+
+    @router.get("/scans/{target_scan_id}/diff", response_model=P1ScanDiffView,
+                responses={code: {"model": ErrorEnvelope} for code in (400, 404, 409, 503)})
+    def compare_scans(
+        target_scan_id: str,
+        request: Request,
+        base_scan_id: str,
+        base_assessment_id: str | None = None,
+        target_assessment_id: str | None = None,
+    ) -> P1ScanDiffView:
+        assessment = request.app.state.assessment_service
+        value = DiffReader(
+            request.app.state.scan_api_service._registry,
+            assessment.store if assessment is not None else None,
+        ).compare(target_scan_id, base_scan_id, base_assessment_id, target_assessment_id)
+        try:
+            return P1ScanDiffView.model_validate(value)
+        except ValidationError:
+            raise ApiError(
+                status_code=503, code="upstream_unavailable",
+                message="Stored facts cannot be represented by the Diff contract.",
+                reason="diff_reference_integrity",
+            ) from None
 
     @router.get("/scans/{scan_id}", response_model=ScanRunStatusView, responses=_ERROR_RESPONSES)
     def get_scan(
@@ -531,6 +555,12 @@ def create_app(
 
     @app.exception_handler(RequestValidationError)
     async def handle_validation_error(request: Request, _: RequestValidationError) -> JSONResponse:
+        route = request.scope.get("route")
+        if request.method == "GET" and getattr(route, "path", None) == "/api/v1/scans/{target_scan_id}/diff":
+            return _error_response(request, ApiError(
+                status_code=400, code="invalid_argument",
+                message="Diff parameters are invalid.", reason="request_invalid",
+            ))
         return _error_response(
             request,
             ApiError(

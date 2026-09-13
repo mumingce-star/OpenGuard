@@ -30,6 +30,32 @@
       "object-examples.json": "a02159359c858c27c46d3eb9646c5c096a78cd645652fbae08e7dba3106a38dc"
     }
   },
+  "errata_validation": {
+    "erratum": "ERRATUM-01 — Diff Empty String Preservation",
+    "status": "PASS",
+    "contract_version": "1.0",
+    "baseline": "9822c8668683f0be475086b81642f2d8b41aa453",
+    "changed_schema": "schemas/p1/scan-diff-view.schema.json",
+    "reason": "preserve valid P0 empty-string scalar semantics",
+    "checks": {
+      "ten_change_value_string_branches_relaxed": "PASS: exactly 10",
+      "empty_string_distinct_from_null": "PASS: all five change categories",
+      "path_and_identifier_min_lengths_preserved": "PASS",
+      "other_frozen_schemas_unchanged": "PASS: common plus six other object schemas",
+      "p0_schemas_unchanged": "PASS"
+    },
+    "tests": {
+      "contract_schema": "42 passed",
+      "a03_diff_contract_and_independent": "109 passed",
+      "command": "PYTHONPATH=backend python -m pytest -q -p no:cacheprovider tests/unit/test_p1_contract_schema.py tests/unit/test_p1_diff_api.py tests/security/test_p1_diff_independent.py"
+    },
+    "environment": {
+      "python": "3.12.14",
+      "production_touched": false
+    },
+    "validated_at": "2026-09-13T12:26:19Z",
+    "note": "This narrow validation records ERRATUM-01 only; it preserves the historical freeze_validation object and does not re-freeze the full P1 contract or validate Production."
+  },
   "freeze_validation": {
     "contract_version": "1.0",
     "contract_commit": {

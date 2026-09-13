@@ -245,10 +245,11 @@ def test_neg_a3zip_006_unconfigured_runtime_rejects_zip_but_keeps_git_json(tmp_p
         registry.close()
 
 
-def test_pos_a3zip_003_openapi_keeps_exactly_six_paths_and_documents_one_post(harness: Harness) -> None:
+def test_pos_a3zip_003_openapi_adds_diff_get_and_preserves_scan_get_post(harness: Harness) -> None:
     schema = harness.client.get("/openapi.json").json()
-    assert len(schema["paths"]) == 6
-    assert set(schema["paths"]["/api/v1/scans"]) == {"post"}
+    assert len(schema["paths"]) == 7
+    assert set(schema["paths"]["/api/v1/scans"]) == {"get", "post"}
+    assert set(schema["paths"]["/api/v1/scans/{target_scan_id}/diff"]) == {"get"}
     content = schema["paths"]["/api/v1/scans"]["post"]["requestBody"]["content"]
     assert set(content) == {"application/json", "multipart/form-data"}
     assert content["application/json"]["schema"]["properties"]["source_type"]["const"] == "git"

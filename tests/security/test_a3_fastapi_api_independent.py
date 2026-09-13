@@ -279,11 +279,12 @@ def _assert_error_shape(response: Any, *, status_code: int) -> None:
     assert response.headers["x-request-id"] == payload["error"]["request_id"]
 
 
-def test_openapi_preserves_business_routes_with_additive_history_get(harness: ApiHarness) -> None:
+def test_openapi_preserves_business_routes_with_additive_history_and_diff_get(harness: ApiHarness) -> None:
     response = harness.client.get("/openapi.json")
     assert response.status_code == 200
     assert response.json()["paths"] == {
         "/api/v1/scans": {method: response.json()["paths"]["/api/v1/scans"][method] for method in ("get", "post")},
+        "/api/v1/scans/{target_scan_id}/diff": {"get": response.json()["paths"]["/api/v1/scans/{target_scan_id}/diff"]["get"]},
         "/api/v1/scans/{scan_id}": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}"]["get"]},
         "/api/v1/scans/{scan_id}/evidence/{evidence_id}": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/evidence/{evidence_id}"]["get"]},
         "/api/v1/scans/{scan_id}/report": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/report"]["get"]},
