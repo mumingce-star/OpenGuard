@@ -93,15 +93,15 @@ class GraphReader:
         ids, kinds = self._filters(resource_ids, resource_kinds)
         stored = self._stored(scan_id)
         run = stored.run
+        if run.status in {ScanStatus.QUEUED, ScanStatus.RUNNING}:
+            _fail("not_ready", 409, "扫描尚未完成，暂不能生成资源图。")
+        if run.status not in {ScanStatus.COMPLETED, ScanStatus.PARTIAL}:
+            _fail("not_comparable", 409, "扫描状态不可用于资源图。")
         resources = [("component", index, item) for index, item in enumerate(run.components)]
         resources += [("ai_asset", index, item) for index, item in enumerate(run.ai_assets)]
         by_resource_id = {item.id: (kind, index, item) for kind, index, item in resources}
         if any(resource_id not in by_resource_id for resource_id in ids):
             _fail("invalid_argument", 400, "资源筛选参数无效。", reason="resource_filter_invalid")
-        if run.status in {ScanStatus.QUEUED, ScanStatus.RUNNING}:
-            _fail("not_ready", 409, "扫描尚未完成，暂不能生成资源图。")
-        if run.status not in {ScanStatus.COMPLETED, ScanStatus.PARTIAL}:
-            _fail("not_comparable", 409, "扫描状态不可用于资源图。")
 
         filtered = bool(ids or kinds)
         id_filter, kind_filter = set(ids), set(kinds)

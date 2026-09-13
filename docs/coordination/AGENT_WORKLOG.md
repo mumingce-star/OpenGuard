@@ -4530,3 +4530,18 @@
 - 无新第三方依赖；AI参与仅开发协作，不调用产品Qwen。证据与tested-source SHA保留于ignored output/manual-fixes/a04-graph-20260913。未触碰数据库/报告/Production/Docker/扫描器，未操作cz/xzb分支，未merge/rebase。
 - 截至本条：实现与验收完成，待Root将本条及允许文件同一提交后普通push负责人功能分支；最终完整SHA/远端一致性由用户交付回执核实。P1集成仍5ad3b96、P0仍36d1b794。下一步仅负责人Review；不开始A05，不声称P1整体完成或生产验收。
 - 精确token不可获得；开工估算12k–24k，不能确认实际落入区间，范围未扩大。
+
+
+### [20260913-A04R1-RootAstra-start] START — Graph status gate precedence
+
+- GPT-6 Astra / Root：负责人已批准窄修；preflight clean，local/remote feat/p1-graph-api 均 c96c4dc781088857eb7bdd344e02a46ce6ab9f4c，integration/p1 为 5ad3b9622af444086023514e6a4fe8c3572be98f。
+- 仅移动 graph.py 状态 gate、追加 A04 组合测试和最小治理记录；先验证回归用例能复现，再复用430集合。无 Contract/Schema/API/生产/组员分支修改。新增独立提交并普通push，不amend、不merge、不开始A05。
+- token估算3k–6k；精确遥测不可获得。
+
+
+### [20260913-A04R1-RootAstra-result] COMPLETE — Graph status gate precedence fix
+
+- GPT-6 Astra / Root：仅移动 graph.py 的既有状态检查至读取run后、构建resource map前；query syntax依旧最先验证。七节点七边、closure/capacity/coverage/hash/formal均未改变。
+- A04追加12项组合用例；修改前4 fail/8 pass准确复现Review；修改后复用原430集合加12项，442 passed/0 failed/0 skipped，1条既有Starlette弃用warning。A04 54、A03 67、A02 24、Contract42、相关P0/API/Registry/ZIP/Assessment255。日志保留output/manual-fixes/a04-r1-20260913，不提交测试产物。
+- 范围仅graph.py、A04 unit tests及治理日志/进度追加。无Frozen Contract/Schema/frontend/deploy/Production/组员分支修改，无A05。提交前diff check通过；新增独立fix提交，普通push负责人分支，最终SHA与远端核实见Root回执。
+- 下一步负责人最终Review；不合并integration/p1。本次精确token不可获得，开工估算3k–6k，不把估算当实际消耗。

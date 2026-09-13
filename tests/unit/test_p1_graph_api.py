@@ -113,3 +113,34 @@ def test_get_no_assessment_reads_and_no_ai_or_network(env,monkeypatch):
     monkeypatch.setattr('socket.create_connection',forbidden)
     monkeypatch.setattr('subprocess.Popen',forbidden)
     assert graph(env,run).status_code==200
+
+
+@pytest.mark.parametrize('status,http_status,code', [
+    ('queued',409,'not_ready'), ('running',409,'not_ready'),
+    ('failed',409,'not_comparable'), ('cancelled',409,'not_comparable'),
+    ('completed',400,'invalid_argument'), ('partial',400,'invalid_argument'),
+])
+def test_scan_status_precedes_resource_existence(env,status,http_status,code):
+    run=seed(env,1,status)
+    response=graph(env,run,resource_ids='missing')
+    assert response.status_code==http_status, response.text
+    assert response.json()['error']['code']==code
+
+
+@pytest.mark.parametrize('params', [
+    {'resource_ids':''}, {'resource_ids':'   '},
+    {'resource_kinds':'Component'}, {'resource_kinds':' '}, {'cursor':'x'},
+])
+def test_graph_query_syntax_precedes_scan_read(env,monkeypatch,params):
+    def forbidden(*args,**kwargs):
+        raise AssertionError('Invalid query must not read scan storage')
+    monkeypatch.setattr(env.registry,'get',forbidden)
+    response=env.client.get('/api/v1/scans/scn_00000000-0000-4000-8000-000000000099/graph',params=params)
+    assert response.status_code==400
+    assert response.json()['error']['code']=='invalid_argument'
+
+
+def test_missing_scan_precedes_resource_existence(env):
+    response=env.client.get('/api/v1/scans/scn_00000000-0000-4000-8000-000000000099/graph',params={'resource_ids':'missing'})
+    assert response.status_code==404
+    assert response.json()['error']['code']=='not_found'

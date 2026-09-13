@@ -1211,3 +1211,8 @@ A线本轮：关闭Git时503拒绝且不建任务；5174接独立完整工具Doc
 | A05及后续负责人任务 | 本轮未开始 | 不扩大范围 |
 
 实施说明：`docs/p1/a04-resource-graph.md`。Root接入并统一验收；Terra实现graph核心、Luna独立测试、Sol只读审计。无cz/xzb分支操作。提交及普通push结果以本节所属A04提交和Root最终回执为准；不代表整个P1或竞赛交付完成。
+
+
+### A04-R1 — 状态 Gate 优先级修复
+
+A04 首轮负责人 Review 为 CONDITIONAL PASS。本次仅将 scan status gate 提到资源存在性验证之前，语法级400仍最先；新增12项组合测试，原430集合扩为442 passed/0 failed。仅负责人feat/p1-graph-api独立修复提交及普通push，等待FINAL REVIEW。Contract/Schema和integration/p1不变，不部署、不操作cz/xzb分支、不开始A05；SHA以本节所属修复提交及Root远端回执为准。
