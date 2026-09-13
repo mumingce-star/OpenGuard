@@ -6,6 +6,7 @@ from app.domain.usage import UsageDeclaration
 import os
 import json
 import stat
+import secrets
 import threading
 from base64 import b64encode
 from contextlib import asynccontextmanager
@@ -22,6 +23,8 @@ from starlette.concurrency import run_in_threadpool
 from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.p1.history import HistoryReader
+from app.p1.models import P1HistoryPage
 from app.ai import OllamaProvider
 from app.api.models import (
     ErrorBody,
@@ -213,6 +216,23 @@ def _router() -> APIRouter:
             reason="unsupported_media_type",
         )
 
+    @router.get("/scans", response_model=P1HistoryPage, responses={400: {"model": ErrorEnvelope}, 503: {"model": ErrorEnvelope}})
+    def list_scans(
+        request: Request,
+        cursor: str | None = None,
+        limit: str = "20",
+        status: str | None = None,
+        source_type: str | None = None,
+        q: str | None = None,
+        project_key: str | None = None,
+    ) -> P1HistoryPage:
+        assessment = request.app.state.assessment_service
+        return HistoryReader(
+            request.app.state.scan_api_service._registry,
+            assessment.store if assessment is not None else None,
+            request.app.state.history_cursor_key,
+        ).page(cursor=cursor, limit=limit, status=status, source_type=source_type, q=q, project_key=project_key)
+
     @router.get("/scans/{scan_id}", response_model=ScanRunStatusView, responses=_ERROR_RESPONSES)
     def get_scan(
         scan_id: str,
@@ -402,6 +422,7 @@ def create_app(
     app.state.git_scan_runtime = git_runtime
     app.state.zip_dispatcher = zip_dispatcher
     app.state.assessment_service = assessment_service
+    app.state.history_cursor_key = secrets.token_bytes(32)
 
     @app.middleware("http")
     async def v4_write_boundary(request: Request, call_next):

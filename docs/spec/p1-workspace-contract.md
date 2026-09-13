@@ -182,6 +182,10 @@ Report V2至少HTML/JSON；artifacts保存相对下载href、hash、size，不�
 
 显式写入继承本机Origin/请求大小限制，不新增用户系统。容量不足拒绝新写、保留历史；幂等对象与记录原子持久化。所有新增API的实现与请求Schema另属后续工作包，七响应Schema不是自动接入FastAPI的授权。
 
+### History q Search Semantics（负责人批准的A02 clarification）
+
+q先strip首尾空白，空值等价未提供；使用Unicode casefold后的literal substring匹配，禁止regex/fuzzy/编辑距离/相似度/拼写猜测/LLM。仅搜索project.name及History最终允许公开返回的安全source。必须先安全投影source再匹配，不能先搜索原始路径再脱敏；ZIP/local无安全公开source标识时source不参与搜索。不得搜索scan_id、Project.id、revision、Evidence/Finding、Assessment/Qwen、Report/Metadata正文或本地/workspace/container/ZIP内部路径。规范化q参与cursor filter绑定，大小写及首尾空白等价；不同q或有q与无q不得复用cursor。q不改变稳定排序，不产生扫描、模型、评估、外部读取或数据库写入。本澄清不改变Contract V1版本、Schema或其它决策。
+
 ## 11. 版本、回退与团队交付
 
 未知schema版本前端明确报不支持，不静默升级事实。额外字段当前拒绝；后续扩展须经过兼容变更审查、版本与样例更新，不修改P0 schema。新增sidecar先隔离验证和可恢复备份，再单独部署批准；回退不得删历史。
