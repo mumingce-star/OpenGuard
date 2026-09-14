@@ -247,10 +247,13 @@ def test_neg_a3zip_006_unconfigured_runtime_rejects_zip_but_keeps_git_json(tmp_p
 
 def test_pos_a3zip_003_openapi_adds_graph_get_and_preserves_scan_get_post(harness: Harness) -> None:
     schema = harness.client.get("/openapi.json").json()
-    assert len(schema["paths"]) == 8
+    assert len(schema["paths"]) == 11
     assert set(schema["paths"]["/api/v1/scans"]) == {"get", "post"}
     assert set(schema["paths"]["/api/v1/scans/{target_scan_id}/diff"]) == {"get"}
     assert set(schema["paths"]["/api/v1/scans/{scan_id}/graph"]) == {"get"}
+    assert set(schema["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks"]) == {"get"}
+    assert set(schema["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/derive"]) == {"post"}
+    assert set(schema["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/{task_id}"]) == {"patch"}
     content = schema["paths"]["/api/v1/scans"]["post"]["requestBody"]["content"]
     assert set(content) == {"application/json", "multipart/form-data"}
     assert content["application/json"]["schema"]["properties"]["source_type"]["const"] == "git"

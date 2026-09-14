@@ -1216,3 +1216,16 @@ A线本轮：关闭Git时503拒绝且不建任务；5174接独立完整工具Doc
 ### A04-R1 — 状态 Gate 优先级修复
 
 A04 首轮负责人 Review 为 CONDITIONAL PASS。本次仅将 scan status gate 提到资源存在性验证之前，语法级400仍最先；新增12项组合测试，原430集合扩为442 passed/0 failed。仅负责人feat/p1-graph-api独立修复提交及普通push，等待FINAL REVIEW。Contract/Schema和integration/p1不变，不部署、不操作cz/xzb分支、不开始A05；SHA以本节所属修复提交及Root远端回执为准。
+
+
+### 2026-09-14 A05 — 整改任务后端（本机未提交，待Review）
+
+A04已由负责人PASS并fast-forward集成，当前基线6e32044。A05在负责人feat/p1-remediation-tasks实现固定评估任务derive/list/PATCH、独立sidecar、CAS/version审计、严格note及局部写入护栏；Formal/Scan facts不变。主回归204通过、P1回归145通过，0失败；1既有真实uvicorn测试按本轮禁socket/subprocess要求未运行。无生产接线/部署、无提交推送或集成、无cz/xzb分支操作。下一步负责人Review；A06未开始，不标记P1交付完成。
+
+### 2026-09-14 A05-R1 — 窄修验收完成，仍未发布
+
+修复公共EvidenceRef兼容及A05写入结构验证400语义；补POST derive写边界测试，修正PATCH OpenAPI默认值表达。362 passed/0 failed/0 skipped，既有real_uvicorn按授权排除；Contract及存储/derive不改。仅本机feat/p1-remediation-tasks未提交成果，等待负责人最终Review；不commit/push/merge/deploy，不开始A06。
+
+### 2026-09-14 A05-R2 — Content-Type语义窄修，等待最终Review
+
+仅Task写路由非JSON改为400 invalid_argument/request_invalid；A05 61项、全部授权集合364 passed/0 failed/0 skipped，1既有real_uvicorn排除。最终receipt使用测试时9文件SHA，生成后复算一致；未提交推送合并部署，A06未开始。

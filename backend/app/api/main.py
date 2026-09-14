@@ -26,6 +26,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.p1.history import HistoryReader
 from app.p1.models import P1HistoryPage, P1ScanDiffView, P1ResourceGraphView, P1GraphCapacityErrorEnvelope
 from app.p1.graph import GraphReader, GraphCapacityError
+from app.p1.models import P1TaskDeriveRequest, P1TaskPatchRequest, P1TaskCollection, P1TaskPage, P1RemediationTask
 from app.p1.diff import DiffReader
 from app.ai import OllamaProvider
 from app.api.models import (
@@ -265,6 +266,33 @@ def _router() -> APIRouter:
                 reason="diff_reference_integrity",
             ) from None
 
+    def task_service(request: Request):
+        service = request.app.state.remediation_service
+        if service is None:
+            raise ApiError(status_code=503, code="feature_disabled",
+                           message="整改任务服务尚未配置。", reason="remediation_not_configured")
+        return service
+
+    @router.get("/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks", response_model=P1TaskPage,
+                responses={code: {"model": ErrorEnvelope} for code in (400, 404, 409, 503)})
+    def list_remediation_tasks(scan_id: str, assessment_id: str, request: Request,
+                               cursor: str | None = None, limit: str = "20") -> P1TaskPage:
+        if set(request.query_params) - {"cursor", "limit"} or any(len(request.query_params.getlist(k)) > 1 for k in request.query_params):
+            raise ApiError(status_code=400, code="invalid_argument", message="任务查询参数无效。", reason="request_invalid")
+        return task_service(request).page(scan_id, assessment_id, cursor=cursor, limit=limit)
+
+    @router.post("/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/derive", response_model=P1TaskCollection,
+                 responses={code: {"model": ErrorEnvelope} for code in (400, 404, 409, 503)})
+    def derive_remediation_tasks(scan_id: str, assessment_id: str, request: Request,
+                                 payload: P1TaskDeriveRequest) -> P1TaskCollection:
+        return task_service(request).derive(scan_id, assessment_id, payload)
+
+    @router.patch("/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/{task_id}", response_model=P1RemediationTask,
+                  responses={code: {"model": ErrorEnvelope} for code in (400, 404, 409, 503)})
+    def patch_remediation_task(scan_id: str, assessment_id: str, task_id: str, request: Request,
+                               payload: P1TaskPatchRequest) -> P1RemediationTask:
+        return task_service(request).patch(scan_id, assessment_id, task_id, payload)
+
     @router.get("/scans/{scan_id}/graph", response_model=P1ResourceGraphView,
                 responses={**{code: {"model": ErrorEnvelope} for code in (400, 404, 409, 503)},
                            413: {"model": P1GraphCapacityErrorEnvelope}})
@@ -433,6 +461,7 @@ def create_app(
     zip_dispatcher: ZipDispatcher | None = None,
     persistent_capacity: _PersistentCapacity | None = None,
     assessment_service=None,
+    remediation_service=None,
 ) -> FastAPI:
     if zip_dispatcher is not None:
         # Durable lifecycle ownership is deliberately all-or-nothing.  An
@@ -478,6 +507,7 @@ def create_app(
     app.state.git_scan_runtime = git_runtime
     app.state.zip_dispatcher = zip_dispatcher
     app.state.assessment_service = assessment_service
+    app.state.remediation_service = remediation_service
     app.state.history_cursor_key = secrets.token_bytes(32)
     app.state.p1_graph_max_nodes = 20_000
     app.state.p1_graph_max_edges = 60_000
@@ -485,7 +515,12 @@ def create_app(
     @app.middleware("http")
     async def v4_write_boundary(request: Request, call_next):
         path = request.url.path
-        if assessment_service is not None and request.method in {"POST", "DELETE"} and ("/assessments" in path or path.endswith("/chat")):
+        segments = path.strip("/").split("/")
+        task_path = (len(segments) == 8 and segments[:3] == ["api", "v1", "scans"]
+                     and segments[4] == "assessments" and segments[6] == "remediation-tasks")
+        task_write = task_path and (request.method == "PATCH" or (request.method == "POST" and segments[7] == "derive"))
+        existing_write = assessment_service is not None and request.method in {"POST", "DELETE"} and ("/assessments" in path or path.endswith("/chat"))
+        if task_write or existing_write:
             from urllib.parse import urlsplit
             configured = os.environ.get("OPENGUARD_WEB_ORIGINS", "http://127.0.0.1:8080,http://localhost:8080")
             allowed = configured.split(",")
@@ -494,8 +529,10 @@ def create_app(
                 return _error_response(request, ApiError(status_code=503,code="origin_configuration_invalid",message="本地来源配置不可用。",reason="origin_configuration_invalid"))
             if (origin is not None and origin not in allowed) or request.headers.get("sec-fetch-site") == "cross-site":
                 return _error_response(request, ApiError(status_code=403,code="origin_rejected",message="仅允许本地产品页面提交此操作。",reason="origin_rejected"))
-            if request.method == "POST":
+            if request.method in {"POST", "PATCH"}:
                 if request.headers.get("content-type", "").split(";")[0] != "application/json":
+                    if task_write:
+                        return _error_response(request, ApiError(status_code=400,code="invalid_argument",message="请求必须为JSON。",reason="request_invalid"))
                     return _error_response(request, ApiError(status_code=422,code="request_invalid",message="请求必须为JSON。",reason="request_invalid"))
                 chunks=[]; size=0
                 async for chunk in request.stream():
@@ -590,6 +627,14 @@ def create_app(
     @app.exception_handler(RequestValidationError)
     async def handle_validation_error(request: Request, _: RequestValidationError) -> JSONResponse:
         route = request.scope.get("route")
+        if (request.method, getattr(route, "path", None)) in {
+            ("POST", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/derive"),
+            ("PATCH", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/{task_id}"),
+        }:
+            return _error_response(request, ApiError(
+                status_code=400, code="invalid_argument",
+                message="Remediation task parameters are invalid.", reason="request_invalid",
+            ))
         if request.method == "GET" and getattr(route, "path", None) == "/api/v1/scans/{target_scan_id}/diff":
             return _error_response(request, ApiError(
                 status_code=400, code="invalid_argument",

@@ -4545,3 +4545,43 @@
 - A04追加12项组合用例；修改前4 fail/8 pass准确复现Review；修改后复用原430集合加12项，442 passed/0 failed/0 skipped，1条既有Starlette弃用warning。A04 54、A03 67、A02 24、Contract42、相关P0/API/Registry/ZIP/Assessment255。日志保留output/manual-fixes/a04-r1-20260913，不提交测试产物。
 - 范围仅graph.py、A04 unit tests及治理日志/进度追加。无Frozen Contract/Schema/frontend/deploy/Production/组员分支修改，无A05。提交前diff check通过；新增独立fix提交，普通push负责人分支，最终SHA与远端核实见Root回执。
 - 下一步负责人最终Review；不合并integration/p1。本次精确token不可获得，开工估算3k–6k，不把估算当实际消耗。
+
+
+### [20260914-A05-RootAstra-start] START — A05 remediation backend, isolated only
+
+- GPT-6 Astra / Root：feat/p1-remediation-tasks，HEAD 6e32044bc00640ef14ed646b31447ffe89ae23d7，preflight clean。负责人已明确note为string、默认空串、PATCH省略保留/null拒绝，最终done/dismissed非空白，原样保存合法字符串。
+- 范围：新增p1 remediation service/store，P1 DTO/API接线与局部PATCH安全边界，A05 unit/security及最小治理记录；不改Frozen Contract/Schema、frontend、scanner、reports、deploy；不触碰生产DB、不调用网络/模型/扫描、不commit/push/merge。
+- 单文件写者：子代理负责remediation_store.py；Root负责service/models/API和unit；独立审阅代理只读。隔离tmp_path sidecar，实例显式注入，未配置503；测试Schema/CAS/audit/idempotency/只读与Formal不变，并回归现有P1/API。
+- token估算15k–30k，精确遥测不可获得。完成仅READY FOR REVIEW，不开始A06。
+
+
+### [20260914-A05-RootAstra-review] COMPLETE — A05 backend isolated implementation, uncommitted Review
+
+- GPT-6 Astra / Root：仅负责人feat/p1-remediation-tasks，HEAD仍6e32044bc00640ef14ed646b31447ffe89ae23d7；未commit/push/merge。独立存储代理实现remediation_store.py，Root实现service/DTO/API/unit；独立安全代理18项实测，审阅代理静态复核通过。
+- 新增remediation.py/remediation_store.py和A05 unit/security；修改P1 models/API main及三个既有API route-set tests仅新增三条A05路由预期；日志/进度只追加。默认工厂不初始化sidecar，未配置503；仅tmp_path隔离数据库。
+- 固定Formal Assessment五类canonical来源，UUID5确定性task ID、指纹幂等和origin去重；任务current+append-only version审计事务，CAS冲突409不写；note为string，null/超长拒绝，省略保留，最终done/dismissed非空白，原样保存。superseded仅GET只读计算，跳过非Formal快照；不变更旧任务或正式事实。
+- 最终测试：主集合204 passed/0 failed/0 skipped，1 deselected（既有real_uvicorn用例需要真实端口/子进程，本轮明确禁用）；A02/A03/A04回归145 passed/0 failed/0 skipped。A05 unit28、独立18，Contract42，Assessment40，相关API76；A02 24/A03 67/A04 54。两组各1条既有Starlette弃用warning。命令和receipt/hash在ignored output/manual-fixes/a05-remediation-20260914，源码未经后续修改。
+- 原临时venv消失，已在/private/tmp建立Python3.12.14隔离环境，安装项目已声明固定依赖；无新增项目第三方依赖，未改pyproject/lock。No live Qwen/scanners/Git/socket/server/Production/DB migration/frontend/ReportV2/Schema变化。
+- 边界：Dimension-only用途变化提示、用途细节不足、AI独立核验及scan级coverage缺口不额外derive；保留在原Assessment并在交付列明。title限500，完整source由pointer/hash追溯；任务分页cursor为实例签名，重启失效需从首屏读取。sidecar容量保护非OS硬配额；生产接线另行授权。
+- 下一步仅负责人Review，不开始A06。精确token不可获得，开工估算15k–30k，不将估算作为实际消耗。
+
+### [20260914-A05R1-RootAstra-start] START — narrow Review fixes
+
+- GPT-6 Astra / Root：保留未提交A05；仅通用EvidenceRef、A05写路由validation语义、PATCH OpenAPI及unit/security测试。存储/derive/Schema/Contract/生产不改。目标复跑原349同等集合并新增用例，排除既有real_uvicorn；不commit/push/merge/deploy/A06。预计3k–8k token，非实际遥测。
+
+### [20260914-A05R1-RootAstra-complete] COMPLETE — narrow fixes verified, pending owner Review
+
+- GPT-6 Astra / Root：仅models.py/API main及A05 unit/security修复；公共EvidenceRef兼容scan/profile_observation，Diff DTO不改，derive仍scan-only。两个A05写路由RequestValidationError专用400 invalid_argument/request_invalid，P0保持422。OpenAPI删除status/note误导默认值，省略保留、null拒绝不变。
+- A05 59通过（unit39/security20），原349同等覆盖加13项变362通过，0失败/0跳过；既有real_uvicorn仍1 deselected，未运行真实服务。主217/P1 145；Contract42/Assessment40/P0 76/A02 24/A03 67/A04 54。已有Starlette弃用warning。初次新增测试2项错误假定derive与list排序相同，改为同一list前后快照后通过；无产品逻辑补改。
+- git diff --check通过。上一轮receipt确认remediation.py/remediation_store.py和三份P0测试SHA未变；Diff DTO schema前后相同；Frozen Contract/Schema/frontend/deploy无修改。证据output/manual-fixes/a05-r1-20260914。无提交/推送/合并/生产或A06操作。下一步负责人最终Review。精确token不可获得，3k–8k为估算，无法用遥测确认实际区间。
+
+### [20260914-A05R2-RootAstra-start] START — task Content-Type error semantics
+
+- GPT-6 Astra / Root：仅main.py task_write非JSON400及A05 security测试；保留A05/R1未提交成果。完整授权回归、最终receipt与复算SHA；不提交推送合并部署，不开始A06。预计2k–5k token，非实际遥测。
+
+### [20260914-A05R2-RootAstra-complete] COMPLETE — narrow Content-Type fix, no release
+
+- GPT-6 Astra / Root：仅API main的task_write非JSON返回400 invalid_argument/request_invalid及独立安全测试修改，新增POST derive两个Content-Type零DB写入用例。非Task原处理不变，403/413护栏保持。
+- 实际最终主集合219 passed/0 failed/0 skipped/1 deselected；P1回归145 passed/0 failed/0 skipped/0 deselected，总364。A05 unit39/security22，Contract42，Assessment40，P0 76，A02 24/A03 67/A04 54。仅排除既有real_uvicorn，无真实subprocess/socket/server，已有Starlette弃用warning。
+- 最终9个源码/测试SHA与JUnit统计写入output/manual-fixes/a05-r2-20260914/validation-receipt.json；生成后再计算源码SHA，与测试前及receipt完全一致。旧证据保留，不覆盖。diff --check通过；禁止范围未动，A05 derive/store/models及三份P0测试Hash相对R2前不变。
+- 未commit/push/merge/deploy，未开始A06；待负责人最终Review，停止。精确token不可获得，2k–5k仅开工估算，不声称实际用量。
