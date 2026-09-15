@@ -4585,3 +4585,30 @@
 - 实际最终主集合219 passed/0 failed/0 skipped/1 deselected；P1回归145 passed/0 failed/0 skipped/0 deselected，总364。A05 unit39/security22，Contract42，Assessment40，P0 76，A02 24/A03 67/A04 54。仅排除既有real_uvicorn，无真实subprocess/socket/server，已有Starlette弃用warning。
 - 最终9个源码/测试SHA与JUnit统计写入output/manual-fixes/a05-r2-20260914/validation-receipt.json；生成后再计算源码SHA，与测试前及receipt完全一致。旧证据保留，不覆盖。diff --check通过；禁止范围未动，A05 derive/store/models及三份P0测试Hash相对R2前不变。
 - 未commit/push/merge/deploy，未开始A06；待负责人最终Review，停止。精确token不可获得，2k–5k仅开工估算，不声称实际用量。
+
+### [20260915-A06-review-repairs-root-start] START — A06 R1/R2/R3 bounded repairs
+
+- GPT-6 Astra / Root；分支feat/p1-report-v2，HEAD 2f67aa1809572c73c8c67893753792c4fcd74684。16文件及review archive Hash匹配，保留dirty成果。独立openguard-a06-dev running，仅workspace:ro无生产卷。
+- Root修复幂等/Store关联完整性；来源子任务仅新增A06 sources辅助与精确只读Task版本方法；独立测试子任务仅新A06 security文件。共享文件单写者。R1→R2→R3验收，C1/C2/C3限定范围，中文HTML/Graph/旧附件保留。
+- 证据目录output/manual-fixes/a06-review-repairs-20260915-194029；隔离pytest、不真实端口/扫描/Qwen/生产；不暂存commit/push/merge/分支切换。预计15k–35k token，精确遥测不可得。最终仅修复待Review，不宣称A06交付。
+
+### [20260915-A06-review-repairs-root-complete] COMPLETE — local repairs verified, pending owner Review
+
+- Codex / Root：当前feat/p1-report-v2，HEAD仍2f67aa1809572c73c8c67893753792c4fcd74684；不切换分支/暂存/提交/推送/合并/部署。原A06成果及备份保留。
+- Root完成R1规范化显式请求优先重放、旧binding指纹兼容、事务二次检查；R2统一scope/行/body/full章节/附件校验，拒绝占位摘要与损坏；R3来源子任务完成固定用途Hash/引用/Task身份与provenance核验。C1仅新增Task get_version精确只读SQL及生成前包含项/序列化预算；C2 A06局部日期/整数严格验证；独立安全子任务补事务中途故障、四连接并发及隐私测试。新增辅助在现有p1目录，无新服务/迁移。
+- 最终固定Docker Python3.12.14集合548 passed/0 failed/0 skipped/1 deselected/1既有warning；A06 DTO5/Store28/Service22/API28/HTML18/Graph17/Sources47/Independent18、原writer兼容1；Frozen42/P0 API76/A02 24/A03 67/A04 54/A05 61/Assessment40。唯一排除既有real_uvicorn，不运行真实端口/扫描/Qwen。原writer创建合成旧记录，当前服务来源及renderer禁用后可重放及读取原双附件字节，DB SHA不变。
+- R1改前6失败证据保留；测试中修正了未实际改变kind/authority的fixture、补测试局部date-time checker（离线jsonschema缺可选插件），并恢复既有duplicate_algorithm_ref reason；未删skip/xfail制造通过。全部失败日志保留在output/manual-fixes/a06-review-repairs-20260915-194029；最终源码Hash与测试前后一致，包含未跟踪新文件的patch/receipt齐备，diff --check通过。
+- main/API adapter/中文HTML/Graph reader/三个P0 route-set tests相对此次开工Hash不变；Frozen Contract/Schema、P0/扫描器/Qwen、A05既有derive/patch/history等不改。完整审计版仍非自动脱敏，预算不是OS内存硬配额；不能声称全部容量风险消除。
+- 剩余A06：负责人最终Review、Notice/Profile reader、Graph前端引用说明、生产接线/部署、前端真实按钮下载联调与发布。停止，不开始新工作包；本地修复不等于A06已发布或P1完成。精确token遥测不可获得，开工15k–35k仅估算，不报告虚构实际值。
+
+### [20260915-A06-D1D2-start] START — delivery patch and permanent compatibility test
+
+- Codex / Root：feat/p1-report-v2 @ 2f67aa1809572c73c8c67893753792c4fcd74684，上一回执全部source SHA匹配；dirty成果保留。仅迁移兼容测试与两份已核验旧writer fixture、说明，backend不改。
+- Git原生diff/no-index重建交付补丁，在独立临时HEAD展开目录check/apply逐文件Hash核对；不使用真实暂存区。永久测试替换output脚本，不重复计数。原材料保留，隔离开发容器不重建，不碰生产，不暂存提交推送合并部署。预计3k–7k token，非实际遥测。
+
+### [20260915-A06-D1D2-complete] COMPLETE — delivery-only closure, pending Review
+
+- Codex / Root：只新增tests/unit/test_p1_report_v2_legacy_compat.py及tests/fixtures/p1/report-v2-legacy-writer/{report_v2.py,report_v2_store.py,README.md}；测试用__file__相对路径，加载前断言两份指定SHA。旧output脚本/旧补丁/备份保留，backend业务源码Hash不变。
+- 永久兼容测试单跑1 passed；最终统一集合548 passed/0 failed/0 skipped/1 deselected/1既有Starlette警告，26.00s。output兼容脚本已从集合移除；唯一排除既有real_uvicorn，未启动真实服务端口/扫描/Qwen。
+- Git原生tracked diff+no-index（返回1视为有差异），保留No newline标记。初轮独立HEAD archive应用check/apply成功、27文件逐项Hash相同；含本收工记录的最终补丁再独立核验，真实结果见output/manual-fixes/a06-delivery-check-20260915-205208/complete-review-validation.json与validation-receipt.json。原不合法complete-review.patch仅保留历史，不作为最终交付补丁。
+- 真实暂存区未操作；未切分支/commit/push/merge/deploy/生产改动。D1/D2限定交付整理，不扩展A06业务、不开始新工作包。等待负责人Review。精确token不可得，3k–7k仅开工估算。

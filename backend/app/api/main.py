@@ -462,6 +462,7 @@ def create_app(
     persistent_capacity: _PersistentCapacity | None = None,
     assessment_service=None,
     remediation_service=None,
+    report_v2_service=None,
 ) -> FastAPI:
     if zip_dispatcher is not None:
         # Durable lifecycle ownership is deliberately all-or-nothing.  An
@@ -508,6 +509,7 @@ def create_app(
     app.state.zip_dispatcher = zip_dispatcher
     app.state.assessment_service = assessment_service
     app.state.remediation_service = remediation_service
+    app.state.report_v2_service = report_v2_service
     app.state.history_cursor_key = secrets.token_bytes(32)
     app.state.p1_graph_max_nodes = 20_000
     app.state.p1_graph_max_edges = 60_000
@@ -520,7 +522,12 @@ def create_app(
                      and segments[4] == "assessments" and segments[6] == "remediation-tasks")
         task_write = task_path and (request.method == "PATCH" or (request.method == "POST" and segments[7] == "derive"))
         existing_write = assessment_service is not None and request.method in {"POST", "DELETE"} and ("/assessments" in path or path.endswith("/chat"))
-        if task_write or existing_write:
+        report_write = (
+            request.method == "POST" and len(segments) == 7
+            and segments[:3] == ["api", "v1", "scans"]
+            and segments[4] == "assessments" and segments[6] == "report-v2"
+        )
+        if task_write or report_write or existing_write:
             from urllib.parse import urlsplit
             configured = os.environ.get("OPENGUARD_WEB_ORIGINS", "http://127.0.0.1:8080,http://localhost:8080")
             allowed = configured.split(",")
@@ -531,7 +538,7 @@ def create_app(
                 return _error_response(request, ApiError(status_code=403,code="origin_rejected",message="仅允许本地产品页面提交此操作。",reason="origin_rejected"))
             if request.method in {"POST", "PATCH"}:
                 if request.headers.get("content-type", "").split(";")[0] != "application/json":
-                    if task_write:
+                    if task_write or report_write:
                         return _error_response(request, ApiError(status_code=400,code="invalid_argument",message="请求必须为JSON。",reason="request_invalid"))
                     return _error_response(request, ApiError(status_code=422,code="request_invalid",message="请求必须为JSON。",reason="request_invalid"))
                 chunks=[]; size=0
@@ -628,6 +635,14 @@ def create_app(
     async def handle_validation_error(request: Request, _: RequestValidationError) -> JSONResponse:
         route = request.scope.get("route")
         if (request.method, getattr(route, "path", None)) in {
+            ("POST", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2"),
+            ("GET", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2/{snapshot_id}"),
+        }:
+            return _error_response(request, ApiError(
+                status_code=400, code="invalid_argument",
+                message="报告请求参数无效。", reason="request_invalid",
+            ))
+        if (request.method, getattr(route, "path", None)) in {
             ("POST", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/derive"),
             ("PATCH", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/{task_id}"),
         }:
@@ -684,6 +699,8 @@ def create_app(
         )
 
     app.include_router(_router())
+    from app.api.report_v2 import router as report_v2_router
+    app.include_router(report_v2_router())
     if assessment_service is not None:
         from app.api.assessment import router as assessment_router
         app.include_router(assessment_router())

@@ -304,3 +304,75 @@ class P1TaskCollection(P1Model):
 
 class P1TaskPage(P1TaskCollection):
     next_cursor: str | None
+
+
+class P1TaskRef(P1Model):
+    task_id: Text
+    version: Annotated[int, Field(ge=1)]
+
+
+class P1NoticeRef(P1Model):
+    draft_id: Text
+    content_hash: Hash
+
+
+class P1AlgorithmRef(P1Model):
+    kind: Literal['graph', 'profile']
+    version: Text
+    content_hash: Hash
+
+
+class P1Binding(P1Model):
+    scan_ref: P1ScanRef
+    assessment_ref: P1AssessmentRef
+    task_refs: list[P1TaskRef]
+    notice_refs: list[P1NoticeRef]
+    algorithm_refs: list[P1AlgorithmRef]
+
+
+class P1SnapshotSection(P1Model):
+    authority: Literal[
+        'scan_facts',
+        'formal_assessment',
+        'workflow',
+        'observation',
+        'ai_explanation',
+    ]
+    schema_version: Text
+    source_ids: list[Text]
+    content_hash: Hash
+    snapshot_ref: Text
+
+
+class P1ReportArtifact(P1Model):
+    format: Literal['html', 'json']
+    content_hash: Hash
+    size_bytes: Annotated[int, Field(ge=0)]
+    href: Annotated[str, Field(pattern=r'^/api/v1/')]
+
+
+class P1ReportV2Snapshot(P1Model):
+    @model_validator(mode='before')
+    @classmethod
+    def strict_report_boundary(cls, value):
+        from .report_v2_integrity import strict_snapshot
+        # model instances have already passed this boundary.
+        if isinstance(value, cls):
+            return value
+        if isinstance(value, dict):
+            value = {k: (v.model_dump(mode='json') if hasattr(v, 'model_dump') else v) for k,v in value.items()}
+            value['artifacts'] = [v.model_dump(mode='json') if hasattr(v,'model_dump') else v for v in value.get('artifacts',[])]
+        try:
+            return strict_snapshot(value)
+        except (KeyError, TypeError, AttributeError) as error:
+            raise ValueError('report_structure_invalid') from error
+
+    schema_version: Literal['1.0']
+    snapshot_id: Text
+    binding: P1Binding
+    created_at: Utc
+    generator_version: Text
+    sections: list[P1SnapshotSection]
+    content_hash: Hash
+    artifacts: list[P1ReportArtifact]
+    provenance: P1HistoryProvenance

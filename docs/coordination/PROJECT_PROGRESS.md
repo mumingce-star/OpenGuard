@@ -1229,3 +1229,13 @@ A04已由负责人PASS并fast-forward集成，当前基线6e32044。A05在负责
 ### 2026-09-14 A05-R2 — Content-Type语义窄修，等待最终Review
 
 仅Task写路由非JSON改为400 invalid_argument/request_invalid；A05 61项、全部授权集合364 passed/0 failed/0 skipped，1既有real_uvicorn排除。最终receipt使用测试时9文件SHA，生成后复算一致；未提交推送合并部署，A06未开始。
+
+### 2026-09-15 A06 Report V2 — 审查修复本地验证完成，待负责人Review
+
+当前工作分支feat/p1-report-v2基于2f67aa1（A05集成成果），A06为既有未提交实现。R1重放优先/旧指纹兼容、R2完整正文和附件关联、R3固定来源核验及C1/C2/C3限定补强已隔离验证：548 passed/0 failed/0 skipped，1既有real_uvicorn排除、1既有warning。源码回执及包含新增文件的差异保存在ignored output/manual-fixes/a06-review-repairs-20260915-194029。未暂存提交推送合并部署，不改Frozen Schema，不调用生产/扫描/Qwen。中文展示和完整审计版隐私边界保留。
+
+尚未交付：Notice/Profile reader、Graph引用的正式前端选择说明、生产接线部署、前端真实按钮/下载联调、负责人最终Review及A06发布。此处不标记A06或P1整体完成，后续工作等待单独授权。
+
+### 2026-09-15 A06 D1/D2 — 补丁与永久兼容测试交付整理
+
+永久旧writer兼容测试进入tests/unit，必要旧源码及来源/Hash说明进入tests/fixtures/p1/report-v2-legacy-writer；不依赖output或固定/workspace路径。原writer创建合成报告，当前服务离线重放和双附件/DB Hash保持不变。替换后统一548 passed/0 failed/0 skipped，唯一real_uvicorn排除，未重复计数。Git原生完整补丁独立HEAD应用及逐文件Hash验证记录位于ignored output/manual-fixes/a06-delivery-check-20260915-205208。backend业务代码未变；仍未暂存提交推送合并部署，停止等待负责人Review，不代表A06上线。

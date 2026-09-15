@@ -114,6 +114,8 @@ def test_openapi_preserves_p0_routes_with_additive_history_diff_and_graph_get(ha
         "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks": ["get"],
         "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/derive": ["post"],
         "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/{task_id}": ["patch"],
+        "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2": ["post"],
+        "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2/{snapshot_id}": ["get"],
         "/api/v1/scans/{scan_id}": ["get"],
         "/api/v1/scans/{scan_id}/evidence/{evidence_id}": ["get"],
         "/api/v1/scans/{scan_id}/report": ["get"],

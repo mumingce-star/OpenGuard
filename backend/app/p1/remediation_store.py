@@ -203,6 +203,25 @@ class RemediationTaskStore:
         rows = self._read("SELECT payload,payload_hash FROM tasks WHERE scan_id=? AND assessment_id=? AND task_id=?", (scan_id, assessment_id, task_id))
         return rows[0] if rows else None
 
+    def get_version(self, scan_id: str, assessment_id: str, task_id: str,
+                    version: int) -> dict | None:
+        """Read exactly one scoped audit snapshot, without loading all history."""
+        if type(version) is not int or version < 1:
+            raise RemediationStoreError("invalid_argument")
+        rows = self._read(
+            "SELECT v.payload,v.payload_hash FROM task_versions v JOIN tasks t "
+            "ON t.task_id=v.task_id WHERE t.scan_id=? AND t.assessment_id=? "
+            "AND v.task_id=? AND v.version=?",
+            (scan_id, assessment_id, task_id, version))
+        if not rows:
+            return None
+        task = rows[0]
+        if (task["task_id"] != task_id or task["version"] != version
+                or task["scan_id"] != scan_id
+                or task["assessment_ref"]["assessment_id"] != assessment_id):
+            raise RemediationStoreError("storage_unavailable")
+        return task
+
     def page(self, scan_id: str, assessment_id: str, *, limit: int = 20,
              after: tuple[str, str] | None = None) -> list[dict]:
         if type(limit) is not int or not 1 <= limit <= 100 or (after is not None and (not isinstance(after, tuple) or len(after) != 2 or not all(isinstance(x, str) for x in after))):
