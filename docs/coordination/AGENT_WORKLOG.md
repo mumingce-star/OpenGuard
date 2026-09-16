@@ -4612,3 +4612,38 @@
 - 永久兼容测试单跑1 passed；最终统一集合548 passed/0 failed/0 skipped/1 deselected/1既有Starlette警告，26.00s。output兼容脚本已从集合移除；唯一排除既有real_uvicorn，未启动真实服务端口/扫描/Qwen。
 - Git原生tracked diff+no-index（返回1视为有差异），保留No newline标记。初轮独立HEAD archive应用check/apply成功、27文件逐项Hash相同；含本收工记录的最终补丁再独立核验，真实结果见output/manual-fixes/a06-delivery-check-20260915-205208/complete-review-validation.json与validation-receipt.json。原不合法complete-review.patch仅保留历史，不作为最终交付补丁。
 - 真实暂存区未操作；未切分支/commit/push/merge/deploy/生产改动。D1/D2限定交付整理，不扩展A06业务、不开始新工作包。等待负责人Review。精确token不可得，3k–7k仅开工估算。
+
+
+### [20260916-P1Dev-Root-start] START — isolated integration entry and handoff
+
+- Codex Root; local/remote integration/p1 verified clean at 62d78dadff3d01251bba648e9a17676b55870c05. Created owner branch feat/p1-dev-integration. AMENDMENT: A06 is now integrated; previous uncommitted entries are historical.
+- Scope: dev-only seed/factory/launcher, synthetic fixtures, tests, opt-in proxy and handoff. Root owns lifecycle/HTTP/logs; disjoint agents own factory, independent tests, proxy/docs. Baseline hashes in ignored output/manual-fixes/p1-dev-integration-20260916.
+- No existing business/production/Contract/Schema edits; no real scan/model/metadata, staging/commit/push/merge. New tests then prior548 equivalent excluding old real_uvicorn; separately authorized bounded HTTP/proxy checks; stop owned instances at finish.
+- Estimated 20k-40k tokens, not actual telemetry. Docker Desktop was stopped; opened under prior user authorization, no new containers yet.
+
+
+### [20260916-P1Dev-Root-complete] COMPLETE — isolated entry and handoff verified, pending Review
+
+- Codex Root / delegated implementation, independent tests and proxy/docs；feat/p1-dev-integration，HEAD仍62d78dadff3d01251bba648e9a17676b55870c05。仅新增开发factory/server/launcher/smoke、tests/fixture说明、opt-in Vite和交接文档；README导航及共享记录追加。未暂存commit/push/merge/deploy，不操作cz/xzb分支。
+- seed v2：两completed同项目+一partial，正式Scan/Assessment固定facts/usage hash，显式seed；Task/Report正式service/store注入，Graph引用由既有helper生成。启动前只读schema/manifest核验，不初始化坏库；拒绝symlink/越界/旧v1seed。仅Task/Report写可用，其余开发层503；公共安全边界保留。
+- 后端最终619 passed/0 failed/0 skipped/1 deselected/1既有Starlette warning（30.62s）；前端59 passed/0 failed/0 skipped、tsc通过。唯一排除旧test_real_uvicorn_disabled_git_rejects_without_queued_scan。本轮专用HTTP实际执行，非TestClient替代；25请求Task/CAS/基础及Graph报告/双格式摘要/旧字节不变；真实停止重启5次GET恢复、代理5次GET恢复均通过。早期断言、环境与安全失败日志保留。
+- Chrome扩展实际首页AX/截图通过，直接API JSON导航ERR_BLOCKED_BY_CLIENT未绕过；代理HTTP和Origin400/403通过，不宣称新P1业务页面或浏览器JSON导航通过。Docker Desktop bind映射uid0，独立容器uid0配cap-drop ALL、no-new-privileges、只读rootfs及公开源码、仅synthetic root RW。init network none；serve bridge+host127.0.0.1 publish，不声称网络层断网。
+- 156个既有backend/frontend/deploy/schema/rules/Contract基线文件Hash不变；245个测试时源码/测试文件最终Hash不漂移。SQLite主DB/非空WAL不变与无建表验证独立覆盖；不声称SHM读协调文件字节恒定。
+- 验收output/manual-fixes/p1-dev-integration-20260916；旧v1失败/产物保留，新v2数据output/manual-fixes/p1-dev-acceptance-v2-20260916。两API实例openguard-p1-dev-05c24c9906dd50f2/e225b301be107a48均已停止保留；Vite15174自身进程已停止；既有a06测试容器恢复原exited，未删除重建。
+- 待办：负责人源码Review/发布；新P1页面、动态Graph引用产品接口、Notice/Profile、生产启用、Windows不属于本轮完成事实。仅隔离开发入口闭环，不代表竞赛整体提交或获奖门禁关闭。精确token不可获得，开工20k–40k为估算，无法核定实际区间；范围未扩大。
+
+### [20260916-1951-Codex-P1DevReview] START — DEV-R1/R2/T1 bounded repairs
+
+- Codex Root：完整补读工作日志、进度、AGENTS、README、交接及相关Contract；现场feat/p1-dev-integration、HEAD 62d78dadff3d01251bba648e9a17676b55870c05，原14项Hash及原回执bacc8763…d4e一致，无可见并行编辑漂移。备份与新证据目录output/manual-fixes/p1-dev-review-20260916-195148；原证据不覆盖。
+- 仅修改开发launcher/smoke/factory、对应测试及dev-integration说明；必要日志只追加。先fail-first容器实际配置、HTTP身份/redirect、完整坏库启动只读预检，再最小修复和既有相关回归。测试固定既有a06容器Python3.12.14，真实HTTP仅新专属合成空间，结束停止本轮实例。
+- 禁止修改A06服务/store/算法、Frozen Contract/P0/生产工厂/安全中间件/扫描器/模型/组员页面；不暂存提交推送合并部署、不操作cz/xzb分支、不重做后端或环境。跨实现与测试职责由Root承担，等待负责人Review。20k–40k为实施估算，精确token不可得，完整历史补读额外耗用不伪称落在估算内。
+
+### [20260916-P1DevReview-Root-complete] COMPLETE — DEV-R1/R2/T1 bounded repairs, pending owner Review
+
+- feat/p1-dev-integration / HEAD 62d78dadff3d01251bba648e9a17676b55870c05 保持；原14项成果均保留，本轮仅调整其中6项（开发factory、launcher、smoke、launcher单测、开发文档、worklog）并新增test_p1_dev_review.py。README/PROJECT_PROGRESS、server、前端、fixture等其余原成果未改。旧记录完整前缀保留；未暂存/commit/push/merge/生产部署，无组员分支操作。
+- DEV-R1：所有权与可启动配置分离；实际完整ID/Image、精确loopback发布、6项源码/数据挂载、rootfs/cap/privilege/network/namespace/资源限制/workdir/argv规范化核验；新建和恢复均核验同一对象。健康响应身份与前后实际容器ID绑定；拒绝redirect。停止只按所有权与精确ID，不因异常运行配置阻止停止。错配模拟零start；真实Docker新建/重启通过，不曾制造危险配置。
+- DEV-R2：仅开发层身份头，manifest/root_id/synthetic/seed严格绑定首个GET和后续每次响应、verify、代理；带身份写前置条件防途中实例切换；失败撤销旧绑定。smoke/health禁所有redirect，不改Frozen JSON/安全中间件/Origin/TLS。两个真实TestClient相同seed不同root错连拒绝；真实旧manifest→新实例首次GET拒绝，0写请求/无PASS回执/DB Hash不变。实际回执保存base/origin/观察身份/manifest身份。
+- DEV-T1：完整create_dev_app坏列启动原已拒绝，但DELETE scans.db拒绝前Hash变化已在Python3.12.14复现；没有服务启动成功或生产损坏结论。开发只读预检复用既有registry验证器，补sidecar列/键/索引/约束/version校验；四库DELETE/WAL坏列及metadata/version/约束用例拒绝，主DB/非空WAL/schema不变，合法重启保留；不迁移、不改store/P0。
+- 证据目录output/manual-fixes/p1-dev-review-20260916-195148；fail-first 17 failed/8 passed，第一轮96 passed，追加用例4 failed/112 passed暴露旧身份绑定未撤销，修复后116 passed。最终668 passed/0 failed/0 skipped/1指定精确deselected/1既有Starlette warning，32.11s；原JUnit619唯一节点全保留，新增49节点未排除。命令/JUnit/失败轨迹与最终Hash见新回执；前两轮原始stdout未另存文件，JUnit保留，不伪称存在日志。
+- 真实新容器f18655531ccb0336009709774878d42fedef9c328b22bcb1b8261c25827cdf2d：26请求合成HTTP通过，真实Vite代理6 GET、合法重启6 GET通过；错实例额外1 GET拒绝。对应root p1-dev-review-live-20260916-195148保留。新容器及A06测试容器均exited，Vite PID67000已TERM退出，15174/18011无监听；旧两容器仍exited且未启动/删除。无Production/真实扫描/AI/外部redirect请求。
+- 原回执SHA256仍bacc87636a4c1be359b18f8ae41c9ceeeba8b572df65b3713f9375e7fbc55d4e；156项保护文件Hash全不变，245项原测试输入仅4项允许源码/单测改变。前端未改，未重跑59/tsc或Chrome；生产build、Windows/原生Linux、真实仓库仍未验收，bridge不代表禁外联，UID0只属已核验Docker Desktop策略。无新依赖/Node重装。等待负责人Review，不自动发布/开发下一任务；精确token不可获得，不以估算冒充实际。

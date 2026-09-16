@@ -1239,3 +1239,16 @@ A04已由负责人PASS并fast-forward集成，当前基线6e32044。A05在负责
 ### 2026-09-15 A06 D1/D2 — 补丁与永久兼容测试交付整理
 
 永久旧writer兼容测试进入tests/unit，必要旧源码及来源/Hash说明进入tests/fixtures/p1/report-v2-legacy-writer；不依赖output或固定/workspace路径。原writer创建合成报告，当前服务离线重放和双附件/DB Hash保持不变。替换后统一548 passed/0 failed/0 skipped，唯一real_uvicorn排除，未重复计数。Git原生完整补丁独立HEAD应用及逐文件Hash验证记录位于ignored output/manual-fixes/a06-delivery-check-20260915-205208。backend业务代码未变；仍未暂存提交推送合并部署，停止等待负责人Review，不代表A06上线。
+
+
+### 2026-09-16 P1 隔离联调入口（本地验证，等待负责人Review）
+
+AMENDMENT：A06本批已集成至integration/p1@62d78da；之前未提交条目保留历史。本轮负责人分支feat/p1-dev-integration仅新增隔离开发接线，不部署生产、不发布。
+
+| 负责人A线范围 | 已完成与验证 | 尚待 | 发布状态 |
+|---|---|---|---|
+| A01–A06本批基线 | 冻结契约及已集成后端复用，156既有源码/配置Hash不变 | 不代表全部P1完成 | 既有62d78da保留 |
+| 开发seed/factory/lifecycle | 私有v2合成空间、真实服务、精确stop/start、Origin与禁用边界；新增71测试 | 负责人Review | 本地未提交 |
+| 接口和报告联调 | HTTP25请求、真实重启/代理恢复，Task/CAS/基础及Graph报告Hash通过 | 任意扫描Graph引用产品接口未做 | 本地未提交 |
+| 代理/交接 | 首页Chrome实际可见，HTTP代理、59前端测试/tsc通过；docs/p1/dev-integration.md | Chrome直接API导航被客户端拦截；新P1页面、Windows未验收 | 本地未提交 |
+| 后续工作 | 本轮619后端通过，所有临时实例已停止，数据保留 | Notice/Profile、生产接线部署、P1最终交付另行授权 | 不自动推进 |

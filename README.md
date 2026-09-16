@@ -177,3 +177,7 @@ OpenGuard/
 ## License
 
 OpenGuard 的团队自主代码和文档采用 [Apache License 2.0](LICENSE) 开放。第三方软件、模型、数据、素材和服务仍分别受其自身许可证、授权条款或服务条款约束；本仓库的许可证不会改变第三方内容原有权利归属。
+
+## P1 隔离联调入口
+
+已集成的 A02–A06 可通过[开发专用入口与接口交接说明](docs/p1/dev-integration.md)使用合成数据联调。该入口独立于生产，显式初始化和启动，仅允许 Task/Report 写入，不启用真实扫描、Qwen 或 Metadata；不代表 P1 新页面、Notice/Profile 或生产启用已经完成。
