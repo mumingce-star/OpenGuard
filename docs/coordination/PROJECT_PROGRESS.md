@@ -1252,3 +1252,16 @@ AMENDMENT：A06本批已集成至integration/p1@62d78da；之前未提交条目�
 | 接口和报告联调 | HTTP25请求、真实重启/代理恢复，Task/CAS/基础及Graph报告Hash通过 | 任意扫描Graph引用产品接口未做 | 本地未提交 |
 | 代理/交接 | 首页Chrome实际可见，HTTP代理、59前端测试/tsc通过；docs/p1/dev-integration.md | Chrome直接API导航被客户端拦截；新P1页面、Windows未验收 | 本地未提交 |
 | 后续工作 | 本轮619后端通过，所有临时实例已停止，数据保留 | Notice/Profile、生产接线部署、P1最终交付另行授权 | 不自动推进 |
+
+### 2026-09-17 A07-1 — Metadata受限传输基础层，本地待Review
+
+AMENDMENT：前节“本地未提交”是历史状态；A01–A06及隔离联调/DEV-R1/R2/T1已由负责人集成，当前基线为integration/p1@ac6753fd48467eb39d7f4606f1e54e6931d2e386。
+
+| 范围/责任 | 本轮结果 | GitHub与下一步 |
+|---|---|---|
+| A线A07-1内部transport | 默认关闭；HF model/dataset类型化目标，数值IP/TLS、共享网络预算、零redirect、流式上限/严格JSON、临时bytes和来源绑定；实际运行实现而非NotImplemented | feat/p1-metadata-transport未暂存/提交/推送，负责人Review |
+| A线离线验证 | 原668明确集合+本轮99节点+既有A2离线46节点，最终计数/日志以output/manual-fixes/a07-1-metadata-20260917-1153回执为准；真实外部Git验收未运行 | 不作为真实HF/TLS握手或生产验收 |
+| cz B01 | 提供synthetic consumer及docs/p1/metadata-transport.md；未实现业务parser/真实5模型5数据集 | 待双方接口Review与cz实现 |
+| Profile/NOTICE/生产 | 未实现sidecar/cache/refresh/job/API/reader/前端；旧扫描和报告不受影响 | A与cz/xzb分别后续授权，不自动推进 |
+
+已可独立运行/演示的仍是既有扫描/评估/报告和隔离合成联调；本批仅新增可离线验证的内部传输层，未接产品。参赛完整作品仍需真实授权联调、业务页面、Profile/NOTICE、Bench人工核验、异机/恢复和提交材料；获奖竞争力需可复现对比/消融/用户效果证据，不能以本批测试数替代或给出无分母百分比。

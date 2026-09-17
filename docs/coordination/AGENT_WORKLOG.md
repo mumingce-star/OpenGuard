@@ -4647,3 +4647,23 @@
 - 证据目录output/manual-fixes/p1-dev-review-20260916-195148；fail-first 17 failed/8 passed，第一轮96 passed，追加用例4 failed/112 passed暴露旧身份绑定未撤销，修复后116 passed。最终668 passed/0 failed/0 skipped/1指定精确deselected/1既有Starlette warning，32.11s；原JUnit619唯一节点全保留，新增49节点未排除。命令/JUnit/失败轨迹与最终Hash见新回执；前两轮原始stdout未另存文件，JUnit保留，不伪称存在日志。
 - 真实新容器f18655531ccb0336009709774878d42fedef9c328b22bcb1b8261c25827cdf2d：26请求合成HTTP通过，真实Vite代理6 GET、合法重启6 GET通过；错实例额外1 GET拒绝。对应root p1-dev-review-live-20260916-195148保留。新容器及A06测试容器均exited，Vite PID67000已TERM退出，15174/18011无监听；旧两容器仍exited且未启动/删除。无Production/真实扫描/AI/外部redirect请求。
 - 原回执SHA256仍bacc87636a4c1be359b18f8ae41c9ceeeba8b572df65b3713f9375e7fbc55d4e；156项保护文件Hash全不变，245项原测试输入仅4项允许源码/单测改变。前端未改，未重跑59/tsc或Chrome；生产build、Windows/原生Linux、真实仓库仍未验收，bridge不代表禁外联，UID0只属已核验Docker Desktop策略。无新依赖/Node重装。等待负责人Review，不自动发布/开发下一任务；精确token不可获得，不以估算冒充实际。
+
+### [20260917-1153-Codex-A07-1-start] START — bounded metadata transport
+
+- Codex（GPT-5 系列代理，精确变体无可用遥测）/ Root：负责人明确授权实施A07-1，非新Contract。已核验本地/远端integration/p1=ac6753fd48467eb39d7f4606f1e54e6931d2e386、干净工作区/暂存区、同名分支不存在，创建feat/p1-metadata-transport。README/完整历史日志/进度在本会话此前完整阅读，本次逐文件Hash确认与该已读版本一致，并复读当前末尾及交接/Contract/源码。
+- AMENDMENT：A06与P1隔离联调及DEV-R1/R2/T1已经集成到ac6753f；旧“未提交”记录只代表当时状态。没有可见重叠在途编辑；不派发并行代理，Root单写者。
+- 仅新增Metadata内部types/有界连接/transport、合成测试/consumer、docs/p1调用交接，日志和进度追加。默认关闭，纯目标构造，数值地址dial、TLS验证、零redirect、共享单调预算、流式容量/JSON/身份校验；不实现cz许可证parser、不接生产或开发工厂、不改共享P0政策/依赖/Frozen。
+- 先fail-first再定向/安全/下层传输及原668明确集合与既有网络离线回归；既有真实外网测试只登记不执行。测试容器原exited，仅允许启动原ID并恢复；禁止真实Metadata/DoH/扫描/AI/生产及git暂存/提交/推送/合并。新证据目录output/manual-fixes/a07-1-metadata-20260917-1153。
+- 预计20k–40k token为工作量估算，精确消耗不可获得。内部接口待负责人及cz接线Review，不能据此宣布A07/Profile全部完成。
+
+### [20260917-1211-Codex-A07-1-complete] COMPLETE — local transport and offline validation, pending owner Review
+
+- Codex（GPT-5系列代理，精确变体无可用遥测）/ Root单写者：feat/p1-metadata-transport @ ac6753fd48467eb39d7f4606f1e54e6931d2e386；仅本地新增实现，未暂存/commit/push/merge/部署。基线A01–A06/隔离联调已集成的状态保持，不把历史未提交描述当当前事实。
+- 新增backend/app/ingestion/metadata_{types,wire,egress}.py，unit/security两个测试文件，tests/fixtures/p1/metadata-transport的synthetic_consumer.py/README，docs/p1/metadata-transport.md；仅追加共享日志/PROJECT_PROGRESS/AI辅助记录。共享address_policy/DoH/Git代理、P0、A02–A06、Frozen/Schema、开发入口/launcher、前端/生产配置及依赖均不改；全部原tracked源码Hash核对见新回执。
+- 实际运行transport，不是空接口：默认关闭、纯目标构造、HF model/dataset匿名信息安全子集、请求revision三模式；复用P0地址政策，Metadata局部DoH复用codec并绑定question，已验集合数值dial+peer核对，无二次解析/代理fallback；TLS正确Host/SNI/证书校验且不读取SSLKEYLOGFILE，全部redirect拒绝。共享单调deadline约束每次网络阻塞，头/body/wire/JSON预算与严格身份/revision绑定，稳定脱敏错误保留安全upstream_status。无缓存/DB/API/工厂接线/许可证解析/Scan写入。
+- 官方依据：2026-09-17 HF Hub API文档及官方SDK model_info/dataset_info、id/sha字段；OpenAPI markdown浏览未成功，明确用官方源码确认，未调用真实资源Metadata。h11 0.16.0复用已有API-lock和third_party MIT登记，无新依赖/安装/升级。
+- fail-first为模块缺失1 collection error（不冒称安全漏洞复现）；targeted-1为82 passed/1 failed，原因是同一DNS地址被既有政策去重，修正为两个不同合成公网地址而非放宽实现；targeted-2为83 passed。最终安全文件可单独运行51 passed；最终统一813 passed/0 failed/0 skipped/1精确deselected/1既有Starlette warning（37.66s）：原668全部唯一节点保留+本轮99+既有A2离线46，批次不累加。原real_uvicorn唯一排除不变；真实外部Git集成测试独立登记未授权/未运行。
+- 下层验证用合成公网地址、socket/TLS故障注入及真实h11读取/JSON/DNS codec；实际numeric dial代码由假socket断言，无真实HF/DoH/TLS握手。离线Python guard记录external_attempts_blocked=[]且无实际外部connect，非OS防火墙证明；既有Git子进程用审过的本地合成对象。SQL/生产/扫描工具/Qwen/Ollama均未调用。6文件compile(source)无pyc通过；git diff --check及完整新增清单/Hash见回执。
+- cz收到临时bounded bytes+versioned source descriptor和synthetic consumer，仅边界演示，不是B01完成或接口已接受，不计真实5模型5数据集。raw不得持久化/log/公开dump，source观察Hash不等Git revision/规范化观察Hash；同步证书文件加载/CPU有界处理不宣称OS硬实时保证；释放引用不宣称物理擦除。
+- 测试容器原ID 3d2b55b060a380979774cc408a14fd4ea5571c6e05e543c5be6a3a9fdc219bad仅启动/停止，已恢复exited且原只读挂载保留；未动已交付开发实例/数据库、Production或组员分支。证据output/manual-fixes/a07-1-metadata-20260917-1153保存命令、全部JUnit/日志、网络guard、保护及完整新增Hash、validation-receipt.json。
+- 本轮范围本地实现与离线验证完成，待负责人/安全Review及cz接线；仍待真实联网/TLS单独授权验收、parser/sidecar/refresh/job/Profile/NOTICE/前端及生产。本轮非A07全部完成，非P1/竞赛整体交付。停止等待Review。本次运行精确token数不可获得；20k–40k为开工估算，无法核定实际是否落在区间，任务范围未扩展。
