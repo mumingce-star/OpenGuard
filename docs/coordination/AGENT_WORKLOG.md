@@ -1857,3 +1857,11 @@
 - 建议下一步及责任模型：Root 执行已暂存文件的最终提交/推送并回执 SHA；用户执行真人复标；Sol/Terra/Luna 分别按职责实施 Bench 2.0 契约、运行器和独立反例。
 - 关联提交/PR/Issue/evidence_id：无新提交或 PR；CR-20260917-single-human-rereview。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 4,000～8,000，本轮预检、恢复、测试与发布准备在该范围内完成。
+### [20260918-1128-GPT5-Git发布评测工作包] AMENDMENT - 发布回执
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-18 11:28（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 实际发布：已创建提交 `d9d7a70`（`feat(bench): add review workflow tools`），并成功推送至 `origin/codex/scan-reliability-integration`，远端范围 `0f5a161..d9d7a70`。
+- 上传范围与排除项：21 个已验证的代码、测试、规格与治理文件均已上传；`output/` 下 9 个本机扫描输出仍未跟踪、未暂存、未提交或推送。此次发布不修改 `main`，仍需通过 PR 合并。
+- 验证：提交前 Node 语法检查、合成闭环 14/14、暂存格式检查和敏感模式扫描均已通过；推送命令退出成功。
+- 接口与风险：不改变 P0/P1 公共接口、Schema、规则或风险语义；真人盲审/复标待用户执行，Bench 2.0 Java/Schema实现仍未开始。
+- token说明：精确 token 数不可获得；发布回执属同一开工估算范围。
