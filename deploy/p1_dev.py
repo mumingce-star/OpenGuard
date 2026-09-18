@@ -25,6 +25,15 @@ LABEL = 'org.openguard.p1-dev'
 PYTHON = '/opt/api/bin/python'
 RESERVED_PORTS = {5174, 8011, 8080, 8000}
 IDENTITY_HEADER = 'X-OpenGuard-Dev-Identity'
+ACCEPTANCE_PREFIX = 'p1-frontend-acceptance-'
+
+
+def server_module(root):
+    return 'app.frontend_acceptance_server' if root.name.startswith(ACCEPTANCE_PREFIX) else 'app.dev_integration_server'
+
+
+def seed_version(root):
+    return 'p1-frontend-acceptance/1' if root.name.startswith(ACCEPTANCE_PREFIX) else 'p1-dev-integration/2'
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -40,8 +49,8 @@ def safe_root(value, repository=REPOSITORY):
     if '..' in raw.parts:
         raise LaunchError('parent traversal is not allowed')
     path = raw if raw.is_absolute() else repository / raw
-    if not re.fullmatch(r'p1-dev-[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}', path.name):
-        raise LaunchError('root name must be p1-dev-<unique-name>')
+    if not re.fullmatch(r'(?:p1-dev-|p1-frontend-acceptance-)[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}', path.name):
+        raise LaunchError('root name must identify a dev or frontend-acceptance instance')
     if path.parent != repository / 'output' / 'manual-fixes':
         raise LaunchError('root must be a direct child of this checkout output/manual-fixes')
     for p in [path, *path.parents]:
@@ -98,8 +107,10 @@ def inspect_owned(name):
 
 
 def marker(root):
-    path = root / 'dev-manifest.json'
+    path = root / ('frontend-acceptance-manifest.json' if root.name.startswith(ACCEPTANCE_PREFIX) else 'dev-manifest.json')
     if path.is_symlink() or not path.is_file():
+        if root.name.startswith(ACCEPTANCE_PREFIX):
+            raise LaunchError('acceptance_not_prepared')
         raise LaunchError('initialized manifest is required; run init explicitly')
     try:
         value = json.loads(path.read_text())
@@ -107,6 +118,8 @@ def marker(root):
         raise LaunchError('manifest is unreadable') from None
     if value.get('synthetic') is not True or not value.get('root_id'):
         raise LaunchError('not a synthetic P1 instance')
+    if root.name.startswith(ACCEPTANCE_PREFIX) and value.get('seed_version') != seed_version(root):
+        raise LaunchError('acceptance seed version mismatch')
     return value
 
 
@@ -115,7 +128,8 @@ def identity(root, manifest):
     instance = manifest['root_id']
     if not isinstance(instance, str) or not re.fullmatch(r'[a-zA-Z0-9_-]{1,100}', instance):
         raise LaunchError('invalid instance identity')
-    return 'openguard-p1-dev-' + root_hash[:16], {LABEL: instance, LABEL + '.root': root_hash}
+    prefix = 'openguard-p1-acceptance-' if root.name.startswith(ACCEPTANCE_PREFIX) else 'openguard-p1-dev-'
+    return prefix + root_hash[:16], {LABEL: instance, LABEL + '.root': root_hash}
 
 
 def check_owned(info, labels):
@@ -127,7 +141,7 @@ def check_owned(info, labels):
 
 
 def serve_command(root, api_port, web_port):
-    return ['-B', '-m', 'app.dev_integration_server', 'serve', '--root',
+    return ['-B', '-m', server_module(root), 'serve', '--root',
             '/workspace/output/manual-fixes/' + root.name, '--port', '18011',
             '--web-port', str(web_port), '--api-origin-port', str(api_port)]
 
@@ -174,13 +188,61 @@ def check_start_configuration(info, container_id, root, image_id, api_port, web_
     require(actual == expected, 'source/data mounts')
 
 
+def check_acceptance_configuration(info, root, manifest):
+    """Reuse start's full safety contract before any acceptance exec."""
+    check_owned(info, identity(root, manifest)[1])
+    image = info.get('Image', '')
+    if not isinstance(image, str) or not re.fullmatch(r'sha256:[0-9a-f]{64}', image):
+        raise LaunchError('invalid actual runtime Image')
+    try:
+        ports = []
+        for key in ('api_base', 'recommended_web_origin'):
+            value = urllib.parse.urlsplit(manifest[key])
+            if value.scheme != 'http' or value.hostname != '127.0.0.1' or value.path or value.query or value.fragment or value.username:
+                raise ValueError()
+            ports.append(port_number(value.port))
+        api_port, web_port = ports
+        if api_port == web_port:
+            raise ValueError()
+    except (KeyError, TypeError, ValueError):
+        raise LaunchError('invalid acceptance endpoint configuration') from None
+    labels = identity(root, manifest)[1]
+    labels[LABEL+'.config'] = hashlib.sha256(json.dumps([image,api_port,web_port]).encode()).hexdigest()
+    check_owned(info, labels)
+    check_start_configuration(info, info['Id'], root, image, api_port, web_port)
+    return image
+
+
+def validate_acceptance(root, image_id, platform):
+    """Read-only SQL in the verified live instance, or an offline RO data bind.
+
+    A live WAL may need its existing namespace's SHM coordination. Never use
+    immutable=1 (which can ignore WAL), copy a live DB, or checkpoint to validate.
+    """
+    manifest = marker(root)
+    info = inspect_owned(identity(root, manifest)[0])
+    if info and info['State']['Running']:
+        actual = check_acceptance_configuration(info, root, manifest)
+        if actual != image_id:
+            raise LaunchError('container configuration mismatch: Image')
+        return json.loads(docker('exec', info['Id'], PYTHON, '-B', '-m',
+            'app.frontend_acceptance_server', 'validate', '--root',
+            '/workspace/output/manual-fixes/' + root.name, timeout=90))
+    args = common_args(root, image_id, platform)
+    args[-1] += ',readonly'  # common_args ends with the sole data bind
+    value = docker('run', '--rm', '--network=none', *args, image_id,
+        '-B', '-m', 'app.frontend_acceptance_server', 'validate', '--root',
+        '/workspace/output/manual-fixes/' + root.name, timeout=90)
+    return json.loads(value)
+
+
 def health_identity(response, manifest):
     expected = {k: manifest.get(k) for k in ('root_id', 'synthetic', 'seed_version')}
     try:
         observed = json.loads(response.headers.get(IDENTITY_HEADER, ''))
     except (ValueError, TypeError):
         raise LaunchError('health identity missing/invalid') from None
-    if (expected['synthetic'] is not True or expected['seed_version'] != 'p1-dev-integration/2'
+    if (expected['synthetic'] is not True or expected['seed_version'] not in {'p1-dev-integration/2', 'p1-frontend-acceptance/1'}
             or not isinstance(observed, dict) or observed.get('synthetic') is not True
             or observed != expected):
         raise LaunchError('health identity mismatch')
@@ -265,7 +327,7 @@ def main(argv=None):
         root.mkdir(mode=0o700, exist_ok=True)
         version = subprocess.check_output(['git', '-C', str(REPOSITORY), 'rev-parse', 'HEAD'], text=True).strip()
         print(docker('run', '--rm', '--network=none', *common_args(root, image_id, platform), image_id,
-                     '-B', '-m', 'app.dev_integration_server', 'init', '--root', inside,
+                     '-B', '-m', server_module(root), 'init', '--root', inside,
                      '--code-version', version, timeout=90))
         return
     manifest = marker(root)
@@ -290,6 +352,10 @@ def main(argv=None):
             print('already stopped; no unrelated process touched')
         return
     image_id, platform = local_image(args.image)
+    if root.name.startswith(ACCEPTANCE_PREFIX):
+        validated = validate_acceptance(root, image_id, platform)
+        if validated != manifest:
+            raise LaunchError('acceptance manifest changed during validation')
     config_hash = hashlib.sha256(json.dumps([image_id, args.api_port, args.web_port]).encode()).hexdigest()
     labels[LABEL + '.config'] = config_hash
     if info:

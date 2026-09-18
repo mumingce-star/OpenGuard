@@ -17,9 +17,9 @@ import re
 IDENTITY_HEADER = 'X-OpenGuard-Dev-Identity'
 
 
-def instance_identity(value):
+def instance_identity(value, seed_version='p1-dev-integration/2'):
     identity = {key: value.get(key) for key in ('root_id', 'synthetic', 'seed_version')}
-    if (identity['synthetic'] is not True or identity['seed_version'] != 'p1-dev-integration/2'
+    if (identity['synthetic'] is not True or identity['seed_version'] != seed_version
             or not isinstance(identity['root_id'], str)
             or not re.fullmatch(r'[a-zA-Z0-9_-]{1,100}', identity['root_id'])):
         raise ValueError('invalid development identity')
@@ -41,11 +41,12 @@ def local_url(value):
 
 
 class Client:
-    def __init__(self, base, origin, manifest=None):
+    def __init__(self, base, origin, manifest=None, *, seed_version='p1-dev-integration/2'):
         self.base, self.origin = local_url(base), local_url(origin)
         self.opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
         self.events = []
-        self.manifest_identity = instance_identity(manifest) if manifest is not None else None
+        self.seed_version = seed_version
+        self.manifest_identity = instance_identity(manifest, seed_version) if manifest is not None else None
         self.observed_identity = None
 
     def bind(self):
@@ -90,7 +91,7 @@ class Client:
                 raise ValueError('HTTP redirect refused')
             if self.manifest_identity is not None:
                 try:
-                    observed = instance_identity(json.loads(response.headers.get(IDENTITY_HEADER, '')))
+                    observed = instance_identity(json.loads(response.headers.get(IDENTITY_HEADER, '')), self.seed_version)
                 except (ValueError, TypeError, AttributeError):
                     raise ValueError('remote identity missing/invalid') from None
                 if observed != self.manifest_identity:

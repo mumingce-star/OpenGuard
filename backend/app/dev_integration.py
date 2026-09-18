@@ -87,7 +87,7 @@ def _expected_parent(repository_root: Path) -> Path:
     return repository_root / "output" / "manual-fixes"
 
 
-def _root(root: Path, repository_root: Path | None, *, must_exist: bool) -> Path:
+def _root(root: Path, repository_root: Path | None, *, must_exist: bool, prefix: str = _DEV_PREFIX) -> Path:
     repo = _repository_root(repository_root)
     parent = _expected_parent(repo)
     raw = root.expanduser()
@@ -109,7 +109,7 @@ def _root(root: Path, repository_root: Path | None, *, must_exist: bool) -> Path
         expected = parent.resolve(strict=False)
     except OSError as error:
         raise DevIntegrationError("root_invalid") from error
-    if candidate.parent != expected or not candidate.name.startswith(_DEV_PREFIX):
+    if candidate.parent != expected or not candidate.name.startswith(prefix):
         raise DevIntegrationError("root_invalid")
     if any(item.is_symlink() for item in (candidate, *candidate.parents)):
         raise DevIntegrationError("root_unsafe")
@@ -515,6 +515,11 @@ def create_dev_app(root: Path, *, origins: tuple[str, ...], repository_root: Pat
     """Wire existing P1 services over an initialized synthetic root only."""
     path = _root(root, repository_root, must_exist=True)
     manifest = validate_root(path, repository_root=repository_root)
+    return _wire_dev_app(path, manifest.to_dict(), origins=origins)
+
+
+def _wire_dev_app(path: Path, manifest: dict, *, origins: tuple[str, ...]):
+    """Internal wiring shared only by independently validated synthetic roots."""
     if not origins or any(not isinstance(origin, str) or not origin for origin in origins):
         raise DevIntegrationError("origin_invalid")
     for origin in origins:
@@ -562,7 +567,7 @@ def create_dev_app(root: Path, *, origins: tuple[str, ...], repository_root: Pat
                                     content=payload.model_dump(mode="json"))
         return await call_next(request)
 
-    identity = {key: manifest.to_dict()[key] for key in ('root_id', 'synthetic', 'seed_version')}
+    identity = {key: manifest[key] for key in ('root_id', 'synthetic', 'seed_version')}
     identity_header = json.dumps(identity, sort_keys=True, separators=(',', ':'))
 
     @app.middleware("http")
@@ -585,5 +590,5 @@ def create_dev_app(root: Path, *, origins: tuple[str, ...], repository_root: Pat
         return response
 
     app.state.dev_integration_root = path
-    app.state.dev_integration_manifest = manifest.to_dict()
+    app.state.dev_integration_manifest = manifest
     return app

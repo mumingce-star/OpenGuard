@@ -4667,3 +4667,37 @@
 - cz收到临时bounded bytes+versioned source descriptor和synthetic consumer，仅边界演示，不是B01完成或接口已接受，不计真实5模型5数据集。raw不得持久化/log/公开dump，source观察Hash不等Git revision/规范化观察Hash；同步证书文件加载/CPU有界处理不宣称OS硬实时保证；释放引用不宣称物理擦除。
 - 测试容器原ID 3d2b55b060a380979774cc408a14fd4ea5571c6e05e543c5be6a3a9fdc219bad仅启动/停止，已恢复exited且原只读挂载保留；未动已交付开发实例/数据库、Production或组员分支。证据output/manual-fixes/a07-1-metadata-20260917-1153保存命令、全部JUnit/日志、网络guard、保护及完整新增Hash、validation-receipt.json。
 - 本轮范围本地实现与离线验证完成，待负责人/安全Review及cz接线；仍待真实联网/TLS单独授权验收、parser/sidecar/refresh/job/Profile/NOTICE/前端及生产。本轮非A07全部完成，非P1/竞赛整体交付。停止等待Review。本次运行精确token数不可获得；20k–40k为开工估算，无法核定实际是否落在区间，任务范围未扩展。
+
+### [20260918-1125-Codex-FrontendAcceptance-start] START — synthetic acceptance seed pack v1
+
+- Codex（GPT-5系列代理，精确变体无遥测）/ Root单写者，负责人A线限定基础设施任务。基线integration/p1@944a00e3d98cba0f815f40dbc8bc96437afb44f3及干净状态实核，创建feat/p1-frontend-acceptance-seed；未暂存/提交/推送/合并。此前完整读过的工作日志/进度与A07回执Hash逐字节一致，本轮复读末尾及README/AGENTS/Contract/开发说明/交接和复用源码。历史A07未提交描述只代表当时，现已由负责人集成。
+- 范围：独立p1-frontend-acceptance/1 generator/manifest、最小复用dev launcher/factory/HTTP client、对应测试及docs/p1/frontend-acceptance-seed.md，日志只追加。不修改Frozen/P0/A02–A07产品算法/组员前端或分支；不真实扫描/Metadata/AI/生产部署。不覆盖原seed v2或旧证据。
+- 验收：先fail-first，205条真实Registry分页、100/300/500实际图、固定Diff、正式Task derive及Obligation追溯/CAS、四类不可变Report、GET逻辑审计，最后固定Python3.12.14统一回归及有界loopback HTTP。精确排除原唯一real_uvicorn节点，不安装依赖或放宽Contract。
+- 当前Docker daemon不可用，已按既有开关授权启动Docker Desktop，须先核对原a06容器再执行测试。证据预定output/manual-fixes/p1-frontend-acceptance-20260918-112553；环境不满足时如实停在BLOCKED，不伪造测试或成功manifest。预计20k–40k token为工作量估算，精确消耗不可获得。
+
+### [20260918-1148-Codex-FrontendAcceptance-complete] COMPLETE — local synthetic seed and isolation validation, pending owner Review
+
+- Codex（GPT-5系列代理，精确变体无遥测）/ Root单写者；feat/p1-frontend-acceptance-seed，HEAD仍944a00e3d98cba0f815f40dbc8bc96437afb44f3。独立seed p1-frontend-acceptance/1，新增generator/server/CLI、unit/security测试与交接文档；最小复用dev factory/launcher/client，日志只追加。无Frozen/P0/A02–A07产品算法/前端/依赖修改；旧seed v2和旧空间保留，不操作cz/xzb分支。
+- 205真实Registry行，正式History cursor遍历100+100+5且唯一；六状态/Git-like与ZIP筛选。四Diff场景包含version/revision/added/confirmed-not-observed、partial不确认删除、真实缺Assessment和固定Assessment比较。正式图100/300/500节点、283/883/1483边；筛选闭包、partial、测试专属低容量拒绝通过，产品默认容量不改。
+- 15个正式derive Task（gap/next_step/obligation），原Assessment pointer/hash/resource/evidence追溯通过，另有空Task场景。四类basic/task/graph/long正式不可变Report，两格式实际Hash/size在manifest。prepare同键重放不增生；最终smoke明确修改Task报告实际绑定的Task，todo→in_progress→旧版本409→done版本3，旧报告字节及Scan/Assessment/原Obligation不变。GET业务表计数/全行及BLOB规范化摘要前后一致。
+- Fail-first 7模块缺失setup errors/1 passed；定向20 passed（最后补1 launcher测试后进入统一集合）。统一首轮829 passed/5 failed是旧安全测试reload导致新测试持有过期异常类，修正测试引用，未放宽拒绝。最终统一834 passed/0 failed/0 skipped/1精确deselected/1既有Starlette warning，60.21秒；原813唯一节点保留+本轮21。唯一排除原test_real_uvicorn_disabled_git_rejects_without_queued_scan。中间stdout不完整的targeted-1不伪称完整回执，旧失败轨迹保留。
+- 最终r2真实loopback HTTP 96请求与同ID停止恢复后40 GET通过；早先r1修改任意Task的较弱不变性检查保留，不用它替代r2确切绑定测试。final r2 root为output/manual-fixes/p1-frontend-acceptance-live-20260918-112553-r2，root_id=dev_db7db540b3cd45d4a4eae10db4743757。两本轮容器a397b31…/fbeea139…均exited，原a06测试容器3d2b55…恢复exited，数据/日志均保留。没有删除重建旧容器或旧数据。
+- 完整命令/日志/JUnit/节点/源码Hash/业务审计/报告Hash/回执在output/manual-fixes/p1-frontend-acceptance-20260918-112553。Python3.12.14及原镜像8ffe27…；没有授权或执行外部业务网络请求，测试/HTTP Python guard不等于OS防火墙，bridge不宣称禁外联。所有事实为synthetic，非真实仓库/Gold/合规或性能证明；测试由同一代理执行，不冒称独立人工Review。
+- Profile/NOTICE明确not_available_on_current_baseline，未伪造200；前端未改/未重跑，无本轮Vite代理或Chrome页面验收，Windows/原生Linux/生产build未测。未git add/commit/push/merge/生产部署。负责人Review后再决定发布和交给xzb浏览器验收；不自动开始A07-2。本次运行精确token数不可获得，20k–40k为开工估算，无法核定是否落在区间；范围未扩大。
+
+### [20260918-1227-Codex-AcceptanceR1R2-start] START — Owner Review narrow repairs
+
+- Codex（GPT-5系列代理，精确变体无遥测）/ Root单写者。现场feat/p1-frontend-acceptance-seed@944a00e3d98cba0f815f40dbc8bc96437afb44f3，原12项Hash逐项与d7f724c5…2361回执一致，无额外修改。按本轮要求重读AGENTS/README/日志及进度末尾/交接说明，历史保留。
+- 仅R1内部manifest完整性及只读绑定、R2 exec前实际容器安全配置核查，相关测试/文档/日志。复用原store只读reader和launcher配置检查，不改Frozen/产品算法/前端/旧v2；stop仍ownership-only。未提交推送合并部署，不开始Profile/NOTICE/A07-2。
+- 先参数化fail-first，定向/原dev回归/原834完整集合，再全新合成root真实loopback init/start/prepare/smoke/restart/verify和独立篡改root拒绝。证据output/manual-fixes/p1-frontend-acceptance-r1r2-20260918-122736；最终统一日志固定unified-final.log。原测试容器身份/镜像/只读挂载已核验，当前exited，结束恢复。
+- 预计15k–30k token，精确消耗不可获得；所有旧证据保留，完成仅本地待负责人最终Review。
+
+### [20260918-2046-Codex-AcceptanceR1R2-complete] COMPLETE — narrow local repair, pending final owner Review
+
+- Codex（GPT-5系列代理，精确变体无遥测）/ Root单写者；分支feat/p1-frontend-acceptance-seed，HEAD仍944a00e3d98cba0f815f40dbc8bc96437afb44f3。保留原12项成果，新增1个R1/R2测试文件；本轮改frontend_acceptance.py/server、p1_dev.py、p1_frontend_acceptance.py、对应文档及三份追加日志。dev_integration.py/p1_dev_smoke.py及原Acceptance两测试本轮不改。无Frozen/Schema/产品service/store/metadata/前端/生产factory/依赖改动，不操作组员分支。
+- R1：内部manifest顶层与identity完整，205固定Registry行、D1–D4、三档正式Graph实际计数、五个固定formal Assessment及facts/usage/version、两Task集合历史v1来源/resource/evidence、四个Report真实snapshot/binding/artifacts均严格只读绑定；D3缺Assessment和Profile/NOTICE未实现保持。init全部成功后才发布marker/manifest，失败现场保留且拒绝acceptance_not_prepared；start/app factory/print/HTTP验收共用校验，不调用创建/derive来修补。合法Task CAS后仍绑定初始v1，不强迫回滚。
+- R2：审计及新增运行中校验exec均先复用完整check_start_configuration，核验实际ID/Image/User/目录/命令/端口/rootfs/cap/security/network/namespace/devices/limits/tmpfs/全部mount；只取必要inspect字段，标签不能代替实际安全配置。配置异常自有实例仍可ownership-only stop，归属不明拒绝。
+- Fail-first 18 failed/1 passed，复现删Graph/计数/报告/Assessment/Task/identity等被接受及错配audit先exec。修补中replay显式identity调用错误的两轮日志保留，未改产品store；最终定向31 passed，原Acceptance两文件+旧dev回归141 passed。首次统一863通过后，真实HTTP发现跨容器只读bind无法打开live WAL；保留失败，改为实际配置核验后的同ID容器内mode=ro读取，不用immutable忽略WAL、不checkpoint。最终完整统一865 passed/0failed/0skipped/1原精确deselected/1既有Starlette warning，71.90秒；原834保留+31。最终唯一成功日志unified-final.log及final.xml，不扩大排除。
+- fresh真实loopback：init/start、prepare重复幂等52请求、smoke96请求、同ID stop/start后verify40 GET；共188条HTTP回执事件（额外launcher health GET不混计）。205 History、100/300/500节点、15/0 Task、四Report、实际绑定Task CAS409→done v3、原报告不变及GET业务表/全行/BLOB摘要一致。无外部业务请求；guard不是OS防火墙，bridge非禁外联。独立停止后副本删除graphs.500，start及print均拒绝acceptance_manifest_invalid，未建API容器、全部副本文件Hash不变；源root/副本/失败日志均保留。
+- 本轮验收容器4f7080a6…69ac已exited，a06测试容器3d2b55b0…4bad恢复exited；未删除旧容器/空间。新证据output/manual-fixes/p1-frontend-acceptance-r1r2-20260918-122736包含完整命令、失败轨迹、JUnit、collection、源码/保护Hash、HTTP审计及回执。测试由同代理实现执行，不替代独立负责人Review。
+- 未git add/commit/push/merge/生产部署；可独立演示合成History/Diff/Graph/Task/Report，不代表前端页面完成、真实仓库合规或获奖门禁。Profile/NOTICE/A07-2、xzb页面/代理、Windows/原生Linux/生产build/真实扫描均未扩验。下一步仅负责人最终Review；发布、xzb页面验收及后续包需另行安排。本次运行精确token数不可获得，开工估算15k–30k无法核定实际是否在区间，任务范围未扩大。

@@ -1265,3 +1265,28 @@ AMENDMENT：前节“本地未提交”是历史状态；A01–A06及隔离联�
 | Profile/NOTICE/生产 | 未实现sidecar/cache/refresh/job/API/reader/前端；旧扫描和报告不受影响 | A与cz/xzb分别后续授权，不自动推进 |
 
 已可独立运行/演示的仍是既有扫描/评估/报告和隔离合成联调；本批仅新增可离线验证的内部传输层，未接产品。参赛完整作品仍需真实授权联调、业务页面、Profile/NOTICE、Bench人工核验、异机/恢复和提交材料；获奖竞争力需可复现对比/消融/用户效果证据，不能以本批测试数替代或给出无分母百分比。
+
+### 2026-09-18 Frontend Acceptance Seed Pack v1 — 本地实现及隔离验证完成，待Review
+
+AMENDMENT：A07-1已由负责人集成至944a00e；此前本地未提交描述保留为历史。本轮工作分支feat/p1-frontend-acceptance-seed未暂存/提交/推送/合并。
+
+| 范围/责任 | 当前结果与验证 | 发布状态/下一步 |
+|---|---|---|
+| A线验收基础设施 | 独立synthetic seed，205 History、D1–D4 Diff、100/300/500图、15真实derive Task及空列表、四类Report；原dev v2保持 | 本轮本地未发布，负责人源码Review |
+| A线验证 | 最终834通过，原813唯一节点保留+21；96真实loopback HTTP和40重启GET，实际绑定Task CAS与旧报告不变，逻辑GET审计通过 | 证据output/manual-fixes/p1-frontend-acceptance-20260918-112553；本轮容器已停，数据保留 |
+| xzb F01/F03/F04/F05/F06 | 已有可定位ID/快照/Hash及操作文档，未修改页面或恢复stash | 由xzb按后续安排接真实API并做浏览器/F07验收；不把后端通过当UI完成 |
+| A07-2/cz B01/NOTICE | 当前基线无可用Profile/NoticeDraft，manifest明确未提供 | 负责人后续单独安排，不伪造成功或扩大本轮 |
+
+当前可独立演示新增合成History/Diff/Graph/Task/Report链路，不是真实仓库扫描、Gold或合规证明。前端未改/未重跑，Windows/原生Linux/生产build/性能分布未验收。本批不关闭竞赛整体报名/作品/获奖门禁；仍需业务页面、Profile/NOTICE、真实授权联调、人工Bench、异机恢复与提交材料，以及可复现对比/消融证据。无无分母完成率。
+
+### 2026-09-18 Acceptance Owner Review R1/R2 — 窄修完成，待负责人最终Review
+
+| 范围/责任 | 本轮结果 | 发布与下一步 |
+|---|---|---|
+| A线R1 | manifest完整集合与正式事实/sidecar只读绑定，失败init不可启动，独立篡改副本start/print拒绝且文件Hash不变 | 本地未暂存提交推送合并；负责人Review |
+| A线R2 | audit及live validator exec前检查实际完整容器配置，异常自有实例仍可安全stop | 复用原launcher要求，不改变生产 |
+| 回归/隔离验收 | 31定向、141旧dev/Acceptance、最终865通过；原834全部保留，仅原1节点精确排除。fresh prepare52+smoke96+restart40=188回执请求；两个本轮使用容器均exited | 新R1/R2目录保留成功与失败日志、JUnit、Hash及回执 |
+| 累计合成能力 | 205 History、D1–D4、三档图、15/0 Task、四Report/CAS/不可变报告/GET审计保持 | 仍非真实仓库/Gold或页面验收 |
+| 待办/负责人、xzb、cz | 最终Review；后续另行授权xzb页面/代理、A07-2/B01/Profile/NOTICE及真实授权联调 | 本轮不进入后续包，不动组员分支 |
+
+当前可独立演示的仅既有合成后端链路；尚未具备的前端/Profile/NOTICE与上一记录一致。本轮不代表关闭报名/完整作品/获奖竞争力门禁：人工Bench、异机恢复、材料、真实授权验收、对比/消融证据仍需单独验证。未改前端，Windows/原生Linux/生产build未实测，不编造完成率。
