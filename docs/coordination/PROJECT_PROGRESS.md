@@ -235,3 +235,15 @@
 | Python 到 Java 运行时迁移 | 进行中 | 已审计 `backend/app` 的 security、ingestion、scanners、licenses、rules、detectors、domain 与 CLI；直接依赖、许可证候选、AI URL 与报告已有 Java 纵切 | 不删除 Python 基线；安全 ZIP 会话、完整 parser/mapper、ScanCode/Syft、规则 AST、AI 降级、API/持久化与流水线须逐段契约对照 |
 
 Java 真实扫描产物仅用于本机验收，未纳入 Git；当前分支未提交、未推送，`main` 未变更。
+### 2026-09-13：第二位独立真人盲审工作包（进行中）
+
+- 已新增 `benchmarks/annotations/real-resource-20260911-ai-assisted/blind-second-review/`：协调人生成的隔离盲审包、R01-R12 五维空白回执、严格提交校验器和盲审锁定后才可使用的分歧/仲裁模板。
+- 不能宣称完成：尚未收到第二位真人的独立盲审回执；首位评审已接触 AI 草稿，不能计作盲审；缺少第三位真人的仲裁记录时，任何实质分歧必须保留为 `disputed` 或 `uncertain`。
+- 责任：第二位真人填写并签收；Luna 复核材料可用性；Sol 复核仲裁语义；Root 协调提交后完整性检查。GitHub：本轮仅本地工作包，尚未提交或推送。
+
+## 2026-09-17：单人时间隔离盲化复标工作包
+
+- 已新增 `single-human-rereview/` 离线工作包：固定来源哈希绑定、盲化包和空白复标表生成、至少72小时冷却门禁、12条/60维逐项校验、两轮一致率、冲突复核与最终冻结哈希链。
+- 合成闭环14项通过：空白回执、冷却期不足、未解决冲突和篡改比较文件均失败关闭；合法样例可生成`single_human_time_separated_rereview_finalized`快照。
+- 当前状态是“工具完成、真人尚未执行”。只有用户本人完成72小时后的第二轮复标、冲突查证与冻结，才能形成单人最终回执；不得称为双人独立复核或正式gold盲标。
+- 责任：用户执行真实复标；Luna复核回执完整性与指标；Sol复核披露语义；Root验收和发布。GitHub：本轮变更尚未提交或推送，`main`未改变。

@@ -1,0 +1,25 @@
+{
+  "schema_version": "openguard-human-adjudication/0.1",
+  "status": "blocked_pending_valid_blind_review",
+  "preconditions": {
+    "first_human_record": "../human-confirmation.json",
+    "second_human_review": null,
+    "blind_review_validation_passed": false,
+    "adjudicator_is_not_first_or_second_reviewer": null
+  },
+  "records": [
+    {"record_id":"R01","differences":[],"arbitration":null},
+    {"record_id":"R02","differences":[],"arbitration":null},
+    {"record_id":"R03","differences":[],"arbitration":null},
+    {"record_id":"R04","differences":[],"arbitration":null},
+    {"record_id":"R05","differences":[],"arbitration":null},
+    {"record_id":"R06","differences":[],"arbitration":null},
+    {"record_id":"R07","differences":[],"arbitration":null},
+    {"record_id":"R08","differences":[],"arbitration":null},
+    {"record_id":"R09","differences":[],"arbitration":null},
+    {"record_id":"R10","differences":[],"arbitration":null},
+    {"record_id":"R11","differences":[],"arbitration":null},
+    {"record_id":"R12","differences":[],"arbitration":null}
+  ],
+  "notes": "协调人仅可在验证过的第二盲审回执提交后填入分歧。每个 arbitration 必须记录维度、双方值、补充证据、第三位真人裁决者、时间和理由；无法裁决时保留 disputed/uncertain。"
+}

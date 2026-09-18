@@ -1,0 +1,32 @@
+{
+  "schema_version": "openguard-second-human-blind-review/0.1",
+  "status": "draft",
+  "batch_id": "real-resource-20260911-ai-assisted",
+  "blind_packet_sha256": null,
+  "reviewer": {
+    "type": "human",
+    "reviewer_id": null,
+    "independence_attestation": {
+      "independent_from_first_reviewer": null,
+      "has_not_seen_ai_draft": null,
+      "has_not_seen_first_human_decision": null,
+      "has_not_seen_r05_amendment": null,
+      "has_not_seen_second_ai_review": null
+    }
+  },
+  "submitted_at": null,
+  "records": [
+    {"record_id":"R01","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R02","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R03","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R04","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R05","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R06","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R07","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R08","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R09","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R10","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R11","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null},
+    {"record_id":"R12","judgments":{"resource":null,"evidence":null,"license":null,"risk":null,"suggestion":null},"reason":null,"evidence_locator":null}
+  ]
+}

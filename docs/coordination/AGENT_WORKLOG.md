@@ -846,6 +846,21 @@
 - 验收方法：验证 `py -3.12 --version`、隔离环境的 `python --version`、pytest 及 B5 定向测试；复核 Git 状态。
 - token 使用估算：3,000～6,000；系统未提供本轮精确 token 遥测。
 
+### [20260917-1649-GPT5-本地预览启动] COMPLETE - Vite Mock 前端已启动并通过页面探测
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：项目协调 / 本地演示验收
+- 时间：2026-09-17 16:49（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；当前产品提交仍为 `0f5a1610ea52`，既有未提交内容保持原样。
+- 任务目标和实际结果：已从 `frontend/` 运行 `npm.cmd run dev -- --port 5173`，Vite 8.2.2 成功启动，预览地址为 `http://127.0.0.1:5173/`；运行会话保持存活，未启动 Docker、后端或其他服务。
+- 修改或新增文件：未修改产品代码、配置或依赖；仅向本工作日志追加 START 与 COMPLETE。运行进程由当前 Codex 执行会话托管。
+- 运行的命令与测试结果：Vite 报告 `ready`；HTTP 探测 `/`、`/app/new-scan`、`/app/progress`、`/app/overview`、`/app/risk`、`/app/resources`、`/app/graph`、`/app/report` 均返回 200，响应包含 React 根节点；运行会话轮询无退出或新增错误。系统端口枚举因当前权限被拒绝，但实际 HTTP 请求和 Vite 存活已独立证明服务可访问。
+- 接口、Schema、规则和重要决策：未改变接口、Schema、规则、依赖或风险语义。当前页面数据来自 `frontend/src/mocks/data.ts`，属于 Mock 演示，不代表真实扫描 API、Docker 部署或端到端报告闭环已完成。
+- 已知风险、失败项和未完成内容：Docker Engine 不可连接，`pnpm` 不在 PATH，因此本轮未启动正式 Compose 后端；浏览器需访问 HTTP 而非 HTTPS。预览进程依赖当前 Codex 执行会话，系统或任务会话结束后可能停止。
+- 建议下一步及责任模型：用户可立即浏览各工作台页面；若需要真实扫描闭环，应由 Root/Terra 另行恢复 Docker Engine或选择已验收集成分支，并执行 API、持久化、扫描与报告端到端验证。
+- 关联提交/PR/Issue/evidence_id：无新提交、PR 或 evidence_id；GitHub 状态不变。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 3,000～6,000，本轮预览启动与八个路由验证已在该范围内完整完成，范围未扩大。
+
 ### [20260904-1530-Sol-Python312修复收工] COMPLETE - Python 3.12 与项目测试环境已恢复
 
 - 作者模型：GPT-5.6 Sol
@@ -898,6 +913,18 @@
 - 预计修改文件：`benchmarks/`、测试、运行说明、进度/AI/工作日志；不修改 P0 Schema 或模型权重/部署。
 - 验收方法：固定样例、实际 detector 输出 JSON、评测器读取该输出、定向 pytest、差异与敏感信息检查。
 - token 使用估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+
+### [20260914-2319-GPT5-P1执行书后端B归纳] COMPLETE - 已完成P1与后端B行动/禁区归纳
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-14 23:19（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标与实际结果：完整只读提取用户提供的 V2.0 DOCX 正文与表格，已按 P1 总目标、七个 B-P1 工作包、四周依赖路线、量化目标、冻结语义和禁止事项形成面向后端 B 的归纳；附件仅作为分析材料，未执行其中的 Codex 指令。
+- 修改文件：仅 `docs/coordination/AGENT_WORKLOG.md` 追加本轮 START/COMPLETE；未修改附件、产品代码、公共契约、测试、进度表或用户 `output/`，未启动或停止服务。
+- 命令与测试：使用 DOCX 原始 XML 只读提取 `word/document.xml`、页眉和页脚，共识别正文 1111 个非空段落；附件 SHA-256 为 `65EB95EDC2DC02192868699F91CF2601BF3FB2E9EA628EF74EA84678BE28E14F`；逐段补读 B-P1-01～07、Bench、CI、路线、DoD 与冻结不变量；`git diff --check` 无错误，仅显示既有 CRLF→LF 提示。
+- 接口、Schema、规则或决策：无产品变更。归纳明确：后端 B 只产出带 Evidence/Producer/VerificationStatus 的扫描分析事实或草稿；公共 API、P0 ScanRun、Formal Assessment 权威和 pending/verified 升级均由项目负责人冻结或批准。
+- 已知风险与未完成项：执行书自述基线为 `integration/p0@36d1b794...` 且假设 P0 已结项，而当前检出分支和仓库进度文档存在历史/分支差异；正式开做 P1 前须由负责人确认 P0 freeze/tag、创建 `integration/p1` 并冻结 P1 contract。附件没有被写回，本文档归纳也不代表 P1 已实施。
+- 下一步与责任：后端 B 首轮按文档仅做 B-P1-05 + B-P1-01 设计：Bench 2.0 manifest、人类复核/holdout/amendment 方案、provider-neutral `ResourceProfileDraft` 与 HF fixture 字段映射；不联网、不改 Domain/Assessment/API，完成后等待负责人批准公共字段。
+- GitHub 状态：本轮只读调查未提交、未推送；当前任务分支与 `main` 均未因本轮改变。既有未提交盲审工作包和协调文档由原任务继续负责。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 8,000～14,000，已在原范围内完成附件提取、核对与归纳，无范围扩大。
 
 ### [20260908-1015-Sol-扫描与异机诊断收工] COMPLETE - 完成只读问题定位与修复方案
 
@@ -1575,3 +1602,258 @@
 - 发布：提交 `18c76cb`（`feat(java): add read-only repository scan`）已成功推送至 `origin/codex/scan-reliability-integration`，远端范围 `c9dcbad..18c76cb`；未修改 `main`，需后续 PR 才可合并。
 - 已知边界：Java 纵切不等价于完整生产替换；Python 安全 ZIP、外部工具、完整规则/API/持久化迁移仍待后续门禁。
 - token：本次运行精确 token 数不可获得；提交与推送范围已完成。
+### [20260913-1100-GPT5-人工标签审查] START - 审核人工标签质量并给出修改建议
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 11:00（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 目标：对已有 AI 初标、第一位人工确认、R05 补充确认、来源复核和召回 gold 材料进行只读审查，输出可执行修改建议，不改动人工裁决或标签文件。
+- 验收：检查记录/维度计数、人工独立性、来源与证据可复核性、口径一致性、gold 可用性及评测限制；仅追加本日志收工记录。
+### [20260913-1120-GPT5-人工标签审查] COMPLETE - 已完成只读质量审查并提出修订建议
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 11:20（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 结果：审查 `real-resource-20260911-ai-assisted` 的 12 条 AI 初标、第一位人工确认、R05 补充确认、来源复核、证据审计与召回 gold。确认固定来源复核覆盖 12/12 记录、11 个文件、3 个固定提交；但人工独立性、记录状态同步、原始扫描附件/额外证据和 gold 复核仍未闭环。
+- 关键建议：将 R05 补充裁决投影到主记录；将逐记录来源状态从旧 `unavailable` 同步为 `verified` 或显式保留验证批次；将第一位人工“看过 AI 草稿”的确认与第二位盲审拆开；对 25 个 Evidence 建立逐对象复核状态；将召回 gold 标为 AI-only、非生产重跑，待独立人工复核后才用于质量结论。
+- 修改文件：仅追加本工作日志，未改动任何标签、裁决、指标或项目实现。
+- 验证：读取 manifest、AI 草稿、两份人工记录、来源复核、证据审计和召回 gold；JSON 可解析，`git status` 仅保留用户本机 `output/` 未跟踪产物。
+- GitHub 与 token：未提交、未推送，`main` 未变更。本次运行精确 token 数不可获得；只读审查范围已完成。
+### [20260913-1140-GPT5-第二真人盲审] START - 建立独立盲审、分歧记录与仲裁工作包
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 11:40（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标：按用户明确要求，为现有 R01-R12 人工标注增加第二位独立真人盲审流程：隔离 AI 草稿与首位裁决，逐条完成五维判断；仅在盲审提交并校验后，暴露分歧记录与第三方仲裁入口。
+- 开始前已确认：已重读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF、分支/状态/近五次提交；现有首位真人曾查看 AI 草稿，不能充当盲审；用户已有 `output/` 未跟踪产物保持不触碰。目标目录属 Luna 材料范围，用户已明确授权直接新增工作包，另登记变更请求。
+- 预计修改：`benchmarks/annotations/real-resource-20260911-ai-assisted/` 下新增盲审材料和本地校验脚本，及协调/进度/AI 辅助记录；不会改写既有 AI 或真人结论，不会代填真人判断，不启动服务。
+- 验收：盲审包不含 AI 标签、首位裁决或 R05 修订；模板覆盖 R01-R12 的五维；校验器拒绝未完成、未独立声明或记录集不完整的提交；仲裁模板要求盲审锁定后方可使用；执行 JSON、Node、diff 和敏感信息检查。预计 8,000～12,000 token；本次运行精确 token 数不可获得。
+### [20260913-1200-GPT5-第二真人盲审] COMPLETE - 盲审、分歧记录与仲裁材料已就绪
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-13 12:00（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 实际结果：新增 `blind-second-review/` 工作包。协调人生成器从 AI 草稿只提取最小待评估断言、行动建议和固定原文入口，剔除既有五维标签、理由、问题码、人工状态和首位裁决；第二真人模板对 R01-R12 的五维均为空，并要求独立性声明、回执理由、证据定位、包哈希和提交时间。仲裁模板默认阻塞，必须在有效盲审回执后由未参与前两轮的第三位真人处理分歧。
+- 修改文件：新增盲审目录内 README、生成器、回执模板、校验器、仲裁模板；更新 `docs/coordination/change-requests.md`、`PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 和本日志。没有改写任何既有 AI/真人标注、许可证结论或指标；未触碰用户的 `output/`。
+- 命令与测试：生成临时盲审包，输出 12 条且泄露字段检查通过；空白模板被 `validate-blind-review.mjs` 正确拒绝；两份 JSON 可解析；`git diff --check` 通过（仅既有 CRLF 规范化警告）。未启动服务，未安装依赖。
+- 接口/决策：新增离线契约 `openguard-second-human-blind-review/0.1`；第二评审须在隔离区作答，真实身份独立性只能由本人声明和线下流程进一步核验；校验器不能也不会替代真人身份认证。AI 不得仲裁。
+- 已知风险与未完成：实际第二真人回执、隔离交付的访问控制、第三真人仲裁和最终批次冻结尚未发生，因此标注批次仍不能宣称双人盲审完成或产生质量结论。
+- 下一步与责任：第二位真人填写并提交独立回执；Luna 复核材料交付与回执完整性；Sol 复核分歧/仲裁语义；Root 在回执到位后做冻结检查。GitHub：本轮未提交、未推送，`main` 未变更。
+- token：本次运行精确 token 数不可获得；开工估算 8,000～12,000 token，工作包与验证均在该范围内完成。
+
+### [20260914-2318-GPT5-P1执行书后端B归纳] START - 整理P1扫描与分析职责及禁区
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-14 23:18（Asia/Shanghai）；分支：`codex/scan-reliability-integration`。
+- 任务目标：将用户提供的《OpenGuard AI P1 技术规划与三人协作执行书 V2.0》作为待分析材料，区分其中内容与用户指令，整理 P1 阶段总体工作，并重点提炼后端 B（扫描与分析）的必做事项、坚决不能做的事项、协作边界和验收口径。
+- 开始前已确认：已按仓库规则读取根 README、完整共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区和最近提交；当前已有盲审工作包及协调文档未提交变更，本轮只在日志末尾追加记录，不覆盖、不整理、不提交这些既有变更，也不触碰用户的 `output/`。
+- 预计修改文件：仅 `docs/coordination/AGENT_WORKLOG.md` 追加 START 与收工记录；附件 DOCX 和产品文件均只读。
+- 验收方法：使用 DOCX 分析流程提取正文与表格，按“文档原文事实 / 面向后端 B 的归纳与建议”分层核对；检查职责、交付、输入输出、依赖、禁区、验收和时间节点是否覆盖；执行 `git diff --check`。
+- 接口、Schema、规则或决策：本轮不改变任何产品接口、Schema、规则、依赖或风险语义；不启动或停止服务。
+- token 使用估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+
+### [20260917-1614-GPT5-Git拉取最新内容] START - 从 GitHub 快进同步当前功能分支
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：项目协调
+- 时间：2026-09-17 16:14（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；跟踪 `origin/codex/scan-reliability-integration`；工作区已有 4 个修改文件及 `blind-second-review/`、`output/` 两个未跟踪目录，本轮不覆盖、不清理、不暂存。
+- 任务目标：按用户要求从 GitHub 拉取当前分支最新内容，采用仅快进策略，避免自动合并提交并保护现有本地改动。
+- 开始前已确认：已读取根 README、完整共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区、远端和最近五次提交；日志中另有一条仅涉及本日志的历史在途记录，本轮仅追加记录，不改写历史。
+- 预计修改文件：仅由远端快进带来的已跟踪文件变化，以及本日志的本轮 START/收工追加；不主动修改产品实现。
+- 验收方法：执行 `git pull --ff-only`，随后核对退出码、HEAD、上游 ahead/behind、工作区状态与最近提交。
+- 接口、Schema、规则或决策：本轮不主动改变接口、Schema、规则或风险语义；若本地未提交改动阻止拉取，将保留现场并报告，不自动 stash、reset 或覆盖。
+- token 使用估算：2,000～5,000；系统未提供本轮精确 token 遥测。
+
+### [20260917-1616-GPT5-Git拉取最新内容] COMPLETE - 当前功能分支已与 GitHub 上游同步
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：项目协调
+- 时间：2026-09-17 16:16（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；本地 HEAD 与 `origin/codex/scan-reliability-integration` 均为 `0f5a1610ea52`。
+- 任务目标和实际结果：已执行 `git pull --ff-only`。GitHub 拉取成功，当前分支返回 `Already up to date.`，ahead/behind 为 `0/0`；同时刷新了远端 P1 功能分支引用，并将 `origin/integration/p0` 更新到 `36d1b79`、新增 `origin/integration/p1` 指向 `ac6753f`。未切换、合并或变基其他分支。
+- 修改或新增文件：拉取未改变当前分支的任何已跟踪产品文件；本轮仅向 `docs/coordination/AGENT_WORKLOG.md` 追加 START 与 COMPLETE 记录。开始前已有的 4 个修改文件及 `blind-second-review/`、`output/` 两个未跟踪目录均原样保留。
+- 运行的命令与测试结果：`git pull --ff-only` 退出码 0；`git rev-parse` 证实本地与上游 SHA 一致；`git rev-list --left-right --count HEAD...origin/codex/scan-reliability-integration` 输出 `0 0`；已复核 `git status --short --branch`、最近五次提交和新获取远端引用。本轮只做 Git 同步，不涉及产品测试，未启动或停止服务。
+- 接口、Schema、规则和重要决策：未改变接口、Schema、规则、依赖或风险语义；仅快进策略避免了自动合并提交。
+- 已知风险、失败项和未完成内容：当前工作区仍非干净状态，这些是拉取前即存在的未提交内容；新获取的 P1/集成分支尚未合并到当前分支，也未在本轮验收其产品能力。
+- 建议下一步及责任模型：如需采用最新 P1 集成成果，应由 Root 先比较 `origin/integration/p1` 与当前分支差异，再按独立任务执行测试、审查和受控集成；不得把“已获取远端引用”表述为“当前分支已包含 P1 功能”。
+- 关联提交/PR/Issue/evidence_id：本轮无新提交、PR 或 evidence_id；当前分支远端提交仍为 `0f5a1610ea52`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 2,000～5,000，本轮 Git 同步和验证已在该范围内完整完成，范围未扩大。
+
+### [20260917-1648-GPT5-本地预览启动] START - 启动并验证当前分支前端预览
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：项目协调 / 本地演示验收
+- 时间：2026-09-17 16:48（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；保留现有 4 个已修改文件及 `blind-second-review/`、`output/` 未跟踪目录，不覆盖、不清理、不暂存。
+- 任务目标：按用户明确授权启动项目供本地预览；优先使用当前分支已安装依赖的 Vite 前端 Mock 演示，不擅自切换分支或启动不可用的 Docker 后端。
+- 开始前已确认：已读取 README、共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、工作区、最近提交和在途工作；当前 5173/8080/8081/8000 均无监听，Node.js 26.2.0、npm 11.13.0 可用，`frontend/node_modules/.bin/vite.cmd` 存在；Docker Engine 当前不可连接，`pnpm` 不在 PATH。
+- 预计修改文件：仅向本日志追加 START/收工记录；运行期日志写入系统临时目录，不修改产品代码和配置。
+- 验收方法：以隐藏后台进程执行现有 `npm run dev`，检查进程存活、5173 端口监听，并请求 `/` 与 `/app/new-scan` 验证 HTTP 200 和 HTML 内容。
+- 接口、Schema、规则或决策：不改变接口、Schema、规则、依赖或风险语义；本轮展示的是 README 明示的 Mock 前端，不将其表述为真实后端扫描闭环。
+- token 使用估算：3,000～6,000；系统未提供本轮精确 token 遥测。
+
+### [20260917-1833-GPT5-人工标签核验审计] START - 检测人工标签与核验闭环
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：架构审计 / 评测治理
+- 时间：2026-09-17 18:33（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration@0f5a161`；保留现有协调文档修改、`blind-second-review/` 与 `output/`，不覆盖其他在途工作。
+- 任务目标：对项目人工标签、人工核验、第二真人盲审、分歧仲裁、证据对象复核、gold 冻结和评测准入进行检测，向用户给出按优先级排序的完善项。
+- 开始前已确认：已读取根 README、共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区和最近提交；日志存在一项前端预览在途任务，与本轮只读审计无业务文件冲突。
+- 预计修改文件：仅向本日志追加 START 与收工记录；不修改人工裁决、标签、gold、业务代码、Schema 或测试，不启动或停止服务。
+- 验收方法：盘点标注目录与规范，运行现有离线校验器/相关测试，交叉核对状态字段、哈希、评审独立性、逐证据覆盖、分歧仲裁和评测使用限制，并输出证据定位与责任模型。
+- 接口、Schema、规则或决策：本轮不改变接口、Schema、规则或风险语义；人工审核不得由 AI 代签，未完成双人独立复核与争议闭环的批次不得用于正式质量结论。
+- token 使用估算：8,000～14,000；系统未提供本轮精确 token 遥测。
+### [20260917-1838-GPT5-人工标签核验审计] COMPLETE - 已完成标签与核验闭环审计
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：架构审计 / 评测治理
+- 时间：2026-09-17 18:38（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration@0f5a161`；未切换或合并分支，未触碰 `output/`，保留全部既有未提交内容。
+- 任务目标和实际结果：已完成现有12条AI辅助标签、首位真人确认、R05补充确认、固定来源复核、25个Evidence审计、9-case召回gold、第二真人盲审工作包、Bench评测接入以及`origin/integration/p1`迁移边界的检查。结论是材料边界披露较诚实、历史指标可复算，但正式双人核验、原附件与额外Evidence逐对象复核、分歧仲裁、真人gold冻结、当前Detector实跑、Schema/API/持久化/Web接入均未关闭，不能作为正式准确率或完整人工标签闭环。
+- 修改或新增文件：仅向 `docs/coordination/AGENT_WORKLOG.md` 追加 START 与本 COMPLETE；未修改人工标签、回执、gold、业务代码、Schema、测试或进度表。因标准补丁工具受 Windows sandbox `helper_unknown_error` 阻塞，日志按强制追加规则使用受控 `AppendAllText` 写入，未改写历史。
+- 运行的命令与测试结果：JSON全部可解析；盲审包生成12条，空白模板被校验器拒绝；`tests/unit/test_benchmark_actual_static_assets.py` 为2/2通过；历史gold复算得到TP=11、FP=8、FN=39、Precision=0.578947、Recall=0.22、F1=0.318841；`git diff --check`无错误，仅有既有CRLF提示。未启动或停止服务。
+- 接口、Schema、规则和重要决策：未改变接口、Schema、标签或风险语义。审计维持以下准入门禁：第一真人已见AI结果，不计盲审；第二真人有效回执前不称双人复核；AI-only gold不进入正式质量结论；AI不得仲裁；未恢复旧扫描附件时不得把来源复核等同于Evidence对象序列化复核。
+- 已知风险、失败项和未完成内容：当前仅1名真人，第二盲审目录仍未跟踪；旧附件0/3、额外Evidence逐对象0/13、gold真人0名；盲审校验器尚未校验受信包清单、schema/batch、评审人唯一性、逐维理由/定位与仲裁回执；当前评测器只比较expected/predicted集合，不消费五维人工记录；当前分支及`integration/p1`均无人工标签Schema/API/持久化/Web闭环，P1只把该批次作为historical artifact迁移。
+- 建议下一步及责任模型：P0先由第二位真人完成R01-R12隔离盲审，Luna生成逐维差异并校验，必要时第三位真人仲裁，Root冻结哈希与最终manifest；并由真人复核50个gold资源、恢复或重新生成三份可追溯扫描附件并覆盖25个Evidence。P1由Sol冻结标签/仲裁Schema和指标准入，Terra实现独立存储/API/Web阶段隔离，Luna补校验器、当前Detector重跑、holdout与单元/集成/浏览器测试，Root验收后再发布到任务分支。
+- 关联提交/PR/Issue/evidence_id：无新提交、PR或evidence_id；盲审工作包仍为本地未跟踪目录，`main`未改变。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算8,000～14,000，本轮完成了计划中的只读审计与验证，范围未扩展为修复或提交，预计在估算范围内。
+### [20260917-1847-GPT5-单人核验替代方案] START - 评估单人条件下的可信核验方案
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-17 18:47（Asia/Shanghai）；分支：`codex/scan-reliability-integration@0f5a161`。
+- 任务目标：回答仅有一名真人时，能否以其他可复现方式替代双人独立核验，并明确可声明与不可声明边界。
+- 开始前已确认：已重读README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF并检查Git状态；项目文本把双人复核作为内部Bench质量门禁，现有材料同时允许只有一名真人时登记`single_review`并如实披露。
+- 预计修改与验收：仅追加本日志；不修改标签、gold、接口或测试。输出单人盲化复标、自动一致性、证据抽查、冻结与披露方案。
+- token估算：2,000～4,000；精确token遥测不可获得。
+
+### [20260917-1847-GPT5-单人核验替代方案收工] COMPLETE - 形成单人可执行替代流程
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-17 18:47（Asia/Shanghai）。
+- 实际结果：确认可采用“单人时间隔离盲化复标＋冲突保守处理＋自动一致性校验＋证据哈希＋当前Detector重跑＋限制披露”形成可审计的`single-human verified`批次；它不能被命名为双人独立核验，也不能报告跨标注员一致性。
+- 修改文件：仅本共享日志；未修改人工判断、gold或产品代码。
+- 验证与决策：检索项目内双人/独立复核要求，确认`docs/spec/scan-result-human-annotation-plan.md`明确规定单人时记录`single_review`；建议将双人门禁调整为竞赛增强项而非当前阻塞项，但正式指标必须披露单人、AI暴露、复标间隔和不确定项处理。
+- 未完成与下一步：如用户授权实施，应新增单人复标模板/校验器、冻结当前答案、设置冷却期后以不含旧答案的数据包重新标注，再计算同一标注者一致率并冻结最终manifest；真人仍须本人完成第二轮，AI不能代填。
+- GitHub：无提交或推送，`main`未变。
+- token说明：精确token数不可获得；本轮在2,000～4,000估算内完成，范围未扩大。
+### [20260917-1851-GPT5-BP105-Bench2Manifest设计] START - 完善 Bench 2.0 manifest 设计
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：架构审计 / 评测治理
+- 时间：2026-09-17 18:51（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration@0f5a161`；保留既有协调文档修改、未跟踪 `blind-second-review/` 与用户 `output/`，不覆盖、不清理、不暂存。
+- 任务目标：完善 B-P1-05 的 Bench 2.0 manifest 设计，使其可表达数据集身份、不可变来源、train/dev/holdout 隔离、人类复核与暴露、amendment/supersedes、运行产物、指标准入和可复现冻结。
+- 开始前已确认：已阅读根 README、完整共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区、最近提交及 `origin/integration/p1`；当前 P1 分支尚无 Bench 2.0 manifest，现有 P0 manifest 为批次自描述 JSON，缺少正式 Schema、holdout 泄漏门禁、amendment 链和指标准入状态。现有未提交盲审工作包属于相关材料范围，本轮不改写其人工结论。
+- 预计修改文件：设计获用户批准后，拟新增 Bench 2.0 设计文档、JSON Schema、最小有效/无效示例与 schema 校验测试，并只追加更新共享日志、项目进度和 AI 辅助记录；不改 P0 Domain、Formal Assessment、公共 API 或人工标签值。
+- 验收方法：Schema Draft 2020-12 校验；正例通过；重复 ID、哈希不合法、holdout 暴露、无 amendment 追溯、未满足人工门禁却准入正式指标等反例失败；执行定向测试、JSON 解析、`git diff --check`、敏感信息与待提交清单复核。
+- 接口、Schema、规则或决策：本轮先按 brainstorming 架构路径完成用户选择与设计批准；批准前不写产品设计/Schema实现。建议采用“声明层 manifest + 引用型不可变 artifact + 派生准入状态”的 fail-closed 模型，且 Bench 2.0 与 P0 ScanRun/人工标注记录保持引用关系而非复制业务对象。
+- 已知风险与未完成项：执行书原附件未在仓库中，仅有已核对日志摘要；单真人流程可支持受限声明，但不能伪装双人独立复核。当前分支与 `integration/p1` 差异较大，最终落点需用户确认。
+- 下一步与责任模型：Root 先向用户确认 manifest 的目标落点/交付深度，再提出备选方案并分节取得批准；Sol 负责冻结语义，Luna 后续负责校验器与反例，Terra 仅在批准后接入运行器。
+- 关联提交/PR/Issue/evidence_id：无；本轮尚未提交或推送。
+- token 使用估算：10,000～18,000；系统未提供本轮精确 token 遥测。
+### [20260917-1851-GPT5-本地预览重启] START - 复核并重新启动本地前端预览
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-17 18:51（Asia/Shanghai）；分支：`codex/scan-reliability-integration@0f5a161`。
+- 任务目标：响应用户再次提出的本地预览请求，确认原 Vite 会话状态；若会话已失效，重新启动当前分支的 Mock 前端并验证首页。
+- 开始前已确认：沿用本次对话已完成的 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF 和 Git 状态核对，并在写入前重新读取日志末尾；保留现有未提交内容，不修改产品代码，不启动不可用的 Docker 后端。
+- 预计修改与验收：仅追加本日志；运行 `npm.cmd run dev -- --port 5173`，以 Vite ready 输出和首页 HTTP 200 为验收。估算 1,000～3,000 token，精确遥测不可获得。
+
+### [20260917-1852-GPT5-本地预览重启] COMPLETE - 前端预览已恢复并验证可访问
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-17 18:52（Asia/Shanghai）；分支：`codex/scan-reliability-integration@0f5a161`。
+- 实际结果：原执行会话句柄已失效；已重新运行 `npm.cmd run dev -- --port 5173`，Vite 8.2.2 在 `http://127.0.0.1:5173/` 报告 ready，首页探测返回 HTTP 200、544 bytes，并包含 React 根节点。
+- 修改文件与命令：未修改产品代码、配置或依赖，仅追加本日志；当前预览由新的 Codex 运行会话托管。受限执行器发生 `helper_unknown_error` 后，按授权在沙箱外重启并验证；未启动 Docker、API 或其他服务。
+- 接口与边界：接口、Schema、规则、依赖和风险语义均未改变；当前仍为 `frontend/src/mocks/data.ts` 驱动的 Mock 演示，不代表真实扫描闭环。
+- 风险与下一步：预览进程依赖当前运行会话，任务或系统会话结束后可能停止；若需正式后端预览，应另行恢复 Docker Engine并执行端到端验收。无新提交或推送，GitHub状态不变。
+- token说明：本次运行精确 token 数不可获得；在1,000～3,000估算内完成重启与验证，范围未扩大。
+### [20260917-1853-GPT5-BP105-Bench2Manifest设计] PARTIAL - 已完成现状核对，等待设计交付深度确认
+
+- 作者：GPT-5 / Root Coordinator；对话角色：架构审计 / 评测治理；时间：2026-09-17 18:53（Asia/Shanghai）。
+- 任务目标和实际结果：已完成 B-P1-05 现状核对并确认其为架构型设计；当前 P0 manifest 缺正式 Schema、holdout 泄漏门禁、amendment 链与正式指标准入，`origin/integration/p1` 亦未包含 Bench 2.0 manifest。已形成推荐边界，但依 brainstorming 强制批准门禁，尚未写设计文档或 Schema。
+- 修改或新增文件：仅向 `docs/coordination/AGENT_WORKLOG.md` 追加本轮 START 与 PARTIAL；未修改 Bench、人工标签、gold、P0/P1 Schema、产品代码、API 或用户 `output/`。标准 `apply_patch` 连续两次受 Windows sandbox `helper_unknown_error` 阻塞，故按既有日志惯例使用受控 `AppendAllText` 仅追加末尾，未改写历史。
+- 运行的命令与测试结果：完整读取必读材料，核对 Git 状态/最近提交、现有 P0 Bench/标注 manifest、人工标注方案与 `origin/integration/p1` 路径/差异；本轮未进入实现，未运行产品测试，未启动或停止服务。
+- 接口、Schema、规则和重要决策：建议采用“声明层 manifest + 不可变 artifact 引用 + 派生准入状态”的 fail-closed 结构；Bench 契约不复制 P0 ScanRun 或人工裁决对象。该建议尚待用户确认，不视为冻结。
+- 已知风险、失败项和未完成内容：需用户确认本轮是仅写设计文档，还是交付可校验契约包；当前只有一名真人的事实必须在准入声明中保守表达。
+- 建议下一步及责任模型：用户确认交付深度后，Root 提出 2～3 个结构方案与推荐方案，分节取得批准；批准前不实施。
+- 关联提交/PR/Issue/evidence_id：无；未提交、未推送，`main` 未改变。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 10,000～18,000，本轮仅完成上下文核对与第一项澄清准备，完整任务未完成，范围未扩大。
+### [20260917-1918-GPT5-BP105-Bench2Manifest规格] PARTIAL - 设计规格已固化并完成自审
+
+- 作者：GPT-5 / Root Coordinator；对话角色：架构审计 / 评测治理；时间：2026-09-17 19:18（Asia/Shanghai）。
+- 任务目标和实际结果：用户已依次确认离线 Java 库＋CLI、JSON Schema＋Java 语义双层方案、数据边界、准入状态机、错误模型、组件拆分与测试范围；已将确认内容固化为正式设计规格，并完成占位符、内部一致性、范围和歧义自审。
+- 修改或新增文件：新增 `docs/spec/b-p1-05-bench-2-manifest.md`；仅追加本日志。本阶段未修改 Java、POM、Schema、Bench 数据、人工标签、gold、公共 API 或用户 `output/`。
+- 运行的命令与测试结果：核对 networknt 官方资料，确认 Jackson 2 对应 2.x 发布线且支持 Draft 2020-12；运行占位符/关键字段检索和 `git diff --check`，均通过。自审发现并修正了 manifest 内保存自身 SHA-256 的不可解自引用：evaluation 改为绑定当前 revision、gold 与 matching-policy artifact，CLI 外部报告实际 manifest SHA-256。
+- 接口、Schema、规则和重要决策：冻结候选设计为七区 manifest、四级准入、退出码 0/1/2/3、不可变 artifact、family/content split 隔离、holdout 暴露降级、追加式 amendment 以及稳定诊断。第三方候选为 `com.networknt:json-schema-validator:2.0.4`，正式引入时仍须更新依赖锁定与第三方台账。
+- 已知风险、失败项和未完成内容：规格待用户最终审阅；JSON Schema、正反例、Java 实现与测试尚未开始。设计文档未提交或推送，避免在用户审阅前冻结错误版本。
+- 建议下一步及责任模型：用户批准规格后，进入实施计划与 Java TDD；Root/Sol 冻结契约，Terra 范围实现 Java，Luna 范围补独立反例，Root 验收。
+- 关联提交/PR/Issue/evidence_id：无；`main` 未改变。
+- token 使用说明：本次运行精确 token 数不可获得；原开工估算 10,000～18,000，目前完成设计阶段，完整可执行契约包仍未完成。
+### [20260917-1928-GPT5-单人盲化复标实现] START - 实现单人分阶段盲化复标闭环
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：评测治理 / 工具实现
+- 时间：2026-09-17 19:28（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration@0f5a161`；保留现有4个已修改协调文件、`blind-second-review/`、`docs/spec/b-p1-05-bench-2-manifest.md`与`output/`，不覆盖并行任务。
+- 任务目标：按用户授权，将单人条件下的时间隔离盲化复标落实为可执行工作包，并提供详细中文操作步骤；AI不代填真人判断。
+- 开始前已确认：已读取README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支/工作区/最近提交；当前另有Bench 2.0规格任务仅修改其独立规格文件，本轮仅新增`single-human-rereview/`并对共享治理文件做追加式记录，无业务文件冲突。
+- 预计修改文件：新增 `benchmarks/annotations/real-resource-20260911-ai-assisted/single-human-rereview/` 下操作手册、盲化包生成器、复标模板、校验器、比较/冲突/冻结工具及合成自测；追加 change request、AI辅助记录、PROJECT_PROGRESS与本日志。
+- 验收方法：用临时目录运行完整合成闭环；验证模板被拒绝、合法复标通过、冷却期不足失败、差异被识别、冲突未解决时禁止冻结、解决后生成单人最终快照；运行JSON解析、泄露字段扫描、`git diff --check`和待改文件复核。
+- 接口、Schema、规则或决策：新增离线契约，不改变P0/P1公共Schema。最终状态明确为`single_human_time_separated_rereview`，只能报告同一标注者一致率，不能报告双人独立复核或标注者间一致性；gold模式禁止向复标包暴露预测。
+- token使用估算：12,000～20,000；系统未提供精确token遥测。
+### [20260917-2118-GPT5-单人盲化复标实现] COMPLETE - 单人分阶段复标闭环与操作手册已完成
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：评测治理 / 工具实现
+- 时间：2026-09-17 21:18（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration@0f5a161`；保留并行Bench 2.0规格、第二真人旧工作包和用户`output/`，未覆盖、清理、暂存或提交。
+- 任务目标和实际结果：新增可执行的单人时间隔离盲化复标工作包及详细中文操作手册，覆盖固定来源绑定、最小披露包、私有空白表、至少72小时冷却、12条/60维逐项校验、两轮比较、冲突复核、最终冻结和披露边界。真实人工复标未由AI代填，状态保持“工具完成、待用户执行”。
+- 修改或新增文件：`single-human-rereview/`内新增README、`OPERATION_GUIDE.md`、共享校验库、包/表/冲突生成器、复标/冲突校验器、两轮比较器、最终冻结器和合成闭环测试，共10个文件；追加`change-requests.md`、`PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`及本日志。未改既有AI初稿、真人回执、R05修订、gold、P0/P1 Schema或产品代码。
+- 运行的命令与测试结果：全部8个MJS脚本`node --check`通过；`test-workflow.mjs`合成闭环14项通过，覆盖空表拒绝、72小时不足拒绝、未来时间拒绝、合法复标、60维比较、一处差异、未解决冲突拒绝、冲突保守解决、来源哈希绑定、比较文件篡改拒绝和最终12条冻结；`git diff --check`无错误，仅既有CRLF提示；敏感/占位扫描仅命中校验器自身的占位词正则。
+- 接口、Schema、规则和重要决策：新增离线契约版本`openguard-single-human-*/0.1`，不改变公共Schema。最终状态为`single_human_time_separated_rereview_finalized`，固定`reviewer_count=1`、`review_rounds=2`、`independent_second_human=false`；仅允许报告同一标注者时间隔离一致率。本工具只适用`output_review`，明确拒绝冒充隐藏Detector预测的`benchmark_gold`。
+- 已知风险、失败项和未完成内容：单人流程不能消除同一人的系统性偏差，也无法用本地工具证明本人未回看旧答案；72小时门禁仍依赖诚实保留首日哈希和系统时间。用户尚未生成真实包、等待冷却、填写复标、处理冲突或冻结最终回执，因此当前不能宣称真人复标已完成。旧附件0/3和额外Evidence 0/13门禁不由本工作包关闭。
+- 建议下一步及责任模型：用户按`OPERATION_GUIDE.md`执行第1～9步；第1天只生成包和表并记录SHA，至少72小时后再独立填写。Root/Luna在收到`final-single-human-review.json`后核验输入哈希、60维完整性、一致率和披露语义，再决定是否纳入Bench 2.0 manifest；Sol复核正式报告措辞。
+- 关联提交/PR/Issue/evidence_id：CR-20260917-single-human-rereview；无新提交、PR或evidence_id；GitHub和`main`均未改变。
+- token使用说明：本次运行精确token数不可获得；开工估算12,000～20,000，本轮完成了计划内工具、手册、加固、测试和治理记录，预计在估算范围内，范围未扩展为真人代标或发布。
+### [20260918-1101-GPT5-Git拉取最新内容] START - 快进同步当前功能分支
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：项目协调
+- 时间：2026-09-18 11:01（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；当前存在 4 个已修改协调文件、两个标注工作包、Bench 规格草案及 `output/` 未跟踪内容，本轮不覆盖、不清理、不暂存。
+- 任务目标：按用户要求从 GitHub 拉取当前分支最新内容，只允许快进同步，保护现有本地未提交改动。
+- 开始前已确认：已读取 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、工作区、远端和最近提交；日志显示 Bench 规格与单人复标工作包为未提交在途内容，不能被本轮覆盖。
+- 预计修改文件：仅由远端快进产生的已跟踪文件变化及本日志追加；不主动修改产品代码、接口、Schema、规则或风险语义。
+- 验收方法：执行 `git pull --ff-only`，随后核对 HEAD、上游 ahead/behind、工作区状态和新获取远端分支。
+- token 使用估算：2,000～5,000；系统未提供精确 token 遥测。
+### [20260918-1102-GPT5-Git拉取最新内容] COMPLETE - 当前功能分支已与 GitHub 上游同步
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：项目协调
+- 时间：2026-09-18 11:02（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；本地 HEAD 与 `origin/codex/scan-reliability-integration` 均为 `0f5a1610ea52`。
+- 任务目标和实际结果：已执行 `git pull --ff-only`，退出码为 0，当前分支返回 `Already up to date.`，ahead/behind 为 `0/0`；未切换、合并或变基其他分支。
+- 修改或新增文件：当前分支未因拉取获得新的已跟踪文件；本轮仅追加本工作日志。开始前已有的 4 个修改文件、两个标注工作包、Bench 规格草案和 `output/` 均原样保留。
+- 运行的命令与测试结果：拉取同时刷新远端引用：新增 `origin/docs/p1-pydantic-material-review`（`db95447`）与 `origin/feat/p1-metadata-transport`（`944a00e`），并将 `origin/integration/p1` 更新至 `944a00e`；已复核 HEAD、上游、ahead/behind、状态与引用。本轮仅 Git 同步，未运行产品测试或启动/停止服务。
+- 接口、Schema、规则和重要决策：未改变接口、Schema、规则、依赖或风险语义；仅快进策略保护本地在途工作。
+- 已知风险、失败项和未完成内容：远端 P1 更新仅被获取，尚未并入当前分支，也未在本轮验收；当前工作区仍非干净，属于本轮开始前已有的本地工作。
+- 建议下一步及责任模型：如需采用 P1 更新，应先比较当前分支与 `origin/integration/p1` 的差异，再以独立任务完成测试、审查和受控集成；不得将“远端引用已获取”表述为“当前分支已包含 P1 功能”。
+- 关联提交/PR/Issue/evidence_id：无新提交、PR 或 evidence_id；GitHub 当前分支仍为 `0f5a1610ea52`。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 2,000～5,000，本轮同步与验证在该范围内完成，范围未扩大。
+### [20260918-1110-GPT5-Git发布评测工作包] START - 暂存、提交并推送当前可复现代码与规范
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：发布协调
+- 时间：2026-09-18 11:10（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；暂存区起始为空。待发布范围为两个离线评测工作包、Bench 2.0 规格及其治理记录；明确排除用户本机 `output/` 扫描报告。
+- 任务目标：按用户“上传所有代码”授权，将当前未提交的项目代码、测试、必要规格与配套治理记录经检查后提交并推送当前功能分支。
+- 开始前已确认：已读取 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、状态、暂存区、未跟踪列表、最近提交和远端；最近五个提交均为英文信息。当前无另一条明确修改同一文件的在途记录，现有工作包均为已完成但未发布状态。
+- 预计修改文件：仅暂存和提交既有 `docs/`、`benchmarks/annotations/.../blind-second-review/`、`benchmarks/annotations/.../single-human-rereview/`；不改产品逻辑，不纳入 `output/`。
+- 验收方法：运行 Node 语法检查与单人复标合成闭环，执行 `git diff --check`、敏感信息模式扫描、暂存清单复核与 `git push`；推送后核对 HEAD 与上游。
+- 接口、Schema、规则或决策：不改变现有产品接口或 P0/P1 公共 Schema；提交内容为离线评测治理工具和规格，单人复标不得宣称双人独立盲审。
+- token 使用估算：4,000～8,000；系统未提供精确 token 遥测。
+### [20260918-1130-GPT5-Git发布评测工作包] COMPLETE - 评测代码、规格与治理记录已验证待推送
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：发布协调
+- 时间：2026-09-18 11:30（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration`；本轮明确排除 `output/` 的 9 个本机扫描报告文件。
+- 任务目标和实际结果：已将两个可复现离线评测工作包、Bench 2.0 规格和配套治理记录加入暂存区，准备推送当前功能分支；其中包含第二真人盲审包与单人时间隔离复标工具，均不伪装为已完成的真人裁决。
+- 修改或新增文件：暂存 21 个项目文件：16 个评测工作包代码/文档、Bench 规格以及 4 个治理文档和本日志；无产品运行时代码变更，无 `output/`、密钥、本机缓存或虚拟环境。
+- 运行的命令与测试结果：所有相关 MJS 文件 `node --check` 通过；`single-human-rereview/test-workflow.mjs` 合成闭环 14/14 通过；`git diff --cached --check` 通过；敏感模式扫描无凭据命中；暂存清单已复核。
+- 重要修复与决策：格式检查发现 Bench 规格仅有 3 处行尾空白。标准 `apply_patch` 受 Windows sandbox `helper_unknown_error` 阻断；替代修复命令参数异常一度将该新文件清空。已从本地 Git 未引用 blob `1b48c79fb4acf4c4737a3884bc67a33b723b10d1` 精确恢复原 337 行内容，仅移除行尾空白，随后重新暂存并通过格式检查；未凭空重写规格内容。
+- 接口、Schema、规则和重要决策：不改变 P0/P1 公共接口、Schema、规则或风险语义；已发布的离线工具仍维持单人/双人复核的保守披露边界。
+- 已知风险、失败项和未完成内容：工具和文档已测试，但真人盲审/复标本身尚未执行；Bench 2.0 目前为已确认规格，Schema/Java 实现仍未开始。当前记录在提交前先标记为“验证完成待推送”，实际 Git 提交 SHA 将由后续发布回执补充。
+- 建议下一步及责任模型：Root 执行已暂存文件的最终提交/推送并回执 SHA；用户执行真人复标；Sol/Terra/Luna 分别按职责实施 Bench 2.0 契约、运行器和独立反例。
+- 关联提交/PR/Issue/evidence_id：无新提交或 PR；CR-20260917-single-human-rereview。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 4,000～8,000，本轮预检、恢复、测试与发布准备在该范围内完成。
