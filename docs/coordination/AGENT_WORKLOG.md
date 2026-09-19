@@ -2095,3 +2095,11 @@
 - **下一步与责任模型**：Root 提交并推送，随后核对上游；Sol/Terra/Luna 继续按规格处理 artifact 准入、离线可移植构建、运行器与独立反例。
 - **关联提交/PR/evidence_id**：提交 SHA 待发布命令回执；无新 evidence_id。
 - **token 使用说明**：本次运行精确 token 数不可获得；估算 6,000～12,000，本轮验证与发布准备在范围内完成。
+## 20260919-GPT5-Bench2代码发布
+- **状态**：AMENDMENT
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-19 15:58 CST
+- **发布回执**：提交 `338143b`（`feat(bench): add manifest validation toolkit`）已成功推送至 `origin/codex/scan-reliability-integration`，远端范围 `38050f6..338143b`；本地与上游 HEAD 均为 `338143b1b255`，ahead/behind 为 0/0。
+- **范围与排除**：57 个已验证代码、测试、Schema、示例和文档文件已上传；`output/` 下本机扫描/审计报告保持未跟踪、未暂存、未提交。未修改 `main`，仍需 PR 合并。
+- **验证与边界**：Node 审计 16/16、Maven 17/17、格式和敏感信息检查结果沿用本任务 COMPLETE 记录；不将离线 Bench 工具、自动审计或历史材料表述为真实端到端、双人核验或正式 gold 完成。
+- **token说明**：精确 token 数不可获得；发布回执在原估算范围内完成。
