@@ -1865,3 +1865,233 @@
 - 验证：提交前 Node 语法检查、合成闭环 14/14、暂存格式检查和敏感模式扫描均已通过；推送命令退出成功。
 - 接口与风险：不改变 P0/P1 公共接口、Schema、规则或风险语义；真人盲审/复标待用户执行，Bench 2.0 Java/Schema实现仍未开始。
 - token说明：精确 token 数不可获得；发布回执属同一开工估算范围。
+
+### [20260918-1140-GPT5-Bench2SchemaJava实现] START - 实现 Bench 2.0 可执行契约包
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：契约实现 / Java 工具链
+- 时间：2026-09-18 11:40（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration@38050f6`；工作区仅有用户本机 `output/` 未跟踪目录，本轮明确不读取、不修改、不暂存。
+- 任务目标：按用户已确认的 B-P1-05 方案，实现 Draft 2020-12 Schema、独立 Java 库与 CLI、正反例及自动化校验测试；只提供离线 CI/Maven 校验，不新增 Web API，也不启动或停止服务。
+- 开始前已确认：已完整读取根 README、共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、状态和最近提交；Bench 2.0 设计已在 `38050f6` 发布，当前无其他在途记录修改相同 Schema/Java 文件。Java 属 Terra、示例/测试属 Luna 范围，用户已明确授权 Root 直接完成，并登记 `CR-20260918-bench2-java-contract`。
+- 预计修改文件：`schemas/bench/v2/`、`backend/java/pom.xml`、`backend/java/src/main/java/dev/openguard/bench/`、对应 Java 测试与测试资源、`benchmarks/examples/v2/`、设计/第三方/AI 辅助/项目进度及本日志；保留现有 Python、P0/P1 Schema 和所有 Web 接口。
+- 验收方法：先写失败测试，再实现 Schema 与 Java 语义校验；运行 Maven 测试、CLI 正反例与退出码测试、离线/路径穿越/哈希/准入门禁测试、`git diff --check`、敏感信息及变更清单复核。
+- 接口、Schema、规则或决策：新增 `openguard-bench-manifest/2.0` 与 `openguard-bench-validation-report/1.0`；稳定诊断按 severity/code/json_pointer/message 排序；退出码 0=通过、1=契约无效、2=输入/用法错误、3=manifest 有效但请求层级未达到；正式指标继续保守区分单人盲化复标与双人独立标注。
+- token 使用估算：18,000～32,000；系统未提供精确 token 遥测。
+
+## 20260918-1602-GPT5-单人复标七阶段执行
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-18 16:02 CST
+- **任务目标**：执行单人分阶段盲化复标七阶段流程；本轮先生成盲化材料并启动不少于 72 小时冷却门禁，后续在用户独立完成第二轮判断后继续校验、比较、冲突处置与定稿。
+- **范围与预计文件**：仅新增 `output/single-human-rereview-20260918-1602/` 下的本地运行材料，并向本日志追加记录；不修改标签金标准、Schema、业务代码或并行 Bench2 Java 任务文件。
+- **协作检查**：已完整阅读 README、AGENT_WORKLOG、PROJECT_PROGRESS、SOL_HANDOFF；当前分支 `codex/scan-reliability-integration`，HEAD `38050f6`；检测到并行 `20260918-1140-GPT5-Bench2SchemaJava实现` 正在修改 `backend/java/pom.xml` 等文件，本任务避开其范围。
+- **验收方法**：运行材料生成脚本；核对样本数、维度数、来源摘要、空白复标表；确认提前校验会被 72 小时门禁拒绝；记录最早可复标时间与文件哈希。
+- **token 用量估算**：约 5,000–9,000 tokens（系统不提供精确遥测）。
+## 20260918-1602-GPT5-单人复标七阶段执行
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-18 16:07 CST
+- **任务目标与实际结果**：已执行第 1 阶段并进入第 2 阶段。生成 12 条记录的盲化复标包和空白人工回执；冷却起点为 2026-09-18 16:03:17 +08:00，最早可开始复标时间为 2026-09-21 16:03:17 +08:00。第 3–7 阶段必须等待冷却完成并由用户本人独立填写判断，当前未伪造或代填人工标签。
+- **修改或新增文件**：本地新增 `output/single-human-rereview-20260918-1602/rereview-packet.json` 与 `rereview-response.json`；仅追加本工作日志。未修改标签金标准、产品代码、Schema、接口或并行 Bench2 Java 文件。
+- **哈希**：packet SHA-256=`ddc48b83ec1e47f48ccdc6a91dff59c27bab3753e556e17d85132f4e08f3b2db`；初始空白 response SHA-256=`f866de6132a522d03e917525a452f0231bbf88d87d976483a794368876e864a1`。
+- **运行命令与测试结果**：材料生成脚本均退出 0；核对 packet/response 均为 12 条；盲化包未命中 round1/original_label/gold_label/final_label/agreement/disagreement 禁用键；空白回执校验按预期退出 1；`test-workflow.mjs` 14/14 通过（含冷却、哈希、比较、冲突与冻结链路）；`git diff --check` 无空白错误，仅报告现有 CRLF→LF 提示。
+- **接口、Schema、规则与重要决策**：无变更。继续执行“单人、时间隔离、无 AI 标签建议”的保守披露；该结果不得表述为第二位独立真人复核。
+- **已知风险与未完成内容**：第 2 阶段为真实时间门禁，当前仍在冷却；第 3 阶段需要用户完成 12 条×5 维判断、逐项理由及证据定位，之后 Root 才能执行第 4–7 阶段。当前环境未提供 Codex 自动提醒工具，故未创建提醒。
+- **建议下一步及责任模型**：用户在 2026-09-21 16:03:17 +08:00 后，仅查看盲化包并填写 `rereview-response.json`，完成后通知 Root；Root 负责校验、比较、生成冲突处置表、验证并最终冻结。
+- **Git/GitHub/evidence_id**：运行材料位于被排除的本地 `output/`，未暂存、未提交、未推送；当前分支和 GitHub HEAD 均保持 `38050f6`。本轮无新 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 5,000–9,000，本轮在该范围内完成阶段 1、启动阶段 2并验证门禁，阶段 3–7 因规定的 72 小时和真人输入而顺延。
+## 20260918-1610-GPT5-快速单人复核替代方案
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-18 16:10 CST
+- **任务目标**：评估比 72 小时单人时间隔离复标更快、但仍保持可审计和诚实披露的替代办法。
+- **范围与预计文件**：只读核对现有工作流、项目门禁及在途任务；仅追加共享日志，不修改既有复标包、标签、Schema、业务代码或并行 Bench2 文件。
+- **协作检查**：已完整阅读 README、AGENT_WORKLOG、PROJECT_PROGRESS、SOL_HANDOFF；当前分支 `codex/scan-reliability-integration@38050f6`，并行 Bench2 Java/Schema 实现仍在途，本任务不接触其文件。
+- **验收方法**：给出可当天执行的方案、耗时、操作步骤、证据强度和必须保留的披露边界。
+- **token 用量估算**：2,000–4,000 tokens（系统不提供精确遥测）。
+## 20260918-1610-GPT5-快速单人复核替代方案
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 评测治理建议）
+- **日期时间**：2026-09-18 16:12 CST
+- **任务目标与实际结果**：完成快速替代方案评估。建议采用“同日短间隔盲化复核 + 风险分层复查 + 机器结构校验”：保留标签隐藏、随机顺序、理由和证据定位；将 72 小时冷却改为 60–120 分钟，并对高风险/低置信/证据不足项全量复查、其余项随机抽查。该方案可当天完成，但证据强度低于 72 小时复标，必须披露为单人同日复核，不能称独立双人核验或严格时间隔离复标。
+- **修改或新增文件**：仅向 `docs/coordination/AGENT_WORKLOG.md` 追加 START/COMPLETE；未修改已有复标包、标签、工具、Schema、接口、规则实现或在途 Bench2 文件。
+- **验证/依据**：对照现有 12 条×5 维工作包及项目披露门禁，确认可复用盲化、哈希、逐项理由、证据定位和冲突处置机制；现有 72 小时包保持原样，不静默降低其门禁。
+- **重要决策**：快速方案应另建 profile/批次，不能篡改现有 72 小时批次；AI 只可做格式、缺项、证据定位存在性和前后矛盾检查，不代替人工给标签。
+- **已知风险与未完成内容**：同日短间隔仍有记忆偏差，只能提升内部一致性和可追溯性，不能提供观察者间一致性；本轮仅回答方案，尚未按快速方案生成新批次。
+- **建议下一步及责任模型**：若用户确认采用，Root 新增快速 profile 并生成独立批次，用户在短间隔后完成判断，Root 执行结构校验、差异比较与冻结；原 72 小时批次保留为可选高强度证据。
+- **Git/GitHub**：无提交、推送或 PR；当前 HEAD 保持 `38050f6`，本地并行变更原样保留。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 2,000–4,000，本轮在范围内完成，未扩大实施范围。
+
+### [20260918-1632-GPT5-Bench2SchemaJava实现] COMPLETE - Bench 2.0 可执行契约包已本地验收
+
+- 作者：GPT-5 / Root Coordinator
+- 对话角色：契约实现 / Java 工具链
+- 时间：2026-09-18 16:32（Asia/Shanghai）
+- 分支或工作区：`codex/scan-reliability-integration@38050f6`；本轮未提交、未推送，`main` 未改变；用户及并行任务的 `output/` 全部保持未跟踪且未纳入变更。
+- 任务目标和实际结果：完成 `openguard-bench-manifest/2.0` 的 Draft 2020-12 Schema、Java 库入口、离线 CLI、稳定诊断/退出码、四组正例、七组反例和自动化校验。未新增 Web API、Controller、数据库对象或服务启动逻辑。
+- 修改或新增文件：新增 `schemas/bench/v2/manifest.schema.json`、`dev.openguard.bench` 九个生产类、三个 Java 测试类、`benchmarks/examples/v2/` README/11个 manifest/20个固定 fixture；更新 Maven 依赖与 classpath 资源、根 README、设计规格、第三方台账、AI 辅助记录、change request、PROJECT_PROGRESS 和本日志。样例目录从被全局忽略的 `artifacts/` 更名为可发布的 `fixtures/`，避免克隆后丢失文件。
+- 运行的命令与测试结果：TDD 首轮按预期编译失败；实现后 Maven 在线及 `-o` 离线测试最终 17/17 通过（Bench 16 项、既有扫描回归 1 项）；`mvn package` 成功，JAR 已确认包含 Bench 类和 `schema/bench/v2/manifest.schema.json`；正例 CLI 输出单一 JSON 并退出 0；直接 JVM 子进程确认策略拒绝退出 3；从不同工作目录执行仍能加载 classpath Schema；32 个 Schema/manifest/fixture JSON 路径完成解析检查；`git diff --check` 通过，仅有既有 CRLF→LF 提示；敏感模式扫描无命中。
+- 接口、Schema、规则和重要决策：Schema 关闭额外字段并覆盖七区模型、枚举、format 和局部条件；Java 校验严格 UTF-8/单 JSON/重复键、ID 唯一、artifact 角色/路径/大小/SHA、split 隔离、授权状态、holdout 开发暴露、review/dispute/freeze、完整 parent 摘要链、amendment 与 evaluation 时序，并推导 `smoke`/`development`/`reportable_single_human`/`reportable_independent`。报告版本固定为 `openguard-bench-validation-report/1.0`，退出码固定为 0/1/2/3，诊断稳定排序且不泄露绝对路径、正文、异常类或堆栈。
+- 第三方与安全：新增并锁定 `com.networknt:json-schema-validator:2.0.4`（Jackson 2、Apache-2.0）与 Exec Maven Plugin 3.6.2 台账；Maven 使用阿里云镜像完成首次解析，随后 `mvn -o` 验证离线运行。manifest 上限 2 MiB、artifact 上限 64 MiB；拒绝绝对/驱动器/URI/反斜杠/`.`/`..`/空段/符号链接路径；校验器不联网、不执行样本代码。
+- 已知风险、失败项和未完成内容：当前只提供 manifest 验证，不自动生成 manifest、不运行 detector、不重算业务指标、不接 Web/数据库/Formal Assessment；身份独立性仍需组织流程核验。当前 Maven package 包含库类/CLI，但尚未制作单独签名的 CLI 分发包。真实历史批次尚未迁移到 2.0；第二真人盲审、正式 gold 冻结、权属与竞赛材料门禁仍未关闭。
+- 建议下一步及责任模型：Luna 独立补符号链接/跨平台路径和真实批次反例；Sol 复核 Schema/准入披露与指标口径；Terra/Root 后续拆出独立签名 CLI 分发并接自动 manifest 生成器；Root 验收后再按用户授权提交/推送功能分支。
+- 关联分支、提交、PR、Issue 或 evidence_id：`CR-20260918-bench2-java-contract`；无新提交、PR、Issue 或 evidence_id；GitHub 当前分支仍为 `38050f6`，状态为“本地完成、待发布”。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 18,000～32,000，本轮完整完成实现、样例、测试、文档与治理同步，范围未扩展到评测运行器或 Web API，预计在估算范围内。
+
+## 20260918-1635-GPT5-无人干预自动审计方案
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-18 16:35 CST
+- **任务目标**：评估可在短时间内完成、无需用户人工操作的标签质量保障方案，并明确它能与不能替代的验证证据。
+- **范围与预计文件**：只读核对现有标签、复标与 Bench 2.0 状态；仅追加共享日志，不执行用户已撤回的同日人工复标，不修改标签、复标包、Schema、业务代码或并行任务文件。
+- **协作检查**：已完整读取 README、AGENT_WORKLOG、PROJECT_PROGRESS、SOL_HANDOFF，检查 Git 状态与最近提交；被中断的快速方案未生成任何 quick/fast/same-day 输出目录。Bench 2.0 本地实现已由并行任务记录 COMPLETE，本轮不接触其文件。
+- **验收方法**：给出全自动流程、预计周期、产物、保守披露和残余门禁。
+- **token 用量估算**：2,000–4,000 tokens（系统不提供精确遥测）。
+## 20260918-1635-GPT5-无人干预自动审计方案
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 评测治理建议）
+- **日期时间**：2026-09-18 16:37 CST
+- **任务目标与实际结果**：确认可采用“原人工标签保持不变 + 全自动证据一致性审计 + 冲突隔离”的无人干预方案。自动完成哈希/Schema/必填、标签枚举、证据定位、来源覆盖、规则重算、跨字段矛盾、重复项和 AI 对抗式审阅；只有全部检查一致的记录进入 automated-audit-pass，冲突项仅标记 needs-future-human-review，不自动篡改标签。
+- **修改或新增文件**：仅追加本工作日志；未生成快速复标批次，未修改人工标签、现有 72 小时复标材料、Bench 2.0 实现、产品接口或 Schema。
+- **重要决策与披露**：建议状态名为 `human_labels_with_automated_consistency_audit`。该方案可无需用户干预并在本批次规模下短时间完成，但不能称“人工复核”“双人独立核验”或用于计算观察者间一致性；它能提供数据完整性和内部一致性证据，不能证明语义真值。
+- **已知风险与未完成内容**：自动规则与 AI 可能共享系统性偏差；冲突记录仍需未来真人裁决。正式独立真人门禁不会因此关闭，但项目可先继续开发和演示。
+- **建议下一步及责任模型**：若用户授权执行，Root 在独立 output 批次中运行自动审计，输出逐条通过/警告/隔离、汇总指标、哈希链和披露文本；不覆盖原始标签，不触碰并行 Bench2 变更。
+- **Git/GitHub**：无提交、推送或 PR；当前 HEAD 仍为 `38050f6`，现有工作区变更全部保留。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 2,000–4,000，本轮在范围内完成，未扩大为实际执行。
+## 20260918-1640-GPT5-执行全自动标签审计
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-18 16:40 CST
+- **任务目标**：对现有 12 条人工标签执行无人干预的自动化证据一致性审计，输出逐条结论、异常隔离、汇总指标、披露文本与哈希链；不覆盖原始标签。
+- **范围与预计文件**：读取 `benchmarks/annotations/real-resource-20260911-ai-assisted/` 内标签、来源与证据材料；计划在 `output/automated-label-audit-20260918-1640/` 生成本地审计产物，必要时在现有标注工作包下新增可复现审计脚本及测试；追加共享日志。不得修改并行 Bench2 Java/Schema/文档变更。
+- **协作检查**：已完整读取 README、AGENT_WORKLOG、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、状态与最近提交；并行 Bench2 实现已本地完成但尚未发布，本任务避开其所有文件。已完整阅读并应用 `6verity` 技能，以证据、硬错误、警告和验收报告为边界；该技能不会被用于伪造人工核验。
+- **验收方法**：验证输入哈希、JSON 结构、标签枚举、字段完整性、证据定位/来源覆盖、跨字段一致性与重复项；运行脚本测试和真实批次审计；复核结果哈希与原始标签未变。
+- **token 用量估算**：10,000–18,000 tokens（系统不提供精确遥测）。
+
+## 20260918-1640-GPT5-执行全自动标签审计
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 自动化评测审计）
+- **日期时间**：2026-09-18 17:03 CST
+- **任务目标与实际结果**：已对现有 12 条、60 维人工确认标签完成无人干预的自动证据一致性审计。最终状态为 `human_labels_with_automated_consistency_audit`：12/12 均为 `automated_audit_pass_with_known_limitations`，0 条隔离、0 个错误、16 个警告；没有修改任何原人工标签。
+- **修改或新增文件**：新增 `benchmarks/annotations/real-resource-20260911-ai-assisted/automated-consistency-audit/` 下 `audit-lib.mjs`、`run-audit.mjs`、`test-audit.mjs`、`README.md`；本地生成 `output/automated-label-audit-20260918-1640/` 下报告、摘要和哈希链；更新 `PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 并追加本日志。未修改 Bench 2.0 Java/Schema/规格、产品接口或原始标签文件。
+- **运行命令与测试结果**：三个 MJS 文件 `node --check` 通过；`test-audit.mjs` 16/16 通过，覆盖许可门禁矛盾、来源摘要篡改、确认缺失、manifest 计数错误与 R05 修订冲突；真实批次审计 12/12 通过、0 quarantine、0 error、16 warning；8 个输入摘要、2 个输出摘要和链根全部复算通过；原标签目录除新增工具外无 tracked diff；相关 `git diff --check` 无空白错误，仅有既有 CRLF→LF 提示。
+- **审计覆盖**：记录集合与唯一 ID、合法标签和逐维理由、首次人工确认、R05 补充确认、第二次 AI 对抗式审阅、固定 commit URL、11 个来源文件 SHA-256、证据定位、许可 `uncertain` 与 `NOASSERTION/review_required`、高风险/部分支持边界、最终分布和 9 个 recall case 指标重算。
+- **结果分布**：资源与证据均为 9 `correct` / 3 `partially_correct`；许可 12 `uncertain`；风险 8 `accept` / 4 `revise`；建议 12 `too_generic`。召回指标重算为 TP=11、FP=8、FN=39、Precision=0.5789473684210527、Recall=0.22、F1=0.3188405797101449。
+- **警告解释**：16 个警告由 12 条 `COMPLETE_REPORT_NOT_REVIEWED`、1 条第二真人缺失、1 条旧附件/额外 Evidence 缺失、1 条 R05 人工修订已应用、1 条 recall gold 仅 AI 构成；均为已知证据边界，不是被静默忽略的错误。
+- **哈希与产物**：chain root=`ff1f18deb2ec1a49684986f57c1abea1c13b40aaeb44da204bfd81442ddd9c58`；`audit-report.json` SHA-256=`1c145b547738f8235e2dc36300fd51ee6442b502cbec4bd2538e979d689ae874`；`AUDIT_SUMMARY.md` SHA-256=`09d58a5a07e429d46499195f8eeb3262ec1ea5b7af94c224ae8ec7b81ffc521f`；`hash-chain.json` SHA-256=`da877c6ccd86467c60937a690cff12a1f945c2a8dcfdd26eaa44b8a4b3d1759a`。
+- **接口、Schema、规则和重要决策**：未改变产品接口或公共 Schema。新审计状态只证明自动结构、证据链和内部一致性；明确 `automated_audit_is_human_review=false`、真人计数 1、第二独立真人=false。冲突输入失败关闭并隔离，不自动篡改标签。
+- **已知风险与未完成内容**：第二位独立真人、三份旧扫描 JSON、13 个额外 Evidence 对象及真人 recall gold 仍未完成；因此不能宣称双人独立核验、观察者间一致性或语义真值。自动审计可支持内部质量门禁和保守演示披露，不关闭正式人工 gold 门禁。
+- **建议下一步及责任模型**：Root 可在用户授权后将可复现工具、测试及治理记录整理提交并推送；本地 `output/` 报告默认不纳入 Git。未来若获得第二真人或旧附件，由 Luna/Sol 复核后另建 amendment，不覆盖本次哈希链。
+- **Git/GitHub/evidence_id**：当前分支与远端 HEAD 仍为 `38050f6`；本轮未提交、未推送、未合并 `main`；无新 evidence_id。Bench 2.0 的既有本地变更保持不动。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 10,000–18,000，本轮在该范围内完成实现、测试、真实审计、报告、哈希复核与治理记录，范围未扩大到人工标签改写或 GitHub 发布。
+
+## 20260918-1710-GPT5-人工核验检测
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-18 17:10 CST
+- **任务目标**：只读检测现有人工核验链条的真实性、人数、独立性、完整性、修订追溯和不当宣称风险；不修改标签或自动审计结果。
+- **范围与预计文件**：读取人工确认、R05补充确认、第二真人盲审模板、单人复标状态、自动审计报告和批次 manifest；仅追加本日志。
+- **协作检查**：已完整读取 README、AGENT_WORKLOG、PROJECT_PROGRESS、SOL_HANDOFF，确认当前分支 `codex/scan-reliability-integration@38050f6`，保留 Bench 2.0 等既有未提交变更；本任务不触碰其范围。
+- **验收方法**：复算 12/60 对应关系，检查真人计数/独立性声明、R05 amendment 链、第二真人回执缺失、单人复标未提交、自动审计身份边界及输入哈希。
+- **token 用量估算**：4,000–7,000 tokens（系统不提供精确遥测）。
+## 20260918-1710-GPT5-人工核验检测
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 只读人工证据审计）
+- **日期时间**：2026-09-18 17:14 CST
+- **任务目标与实际结果**：已完成对人工核验链的只读检测。确认存在一位身份自报真人对 R01-R12、60 个维度的确认，以及同一真人对 R05 的可追溯补充确认；未发现第二位独立真人已提交的回执，也未发现已提交的单人时间隔离复标回执。
+- **检测结果**：`human-confirmation.json` 为 `confirmed_single_human_review`，type=human、计数=1、12 条记录精确对应、60 维、明确 `independent_blind_review=false` 和 `second_independent_human_review_required=true`；`human-amendment-r05.json` 通过 `amends_confirmation_id=hrv_20260911_user_01` 追溯同一真人的 R05 修订，仍计 1 人且非盲审。`second-human-blind-review.template.json` 为 `draft` 未提交；`output/single-human-rereview-20260918-1602/rereview-response.json` 为 `draft` 未提交；自动审计报告明确 reviewer_count=1、independent_second_human=false、automated_audit_is_human_review=false。manifest 亦显示 human_reviews_received=1、second_independent_review_pending=true。
+- **运行命令与验证结果**：只读结构检查确认两个确认链条的 12 条 ID 完整、R05 关联正确；重跑自动审计器测试 16/16 通过。未修改标签、复标包、审计报告、Bench 2.0 或产品代码；`git diff --check` 无空白错误，只有既有 CRLF→LF 提示。
+- **可用与禁止表述**：可表述为“1 名身份自报真人已在看过 AI 初标的条件下确认 12 条/60 维，并对 R05 作补充确认；标签另经自动一致性审计”。不得表述为“第二真人独立核验已完成”“双人盲审完成”“观察者间一致性已计算”或“自动审计等同人工核验”。
+- **已知风险与未完成内容**：人工身份为自报，未收集外部身份凭证；第一真人已见 AI 初标，故不是独立盲标；第二真人、提交的单人复标、旧附件/额外 Evidence、真人 gold 均未完成。此检测不关闭正式独立人工门禁。
+- **建议下一步及责任模型**：项目可继续以单人 AI 辅助确认和自动审计作为内部质量证据；若未来需要更强证据，第二位真人提交盲审回执后由 Luna 检查完整性、Sol 审查争议语义、Root 验收并另建 amendment。
+- **Git/GitHub/evidence_id**：本轮仅追加共享日志；无新提交、推送、PR 或 evidence_id，当前 HEAD 仍为 `38050f6`。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 4,000–7,000，本轮在范围内完成只读检测与测试复核，未扩大为标签修改或发布。
+
+## 20260919-评估-GPT5-Bench2完善度分析
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标**：对 B-P1-05 Bench 2.0 manifest 的设计和现有 Java/Schema 契约实现进行只读完善程度分析，区分已闭合的离线校验能力、尚存的语义/安全/发布缺口，以及其对正式评测主张的影响。
+- **范围与预计文件**：读取 Schema、设计规格、Java 校验器、示例、测试、Maven 配置和协作台账；仅追加本日志的 START/COMPLETE 记录，不修改 Bench 实现、历史标注、`output/` 或 Git 状态。
+- **协作检查**：已复核 README、PROJECT_PROGRESS、SOL_HANDOFF、完整共享工作日志、分支/状态/最近提交；当前无其他活跃模型，Bench 相关未提交变更保留原样。
+- **验收方法**：静态追踪每项设计规则至 Schema/Java/测试证据；运行既有 Java 离线回归和安全性诊断；按可执行性、语义闭合、安全性、测试、发布/复现和竞赛证据分级给出可验证路线图。
+- **token 用量估算**：6,000～10,000 tokens（系统未提供精确 token 遥测）。
+
+## 20260919-评估-GPT5-Bench2完善度分析
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 只读契约成熟度审计）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：完成 B-P1-05 的分层成熟度审计。结论是：离线 manifest 契约的首版核心设计和大多数校验规则已经可执行；它尚不足以作为“正式可报告评测已完整复现”的最终证明，尤其需要关闭 artifact 准入、评测结果绑定、抗 TOCTOU 读取和可移植离线构建四项门禁。
+- **审计依据与关键发现**：Schema 已关闭对象并定义结构/枚举/局部条件；Java 已实现严格 JSON、ID/引用/split/holdout/review/freeze/amendment/parent/tier 校验，四正七反例进入 Maven 测试。发现 evaluation 仅验证 gold 的角色而不验证其对应 target split 的 case gold；`reference_only` 缺本地文件直接跳过且无角色级准入限制；artifact 与 manifest 使用检查后再普通打开的文件读取，存在并发替换/符号链接 TOCTOU 窗口；父链仅读取 identity/schema，不递归执行严格 JSON、Schema 与语义校验；`declared_metrics` 未与 result artifact 内容复核。样例与单元测试没有覆盖这些反例或跨平台 symlink/race/完整多代 parent 情形。
+- **运行的命令与测试结果**：`git diff --check` 通过（仅已有 CRLF→LF 提示）。本轮以 `mvn -o -Dmaven.repo.local=F:\aic\OpenGuard\.tools\m2-java-migration -f backend/java/pom.xml test` 复验失败：networknt 2.0.4 缓存记录为 `aliyunmaven` 而 POM 当前离线解析使用 `central`；默认 `mvn -o` 又因本机 `C:\.m2\repository` 不可创建失败。故此前 17/17 的历史测试证据仍存在，但“干净、可移植离线 Maven”不能在本轮复现，必须视为未关闭门禁。
+- **修改或新增文件**：仅追加本共享工作日志；未修改 Bench Schema、Java、测试、示例、POM、历史标注或 `output/` 内容。
+- **重要决策和建议下一步**：P0：为每个 evaluation 建立 target-split case-gold 精确绑定，限制 formal tier 的 remote-only artifact，使用无跟随链接/打开后属性校验的安全读取，并将 Maven repository/mirror 作为可复现 CI 输入固定。P1：递归验证 parent 契约、将 result 规范和指标重算纳入可验证格式、强化 amendment 的目标/旧新摘要一致性和反选择语义。P2：拆分独立 CLI 分发包、增加跨语言 conformance fixtures、Windows/Linux symlink 与模糊/上限测试。
+- **Git/GitHub/evidence_id**：分支 `codex/scan-reliability-integration@38050f6`；Bench 实现及本轮日志仍未提交、未推送、无 PR；`output/` 保持未跟踪且未读取/修改。本轮无新 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，本轮在该范围内完成只读审计与离线复现检查，范围未扩大为修复或发布。
+
+## 20260919-GPT5-交付门禁闭环
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标**：按用户授权推进完整产品闭环、真实评测、人工治理和参赛材料门禁；优先关闭可由工程、测试和文档证据关闭的项目，并把必须由 Owner/真人完成的外部门禁形成可签收、不可伪造的材料。
+- **范围与预计文件**：先审计现有实现/部署/评测/材料文件，再在不覆盖未提交 Bench 2.0 变更的前提下新增或修订验收工具、运行文档、真实评测回执和材料检查清单；不改写人工标签、不伪造真人复核、不启动或停止服务，除非用户另行明确指示。
+- **协作检查**：已完整读取 README、AGENT_WORKLOG、PROJECT_PROGRESS、SOL_HANDOFF，检查分支/工作区/最近提交，并确认当前无其他活跃模型。现有 Bench 2.0 未提交实现及 `output/` 产物保持原样。
+- **验收方法**：建立门禁矩阵并逐项映射到可运行命令、输出哈希、人工签收或正式平台回执；对可执行部分运行测试/静态检查，对外部事实仅生成模板并明确阻塞。
+- **token 用量估算**：20,000～35,000 tokens（系统未提供精确 token 遥测）。
+
+## 20260919-GPT5-交付门禁闭环
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / 交付门禁审计与推进）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：完成四类门禁的当前状态回溯，未将文档、历史局部测试或自动审计误写为完整交付。确认工程侧尚缺真实部署的 Git/ZIP 输入至报告导出闭环与干净环境重建；评测侧尚缺多独立真实项目、正式 gold、基线/消融/错误分析；人工侧尚缺第二位独立真人盲审；材料侧尚缺 Owner 权属、报名、最终上传与平台回执。
+- **审计依据**：`PROJECT_PROGRESS.md` 记录 Docker/Compose 的历史真实 up 失败且未完成完整报告/异机回执；`scoring-traceability.md` 将 TRACE-04-A/B/D、05-B/C、06-A 标为 planned 或 blocked；`submission-checklist.md` 将权属、截止、报名标为 Owner blocked；真人工作包明确第二真人模板仍为 draft，不能由自动审计替代。
+- **本轮修改或新增文件**：仅追加本日志的 START/PARTIAL；未修改 Bench 实现、标注、产品代码、材料、`output/` 或 Git 状态。
+- **阻塞原因与解除条件**：当前规则禁止未经明确指令启动/停止服务；要关闭工程闭环须用户明确授权启动现有 Docker/Compose 或指定允许的部署命令。第二真人、权属/单位授权、报名缴费、平台上传和回执只能由 Owner/真人完成；解除后 Root 可执行或核验相应可复现步骤，绝不代填。
+- **建议下一步及责任模型**：用户明确授权后，Root/Terra 先启动现有部署并执行固定 Git/ZIP→四报告→重建回归；Luna 组织独立样本/反例与测试；Sol 复核评测和材料措辞；第二真人与 Owner 分别提交盲审和权属/平台回执，再由 Root 汇总验证。
+- **Git/GitHub/evidence_id**：`codex/scan-reliability-integration@38050f6`；无新提交、推送、PR 或 evidence_id；既有未提交变更完整保留。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 20,000～35,000，本轮因外部事实和服务启动授权缺失而缩小为门禁审计，未完成所有闭环，不以计划冒充交付。
+
+## 20260919-GPT5-真实端到端验收
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标**：依用户明确授权启动仓库现有 Docker/Compose，执行真实端到端验收。
+- **范围与预计文件**：仅运行现有部署配置并保存脱敏验收回执；不创建或替换 Compose、不删除 Docker 资源、不修改 Bench 2.0 未提交变更或 `output/`。
+- **协作检查**：已重新阅读 README、AGENT_WORKLOG、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支/工作区/提交且无其他活跃模型。
+- **验收方法**：定位当前部署清单，复核固定提交和配置后执行 `docker compose config/up`、健康检查、固定输入扫描、报告检查与重建。
+- **token 用量估算**：6,000～10,000 tokens（系统未提供精确 token 遥测）。
+
+## 20260919-GPT5-真实端到端验收
+- **状态**：BLOCKED
+- **作者与角色**：GPT-5（Root Coordinator / 部署验收）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：已定位当前工作树与历史固定副本；两者均未发现任何 `docker-compose.yml`、`docker-compose.yaml`、`compose.yml` 或 `compose.yaml`。当前 `deploy/` 仅含 README；历史隔离副本 `.tools/acceptance-windows-5611c00`（HEAD `5611c00cdd214cf0b3c5cf545c918ea90be0f738`）也仅含 `deploy/Dockerfile.web` 与 `deploy/Dockerfile.scanner`。因此不存在可由本轮授权安全启动的“现有 Docker/Compose”配置。
+- **运行命令与验证结果**：使用 `rg --files -uu` 搜索当前工作树及历史副本的 compose/Dockerfile/smoke 文件；确认仅找到 Dockerfile，未运行 `docker compose up`，未启动、停止、删除或修改任何服务/容器/卷。
+- **修改或新增文件**：仅追加本日志 START/BLOCKED；未修改产品代码、部署配置、Bench、标注、`output/` 或 Git 状态。
+- **阻塞原因与解除条件**：需要用户提供应验收的 Compose 文件路径，或明确授权基于现有 Dockerfile/README 新建 Compose 配置；二者会对应不同验收对象，不能擅自选择或将历史副本混同当前工作树。
+- **建议下一步及责任模型**：用户指定 Compose 路径或授权新建最小配置后，Root 执行真实端到端验收；若该配置来自历史提交，先记录 SHA 与当前分支差异，报告中不将其表述为当前工作树功能。
+- **Git/GitHub/evidence_id**：当前 `codex/scan-reliability-integration@38050f6`；无提交、推送、PR 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，本轮因缺少现有 Compose 文件而在范围内被阻塞，未通过创建替代配置伪造端到端证据。
+
+## 20260919-GPT5-Bench2代码发布
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator）
+- **日期时间**：2026-09-19 15:55 CST
+- **任务目标**：按用户明确“上传所有代码”授权，验证、暂存、提交并推送当前 Bench 2.0 Java 校验器、Schema、示例、自动审计工具和配套文档。
+- **范围与排除**：包含 `backend/java` Bench 源码/测试、`schemas/bench`、`benchmarks/examples`、自动审计工具、已修改 README/规格/治理/台账；明确排除 `output/` 本机扫描与审计结果。
+- **开始前确认**：已读取 README、PROJECT_PROGRESS、SOL_HANDOFF、共享日志尾部，检查分支/暂存区/未跟踪文件/最近提交；当前无暂存内容，未提交 Bench 实现由已完成审计和端到端任务留下。
+- **验收方法**：运行 Maven Bench 回归、Node 审计自测、JSON/格式/敏感信息检查，复核暂存范围，提交并推送当前功能分支。
+- **token估算**：6,000～12,000；精确 token 遥测不可获得。
+## 20260919-GPT5-Bench2代码发布
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-19 15:57 CST
+- **任务目标与实际结果**：已按用户授权完成当前 Bench 2.0 Java 校验器、Schema、正反例、自动一致性审计、README/规格/台账的验证与暂存，现进入提交推送。
+- **修改或新增文件**：暂存 Java Bench 主源码 9 个、JUnit 测试 3 个、自动审计工具 4 个、v2 正反例及 fixtures 27 个、Schema 1 个，以及 README、POM、规格、第三方台账和治理记录；`output/` 本机报告/草稿明确未暂存。
+- **验证**：Node 语法检查通过；自动审计自测输出 `valid=true, tests=16`；Maven 使用项目受控本地仓库运行 `backend/java/pom.xml test`，17/17 通过；`git diff --cached --check` 通过；敏感信息模式扫描无命中。
+- **接口与边界**：Bench 2.0 仅提供离线 Java 库与 CLI、JSON Schema 及测试样例，不新增 Web API或改变 P0/P1 公共接口。它不自动形成正式真人 gold 或代替独立人工核验。
+- **已知风险与未完成项**：历史端到端 Docker/Compose 闭环仍缺现有 Compose 配置；真实人工复标、第二真人盲审与材料 Owner 门禁仍未关闭。当前提交不将上述项表述为完成。
+- **下一步与责任模型**：Root 提交并推送，随后核对上游；Sol/Terra/Luna 继续按规格处理 artifact 准入、离线可移植构建、运行器与独立反例。
+- **关联提交/PR/evidence_id**：提交 SHA 待发布命令回执；无新 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；估算 6,000～12,000，本轮验证与发布准备在范围内完成。

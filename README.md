@@ -26,6 +26,17 @@ PYTHONPATH=backend python -m pytest -q
 
 前三条命令分别输出 inventory、Python 依赖和 JavaScript 直接依赖的 P0 JSON；安全拒绝、输入错误、只读会话/parser/mapper 用法和退出码说明见 [backend/README.md](backend/README.md)。随后三条命令分别复现 JavaScript、Python mapper、Python parser 的实现侧与独立安全测试，最后一条复现当前 424 项自动测试。系统 Python 不是 3.12 时，应先创建或选择 Python 3.12 虚拟环境；不要用修改项目版本约束的方式绕过环境要求。
 
+Bench 2.0 manifest 已提供独立 Java 库接口与离线 CLI，不新增 Web API。它先按 Draft 2020-12 Schema 校验结构，再校验 artifact 哈希、引用闭包、split 隔离、holdout 暴露、parent/amendment 链和指标等级。正反例见 [benchmarks/examples/v2/README.md](benchmarks/examples/v2/README.md)，从仓库根目录运行：
+
+```powershell
+mvn -f backend/java/pom.xml test
+mvn -q -f backend/java/pom.xml exec:java `
+  -Dexec.mainClass=dev.openguard.bench.BenchManifestCli `
+  -Dexec.args="validate benchmarks/examples/v2/valid/development.json"
+```
+
+CLI 自身退出码为 0（通过）、1（契约无效）、2（输入/用法错误）、3（请求等级未达到），stdout 为单一稳定 JSON；Maven 包装命令仍按 0/非 0 供 CI 判定。该能力只验证评测 manifest，不等于自动运行评测或形成正式真人 gold。
+
 ## 竞赛交付定义
 
 在 2026-10-15 20:00 前形成：

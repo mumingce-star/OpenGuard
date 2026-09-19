@@ -1,0 +1,164 @@
+{
+  "schema_version": "openguard-bench-manifest/2.0",
+  "identity": {
+    "manifest_id": "bmf_example_manifest",
+    "revision": 1,
+    "created_at": "2026-09-18T00:00:00Z",
+    "parent": null
+  },
+  "benchmark": {
+    "benchmark_id": "bench_example",
+    "title": "OpenGuard Bench 2.0 example",
+    "task_types": [
+      "component_detection"
+    ],
+    "label_set_version": "labels-1",
+    "case_granularity": "repository",
+    "scope": {
+      "included": [
+        "public fixtures"
+      ],
+      "excluded": [
+        "restricted material"
+      ]
+    },
+    "matching_policy_artifact_id": "art_policy"
+  },
+  "artifacts": [
+    {
+      "artifact_id": "art_source",
+      "role": "source_index",
+      "path": "fixtures/source.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_gold",
+      "role": "gold",
+      "path": "fixtures/gold.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_policy",
+      "role": "matching_policy",
+      "path": "fixtures/policy.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_config",
+      "role": "run_config",
+      "path": "fixtures/config.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_prediction",
+      "role": "prediction",
+      "path": "fixtures/prediction.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_result",
+      "role": "result",
+      "path": "fixtures/result.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_review",
+      "role": "review",
+      "path": "fixtures/review.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_blind",
+      "role": "source_index",
+      "path": "fixtures/blind.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "case_alpha",
+      "family_id": "family_alpha",
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "split": "holdout",
+      "source_artifact_ids": [
+        "art_source"
+      ],
+      "gold_artifact_id": "art_gold",
+      "authorization_status": "verified",
+      "included": true
+    }
+  ],
+  "governance": {
+    "reviews": [
+      {
+        "review_id": "review_blind",
+        "artifact_id": "art_review",
+        "reviewer_id": "reviewer_one",
+        "actor_type": "human",
+        "mode": "single_human_blinded_relabel",
+        "ai_output_seen": false,
+        "system_output_seen": false,
+        "submitted_at": "2026-09-18T00:50:00Z",
+        "case_ids": [
+          "case_alpha"
+        ],
+        "prior_exposure": true,
+        "cooldown_started_at": "2026-09-15T00:00:00Z",
+        "cooldown_ended_at": "2026-09-18T00:30:00Z",
+        "blinded_packet_artifact_id": "art_blind"
+      }
+    ],
+    "exposures": [],
+    "disputes": [],
+    "freeze": {
+      "status": "frozen",
+      "frozen_at": "2026-09-18T00:10:00Z",
+      "artifact_ids": [
+        "art_gold",
+        "art_policy"
+      ],
+      "frozen_by_actor_type": "human"
+    }
+  },
+  "amendments": [],
+  "evaluations": [
+    {
+      "evaluation_id": "eval_alpha",
+      "benchmark_revision": 1,
+      "target_split": "holdout",
+      "system_revision": "git:0123456789abcdef",
+      "gold_artifact_id": "art_gold",
+      "matching_policy_artifact_id": "art_policy",
+      "run_config_artifact_id": "art_config",
+      "prediction_artifact_id": "art_prediction",
+      "result_artifact_id": "art_result",
+      "started_at": "2026-09-18T01:00:00Z",
+      "finished_at": "2026-09-18T01:05:00Z",
+      "requested_tier": "reportable_single_human"
+    }
+  ]
+}

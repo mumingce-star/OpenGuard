@@ -1,6 +1,6 @@
 # B-P1-05 OpenGuard-Bench 2.0 Manifest 设计
 
-状态：设计已确认，待实现
+状态：已实现并通过本地自动化验收（2026-09-18）
 契约标识：`openguard-bench-manifest/2.0`
 适用范围：离线 JSON manifest、Java 库与 CLI、Maven/CI 校验
 不在范围：Web API、数据库、P0 `ScanRun` 变更、Formal Assessment 写入、自动生成真人裁决
@@ -335,3 +335,12 @@ mvn -f backend/java/pom.xml exec:java `
 Sol/Root 冻结 Schema 和准入语义；Terra 实现 Java 库与 CLI；Luna 独立补充反例、跨平台路径和 holdout 泄漏测试；Root 复核第三方依赖、文档、测试与发布范围。
 
 现有 P0 历史 manifest 可以作为迁移输入，但不得原地改名冒充 2.0。迁移必须生成新 manifest、记录来源 artifact 和限制说明。
+
+## 13. 实现回执
+
+- Schema：`schemas/bench/v2/manifest.schema.json`，Maven 固定复制到 classpath，不进行网络 Schema 获取。
+- Java：`dev.openguard.bench` 提供 `BenchManifestService` 库入口和 `BenchManifestCli`；未增加 Spring Controller、HTTP 路由或数据库对象。
+- 样例：`benchmarks/examples/v2/` 包含四个正例、七个反例和固定 artifact；样例本身进入 Maven 回归。
+- 安全边界：manifest 上限 2 MiB，artifact 上限 64 MiB；严格 UTF-8；拒绝绝对/驱动器/URI/反斜杠/`.`/`..`/空段/符号链接路径；错误不返回本机绝对路径、输入正文、异常类或堆栈。
+- 验收：Java 离线测试 17/17 通过，覆盖严格 JSON、Schema、重复 ID、引用、split、holdout、哈希、路径、授权、parent SHA、amendment、四级准入、CLI JSON 和直接 JVM 退出码 3；既有 Java 仓库扫描回归同时通过。
+- 仍在范围外：自动生成 manifest、执行 detector、重算业务指标、Web 展示、数据库和 Formal Assessment 写入。

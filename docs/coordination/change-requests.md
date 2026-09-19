@@ -31,3 +31,11 @@
 - 所有权与影响：新增内容位于Luna负责的Bench标注材料目录；用户明确授权Root直接实现。不修改既有AI草稿、首轮真人回执、R05修订、gold指标或公共P0/P1 Schema。
 - 契约边界：仅允许声明`single_human_time_separated_rereview`；不能声明双人独立复核、标注者间一致率或AI第二评审。当前工具仅适用于`output_review`，不得用于隐藏预测的`benchmark_gold`。
 - 验收：至少72小时冷却；12条/60维完整填写；逐维理由和逐记录证据定位；包、回执、比较、冲突与最终快照哈希绑定；篡改中间比较文件失败关闭；合成闭环14项通过。
+
+## CR-20260918-bench2-java-contract
+
+- 提出者：用户；日期：2026-09-18；状态：本地实现完成，待发布。
+- 目标：按已批准的 B-P1-05 设计实现 Bench 2.0 Draft 2020-12 JSON Schema、独立 Java 校验库与 CLI、正反例和自动化校验测试，供 CI/Maven 离线使用，不新增 Web API。
+- 所有权与影响：`backend/java/` 通常由 Terra 负责，`benchmarks/` 测试材料通常由 Luna 负责；用户已明确授权 Root 在本任务中直接实现。保留现有 P0/P1 Schema 与运行时接口，不改写人工标注或 gold 结论。
+- 契约影响：新增 `openguard-bench-manifest/2.0` 和稳定诊断报告 `openguard-bench-validation-report/1.0`；Schema 负责结构约束，Java 负责 ID/引用闭包、split 隔离、holdout 暴露、amendment 链、文件哈希和正式指标准入；CLI 退出码固定为 0/1/2/3。
+- 验收：Maven 单元/集成测试、正反例期望诊断、CLI JSON 与退出码、离线路径/符号链接/哈希安全测试、`git diff --check`、第三方依赖台账和设计/进度/AI 辅助记录同步。

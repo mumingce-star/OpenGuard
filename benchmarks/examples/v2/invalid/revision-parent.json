@@ -1,0 +1,110 @@
+{
+  "schema_version": "openguard-bench-manifest/2.0",
+  "identity": {
+    "manifest_id": "bmf_example_manifest",
+    "revision": 2,
+    "created_at": "2026-09-18T00:00:00Z",
+    "parent": null
+  },
+  "benchmark": {
+    "benchmark_id": "bench_example",
+    "title": "OpenGuard Bench 2.0 example",
+    "task_types": [
+      "component_detection"
+    ],
+    "label_set_version": "labels-1",
+    "case_granularity": "repository",
+    "scope": {
+      "included": [
+        "public fixtures"
+      ],
+      "excluded": [
+        "restricted material"
+      ]
+    },
+    "matching_policy_artifact_id": "art_policy"
+  },
+  "artifacts": [
+    {
+      "artifact_id": "art_source",
+      "role": "source_index",
+      "path": "fixtures/source.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_gold",
+      "role": "gold",
+      "path": "fixtures/gold.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_policy",
+      "role": "matching_policy",
+      "path": "fixtures/policy.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_config",
+      "role": "run_config",
+      "path": "fixtures/config.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_prediction",
+      "role": "prediction",
+      "path": "fixtures/prediction.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    },
+    {
+      "artifact_id": "art_result",
+      "role": "result",
+      "path": "fixtures/result.json",
+      "media_type": "application/json",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redistribution": "repository_allowed"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "case_alpha",
+      "family_id": "family_alpha",
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "split": "dev",
+      "source_artifact_ids": [
+        "art_source"
+      ],
+      "gold_artifact_id": "art_gold",
+      "authorization_status": "verified",
+      "included": true
+    }
+  ],
+  "governance": {
+    "reviews": [],
+    "exposures": [],
+    "disputes": [],
+    "freeze": {
+      "status": "draft",
+      "frozen_at": null,
+      "artifact_ids": [],
+      "frozen_by_actor_type": "human"
+    }
+  },
+  "amendments": [],
+  "evaluations": []
+}
