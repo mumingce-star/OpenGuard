@@ -118,7 +118,7 @@ def marker(root):
         raise LaunchError('manifest is unreadable') from None
     if value.get('synthetic') is not True or not value.get('root_id'):
         raise LaunchError('not a synthetic P1 instance')
-    if root.name.startswith(ACCEPTANCE_PREFIX) and value.get('seed_version') != seed_version(root):
+    if root.name.startswith(ACCEPTANCE_PREFIX) and value.get('seed_version') not in {'p1-frontend-acceptance/1','p1-frontend-acceptance/2'}:
         raise LaunchError('acceptance seed version mismatch')
     return value
 
@@ -242,7 +242,7 @@ def health_identity(response, manifest):
         observed = json.loads(response.headers.get(IDENTITY_HEADER, ''))
     except (ValueError, TypeError):
         raise LaunchError('health identity missing/invalid') from None
-    if (expected['synthetic'] is not True or expected['seed_version'] not in {'p1-dev-integration/2', 'p1-frontend-acceptance/1'}
+    if (expected['synthetic'] is not True or expected['seed_version'] not in {'p1-dev-integration/2', 'p1-frontend-acceptance/1', 'p1-frontend-acceptance/2'}
             or not isinstance(observed, dict) or observed.get('synthetic') is not True
             or observed != expected):
         raise LaunchError('health identity mismatch')
@@ -312,6 +312,7 @@ def main(argv=None):
     parser.add_argument('action', choices=['init', 'start', 'status', 'stop', 'graph-ref'])
     parser.add_argument('--root', required=True)
     parser.add_argument('--image')
+    parser.add_argument('--acceptance-version', choices=['1','2'], default='1')
     parser.add_argument('--api-port', type=port_number, default=18011)
     parser.add_argument('--web-port', type=port_number, default=15174)
     args = parser.parse_args(argv)
@@ -328,7 +329,8 @@ def main(argv=None):
         version = subprocess.check_output(['git', '-C', str(REPOSITORY), 'rev-parse', 'HEAD'], text=True).strip()
         print(docker('run', '--rm', '--network=none', *common_args(root, image_id, platform), image_id,
                      '-B', '-m', server_module(root), 'init', '--root', inside,
-                     '--code-version', version, timeout=90))
+                     '--code-version', version,
+                     *(['--seed-version',args.acceptance_version] if root.name.startswith(ACCEPTANCE_PREFIX) else []), timeout=90))
         return
     manifest = marker(root)
     name, labels = identity(root, manifest)

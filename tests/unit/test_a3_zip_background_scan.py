@@ -247,7 +247,10 @@ def test_neg_a3zip_006_unconfigured_runtime_rejects_zip_but_keeps_git_json(tmp_p
 
 def test_pos_a3zip_003_openapi_adds_graph_get_and_preserves_scan_get_post(harness: Harness) -> None:
     schema = harness.client.get("/openapi.json").json()
-    assert len(schema["paths"]) == 13
+    assert len(schema["paths"]) == 16
+    assert set(schema["paths"]["/api/v1/scans/{scan_id}/resources/{resource_id}/profile"]) == {"get"}
+    assert set(schema["paths"]["/api/v1/scans/{scan_id}/resource-profiles/refresh"]) == {"post"}
+    assert set(schema["paths"]["/api/v1/scans/{scan_id}/resource-profiles/jobs/{job_id}"]) == {"get"}
     assert set(schema["paths"]["/api/v1/scans"]) == {"get", "post"}
     assert set(schema["paths"]["/api/v1/scans/{target_scan_id}/diff"]) == {"get"}
     assert set(schema["paths"]["/api/v1/scans/{scan_id}/graph"]) == {"get"}

@@ -1290,3 +1290,29 @@ AMENDMENT：A07-1已由负责人集成至944a00e；此前本地未提交描述�
 | 待办/负责人、xzb、cz | 最终Review；后续另行授权xzb页面/代理、A07-2/B01/Profile/NOTICE及真实授权联调 | 本轮不进入后续包，不动组员分支 |
 
 当前可独立演示的仅既有合成后端链路；尚未具备的前端/Profile/NOTICE与上一记录一致。本轮不代表关闭报名/完整作品/获奖竞争力门禁：人工Bench、异机恢复、材料、真实授权验收、对比/消融证据仍需单独验证。未改前端，Windows/原生Linux/生产build未实测，不编造完成率。
+
+## 2026-09-19 A07-2 本地实现验收 / 待负责人 Review
+
+| 范围 | 本轮状态与验证 | 责任/发布状态/下一步 |
+|---|---|---|
+| A07-2 Profile/metadata/refresh/job | 实现与功能验收通过：55新增定向；统一920 unique passed，原865保留；99 A07-1及172旧dev/Acceptance回归 | A线Codex本地单写；未暂存提交推送合并部署，负责人源码Review |
+| 验收流程偏差 | 初始只有7项fail-first，未完整先执行20类；其他负向测试过程中补齐并通过，不能倒置时序 | 总状态PARTIAL，负责人决定是否接纳流程偏差，不伪称全门槛COMPLETE |
+| Acceptance /2 F02 | P1–P5正式API、独立metadata.db、显式synthetic refresh；额外未预取资源真实HTTP0→1；smoke127+重启53 GET | 新空间才启用，原/1恢复+40 GET通过且无metadata库；NOTICE仍unsupported |
+| 累计本地能力 | A01–A06、受限A07-1与205 History/D1–D4/100-300-500 Graph/Task/四Report保持；现在可合成演示Profile | 不代表生产启用或xzb业务页面完成 |
+| 剩余包/门禁 | 真实cz B01、真实HF、NOTICE、Report/Profile、人工核验接纳；xzb页面；异机/Windows/生产build | 各自责任人另行授权；本轮STOP等待Review |
+
+四个使用过的确切容器均恢复exited，全部数据/失败轨迹保留；外部业务请求0，无新依赖。
+报名/完整作品/获奖竞争力仍需人工Bench、材料、真实授权验收、跨平台及对比/消融等独立证据；
+本轮没有相应验收，不能从920测试或synthetic API推断完成率。详见新A07-2回执和工作日志。
+
+## 2026-09-19 Owner R1/R2/T1 窄修完成，待FINAL Review
+
+| 范围 | 当前结果 | 责任/发布/下一步 |
+|---|---|---|
+| A07-2 R1/R2/T1 | 真实生成时间与稳定语义ID、空provider仅投影null+gap、Profile专属错误文案 | A线Codex本地COMPLETE；负责人FINAL Review |
+| 验证 | 本轮fail-first5失败/2保护通过；修补后7定向、62Profile、99transport、172兼容；统一927通过，原920全保留、新增7 | 仅原精确1项排除；未暂存提交推送合并部署 |
+| 合成链路 | 新/2 HTTP131+5+52，旧/1只读40；Profile及既有History/Diff/Graph/Task/Report保持，三容器停止 | 不是前端页面/真实授权/生产验收 |
+| 原流程偏差 | 负责人接受不阻止代码交付；旧7项fail-first历史及PARTIAL回执不重写 | accepted_for_code_delivery_without_rewriting_chronology |
+| 剩余范围 | 真实B01/HF、NOTICE、人工接纳、页面、Report/Profile与跨平台/生产门禁 | 分属负责人/cz/xzb后续授权，本轮STOP |
+
+竞赛完整作品与获奖门禁仍需既有人工Bench、材料、真实授权/异机/对比证据，不从本轮回归编造完成率。

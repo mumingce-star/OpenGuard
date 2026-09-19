@@ -463,6 +463,8 @@ def create_app(
     assessment_service=None,
     remediation_service=None,
     report_v2_service=None,
+    profile_service=None,
+    profile_routes_enabled=True,
 ) -> FastAPI:
     if zip_dispatcher is not None:
         # Durable lifecycle ownership is deliberately all-or-nothing.  An
@@ -510,6 +512,8 @@ def create_app(
     app.state.assessment_service = assessment_service
     app.state.remediation_service = remediation_service
     app.state.report_v2_service = report_v2_service
+    from app.p1.profile import ProfileService
+    app.state.profile_service = profile_service or ProfileService(registry)
     app.state.history_cursor_key = secrets.token_bytes(32)
     app.state.p1_graph_max_nodes = 20_000
     app.state.p1_graph_max_edges = 60_000
@@ -527,7 +531,9 @@ def create_app(
             and segments[:3] == ["api", "v1", "scans"]
             and segments[4] == "assessments" and segments[6] == "report-v2"
         )
-        if task_write or report_write or existing_write:
+        profile_write = (profile_routes_enabled and request.method == 'POST' and len(segments) == 6
+                         and segments[:3] == ['api', 'v1', 'scans'] and segments[4:] == ['resource-profiles', 'refresh'])
+        if task_write or report_write or existing_write or profile_write:
             from urllib.parse import urlsplit
             configured = os.environ.get("OPENGUARD_WEB_ORIGINS", "http://127.0.0.1:8080,http://localhost:8080")
             allowed = configured.split(",")
@@ -538,7 +544,7 @@ def create_app(
                 return _error_response(request, ApiError(status_code=403,code="origin_rejected",message="仅允许本地产品页面提交此操作。",reason="origin_rejected"))
             if request.method in {"POST", "PATCH"}:
                 if request.headers.get("content-type", "").split(";")[0] != "application/json":
-                    if task_write or report_write:
+                    if task_write or report_write or profile_write:
                         return _error_response(request, ApiError(status_code=400,code="invalid_argument",message="请求必须为JSON。",reason="request_invalid"))
                     return _error_response(request, ApiError(status_code=422,code="request_invalid",message="请求必须为JSON。",reason="request_invalid"))
                 chunks=[]; size=0
@@ -634,6 +640,11 @@ def create_app(
     @app.exception_handler(RequestValidationError)
     async def handle_validation_error(request: Request, _: RequestValidationError) -> JSONResponse:
         route = request.scope.get("route")
+        if (request.method, getattr(route, "path", None)) == ("POST", "/api/v1/scans/{scan_id}/resource-profiles/refresh"):
+            return _error_response(request, ApiError(
+                status_code=400, code="invalid_argument",
+                message="Profile刷新请求参数无效。", reason="request_invalid",
+            ))
         if (request.method, getattr(route, "path", None)) in {
             ("POST", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2"),
             ("GET", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2/{snapshot_id}"),
@@ -701,6 +712,9 @@ def create_app(
     app.include_router(_router())
     from app.api.report_v2 import router as report_v2_router
     app.include_router(report_v2_router())
+    if profile_routes_enabled:
+        from app.api.profile import router as profile_router
+        app.include_router(profile_router())
     if assessment_service is not None:
         from app.api.assessment import router as assessment_router
         app.include_router(assessment_router())

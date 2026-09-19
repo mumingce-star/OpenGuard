@@ -254,3 +254,7 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 2026-09-18 Frontend Acceptance Seed Pack v1：Codex（GPT-5系列代理，精确变体无遥测）按限定任务生成独立合成事实与验收工具，复用既有真实服务/开发隔离，不新增依赖或复制外部代码。实际验证205 History、三档图、Task来源/CAS、四类报告及GET无业务副作用；834后端通过、96合成HTTP和40重启GET。保留失败日志，修正测试reload异常类与补强实际报告绑定Task的不变性检查；非独立人工签收。未调用产品AI/Metadata/真实扫描，synthetic不作为Gold或真实项目授权证据。等待负责人Review，未暂存提交推送合并部署；精确token不可获得。
 
 2026-09-18 Acceptance Owner Review R1/R2：Codex（GPT-5系列代理，精确变体无遥测）仅加强内部manifest完整性、实际容器配置审计和测试/文档。Fail-first18失败/1通过后修补，最终31定向、141兼容、865统一通过，原834节点保留；实际合成HTTP prepare52+smoke96+restart40及独立篡改root拒绝。保留replay调用与live WAL只读挂载失败轨迹，后者改为配置核验后的同ID只读SQL，不改产品store或用immutable忽略WAL。未新增依赖/外部代码/AI或Metadata调用，非独立人工安全签收。实例均停止，旧成果与证据保留，未暂存提交推送合并生产部署；下一步仅负责人Review。精确token不可获得。
+
+2026-09-19 A07-2：Codex（GPT-5系列代理，精确变体无遥测）实现Profile投影、严格parser port、不可变metadata sidecar与refresh/job，并接入仅新Acceptance /2的synthetic场景。没有真实HF/B01业务parser、产品AI、NOTICE、人工核验或前端实现；无新依赖/外部代码。55新增测试与原865节点统一920通过，真实HTTP127+重启53、旧/1兼容40 GET；非独立模型或人工安全签收。原始fail-first只有7项，其余负向用例过程中补齐，故严格状态PARTIAL并交负责人裁决流程偏差，不能伪称全部20类前置完成。失败轨迹、原空间和原Schema保留，四个使用实例均停止；未暂存提交推送合并部署。精确token数不可获得，原估算25k–45k不能替代实耗。
+
+2026-09-19 A07-2 Owner R1/R2/T1：Codex（GPT-5系列，精确变体无遥测）按负责人源码Review窄修实际generated_at/语义ID、空provider投影、专属错误文案。新fail-first5失败/2通过后修补，7Owner/62Profile/99transport/172兼容与统一927通过，原920节点保留；Host HTTP131+5+52及旧/1只读40。首个测试collection import错误保留；没有真实HF/B01、AI或生产调用、无新增依赖。负责人接受原7项而非完整20类前置fail-first的流程偏差，不改写旧历史/回执、不声称时序已修复；本轮完成窄修待FINAL Review，不等于独立人工安全签收。三个实例均停止，未暂存提交推送合并部署。精确token不可获得，开工估算12k–22k不作实耗。

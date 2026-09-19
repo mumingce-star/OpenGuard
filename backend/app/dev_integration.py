@@ -518,7 +518,7 @@ def create_dev_app(root: Path, *, origins: tuple[str, ...], repository_root: Pat
     return _wire_dev_app(path, manifest.to_dict(), origins=origins)
 
 
-def _wire_dev_app(path: Path, manifest: dict, *, origins: tuple[str, ...]):
+def _wire_dev_app(path: Path, manifest: dict, *, origins: tuple[str, ...], profile_service_factory=None):
     """Internal wiring shared only by independently validated synthetic roots."""
     if not origins or any(not isinstance(origin, str) or not origin for origin in origins):
         raise DevIntegrationError("origin_invalid")
@@ -544,7 +544,9 @@ def _wire_dev_app(path: Path, manifest: dict, *, origins: tuple[str, ...]):
     report_service = ReportV2Service(registry, assessment_store, task_store, report_store,
                                      graph_reader=ReportGraphReader(max_nodes=20_000, max_edges=60_000))
     app = create_app(registry, close_registry=True, assessment_service=assessment_service,
-                     remediation_service=remediation_service, report_v2_service=report_service)
+                     remediation_service=remediation_service, report_v2_service=report_service,
+                     profile_service=profile_service_factory(registry) if profile_service_factory else None,
+                     profile_routes_enabled=profile_service_factory is not None)
 
     @app.middleware("http")
     async def dev_write_boundary(request: Request, call_next):
@@ -557,7 +559,9 @@ def _wire_dev_app(path: Path, manifest: dict, *, origins: tuple[str, ...]):
                     and (request.method == "PATCH" or (request.method == "POST" and parts[7] == "derive")))
             report = (request.method == "POST" and len(parts) == 7 and parts[:3] == ["api", "v1", "scans"]
                       and parts[4] == "assessments" and parts[6] == "report-v2")
-            if not task and not report:
+            profile = (profile_service_factory is not None and request.method == 'POST' and len(parts) == 6
+                       and parts[:3] == ['api', 'v1', 'scans'] and parts[4:] == ['resource-profiles', 'refresh'])
+            if not task and not report and not profile:
                 request_id = "req_dev_" + uuid4().hex
                 payload = ErrorEnvelope(error=ErrorBody(
                     code="feature_disabled", message="This write operation is disabled in isolated development.",

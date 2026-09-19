@@ -10,6 +10,7 @@ def main():
     parser.add_argument('action', choices=['init', 'prepare', 'serve', 'audit', 'validate'])
     parser.add_argument('--root', required=True, type=Path)
     parser.add_argument('--code-version', default='unrecorded-local-source')
+    parser.add_argument('--seed-version', choices=['1','2'], default='1')
     parser.add_argument('--port', type=int, default=18011)
     parser.add_argument('--web-port', type=int, default=15174)
     parser.add_argument('--api-origin-port', type=int, default=18011)
@@ -21,7 +22,8 @@ def main():
     from app import frontend_acceptance as seed
     if args.action != 'serve':
         if args.action == 'init':
-            value = seed.initialize(args.root, code_version=args.code_version)
+            initializer=seed.initialize_v2 if args.seed_version=='2' else seed.initialize
+            value = initializer(args.root, code_version=args.code_version)
         elif args.action == 'prepare':
             value = seed.prepare(args.root)
         elif args.action == 'validate':

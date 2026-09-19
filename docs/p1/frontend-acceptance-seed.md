@@ -1,4 +1,4 @@
-# P1 Frontend Acceptance Seed Pack v1
+# P1 Frontend Acceptance Seed Pack：版本化验收空间
 
 开发验收基础设施，基于 `944a00e3d98cba0f815f40dbc8bc96437afb44f3`。
 **synthetic=true；没有真实仓库扫描、联网 Metadata 或模型调用。**
@@ -85,7 +85,8 @@ OPENGUARD_P1_API_PORT=18011 OPENGUARD_P1_WEB_PORT=15174 pnpm exec vite --config 
 
 依次验收 History → Diff → Task → Graph → Report（F01/F05/F04/F03/F06）。
 按 manifest 选择实体，页面访问真实 API；首页可打开不代表这些新页面完成。
-F02 Profile 明确 `not_available_on_current_baseline`（A07-2/B01 pending）；F06 NOTICE 同样未就绪。
+旧 `/1` 的 F02 Profile 仍明确 `not_available_on_current_baseline`；新 `/2` 提供下述 synthetic F02。
+F06 NOTICE 在两个版本均未就绪。真实 B01 parser、真实 HF 内容仍未验收。
 未注册路径 404 是未实现，不是“功能完成但暂无数据”，禁止伪造 Profile/NoticeDraft 200。
 
 ## 停止、恢复、全新空间
@@ -105,7 +106,7 @@ stop 只操作通过所有权验证的确切容器 ID，不删除容器或空间
 后端测试固定 `openguard-a06-dev` `/opt/api/bin/python`，不安装依赖。
 本地测试、真实 HTTP 和重启的具体计数/Hashes 以本轮 ignored receipt 为准。
 API 请求耗时只是小样本 observation，不是 p95 门禁；本轮未测 DOM/render、Windows/原生 Linux、生产 build 或真实仓库。
-未改前端，前端测试不重复运行。Review 后是否提交/推送以及后续 A07-2，由负责人另行决定。
+未改前端，前端测试不重复运行。Review 后是否提交/推送由负责人另行决定。
 
 ## Owner Review R1/R2：只读完整性与审计实例边界
 
@@ -113,7 +114,7 @@ API 请求耗时只是小样本 observation，不是 p95 门禁；本轮未测 D
 Assessment、Task 历史 version 1、ReportV2 快照及 artifact 描述一致。History 必须 205 条，
 D1–D4、100/300/500 Graph、五个固定 Assessment、populated/empty Task、四类 Report 均不可删项。
 Graph 计数从正式 reader 取得；不信任 manifest 自报数字。D3 仍不创建 Assessment。
-后续合法 Task workflow 修改不会改写或使初始版本引用失效；Profile/NOTICE 仍不支持。
+后续合法 Task workflow 修改不会改写或使初始版本引用失效；旧 `/1` 的 Profile/NOTICE 仍不支持。
 
 完整 init 的显式写入及内部校验全部成功后，才发布 manifest/成功 marker。
 中途失败保留 DB 现场，普通 start/print-manifest 拒绝为 `acceptance_not_prepared`；
@@ -135,3 +136,49 @@ SQLite WAL/SHM 协调文件不等于业务写入；主 DB、非空 WAL 与业务
 
 这轮真实 HTTP 仅证明专属合成空间可用；bridge 不是网络层禁外联，Python guard 不是防火墙。
 具体失败轨迹、最终测试、HTTP/重启及篡改拒绝证据见新的 R1/R2 ignored 验证目录。
+
+## A07-2：显式 `/2` Profile 空间
+
+`init` 仍生成 `p1-frontend-acceptance/1`，原 validator 与原行为保留。
+已存在 `/1` root 无需重新 init，可继续 read/start/status/stop/verify；不创建 metadata sidecar，
+不补 Profile，不迁移、不原地升级。新版本仅从全新目录显式创建：
+
+```sh
+python3 -B deploy/p1_frontend_acceptance.py init-v2 --root "$P1_ROOT" --image "$P1_IMAGE"
+python3 -B deploy/p1_frontend_acceptance.py start --root "$P1_ROOT" --image "$P1_IMAGE"
+python3 -B deploy/p1_frontend_acceptance.py print-manifest --root "$P1_ROOT"
+```
+
+`P1_ROOT` 必须是未使用的新 acceptance 路径。没有 `openguard-a06-dev` 时，
+显式设置 `P1_IMAGE=sha256:<负责人已核验的本地完整runtime image ID>`，不要下载镜像或执行生产 Compose。
+`/2` 只增加 scan 9 的合成 AIAsset 与独立 metadata.db；History 205、D1–D4、
+Graph 100/300/500、Task/Report 原场景与固定引用保留。NOTICE 始终 unsupported。
+种子版本 `/2` 不改变 Product Contract 1.0 或 ResourceProfile schema_version 1.0。
+
+| F02 场景 | 正式 Profile API 数据 |
+|---|---|
+| P1 | scan 2 原 component；无 metadata，明确 unavailable gap |
+| P2 | scan 9 `ast_00000000-0000-0000-0000-000000009c41`；synthetic HF model 观察 |
+| P3 | scan 9 `ast_00000000-0000-0000-0000-000000009c42`；synthetic HF dataset 观察 |
+| P4 | scan 9 `ast_00000000-0000-0000-0000-000000009c43`；revision unconfirmed，保留 gap/null |
+| P5 | scan 9 `ast_00000000-0000-0000-0000-000000009c44`；缺值/冲突字段，保留 gap |
+
+scan 9 ID 为 `scn_00000000-0000-0000-0000-000000002719`；完整固定 scan/resource/href
+由 `print-manifest` 给出，页面必须调用真实 API。Metadata verified 不等于授权 verified。
+`/2` factory 显式注入 synthetic transport/parser，初始化通过正式 refresh service 生成观察，
+不是把 Profile JSON 写死。无真实网络；默认生产 factory 不注入此实现。
+
+`prepare`/`smoke` 在原验收外增加 Profile refresh/job，同 key 同输入同 job，异输入 409，
+相同已播种观察复用而不增生；`verify` 仅 GET 五类 Profile，并将 metadata.db 纳入业务状态审计。
+scan 9 另含 `ast_00000000-0000-0000-0000-000000009c45`（synthetic/unfetched），
+init 不 refresh；smoke/prepare 从正式资源列表取得 ID，显式 refresh 并验证 observation 从 0 到 1，
+再次重放仍为 1。它不是第六份 manifest Mock，也不改变 P1–P5 的固定引用。
+Owner Review新建 `/2` 空间还含资源尾号 `9c46`（synthetic/empty-provider）：原合法Scan provider=""，
+Profile投影null+稳定gap，不refresh。HTTP验收核对该事实、两次Profile语义相同但generated_at为
+各次真实UTC生成时刻；仅从语义比较中排除顶层provenance.generated_at，其他字段不放宽。
+重启后可加 `--profile-job-id <原回执中的job_id>` 验证原 job，仍不写业务数据。
+V2 validator 先保留 V1 业务语义，再核对 Profile 场景全集、引用、实际观察数/gaps；
+缺库、未知 schema、篡改 resource/scenario/count 拒绝，不自动修复。
+原 R2 容器配置/唯一数据 RW mount 检查原样使用，不因增加 sidecar 放宽边界。
+
+实现说明见 [resource-profile-backend.md](resource-profile-backend.md)。

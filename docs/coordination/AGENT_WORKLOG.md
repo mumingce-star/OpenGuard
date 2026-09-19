@@ -4701,3 +4701,41 @@
 - fresh真实loopback：init/start、prepare重复幂等52请求、smoke96请求、同ID stop/start后verify40 GET；共188条HTTP回执事件（额外launcher health GET不混计）。205 History、100/300/500节点、15/0 Task、四Report、实际绑定Task CAS409→done v3、原报告不变及GET业务表/全行/BLOB摘要一致。无外部业务请求；guard不是OS防火墙，bridge非禁外联。独立停止后副本删除graphs.500，start及print均拒绝acceptance_manifest_invalid，未建API容器、全部副本文件Hash不变；源root/副本/失败日志均保留。
 - 本轮验收容器4f7080a6…69ac已exited，a06测试容器3d2b55b0…4bad恢复exited；未删除旧容器/空间。新证据output/manual-fixes/p1-frontend-acceptance-r1r2-20260918-122736包含完整命令、失败轨迹、JUnit、collection、源码/保护Hash、HTTP审计及回执。测试由同代理实现执行，不替代独立负责人Review。
 - 未git add/commit/push/merge/生产部署；可独立演示合成History/Diff/Graph/Task/Report，不代表前端页面完成、真实仓库合规或获奖门禁。Profile/NOTICE/A07-2、xzb页面/代理、Windows/原生Linux/生产build/真实扫描均未扩验。下一步仅负责人最终Review；发布、xzb页面验收及后续包需另行安排。本次运行精确token数不可获得，开工估算15k–30k无法核定实际是否在区间，任务范围未扩大。
+
+### [20260918-2321-Codex-A07-2-start] START — ResourceProfile backend and synthetic acceptance v2
+
+- Codex / Root单写者，基线integration/p1@16498704950eb48be54d5f154d771e9f8c098969 clean，创建feat/p1-resource-profile-backend。此前已读日志/进度Hash与上一回执一致，复读当前末尾、AGENTS/README/Contract/Schema/transport/acceptance/交接及相关源码；不把历史未发布状态当当前事实。
+- 范围：严格parser port/observation、独立metadata.db、只读Profile、显式refresh/job及默认关闭工厂接线；测试、synthetic Acceptance /2、必要launcher/文档/追加日志。旧/1完整保留，不迁移补库；不改Frozen/P0/Diff/Assessment/Report事实、前端、真实cz parser、NOTICE或人工接纳。
+- 已批准clarification：仅Profile identity.version将原空字符串映射null并加入identity_version_empty_normalized_to_unknown，不改原事实/hash；Acceptance /1与/2显式分流，产品schema仍1.0。
+- TemporaryMetadata→严格parser DTO→校验→不可变observation→独立sidecar→Profile。先fail-first，定向及A07-1/原865集合，最后新root真实loopback synthetic HTTP及GET/网络/raw审计；既有唯一real_uvicorn精确排除保持。原a06容器先核验再启动，结束恢复；不真实HF/AI/扫描/生产/组员分支，不暂存提交推送合并。
+- 新证据目录output/manual-fixes/a07-2-resource-profile-20260918-232130。预计25k–45k token为估算，精确消耗不可获得；遇到真实Contract冲突停止相关范围，不伪造COMPLETE。
+
+### [20260919-0002-Codex-A07-2-review] PARTIAL — implementation verified; fail-first process deviation requires owner Review
+
+- Codex（GPT-5系列代理，精确变体无遥测）/ Root单写者。feat/p1-resource-profile-backend，base/current HEAD同为16498704950eb48be54d5f154d771e9f8c098969；未暂存、提交、推送、合并或部署，不动组员分支。
+- 本地实现及功能验收已完成：严格parser port、immutable observation、独立metadata.db user_version=1（三表、逐项状态在job DTO）、Profile projection、三条正式Profile GET/refresh POST/job GET，显式同步/事务claim/双连接幂等、安全错误码/默认refresh disabled。Profile algorithm=resource-profile/1，port=metadata-parser-port/1，产品Schema保持1.0；metadata不提升授权、不回写旧Scan/Assessment/Report，不新增真实parser/NOTICE/人工核验。
+- 批准的Q1仅identity.version空字符串→null+稳定gap；Q2明确/1原validator与行为、/2新init-v2分流。新/2有P1–P5及额外未预取synthetic资源用于真实HTTP新观察验证。旧/1原root无需init成功恢复与40 GET verify，不创建metadata.db；205 History、D1–D4、三档图、15/0 Task、四Report保持。
+- 修改文件：backend/app/p1/profile{,_models,_store}.py、api/profile.py及main.py接线；profile_synthetic.py、frontend_acceptance_profile.py、frontend_acceptance.py/server、dev_integration.py最小factory注入；deploy/p1_dev.py及p1_frontend_acceptance.py；两新增Profile测试与三既有OpenAPI精确路由断言；两份P1说明及三份追加记录。Frozen/Schema、P0领域/registry、A02–A06算法/store、A07-1 transport及frontend均未改。
+- Python3.12.14固定容器：55定向、99 A07-1、172既有Acceptance/dev回归通过。最终unified-final.log与final.xml=920 unique passed、0failed、0skipped、1精确原deselected、1既有Starlette warning；collection921，原865节点逐项保留，新增55，不累加分阶段重复计数。仅精确排除原test_real_uvicorn_disabled_git_rejects_without_queued_scan。git diff --check通过。
+- Fail-first真实记录仅7项（路由/默认refresh/internal port/新版本入口缺失）；任务要求的完整20类没有全部先于实现执行，其余负向测试是过程中补齐，不能补造时序。因此本轮不声称严格全门槛COMPLETE，标PARTIAL，提交负责人决定是否接受该流程偏差；未发现尚失败的功能回归。失败轨迹含DTO序列化比较、真实WAL保活/bytes序列化测试修正、三处13→16条OpenAPI断言更新、独立审计脚本不在容器挂载范围后改用参数传入，均保留。
+- 最终全新/2真实loopback smoke127请求（含0→1 observation、job/幂等/conflict）+重启verify50+新观察持久化3 GET=180回执事件；此前/2中间root120+50保留但不混入最终计数；另旧/1兼容40 GET。五库GET逐表业务行/内容Hash相同，Task CAS不改变固定事实/报告。raw sentinel主DB与API/job/error/repr/log未泄露；实际非空WAL/SHM另由专门SQLite测试验证，运行root使用DELETE journal、WAL不存在不虚称检查了非空WAL。
+- synthetic transport无DNS/DoH/socket/TLS；外部业务请求0，统一测试guard无阻断尝试；进程级guard不是OS防火墙、bridge不禁外联。本轮新/2两容器、旧/1容器与a06测试容器均已exited；全部空间/失败证据保留。证据在上述新目录，receipt记录Hash、命令、JUnit、collection、SQL/raw/GET/网络/manifest与容器状态。
+- 未完成/未验：cz B01真实parser、真实HF、NOTICE、Report/Profile integration、人工核验接纳、xzb业务页面、Windows/原生Linux、生产build/部署。功能可独立合成演示不代表真实授权/比赛门禁关闭；下一步仅负责人源码Review及流程偏差裁决，无自动后续开发/发布。本次运行精确token数不可获得，开工25k–45k估算无法核定实际是否落在范围，未扩产品范围。
+
+### [20260919-2036-Codex-A07-2-owner-start] START — Owner R1/R2/T1 narrow repair
+
+- Codex（GPT-5系列，精确变体无遥测）/ Root单写。feat/p1-resource-profile-backend@16498704950eb48be54d5f154d771e9f8c098969，原22项Hash全部与上轮回执相符，含完整日志/进度；无并行修改迹象，保留全部成果与历史证据。
+- Owner功能Review=CONDITIONAL PASS；原fail-first只有7项、并非20类均先失败的历史永久保留。负责人裁决accepted_for_code_delivery_without_rewriting_chronology，不称流程偏差已修复，不改旧receipt/log。
+- 本轮仅R1 Profile/observation真实generated_at及语义ID排除生成时刻、R2仅identity.provider空字符串→null+稳定gap、T1刷新参数错误专属文案；对应测试、合成HTTP工具及必要fixture/文档/追加记录。Frozen、上游事实、真实parser/网络、NOTICE、前端不改；不暂存提交推送合并部署。
+- 新fail-first先于修补；Owner targeted→原55+新增→99 transport→172兼容→原920完整集合+新增，仅原精确deselect。新/2真实HTTP及旧/1只读兼容，结束恢复实例。证据output/manual-fixes/a07-2-resource-profile-owner-r1-20260919-203620。估算12k–22k token，精确数不可获得。
+
+### [20260919-2046-Codex-A07-2-owner-complete] COMPLETE — local R1/R2/T1, pending Owner FINAL Review
+
+- Codex（GPT-5系列，精确变体无遥测）/ Root单写；branch/HEAD不变，未add/commit/push/merge/deploy。本轮保留原22项，新增Owner测试；不改Frozen/P0/Domain/registry/Diff/Assessment/Report/metadata store/models/transport或前端，无新依赖。
+- R1：Profile provenance.generated_at为本次datetime.now(timezone.utc)生成时间，profile_id仅排除该顶层时间；metadata fetched_at仍为descriptor时间，observation provenance.generated_at为实际normalization时刻。既有observation semantic去重排除时间且保留首个不可变正文，未改store。重复GET只比较除顶层generated_at外的完整语义，另验真实UTC时间。
+- R2：仅Profile identity.provider对精确空字符串映射null+identity_provider_empty_normalized_to_unknown，不trim/猜测、不改上游事实/hash；新/2初始化的独立合成9c46用正式P0事实测试，不能refresh未知provider。旧/1不变。T1：只分出Profile refresh RequestValidationError文案，仍400 invalid_argument/reason=request_invalid；Report原文案、P0 422保持。
+- 真实新fail-first=5failed/2passed，覆盖三个R1断言、R2、T1；首次测试跨目录import collection error另存，修正测试后才记录有效fail-first，产品修补在其后。Owner targeted7passed；原55+7=62passed；99 A07-1、172Acceptance/dev通过。最终统一927 unique passed、0failed、0skipped、1原精确deselected、1既有warning；原920逐项保留、新增7，collection928。不相加分阶段次数。
+- 新/2 Host HTTP smoke131、Owner只读5、重启verify52；同profile_id，实际两次generated_at=2026-09-19T12:43:03.083593Z/2026-09-19T12:43:03.094359Z，除该时间外语义相同；空provider→200/null/gap；refresh/job/幂等/conflict、0→1 observation和NOTICE unsupported保持。旧/1原root恢复后40 GET只读验收通过且无metadata.db。五库GET逻辑状态无变化；raw主库与实际非空WAL/SHM测试、API/job/error/repr/log通过；runtime WAL缺失明确不冒充非空实测。
+- 外部业务请求0，synthetic无DNS/socket/TLS；Python guard不是OS防火墙。新/2、旧/1及a06三个使用实例均恢复exited，无删库/删空间。证据新目录含原始失败、新JUnit、collection、时间戳/GET/raw/网络/Hash/回执，旧回执及日志不改。
+- Owner裁决永久保留：原主体Review为CONDITIONAL PASS；最初只有7项fail-first、并非完整20类前置失败的历史不变，accepted_for_code_delivery_without_rewriting_chronology，允许代码交付，不写“process deviation fixed”。本轮COMPLETE仅指Owner窄修本地验收，仍待负责人FINAL Review；未实现真实B01/HF、NOTICE、人工接纳、前端、Report/Profile integration或生产/跨平台验收。
+- 本轮改动profile.py、api/main.py、frontend_acceptance.py/profile扩展、HTTP harness、旧Profile比较断言、新Owner测试、两文档及三份追加日志；不扩包。精确token数不可获得，原12k–22k估算无法核定是否在范围内，范围未扩大。下一步仅负责人FINAL Review，STOP。

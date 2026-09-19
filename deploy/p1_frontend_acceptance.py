@@ -12,9 +12,24 @@ from pathlib import Path
 import socket
 import sys
 import urllib.parse
+from copy import deepcopy
+from datetime import datetime,timezone
 
 import p1_dev as launcher
 from p1_dev_smoke import Client, local_url
+
+
+def profile_get(client,href):
+    start=datetime.now(timezone.utc)
+    value=client.json('GET',href)
+    at=value['provenance']['generated_at']
+    assert at.endswith('Z')
+    assert start<=datetime.fromisoformat(at.replace('Z','+00:00'))<=datetime.now(timezone.utc)
+    return value
+
+
+def profile_semantic(value):
+    value=deepcopy(value);value['provenance'].pop('generated_at');return value
 
 
 def network_guard():
@@ -148,23 +163,81 @@ def verify_http(client, manifest):
         assert sizes['long'] > sizes['basic']
     for unsupported in manifest['unsupported'].values():
         client.call('GET', unsupported['href'], expected=404)
-    return dict(history={'count':len(rows), 'pages':pages}, diff=diffs, graphs=graphs, tasks=task_audit)
+    result=dict(history={'count':len(rows), 'pages':pages}, diff=diffs, graphs=graphs, tasks=task_audit)
+    if 'profiles' in manifest:
+        profiles={}
+        for label,row in manifest['profiles'].items():
+            profile=profile_get(client,row['href'])
+            assert len(profile['metadata_observations'])==row['expected_metadata_count']
+            assert profile['coverage_gaps']==row['expected_gaps']
+            assert profile_semantic(profile)==profile_semantic(profile_get(client,row['href']))
+            profiles[label]=dict(profile_id=profile['profile_id'],resource_ref=profile['resource_ref'],
+                metadata_count=len(profile['metadata_observations']),coverage_gaps=profile['coverage_gaps'])
+        result['profiles']=profiles
+        sid=manifest['profiles']['P2']['scan_id']
+        resources=client.json('GET',f'/api/v1/scans/{sid}/resources?kind=ai_asset')['items']
+        for row in resources:
+            if row['resource']['name']=='synthetic/empty-provider':
+                assert row['resource']['provider']==''
+                value=profile_get(client,f'/api/v1/scans/{sid}/resources/{row["resource"]["id"]}/profile')
+                assert value['identity']['provider'] is None
+                assert 'identity_provider_empty_normalized_to_unknown' in value['coverage_gaps']
+                result['empty_provider']=dict(resource_id=row['resource']['id'],provider=None,coverage_gaps=value['coverage_gaps'])
+    return result
+
+
+def profile_refresh_http(client,manifest):
+    row=manifest['profiles']['P2']
+    before=profile_get(client,row['href'])
+    path=f'/api/v1/scans/{row["scan_id"]}/resource-profiles'
+    body=dict(resource_ids=[row['resource_id']],expected_facts_hash=before['scan_ref']['facts_hash'],
+              idempotency_key='acceptance-profile-http-v2')
+    job=client.json('POST',path+'/refresh',body)
+    assert job['status']=='succeeded'
+    assert client.json('POST',path+'/refresh',body)==job
+    client.json('POST',path+'/refresh',dict(body,resource_ids=[manifest['profiles']['P3']['resource_id']]),409)
+    assert client.json('GET',path+'/jobs/'+job['job_id'])==job
+    after=profile_get(client,row['href'])
+    assert profile_semantic(after)==profile_semantic(before)
+    return job
+
+
+def profile_new_observation_http(client,manifest):
+    sid=manifest['profiles']['P2']['scan_id']
+    base=f'/api/v1/scans/{sid}'
+    rows=client.json('GET',base+'/resources?kind=ai_asset')['items']
+    resource=next(row['resource'] for row in rows if row['resource']['name']=='synthetic/unfetched')
+    href=base+'/resources/'+resource['id']+'/profile'
+    before=profile_get(client,href)
+    body=dict(resource_ids=[resource['id']],expected_facts_hash=before['scan_ref']['facts_hash'],
+        idempotency_key='acceptance-new-observation-v2')
+    job=client.json('POST',base+'/resource-profiles/refresh',body)
+    assert job['status']=='succeeded'
+    assert client.json('GET',base+'/resource-profiles/jobs/'+job['job_id'])==job
+    after=profile_get(client,href)
+    assert len(after['metadata_observations'])==1
+    assert profile_semantic(profile_get(client,href))==profile_semantic(after)
+    assert client.json('POST',base+'/resource-profiles/refresh',body)==job
+    return dict(resource_id=resource['id'],href=href,job_id=job['job_id'],
+        before_count=len(before['metadata_observations']),after_count=1,profile_id=after['profile_id'])
 
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action', choices=['init','start','stop','status','prepare','smoke','verify','print-manifest'])
+    p.add_argument('action', choices=['init','init-v2','start','stop','status','prepare','smoke','verify','print-manifest'])
     p.add_argument('--root', required=True)
     p.add_argument('--image')
     p.add_argument('--base', type=local_url, default='http://127.0.0.1:18011')
     p.add_argument('--origin', type=local_url, default='http://127.0.0.1:15174')
     p.add_argument('--receipt', default='acceptance-http.json')
+    p.add_argument('--profile-job-id')
     args = p.parse_args(argv)
     root = launcher.safe_root(args.root)
     if not root.name.startswith(launcher.ACCEPTANCE_PREFIX):
         p.error('only a dedicated frontend-acceptance root is allowed')
-    if args.action in {'init','start','stop','status'}:
-        values = [args.action, '--root', str(root)]
+    if args.action in {'init','init-v2','start','stop','status'}:
+        values = ['init' if args.action=='init-v2' else args.action, '--root', str(root)]
+        if args.action=='init-v2': values += ['--acceptance-version','2']
         if args.image:
             values += ['--image', args.image]
         return launcher.main(values)
@@ -189,6 +262,7 @@ def main(argv=None):
             count=len(row['initial_tasks']), href=row['href']) for label,row in manifest['tasks'].items()}
         summary['reports'] = {label:dict(snapshot_id=row['snapshot_id'], artifacts=row['artifacts'])
                               for label,row in manifest['reports'].items()}
+        if 'profiles' in manifest: summary['profiles']=manifest['profiles']
         print(json.dumps(summary, ensure_ascii=False, indent=2))
         return
     if Path(args.receipt).name != args.receipt or args.receipt in {'.','..'}:
@@ -197,13 +271,19 @@ def main(argv=None):
     if path.exists() or path.is_symlink():
         p.error('receipt exists; preserve it and choose a new receipt filename')
     attempts = network_guard()
-    client = Client(args.base, args.origin, manifest, seed_version='p1-frontend-acceptance/1')
+    client = Client(args.base, args.origin, manifest, seed_version=manifest['seed_version'])
     client.bind()
     if args.action in {'prepare','smoke'}:
         prepare_http(client, manifest)
         prepare_http(client, manifest)
+    profile_job=profile_refresh_http(client,manifest) if 'profiles' in manifest and args.action in {'prepare','smoke'} else None
+    profile_new=profile_new_observation_http(client,manifest) if 'profiles' in manifest and args.action in {'prepare','smoke'} else None
     before = audit(root, manifest)
     result = verify_http(client, manifest)
+    if args.profile_job_id:
+        row=manifest['profiles']['P2']
+        profile_job=client.json('GET',f'/api/v1/scans/{row["scan_id"]}/resource-profiles/jobs/{args.profile_job_id}')
+        assert profile_job['status']=='succeeded'
     after = audit(root, manifest)
     assert before == after, 'GET modified business state'
     cas = None
@@ -231,6 +311,8 @@ def main(argv=None):
         reports=manifest['reports'], events=client.events,
         network={'external_business_requests':0,'blocked_attempts':attempts,
                  'boundary':'Python harness guard; not an OS firewall. No external business request authorized or executed.'})
+    if profile_job: receipt['profile_refresh']=profile_job
+    if profile_new: receipt['profile_new_observation']=profile_new
     with path.open('x', encoding='utf-8') as file:
         json.dump(receipt, file, ensure_ascii=False, indent=2)
     print(json.dumps({'result':'PASS','action':args.action,'requests':len(client.events), 'synthetic':True}))

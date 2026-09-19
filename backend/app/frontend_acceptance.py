@@ -26,6 +26,7 @@ from app.p1.models import P1TaskDeriveRequest, P1TaskRef
 from app.p1.report_v2_integrity import explicit_identity
 
 SEED_VERSION = 'p1-frontend-acceptance/1'
+PROFILE_SEED_VERSION = 'p1-frontend-acceptance/2'
 PREFIX = 'p1-frontend-acceptance-'
 MANIFEST = 'frontend-acceptance-manifest.json'
 MARKER = '.openguard-frontend-acceptance.json'
@@ -104,14 +105,14 @@ def read_manifest(root, *, repository_root=None):
     marker = dev._load_json(root / MARKER)
     manifest = dev._load_json(root / MANIFEST)
     for value in (marker, manifest):
-        if (value.get('synthetic') is not True or value.get('seed_version') != SEED_VERSION
+        if (value.get('synthetic') is not True or value.get('seed_version') not in {SEED_VERSION, PROFILE_SEED_VERSION}
                 or value.get('tool') != 'P1 Frontend Acceptance Seed'
                 or not isinstance(value.get('root_id'), str)
                 or not re.fullmatch(r'dev_[0-9a-f]{32}', value['root_id'])
                 or not isinstance(value.get('code_commit'), str)
                 or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,199}', value['code_commit'])):
             raise dev.DevIntegrationError('acceptance_identity_invalid')
-    if any(marker.get(k) != manifest.get(k) for k in ('root_id', 'code_commit')):
+    if any(marker.get(k) != manifest.get(k) for k in ('root_id', 'code_commit', 'seed_version')):
         raise dev.DevIntegrationError('acceptance_identity_invalid')
     dev._validate_database_set(root)
     dev._readonly_schema_preflight(root)
@@ -138,6 +139,22 @@ def _readonly_rows(root, name, query):
 
 
 def _validate_manifest(root, manifest):
+    if manifest.get('seed_version') == PROFILE_SEED_VERSION:
+        from app.frontend_acceptance_profile import validate
+        validate(root, manifest)
+        base=deepcopy(manifest)
+        del base['profiles']
+        base['unsupported']['profile']=_legacy_profile_unsupported()
+        return _validate_manifest_v1(root,base)
+    return _validate_manifest_v1(root,manifest)
+
+
+def _legacy_profile_unsupported():
+    return dict(status='not_available_on_current_baseline',reason='A07-2 ResourceProfile / B01 parser pending',
+        href=f'/api/v1/scans/{_id("scn",10002)}/resources/{dev._fixture()["components"][0]["id"]}/profile')
+
+
+def _validate_manifest_v1(root, manifest):
     """Existing facts only. Never constructs a writable registry or calls create/derive.
 
     Fixed v1 scenario membership comes from the seed definition, not whatever
@@ -247,7 +264,7 @@ def _stores(root):
     return registry, assessments, tasks, reports
 
 
-def initialize(root, *, repository_root=None, code_version='unknown'):
+def initialize(root, *, repository_root=None, code_version='unknown', _profile_v2=False):
     root = _root(root, repository_root, must_exist=False)
     if root.exists():
         dev._private_directory(root)
@@ -267,7 +284,11 @@ def initialize(root, *, repository_root=None, code_version='unknown'):
             status = 'partial' if number == 3 else ('completed' if number <= 170 else
                 'partial' if number <= 185 else 'failed' if number <= 193 else
                 'cancelled' if number <= 199 else 'running' if number <= 202 else 'queued')
-            run = _persist(registry, _facts(number, nodes=tier, empty=number == 8 or number > 8), status)
+            value = _facts(number, nodes=tier, empty=number == 8 or number > 8)
+            if _profile_v2 and number == 9:
+                from app.frontend_acceptance_profile import add_facts
+                add_facts(value,empty_provider=True)
+            run = _persist(registry, value, status)
             if number <= 8:
                 runs[number] = run
             # D3 intentionally has no Assessment. Do not synthesize one later.
@@ -283,7 +304,7 @@ def initialize(root, *, repository_root=None, code_version='unknown'):
                 graphs[str(tier)] = dict(scan_id=run.id, target_tier=tier,
                     actual_node_count=len(graph['nodes']), edge_count=len(graph['edges']),
                     resource_id=run.components[0].id, href=f'/api/v1/scans/{run.id}/graph')
-        identity = dict(synthetic=True, seed_version=SEED_VERSION, root_id=dev._new_root_id(),
+        identity = dict(synthetic=True, seed_version=PROFILE_SEED_VERSION if _profile_v2 else SEED_VERSION, root_id=dev._new_root_id(),
                         code_commit=code_version, tool='P1 Frontend Acceptance Seed')
         diff = {}
         for label, target in [('D1', 2), ('D2', 3), ('D3', 4), ('D4', 2)]:
@@ -317,10 +338,17 @@ def initialize(root, *, repository_root=None, code_version='unknown'):
     # No success marker is published until all explicit writes and read-only
     # checks succeed. A failed init remains private evidence, never recover-seeded.
     manifest = _prepare(root, manifest)
+    if _profile_v2:
+        from app.frontend_acceptance_profile import initialize as initialize_profiles
+        initialize_profiles(root, manifest)
     _validate_manifest(root, manifest)
     dev._atomic_json(root / MANIFEST, manifest)
     dev._atomic_json(root / MARKER, identity)
     return read_manifest(root, repository_root=repository_root)
+
+
+def initialize_v2(root, *, repository_root=None, code_version='unknown'):
+    return initialize(root, repository_root=repository_root, code_version=code_version, _profile_v2=True)
 
 
 def prepare(root, *, repository_root=None):
@@ -367,15 +395,19 @@ def _prepare(root, manifest):
 def create_acceptance_app(root, *, origins, repository_root=None):
     manifest = read_manifest(root, repository_root=repository_root)
     root = _root(root, repository_root)
-    return dev._wire_dev_app(root, manifest, origins=origins)
+    factory=None
+    if manifest['seed_version']==PROFILE_SEED_VERSION:
+        from app.frontend_acceptance_profile import service
+        factory=lambda registry:service(root,registry)
+    return dev._wire_dev_app(root, manifest, origins=origins, profile_service_factory=factory)
 
 
 def logical_state(root, *, repository_root=None):
     """Readonly business rows including BLOB hashes; WAL/SHM bytes are not facts."""
-    read_manifest(root, repository_root=repository_root)
+    manifest=read_manifest(root, repository_root=repository_root)
     root = _root(root, repository_root)
     result = {}
-    for name in dev._DATABASES:
+    for name in (*dev._DATABASES, *(('metadata.db',) if manifest['seed_version']==PROFILE_SEED_VERSION else ())):
         with sqlite3.connect(f"file:{quote(str(root), safe='/')}/{name}?mode=ro", uri=True) as connection:
             connection.execute('PRAGMA query_only=ON')
             tables = connection.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").fetchall()
