@@ -2,6 +2,8 @@
 from __future__ import annotations
 import json
 import os
+import sqlite3
+from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 import pytest
@@ -232,3 +234,68 @@ def test_usage_same_details_different_declaration_time_reuses_semantic_key():
     second = UsageDeclaration(preset="internal",declared_at=datetime(2026,9,11,tzinfo=timezone.utc))
     a,b = build_assessment(run,first),build_assessment(run,second)
     assert a.cache_key == b.cache_key and a.usage.declared_at != b.usage.declared_at
+
+
+def _audit007_pair(tmp_path):
+    store = AssessmentStore(tmp_path / "assessment.db", min_free_bytes=0)
+    run = controlled()
+    other_data = run.model_dump(mode="json")
+    other_data["id"] = "scn_00000000-0000-0000-0000-00000000b007"
+    other_run = ScanRun.model_validate(other_data)
+    a = build_assessment(run, use())
+    b = build_assessment(other_run, UsageDeclaration(preset="personal"))
+    assert a.id != b.id and a.scan_id != b.scan_id and a.cache_key != b.cache_key
+    store.create(a, idempotency_key="audit-a", run=run)
+    store.create(b, idempotency_key="audit-b", run=other_run)
+    assert store.get(a.scan_id, a.id) == a
+    assert store.get(b.scan_id, b.id) == b
+    return store, run, a, b
+
+
+def _audit007_rows(store):
+    with closing(sqlite3.connect(f"file:{store.path}?mode=ro", uri=True)) as db:
+        return (
+            db.execute("SELECT * FROM assessments ORDER BY id").fetchall(),
+            db.execute("SELECT * FROM assessment_requests ORDER BY scan_id,request_key").fetchall(),
+        )
+
+
+def _audit007_read(store, run, a, method):
+    if method == "get":
+        return store.get(a.scan_id, a.id)
+    if method == "get_by_id":
+        return store.get_by_id(a.id)
+    if method == "list":
+        return store.list(a.scan_id)[0]
+    assert method == "cache_replay"
+    return store.create(a, idempotency_key="audit-a", run=run)
+
+
+@pytest.mark.parametrize("method", ["get", "get_by_id", "list", "cache_replay"])
+@pytest.mark.parametrize("fault", ["other_payload", "id", "scan_id", "version", "cache_key", "invalid_json", "invalid_model"])
+def test_audit007_row_payload_binding_fails_closed(tmp_path, method, fault):
+    from app.assessment.models import Assessment
+    store, run, a, b = _audit007_pair(tmp_path)
+    assert _audit007_read(store, run, a, method) == a
+    before = _audit007_rows(store)
+    if fault == "other_payload":
+        with closing(sqlite3.connect(store.path)) as db:
+            payload = db.execute("SELECT payload FROM assessments WHERE id=?", (b.id,)).fetchone()[0]
+        assert Assessment.model_validate_json(payload) == b
+    elif fault in {"invalid_json", "invalid_model"}:
+        payload = b"{" if fault == "invalid_json" else b"{}"
+    else:
+        # One binding field differs, while the payload remains a valid DTO.
+        value = a.model_dump(mode="json")
+        value[fault] = {"id": b.id, "scan_id": b.scan_id,
+                        "version": a.version + 1, "cache_key": b.cache_key}[fault]
+        payload = Assessment.model_validate(value).model_dump_json().encode()
+    with closing(sqlite3.connect(store.path)) as db, db:
+        assert db.execute("UPDATE assessments SET payload=? WHERE id=?", (payload, a.id)).rowcount == 1
+    corrupted = _audit007_rows(store)
+    assert corrupted[1] == before[1]
+    for old, new in zip(before[0], corrupted[0]):
+        assert old[:4] == new[:4] and old[5:] == new[5:]
+    with pytest.raises(AssessmentStoreError, match="^assessment_store_integrity_error$"):
+        _audit007_read(store, run, a, method)
+    assert _audit007_rows(store) == corrupted

@@ -155,3 +155,25 @@ def test_disabled_git_rejected_without_queued_record(harness):
     assert response.status_code==503
     assert response.json()['error']['code']=='git_scanning_unavailable'
     if before is not None: assert s.registry.active_count()==before
+
+
+def test_audit007_get_rejects_cross_bound_payload(harness):
+    import sqlite3
+    from contextlib import closing
+    c, service, provider, ids = harness
+    a_run, b_run = (service.run(sid) for sid in ids)
+    a, b = build_assessment(a_run), build_assessment(b_run)
+    service.store.create(a, idempotency_key="binding-a", run=a_run)
+    service.store.create(b, idempotency_key="binding-b", run=b_run)
+    url = f"/api/v1/scans/{a.scan_id}/assessments/{a.id}"
+    assert c.get(url).json()["id"] == a.id
+    with closing(sqlite3.connect(service.store.path)) as db, db:
+        payload = db.execute("SELECT payload FROM assessments WHERE id=?", (b.id,)).fetchone()[0]
+        db.execute("UPDATE assessments SET payload=? WHERE id=?", (payload, a.id))
+    before = service.store.path.read_bytes()
+    response = c.get(url)
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "assessment_store_integrity_error"
+    assert b.id not in response.text
+    assert service.store.path.read_bytes() == before
+    assert provider.calls == 0

@@ -4739,3 +4739,19 @@
 - 外部业务请求0，synthetic无DNS/socket/TLS；Python guard不是OS防火墙。新/2、旧/1及a06三个使用实例均恢复exited，无删库/删空间。证据新目录含原始失败、新JUnit、collection、时间戳/GET/raw/网络/Hash/回执，旧回执及日志不改。
 - Owner裁决永久保留：原主体Review为CONDITIONAL PASS；最初只有7项fail-first、并非完整20类前置失败的历史不变，accepted_for_code_delivery_without_rewriting_chronology，允许代码交付，不写“process deviation fixed”。本轮COMPLETE仅指Owner窄修本地验收，仍待负责人FINAL Review；未实现真实B01/HF、NOTICE、人工接纳、前端、Report/Profile integration或生产/跨平台验收。
 - 本轮改动profile.py、api/main.py、frontend_acceptance.py/profile扩展、HTTP harness、旧Profile比较断言、新Owner测试、两文档及三份追加日志；不扩包。精确token数不可获得，原12k–22k估算无法核定是否在范围内，范围未扩大。下一步仅负责人FINAL Review，STOP。
+
+### [20260920-1058-GPT-6-Astra-REPAIR-01-start] START — AUDIT-007 Assessment row binding
+
+- GPT-6 Astra / Root单写；仅修AUDIT-007。fetch后origin/integration/p1与本地基线均为13e02db5ec500e43cd3ea4e50ea5c35c5c8291f7，原工作区clean；新建fix/audit-007-assessment-binding，HEAD/merge-base均为该SHA，无同名已有分支。原DYNAMIC-01 final receipt SHA256=9109268cca8ff4a1874401698d41e888533c7a50187cb3299ab024209fbdaf43，保持原样。
+- 允许产品文件仅backend/app/assessment/store.py；永久测试test_v4_assessment_core.py及必要API测试；本日志和AI日志仅追加。先永久测试真实fail-first，再统一decoder，定向/消费者/历史927集合回归及临时corruption复验。不改模型/算法/schema/report()/其他finding，不暂存提交推送合并部署。
+- 仅exact A06 legacy runtime及Python3.12.14，历史宽松安全配置仅限本轮测试例外，不称安全基线PASS；不访问业务网络/真实数据库/扫描/AI，完成后停止该容器。新ignored证据目录output/manual-fixes/audit-007-assessment-binding-repair-20260920T105851Z。
+- Luna只读定位历史回归命令，主控独立复核；不默认Astra子代理。估算12k–22k token，精确消耗不可获得，不将估算当实耗。完成后仅待Owner Review。
+
+### [20260920-1109-GPT-6-Astra-REPAIR-01-complete] COMPLETE — AUDIT-007 local repair; pending Owner Review
+
+- 按真实顺序完成：新分支、START、永久测试、旧store真实29失败并保存JUnit、最小产品修补、新测试29通过。旧失败为20项错绑未拒绝、8项解析错误未转稳定StoreError、1项API错误200；没有fixture/environment失败冒充fail-first。原DYNAMIC-01证据未改。
+- 仅AssessmentStore新增统一_decode_assessment_row，get/get_by_id/list/create cache replay读取并核对SQL id/scan_id/version/cache_key与合法payload；解析或绑定错误复用assessment_store_integrity_error。report()、schema、ID/cache算法、Usage/Formal/ScanRun/Report V2/HTTP Contract均不改；正常cache复用和既有错误语义保留。
+- Python3.12.14：新增29、完整core/API69、四个P1消费者164通过。复用历史授权完整集合，最终956 unique passed/0failed/0skipped/1precise deselected/1既有Starlette warning；逐节点原927全部保留，新增29，collection928→957，无新增排除。各阶段数量不相加。
+- 最小临时SQLite corruption复验get/get_by_id/list/cache replay全部完整性拒绝；失败调用前后业务行及DB字节均不变。API错绑503且无B正文/AI调用。进程网络guard无外部尝试，不称OS级禁外联；未访问生产DB、真实扫描、AI或业务网络。
+- exact openguard-a06-dev已停止为exited，docker ps无运行容器；不remove。legacy安全例外不称基线PASS。新ignored证据output/manual-fixes/audit-007-assessment-binding-repair-20260920T105851Z保留命令、失败/通过日志、JUnit、collection、probe、Hash、diff和receipt；最终源码Hash绑定测试快照，两日志仅追加。
+- Luna只读检索历史测试集合，因任务机械且边界清晰选最低足够模型；主控独立核对命令/节点/结果。仅5项授权tracked文件；未暂存/commit/push/merge/deploy。AUDIT-002/003/004/009仍unresolved，其他finding均未顺手修；007仅本地修复待负责人Review，STOP。精确token消耗不可获得。

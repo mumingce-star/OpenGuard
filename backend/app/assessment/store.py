@@ -139,9 +139,20 @@ class AssessmentStore:
         except sqlite3.Error as error:
             raise AssessmentStoreError("assessment_store_unavailable") from error
 
+    @staticmethod
+    def _decode_assessment_row(row: tuple) -> Assessment:
+        """Validate persisted payload and its binding to the selected SQL row."""
+        try:
+            assessment = Assessment.model_validate_json(row[4])
+        except (ValueError, TypeError):
+            raise AssessmentStoreError("assessment_store_integrity_error") from None
+        if (assessment.id, assessment.scan_id, assessment.version, assessment.cache_key) != tuple(row[:4]):
+            raise AssessmentStoreError("assessment_store_integrity_error")
+        return assessment
+
     def get(self, scan_id: str, assessment_id: str) -> Assessment | None:
-        rows = self._read("SELECT payload FROM assessments WHERE scan_id=? AND id=?", (scan_id, assessment_id))
-        return Assessment.model_validate_json(rows[0][0]) if rows else None
+        rows = self._read("SELECT id,scan_id,version,cache_key,payload FROM assessments WHERE scan_id=? AND id=?", (scan_id, assessment_id))
+        return self._decode_assessment_row(rows[0]) if rows else None
 
     def get_by_id(self, assessment_id: str) -> Assessment | None:
         """Read an assessment without weakening its scan binding.
@@ -149,8 +160,8 @@ class AssessmentStore:
         Cross-scan callers use this only to distinguish a missing explicit ID
         from an ID bound to a different scan.  The database remains read-only.
         """
-        rows = self._read("SELECT payload FROM assessments WHERE id=?", (assessment_id,))
-        return Assessment.model_validate_json(rows[0][0]) if rows else None
+        rows = self._read("SELECT id,scan_id,version,cache_key,payload FROM assessments WHERE id=?", (assessment_id,))
+        return self._decode_assessment_row(rows[0]) if rows else None
 
     def latest(self, scan_id: str) -> Assessment | None:
         rows = self.list(scan_id, limit=1)
@@ -159,8 +170,8 @@ class AssessmentStore:
     def list(self, scan_id: str, *, limit: int = 20, offset: int = 0) -> list[Assessment]:
         if not 1 <= limit <= 100 or offset < 0:
             raise AssessmentStoreError("assessment_store_invalid_argument")
-        return [Assessment.model_validate_json(row[0]) for row in self._read(
-            "SELECT payload FROM assessments WHERE scan_id=? ORDER BY version DESC LIMIT ? OFFSET ?", (scan_id, limit, offset))]
+        return [self._decode_assessment_row(row) for row in self._read(
+            "SELECT id,scan_id,version,cache_key,payload FROM assessments WHERE scan_id=? ORDER BY version DESC LIMIT ? OFFSET ?", (scan_id, limit, offset))]
 
     def report(self, scan_id: str, assessment_id: str, format: str = "html") -> bytes | None:
         if format not in {"html", "json"}:
@@ -186,9 +197,9 @@ class AssessmentStore:
                 request = db.execute("SELECT cache_key,assessment_id FROM assessment_requests WHERE scan_id=? AND request_key=?", (assessment.scan_id, idempotency_key)).fetchone()
                 if request and request[0] != assessment.cache_key:
                     raise AssessmentStoreError("assessment_idempotency_conflict")
-                cached = db.execute("SELECT payload FROM assessments WHERE scan_id=? AND cache_key=?", (assessment.scan_id, assessment.cache_key)).fetchone()
+                cached = db.execute("SELECT id,scan_id,version,cache_key,payload FROM assessments WHERE scan_id=? AND cache_key=?", (assessment.scan_id, assessment.cache_key)).fetchone()
                 if cached:
-                    saved = Assessment.model_validate_json(cached[0])
+                    saved = self._decode_assessment_row(cached)
                 else:
                     next_version = db.execute("SELECT COALESCE(MAX(version),0)+1 FROM assessments WHERE scan_id=?", (assessment.scan_id,)).fetchone()[0]
                     if assessment.version != next_version:
