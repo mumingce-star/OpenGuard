@@ -28,6 +28,10 @@ class RemediationStoreError(RuntimeError):
 # Kept explicit so callers need no knowledge of sqlite exceptions.
 RemediationTaskStoreError = RemediationStoreError
 
+# Fixed row shapes consumed by the two binding decoders below.
+_TASK_COLUMNS = "task_id,scan_id,assessment_id,origin_key,created_at,version,payload,payload_hash"
+_VERSION_COLUMNS = "v.task_id,v.version,t.scan_id,t.assessment_id,v.payload,v.payload_hash"
+
 
 def _bytes(value: object) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
@@ -158,6 +162,31 @@ class RemediationTaskStore:
         except (ValueError, TypeError, RemediationStoreError) as error:
             raise RemediationStoreError("storage_unavailable") from error
 
+    def _decode_task_row(self, row) -> dict:
+        """Bind _TASK_COLUMNS metadata to the hash-checked current payload."""
+        task_id, scan_id, assessment_id, origin_key, created_at, version, payload, sha = row
+        task = self._decode((payload, sha))
+        expected_origin = _digest(_bytes([task["assessment_ref"]["version"], task["origin"]]))
+        if (task_id, scan_id, assessment_id, origin_key, created_at, version) != (
+                task["task_id"], task["scan_id"], task["assessment_ref"]["assessment_id"],
+                expected_origin, task["created_at"], task["version"]):
+            raise RemediationStoreError("storage_unavailable")
+        return task
+
+    def _decode_task_version_row(self, row) -> dict:
+        """Bind _VERSION_COLUMNS to snapshot identity and the parent SQL scope.
+
+        Historical version is compared to v.version, never the current version;
+        current payload is neither loaded nor required for fixed-version reads.
+        """
+        task_id, version, scan_id, assessment_id, payload, sha = row
+        task = self._decode((payload, sha))
+        if (task_id, version, scan_id, assessment_id) != (
+                task["task_id"], task["version"], task["scan_id"],
+                task["assessment_ref"]["assessment_id"]):
+            raise RemediationStoreError("storage_unavailable")
+        return task
+
     def _capacity(self, db, size: int) -> None:
         page_size = db.execute("PRAGMA page_size").fetchone()[0]
         used = db.execute("PRAGMA page_count").fetchone()[0] * page_size
@@ -174,13 +203,14 @@ class RemediationTaskStore:
             raise RemediationStoreError("storage_capacity_exceeded")
         return payload
 
-    def _read(self, query: str, args: tuple) -> list[dict]:
+    def _read(self, query: str, args: tuple, *, version_rows: bool = False) -> list[dict]:
         try:
             db = self._connect(readonly=True)
             if db is None:
                 return []
             with closing(db):
-                return [self._decode(row) for row in db.execute(query, args)]
+                decode = self._decode_task_version_row if version_rows else self._decode_task_row
+                return [decode(row) for row in db.execute(query, args)]
         except (OSError, sqlite3.Error) as error:
             raise self._error(error) from error
 
@@ -200,7 +230,7 @@ class RemediationTaskStore:
             raise self._error(error) from error
 
     def get(self, scan_id: str, assessment_id: str, task_id: str) -> dict | None:
-        rows = self._read("SELECT payload,payload_hash FROM tasks WHERE scan_id=? AND assessment_id=? AND task_id=?", (scan_id, assessment_id, task_id))
+        rows = self._read(f"SELECT {_TASK_COLUMNS} FROM tasks WHERE scan_id=? AND assessment_id=? AND task_id=?", (scan_id, assessment_id, task_id))
         return rows[0] if rows else None
 
     def get_version(self, scan_id: str, assessment_id: str, task_id: str,
@@ -209,29 +239,24 @@ class RemediationTaskStore:
         if type(version) is not int or version < 1:
             raise RemediationStoreError("invalid_argument")
         rows = self._read(
-            "SELECT v.payload,v.payload_hash FROM task_versions v JOIN tasks t "
+            f"SELECT {_VERSION_COLUMNS} FROM task_versions v JOIN tasks t "
             "ON t.task_id=v.task_id WHERE t.scan_id=? AND t.assessment_id=? "
             "AND v.task_id=? AND v.version=?",
-            (scan_id, assessment_id, task_id, version))
-        if not rows:
-            return None
-        task = rows[0]
-        if (task["task_id"] != task_id or task["version"] != version
-                or task["scan_id"] != scan_id
-                or task["assessment_ref"]["assessment_id"] != assessment_id):
-            raise RemediationStoreError("storage_unavailable")
-        return task
+            (scan_id, assessment_id, task_id, version), version_rows=True)
+        return rows[0] if rows else None
 
     def page(self, scan_id: str, assessment_id: str, *, limit: int = 20,
              after: tuple[str, str] | None = None) -> list[dict]:
         if type(limit) is not int or not 1 <= limit <= 100 or (after is not None and (not isinstance(after, tuple) or len(after) != 2 or not all(isinstance(x, str) for x in after))):
             raise RemediationStoreError("invalid_argument")
         condition = " AND (created_at,task_id) > (?,?)" if after is not None else ""
-        return self._read("SELECT payload,payload_hash FROM tasks WHERE scan_id=? AND assessment_id=?" + condition + " ORDER BY created_at,task_id LIMIT ?", (scan_id, assessment_id, *(after or ()), limit + 1))
+        return self._read(f"SELECT {_TASK_COLUMNS} FROM tasks WHERE scan_id=? AND assessment_id=?" + condition + " ORDER BY created_at,task_id LIMIT ?", (scan_id, assessment_id, *(after or ()), limit + 1))
 
     def history(self, task_id: str) -> list[dict]:
         """Internal audit inspection; deliberately not exposed as an HTTP API."""
-        return self._read("SELECT payload,payload_hash FROM task_versions WHERE task_id=? ORDER BY version", (task_id,))
+        return self._read(f"SELECT {_VERSION_COLUMNS} FROM task_versions v LEFT JOIN tasks t "
+                          "ON t.task_id=v.task_id WHERE v.task_id=? ORDER BY v.version",
+                          (task_id,), version_rows=True)
 
     def derive(self, scan_id: str, assessment_id: str, idempotency_key: str,
                fingerprint: str, tasks: list[dict]) -> list[dict]:
@@ -254,10 +279,10 @@ class RemediationTaskStore:
                         raise RemediationStoreError("storage_unavailable") from error
                     saved = []
                     for task_id in ids:
-                        row = db.execute("SELECT payload,payload_hash FROM tasks WHERE scan_id=? AND assessment_id=? AND task_id=?", (scan_id, assessment_id, task_id)).fetchone()
+                        row = db.execute(f"SELECT {_TASK_COLUMNS} FROM tasks WHERE scan_id=? AND assessment_id=? AND task_id=?", (scan_id, assessment_id, task_id)).fetchone()
                         if row is None:
                             raise RemediationStoreError("storage_unavailable")
-                        saved.append(self._decode(row))
+                        saved.append(self._decode_task_row(row))
                     return saved
                 saved, seen = [], set()
                 for task in tasks:
@@ -265,9 +290,9 @@ class RemediationTaskStore:
                     if task["scan_id"] != scan_id or task["assessment_ref"]["assessment_id"] != assessment_id or task["version"] != 1 or task["status"] != "todo":
                         raise RemediationStoreError("invalid_argument")
                     origin_key = _digest(_bytes([task["assessment_ref"]["version"], task["origin"]]))
-                    row = db.execute("SELECT payload,payload_hash FROM tasks WHERE scan_id=? AND assessment_id=? AND origin_key=?", (scan_id, assessment_id, origin_key)).fetchone()
+                    row = db.execute(f"SELECT {_TASK_COLUMNS} FROM tasks WHERE scan_id=? AND assessment_id=? AND origin_key=?", (scan_id, assessment_id, origin_key)).fetchone()
                     if row:
-                        stored = self._decode(row)
+                        stored = self._decode_task_row(row)
                         if stored["task_id"] != task["task_id"]:
                             raise RemediationStoreError("invalid_argument")
                     else:
@@ -295,10 +320,10 @@ class RemediationTaskStore:
         try:
             with closing(self._connect()) as db, db:
                 db.execute("BEGIN IMMEDIATE")
-                row = db.execute("SELECT payload,payload_hash FROM tasks WHERE scan_id=? AND assessment_id=? AND task_id=?", (scan_id, assessment_id, task_id)).fetchone()
+                row = db.execute(f"SELECT {_TASK_COLUMNS} FROM tasks WHERE scan_id=? AND assessment_id=? AND task_id=?", (scan_id, assessment_id, task_id)).fetchone()
                 if row is None:
                     raise RemediationStoreError("not_found")
-                task = self._decode(row)
+                task = self._decode_task_row(row)
                 if task["version"] != expected_version:
                     raise RemediationStoreError("stale_version")
                 task.update(changes)

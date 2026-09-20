@@ -4755,3 +4755,19 @@
 - 最小临时SQLite corruption复验get/get_by_id/list/cache replay全部完整性拒绝；失败调用前后业务行及DB字节均不变。API错绑503且无B正文/AI调用。进程网络guard无外部尝试，不称OS级禁外联；未访问生产DB、真实扫描、AI或业务网络。
 - exact openguard-a06-dev已停止为exited，docker ps无运行容器；不remove。legacy安全例外不称基线PASS。新ignored证据output/manual-fixes/audit-007-assessment-binding-repair-20260920T105851Z保留命令、失败/通过日志、JUnit、collection、probe、Hash、diff和receipt；最终源码Hash绑定测试快照，两日志仅追加。
 - Luna只读检索历史测试集合，因任务机械且边界清晰选最低足够模型；主控独立核对命令/节点/结果。仅5项授权tracked文件；未暂存/commit/push/merge/deploy。AUDIT-002/003/004/009仍unresolved，其他finding均未顺手修；007仅本地修复待负责人Review，STOP。精确token消耗不可获得。
+
+### [20260920-1131-GPT-6-Astra-REPAIR-02-start] START — AUDIT-004 Remediation row binding
+
+- 负责人确认AUDIT-007已FINAL PASS并集成；本轮fetch后integration/p1本地/远端均为3e46d109f6160630e33c729170f6fb6a78c46979，工作区clean，从该精确基线新建fix/audit-004-remediation-binding，merge-base一致。只修AUDIT-004，不再修改AssessmentStore或其他finding。
+- 主控单写，允许remediation_store.py、test_p1_remediation_api.py和两份append-only日志。先正式永久测试及旧产品fail-first，再current/version decoder最小修补；覆盖读取、derive两种replay、PATCH原子性和历史snapshot，保留原get_version防护。禁止schema/service扩改及自动修坏库。
+- exact legacy A06容器仅用于Python3.12.14受控测试，继续网络guard，不调用业务网络/扫描/AI。验收新测试、完整remediation、Report消费者、AUDIT-007和历史956节点集合，最后新临时DB复验、Hash/回执、停容器。旧证据不覆盖，新目录audit-004-remediation-binding-repair-20260920T113115Z。
+- 不暂存commit/push/merge/deploy；完成后STOP待Owner Review。本轮主控串行，不开子代理；预计12k–22k token，精确实耗不可获得。
+
+### [20260920-1140-GPT-6-Astra-REPAIR-02-complete] COMPLETE — AUDIT-004 local repair; pending Owner Review
+
+- 严格顺序：repair分支/START→永久测试→旧产品51真实失败→保存log/JUnit→Store修补→新增56通过。失败包括46项错绑接受、1项误报invalid_argument、1项误报stale_version、3项HTTP错误200；旧PATCH日志可见A SQL row下新增B payload version2。没有fixture/DTO/SQL constraint失败冒充产品缺陷。另5项get_version原有保护单独在修前通过，标记兼容门禁，不宣称它们是新fail-first。
+- 仅remediation_store.py新增固定列顺序的current/version decoder。current绑定task_id/scan_id/assessment_id/origin_key/created_at/version；origin_key复用既有assessment_ref.version+origin算法。version绑定task_id/version和父SQL行scan/assessment，不加载当前payload、不比较当前版本。get/page/history/derive replay/existing-origin replay/patch/get_version均复用绑定检查，失败storage_unavailable；service仍映射503 upstream_unavailable。
+- Python3.12.14：新增56、Remediation unit/security117、Report V2 sources/service/store97、Assessment/AUDIT-007 69通过；完整1012 unique passed/0failed/0skipped/1precise deselected/1既有warning。原956节点全部保留、增加56；collection957→1013；唯一排除原real_uvicorn测试。计数不相加，不新增skip/deselect。
+- full之后新临时DB逐路径corruption复验7项通过；PATCH拒绝前后tasks/task_versions/derive_requests完整内容及DB字节不变，无UPDATE/INSERT/DELETE、无version2或更新时间写入，不自动修库。原动态证据和AUDIT-007回执未改；Hash绑定本轮产品/测试、未改AssessmentStore与日志增量。证据audit-004-remediation-binding-repair-20260920T113115Z含原始失败、所有命令/JUnit/collection、独立复验、diff和receipt。
+- Task ID/origin算法、正常derive/idempotency/CAS/状态/note/version append-only/superseded/cursor、Formal Assessment/ScanRun/Report V2/HTTP Contract/Schema均不改；service、其他Store及前端未修改。业务外网guard无尝试，不称OS防火墙；未扫描/AI/生产访问。exact A06容器已exited，无运行容器，未kill/remove；legacy例外不称生产安全PASS。
+- 仅4个授权tracked文件未暂存；不commit/push/merge/deploy。AUDIT-002/003/009 unresolved；AUDIT-004仅本地修复待Owner Review；AUDIT-007 integrated，其他finding不关闭。主控串行无子代理；本次运行精确token数不可获得，12k–22k仅开工估算，范围未扩大。STOP。

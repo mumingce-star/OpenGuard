@@ -324,3 +324,146 @@ def test_patch_openapi_omission_preserves_without_advertised_defaults(task_env):
         assert field['type']=='string'
         assert 'preserve current' in field['description']
         assert 'null is invalid' in field['description']
+
+
+def _audit004_rows(store):
+    import sqlite3
+    from contextlib import closing
+    with closing(sqlite3.connect(f'file:{store.path}?mode=ro', uri=True)) as db:
+        return {table: db.execute(f'SELECT * FROM {table} ORDER BY 1,2,3').fetchall()
+                for table in ('tasks', 'task_versions', 'derive_requests')}
+
+
+def _audit004_pair(env, cross_scope=False):
+    a, b = tasks(env)[:2]
+    if cross_scope:
+        from app.p1.models import P1TaskDeriveRequest
+        run = seed(env, 2, 'completed')
+        other = assessment(env, run)
+        b = env.service.derive(run.id, other.id, P1TaskDeriveRequest(
+            idempotency_key='other', expected_facts_hash=other.facts_hash)).items[0].model_dump(mode='json')
+        assert a['scan_id'] != b['scan_id']
+        assert a['assessment_ref']['assessment_id'] != b['assessment_ref']['assessment_id']
+    assert a['task_id'] != b['task_id']
+    assert env.tasks.get(a['scan_id'], a['assessment_ref']['assessment_id'], a['task_id']) == a
+    assert a in env.tasks.page(a['scan_id'], a['assessment_ref']['assessment_id'], limit=100)
+    assert env.tasks.get(b['scan_id'], b['assessment_ref']['assessment_id'], b['task_id']) == b
+    return a, b
+
+
+def _audit004_corrupt(store, a, b, fault, table='tasks'):
+    import sqlite3
+    from contextlib import closing
+    from app.p1.models import P1RemediationTask
+    value = copy.deepcopy(b if fault == 'other_payload' else a)
+    if fault == 'task_id': value['task_id'] = b['task_id']
+    elif fault == 'scan_id':
+        value['scan_id'] = value['assessment_ref']['scan_id'] = 'scn_audit004_other'
+    elif fault == 'assessment_id': value['assessment_ref']['assessment_id'] = 'asm_audit004_other'
+    elif fault == 'version': value['version'] += 1
+    elif fault == 'created_at': value['created_at'] = '2020-01-01T00:00:00Z'
+    elif fault == 'origin': value['origin']['source_hash'] = '0'*64
+    elif fault == 'assessment_version': value['assessment_ref']['version'] += 1
+    # Every corruption remains valid at the DTO/hash layer, including internal scan binding.
+    P1RemediationTask.model_validate(value)
+    store._validate(value)
+    before = _audit004_rows(store)
+    payload = canonical_bytes(value)
+    with closing(sqlite3.connect(store.path)) as db, db:
+        if fault == 'other_payload':
+            payload, sha = db.execute(f'SELECT payload,payload_hash FROM {table} WHERE task_id=? AND version=1', (b['task_id'],)).fetchone()
+        else:
+            sha = hashlib.sha256(payload).hexdigest()
+        assert hashlib.sha256(payload).hexdigest() == sha
+        assert db.execute(f'UPDATE {table} SET payload=?,payload_hash=? WHERE task_id=? AND version=1',
+                          (payload, sha, a['task_id'])).rowcount == 1
+    after = _audit004_rows(store)
+    for name in before:
+        if name != table:
+            assert after[name] == before[name]
+        else:
+            assert [r[:-2] for r in after[name]] == [r[:-2] for r in before[name]]
+
+
+def _audit004_call(env, a, method):
+    sid, aid, tid = a['scan_id'], a['assessment_ref']['assessment_id'], a['task_id']
+    if method == 'get': return env.tasks.get(sid, aid, tid)
+    if method == 'page': return env.tasks.page(sid, aid, limit=100)
+    if method == 'history': return env.tasks.history(tid)
+    if method == 'get_version': return env.tasks.get_version(sid, aid, tid, 1)
+    if method == 'patch': return env.tasks.patch(sid, aid, tid, 1, {'status':'in_progress'})
+    assert method in {'derive_replay', 'existing_origin'}
+    fingerprint = env.tasks.request_fingerprint(sid, aid, 'first')
+    return env.tasks.derive(sid, aid, 'first' if method == 'derive_replay' else 'audit004-alternate', fingerprint, [a])
+
+
+def _audit004_reject_without_writes(env, a, method, monkeypatch):
+    before = _audit004_rows(env.tasks)
+    raw = env.tasks.path.read_bytes()
+    statements = []
+    connect = env.tasks._connect
+    def traced(*args, **kwargs):
+        db = connect(*args, **kwargs)
+        if db is not None: db.set_trace_callback(statements.append)
+        return db
+    monkeypatch.setattr(env.tasks, '_connect', traced)
+    code, returned = None, None
+    try:
+        returned = _audit004_call(env, a, method)
+    except RemediationStoreError as error:
+        code = error.code
+    after = _audit004_rows(env.tasks)
+    observed = [(r[0], r[1], json.loads(r[2])['task_id'], json.loads(r[2])['version'])
+                for r in after['task_versions'] if r[0] == a['task_id']]
+    # Old PATCH failure output exposes A SQL / B body version 2 and changed tables.
+    assert code == 'storage_unavailable', {'method':method, 'code':code,
+        'accepted_payload':returned is not None, 'history_bindings':observed,
+        'business_rows_changed':after != before}
+    assert after == before
+    assert env.tasks.path.read_bytes() == raw
+    assert not any(s.lstrip().upper().startswith(('UPDATE ', 'INSERT ', 'DELETE ')) for s in statements)
+
+
+@pytest.mark.parametrize('method', ['get', 'page', 'patch', 'derive_replay', 'existing_origin'])
+@pytest.mark.parametrize('fault', ['task_id', 'scan_id', 'assessment_id', 'version', 'created_at', 'origin', 'assessment_version'])
+def test_audit004_current_binding(task_env, monkeypatch, method, fault):
+    a, b = _audit004_pair(task_env)
+    _audit004_corrupt(task_env.tasks, a, b, fault)
+    _audit004_reject_without_writes(task_env, a, method, monkeypatch)
+
+
+@pytest.mark.parametrize('method', ['get', 'page', 'patch', 'derive_replay'])
+@pytest.mark.parametrize('cross_scope', [False, True])
+def test_audit004_current_cross_bound_payload(task_env, monkeypatch, method, cross_scope):
+    a, b = _audit004_pair(task_env, cross_scope)
+    _audit004_corrupt(task_env.tasks, a, b, 'other_payload')
+    _audit004_reject_without_writes(task_env, a, method, monkeypatch)
+
+
+@pytest.mark.parametrize('fault', ['other_payload', 'task_id', 'version', 'scan_id', 'assessment_id'])
+def test_audit004_history_binding(task_env, monkeypatch, fault):
+    a, b = _audit004_pair(task_env, True)
+    _audit004_corrupt(task_env.tasks, a, b, fault, 'task_versions')
+    _audit004_reject_without_writes(task_env, a, 'history', monkeypatch)
+
+
+@pytest.mark.parametrize('fault', ['other_payload', 'task_id', 'version', 'scan_id', 'assessment_id'])
+def test_audit004_get_version_existing_protection(task_env, monkeypatch, fault):
+    # Compatibility gate, not fail-first: already protected before this repair.
+    a, b = _audit004_pair(task_env, True)
+    _audit004_corrupt(task_env.tasks, a, b, fault, 'task_versions')
+    _audit004_reject_without_writes(task_env, a, 'get_version', monkeypatch)
+
+
+@pytest.mark.parametrize('method', ['page', 'patch', 'derive'])
+def test_audit004_http_fail_closed(task_env, method):
+    env = task_env
+    a, b = _audit004_pair(env, True)
+    _audit004_corrupt(env.tasks, a, b, 'other_payload')
+    before = _audit004_rows(env.tasks)
+    response = (env.client.get(base(env)) if method == 'page' else
+                patch(env, a, status='in_progress') if method == 'patch' else derive(env))
+    check_error(response, 503, 'storage_unavailable')
+    assert response.json()['error']['code'] == 'upstream_unavailable'
+    assert b['task_id'] not in response.text
+    assert _audit004_rows(env.tasks) == before
