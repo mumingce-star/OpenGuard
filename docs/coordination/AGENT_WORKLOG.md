@@ -2366,3 +2366,8 @@
 - **下一步与责任模型**：Root 提交并推送当前任务分支；项目负责人裁决 CR；批准后 Terra、Luna、Sol 分别按职责实施与复核。
 - **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；提交 SHA、推送回执将在下一条 AMENDMENT 记录补充；`main` 不直接改动。
 - **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，已在该范围内完成验证、暂存和发布准备，范围未扩大。
+## 20260920-GPT5-ResourceProfile代码发布回执
+- **状态**：AMENDMENT
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-20 18:38 CST
+- **更正/补充内容**：上一条 COMPLETE 所述发布已实际完成：提交 `23fae26`（`feat(scan): add resource profile draft fixtures`）已推送到 `origin/codex/scan-reliability-integration`，远端从 `a6e1f8b` 前进至 `23fae26`。本回执将单独提交、推送，确保发布日志本身也被远端保留；`main` 仍未直接改动。
