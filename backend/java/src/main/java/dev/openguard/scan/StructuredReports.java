@@ -33,6 +33,11 @@ public final class StructuredReports {
             output.append("ai_asset,").append(csv(asset.url())).append(",,,")
                     .append(csv(asset.evidencePath())).append('\n');
         }
+        for (var profile : result.resourceProfiles()) {
+            output.append("resource_profile,").append(csv(profile.providerResourceId())).append(',')
+                    .append(csv(profile.revision())).append(',').append(csv(profile.provider()))
+                    .append(',').append(csv(profile.canonicalUrl())).append('\n');
+        }
         return output.toString();
     }
 
@@ -42,7 +47,9 @@ public final class StructuredReports {
                 .reduce("", String::concat);
         return "<!doctype html><html><head><meta charset=\"utf-8\"><title>OpenGuard scan report</title>"
                 + "</head><body><h1>OpenGuard scan report</h1><p>Status: " + escape(result.status())
-                + "</p><p>Source: " + escape(result.source()) + "</p><h2>Findings</h2><ul>" + items
+                + "</p><p>Source: " + escape(result.source()) + "</p><h2>Resource profile drafts</h2><p>"
+                + result.resourceProfiles().stream().map(profile -> escape(profile.providerResourceId()) + " (authorization: pending)").reduce("", (a, b) -> a.isEmpty() ? b : a + ", " )
+                + "</p><h2>Findings</h2><ul>" + items
                 + "</ul></body></html>";
     }
 

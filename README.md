@@ -37,11 +37,22 @@ mvn -q -f backend/java/pom.xml exec:java `
 
 CLI 自身退出码为 0（通过）、1（契约无效）、2（输入/用法错误）、3（请求等级未达到），stdout 为单一稳定 JSON；Maven 包装命令仍按 0/非 0 供 CI 判定。该能力只验证评测 manifest，不等于自动运行评测或形成正式真人 gold。
 
+### 本地必须执行的 Java 验证命令
+
+每次变更 Java 核心代码后，必须仅在本地执行以下命令，作为 J0 的最低验证门禁：
+
+```powershell
+mvn -f backend/java/pom.xml test
+```
+
+该命令及其 Maven `target/` 产物、控制台输出和本地运行结果均不得打包或上传到 GitHub；仅经人工筛选后的 Java 源码、测试和必要文档可以进入后续发布范围。
+
 ## 竞赛交付定义
 
 在 2026-10-15 20:00 前形成：
 
 - 可本地部署的完整 Web 应用；
+- **以 Java 编写并交付可运行的项目核心代码**（不得以仅保留 Java 工具、示例或文档替代）；
 - Python 与 JavaScript/TypeScript 项目扫描能力；
 - 代码依赖、模型、数据集、第三方 API 四类资源图谱；
 - 15 种常见许可证的结构化义务与风险规则；

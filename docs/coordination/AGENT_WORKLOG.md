@@ -2103,3 +2103,266 @@
 - **范围与排除**：57 个已验证代码、测试、Schema、示例和文档文件已上传；`output/` 下本机扫描/审计报告保持未跟踪、未暂存、未提交。未修改 `main`，仍需 PR 合并。
 - **验证与边界**：Node 审计 16/16、Maven 17/17、格式和敏感信息检查结果沿用本任务 COMPLETE 记录；不将离线 Bench 工具、自动审计或历史材料表述为真实端到端、双人核验或正式 gold 完成。
 - **token说明**：精确 token 数不可获得；发布回执在原估算范围内完成。
+
+## 20260919-GPT5-BP101-ResourceProfileDraft设计
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator / 架构契约）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标**：按用户指令完成 B-P1-01 的 provider-neutral `ResourceProfileDraft` 字段与 Hugging Face 离线 fixture 映射设计；冻结候选字段、证据绑定、拒绝/降级语义与 P0 投影边界，不实现联网抓取或修改公共领域模型。
+- **范围与预计文件**：新增 `docs/spec/b-p1-01-resource-profile-draft.md`，并追加 `PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 与本日志；不修改 `backend/`、`schemas/p0/`、`tests/fixtures/`、`benchmarks/fixtures/`、历史标注或 `output/`。
+- **协作检查**：已阅读根 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支/工作区/最近提交；当前无其他活跃模型。HF fixture 与测试素材默认归 Luna，本轮仅交付其实施前契约，避免覆盖其文件。
+- **验收方法**：字段逐项定义来源、类型、可空语义和证据要求；HF model/dataset fixture 建立 JSON Pointer 映射及拒绝规则；明确不会升级许可证/授权状态的字段；对齐当前 P0 `AIAsset` 的最小投影；执行 Markdown 链接/关键字检查、JSON 示例解析、`git diff --check` 和敏感信息扫描。
+- **token 用量估算**：6,000～10,000（系统未提供精确 token 遥测）。
+
+## 20260919-GPT5-BP101-ResourceProfileDraft设计
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 架构契约）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：已完成 B-P1-01 实施前设计：新增 provider-neutral `ResourceProfileDraft` 契约，冻结身份、生命周期、声明元数据、字段级 EvidenceRef、诊断和稳定 ID；完成 Hugging Face model/dataset 离线 fixture 的 JSON Pointer 映射、拒绝/降级语义、8 组 fixture 回归口径以及向既有 P0 `AIAsset` 的受限投影。
+- **修改或新增文件**：新增 `docs/spec/b-p1-01-resource-profile-draft.md`；追加 `docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 与本日志。未修改 `backend/`、`schemas/p0/`、`tests/fixtures/`、`benchmarks/fixtures/`、历史标注或 `output/`。
+- **命令与测试结果**：4 个 Markdown 内嵌 JSON 示例均经 PowerShell `ConvertFrom-Json` 解析；字段存在性检查通过；`git diff --check` 通过（仅 Git 的既有 CRLF→LF 提示）；对本轮文件的敏感信息模式扫描无命中。未运行业务测试，因为本轮没有业务实现或 fixture。
+- **接口、Schema、规则或重要决策**：Draft 仍是内部候选契约，未改变 P0/P1 公共 Schema/API。HF 的 `private`、`gated`、`disabled`、`cardData.license`、`sha` 与采集成功均不得升级授权状态、许可证表达式或合规结论；P0 投影时 `license_expression_id=null`、`authorization_status=pending`。`detected_by` 扩展和正式 Evidence materialization 需要负责人另行批准。
+- **已知风险与未完成项**：真实 HF 响应兼容性、fixture 创建、parser/materializer、P0/P1 Schema 批准、许可证标准化和人工授权核验均未实施；本设计不构成 HF 集成或合规完成。
+- **下一步与责任模型**：Luna 依据设计创建最小脱敏的正反 fixture 与独立回归；Terra 实现纯离线 parser/materializer；Sol/Root 先审批正式 Schema、稳定 ID 算法和 detection method，再审计 B4/B5 的独立许可证据链。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本轮未提交、未推送、无 PR/Issue/evidence_id；用户本机 `output/` 保持未跟踪且未读取/修改。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，本轮在该范围内完成设计、台账同步与静态验证，范围未扩大。
+
+## 20260919-GPT5-交付门禁实施
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator / 工程闭环协调）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标**：按用户指令关闭 fixture、实现、端到端报告、真实评测与人工治理门禁；优先实施可由仓库内工程和测试验证的 HF Draft 链路、报告/评测工具与人工治理校验，并对必须由真人或 Owner 完成的步骤保持不可伪造的外部待办。
+- **范围与预计文件**：可能修改 `backend/`、`tests/`、`benchmarks/`、`docs/`、`schemas/`、`third_party/` 及协调台账；用户已明确授权跨 Terra/Luna 默认所有权范围。保留既有未提交设计文档和 `output/`，不删除或重写历史人工判断，不启动/停止服务，除非用户另行明确要求。
+- **协作检查**：已重新阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、状态与最近提交；当前无其他活跃模型。当前工作区仅含本任务前的 B-P1-01 文档/台账修改及未跟踪 `output/`，均保留。
+- **验收方法**：先定位现有 P0 模型、报告、评测和人工治理实现；为可实现门禁添加 fixture、离线 parser/materializer、端到端命令及独立回归，运行定向与全量相关测试、格式/敏感信息检查；对第二真人、权属和平台回执仅生成/校验真实签收入口，绝不代填。
+- **token 用量估算**：20,000～35,000（系统未提供精确 token 遥测）。
+
+## 20260919-GPT5-交付门禁实施
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / 工程闭环协调）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：已将 B-P1-01 从设计推进到离线实现：新增 `ResourceProfileDraft` parser/materializer、HF model/dataset/反例 fixtures 与定向单元测试。实现通过字段级 fixture SHA/JSON Pointer 形成 pending Evidence，且 P0 asset 永远不因 HF 元数据提升许可证或授权状态。端到端报告、真实评测与真人治理尚未关闭。
+- **修改或新增文件**：新增 `backend/app/profiles/__init__.py`、`backend/app/profiles/resource_profile.py`、`tests/fixtures/huggingface/` 下 6 个 JSON、`tests/unit/test_b_p1_resource_profile_draft.py`；并更新 B-P1-01 规格、PROJECT_PROGRESS、AI 辅助记录和本日志。未改 P0/P1 Schema/API、历史人工标签或 `output/`。
+- **命令与测试结果**：PowerShell JSON 解析 6/6 fixture 通过，`git diff --check` 通过，关键符号检索通过。尝试 `.venv\\Scripts\\python.exe -m pytest ...` 失败：虚拟环境引用不存在的 Python 3.12；`py -3.12` 亦报告无可用 runtime。因此 pytest、报告链路和评测回归未运行，不能登记为已验收。
+- **接口、Schema、规则或重要决策**：未修改冻结 P0 Schema；materializer 仅产生 `license_expression_id=null` 与 `authorization_status=pending` 的 P0 候选，临时复用既有 `static_pattern` detection method，正式新枚举需负责人批准。离线 fixture 解析不进行网络访问。
+- **已知风险与未完成项**：当前 Python 环境阻塞单元测试；尚不存在统一扫描编排/报告渲染模块，故无法诚实声称 ZIP→报告端到端闭环；正式真实评测仍缺运行器、多独立样本、真人 gold/基线/消融；第二真人、权属与平台回执只能由对应真人/Owner 完成。
+- **下一步与责任模型**：用户或环境管理员恢复项目要求的 Python 3.12 后，Root 先复跑定向与全量测试；Terra 实现 ScanRun 编排与 JSON/CSV/HTML/资源清单报告；Luna 扩展 fixture、独立回归与真实样本；第二真人和 Owner 分别提交签收，Root 再验收发布。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本轮未提交、未推送、无 PR/Issue/evidence_id；未跟踪 `output/` 未读取或修改。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 20,000～35,000，因运行环境及必须由真人/Owner 完成的外部门禁而提前缩小为可实施的 B-P1-01 链路，未在该范围内关闭全部门禁。
+
+## 20260919-GPT5-BP101-Java实现
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator / Java 后端实现）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标**：按用户最新指令，将 B-P1-01 的实现主线切换为 Java；移除本轮未提交 Python 草稿，利用现有 Maven/Jackson/Java 扫描与报告纵切实现离线 HF fixture→ResourceProfileDraft→安全 P0 候选映射。
+- **范围与预计文件**：`backend/java/src/main/java/dev/openguard/scan/`、相应 Java 测试与脱敏 fixture、B-P1-01 规格和协调台账；不改 P0/P1 公共 Schema、不联网、不启动服务。
+- **协作检查**：已重读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查 Maven/Java 源树与状态；用户已明确要求使用 Java，故仅删除本轮刚新增且未提交的 Python 草稿，不触碰既有 Python 基线或用户文件。
+- **验收方法**：JUnit 覆盖 model/dataset、gate 降级、license 冲突和 pending 投影；运行 Maven 定向回归、JSON/格式/敏感信息检查。
+
+## 20260919-GPT5-BP101-Java实现
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / Java 后端实现）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：按用户指令切换至 Java：已删除本轮新建且未提交的 Python 草稿，新增 Java `ResourceProfileDraft`，实现本地 HF JSON model/dataset 的身份、revision、visibility、gate、license 冲突和 EvidenceRef 映射；`toPendingP0Candidate()` 固定产出 pending 授权且不包含许可证表达式。新增 3 个 JUnit 覆盖关键正反例。
+- **修改或新增文件**：新增 `backend/java/src/main/java/dev/openguard/scan/ResourceProfileDraft.java`、`backend/java/src/test/java/dev/openguard/scan/ResourceProfileDraftTest.java`；更新 B-P1-01 进度、AI记录和本日志；删除本轮未提交的 `backend/app/profiles/`、Python 单测及 HF Python fixture。未改任何既有 Python 基线、P0/P1 Schema/API 或 `output/`。
+- **命令与测试结果**：两次 Maven 定向测试均被全局 `C:\\.m2\\repository` 不可创建阻塞；`-Dmaven.repo.local=F:\\aic\\OpenGuard\\.tools\\m2-java-migration` 仍被全局设置覆盖，故 JUnit 未实际运行。此前 `git diff --check` 通过；本轮未因编译失败修改全局 Maven/用户设置。
+- **接口、Schema、规则或重要决策**：Java 为 B-P1-01 唯一新增实现主线；不联网、不下载模型/数据。provider 元数据不会产生许可证或授权结论；正式 P0 映射仍需定义/批准，而 candidate 为 Java 内部记录。
+- **已知风险与未完成项**：Maven 环境阻塞编译/测试；Java Draft 尚未接入 `RepositoryScanner` 的受信 checkout 输入、`StructuredReports` 或 Bench runner；端到端报告、真实评测与真人/Owner 门禁未关闭。
+- **下一步与责任模型**：修复 Maven 全局本地仓库设置或提供可用 settings 后，Root 立即运行 Java 定向/全量回归；随后 Terra 将 Draft 接入 scanner/report，Luna 增加 fixture/独立测试，真人和 Owner 完成不可自动代填的回执。
+- **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration`；未提交、未推送，无 PR/Issue/evidence_id；`output/` 未触碰。
+- **token 使用说明**：精确 token 数不可获得；本轮按 Java 切换完成局部实现，但因 Maven 环境阻塞未完成验收。
+
+## 20260919-GPT5-Java回归与扫描报告接入
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator / Java 后端实现）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标**：按用户指令修复 Maven 本地仓库设置，执行 Java 定向及全量回归，并将 B-P1-01 Draft 接入 `RepositoryScanner` 和 `StructuredReports`。
+- **范围与预计文件**：新增仓库内 `.mvn/settings.xml`，修改 Java scan/report/test 文件及协调台账；不改用户级 Maven settings、不启动服务、不联网抓取模型或数据。
+- **协作检查**：已重新阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查 Java 源树、Maven POM、用户 settings 和工作区；用户级 settings 只配置镜像，`C:\\.m2\\repository` 应由环境/全局设置解析，故使用仓库受控 settings 隔离修复。
+- **验收方法**：`mvn -s .mvn/settings.xml` 定向和全量测试通过；Java scanner 对 HF fixture 生成 Draft/P0 candidate；JSON/CSV/HTML 输出可见且不泄漏许可证/授权结论；格式/敏感信息检查通过。
+
+## 20260919-GPT5-Java回归与扫描报告接入
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / Java 后端实现）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：已用仓库受控 `.mvn/settings.xml` 修复 Maven 本地缓存路径，并实现 HF fixture→`ResourceProfileDraft`→`RepositoryScanner`→`StructuredReports` 的 Java 纵切。扫描器仅识别受信 checkout 内 `huggingface/models/*.json` 与 `huggingface/datasets/*.json`；JSON/CSV/HTML 均显示 Draft，授权固定 pending、许可证表达式固定为空。
+- **修改或新增文件**：新增 `.mvn/settings.xml`、Java Draft 与 JUnit；修改 `ScanResult.java`、`RepositoryScanner.java`、`StructuredReports.java`、`RepositoryScannerTest.java`，并更新进度、AI记录和本日志。未改用户级 Maven settings、P0/P1 Schema/API、服务或 `output/`。
+- **命令与测试结果**：`mvn -o -s .mvn/settings.xml -f backend/java/pom.xml test -Dtest=ResourceProfileDraftTest,RepositoryScannerTest` 通过，4/4；全量 Maven 重新编译通过，BenchExamples 2/2、CLI 1/1、新增 Scanner 1/1、Draft 3/3 通过。全量因 `BenchManifestServiceTest` 13 项 JUnit extension 在清理 `C:\\Users\\cz180\\AppData\\Local\\Temp\\junit-*` 时收到 `AccessDeniedException` 而失败；无业务断言失败，不能称全量绿灯。
+- **接口、Schema、规则或重要决策**：`.mvn/settings.xml` 指向忽略的受控 Maven 缓存并使用国内镜像；`ResourceProfileDraft.EvidenceRef` 以 RFC3339 字符串表达时间，保证 JSON 无需额外 JSR-310 依赖。Draft 仍为 Java 内部记录，候选映射不改变公共 P0 契约。
+- **已知风险与未完成项**：需解决 Windows 临时目录权限/锁定问题后重跑全量；正式 P0 Schema materialization、真实评测和真人/Owner 门禁仍未关闭。
+- **下一步与责任模型**：Root/环境管理员定位 Temp ACL/占用进程，指定可写临时目录后复跑全量；Terra 继续正式 P0 接口和端到端输入；Luna 独立反例与 Bench；真人/Owner 完成外部回执。
+- **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration`；未提交、未推送，无 PR/Issue/evidence_id；`output/` 未触碰。
+- **token 使用说明**：精确 token 数不可获得；本轮完成 Maven 缓存修复、定向验收与扫描/报告接入，但全量受环境清理故障阻塞。
+
+## 20260919-GPT5-Java必做项
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator / 项目治理）
+- **日期时间**：2026-09-19 16:48 CST
+- **任务目标**：按用户明确指令，将“用 Java 语言编写项目代码”登记为不可省略的项目必须执行项，并同步交付定义、P0 门禁与进度台账。
+- **范围与预计文件**：`README.md`、`docs/spec/non-goals.md`、`docs/coordination/PROJECT_PROGRESS.md` 及本追加日志；不修改产品代码、公共 Schema/API、测试、依赖或服务配置。
+- **开始前确认**：已按协作流程阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支 `codex/scan-reliability-integration`、工作区与最近提交；现有 Java 扫描/Bench 主线存在，但尚未被写为不可跳过的交付门禁。
+- **验收方法**：检查三处文档均明示 Java 为必须执行项，且验收要求包含可编译、可测试并接入主交付链；运行 Markdown 关键字检查与 `git diff --check`。
+- **token 用量估算**：2,000～4,000（系统未提供精确 token 遥测）。
+
+## 20260919-GPT5-Java本地命令
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 本地验证治理）
+- **日期时间**：2026-09-19 16:51 CST
+- **任务目标与实际结果**：已将 `mvn -f backend/java/pom.xml test` 固化为每次 Java 核心代码变更后的本地必须执行命令；README 与 J0 门禁均明确命令只能本地运行，其构建产物、控制台输出和运行结果不得打包上传 GitHub。
+- **修改文件**：`README.md`、`.gitignore`、`docs/coordination/PROJECT_PROGRESS.md`、本共享日志。未执行 Maven，未修改 Java 源码、公共 Schema/API、依赖或服务。
+- **命令与测试结果**：`git check-ignore -v` 已确认 `/backend/java/target/`、`/output/` 与本机 Maven 配置 `/.mvn/settings.xml` 均被忽略；关键字检查与 `git diff --check` 通过。
+- **接口、Schema、规则或重要决策**：发布范围仅允许人工筛选后的 Java 源码、测试和必要文档；本地 Maven 配置、构建产物与运行输出不是发布物。
+- **已知风险与未完成项**：J0 Java 核心交付链仍未完成，且 Maven 环境阻塞未解除；本次只登记本地命令和上传排除规则，不以未运行的命令伪造测试结果。
+- **下一步与责任模型**：每次 Java 核心变更由实施者在本地执行该命令；Root 在后续发布前复核忽略规则和暂存清单，Terra/Luna/Sol 分别实施、回归与审核 J0。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本轮未提交、未推送、无 PR/Issue/evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 2,000～4,000，已在该范围内完成，范围未扩大。
+
+## 20260919-GPT5-Java必做项
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 项目治理）
+- **日期时间**：2026-09-19 16:48 CST
+- **任务目标与实际结果**：已将 Java 核心代码纳入不可省略的项目必须执行项：交付定义、P0 必做项和 P0 工作包台账均已同步；明确 Java 工具、CLI、示例或文档不能单独满足该门禁。
+- **修改文件**：`README.md`、`docs/spec/non-goals.md`、`docs/coordination/PROJECT_PROGRESS.md`、本共享日志。未修改产品代码、公共 Schema/API、测试、依赖或服务配置。
+- **命令与测试结果**：关键字检索确认三处声明和验收条件一致；`git diff --check` 通过。此为文档治理改动，未运行产品测试或启动服务。
+- **接口、Schema、规则或重要决策**：新增 J0 门禁：至少一条覆盖扫描、规则、报告或编排的 Java 核心交付链必须可编译、通过自动化测试并接入最终演示；Luna 独立回归、Sol 审核和 Root 验收为关闭条件。Python 仅可作为兼容性基线或受控迁移输入。
+- **已知风险与未完成项**：J0 当前为进行中；既有 Maven 环境阻塞仍使本轮新增 Java 单测未运行，且 Java 核心交付链尚未接入最终演示。工作区中既有的 Java Draft、B-P1-01 文档、AI记录与 `output/` 保持原状，未纳入本任务的完成声明。
+- **下一步与责任模型**：Terra 完成 Java 核心交付链接入，Luna 提供独立回归，Sol 审核，Root 以编译、测试和演示证据验收 J0。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本轮未提交、未推送、无 PR/Issue/evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 2,000～4,000，已在该范围内完成，范围未扩大。
+
+## 20260919-GPT5-Java本地命令
+- **状态**：START
+- **作者**：GPT-5（Root Coordinator / 本地验证治理）
+- **日期时间**：2026-09-19 16:50 CST
+- **任务目标**：按用户澄清，将 Java 项目代码的 Maven 验证登记为本地必须执行命令，并确保命令产物和本地输出不得在后续 GitHub 发布中打包上传。
+- **范围与预计文件**：`README.md`、`.gitignore`、`docs/coordination/PROJECT_PROGRESS.md` 及本追加日志；不执行 Maven，不修改 Java 源码、公共 Schema/API、依赖或服务。
+- **开始前确认**：已阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF、`.gitignore`，并检查分支/工作区/最近提交；`/backend/java/target/` 已忽略，但根目录 `output/` 尚未被忽略。
+- **验收方法**：核对 README 和 J0 均给出本地 Maven 必执行命令及“产物不可上传”限制；确认 `.gitignore` 排除 Maven 构建目录与本地输出；运行 `git check-ignore`、关键字检查和 `git diff --check`。
+- **token 用量估算**：2,000～4,000（系统未提供精确 token 遥测）。
+
+## 20260919-GPT5-Java本地命令
+- **状态**：AMENDMENT
+- **作者与角色**：GPT-5（Root Coordinator / 本地验证治理）
+- **日期时间**：2026-09-19 16:52 CST
+- **更正说明**：先前一条同 ID 的 COMPLETE 因追加定位错误而出现在本 START 记录之前；历史记录按只追加规则保留。本条及其后的 COMPLETE 为该 START 的正式时间顺序收工记录。
+
+## 20260919-GPT5-Java本地命令
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 本地验证治理）
+- **日期时间**：2026-09-19 16:52 CST
+- **任务目标与实际结果**：已将 `mvn -f backend/java/pom.xml test` 固化为每次 Java 核心代码变更后的本地必须执行命令；README 与 J0 门禁均明确命令只能本地运行，其构建产物、控制台输出和运行结果不得打包上传 GitHub。
+- **修改文件**：`README.md`、`.gitignore`、`docs/coordination/PROJECT_PROGRESS.md`、本共享日志。未执行 Maven，未修改 Java 源码、公共 Schema/API、依赖或服务。
+- **命令与测试结果**：`git check-ignore -v` 已确认 `/backend/java/target/`、`/output/` 与本机 Maven 配置 `/.mvn/settings.xml` 均被忽略；关键字检查与 `git diff --check` 通过。
+- **接口、Schema、规则或重要决策**：发布范围仅允许人工筛选后的 Java 源码、测试和必要文档；本地 Maven 配置、构建产物与运行输出不是发布物。
+- **已知风险与未完成项**：J0 Java 核心交付链仍未完成，且 Maven 环境阻塞未解除；本次只登记本地命令和上传排除规则，不以未运行的命令伪造测试结果。
+- **下一步与责任模型**：每次 Java 核心变更由实施者在本地执行该命令；Root 在后续发布前复核忽略规则和暂存清单，Terra/Luna/Sol 分别实施、回归与审核 J0。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本轮未提交、未推送、无 PR/Issue/evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 2,000～4,000，已在该范围内完成，范围未扩大。
+## 20260919-GPT5-Bench2治理补全
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / Bench 架构与治理）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **任务目标与实际结果**：完成 Bench 2.0 公开语料与治理补充规范：索引既有 manifest 契约；定义首批公开仓库选择原则与 10 个候选；明确 human reviewer、holdout、amendment 流程；索引 provider-neutral `ResourceProfileDraft` 和 Hugging Face fixture 映射；形成 FN/FP taxonomy 初稿与负责人批准字段清单。
+- **修改或新增文件**：新增 `docs/spec/b-p1-06-bench-public-corpus-governance.md`；仅追加本日志。未修改公共 Schema、业务代码、fixtures、历史人工标注、P0/P1 API 或服务配置。
+- **命令与测试结果**：已检索并交叉核对 B-P1-05、B-P1-01、既有人工标注方案与 Bench 样例；`git diff --check` 和文档敏感信息检查待本轮末尾执行。
+- **接口、Schema、规则或重要决策**：候选仓库与 taxonomy 均为设计输入；`ResourceProfileDraft` 继续保持内部候选。HF 可见性、gate、sha、license 声明不升级授权/许可证/合规结论；公共字段须按本规范第 6 节获得负责人批准。
+- **已知风险与未完成项**：10 个候选尚未固定 commit、未做授权/再分发筛查、未创建 fixture 或 gold；真人独立审查、holdout 运行、正式 taxonomy/matching policy 及公共 Schema 批准均未完成。
+- **下一步与责任模型**：Luna 完成候选 source index/fixtures 与独立 split 审查；Sol 冻结 taxonomy 和 Schema 提案；Terra 在批准后实现接入；真人 reviewer/负责人完成签收与批准；Root 验收发布。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本轮未提交、未推送、无 PR/Issue/evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，已在该范围内完成文档治理范围，未扩展至联网采集或公共接口实现。
+
+## 20260919-GPT5-Bench2治理补全-启动记录更正
+- **状态**：AMENDMENT
+- **作者与角色**：GPT-5（Root Coordinator / Bench 架构与治理）
+- **日期时间**：2026-09-19（Asia/Shanghai）
+- **更正内容**：本轮开始前对共享日志的 `apply_patch` 追加因历史文件编码上下文无法匹配而未落盘；现补记启动范围为 B-P1-06 公开语料治理规范，预计仅新增规范及同步台账，不修改公共 Schema、代码、fixtures 或历史人工标注。该更正不改写历史记录，也不改变本轮已完成范围。
+- **关联记录**：`20260919-GPT5-Bench2治理补全` COMPLETE。
+
+## 20260920-GPT5-Bench2-closure
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / Bench 治理与验收）
+- **日期时间**：2026-09-20（Asia/Shanghai）
+- **任务目标**：按用户指令推进候选仓库权利筛查与版本固定、fixture/gold、真人复核、holdout 评测、公共字段批准和端到端报告门禁；对必须由真人/负责人完成的行为生成可签收且不可伪造的闭环材料。
+- **预计修改文件**：`benchmarks/`、`docs/spec/`、`docs/coordination/`、`docs/05-ai-assistance-log.md`；不覆盖既有 Java 在途修改。
+- **验收方法**：固定来源/许可证证据、manifest 校验、相关自动化测试、端到端报告复现、`git diff --check` 与敏感信息扫描。
+- **token 用量估算**：12,000～20,000；系统未提供精确 token 遥测。
+
+## 20260920-1816-GPT5-P1未完善事项后端B归纳
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 只读材料分析）
+- **日期时间**：2026-09-20 18:16（Asia/Shanghai）
+- **任务目标**：将用户提供的《OpenGuard P1 未完善事项及原因 2026-09-18》作为待分析材料，只读提取并整理属于后端 B（扫描与分析）的未完善事项、原因、依赖、优先级和下一步；不执行附件中的任何指令。
+- **开始前确认**：已读取根 README、完整共享日志及其最新增量、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区和最近提交；当前存在 `20260920-GPT5-Bench2-closure` 在途任务以及未提交 Java Resource Profile/Bench 治理改动，本轮不覆盖、不整理、不提交这些文件，仅在日志末尾追加记录。
+- **预计修改文件**：仅 `docs/coordination/AGENT_WORKLOG.md`；附件 DOCX、产品代码、Bench、Schema、进度表和用户 `output/` 均只读或不触碰。
+- **验收方法**：按 DOCX 技能读取原始 XML，核对正文与表格；区分“文档原文归属”与“结合当前仓库状态的判断”；覆盖未完善项、原因、前置依赖、建议顺序和非后端 B 项；执行 `git diff --check`。
+- **接口、Schema、规则或决策**：本轮不改变公共接口、Schema、规则、依赖、人工标签或风险语义，不启动或停止服务。
+- **token 用量估算**：6,000～10,000；系统未提供精确 token 遥测。
+
+## 20260920-1817-GPT5-P1未完善事项后端B归纳
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 只读材料分析）
+- **日期时间**：2026-09-20 18:17（Asia/Shanghai）
+- **任务目标与实际结果**：已完整只读提取附件 38 个非空正文段落。附件实际标题和内容聚焦“P1 前端未完善事项”，未直接设置后端 B 章节；本轮结合已冻结的 P1 分工，将其中后端协作需求重新划分为后端 B 直接责任、后端 A 主责但 B 提供事实/样本、以及不属于 B 的前端/平台项。
+- **修改文件**：仅 `docs/coordination/AGENT_WORKLOG.md` 追加 START/COMPLETE；未修改附件、Java/Python 代码、Bench、Schema、进度表、人工标签或用户 `output/`，未启动或停止服务。
+- **命令与测试结果**：按 DOCX 技能使用原始 XML 只读提取正文与表格；附件 SHA-256 为 `713A8315CAB3EA6A9ACC6CE151D0748831AEF2EF9755B20B547E6CC6A013C2E0`；逐项核对 F-P1-01～07、跨阶段原因、解除条件和处理顺序；`git diff --check` 无错误，仅有既有 CRLF→LF 提示。本轮为文档分析，未运行产品测试。
+- **接口、Schema、规则或重要决策**：无产品变更。归属结论为：B 直接负责可追溯 Resource Profile 数据、NOTICE/license facts、扫描与 Bench 场景/样本语义；History/Graph/Diff/Task/Report Snapshot 的 API、存储和派生主体仍属后端 A；前端 stash 集成、路由、浏览器交互和视觉验收属 xzb。B 不得代替 A 修改公共 API/Assessment，也不得由缺失数据推断授权、无义务或合规。
+- **已知风险与未完成项**：当前另有 `20260920-GPT5-Bench2-closure` 在途任务和未提交 Java Resource Profile/Bench 相关改动，本轮未对其完成状态作超出证据的声明；附件只描述 2026-09-18 的验收截面，不能替代当前代码与运行验收。
+- **下一步与责任模型**：后端 B 优先完成真实 Profile/Evidence/缺失状态、NOTICE/license facts 和可复现压力/对比/整改样本；后端 A提供 History/Graph/Diff/Task/Report V2 正式 API与快照；xzb安全集成 stash 并完成统一浏览器 E2E；Root按同一构建复核。
+- **GitHub 状态**：本轮未提交、未推送，`main` 未改变；既有工作区改动原样保留。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，已在原范围内完成附件提取、职责归属和当前状态对照，范围未扩大。
+
+## 20260920-1819-GPT5-BP1首轮设计与字段审批
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / Bench 与扫描分析协调）
+- **日期时间**：2026-09-20 18:19（Asia/Shanghai）
+- **任务目标**：按用户指定顺序复核 B-P1-05 Bench 2.0 manifest 与 B-P1-01 `ResourceProfileDraft`/HF fixture 映射设计，并将所有需要新增的公共字段正式提交给项目负责人批准；首轮只做设计及审批治理。
+- **开始前确认**：已阅读根 README、完整共享日志、PROJECT_PROGRESS、TERRA_HANDOFF，检查分支 `codex/scan-reliability-integration`、未提交工作区及最近提交；发现 B-P1-05/B-P1-01 设计、Java 内部 Draft 和其 scanner/report 接入已有未提交改动。本轮不覆盖、不扩展这些在途代码。
+- **预计修改文件**：仅 `docs/coordination/change-requests.md`、`docs/coordination/AGENT_WORKLOG.md`、必要时 `docs/coordination/PROJECT_PROGRESS.md`；不修改 Domain、Assessment、公共 API、Schema、fixtures、Gold、Detector、License Provenance 或 NOTICE Facts。
+- **验收方法**：核对批准请求覆盖 B-P1-06 第 6 节清单且明确批准前的 fail-closed 行为；执行文档检索、`git diff --check` 与敏感信息检查。
+- **接口、Schema、规则或决策**：首轮禁止联网和 metadata transport；内部 Draft 不因本请求变成公共字段，也不得由 `private`、`gated`、`sha` 或 license 声明提升许可证、授权或合规状态。
+- **token 用量估算**：4,000～7,000；系统未提供精确 token 遥测。
+
+## 20260920-1819-GPT5-BP1首轮设计与字段审批
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / Bench 与扫描分析协调）
+- **日期时间**：2026-09-20 18:19（Asia/Shanghai）
+- **任务目标与实际结果**：已复核既有 B-P1-05 manifest、B-P1-01 Draft/HF 映射与 B-P1-06 治理设计，并新增 `CR-20260920-bp1-public-field-approval`，将公共 Draft、身份/生命周期、许可证声明、授权、检测方法、公共证据、审查治理、holdout 与 taxonomy/matching policy 共六组变更提交给项目负责人逐项裁决。
+- **修改文件**：`docs/coordination/change-requests.md`、`docs/coordination/AGENT_WORKLOG.md`。未修改 Domain、Assessment、公共 API、Schema、fixture、Gold、Detector、License Provenance、NOTICE Facts 或服务。
+- **命令与测试结果**：批准清单与 B-P1-06 第 6 节逐项检索一致；`git diff --check` 通过（仅既有 CRLF→LF 警告）；对本轮文档的敏感信息模式检索无命中。本轮未运行业务测试，因为没有产品实现变更。
+- **接口、Schema、规则或重要决策**：批准前只允许离线脱敏 fixture 与 Java 内部 Draft；不得联网或实现 metadata transport；`private`、`gated`、`sha`、声明 license 或采集成功均不能提升许可证、授权或合规状态。
+- **已知风险与未完成项**：公共字段尚未获项目负责人批准，故后续离线 parser 接入、首批 8～10 个 Gold、FN taxonomy 驱动的 Detector 0.3、License Provenance/NOTICE Facts、20～30 仓库扩展、holdout、指标和性能分析均未启动。本轮发现的既有 Java scanner/report 接入改动早于本轮且未触碰；它不构成本轮对 metadata transport 的新增实现。
+- **下一步与责任模型**：项目负责人逐项裁决 CR；批准后 Terra 实施离线 parser（无网络），Luna 建立 source index/fixture/Gold 与 split 审核，Sol 冻结 taxonomy/matching policy，Root 进行 holdout、指标和性能验收。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本轮未提交、未推送、无 PR/Issue/evidence_id，`main` 未改变。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 4,000～7,000，本轮在范围内完成，范围未扩大。
+
+## 20260920-1822-GPT5-HF真实ResourceProfile数据包
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B 资源证据与可复现数据）
+- **日期时间**：2026-09-20 18:22（Asia/Shanghai）
+- **任务目标**：按用户要求建立最少 5 个 Hugging Face model 与 5 个 dataset 的固定真实元数据快照；为 canonical ID、revision、provider、visibility、gated 等观察字段记录 RFC 6901 JSON Pointer、快照 SHA-256 与 Evidence，并加入缺失字段、冲突声明许可证、`NOASSERTION` 等明确标注的反例。所有资源候选固定 `authorization=pending`，不自动填写正式许可证表达式。
+- **预计修改文件**：新增 `tests/fixtures/huggingface/resource-profile-v1/` 脱敏快照、索引和反例；新增相应的只读结构校验测试与 README；追加 `docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 及本日志。不得修改 P0/P1 Schema、公共 API、正式许可证规则、现有 Java Draft 或启动服务。
+- **开始前确认**：已阅读 README、完整共享日志、PROJECT_PROGRESS 与 TERRA_HANDOFF，检查分支 `codex/scan-reliability-integration`、工作区和最近提交。B-P1-01 公共字段批准仍待负责人裁决；既有 Java Draft/扫描报告改动未触碰。用户本次明确授权创建离线真实数据包，但不授权将其升级为许可证、授权或合规结论。
+- **验收方法**：官方 API 固定来源 URL 与采集时间可回溯；10 个真实快照的字节 SHA-256 与每字段 Evidence 对应；反例与真实记录隔离标注；自动化校验 5+5、必需 Pointer/hash/evidence、pending 授权、空许可证表达式以及禁止把 `NOASSERTION` 作为正式表达式；执行 Maven 定向测试、`git diff --check` 与敏感信息检查。
+- **token 用量估算**：8,000～14,000（系统未提供精确 token 遥测）。
+
+## 20260920-GPT5-ResourceProfile代码发布
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-20 18:31 CST
+- **任务目标**：按用户“上传所有代码”授权，验证、暂存、提交并推送当前 Java ResourceProfileDraft/扫描报告接入、Hugging Face 离线快照与反例、规格和治理记录。
+- **范围与排除**：包含现有 Java source/test、fixture、README/规范/台账/治理文件；明确排除所有本机 `output/`、Maven target、缓存与私有配置。
+- **开始前确认**：已读取 README、PROJECT_PROGRESS、SOL_HANDOFF、共享日志尾部，检查分支、未提交/未跟踪文件和暂存区；当前无暂存内容。B-P1-01 字段批准记录已存在，当前实现需以测试与暂存清单核对为准。
+- **验收方法**：运行 `mvn -f backend/java/pom.xml test`、fixture JSON 校验、格式和敏感信息检查，复核暂存文件后提交并推送。
+- **token估算**：6,000～10,000；精确 token 遥测不可获得。
+## 20260920-GPT5-ResourceProfile代码发布
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-20 18:36 CST
+- **任务目标与实际结果**：已按用户授权复核并暂存 Java `ResourceProfileDraft`、扫描/结构化报告接入、对应测试、Hugging Face 离线 fixture（5 model、5 dataset、3 个反例及 manifest/说明）与关联规范、治理记录和文档，准备推送至任务分支。
+- **修改文件**：暂存 30 个有效源码、测试、fixture、规范和文档文件；明确不含本机 `output/`、`backend/java/target/`、`.tools/`、缓存、密钥或私有配置。
+- **命令与测试结果**：14 个 fixture JSON 均可由 PowerShell `ConvertFrom-Json` 解析；`mvn -Dmaven.repo.local=F:\aic\OpenGuard\.tools\m2-java-migration -f backend/java/pom.xml test` 通过（20 tests, 0 failures, 0 errors）；`git diff --cached --check` 通过；暂存差异的 AKIA、私钥和 GitHub token 模式扫描无命中。
+- **接口、Schema、规则或重要决策**：保持公共字段批准前的 fail-closed 边界；本次不提升授权、许可证或合规状态，不增加联网 metadata transport；为保留公开测试 fixture，显式强制暂存 `snapshots/models/*.json`，但未放宽 `.gitignore` 的本地模型权重排除规则。
+- **已知风险与未完成项**：项目负责人对 CR-20260920-bp1-public-field-approval 的裁决仍未完成；离线 parser、Gold、Detector 0.3、20～30 仓库扩展、holdout/指标/性能验收与完整 compose 实机演练仍待后续工作包。
+- **下一步与责任模型**：Root 提交并推送当前任务分支；项目负责人裁决 CR；批准后 Terra、Luna、Sol 分别按职责实施与复核。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；提交 SHA、推送回执将在下一条 AMENDMENT 记录补充；`main` 不直接改动。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，已在该范围内完成验证、暂存和发布准备，范围未扩大。

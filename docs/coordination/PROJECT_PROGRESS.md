@@ -110,6 +110,7 @@
 |---|---|---|---|---|---|---|
 | S0 | 竞赛要求与评分追踪 | Sol | 已完成 | 正式来源、硬约束、官方评分、提交/补正/匿名/AI披露、27项报告主张与非目标均已映射 | 随正式通知复核；真实需求、实验、用户反馈和最终链接继续保持 planned/blocked | 9月3日前 |
 | S1/A1 | 领域模型与公共契约 | Sol/Terra/Luna | 已完成 | v0.1.1契约、实现、Schema、sample及46项测试完成 | 后续变更需 ADR；A2 不得破坏本契约 | 9月3日前 |
+| J0 | Java 核心实现必做门禁 | Root→Terra→Luna→Sol | 进行中 | 已有 `backend/java/` Maven 模块、离线 Bench 校验器及部分扫描纵切；2026-09-19 起，Java 核心代码正式列为项目不可省略的必须执行项；每次 Java 核心变更后，本地必须执行 `mvn -f backend/java/pom.xml test` | 至少一条覆盖扫描/规则/报告或编排的 Java 核心交付链须可编译、通过自动化测试并接入最终演示；Java Bench、CLI、示例或文档不能单独关闭门禁。该命令的 `target/` 产物、控制台输出和本地运行结果不得上传 GitHub。Luna 独立回归，Sol 审核与 Root 验收后方可标记完成 | 即日起至最终提交前 |
 | S2 | 威胁模型与安全验收 | Sol/Terra/Luna | 进行中 | 条件性设计基线已完成：20 SEC、5 POS、36 NEG，含实现审查、可测性审计和证据模板 | 最终安全验收需在 A2 关闭 TrustedEgress、Linux profile、阈值拆分、依赖台账与全量真实测试；当前不得写成控制已生效 | 9月3日前设计，A2实现 |
 | A2 | Git/ZIP安全输入与Inventory | Terra | 进行中 | A2-0/A2-1本地ZIP、A2-1D CLI 和 A2-2 只读扫描会话已完成；后续可信 parser 已可在清理前受限读取 inventory 文件；B1-2 已证明该会话可承载 Python parser/mapper | 继续完成完整ZIP corpus、cleanup隔离/清道夫、本地Git物化、受控公网Git、Linux隔离、registry/API与系统级证据冻结 | 9月4日-11日 |
 | B1 | Python/JS依赖解析 | Terra | 进行中 | Python requirements/pyproject 与 P0 CLI 已完成；根 package.json 四类直接依赖、package-lock v2/v3 enrichment 与 JS P0 CLI 已完成；当前全量424项通过 | 选定 Python lockfile；Yarn/pnpm/workspace/传递依赖列后续增强；再进入多来源合并 | 9月4日-11日 |
@@ -265,3 +266,34 @@ Java 真实扫描产物仅用于本机验收，未纳入 Git；当前分支未�
 | 12 条人工标签自动审计 | 本地完成 | 12 条/60 维、8 个输入摘要、固定 commit 来源、R05 修订、第二次 AI 审阅、最终分布和召回率重算全部一致；16 项正反测试通过；真实批次 0 error、16 warning、0 quarantine；输出哈希链复算通过 | 仅证明结构、证据链和内部一致性；第二位独立真人、三份旧扫描附件、额外 Evidence 对象和真人 gold 仍缺失 | Root 执行；可复现工具与本地报告尚未提交/推送，`main` 未改变 |
 
 正式状态为 `human_labels_with_automated_consistency_audit`。16 个警告由 12 条“完整旧扫描报告未直接复核”、第二真人缺失、旧附件缺失、R05 已应用人工修订和召回率 gold 仅由 AI 构成；没有把警告提升为通过事实，也没有修改原人工标签。该结果可用于项目内部质量门禁和演示材料的保守披露，但不能宣称双人独立核验、观察者间一致性或语义真值已证明。
+
+## 2026-09-19：B-P1-01 `ResourceProfileDraft` 与 HF fixture 映射设计
+
+| 工作包 | 状态 | 本轮交付 | 未关闭门禁 | 责任与 GitHub 状态 |
+| --- | --- | --- | --- | --- |
+| provider-neutral Draft 契约 | 设计完成 | 定义身份、生命周期、声明元数据、字段证据、诊断、稳定 ID 和长度/拒绝边界；明确它不是许可证、授权或合规结论 | 尚未批准为公共 P1 Schema；未实现 parser/materializer | Sol/Root 设计完成；Terra 待实现；本轮未提交/推送 |
+| HF model/dataset fixture 映射 | 设计完成 | 完成 `/id`、`/sha`、`/lastModified`、`/private`、`/gated`、`/disabled`、`/cardData/license`、`/tags` 等 JSON Pointer 映射及 8 组回归口径 | Luna 尚未创建脱敏 fixture；未验证真实 provider 响应兼容性 | Luna 待实现 fixture/回归；本轮未提交/推送 |
+| P0 投影边界 | 设计完成 | `license_expression_id` 保持 null、`authorization_status` 保持 pending；不以 public/ungated/license/sha 提升任何结论 | `detected_by` 新枚举和实际 Evidence materialization 需负责人批准 | Sol/Root 审核；Terra 待接入 |
+
+设计文档见 `docs/spec/b-p1-01-resource-profile-draft.md`。本轮没有修改 P0/P1 公共接口、业务代码、历史 fixture 或网络行为；只关闭“实施前字段与映射不明确”的设计门禁，不关闭 HF 集成、许可核验、授权确认或合规评估门禁。
+
+### 2026-09-19 补充：B-P1-01 离线 Java 实现（待 Maven 环境复验）
+
+- 已新增离线 Java `ResourceProfileDraft` mapper 和 JUnit：仅接受内存中的本地 JSON、字段级 fixture SHA/JSON Pointer 证据、HF model/dataset 映射、身份失败关闭、license 冲突保留证据、P0 candidate 的 pending 授权边界。
+- 未变更 P0/P1 Schema、API 或网络行为；P0 candidate 保留既有报告模型外部，直到负责人批准正式 Schema/检测方法。
+- `git diff --check` 通过；Maven 因全局设置强制使用不可访问的 `C:\\.m2\\repository` 而未启动测试，即使指定项目受控仓库仍被覆盖。状态为“实现已写入、测试运行阻塞”，不可宣称门禁关闭。
+- 端到端报告、正式评测、第二真人独立盲审、权属/平台回执仍分别需要实现、可运行环境与真人/Owner 输入；本轮未伪造任何外部事实。
+
+### 2026-09-19 补充：Java 本地仓库、扫描与报告接入
+
+- 新增仓库受控 `.mvn/settings.xml`，Maven 可离线使用已忽略的 `.tools/m2-java-migration` 缓存，不再依赖不可访问的 `C:\\.m2\\repository`；不改用户级 settings。
+- `ResourceProfileDraft` 已接入 Java `RepositoryScanner`：受信 checkout 内 `huggingface/models/*.json`、`huggingface/datasets/*.json` 按本地内容和 SHA-256 生成 Draft；JSON、CSV、HTML 报告均展示该候选，且显式保持 `authorization=pending` 与无许可证表达式。
+- 定向 Maven 回归 4/4 通过。全量 Maven 编译、Bench 示例/CLI 测试及新增扫描测试通过；但 `BenchManifestServiceTest` 的 13 项在 JUnit Windows 临时目录自动清理时均报 `AccessDeniedException`，没有业务断言失败，故全量绿灯门禁仍未关闭。
+
+## 2026-09-19：B-P1-06 Bench 2.0 公开语料与治理补充
+
+| 工作区 | 状态 | 本轮交付 | 未关闭门禁 | 责任方 | GitHub 状态 |
+| --- | --- | --- | --- | --- | --- |
+| 公开仓库候选与治理 | 设计完成 | 新增选择/排除原则、10 个候选、真人审查、holdout、amendment、FN/FP taxonomy 和公共字段批准边界 | 候选尚未固定 commit、未完成权利筛查、fixture、gold、独立审查、holdout 评测或字段批准 | Luna / Sol / Terra / 真人 reviewer / Root | 本轮未提交或推送 |
+
+该规范只提供可审查的设计输入，不构成公开仓库已纳入、许可证/授权通过、双人独立质量或可报告指标的声明。

@@ -17,6 +17,8 @@ class RepositoryScannerTest {
             Files.writeString(fixture.resolve("package.json"), "{\"dependencies\":{\"react\":\"18.3.1\"}}");
             Files.writeString(fixture.resolve("LICENSE"), "MIT License\nPermission is hereby granted");
             Files.writeString(fixture.resolve("model.md"), "model=https://huggingface.co/org/model");
+            Files.createDirectories(fixture.resolve("huggingface/models"));
+            Files.writeString(fixture.resolve("huggingface/models/demo.json"), "{\"id\":\"org/model\",\"gated\":false,\"cardData\":{\"license\":\"mit\"}}");
 
             ScanResult result = new RepositoryScanner().scanTrustedCheckout(fixture, "fixture", "fixture-revision");
 
@@ -24,9 +26,12 @@ class RepositoryScannerTest {
             assertEquals(2, result.components().size());
             assertEquals("MIT", result.licenses().getFirst().spdxId());
             assertEquals(1, result.aiAssets().size());
+            assertEquals(1, result.resourceProfiles().size());
+            assertEquals("pending", result.resourceProfiles().getFirst().toPendingP0Candidate().authorizationStatus());
             assertTrue(result.findings().stream().allMatch(finding -> "review_required".equals(finding.outcome())));
             assertTrue(StructuredReports.json(result).contains("scan_id"));
             assertTrue(StructuredReports.html(result).contains("OpenGuard scan report"));
+            assertTrue(StructuredReports.csv(result).contains("resource_profile"));
         } finally {
             try (var paths = Files.walk(fixture)) {
                 paths.sorted(java.util.Comparator.reverseOrder()).forEach(path -> {

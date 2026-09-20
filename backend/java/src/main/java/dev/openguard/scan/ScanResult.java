@@ -13,6 +13,7 @@ public record ScanResult(
         List<Component> components,
         List<License> licenses,
         List<AiAsset> aiAssets,
+        List<ResourceProfileDraft> resourceProfiles,
         List<Evidence> evidence,
         List<Finding> findings,
         List<String> diagnostics) {

@@ -131,3 +131,13 @@
 | 2026-09-17 | GPT-5 / Root Coordinator | 实现单人时间隔离盲化复标工作包 | 新增最小披露复标包、空白表生成、72小时门禁、60维校验、两轮比较、冲突查证、最终冻结、防篡改哈希链和详细中文操作手册 | AI只实现工具并使用合成回执自测，不生成或代填真实人工判断；明确单人1名/两轮2次，不冒充双人复核或gold盲标 | 全部MJS语法检查通过；合成闭环14项通过，含空表拒绝、冷却期拒绝、未解决冲突拒绝和篡改比较文件拒绝 | 是 |
 | 2026-09-18 | GPT-5 / Root Coordinator | 实现 B-P1-05 Bench 2.0 Schema、Java 库与 CLI | 基于用户逐节批准的设计，新增 Draft 2020-12 Schema、稳定 JSON 诊断、artifact/引用/split/holdout/parent/amendment/准入语义、四组正例和七组反例 | 不新增 Web API、不执行评测样本、不联网取 artifact、不代填真人结论；单真人与双真人准入保持分级，用户本机 `output/` 不纳入变更 | Maven 离线测试 17/17 通过；直接 JVM 策略拒绝退出 3；正例 CLI 输出单一 JSON；待最终格式与发布范围检查 | 是 |
 | 2026-09-18 | GPT-5 / Root Coordinator | 执行 12 条人工标签的全自动证据一致性审计 | 新增可复现 Node 审计器与 16 项正反测试；校验 8 个输入摘要、60 维标签、固定来源、人工确认、R05 修订、第二次 AI 审阅、最终计数及召回率重算，生成逐条报告、摘要和哈希链 | 不修改原人工标签，不把自动检查冒充第二真人或语义真值；冲突只允许隔离，旧附件、额外 Evidence 和真人 gold 缺失继续披露 | 测试 16/16；真实批次 12/12 带限制通过、0 隔离、0 错误、16 警告；输入/输出摘要与链根复算通过 | 是 |
+| 2026-09-19 | GPT-5 / Root Coordinator | 设计 B-P1-01 `ResourceProfileDraft` 与 HF fixture 映射 | 形成 provider-neutral 草案字段、JSON Pointer 证据引用、HF model/dataset 映射、拒绝/降级规则和 P0 受限投影；AI 仅协助整理契约，不访问 Hugging Face、下载资源或验证许可/授权 | 不新增 P0/P1 Schema/API，不创建或修改 fixture；`private`、`gated`、`license`、`sha` 和可访问性不提升为授权、许可证或合规结论 | Markdown 结构、JSON 示例、字段检索、diff/敏感信息检查待本轮收工统一复核 | 是 |
+| 2026-09-19 | GPT-5 / Root Coordinator | 实现 B-P1-01 离线 HF Draft 链路 | 新增纯本地 JSON parser、P0 materializer、脱敏 model/dataset/反例 fixture 与单元测试；AI 未联网、未下载权重/数据、未接触凭据 | 只把 fixture 字段转为 pending Evidence/AIAsset；不把 license/gated/private/sha 写成法律或授权结论；未改 P0/P1 公共 Schema/API | JSON fixture 6/6 可解析，`git diff --check` 通过；本机无可用 Python 3.12，pytest 未能运行，需环境恢复后复验 | 是 |
+| 2026-09-19 | GPT-5 / Root Coordinator | 按用户要求切换 B-P1-01 为 Java 实现 | 移除本轮未提交 Python 草稿，新增 Maven/Jackson Java `ResourceProfileDraft` 与 JUnit，复用既有 Java 扫描/报告纵切；AI 未联网或推断许可/授权 | P0 candidate 固定 `licenseExpressionId=null`、`authorizationStatus=pending`；未改公共 Schema/API | Maven 被全局不可访问的 `C:\\.m2\\repository` 覆盖配置阻塞，JUnit 未运行 | 是 |
+| 2026-09-19 | GPT-5 / Root Coordinator | 修复 Maven 本地缓存并接入 Java 扫描/报告 | 新增仓库受控 Maven settings，接入 HF fixture→Draft→RepositoryScanner→JSON/CSV/HTML；AI 未联网、未处理真实受限资源 | provider 元数据仍只生成 pending 候选，不形成许可证/授权结论；不改用户级 Maven 配置或公共 P0/P1 Schema | 定向 4/4 通过；全量编译通过，但 13 个 Bench 测试受 Windows JUnit temp cleanup `AccessDeniedException` 阻塞 | 是 |
+
+## 2026-09-19：B-P1-06 Bench 2.0 公开语料与治理补充
+
+- 使用 AI 辅助汇总既有 Bench 2.0、人工标注和 Draft 契约，形成公开仓库候选选择原则、治理流程、FN/FP taxonomy 与公共字段批准清单。
+- 人工仍须完成候选仓库的固定 commit、权利/再分发筛查、独立标注、holdout 签收、字段批准和最终发布复核；AI 未联网确认任何仓库状态，未作许可证、授权或合规结论。
+- 产物：`docs/spec/b-p1-06-bench-public-corpus-governance.md`。

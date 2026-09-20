@@ -39,3 +39,18 @@
 - 所有权与影响：`backend/java/` 通常由 Terra 负责，`benchmarks/` 测试材料通常由 Luna 负责；用户已明确授权 Root 在本任务中直接实现。保留现有 P0/P1 Schema 与运行时接口，不改写人工标注或 gold 结论。
 - 契约影响：新增 `openguard-bench-manifest/2.0` 和稳定诊断报告 `openguard-bench-validation-report/1.0`；Schema 负责结构约束，Java 负责 ID/引用闭包、split 隔离、holdout 暴露、amendment 链、文件哈希和正式指标准入；CLI 退出码固定为 0/1/2/3。
 - 验收：Maven 单元/集成测试、正反例期望诊断、CLI JSON 与退出码、离线路径/符号链接/哈希安全测试、`git diff --check`、第三方依赖台账和设计/进度/AI 辅助记录同步。
+
+## CR-20260920-bp1-public-field-approval
+
+- 提出者：GPT-5 / Root Coordinator；日期：2026-09-20；状态：**待项目负责人批准**。
+- 目标：为 B-P1-01 `ResourceProfileDraft`、B-P1-05 Bench 2.0 与 FN taxonomy 提交公共字段的显式批准请求；本请求本身不修改 Domain、Assessment、P0/P1 Schema、公共 API、报告 DTO 或现有 gold。
+- 请求批准的范围：
+  1. `ResourceProfileDraft` 是否作为版本化公共对象，以及 `provider`、`canonical_id`、`resource_kind`、`revision` 的定义、默认值、空值和迁移语义；
+  2. `visibility`、`gated`、`disabled` 的展示/脱敏边界；它们不得表示授权或可再分发权；
+  3. `declared_license_raw` 的公共暴露和后续 SPDX 映射责任；批准前 `license_expression_id` 固定为空；
+  4. `authorization_status` 的枚举、责任人和证据门槛；批准前固定为 `pending`；
+  5. `detected_by` 新枚举、公共 Evidence materialization、reviewer/holdout/amendment 治理字段；
+  6. FN/FP taxonomy 与 matching policy 的版本、历史指标回填与 holdout 脱敏策略。
+- 已有设计依据：`docs/spec/b-p1-01-resource-profile-draft.md` 第 6～8 节、`docs/spec/b-p1-05-bench-2-manifest.md`、`docs/spec/b-p1-06-bench-public-corpus-governance.md` 第 5～6 节。
+- 批准前约束：只允许离线、脱敏 fixture 和 Java 内部 Draft；不得联网、不得实现 metadata transport、不得修改 Domain/Assessment/公共 API，且不得从 provider 元数据推导许可证、授权或合规结论。
+- 请负责人逐项给出 `批准`、`驳回` 或 `需修订`，并记录 Schema/API 版本、迁移/回滚、脱敏与再分发策略、责任人和生效 revision。批准后才可进入 parser 接入、Gold、Detector 0.3、License Provenance/NOTICE Facts 与 holdout 阶段。

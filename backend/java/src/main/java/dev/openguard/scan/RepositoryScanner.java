@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -40,6 +41,7 @@ public final class RepositoryScanner {
         var components = new ArrayList<ScanResult.Component>();
         var licenses = new ArrayList<ScanResult.License>();
         var assets = new ArrayList<ScanResult.AiAsset>();
+        var profiles = new ArrayList<ResourceProfileDraft>();
         var evidence = new ArrayList<ScanResult.Evidence>();
         var diagnostics = new ArrayList<String>();
         List<Path> paths;
@@ -69,11 +71,12 @@ public final class RepositoryScanner {
             if (isTextCandidate(relative)) {
                 parseAiReferences(path, relative, assets, evidence, diagnostics);
             }
+            parseHuggingFaceFixture(path, relative, profiles, diagnostics);
         }
         List<ScanResult.Finding> findings = findings(licenses, assets);
         return new ScanResult("0.1.1", "scn_" + UUID.randomUUID(), "completed", source, revision,
                 Instant.now().toString(), List.copyOf(components), List.copyOf(licenses), List.copyOf(assets),
-                List.copyOf(evidence), findings, List.copyOf(diagnostics));
+                List.copyOf(profiles), List.copyOf(evidence), findings, List.copyOf(diagnostics));
     }
 
     private static void parsePythonManifest(Path path, String relative, List<ScanResult.Component> components,
@@ -150,6 +153,20 @@ public final class RepositoryScanner {
             }
         } catch (IOException exception) {
             diagnostics.add("text_candidate_unreadable:" + relative);
+        }
+    }
+
+    private static void parseHuggingFaceFixture(Path path, String relative, List<ResourceProfileDraft> profiles,
+            List<String> diagnostics) {
+        String kind = relative.startsWith("huggingface/models/") ? "model"
+                : relative.startsWith("huggingface/datasets/") ? "dataset" : null;
+        if (kind == null || !relative.endsWith(".json")) return;
+        try {
+            byte[] bytes = Files.readAllBytes(path);
+            String digest = java.util.HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes));
+            profiles.add(ResourceProfileDraft.fromHuggingFace(JSON.readTree(bytes), kind, relative, digest, Instant.now()));
+        } catch (Exception exception) {
+            diagnostics.add("huggingface_fixture_invalid:" + relative);
         }
     }
 
