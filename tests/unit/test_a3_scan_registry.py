@@ -207,3 +207,123 @@ def test_schema_object_allowlist_rejects_extra_table_view_and_trigger(tmp_path: 
         assert valid.create(_run()).revision == 1
     finally:
         valid.close()
+
+
+def _audit002_snapshot(path: Path):
+    from contextlib import closing
+    with closing(sqlite3.connect(path.absolute().as_uri()+'?mode=ro',uri=True)) as db:
+        return (db.execute('PRAGMA journal_mode').fetchone()[0],
+                db.execute('SELECT * FROM registry_metadata').fetchall(),
+                db.execute('SELECT * FROM scan_runs ORDER BY scan_id').fetchall())
+
+
+def _audit002_read(registry, stored, operation):
+    if operation=='get': assert registry.get(stored.run.id)==stored
+    elif operation=='list_runs': assert registry.list_runs().items==(stored,)
+    else: assert registry.active_count()==1
+
+
+@pytest.mark.parametrize('operation',['get','list_runs','active_count'])
+def test_audit002_missing_database_read_does_not_recreate(tmp_path,operation):
+    path=tmp_path/'scans.db';backup=tmp_path/'scans.backup.db'
+    registry=SQLiteScanRunRegistry(path);stored=registry.create(_run())
+    before=_audit002_snapshot(path)
+    path.rename(backup);backup_bytes=backup.read_bytes()
+    assert not path.exists()
+    try:
+        with pytest.raises(ScanRegistryError) as error:
+            _audit002_read(registry,stored,operation)
+        assert error.value.code in {'registry_io_failed','registry_schema_unsupported'}
+        assert backup.read_bytes()==backup_bytes and _audit002_snapshot(backup)==before
+        assert not path.exists(),f'read recreated missing DB: {path.stat().st_size} bytes'
+    finally: registry.close()
+
+
+@pytest.mark.parametrize('operation',['get','list_runs','active_count'])
+def test_audit002_read_preserves_delete_journal(tmp_path,operation):
+    from contextlib import closing
+    path=tmp_path/'scans.db';registry=SQLiteScanRunRegistry(path);stored=registry.create(_run())
+    with closing(sqlite3.connect(path)) as db:
+        assert db.execute('PRAGMA journal_mode=DELETE').fetchone()[0]=='delete'
+    before=_audit002_snapshot(path);before_bytes=path.read_bytes()
+    try:
+        _audit002_read(registry,stored,operation)
+        after=_audit002_snapshot(path)
+        assert after[1:]==before[1:]
+        assert after[0]=='delete',f'read changed journal DELETE -> {after[0]}'
+        assert path.read_bytes()==before_bytes
+    finally:registry.close()
+
+
+def test_audit002_existing_constructor_preserves_delete_journal(tmp_path):
+    from contextlib import closing
+    path=tmp_path/'scans.db';registry=SQLiteScanRunRegistry(path);registry.create(_run());registry.close()
+    with closing(sqlite3.connect(path)) as db:
+        assert db.execute('PRAGMA journal_mode=DELETE').fetchone()[0]=='delete'
+    before=_audit002_snapshot(path);before_bytes=path.read_bytes()
+    reopened=SQLiteScanRunRegistry(path)
+    try:
+        after=_audit002_snapshot(path)
+        assert after[1:]==before[1:]
+        assert after[0]=='delete',f'verification changed journal DELETE -> {after[0]}'
+        assert path.read_bytes()==before_bytes
+    finally:reopened.close()
+
+
+def test_audit002_control_initialization_and_write_wal(tmp_path):
+    from contextlib import closing
+    path=tmp_path/'scans.db';registry=SQLiteScanRunRegistry(path)
+    try:
+        assert path.exists() and _audit002_snapshot(path)[0]=='wal'
+        with closing(sqlite3.connect(path)) as db:
+            assert db.execute('PRAGMA journal_mode=DELETE').fetchone()[0]=='delete'
+        stored=registry.create(_run())
+        assert _audit002_snapshot(path)[0]=='wal'
+        assert registry.get(stored.run.id)==stored
+        with closing(registry._connect()) as db:
+            assert db.execute('PRAGMA synchronous').fetchone()[0]==2
+            assert db.execute('PRAGMA foreign_keys').fetchone()[0]==1
+            assert db.execute('PRAGMA trusted_schema').fetchone()[0]==0
+    finally:registry.close()
+
+
+def test_audit002_control_uri_filename_and_readonly_enforcement(tmp_path):
+    from contextlib import closing
+    path=tmp_path/'scans ?#%.db';registry=SQLiteScanRunRegistry(path);stored=registry.create(_run())
+    try:
+        for operation in ('get','list_runs','active_count'):_audit002_read(registry,stored,operation)
+        with closing(registry._connect(readonly=True)) as db:
+            assert db.execute('PRAGMA query_only').fetchone()[0]==1
+            assert db.execute('PRAGMA foreign_keys').fetchone()[0]==1
+            assert db.execute('PRAGMA trusted_schema').fetchone()[0]==0
+            assert db.execute('PRAGMA busy_timeout').fetchone()[0]==5000
+            for statement in ('CREATE TABLE forbidden (id INTEGER)',
+                              'INSERT INTO registry_metadata SELECT * FROM registry_metadata',
+                              'UPDATE scan_runs SET revision=revision+1',
+                              'DELETE FROM scan_runs'):
+                with pytest.raises(sqlite3.OperationalError, match='readonly'):
+                    db.execute(statement)
+        assert registry.get(stored.run.id)==stored
+        assert {p.name for p in tmp_path.iterdir()}<={path.name,path.name+'-wal',path.name+'-shm'}
+    finally:registry.close()
+
+
+def test_audit002_r1_wal_read_preserves_directory(tmp_path):
+    import hashlib
+    from contextlib import closing
+    path = tmp_path / 'scans.db'
+    registry = SQLiteScanRunRegistry(path)
+    stored = registry.create(_run())
+    def directory_hashes():
+        return {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                for p in tmp_path.iterdir() if p.is_file()}
+    try:
+        with closing(sqlite3.connect(path)) as db:
+            assert db.execute('PRAGMA journal_mode').fetchone()[0] == 'wal'
+        before = directory_hashes()
+        assert set(before) == {'scans.db'}
+        for operation in ('get', 'list_runs', 'active_count'):
+            _audit002_read(registry, stored, operation)
+            assert directory_hashes() == before
+    finally:
+        registry.close()

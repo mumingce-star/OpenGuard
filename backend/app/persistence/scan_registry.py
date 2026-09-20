@@ -201,11 +201,18 @@ class SQLiteScanRunRegistry:
             with self._state_lock:
                 self._active -= 1
 
-    def _connect(self) -> sqlite3.Connection:
+    def _connect(self, *, readonly: bool = False) -> sqlite3.Connection:
         try:
-            connection = sqlite3.connect(os.fspath(self._database_path), timeout=self._busy_timeout_ms / 1000, isolation_level=None, uri=False)
-            connection.execute("PRAGMA journal_mode = WAL")
-            connection.execute("PRAGMA synchronous = FULL")
+            # Non-creating, SQL query-only reads: mode=rw permits SQLite's
+            # normal WAL coordination/close lifecycle, unlike mode=ro.
+            # URI encoding preserves literal filename characters.
+            target = self._database_path.absolute().as_uri() + "?mode=rw" if readonly else os.fspath(self._database_path)
+            connection = sqlite3.connect(target, timeout=self._busy_timeout_ms / 1000, isolation_level=None, uri=readonly)
+            if readonly:
+                connection.execute("PRAGMA query_only = ON")
+            else:
+                connection.execute("PRAGMA journal_mode = WAL")
+                connection.execute("PRAGMA synchronous = FULL")
             connection.execute("PRAGMA foreign_keys = ON")
             connection.execute("PRAGMA trusted_schema = OFF")
             connection.execute(f"PRAGMA busy_timeout = {self._busy_timeout_ms}")
@@ -230,7 +237,7 @@ class SQLiteScanRunRegistry:
             is_empty = self._database_path.stat().st_size == 0
         except OSError:
             _fail("registry_io_failed")
-        connection = self._connect()
+        connection = self._connect(readonly=not is_empty)
         try:
             if is_empty:
                 connection.execute("BEGIN IMMEDIATE")
@@ -423,7 +430,7 @@ class SQLiteScanRunRegistry:
     def active_count(self) -> int:
         """Count reservations without loading potentially large snapshots."""
         with self._activity():
-            connection = self._connect()
+            connection = self._connect(readonly=True)
             try:
                 self._verify_schema(connection)
                 return int(connection.execute("SELECT COUNT(*) FROM scan_runs WHERE status IN ('queued', 'running')").fetchone()[0])
@@ -438,7 +445,7 @@ class SQLiteScanRunRegistry:
     def get(self, scan_id: str) -> StoredScanRun:
         with self._activity():
             valid_id = _validate_scan_id(scan_id)
-            connection = self._connect()
+            connection = self._connect(readonly=True)
             try:
                 self._verify_schema(connection)
                 row = connection.execute("SELECT scan_id, revision, idempotency_key, idempotency_fingerprint, created_at, status, contract_version, run_json FROM scan_runs WHERE scan_id = ?", (valid_id,)).fetchone()
@@ -480,7 +487,7 @@ class SQLiteScanRunRegistry:
         with self._activity():
             if type(limit) is not int or not 1 <= limit <= 100 or (after_scan_id is not None and type(after_scan_id) is not str):
                 _fail("registry_invalid_argument")
-            connection = self._connect()
+            connection = self._connect(readonly=True)
             try:
                 self._verify_schema(connection)
                 parameters: tuple[Any, ...]

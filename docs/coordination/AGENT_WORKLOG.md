@@ -4801,3 +4801,32 @@
 - Python3.12.14：R1新增2通过，原003七项7通过，Profile71、acceptance/dev172、transport/ingestion145、004/007回归186通过。完整1021 unique passed/0failed/0skipped/原1精确deselect/原1Starlette warning；原1019节点零丢失+2，collection1020→1022。full后独立fresh metadata.db复验通过，两个key在错绑后均拒绝，三张业务表完整内容不变（equality assertion，非额外表Hash）。
 - 新ignored证据audit-003-r1-request-job-ownership-20260920T124717Z保留preflight/修前快照/失败/命令/源码Hash/JUnit/collection/probe/diff/receipt。旧repair和Owner Review包逐文件未变。guard无业务外网尝试，不称OS防火墙；未扫描/AI/生产操作。exact A06容器已exited，docker ps为空，未remove。
 - 本轮仅store/test和两份append-only日志新增变化；整体仍原5个未暂存授权文件，未add/commit/push/merge/deploy。003 R1本地完成待Owner Review，004/007 integrated，002/009 unresolved；主控串行无子代理。精确token实耗不可获得，6k–12k仅开工估算，范围未扩大。STOP。
+
+### [20260920-1340-GPT-6-Astra-REPAIR-04-start] START — AUDIT-002 Registry readonly connection
+
+- fetch后integration/p1本地/远端均d4e730ebd1e21e56f5bbad432659bfd21eb996fb，工作区clean，无同名分支；从精确基线创建fix/audit-002-registry-readonly。仅修002，不处理009或改动已集成003/004/007。
+- 仅scan_registry.py、test_a3_scan_registry.py与两份追加日志。先missing-path三种read、DELETE journal三种read、existing constructor永久fail-first，再分离readonly/write connection。保留schema/corruption validation、首次初始化与WAL write durability。
+- exact legacy A06/Python3.12.14受控离线验证，原1021节点不减少；Registry/API消费者、已集成finding回归及新DB复验，收尾停容器。新ignored证据audit-002-registry-readonly-repair-20260920T134059Z；旧动态证据不覆盖。主控串行无子代理，预计8k–15k token，精确实耗不可获得；不暂存commit/push/merge/deploy，STOP待Owner Review。
+
+### [20260920-REPAIR-04-blocked] END — AUDIT-002 local draft; full regression BLOCKED
+
+- START后先增加永久测试，旧产品真实7失败：missing get/list/count各重建4096-byte DB，DELETE journal三种read及existing constructor各变WAL；日志/JUnit保存后才改Registry。新增9项含7缺陷回归和2兼容control，均转绿；完整Registry41通过、Registry/API consumer97通过（原1精确排除/1warning）、003/004/007相关257通过。
+- 最小草稿仅_connect(readonly)分流，read使用URI mode=ro/query_only，不执行journal_mode=WAL；已有非空DB验证走readonly，新/空初始化和写事务仍WAL/FULL。schema校验、行decoder、create/replace/CAS/idempotency/close及错误转换未改；不改其他Store/API/service/Contract/Schema。
+- 完整回归执行1062唯一节点：1058 passed、4 failed、0 skipped、原1精确deselect、原1Starlette warning。原1021节点全部执行但并非全部通过；额外41=32项原有Registry测试首次纳入full+9项真正新增，不混报。4失败是History read_only_get、Diff repeated_get及independent reordering、Graph independent read_only；mode=ro访问WAL数据库后留下空scans.db-wal和scans.db-shm，违反既有全目录Hash断言。主DB Hash未显示变化，但这不构成全门槛PASS，未放宽/排除这些测试。
+- full后新临时DB独立8项通过：缺路径三read不重建且backup/rows不变、DELETE三read及existing reopen保持mode/main bytes/rows、正式replace revision2仍切WAL。未使用immutable绕过WAL，未删除副文件、改exclusive locking或扩展连接生命周期来掩盖回归；整体BLOCKED，保留最小草稿，需Owner裁决WAL协调文件与既有无副作用gate的兼容方案后继续，不能称LOCAL_REPAIR_COMPLETE。
+- 新ignored目录audit-002-registry-readonly-repair-20260920T134059Z保留preflight、7项真实fail-first、全部命令/源码Hash/JUnit/collection、完整回归4失败、fresh probe、diff和BLOCKED receipt；旧DYNAMIC-01证据逐文件Hash保留。guard未报告业务外网尝试，不称OS网络隔离或生产安全PASS，无扫描/AI/生产访问。exact A06已exited，docker ps为空，未remove。
+- 仅4个授权文件未暂存，diff check通过；未add/commit/push/merge/deploy，不动组员分支。002未完成待兼容性决策，003/004/007 integrated，009 unresolved。主控串行无子代理，精确token不可获得，8k–15k只是开工估算。STOP。
+
+### [20260920-1405-GPT-6-Astra-AUDIT-002-R1-start] START — non-creating query-only read
+
+- 继续fix/audit-002-registry-readonly，HEAD d4e730ebd1e21e56f5bbad432659bfd21eb996fb；4个未暂存文件Hash与上轮BLOCKED回执完全一致，无后续编辑。Owner明确批准mode=rw+query_only，保留原missing/DELETE/初始化/WAL写能力，不动History/Diff/Graph断言或其他模块。
+- 仅原4授权文件；先新增1个WAL目录Hash永久回归并保存mode=ro真实失败，再最小切换URI、验证低层DDL/DML拒绝、原9项和Registry、原失败4项、consumer/003/004/007/full及fresh DB复验。新ignored目录audit-002-r1-query-only-20260920T140537Z，旧目录逐文件保留，不覆盖失败轨迹。
+- 主控串行无子代理；复用exact A06/Python3.12.14及离线业务网络guard，结束恢复exited；不暂存commit/push/merge/deploy。预计6k–12k token，精确实耗不可获得；STOP待Owner Review。
+
+### [20260920-1410-GPT-6-Astra-AUDIT-002-R1-complete] COMPLETE — R1 local repair; pending Owner Review
+
+- 按Owner批准继续原002草稿；先新增1个WAL三read目录Hash永久测试，mode=ro产品真实1失败（新增空WAL/SHM）并保存JUnit后，仅将读取URI改为mode=rw，保留query_only及公共PRAGMA，不在read设置journal/synchronous。扩展既有低层control，CREATE/INSERT/UPDATE/DELETE均被SQLite拒绝；没有新增第二个重复测试。
+- Python3.12.14：002合计10、Registry42、原失败History/Diff/Graph四项4、consumer98、003/004/007相关257全部通过。完整1063 unique passed/0failed/0skipped/原1精确deselect/原1Starlette warning；上一轮1062节点全部保留且PASS，唯一新增为R1目录测试；collection1064。各阶段不相加。
+- full后10项fresh DB独立复验通过：missing三read fail closed不重建且backup不变、DELETE三read及reopen保持mode/main bytes/目录Hash、WAL三read和reopen目录名/Hash不变、低层query_only拒绝DDL/DML、正式replace revision2仍WAL。首次初始化/create和WAL/FULL控制由永久测试保持。mode=rw不是文件系统只读，允许SQLite正常WAL协调/关闭生命周期；不宣称任意并发场景目录绝对不变。未用immutable、手动清理副文件、chmod、exclusive locking、schema或连接生命周期重构。
+- schema verification/row decoder/transaction/create/replace/CAS/idempotency/close/错误映射不变；其他Store、History/Diff/Graph测试、API/Schema/Contract未改。原002 BLOCKED/失败证据逐文件Hash保持，新ignored目录audit-002-r1-query-only-20260920T140537Z含preflight、fail-first/全部命令/源码Hash/JUnit/collection/fresh probe/diff/receipt。业务网络guard无尝试，不称OS防火墙，无真实扫描/AI/生产访问。
+- exact A06已恢复exited，docker ps为空，未remove。仍仅4个授权文件未暂存，diff check通过；未add/commit/push/merge/deploy。002 R1本地完成待Owner Review；003/004/007 integrated，009 unresolved。主控串行无子代理；精确token不可获得，6k–12k为开工估算，不能确认实耗区间，任务范围未扩大。下一步仅Owner Review，STOP。
