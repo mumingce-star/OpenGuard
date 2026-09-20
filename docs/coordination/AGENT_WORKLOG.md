@@ -2416,3 +2416,25 @@
 - **下一步与责任模型**：用户确认该 `origin` 可作为发布目的地后由 Root 推送；Sol 审核事实语义，Luna 独立复核归档来源与再分发边界，后端 A 仅消费 rows 实现最终 Report V2 snapshot/API。
 - **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration`；本地提交 `e2d8c01`，相对远端 ahead 1；无 PR/Issue，`main` 未改变。
 - **token 使用说明**：本次运行精确 token 数不可获得；开工估算 10,000～16,000，事实、草稿结构、测试与本地提交均在范围内完成；范围未扩展到最终报告或 API，唯一未完成项为受安全门禁阻止的远端推送。
+
+## 20260921-GPT5-NOTICE事实包发布
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-21 09:15（Asia/Shanghai）
+- **任务目标**：按用户“上传所有代码”授权，复核并推送当前本地领先远端的 NOTICE/许可证关系事实包及其发布记录。
+- **开始前确认**：已完整读取 README、共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支 `codex/scan-reliability-integration`、工作区、远端差异和最近提交。工作区干净；本地领先远端两个已提交变更：`e2d8c01` 和 `2f4923e`。
+- **范围与排除**：仅处理已提交的竞赛源码、测试、fixture、文档与日志；不上传构建产物、缓存、密钥、个人信息或未授权第三方内容；不直接改动 `main`。
+- **验收方法**：核对远端提交范围、执行差异格式与敏感信息检查，复核本轮相关 Maven 定向测试记录后推送，并以远端 SHA/ahead-behind 确认。
+- **token 用量估算**：3,000～6,000；系统未提供精确 token 遥测。
+## 20260921-GPT5-NOTICE事实包发布
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-21 09:22（Asia/Shanghai）
+- **任务目标与实际结果**：已将本地领先的两项提交推送到 `origin/codex/scan-reliability-integration`：`e2d8c01`（NOTICE/许可证关系事实包、fixture 与定向测试）和 `2f4923e`（其验证记录）。
+- **修改文件**：本发布动作未修改产品源码；本日志的 START/COMPLETE 记录将作为单独文档提交推送。已发布范围共含 fixture Schema/facts/说明、两项 Java fixture 测试、HF fixture 测试、第三方资源台账、进度及 AI 辅助记录。
+- **命令与测试结果**：`git diff --check origin/codex/scan-reliability-integration..HEAD` 与暂存检查通过；凭据模式扫描无命中；`mvn -o -s .mvn/settings.xml -f backend/java/pom.xml test -Dtest=HuggingFaceResourceProfileFixtureTest,NoticeLicenseFactsFixtureTest` 通过（4 tests, 0 failures, 0 errors）。
+- **接口、Schema、规则或重要决策**：仅发布内部版本化 fixture Draft，未改变公共 Domain、Assessment、API 或正式许可证/授权/合规语义；所有结论仍保持待人工核验边界。
+- **已知风险与未完成项**：`main` 仍需通过 PR 合并；完整端到端报告、公共字段审批、规则与 Bench/holdout 等门禁尚未完成。
+- **下一步与责任模型**：Root 复核本日志回执推送；Sol 审核事实语义，Luna 独立复核来源/再分发边界，后端 A 后续实现最终 Report V2 snapshot/API。
+- **关联分支、提交、PR、Issue 或 evidence_id**：远端已从 `0c87306` 前进至 `2f4923e`；本发布日志提交 SHA 将在推送后由 HEAD/远端一致性检查确认；无 PR/Issue，`main` 未改变。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 3,000～6,000，已在范围内完成检查、定向测试与推送，范围未扩大。
