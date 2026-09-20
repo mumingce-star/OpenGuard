@@ -16,6 +16,12 @@ def provenance(ref,parameters,at,producer='openguard-profile',version=ALGORITHM)
         generated_at=at,algorithm_version=ALGORITHM,parameters_hash=digest(parameters))
 
 
+def _observation_id(scan_id,resource_ref,request,value):
+    # One existing identity algorithm, shared by creation and read binding.
+    return 'obs_'+digest({'scan_id':scan_id,'resource':resource_ref,
+        'revision_mode':request.revision_mode,'algorithm':ALGORITHM,'observation':semantic(value)})
+
+
 class ProfileService:
     def __init__(self,registry,store=None,*,transport=None,parser=None):
         self.registry,self.store,self.transport,self.parser=registry,store,transport,parser
@@ -47,6 +53,23 @@ class ProfileService:
         stored=self._stored(scan_id); run=stored.run
         row=self._row(stored,resource_id); item=row['item']; ref=GraphReader._ref(stored)
         observations=self.store.observations(scan_id,resource_id,ref['facts_hash']) if self.store else []
+        if observations:
+            # Only ScanRun can supply the trusted resource/request. The sidecar
+            # checks its own rows/hashes; neither its SQL scope nor identity key
+            # alone proves that an observation belongs to this resource instance.
+            try: request=self.metadata_request(row)
+            except (MetadataError,ProfileError): raise ProfileError('upstream_unavailable') from None
+            parameters_hash=digest({'request':asdict(request),'resource':row['ref']})
+            for observation in observations:
+                sources=observation['provenance']['source_refs']
+                if (observation['provider']!=request.provider
+                    or observation['resource_identity_key']!=row['ref']['resource_identity_key']
+                    or observation['requested_revision']!=request.requested_revision
+                    or observation['source_url']!=build_target(request)
+                    or len(sources)!=1 or sources[0]['scan_id']!=scan_id or sources[0]['facts_hash']!=ref['facts_hash']
+                    or observation['provenance']['parameters_hash']!=parameters_hash
+                    or observation['observation_id']!=_observation_id(scan_id,row['ref'],request,observation)):
+                    raise ProfileError('upstream_unavailable')
         gaps=GraphReader._scan_gaps(run)
         if not observations: gaps.append('metadata_observation_unavailable')
         if item.version=='': gaps.append('identity_version_empty_normalized_to_unknown')
@@ -121,8 +144,7 @@ class ProfileService:
             content_hash=source.body_sha256,producer=dict(name='metadata-parser',version=result['parser_version']),
             provenance=provenance(ref,{'request':asdict(request),'resource':row['ref']},datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),
                 producer='metadata-parser',version=result['parser_version']),full_response_replay_available=False)
-        value['observation_id']='obs_'+digest({'scan_id':ref['scan_id'],'resource':row['ref'],
-            'revision_mode':request.revision_mode,'algorithm':ALGORITHM,'observation':semantic(value)})
+        value['observation_id']=_observation_id(ref['scan_id'],row['ref'],request,value)
         return MetadataObservation.model_validate(value).model_dump(mode='json')
 
     def refresh(self,scan_id,request):

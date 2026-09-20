@@ -165,7 +165,19 @@ class MetadataStore:
             existing=db.execute('SELECT fingerprint,job_id FROM profile_refresh_requests WHERE scan_id=? AND request_key=?',(scan_id,request.idempotency_key)).fetchone()
             if existing:
                 if existing[0]!=fp: raise ProfileError('conflict')
-                return self._job(db,scan_id,existing[1]),False
+                # Each new key creates its own job. Equal request content does
+                # not authorize sharing a job owned by another request key.
+                bindings=db.execute('SELECT scan_id,request_key,fingerprint FROM profile_refresh_requests WHERE job_id=? LIMIT 2',(existing[1],)).fetchall()
+                if bindings!=[(scan_id,request.idempotency_key,fp)]:
+                    raise ProfileError('upstream_unavailable')
+                job=self._job(db,scan_id,existing[1])
+                # A valid request fingerprint and a valid job are not enough:
+                # the persisted request row must point to this request's job.
+                if (job['facts_hash']!=request.expected_facts_hash
+                    or job['resource_ids']!=request.resource_ids
+                    or [item['resource_id'] for item in job['items']]!=job['resource_ids']):
+                    raise ProfileError('upstream_unavailable')
+                return job,False
             job=RefreshJob(job_id='prj_'+uuid4().hex,scan_id=scan_id,facts_hash=request.expected_facts_hash,
                 resource_ids=request.resource_ids,status='pending',items=[dict(resource_id=r,status='pending',observation_id=None,error_code=None) for r in request.resource_ids],
                 created_at=now(),completed_at=None,algorithm_version=ALGORITHM).model_dump(mode='json')

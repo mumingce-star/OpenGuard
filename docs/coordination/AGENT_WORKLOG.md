@@ -4771,3 +4771,33 @@
 - full之后新临时DB逐路径corruption复验7项通过；PATCH拒绝前后tasks/task_versions/derive_requests完整内容及DB字节不变，无UPDATE/INSERT/DELETE、无version2或更新时间写入，不自动修库。原动态证据和AUDIT-007回执未改；Hash绑定本轮产品/测试、未改AssessmentStore与日志增量。证据audit-004-remediation-binding-repair-20260920T113115Z含原始失败、所有命令/JUnit/collection、独立复验、diff和receipt。
 - Task ID/origin算法、正常derive/idempotency/CAS/状态/note/version append-only/superseded/cursor、Formal Assessment/ScanRun/Report V2/HTTP Contract/Schema均不改；service、其他Store及前端未修改。业务外网guard无尝试，不称OS防火墙；未扫描/AI/生产访问。exact A06容器已exited，无运行容器，未kill/remove；legacy例外不称生产安全PASS。
 - 仅4个授权tracked文件未暂存；不commit/push/merge/deploy。AUDIT-002/003/009 unresolved；AUDIT-004仅本地修复待Owner Review；AUDIT-007 integrated，其他finding不关闭。主控串行无子代理；本次运行精确token数不可获得，12k–22k仅开工估算，范围未扩大。STOP。
+
+### [20260920-1208-GPT-6-Astra-REPAIR-03-start] START — AUDIT-003 Metadata binding
+
+- fetch及clean基线确认：integration/p1本地与远端437e8bb0ad4e2ef3b1f5c7679792956a9d5f01ea；从该点新建fix/audit-003-metadata-binding。仅003A Observation/resource与先独立复现的003B request/job replay；不修改已集成004/007、Frozen DTO/Schema、seed或其他finding。
+- 授权文件profile.py、profile_store.py、test_p1_profile_backend.py（必要时owner_review测试）及两份追加日志。Terra仅负责永久测试，主控负责实现、执行和独立复核；先保留旧产品真实fail-first，复现后才修对应路径。
+- exact legacy A06 runtime仅Python3.12.14离线/受控测试，guard阻止业务外网。验收Profile/transport/acceptance/dev/004/007及原1012节点集合、新DB复验、业务表只读、Hash与回执；新ignored证据audit-003-metadata-binding-repair-20260920T120832Z。保留旧证据，最后停止exact容器。
+- 不暂存commit/push/merge/deploy，STOP待Owner Review。预计15k–25k token，精确实耗不可获得；不以估算冒充实耗。
+
+### [20260920-1222-GPT-6-Astra-REPAIR-03-complete] COMPLETE — AUDIT-003 local repair; pending Owner Review
+
+- 真实顺序：repair分支/START→永久测试→旧产品003A四项、003B三项DID NOT RAISE→保存原始log/JUnit→最小修补→新增7通过。003A含合法不同identity/instance、同identity不同fixed instance、ID及重算ID后的parameters篡改；003B真实复现同scan合法request A错误指向job B，另测job facts/items错配。两项均DYNAMIC_REPRODUCED，未以fixture或环境失败冒充产品缺陷。
+- ProfileService从权威ScanRun重建resource ref/request，核对provider/identity/revision/source URL、唯一source scan/facts、既有parameters_hash及确定性observation_id；创建和GET复用原ID表达式。Store继续SQL/hash自完整性，并在reserve现有fingerprint检查后绑定job facts/normalized resource_ids/items顺序；corruption复用upstream_unavailable/HTTP503，不静默省略、不修库。claim/finish未改，无Schema/DTO/seed/AssessmentStore/RemediationTaskStore变更。
+- Python3.12.14：新增7、Profile69、transport/ingestion145、acceptance/dev172、004/007回归186通过。完整1019 unique passed/0failed/0skipped/1原精确deselect/1原Starlette warning；逐节点原1012全保留+7，collection1013→1020。targeted不与full相加。full后3项全新临时DB独立复验通过，正常/损坏GET和失败reserve均核对三张sidecar业务表不变，无fetch/parser；ScanRun不变。
+- v1补充TestClient核验最终40GET=既有bind1+verify39，逐响应身份一致，205History/D1–D4/三档Graph/Task/Report保持，不建metadata.db、不迁移。首次探针漏bind而将39误断为40，已保留acceptance-40-get失败log/JUnit及test-design-error说明，仅修ignored探针重跑通过，不改产品或永久测试。v2现有P1–P5、9c45 refresh、9c46 empty provider、NOTICE unsupported回归保持；本轮未新启真实socket HTTP服务。
+- Observation ID/semantic/Profile ID/fingerprint/job public schema/ScanRun/Formal Assessment/authorization/Report V2/HTTP Contract/DB schema均不变。旧DYNAMIC-01及004证据未覆盖，新ignored目录audit-003-metadata-binding-repair-20260920T120832Z保留命令、Hash、失败轨迹、JUnit/collection、diff、独立probe和receipt；网络guard无外部尝试，不宣称OS防火墙或生产安全PASS，无真实扫描/AI/生产访问。
+- Terra仅编写永久测试，主控独立复核并在首跑前修正fixture字典访问、补三表断言，所有执行与结果由主控验证；选择Terra因局部绑定测试设计，不开Astra子代理。exact A06容器现为exited，docker ps为空，未remove。5个授权文件未暂存，未commit/push/merge/deploy；003本地修复待Owner Review，004/007 integrated，002/009 unresolved。精确token数不可获得，15k–25k为开工估算而非实耗，任务范围未扩大。STOP。
+
+### [20260920-1247-GPT-6-Astra-AUDIT-003-R1-start] START — Exact request-key/job ownership
+
+- Owner已PASS的003A保持profile.py Hash190695f40e86719c10ef150aff7ce9f231ca83264359d1f4f812d20a1d51a312不变；当前分支fix/audit-003-metadata-binding、HEAD437e8bb及原5个未暂存文件/Hash核验一致，旧repair和review包逐文件快照保留。
+- R1仅profile_store.py、test_p1_profile_backend.py及两份追加日志。先同normalized request/不同key永久fail-first和正常control；确认旧代码接受错误Job B后才加关系所有权检查，不改Schema/fingerprint/claim/finish或Observation。新ignored证据audit-003-r1-request-job-ownership-20260920T124717Z。
+- 复用exact legacy A06/Python3.12.14受控测试，禁止业务外网；原7项、Profile/transport/acceptance/dev/004/007、原1019节点集合、新DB独立复验后停止容器。主控串行无子代理，预计6k–12k token，精确实耗不可获得；不暂存commit/push/merge/deploy，STOP待Owner Review。
+
+### [20260920-1255-GPT-6-Astra-AUDIT-003-R1-complete] COMPLETE — R1 local repair; pending Owner Review
+
+- START后新增同normalized request/不同key两个永久测试，产品未改时control通过、corruption真实失败：旧reserve(key-a)返回Job B，日志记录实际Job ID。只改临时request A的job_id，显式验证facts/resources/items相同、Job IDs不同、B row及jobs/hashes/observations不变；保存fail-first后才修产品。
+- R1产品仅reserve新增反向SELECT job_id LIMIT2，结果必须精确等于当前(scan_id,request_key,fingerprint)单行，否则upstream_unavailable。没有合并正常同请求Job，也不自动修复/删除/新增alias。约束针对本次审查的多key同时引用损坏，不宣称能识别任意协同改写历史。003A profile.py Hash保持190695f40e86719c10ef150aff7ce9f231ca83264359d1f4f812d20a1d51a312，claim/finish、算法/DTO/Schema/Contract及已集成Store未改。
+- Python3.12.14：R1新增2通过，原003七项7通过，Profile71、acceptance/dev172、transport/ingestion145、004/007回归186通过。完整1021 unique passed/0failed/0skipped/原1精确deselect/原1Starlette warning；原1019节点零丢失+2，collection1020→1022。full后独立fresh metadata.db复验通过，两个key在错绑后均拒绝，三张业务表完整内容不变（equality assertion，非额外表Hash）。
+- 新ignored证据audit-003-r1-request-job-ownership-20260920T124717Z保留preflight/修前快照/失败/命令/源码Hash/JUnit/collection/probe/diff/receipt。旧repair和Owner Review包逐文件未变。guard无业务外网尝试，不称OS防火墙；未扫描/AI/生产操作。exact A06容器已exited，docker ps为空，未remove。
+- 本轮仅store/test和两份append-only日志新增变化；整体仍原5个未暂存授权文件，未add/commit/push/merge/deploy。003 R1本地完成待Owner Review，004/007 integrated，002/009 unresolved；主控串行无子代理。精确token实耗不可获得，6k–12k仅开工估算，范围未扩大。STOP。

@@ -252,3 +252,192 @@ def test_strict_request_and_parser_dtos(case):
             value['bounded_excerpt']+='界'
         else:value['fields']=[dict(name='license',value='' if case=='empty_value' else float('nan'),locator='/license',verification_status='pending')]
         with pytest.raises(ValidationError):ParsedMetadataObservation.model_validate(value)
+
+
+# AUDIT-003 regression fixtures deliberately use the normal synthetic ScanRun
+# persistence path.  The two selected IDs are part of add_facts' five legal
+# assets; only their valid frozen fact values differ between cases.
+def _audit003_run(e, *, same_identity=False):
+    from app.frontend_acceptance import _facts, _persist
+    from app.frontend_acceptance_profile import add_facts
+    value=_facts(30 if same_identity else 31,empty=True);add_facts(value)
+    a,b=value['ai_assets'][:2]
+    if same_identity:
+        for item,revision in ((a,'a'*40),(b,'b'*40)):
+            item.update(asset_type='model',name='synthetic/audit003-shared',version=revision,
+                source_url='https://huggingface.co/synthetic/audit003-shared')
+    else:
+        a.update(asset_type='model',name='synthetic/audit003-a',version='a'*40,
+            source_url='https://huggingface.co/synthetic/audit003-a')
+        b.update(asset_type='dataset',name='synthetic/audit003-b',version='b'*40,
+            source_url='https://huggingface.co/datasets/synthetic/audit003-b')
+    run=_persist(e.registry,value,'completed');e.run=run
+    return run,a['id'],b['id']
+
+
+def _audit003_rows(path,*tables):
+    import sqlite3
+    with sqlite3.connect(f'file:{path}?mode=ro',uri=True) as db:
+        return {table:db.execute(f'SELECT * FROM {table} ORDER BY rowid').fetchall() for table in tables}
+
+
+def _audit003_rejects_corrupt_get(e,resource_id,business_before):
+    from app.p1.profile_store import ProfileError
+    calls=e.profile.transport.calls
+    sidecar_before=_audit003_rows(e.path/'metadata.db','metadata_observations','profile_refresh_jobs','profile_refresh_requests')
+    def forbidden(*args,**kwargs): raise AssertionError('corrupt GET must not fetch or parse')
+    e.profile.transport.fetch=forbidden;e.profile.parser.parse=forbidden
+    with pytest.raises(ProfileError) as error:e.profile.get(e.run.id,resource_id)
+    assert error.value.code=='upstream_unavailable'
+    response=e.client.get(f'/api/v1/scans/{e.run.id}/resources/{resource_id}/profile')
+    assert response.status_code==503 and response.json()['error']['code']=='upstream_unavailable'
+    assert e.profile.transport.calls==calls
+    assert _audit003_rows(e.path/'scans.db','scan_runs')==business_before
+    assert _audit003_rows(e.path/'metadata.db',*sidecar_before)==sidecar_before
+
+
+@pytest.mark.parametrize('same_identity',[False,True],ids=['different_identity_and_instance','same_identity_different_instance'])
+def test_audit003a_resource_id_rebinding_fails_closed_for_resource_identity_and_instance(profile_env,same_identity):
+    import sqlite3
+    e=profile_env;run,a_id,b_id=_audit003_run(e,same_identity=same_identity)
+    stored=e.profile._stored(run.id)
+    a_ref=e.profile._row(stored,a_id)['ref'];b_ref=e.profile._row(stored,b_id)['ref']
+    assert a_id!=b_id and a_ref['resource_instance_key']!=b_ref['resource_instance_key']
+    assert (a_ref['resource_identity_key']==b_ref['resource_identity_key']) is same_identity
+    e.profile.refresh(run.id,request_for(e,key='audit003a',ids=[a_id]))
+    sidecar_before=_audit003_rows(e.path/'metadata.db','metadata_observations','profile_refresh_jobs','profile_refresh_requests')
+    assert len(e.profile.get(run.id,a_id)['metadata_observations'])==1
+    assert e.profile.get(run.id,b_id)['metadata_observations']==[]
+    assert _audit003_rows(e.path/'metadata.db',*sidecar_before)==sidecar_before
+    business_before=_audit003_rows(e.path/'scans.db','scan_runs')
+    with sqlite3.connect(e.path/'metadata.db') as db:
+        db.execute('UPDATE metadata_observations SET resource_id=? WHERE scan_id=? AND resource_id=?',(b_id,run.id,a_id))
+    moved=_audit003_rows(e.path/'metadata.db',*sidecar_before)
+    assert moved['profile_refresh_jobs']==sidecar_before['profile_refresh_jobs']
+    assert moved['profile_refresh_requests']==sidecar_before['profile_refresh_requests']
+    old=sidecar_before['metadata_observations'][0];new=moved['metadata_observations'][0]
+    assert old[:2]+old[3:]==new[:2]+new[3:] and (old[2],new[2])==(a_id,b_id)
+    _audit003_rejects_corrupt_get(e,b_id,business_before)
+
+
+@pytest.mark.parametrize('tamper',['observation_id','parameters_hash'])
+def test_audit003a_observation_id_and_request_parameters_binding_fail_closed(profile_env,tamper):
+    import sqlite3
+    from app.p1.profile_store import ALGORITHM,canonical,digest,semantic
+    e=profile_env;run,a_id,_=_audit003_run(e)
+    e.profile.refresh(run.id,request_for(e,key='audit003a-binding',ids=[a_id]))
+    observation=e.profile.get(run.id,a_id)['metadata_observations'][0]
+    old_id=observation['observation_id']
+    if tamper=='observation_id':
+        observation['observation_id']='obs_'+'f'*64
+    else:
+        observation['provenance']['parameters_hash']='0'*64
+        row=e.profile._row(e.profile._stored(run.id),a_id)
+        observation['observation_id']='obs_'+digest({'scan_id':run.id,'resource':row['ref'],
+            'revision_mode':e.profile.metadata_request(row).revision_mode,'algorithm':ALGORITHM,
+            'observation':semantic(observation)})
+    data=canonical(observation).decode()
+    business_before=_audit003_rows(e.path/'scans.db','scan_runs')
+    with sqlite3.connect(e.path/'metadata.db') as db:
+        db.execute('UPDATE metadata_observations SET observation_id=?,observation_json=?,observation_hash=?,semantic_hash=? WHERE observation_id=?',
+            (observation['observation_id'],data,digest(observation),digest(semantic(observation)),old_id))
+    _audit003_rejects_corrupt_get(e,a_id,business_before)
+
+
+def _audit003_replay_requests(e):
+    run,a_id,b_id=_audit003_run(e)
+    request_a=request_for(e,key='audit003b-a',ids=[a_id])
+    request_b=request_for(e,key='audit003b-b',ids=[b_id])
+    job_a,created_a=e.profile.store.reserve(run.id,request_a)
+    job_b,created_b=e.profile.store.reserve(run.id,request_b)
+    assert created_a and created_b
+    assert e.profile.store.reserve(run.id,request_a)==(job_a,False)
+    assert e.profile.store.reserve(run.id,request_b)==(job_b,False)
+    return run,a_id,b_id,request_a,request_b,job_a,job_b
+
+
+def test_audit003b_request_replay_cannot_be_rebound_to_other_legal_job(profile_env):
+    import sqlite3
+    from app.p1.profile_store import ProfileError
+    e=profile_env;run,_,_,request_a,_,job_a,job_b=_audit003_replay_requests(e)
+    baseline=_audit003_rows(e.path/'metadata.db','metadata_observations','profile_refresh_jobs','profile_refresh_requests')
+    with sqlite3.connect(e.path/'metadata.db') as db:
+        db.execute('UPDATE profile_refresh_requests SET job_id=? WHERE scan_id=? AND request_key=?',
+            (job_b['job_id'],run.id,request_a.idempotency_key))
+    before=_audit003_rows(e.path/'metadata.db','metadata_observations','profile_refresh_jobs','profile_refresh_requests')
+    assert before['metadata_observations']==baseline['metadata_observations']
+    assert before['profile_refresh_jobs']==baseline['profile_refresh_jobs']
+    assert [r[:3] for r in before['profile_refresh_requests']]==[r[:3] for r in baseline['profile_refresh_requests']]
+    with pytest.raises(ProfileError) as error:e.profile.store.reserve(run.id,request_a)
+    assert error.value.code=='upstream_unavailable'
+    assert _audit003_rows(e.path/'metadata.db','metadata_observations','profile_refresh_jobs','profile_refresh_requests')==before
+    assert job_a['job_id']!=job_b['job_id'] and job_a['resource_ids']!=job_b['resource_ids']
+
+
+@pytest.mark.parametrize('tamper',['facts_hash','items'])
+def test_audit003b_replay_rejects_legal_hashed_job_fact_and_item_inconsistency(profile_env,tamper):
+    import sqlite3
+    from app.p1.profile_models import RefreshJob
+    from app.p1.profile_store import ProfileError,canonical,digest
+    e=profile_env;run,_,b_id,request_a,_,job_a,_=_audit003_replay_requests(e)
+    job=deepcopy(job_a)
+    if tamper=='facts_hash': job['facts_hash']='0'*64
+    else: job['items']=[dict(resource_id=b_id,status='pending',observation_id=None,error_code=None)]
+    job=RefreshJob.model_validate(job).model_dump(mode='json')
+    with sqlite3.connect(e.path/'metadata.db') as db:
+        db.execute('UPDATE profile_refresh_jobs SET job_json=?,job_hash=? WHERE job_id=?',
+            (canonical(job).decode(),digest(job),job['job_id']))
+    before=_audit003_rows(e.path/'metadata.db','metadata_observations','profile_refresh_jobs','profile_refresh_requests')
+    with pytest.raises(ProfileError) as error:e.profile.store.reserve(run.id,request_a)
+    assert error.value.code=='upstream_unavailable'
+    assert _audit003_rows(e.path/'metadata.db','metadata_observations','profile_refresh_jobs','profile_refresh_requests')==before
+
+
+def _audit003r1_same_request_jobs(e):
+    a=request_for(e,key='audit003-r1-a',ids=[e.run.ai_assets[0].id])
+    b=request_for(e,key='audit003-r1-b',ids=a.resource_ids)
+    assert a.expected_facts_hash==b.expected_facts_hash
+    assert a.resource_ids==b.resource_ids
+    assert a.model_dump(exclude={'idempotency_key'})==b.model_dump(exclude={'idempotency_key'})
+    ja,created=e.profile.store.reserve(e.run.id,a);assert created
+    jb,created=e.profile.store.reserve(e.run.id,b);assert created
+    assert ja['job_id']!=jb['job_id']
+    assert ja['facts_hash']==jb['facts_hash'] and ja['resource_ids']==jb['resource_ids']
+    assert [i['resource_id'] for i in ja['items']]==[i['resource_id'] for i in jb['items']]
+    assert e.profile.store.reserve(e.run.id,a)==(ja,False)
+    assert e.profile.store.reserve(e.run.id,b)==(jb,False)
+    return a,b,ja,jb
+
+
+def test_audit003r1_same_request_different_keys_keep_distinct_jobs(profile_env):
+    e=profile_env;a,b,ja,jb=_audit003r1_same_request_jobs(e)
+    before=_audit003_rows(e.profile.store.path,'metadata_observations','profile_refresh_jobs','profile_refresh_requests')
+    assert e.profile.store.reserve(e.run.id,b)==(jb,False)
+    assert e.profile.store.reserve(e.run.id,a)==(ja,False)
+    assert _audit003_rows(e.profile.store.path,*before)==before
+
+
+def test_audit003r1_same_request_different_keys_cannot_cross_bind_jobs(profile_env):
+    import sqlite3
+    from app.p1.profile_store import ProfileError
+    e=profile_env;a,b,ja,jb=_audit003r1_same_request_jobs(e)
+    baseline=_audit003_rows(e.profile.store.path,'metadata_observations','profile_refresh_jobs','profile_refresh_requests')
+    with sqlite3.connect(e.profile.store.path) as db:
+        db.execute('PRAGMA foreign_keys=ON')
+        assert db.execute('UPDATE profile_refresh_requests SET job_id=? WHERE scan_id=? AND request_key=?',
+            (jb['job_id'],e.run.id,a.idempotency_key)).rowcount==1
+    before=_audit003_rows(e.profile.store.path,*baseline)
+    assert before['metadata_observations']==baseline['metadata_observations']
+    assert before['profile_refresh_jobs']==baseline['profile_refresh_jobs']
+    for old,new in zip(baseline['profile_refresh_requests'],before['profile_refresh_requests']):
+        assert old[:3]==new[:3]
+        if old[1]==a.idempotency_key:assert old[3]==ja['job_id'] and new[3]==jb['job_id']
+        else:assert new==old and new[1]==b.idempotency_key
+    try:
+        result=e.profile.store.reserve(e.run.id,a)
+    except ProfileError as error:
+        assert error.code=='upstream_unavailable'
+    else:
+        assert result==(jb,False)
+        pytest.fail('old code accepted Job B for key-a: '+jb['job_id'])
+    assert _audit003_rows(e.profile.store.path,*before)==before
