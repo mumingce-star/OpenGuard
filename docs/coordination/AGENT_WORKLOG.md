@@ -2403,3 +2403,16 @@
 - **开始前确认**：已读取根 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、工作区和最近提交。当前工作区保留上一轮未提交的 Resource Profile 测试及台账增量，本轮不覆盖其内容。已确认根项目存在 `LICENSE`、不存在根 `NOTICE`；本机固定 Maven artifacts 中存在 Jackson/Spring Boot Apache LICENSE+NOTICE、Hamcrest BSD-3-Clause LICENSE 和 Mockito MIT LICENSE，可作为本轮真实来源观察。
 - **验收方法**：验证 JSON Schema 与实例；复算根 LICENSE、已提交 HF 快照及本地可用 Maven archive/entry SHA-256；断言三类 subject、Apache/MIT/BSD 演示、gap、稳定排序、唯一 ID、Report V2 rows 引用闭包和不产生最终法律结论；运行定向 Maven、`git diff --check` 与敏感信息检查。
 - **token 用量估算**：10,000～16,000（系统未提供精确 token 遥测）。
+
+## 20260921-0106-GPT5-NOTICE许可证关系事实包
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B 许可证来源事实与 Report V2 草稿数据）
+- **日期时间**：2026-09-21 01:17（Asia/Shanghai）
+- **任务目标与实际结果**：事实与草稿数据已全部生成：`openguard.notice-license-facts/1` 覆盖根项目 1 条、依赖 4 条、AI 资源 3 条，提供 10 条哈希绑定 Evidence、LICENSE/NOTICE/copyright 关系、稳定 gap code 及 8 条 Report V2 七字段 rows。Apache NOTICE 使用 Jackson/Spring Boot 固定归档真实条目；MIT/BSD 署名分别使用 Mockito/Hamcrest 固定归档真实条目。未生成最终 Report V2 snapshot、持久化或下载 API。
+- **修改或新增文件**：新增 `tests/fixtures/notice-license-facts-v1/{schema.json,facts.json,README.md}` 和 `NoticeLicenseFactsFixtureTest.java`；同步发布上一轮未提交的 `HuggingFaceResourceProfileFixtureTest.java`；更新 `third_party/README.md`、PROJECT_PROGRESS、AI 辅助记录与本日志。未修改公共 Domain/Assessment/API 或生产报告代码。
+- **命令与测试结果**：JSON 解析通过；定向 `NoticeLicenseFactsFixtureTest` 2/2 通过，完整复算根 LICENSE、HF fixture、4 个 Maven archive 和 6 个归档 entry SHA-256，并验证 Schema、唯一 ID、引用闭包、三类 subject、Apache/MIT/BSD、gap 与所有正式表达式为空。全量 Maven 共 24 项，其中本轮及其他非 Bench 测试 11 项通过；既有 `BenchManifestServiceTest` 13 项均在 Windows JUnit 临时目录清理时报 `AccessDeniedException`，0 个业务断言失败。`git diff --check` 和敏感信息检查通过。
+- **接口、Schema、规则或重要决策**：Schema 是 fixture 内部版本化 Draft，不是公共 P0/P1/Report V2 API。所有 `license_expression_id=null`、`review_status=pending_human_review`、`compliance_status=待核验`；缺失证据不得被默认值补全。后端 A 可直接读取 `report_v2_rows`，但快照/API 由其负责。
+- **已知风险与未完成项**：正式许可证表达式、义务与合规结论仍待规则和人工核验；根 NOTICE/copyright、AI 原文/NOTICE/copyright 等 gap 如实保留。代码与数据已本地提交为 `e2d8c01`，但 `git push origin codex/scan-reliability-integration` 因当前远端未在本轮明确确认为可信目的地而被安全审查拒绝，故 GitHub 发布门禁未关闭，状态为 PARTIAL。
+- **下一步与责任模型**：用户确认该 `origin` 可作为发布目的地后由 Root 推送；Sol 审核事实语义，Luna 独立复核归档来源与再分发边界，后端 A 仅消费 rows 实现最终 Report V2 snapshot/API。
+- **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration`；本地提交 `e2d8c01`，相对远端 ahead 1；无 PR/Issue，`main` 未改变。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 10,000～16,000，事实、草稿结构、测试与本地提交均在范围内完成；范围未扩展到最终报告或 API，唯一未完成项为受安全门禁阻止的远端推送。

@@ -312,7 +312,7 @@ Java 真实扫描产物仅用于本机验收，未纳入 Git；当前分支未�
 
 | 工作包 | 状态 | 本轮交付 | 未关闭门禁 | 责任与 GitHub 状态 |
 | --- | --- | --- | --- | --- |
-| 三类许可证来源事实 | 本地完成 | 根项目 1 条、依赖 4 条、AI 资源 3 条；统一记录 LICENSE/NOTICE/copyright 来源、hash、locator、短摘录、关系状态和 gap | 事实包尚未接公共 Domain/API；正式许可证表达式与合规结论仍须规则/人工复核 | Root 实现；未提交/推送，`main` 未改变 |
+| 三类许可证来源事实 | 本地完成 | 根项目 1 条、依赖 4 条、AI 资源 3 条；统一记录 LICENSE/NOTICE/copyright 来源、hash、locator、短摘录、关系状态和 gap | 事实包尚未接公共 Domain/API；正式许可证表达式与合规结论仍须规则/人工复核 | Root 实现；本地提交 `e2d8c01`，远端信任确认门禁阻止推送，`main` 未改变 |
 | 真实义务演示输入 | 本地完成 | Jackson/Spring Boot Apache LICENSE+NOTICE；Hamcrest BSD copyright/保留条件；Mockito MIT copyright/许可声明；均绑定固定 Maven archive 与 entry SHA-256 | 只证明归档观察，不自动推导最终分发义务 | 后端 B 事实输入；Sol 待审核语义 |
 | Report V2 草稿输入 | 本地完成 | `openguard.notice-license-facts/1` 内部 Draft 2020-12 Schema 与 8 条可直接消费 rows，七组附件字段齐全，状态统一“待核验” | 不包含最终 Report V2 snapshot、持久化或下载 API | 后端 A 后续只读消费；本轮不代建 API |
 
