@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openguard.invalid/schema/draft/notice-license-facts-v1.json",
+  "title": "OpenGuard NOTICE and license relationship facts draft",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "package_status", "observed_at", "evidence", "facts", "report_v2_rows"],
+  "properties": {
+    "schema_version": {"const": "openguard.notice-license-facts/1"},
+    "package_status": {"const": "draft_facts_only"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+    "facts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fact"}},
+    "report_v2_rows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/reportRow"}}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.:-]{2,127}$"},
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "kind", "locator", "content_sha256", "excerpt", "verification"],
+      "properties": {
+        "evidence_id": {"$ref": "#/$defs/id"},
+        "kind": {"enum": ["repository_file", "archive_entry", "provider_snapshot"]},
+        "locator": {"type": "string", "minLength": 1},
+        "source_url": {"type": ["string", "null"], "format": "uri"},
+        "content_sha256": {"$ref": "#/$defs/sha256"},
+        "container_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "excerpt": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "verification": {"enum": ["repository_bytes_verified", "archive_bytes_verified", "fixture_bytes_verified"]}
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "evidence_ids", "gap_code"],
+      "properties": {
+        "state": {"enum": ["observed", "gap"]},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "gap_code": {"type": ["string", "null"], "pattern": "^[A-Z][A-Z0-9_]{2,63}$"}
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fact_id", "subject", "license_observations", "relationships", "gaps", "review_status"],
+      "properties": {
+        "fact_id": {"$ref": "#/$defs/id"},
+        "subject": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["category", "canonical_id", "display_name", "version", "source_url", "usage_scope"],
+          "properties": {
+            "category": {"enum": ["root_project", "dependency", "ai_resource"]},
+            "canonical_id": {"type": "string", "minLength": 1},
+            "display_name": {"type": "string", "minLength": 1},
+            "version": {"type": ["string", "null"]},
+            "source_url": {"type": ["string", "null"], "format": "uri"},
+            "usage_scope": {"enum": ["project", "runtime", "test", "model", "dataset"]}
+          }
+        },
+        "license_observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["raw_value", "observation_kind", "evidence_ids", "license_expression_id"],
+            "properties": {
+              "raw_value": {"type": ["string", "array", "null"], "items": {"type": "string"}},
+              "observation_kind": {"enum": ["license_text_heading", "provider_declared_raw", "missing"]},
+              "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+              "license_expression_id": {"type": "null"}
+            }
+          }
+        },
+        "relationships": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["license", "notice", "copyright"],
+          "properties": {
+            "license": {"$ref": "#/$defs/relationship"},
+            "notice": {"$ref": "#/$defs/relationship"},
+            "copyright": {"$ref": "#/$defs/relationship"}
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$"}
+        },
+        "review_status": {"const": "pending_human_review"}
+      }
+    },
+    "reportRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["row_id", "subject_fact_id", "resource_name_and_type", "version_and_source", "license_or_authorization", "usage_or_open_mode", "key_obligations_or_restrictions", "team_modifications", "compliance_status", "evidence_ids", "gap_codes"],
+      "properties": {
+        "row_id": {"$ref": "#/$defs/id"},
+        "subject_fact_id": {"$ref": "#/$defs/id"},
+        "resource_name_and_type": {"type": "string", "minLength": 1},
+        "version_and_source": {"type": "string", "minLength": 1},
+        "license_or_authorization": {"type": "string", "minLength": 1},
+        "usage_or_open_mode": {"type": "string", "minLength": 1},
+        "key_obligations_or_restrictions": {"type": "string", "minLength": 1},
+        "team_modifications": {"type": "string", "minLength": 1},
+        "compliance_status": {"const": "待核验"},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "gap_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$"}}
+      }
+    }
+  }
+}

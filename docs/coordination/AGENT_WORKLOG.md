@@ -2366,8 +2366,40 @@
 - **下一步与责任模型**：Root 提交并推送当前任务分支；项目负责人裁决 CR；批准后 Terra、Luna、Sol 分别按职责实施与复核。
 - **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；提交 SHA、推送回执将在下一条 AMENDMENT 记录补充；`main` 不直接改动。
 - **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，已在该范围内完成验证、暂存和发布准备，范围未扩大。
+
+## 20260920-1822-GPT5-HF真实ResourceProfile数据包
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B 资源证据与可复现数据）
+- **日期时间**：2026-09-20 18:36（Asia/Shanghai）
+- **任务目标与实际结果**：建立 `resource-profile-v1` 离线数据包：5 个官方 Hugging Face model、5 个 dataset 的最小脱敏固定快照，外加 3 个明确为合成的失败关闭反例。每条真实记录以 manifest 关联 canonical ID、revision、provider、visibility、gated、disabled、原始许可证声明、RFC 6901 JSON Pointer 和源文件 SHA-256；所有真实/反例记录均为 `authorization_status=pending` 和 `license_expression_id=null`。
+- **修改或新增文件**：新增 `tests/fixtures/huggingface/resource-profile-v1/`（10 个真实快照、3 个反例、manifest、README）与 `backend/java/src/test/java/dev/openguard/scan/HuggingFaceResourceProfileFixtureTest.java`；更新 `third_party/README.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 和本日志。未修改 P0/P1 Schema、公共 API、正式许可证规则、现有 Java Draft 或服务。
+- **命令与测试结果**：官方 API 仅在采集阶段读取最小字段；本地 14 个 JSON 解析及 13 个记录 SHA-256 复算通过；`mvn -o -s .mvn/settings.xml -f backend/java/pom.xml test -Dtest=HuggingFaceResourceProfileFixtureTest` 为 2/2 通过；`git diff --check` 通过；新增文件的凭据模式扫描无命中。
+- **接口、Schema、规则或重要决策**：本包是 fixture/manifest，不是公共 Schema 或 metadata transport。`declared_license_raw` 只保留 provider 原始声明；`NOASSERTION`、`other`、顶层/card 冲突、可见性、gate、revision 和 API 成功都不得自动写入正式许可证表达式、授权或合规结论。
+- **已知风险与未完成项**：快照仅代表固定采集时刻的最小元数据，远端可变；未核验资源权属、再分发权或许可证文本。CR-20260920-bp1-public-field-approval 尚待负责人裁决，故不进入公共 P1、Gold、Detector、正式 Evidence materialization 或线上元数据传输。共享工作区同时存在发布协调任务；本记录不覆盖其暂存/提交/推送范围。
+- **下一步与责任模型**：Luna 对快照/反例做独立回归和可再分发复核；项目负责人裁决 CR；获批后 Terra 接入离线 parser/materializer，Sol 审核公共语义，Root 复核发布。
+- **关联分支、提交、PR、Issue 或 evidence_id**：分支 `codex/scan-reliability-integration`；本数据包任务未独立提交或推送，`main` 未改变。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 8,000～14,000，数据采集、fixture、文档与定向验证均在范围内完成，范围未扩大。
 ## 20260920-GPT5-ResourceProfile代码发布回执
 - **状态**：AMENDMENT
 - **作者与角色**：GPT-5（Root Coordinator / 发布协调）
 - **日期时间**：2026-09-20 18:38 CST
 - **更正/补充内容**：上一条 COMPLETE 所述发布已实际完成：提交 `23fae26`（`feat(scan): add resource profile draft fixtures`）已推送到 `origin/codex/scan-reliability-integration`，远端从 `a6e1f8b` 前进至 `23fae26`。本回执将单独提交、推送，确保发布日志本身也被远端保留；`main` 仍未直接改动。
+
+## 20260920-GPT5-ResourceProfile代码发布后续状态
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / 发布协调）
+- **日期时间**：2026-09-20 18:40 CST
+- **任务目标与实际结果**：已将本轮开始时已暂存并验证的 30 个有效文件提交、推送，远端分支现为 `0c87306f5d75` 且与本地 HEAD 同步（ahead/behind=`0/0`）。最终检查发现推送后工作区存在此前未暂存的新增或修改：`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md`、`third_party/README.md`、`backend/java/src/test/java/dev/openguard/scan/HuggingFaceResourceProfileFixtureTest.java`。
+- **处置与风险**：依照仓库“仅处理暂存区内容、不得提交未暂存文件”的协作约束，未读取、未暂存、未提交、未推送上述四项，避免覆盖或误发布并发/用户工作；`output/` 已由 `/output/` 忽略规则明确排除。
+- **下一步与责任模型**：待这些文件的作者完成自检并明确暂存后，由 Root 按同一验证门禁进行独立提交推送；当前已推送部分保持可追溯，不改动 `main`。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 6,000～10,000，已在范围内完成已暂存范围的验证、提交和推送；由于检测到新增未暂存工作，发布范围按仓库规则缩小，未擅自扩大。
+
+## 20260921-0106-GPT5-NOTICE许可证关系事实包
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B 许可证来源事实与 Report V2 草稿数据）
+- **日期时间**：2026-09-21 01:06（Asia/Shanghai）
+- **任务目标**：按用户要求建立根项目、依赖和 AI 资源三类 NOTICE/许可证/copyright 关系事实包；提供 Apache NOTICE、MIT/BSD 署名真实演示条目，将未知或缺证据项显式标为 gap，并给出 Report V2 可直接消费的稳定版本化草稿结构。
+- **预计修改文件**：新增 `tests/fixtures/notice-license-facts-v1/` 的草稿 Schema、来源观察、事实和 Report V2 rows；新增 Java 只读契约测试；追加 `docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 和本日志。保留上一任务未提交文件，不修改公共 Domain/Assessment/API，不生成最终 Report V2 快照或下载 API。
+- **开始前确认**：已读取根 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、工作区和最近提交。当前工作区保留上一轮未提交的 Resource Profile 测试及台账增量，本轮不覆盖其内容。已确认根项目存在 `LICENSE`、不存在根 `NOTICE`；本机固定 Maven artifacts 中存在 Jackson/Spring Boot Apache LICENSE+NOTICE、Hamcrest BSD-3-Clause LICENSE 和 Mockito MIT LICENSE，可作为本轮真实来源观察。
+- **验收方法**：验证 JSON Schema 与实例；复算根 LICENSE、已提交 HF 快照及本地可用 Maven archive/entry SHA-256；断言三类 subject、Apache/MIT/BSD 演示、gap、稳定排序、唯一 ID、Report V2 rows 引用闭包和不产生最终法律结论；运行定向 Maven、`git diff --check` 与敏感信息检查。
+- **token 用量估算**：10,000～16,000（系统未提供精确 token 遥测）。

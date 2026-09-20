@@ -141,3 +141,15 @@
 - 使用 AI 辅助汇总既有 Bench 2.0、人工标注和 Draft 契约，形成公开仓库候选选择原则、治理流程、FN/FP taxonomy 与公共字段批准清单。
 - 人工仍须完成候选仓库的固定 commit、权利/再分发筛查、独立标注、holdout 签收、字段批准和最终发布复核；AI 未联网确认任何仓库状态，未作许可证、授权或合规结论。
 - 产物：`docs/spec/b-p1-06-bench-public-corpus-governance.md`。
+
+## 2026-09-20：Hugging Face Resource Profile 真实固定快照包
+
+- AI 在用户明确授权下通过 Hugging Face 公开 API 读取 5 个 model 与 5 个 dataset 的最小元数据字段，并将必要字段固化为脱敏、本地可校验的 JSON snapshot；未下载模型权重、数据集内容、完整卡片、凭据或账户信息。
+- AI 仅整理 canonical ID、revision、provider、visibility、gated、disabled 与原始声明许可证值，并为每个字段记录 JSON Pointer 和本地源文件 SHA-256。`NOASSERTION`、`other` 和互相冲突的声明被保留为反例，未自动标准化为 SPDX 或正式许可证表达式。
+- 所有条目均显式为 `authorization_status=pending`、`license_expression_id=null`；本轮未判断访问权、再分发权、授权、许可证有效性或合规性。Java 离线回归 2/2 通过，验证哈希、Pointer 与 fail-closed 边界。
+
+## 2026-09-21：NOTICE 与许可证关系事实包
+
+- AI 协助把本地可复算来源整理为版本化事实：根 `LICENSE`、固定 Maven archives 中的 LICENSE/NOTICE/copyright 条目，以及既有 Hugging Face 最小快照中的 provider 原始声明。没有联网下载新的第三方内容，也没有执行被扫描项目代码。
+- 真实演示条目包括 Jackson Databind 与 Spring Boot 的 Apache NOTICE、Hamcrest 的 BSD-3-Clause copyright/保留条件、Mockito 的 MIT copyright/许可声明。所有摘录均绑定 archive SHA-256、entry SHA-256 与 locator。
+- AI 只生成 `openguard.notice-license-facts/1` 草稿 facts 和 Report V2 rows；全部 `license_expression_id=null`、`review_status=pending_human_review`、`compliance_status=待核验`。未知、未观察或缺证据均以 gap code 保留；不生成最终报告快照、下载 API、授权或法律结论。

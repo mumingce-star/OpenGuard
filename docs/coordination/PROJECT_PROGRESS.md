@@ -297,3 +297,23 @@ Java 真实扫描产物仅用于本机验收，未纳入 Git；当前分支未�
 | 公开仓库候选与治理 | 设计完成 | 新增选择/排除原则、10 个候选、真人审查、holdout、amendment、FN/FP taxonomy 和公共字段批准边界 | 候选尚未固定 commit、未完成权利筛查、fixture、gold、独立审查、holdout 评测或字段批准 | Luna / Sol / Terra / 真人 reviewer / Root | 本轮未提交或推送 |
 
 该规范只提供可审查的设计输入，不构成公开仓库已纳入、许可证/授权通过、双人独立质量或可报告指标的声明。
+
+## 2026-09-20：Hugging Face Resource Profile 真实固定快照包
+
+| 工作包 | 状态 | 本轮交付 | 未关闭门禁 | 责任与 GitHub 状态 |
+| --- | --- | --- | --- | --- |
+| HF 真实最小元数据快照 | 本地完成 | `tests/fixtures/huggingface/resource-profile-v1/` 固定 5 个 model、5 个 dataset 的官方 API 最小脱敏响应；每条记录登记 canonical ID、revision、provider、visibility、gated、disabled 与原始许可证声明的 JSON Pointer、源文件 SHA-256 和 Evidence 映射 | 远端资源可变；本包仅证明 2026-09-20 的固定观察，不证明当前远端状态、可用性、权属或再分发权 | Root 实现；未提交/推送，`main` 未改变 |
+| 失败关闭反例 | 本地完成 | 分离标注 3 个合成负例：缺失 revision/许可证、冲突声明许可证、`NOASSERTION`/`gated="auto"`；未冒充为远端事实 | 尚未接入 public P1 Schema、Gold 或 detector；公共字段批准仍待负责人裁决 | Root 实现；待 Luna 独立扩展回归 |
+| 可复现性校验 | 本地完成 | Java 定向测试核验 10/3 数量、所有 JSON、每个 source SHA、字段 Pointer、`authorization=pending` 与 `license_expression_id=null` | Maven 全量 Windows 临时目录清理问题仍与本包无关；本轮不宣称全量绿灯 | `HuggingFaceResourceProfileFixtureTest` 2/2 通过 |
+
+该数据包只保留 provider 的原始声明，明确禁止把 `NOASSERTION`、`other`、`private=false`、`gated=false`、revision 或成功采集自动转换为正式许可证表达式、授权状态或合规结论。
+
+## 2026-09-21：NOTICE 与许可证关系事实包
+
+| 工作包 | 状态 | 本轮交付 | 未关闭门禁 | 责任与 GitHub 状态 |
+| --- | --- | --- | --- | --- |
+| 三类许可证来源事实 | 本地完成 | 根项目 1 条、依赖 4 条、AI 资源 3 条；统一记录 LICENSE/NOTICE/copyright 来源、hash、locator、短摘录、关系状态和 gap | 事实包尚未接公共 Domain/API；正式许可证表达式与合规结论仍须规则/人工复核 | Root 实现；未提交/推送，`main` 未改变 |
+| 真实义务演示输入 | 本地完成 | Jackson/Spring Boot Apache LICENSE+NOTICE；Hamcrest BSD copyright/保留条件；Mockito MIT copyright/许可声明；均绑定固定 Maven archive 与 entry SHA-256 | 只证明归档观察，不自动推导最终分发义务 | 后端 B 事实输入；Sol 待审核语义 |
+| Report V2 草稿输入 | 本地完成 | `openguard.notice-license-facts/1` 内部 Draft 2020-12 Schema 与 8 条可直接消费 rows，七组附件字段齐全，状态统一“待核验” | 不包含最终 Report V2 snapshot、持久化或下载 API | 后端 A 后续只读消费；本轮不代建 API |
+
+本事实包将根 NOTICE/copyright 缺失、AI NOTICE/copyright/许可证原文未观察到、`other` 未解析等情况作为稳定 gap 输出；不会以空字符串或默认许可证掩盖证据缺口。
