@@ -7,9 +7,27 @@
 
 - `run_json_tool` 仅使用参数数组调用已安装的工具：禁用 shell、标准输入为 `/dev/null` 等价物、标准错误不采集、默认 120 秒超时、输出上限 8 MiB，并把缺失、超时和失败转换为稳定错误码。
 - 适配层不接收 `ReadOnlyScanSession` 的工作目录。该会话只授予可信、非执行式 parser 逐文件读取能力；若暴露目录给任意子进程会破坏 A2-2 的安全边界。
-- ScanCode 与 Syft 均通过 `ZipIngestionService.ingest_with_tree_consumer` 接入受控 ZIP 物化阶段：仅在 POSIX 环境把只读目录描述符继承给固定子进程，并以子进程自己的 `/proc/self/fd/<n>` 作为输入；扫描前后均校验 inventory seal。工具失败只能产生 partial/error，不得伪造 pass。通用 A4 编排、ScanRun partial/error 映射与 Linux ZIP 端到端回归仍未接入。
+- A4 ZIP 编排器复用 A2 已物化并封印的树，通过可信 fd 回调执行固定 ScanCode/Syft 命令，不重复物化，不向 parser 暴露目录。工具失败保留已有事实并生成脱敏 ScanError，以 partial 收口。
 - ScanCode 只生成带相对 locator 的 `Evidence(kind=license_text)` 和原始许可证候选字符串。B4 才能将候选标准化为 `LicenseExpression`。
-- Syft 只在 artifact 含有相对位置证据时生成 `Component`；不猜测许可证、版本或来源 URL。真实 Syft 1.51.0 回归使用公开 npm lockfile fixture；Windows 直接目录输出的根相对反斜杠会在测试专用直接目录模式规范化，生产 ZIP 描述符模式仍只接受 `/proc/self/fd/<n>/...` 前缀。
+- Syft 只在 artifact 含有相对位置证据时生成 `Component`；不猜测许可证、版本或来源 URL。
 - `merge_components` 按 PURL、否则 `(ecosystem,name,version)` 合并，保留全部证据和检测方法。元数据冲突清空冲突字段并产生诊断，置信度取保守最小值。
 
-ScanCode 调用固定为 `--license --strip-root --json -`，因此输出 locator 与 ZIP inventory 使用同一相对路径空间。工具版本由部署配置固定并写入运行 provenance；本仓库不打包 ScanCode 或 Syft 的二进制文件。
+工具版本由部署配置固定并写入运行 provenance；本仓库不打包 ScanCode 或 Syft 的二进制文件。
+
+## 真实 ZIP 接线（2026-09-05）
+
+runner 增量读取 stdout，最多 8 MiB 加一个判定字节；超时、超限和退出均清理进程组并回收直接子进程。ScanCode 以受控 fd 目录为 cwd 扫描 `.`，返回文件集合须覆盖 inventory。Syft 根相对路径只在 source 精确匹配受控目标时接受，最终均须对应 inventory。Evidence.content_hash 绑定封印文件 SHA。
+
+A4 保留 manifest Component ID 和许可证声明绑定，给精确匹配组件追加 Syft 证据。ScanCode 文件候选单独标准化并保持 pending，不将根 LICENSE 分给依赖。无声明组件为 NOASSERTION。默认开关关闭，Compose 启用；工具不完整时保留可用事实并返回 partial/report/95。公开 Schema、API、worker 和 B5 规则语义不变。
+
+## 2026-09-07：ScanCode大仓库实测预算
+
+openai-python固定revision `be928151372e4b62adb4a1571cda52ad759b38be`有1953文件，原120秒超时；固定原命令在受控诊断中约280秒返回554174字节，无scan_errors，另有3个既有VCS排除文件需按原流程补扫。ScanCode编排现共享360秒总deadline，主扫描与补扫扣同一预算，8MiB输出总限额不变。低层工具默认120秒、Syft120秒、Git获取120秒不变；扫描子进程仍禁网、单进程、2CPU/4GiB、受控fd和只读目录。超时继续清理进程组，不绕过安全隔离或改写失败结果。
+
+## 2026-09-10：同任务补扫初始化复用
+
+实测固定Flask/openai-python均需补扫3个VCS相关文件，原来各起一个ScanCode进程，合计约10.7秒。仅当使用Compose固定的`/opt/scancode/venv/bin/scancode`且遗漏文件为2–8个时，改为一个任务私有的固定Python子进程顺序调用原单文件CLI，复用模块和许可证索引初始化；仍逐文件扫描并核对原路径、SHA、scan_errors和整树覆盖。零个、一个或非固定工具路径保留原行为。无跨任务缓存，无多文件目录扫描替代单文件补扫。
+
+解释器使用`-I`隔离目标目录和用户site导入，静态程序不拼接仓库文本。沿用禁网沙箱、只读fd、私有临时目录、共享360秒deadline和8MiB累计原始输出上限。任意CLI失败/异常、输出少一份/多一份/截断、路径或Hash不符均拒绝整组补扫输出，不接受成功前缀。外层仍清理进程组。
+
+本机三轮前后三条件结果和失败记录见本机`output/scanner-v3-evidence/`；此路径不是发布包。两个三文件补扫样例的补扫中位数约10.7→3.66秒，整树扫描和单文件补扫未提速。源码候选验证不等于运行容器已更新，也不代表HTTP、浏览器或Windows验收通过。

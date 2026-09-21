@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Mapping
 
 from app.detectors import detect_ai_assets
+from app.detectors.static_assets import _PRODUCER
 
 
 def _load_case(path: str | Path) -> Mapping[str, Any]:
@@ -47,7 +49,8 @@ def run_case_file(path: str | Path) -> dict[str, Any]:
             "assets": asset_json,
             "evidence": [item.model_dump(mode="json") for item in evidence],
         })
-    return {"version": document["version"], "scanner": "openguard-static-ai-detector/0.1.0", "cases": results}
+    return {"version": document["version"], "scanner": f"{_PRODUCER.name}/{_PRODUCER.version}",
+            "case_sha256": hashlib.sha256(Path(path).read_bytes()).hexdigest(), "cases": results}
 
 
 def write_result(case_path: str | Path, result_path: str | Path) -> dict[str, Any]:

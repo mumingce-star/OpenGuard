@@ -1,3 +1,17 @@
+> **2026-09-12 Benchmark-only 迁移说明**
+>
+> 本目录来自 `codex/scan-reliability-integration@c9dcbad633431328545a2ac6ab8d1a4e2ab3125a`，只用于离线标注与评测，不进入 Formal Assessment。
+> 下文与原 JSON 中的指标统一属于 **historical artifact metrics（历史产物指标）**，不是最新版 Detector 的 live performance。
+> 本次使用 `integration/p0` 基线的 `benchmarks/evaluate.py`，只对既存 expected/predicted 重算：9 个 case，TP=11、FP=8、FN=39，Precision=0.5789473684210527、Recall=0.22、F1=0.3188405797101449，与历史数值一致。
+> 历史 predicted 来自 Node 对旧版正则的复现；本次没有运行 Detector、重新取得固定源码或再次核验原始 Evidence。
+> 12 条人工/AI辅助标注只有一名真人，R05补充确认不增加复核人数；另一个9-case召回率gold仅有AI标注。全部许可证结论仍为 uncertain，不是 VERIFIED License。
+> 源目录原始 JSON、人工确认和修订记录保持字节不变；下文“当前”“本轮”均指2026-09-11历史记录。重算结果、文件摘要及边界见 [migration-receipt.json](migration-receipt.json)。
+>
+> 复算方式（仓库根目录执行）：
+> `PYTHONDONTWRITEBYTECODE=1 python3 -c 'from benchmarks.evaluate import evaluate_scan_result; print(evaluate_scan_result("benchmarks/annotations/real-resource-20260911-ai-assisted/real-source-recall-v1.json"))'`
+
+---
+
 # 12条扫描结果AI辅助初标
 
 作者：GPT-6；日期：2026-09-11；状态：第一位真人已确认原初标及R05后续修订；第二名独立真人复核仍未完成。

@@ -361,7 +361,8 @@ def parse_javascript_manifests(session: ReadOnlyScanSession) -> JavascriptManife
             if len(values) > 1:
                 chosen = values[0]
                 evidence = tuple(sorted({draft for item in values for draft in item.evidence}, key=lambda item: (item.field_locator.encode("utf-8"), item.content_sha256, item.excerpt.encode("utf-8"))))
-                code = "dependency_duplicate" if len(selectors) == 1 else "dependency_declaration_conflict"
+                resolutions = {(item.resolved_version, item.resolved_url) for item in values}
+                code = "dependency_duplicate" if len(selectors) == 1 and len(resolutions) == 1 else "dependency_declaration_conflict"
                 field = next(field for field, scope in _FIELDS if scope is chosen.scope)
                 diagnostics.append(_diag(code, chosen.source_manifest, _locator(chosen.source_manifest, field, chosen.declared_name)))
                 if code == "dependency_declaration_conflict":

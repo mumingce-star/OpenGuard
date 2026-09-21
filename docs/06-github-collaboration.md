@@ -1,5 +1,11 @@
 # GitHub 三人协作方案
 
+## 2026-09-06 分支归并
+
+450b8eb累计验收链已通过保留历史的PR #3汇入integration/p0，PR #2也已合并，main仍等待P0里程碑。用户明确授权后，43个无独有提交的项目负责人历史远端分支已删除；GitHub当前只保留main、integration/p0、扫描组员codex/p0-external-tools-sync和前端组员feat/xzb-frontend。PR #1继续使用前端组员分支。merge保留原提交和下方恢复SHA；未force push或修改仓库设置。
+
+异机继续固定450b8ebe3381a6a27ca333ed78c9a7ad572ba65b，该提交仍可从integration/p0追溯。以后复用integration/p0作为开发入口，任务合入后清理本人短分支，不为发布记录反复开新分支。清理只删除分支引用，不删除提交历史；本文件末尾保留恢复SHA。
+
 ## 仓库目标
 
 GitHub 仓库用于三名成员共享代码、通过 Pull Request 审查变更，并为竞赛形成可核验的提交、测试和开放成果记录。
@@ -20,7 +26,8 @@ GitHub 仓库用于三名成员共享代码、通过 Pull Request 审查变更�
 ### General
 
 - 默认分支：`main`；
-- 功能开发使用分支和 Pull Request；
+- `integration/p0` 作为当前团队开发集成入口；成员从它创建一个短生命周期任务分支，并通过 Pull Request 合回 `integration/p0`；
+- `main` 只接收通过完整里程碑验收的 `integration/p0` Pull Request，不直接承接日常功能提交；
 - 合并方式保留 `Squash merging`，关闭不需要的合并方式以保持历史清晰；
 - 合并后自动删除 head branch；
 - Issues 开启，用于缺陷和任务追踪；
@@ -38,6 +45,8 @@ GitHub 仓库用于三名成员共享代码、通过 Pull Request 审查变更�
 - 禁止 force push；
 - 禁止删除 `main`；
 - 负责人也遵守规则，紧急修复需留下可核验记录。
+
+对 `integration/p0` 建立较轻量规则：禁止 force push和删除，要求 Pull Request、解决讨论，并在状态检查稳定后要求后端测试与前端构建通过。组员现有分支在本人完成迁移前保留；Root 只清理已经被 `integration/p0` 完整包含且没有独有提交的项目负责人历史任务分支。
 
 ### Security
 
@@ -77,3 +86,47 @@ GitHub 仓库用于三名成员共享代码、通过 Pull Request 审查变更�
 - 确认 README、LICENSE、SECURITY、CONTRIBUTING 和第三方资源说明；
 - 运行基础测试；
 - 先查看 `git status` 和待提交文件，再创建首个提交。
+
+| Historical branch | Preserved commit |
+|---|---|
+| docs/a3-a4-durable-zip-spec | `16cd7d4865a27a6a6401e8b629e0d13ae592be32` |
+| docs/a7-browser-download-handoff | `15b12eca42522a0dd0e1180ed7fedfe0842836c3` |
+| docs/a8-runtime-resource-audit | `079b14c7917ef791015ef9cbbf851e220021f29b` |
+| docs/p0-first-product-gap-check | `d640ef4dafc77ccb2b5cd52468973e4c244e3c37` |
+| feat/a2-public-git-egress | `280ad02e309483fecc428d23b44041f253ab7781` |
+| feat/a2-readonly-scan-session | `9b70ba6de88812d9228ee85e3a28c54710bd22be` |
+| feat/a2-zip-cli-demo | `33cd336eebbee3cdda714cddc5f2c36a0fbfce9e` |
+| feat/a2-zip-ingestion | `693c7c4797a5e39c8e1d33e438e2d6819851db6a` |
+| feat/a3-durable-scan-registry | `7ca289de4dfe644856f09afc099da4e73e0a55f7` |
+| feat/a3-durable-zip-storage | `2368d91120a72e7bb474ddacfcb72743b9aa02b1` |
+| feat/a3-fastapi-api | `37b25c140efcdad2e9bd47c6fe6e89713a6f41a5` |
+| feat/a3-zip-background-scan | `dcebda71f2d63e0ff46b90d1721b86b4d2a817ac` |
+| feat/a3-zip-dispatcher-recovery | `5679113088f980b5ec73f385679348a064df24af` |
+| feat/a4-ai-asset-report | `6ac399817f2753547285b8a7cfa82d8ae5f9fa9d` |
+| feat/a4-b5-rule-integration | `048c16787dbb213a9dd2c9af76bb5be2bd3e4e83` |
+| feat/a4-local-zip-pipeline | `bce04fe0ca89665894b6221e0894efdd35f2b1be` |
+| feat/a4-pipeline-worker | `ed91e34dcecf056656d0a4b3e40d5b1ddd8840bc` |
+| feat/a4-real-zip-scanners | `6a832f3300ab0752d724b7dd4e1105ff818f40a8` |
+| feat/a4-zip-license-report | `8318f883cc8cd3d1e6c44ba650c4c6eb04f3c91a` |
+| feat/a5-ai-provider | `ee700d9b94e1d2cce86ade22ff0020a10849076a` |
+| feat/a5-pipeline-integration | `1ba14aff6894aabdd25f4491688df5d7b852e95a` |
+| feat/a6-download-csp-fix | `d9a6aca60a6924a394b2345c684f35b3047afe13` |
+| feat/a6-pipeline-publish | `ec57e57273652b0a21feba3f4d53ab4064255f3c` |
+| feat/a6-report-delivery | `6de6671fe211dad99c28606833a245a8a9a70674` |
+| feat/a6-report-export-core | `682c9ed146cf4a5122e6adf9c4d6230fc11062b9` |
+| feat/a7-minimal-compose | `2dc451d901f59ff055faa0826f82c015af3ee189` |
+| feat/a7-public-git-deploy-acceptance | `341dc348670a558fae35d699b204e4d927f898fb` |
+| feat/a7-public-zip-qwen-acceptance | `be1b4f43a7fcec3e5b2c424065b119270f64a458` |
+| feat/a7-simple-web | `a1a710f8c05d7830b745f8f5b2f3b201ec95bd1c` |
+| feat/a8-scanner-bench-acceptance | `0dcca3947bdd942fa5b308e3f856a305abe61983` |
+| feat/b1-js-manifest-p0-cli | `3985385c7e2aef6ccd6e9b2f0570519cbdbf95f6` |
+| feat/b1-p0-mapper-cli | `380b896cf2b3e0efa4f1f39a450d36f2f32bdfa7` |
+| feat/b1-python-manifest-parser | `d57ea4033a41f2e45334a8011dc866445dd4496f` |
+| feat/p0-domain-contract | `1d77a511c23391fc77ee651dd6387a45a0ddb1b1` |
+| feat/s0-s2-design-gates | `0b7e4b72f734a39c126c1c6f387868837d9a5c24` |
+| fix/a2-nofile-limit | `780536bdf47ed55d8e6c228b284344e46f36f16e` |
+| fix/a2-scanner-no-network | `d38f897616ade0d933a4e8274a6173d5a67479ff` |
+| fix/a2-workspace-disk-limit | `872b2f1b46fbca30529fd5c6142c88fc69ed2e6a` |
+| fix/a7-api-cpu-limit | `1d11d0192c3ef421b098a324e47e6dae2923a5cc` |
+| fix/a7-api-python-lock | `1b5bb6bb9f680d138f313fd80d8362955b1533f3` |
+| fix/a7-debian-git-pin | `39d062ab20acb949a3d7f9b5eb7dbe52520d92c5` |

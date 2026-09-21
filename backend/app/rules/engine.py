@@ -30,6 +30,7 @@ from app.domain.models import (
     Severity,
     VerificationStatus,
 )
+from app.licenses import parse_license_expression
 
 
 _NAMESPACE = uuid.UUID("5c8e3f3c-9811-5feb-9ec5-2c6ae7c90c6e")
@@ -191,14 +192,36 @@ def evaluate(
     evidence_by_id = {item.id: item for item in evidence}
     if len(evidence_by_id) != len(evidence):
         raise ValueError("duplicate evidence id")
+    missing_evidence_ids = sorted(set(license_expression.evidence_ids) - set(evidence_by_id))
     source_evidence = [evidence_by_id[item] for item in license_expression.evidence_ids if item in evidence_by_id]
     source_ids = [item.id for item in source_evidence]
+    if missing_evidence_ids:
+        finding = _finding(
+            resource_kind=resource_kind, resource_id=resource_id, outcome=FindingOutcome.UNKNOWN,
+            severity=Severity.INFO, title="License evidence references are incomplete",
+            rule_id="license-evidence-integrity", rule_version=selected.version,
+            trigger="Missing referenced evidence: " + ", ".join(missing_evidence_ids),
+            evidence_ids=source_ids, confidence=0.0,
+        )
+        return RuleEvaluationResult((), (finding,), ())
+    parsed = parse_license_expression(license_expression.expression)
+    normalized = set(license_expression.normalized_ids)
+    if (parsed.supported and set(parsed.normalized_ids) != normalized) or (
+        not parsed.supported and bool(normalized)
+    ):
+        finding = _finding(
+            resource_kind=resource_kind, resource_id=resource_id, outcome=FindingOutcome.UNKNOWN,
+            severity=Severity.INFO, title="License expression facts are inconsistent",
+            rule_id="license-expression-integrity", rule_version=selected.version,
+            trigger="The expression and normalized license identifiers do not agree",
+            evidence_ids=source_ids, confidence=0.0,
+        )
+        return RuleEvaluationResult((), (finding,), ())
     verified = (
         license_expression.verification_status is VerificationStatus.VERIFIED
         and bool(source_evidence)
         and all(item.verification_status is VerificationStatus.VERIFIED for item in source_evidence)
     )
-    normalized = set(license_expression.normalized_ids)
     matching = [rule for rule in selected.rules if normalized.intersection(rule.license_ids)]
     if not verified:
         finding = _finding(
@@ -213,14 +236,32 @@ def evaluate(
             evidence_ids=(), confidence=0.0,
         )
         return RuleEvaluationResult((), (finding,), ())
-    if not matching:
-        finding = _finding(
+    covered_ids = {license_id for rule in matching for license_id in rule.license_ids if license_id in normalized}
+    uncovered_ids = sorted(normalized - covered_ids)
+    uncovered_labels = uncovered_ids or (
+        [license_expression.expression] if not matching else []
+    )
+    coverage_finding = _finding(
             resource_kind=resource_kind, resource_id=resource_id, outcome=FindingOutcome.UNKNOWN,
             severity=Severity.INFO, title="No rule for normalized license", rule_id="license-rule-coverage",
-            rule_version=selected.version, trigger="No loaded rule matches the verified normalized license identifier",
+            rule_version=selected.version,
+            trigger="No loaded rule matches: " + ", ".join(uncovered_labels),
+            evidence_ids=source_ids, confidence=0.0,
+        ) if uncovered_labels else None
+    if "OR" in parsed.operators:
+        choice_finding = _finding(
+            resource_kind=resource_kind, resource_id=resource_id, outcome=FindingOutcome.REVIEW_REQUIRED,
+            severity=Severity.INFO, title="A license choice is required before evaluating obligations",
+            rule_id="license-choice-required", rule_version=selected.version,
+            trigger="Choose one verified branch of the OR expression before applying license obligations",
             evidence_ids=source_ids, confidence=0.0,
         )
-        return RuleEvaluationResult((), (finding,), ())
+        findings = (choice_finding,) + ((coverage_finding,) if coverage_finding else ())
+        return RuleEvaluationResult((), findings, ())
+    if not matching:
+        if coverage_finding is None:
+            raise AssertionError("missing coverage finding")
+        return RuleEvaluationResult((), (coverage_finding,), ())
 
     obligations: list[Obligation] = []
     findings: list[RiskFinding] = []
@@ -247,4 +288,6 @@ def evaluate(
         findings.append(finding.model_copy(update={"remediation_id": remediation_id}))
         obligations.append(obligation)
         remediations.append(remediation)
+    if coverage_finding is not None:
+        findings.append(coverage_finding)
     return RuleEvaluationResult(tuple(obligations), tuple(findings), tuple(remediations))

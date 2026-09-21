@@ -47,6 +47,7 @@ class DependencyScope(str, Enum):
     RUNTIME = "runtime"
     OPTIONAL = "optional"
     BUILD = "build"
+    DEVELOPMENT = "development"
 
 
 class DependencySourceKind(str, Enum):
@@ -371,7 +372,32 @@ def _pyproject(text: str, path: str, sha256: str) -> tuple[list[PythonDependency
         diagnostics.append(_diag("manifest_field_invalid", path, "build-system", severity="error")); build = {}
     if isinstance(build, dict): fields.append((build.get("requires", []), DependencyScope.BUILD, None, "build-system.requires"))
     tool = document.get("tool", {})
-    if "dependency-groups" in document or (isinstance(tool, dict) and any(key in tool for key in ("poetry", "pdm", "hatch"))):
+    groups = document.get("dependency-groups", {})
+    if not isinstance(groups, dict):
+        diagnostics.append(_diag("manifest_field_invalid", path, "dependency-groups", severity="error"))
+    else:
+        seen_groups: set[str] = set()
+        for name, values in groups.items():
+            if not re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?", name):
+                diagnostics.append(_diag("manifest_field_invalid", path, "dependency-groups", severity="error")); continue
+            group = canonicalize_name(name)
+            if group in seen_groups:
+                diagnostics.append(_diag("manifest_field_invalid", path, "dependency-groups", severity="error")); continue
+            seen_groups.add(group)
+            if not isinstance(values, list):
+                diagnostics.append(_diag("manifest_field_invalid", path, "dependency-groups", severity="error")); continue
+            # Includes need separate provenance; do not guess or expand them.
+            if any(not isinstance(value, str) for value in values):
+                diagnostics.append(_diag("pyproject_tool_table_unsupported", path, "dependency-groups"))
+            for index, value in enumerate(values):
+                if not isinstance(value, str):
+                    continue
+                locator = f"dependency-groups.{quote(name, safe='A-Za-z0-9._-')}[{index}]"
+                declaration, diagnostic = _parse_requirement(value, path=path, locator=locator, start=None, end=None, sha256=sha256, scope=DependencyScope.DEVELOPMENT, group=group)
+                if diagnostic: diagnostics.append(diagnostic)
+                elif declaration: parsed.append(declaration)
+    hatch = tool.get("hatch", {}) if isinstance(tool, dict) else {}
+    if isinstance(tool, dict) and (any(key in tool for key in ("poetry", "pdm")) or (isinstance(hatch, dict) and "envs" in hatch)):
         diagnostics.append(_diag("pyproject_tool_table_unsupported", path, "tool"))
     for values, scope, group, field in fields:
         if not isinstance(values, list) or any(not isinstance(item, str) for item in values):

@@ -1,0 +1,421 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:common:1.0",
+  "$defs": {
+    "ScanRef": {
+      "type": "object",
+      "properties": {
+        "scan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "facts_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "input_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "inventory_hash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "completed",
+            "partial",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "registry_revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "scan_id",
+        "revision",
+        "facts_hash",
+        "input_hash",
+        "inventory_hash",
+        "status",
+        "registry_revision"
+      ],
+      "additionalProperties": false
+    },
+    "AssessmentRef": {
+      "type": "object",
+      "properties": {
+        "assessment_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "facts_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "usage_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "rule_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "formal": {
+          "const": true
+        }
+      },
+      "required": [
+        "assessment_id",
+        "version",
+        "scan_id",
+        "facts_hash",
+        "usage_hash",
+        "rule_version",
+        "formal"
+      ],
+      "additionalProperties": false
+    },
+    "EvidenceRef": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "namespace": {
+              "const": "scan"
+            },
+            "scan_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "namespace",
+            "scan_id",
+            "evidence_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "namespace": {
+              "const": "profile_observation"
+            },
+            "observation_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "namespace",
+            "observation_id"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ResourceRef": {
+      "type": "object",
+      "properties": {
+        "scan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource_kind": {
+          "enum": [
+            "component",
+            "ai_asset"
+          ]
+        },
+        "resource_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource_identity_key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resource_instance_key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scan_id",
+        "resource_kind",
+        "resource_id",
+        "resource_identity_key",
+        "resource_instance_key"
+      ],
+      "additionalProperties": false
+    },
+    "Producer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "Provenance": {
+      "type": "object",
+      "properties": {
+        "producer": {
+          "$ref": "#/$defs/Producer"
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScanRef"
+          }
+        },
+        "assessment_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AssessmentRef"
+          }
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "algorithm_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameters_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "producer",
+        "source_refs",
+        "assessment_refs",
+        "generated_at",
+        "algorithm_version",
+        "parameters_hash"
+      ],
+      "additionalProperties": false
+    },
+    "TaskRef": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "task_id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "NoticeRef": {
+      "type": "object",
+      "properties": {
+        "draft_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "draft_id",
+        "content_hash"
+      ],
+      "additionalProperties": false
+    },
+    "AlgorithmRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "graph",
+            "profile"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "version",
+        "content_hash"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "scan_ref": {
+          "$ref": "#/$defs/ScanRef"
+        },
+        "assessment_ref": {
+          "$ref": "#/$defs/AssessmentRef"
+        },
+        "task_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TaskRef"
+          }
+        },
+        "notice_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NoticeRef"
+          }
+        },
+        "algorithm_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AlgorithmRef"
+          }
+        }
+      },
+      "required": [
+        "scan_ref",
+        "assessment_ref",
+        "task_refs",
+        "notice_refs",
+        "algorithm_refs"
+      ],
+      "additionalProperties": false
+    },
+    "SourcePointer": {
+      "type": "object",
+      "properties": {
+        "scan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pointer": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      },
+      "required": [
+        "scan_id",
+        "pointer"
+      ],
+      "additionalProperties": false
+    },
+    "SnapshotSection": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "enum": [
+            "scan_facts",
+            "formal_assessment",
+            "workflow",
+            "observation",
+            "ai_explanation"
+          ]
+        },
+        "schema_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "snapshot_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "authority",
+        "schema_version",
+        "source_ids",
+        "content_hash",
+        "snapshot_ref"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "description": "P1 V1 structural values only; not a runtime model. Cross-object integrity rules are in the contract."
+}

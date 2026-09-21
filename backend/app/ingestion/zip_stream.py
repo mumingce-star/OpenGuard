@@ -5,7 +5,8 @@ from __future__ import annotations
 import os
 import threading
 import zipfile
-from dataclasses import dataclass
+import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import BinaryIO, Callable, TypeVar
 
@@ -22,6 +23,7 @@ from app.ingestion.zip_preflight import VerifiedZipMember, preflight_zip
 from app.security.errors import IngestionSecurityError
 from app.security.limits import ZipExtractionBudget, ZipSafetyLimits
 from app.security.secure_dir import SecureWorkspace
+from app.work_progress import observe as observe_work_progress
 
 
 _CHUNK_SIZE = 64 * 1024
@@ -32,29 +34,30 @@ T = TypeVar("T")
 
 @dataclass
 class TrustedTreeScan:
-    """Short-lived descriptor target for a code-owned external scanner."""
+    """Code-owned scanner descriptor, separate from the parser capability.
+
+    Adapted from the team's f8bedfd candidate. The caller owns and expires
+    this descriptor inside the existing A2 integrity/cleanup lifecycle.
+    """
 
     _directory_fd: int
     _active: bool = True
+    _thread: int = field(default_factory=threading.get_ident)
 
     def proc_target(self) -> str:
-        if not self._active or os.name != "posix":
+        if not self._active or threading.get_ident() != self._thread or sys.platform != "linux":
             raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
         return f"/proc/self/fd/{self._directory_fd}"
 
     @property
     def inherited_fds(self) -> tuple[int, ...]:
-        if not self._active:
-            raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+        self.proc_target()
         return (self._directory_fd,)
 
     def close(self) -> None:
         if self._active:
             self._active = False
-            try:
-                os.close(self._directory_fd)
-            except OSError as error:
-                raise IngestionSecurityError("scanner_failed", "scan_file_read_failed") from error
+            os.close(self._directory_fd)
 
 
 class ZipIngestionService:
@@ -107,6 +110,7 @@ class ZipIngestionService:
         consumer: Callable[[ReadOnlyScanSession], T],
         *,
         read_limits: ScanReadLimits | None = None,
+        tree_consumer: Callable[[TrustedTreeScan, Inventory], object] | None = None,
     ) -> ScanSessionResult[T]:
         """Run one trusted synchronous consumer before the task tree is removed."""
         if getattr(self._consumer_local, "active", False):
@@ -128,9 +132,12 @@ class ZipIngestionService:
         recovery_failure: IngestionSecurityError | None = None
         inventory: Inventory | None = None
         try:
+            observe_work_progress(5, "正在接收压缩包")
             _materialize_archive(workspace, archive_stream, self.limits)
+            observe_work_progress(25, "压缩包已安全物化")
             snapshot = build_inventory_snapshot(workspace, _TREE_PARTS)
             inventory = snapshot.inventory
+            observe_work_progress(30, "文件清单已建立")
 
             def validate() -> None:
                 validate_inventory_snapshot(workspace, snapshot)
@@ -140,6 +147,18 @@ class ZipIngestionService:
             self._consumer_local.active = True
             try:
                 result = consumer(session)
+                observe_work_progress(40, "依赖清单解析已完成")
+                if tree_consumer is not None:
+                    validate()
+                    tree = TrustedTreeScan(workspace.open_directory(_TREE_PARTS))
+                    try:
+                        tree_consumer(tree, inventory)
+                    finally:
+                        try:
+                            tree.close()
+                        except OSError:
+                            self._poison()
+                            raise IngestionSecurityError("scanner_failed", "scan_file_read_failed") from None
             except BaseException as error:
                 primary = error
             finally:
@@ -173,44 +192,6 @@ class ZipIngestionService:
         finally:
             if session is not None:
                 session._expire()
-            self._workspaces.cleanup(workspace)
-
-
-    def ingest_with_tree_consumer(
-        self, archive_stream: BinaryIO, consumer: Callable[[TrustedTreeScan, Inventory], T]
-    ) -> ScanSessionResult[T]:
-        """Run one code-owned external scanner over the sealed tree.
-
-        The callback receives a descriptor-backed `/proc/self/fd` target, never
-        an attacker-controlled host path. Inventory seals are checked before
-        and after the scanner; mutations fail closed before workspace cleanup.
-        """
-        if getattr(self._consumer_local, "active", False):
-            raise IngestionSecurityError("scanner_failed", "scan_session_reentrant")
-        self._ensure_usable()
-        workspace = self._workspaces.create()
-        tree: TrustedTreeScan | None = None
-        try:
-            _materialize_archive(workspace, archive_stream, self.limits)
-            snapshot = build_inventory_snapshot(workspace, _TREE_PARTS)
-            validate_inventory_snapshot(workspace, snapshot)
-            tree = TrustedTreeScan(workspace.open_directory(_TREE_PARTS))
-            self._consumer_local.active = True
-            try:
-                result = consumer(tree, snapshot.inventory)
-            except IngestionSecurityError:
-                raise
-            except Exception as error:
-                raise IngestionSecurityError("scanner_failed", "external_scanner_failed") from error
-            finally:
-                self._consumer_local.active = False
-                tree.close()
-                tree = None
-            validate_inventory_snapshot(workspace, snapshot)
-            return ScanSessionResult(inventory=snapshot.inventory, consumer_result=result)
-        finally:
-            if tree is not None:
-                tree.close()
             self._workspaces.cleanup(workspace)
 
 
@@ -309,7 +290,11 @@ def _stream_member(
 def _write_all(file_descriptor: int, data: bytes) -> None:
     view = memoryview(data)
     while view:
-        written = os.write(file_descriptor, view)
-        if written <= 0:
-            raise OSError("short write")
+        try:
+            written = os.write(file_descriptor, view)
+            if written <= 0:
+                raise OSError("short write")
+        except OSError as error:
+            # Destination failures are infrastructure errors, not corrupt ZIPs.
+            raise IngestionSecurityError("scanner_failed", "workspace_write_failed") from error
         view = view[written:]

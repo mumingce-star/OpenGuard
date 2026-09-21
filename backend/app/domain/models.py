@@ -9,6 +9,7 @@ from typing import ClassVar, Literal
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from app.domain.usage import UsageDeclaration
 
 
 CONTRACT_VERSION = "0.1.1"
@@ -240,6 +241,7 @@ class Project(P0Model):
     source: str = Field(min_length=1, max_length=2048)
     revision: str | None = None
     root_digest: HashValue | None = None
+    usage: UsageDeclaration | None = Field(default=None, exclude_if=lambda value: value is None)
     created_at: datetime
 
     @field_validator("id")

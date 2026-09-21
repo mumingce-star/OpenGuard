@@ -508,3 +508,9 @@ scope: verified-local-trusted-consumer-parser
 Root 在提交前最终复跑：Terra unit `40 passed`，Luna 独立 `63 passed`，全量 `278 passed`，P0/Schema/sample `46 passed`，`schema_export_equal=true`，compileall 与 `git diff --check` 通过。真实内存 ZIP 通过 `ZipIngestionService.ingest_with_consumer()` 两次运行逐字段相等，候选读取顺序恰为 `pyproject.toml`、`requirements.txt` 且各一次，输出 `pydantic`、`requests`、`setuptools` 三项、零诊断；未执行目标代码、安装目标依赖或联网。
 
 该绑定把候选状态提升为上述本地开发纵切证据，不改变第 16.1 节及各历史 BLOCKED 记录，也不证明跨平台、产品级或任何已列非目标能力。
+
+## 2026-09-07：公开 SDK 的静态开发依赖兼容
+
+为修复 openai-python 的实测遗漏，内部 B1 DTO 增加 `DependencyScope.DEVELOPMENT=development`，字符串形式的 `dependency-groups.<name>[index]` 复用既有 PEP 508 解析与证据Hash，group按名称标准化并与runtime/optional/build隔离。P0 mapper接受该locator并检查scope/group一致；HTTP Schema没有新增字段。依据 [PyPA Dependency Groups](https://packaging.python.org/en/latest/specifications/dependency-groups/)：这类声明用于开发环境，不能归作发布包的运行依赖。
+
+本次只支持静态字符串项；include-group等字典项、非法名称、重复规范化名称及非数组仍明确partial，不执行构建/安装或猜测展开。Hatch仅有build/metadata设置不会直接触发依赖遗漏；Hatch envs、Poetry/PDM与动态依赖仍保持未支持提示。此节替代第4节对所有dependency-groups和Hatch表一概降级的旧行为，是有界兼容扩展；不宣称完整支持所有Python依赖格式。

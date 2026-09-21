@@ -52,6 +52,7 @@ PYTHON_P0_NAMESPACE = uuid.UUID("7d857170-1410-582b-a296-bb0fc9a9f057")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 _REQ_LOCATOR = re.compile(r"^(?:project\.dependencies|build-system\.requires)\[(\d+)]$")
 _OPTIONAL_LOCATOR = re.compile(r"^project\.optional-dependencies\.((?:[A-Za-z0-9._-]|%[0-9A-F]{2})+)\[(\d+)]$")
+_GROUP_LOCATOR = re.compile(r"^dependency-groups\.([A-Za-z0-9._-]+)\[(\d+)]$")
 _NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 _SENSITIVE = re.compile(r"(?i)(?:api[_-]?key|secret|token|password)\s*[=:]")
 _DIAGNOSTIC_SEVERITY = {
@@ -66,7 +67,7 @@ _DIAGNOSTIC_SEVERITY = {
     "dependency_multiple_constraints": "warning",
 }
 _PYPROJECT_DIAGNOSTIC_LOCATOR = re.compile(
-    r"^(?:project|project\.dynamic|project\.dependencies|project\.optional-dependencies(?:\.[A-Za-z0-9._%\-]+)?|build-system|build-system\.requires|tool)$"
+    r"^(?:project|project\.dynamic|project\.dependencies|project\.optional-dependencies(?:\.[A-Za-z0-9._%\-]+)?|build-system|build-system\.requires|tool|dependency-groups)$"
 )
 
 
@@ -155,7 +156,7 @@ def _locator(draft: ManifestEvidenceDraft, manifest: ParsedManifest) -> str:
         if draft.start_line is not None or draft.end_line is not None or not isinstance(draft.field_locator, str):
             raise _error()
         optional = _OPTIONAL_LOCATOR.fullmatch(draft.field_locator)
-        if not (_REQ_LOCATOR.fullmatch(draft.field_locator) or optional):
+        if not (_REQ_LOCATOR.fullmatch(draft.field_locator) or optional or _GROUP_LOCATOR.fullmatch(draft.field_locator)):
             raise _error()
         if optional:
             encoded_group = optional.group(1)
@@ -207,6 +208,7 @@ def _diagnostic_valid(item: ParserDiagnostic, manifests: dict[str, ParsedManifes
         _PYPROJECT_DIAGNOSTIC_LOCATOR.fullmatch(item.field_locator)
         or _REQ_LOCATOR.fullmatch(item.field_locator)
         or _OPTIONAL_LOCATOR.fullmatch(item.field_locator)
+        or _GROUP_LOCATOR.fullmatch(item.field_locator)
     ):
         raise _error()
 
@@ -247,8 +249,8 @@ def _dependency_valid(declaration: PythonDependencyDeclaration, manifests: dict[
         or type(declaration.scope) is not DependencyScope
         or type(declaration.source_kind) is not DependencySourceKind
         or declaration.group is not None and (type(declaration.group) is not str or not _NAME.fullmatch(declaration.group) or canonicalize_name is None or canonicalize_name(declaration.group) != declaration.group)
-        or declaration.scope is DependencyScope.OPTIONAL and not declaration.group
-        or declaration.scope is not DependencyScope.OPTIONAL and declaration.group is not None
+        or declaration.scope in (DependencyScope.OPTIONAL, DependencyScope.DEVELOPMENT) and not declaration.group
+        or declaration.scope not in (DependencyScope.OPTIONAL, DependencyScope.DEVELOPMENT) and declaration.group is not None
         or type(declaration.hashes) is not tuple
         or any(type(item) is not str or not _SHA256.fullmatch(item) for item in declaration.hashes)
         or tuple(declaration.hashes) != tuple(sorted(set(declaration.hashes)))
@@ -312,6 +314,10 @@ def _dependency_valid(declaration: PythonDependencyDeclaration, manifests: dict[
                 optional is None or canonicalize_name is None or canonicalize_name(unquote(optional.group(1))) != declaration.group
             ):
                 raise _error()
+            if declaration.scope is DependencyScope.DEVELOPMENT:
+                group = _GROUP_LOCATOR.fullmatch(draft.field_locator)
+                if group is None or canonicalize_name(group.group(1)) != declaration.group:
+                    raise _error()
     if declaration.source_manifest != min((draft.manifest_path for draft in declaration.evidence), key=lambda value: value.encode("utf-8")):
         raise _error()
 

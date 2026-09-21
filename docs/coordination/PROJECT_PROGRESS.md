@@ -1,108 +1,68 @@
 # OpenGuard 项目进度台账
 
-## 2026-09-10 23:05 诊断记录发布
-
-用户授权将此前仅保存在本地的Docker状态更正、扫描耗时分析、B4–B7/前端核查上传GitHub。Root仅发布本进度、共享日志及AI记录三份文档到codex/scan-reliability-integration；目标分支fetch后与本地基线82c16d1一致。产品代码与main不变，测试失败和人工待验门禁保留；提交及推送回执追加于本轮收工记录。
-
-发布回执：7504b5e已普通推送成功，三份文档69行新增；差异检查、敏感模式检查和清单审阅通过。累计调查记录已上传，未关闭B4/B5衔接、Linux/浏览器闭环与人工复核；本回执另随文档提交推送。负责人Root；下一步Terra/Luna/Sol按核查建议继续，上传不等于产品验收。
-
-2026-09-10 21:07，Root/GPT-6扫描耗时只读分析：5611c00代码确认ScanCode/Syft串行、ScanCode总预算360秒及有限逐文件补扫、AI分组串行且每次30秒、进程内缓存及API2CPU/4GiB限制。历史耗时不是当前慢任务实测；本机无运行容器，缺用户任务阶段数据，实际主因待定位。未修改产品或实施性能优化，仅三份本地协作记录，不推送；下一步收集一条实际慢任务后由Root定向分析。
-
-## 2026-09-10 20:42 Docker状态复核（Root/GPT-6，以此为当前环境状态）
-
-只读实测Engine已恢复，Server29.7.2、linux/amd64、WSL内核6.18.33.2；日志20:34起有engine is running。本轮未实施修复，恢复触发未知；先前阻塞记录是历史结果。docker ps -a及compose ls为空，8081拒绝连接，现在缺少的是OpenGuard构建启动和后续真实扫描验收。暂不需要安全模式/重装；Root下一步按用户部署指令使用5611c00副本与8081运行现有验收。当前仅更新三份本地诊断记录，不推送；不改产品或系统，未将Engine可用当成异机通过。
-
-## 2026-09-10 Windows异机实测（19:53，Root/GPT-6）
-
-用户已确认当前Windows就是异机，无需再提供另一台设备。固定团队集成版5611c00独立副本，源码未改；Compose静态检查通过，真实up退出1（Docker Engine管道缺失），smoke退出1（首个网页请求10061），尚未提交扫描。异机验收状态为阻塞，不是通过；Git/ZIP、工具输出、报告及重建仍未执行。详见[异机实测回执](2026-09-10-windows-portability-acceptance.md)。
-
-累计Python/pnpm/WSL等工具可用不等于完整Web可演示；Root后续在引擎恢复后续测，用户仅需配合本机Docker恢复。报名资格/权属、完整交付闭环、独立评测竞争力门禁保持待验。四份验收/协作文档经审查发布当前功能分支，测试副本和环境产物不上传，main不变。
-
-## 2026-09-10 代码同步（19:50，Root/GPT-6）
-
-- 本轮完成：fetch成功；当前codex/scan-reliability-integration在f7308ed执行pull --ff-only返回Already up to date，上游0/0。协作记录随后单独提交推送该分支。
-- 团队更新：origin/integration/p0已获取至5611c00（原e323509）；没有切换、合并或更新手册固定副本，新功能未在本轮运行验收。
-- 累计/未完成：此前工具安装和局部扫描验证保持历史状态；Docker系统阻塞、完整部署、真实扫描报告与异机、竞赛材料和独立评测门禁未由本次Git同步关闭。下一步由用户选择团队分支切换或集成，Root执行。
-- GitHub范围：仅本日志状态、共享工作日志、AI记录三份文档；main和产品源码未改。
-
-## 2026-09-10 重启后环境配置（以本节为最新状态）
-
-| 范围 | 状态/验证 | 责任与下一步 |
-|---|---|---|
-| 本轮完成 | WSL2.7.13.0官方签名MSI安装退出0，内核6.18.33.2-2；两个Windows组件均已启用 | Root保留版本回执 |
-| 累计工具 | Python3.12.10、Node26.2.0、pnpm10.30.0可用；Docker/Compose已安装，配置静态验证通过 | 安装不等于Engine可用 |
-| Docker阻塞 | 第一个残留套接字目录已备份；第二个engine.sock错误1920，管理员目录改名仍被拒绝，Handle未发现占用 | 用户配合安全模式/离线诊断，Root随后继续；未自动重启或重置 |
-| 网页入口 | 8080被其他程序占用；本机启动助手配置8081，目前正式网页未启动 | Docker恢复后Root验证8081真实页面 |
-| 未完成 | Compose构建/健康、真实Git/ZIP、四报告/持久化、异机回执 | Root及第二机器操作者逐项实测 |
-| GitHub | 本轮五份环境/协作文档在当前功能分支检查后提交推送，最终SHA见Git；本机工具不上传 | main仍须PR |
-
-详见[环境续配回执](2026-09-10-environment-followup.md)。历史Mock演示和局部扫描测试不能当成本轮完整部署。报名资格/权属、完整交付闭环、独立评测质量门禁均未由环境安装自动关闭。
-
-## 2026-09-09 按说明书安装部署
-
-| 项目 | 实际状态 | 下一步/责任 |
-|---|---|---|
-| 说明书指定源码 | 已固定450b8ebe3381a6a27ca333ed78c9a7ad572ba65b，独立部署副本干净 | Root继续使用该版本，保留开发分支 |
-| Docker安装 | Desktop4.90.0、CLI29.7.2、Compose5.5.1已安装并验证；签名Valid | 用户保存工作并重启Windows |
-| WSL/虚拟机平台 | DISM启用成功，明确Reboot required=yes | 重启后Root复验WSL运行时与Linux引擎 |
-| Compose | 静态配置通过，默认api/web；引擎stopped，hello-world失败 | 引擎就绪后Root构建并验证真实扫描/报告 |
-
-详见[本轮部署回执](2026-09-09-manual-deployment.md)。当前8080正式服务尚未运行，不把5173演示页当作部署成功。本轮仅公开五份文档/台账，源码副本与安装产物保持忽略。
-
-2026-09-09 网页协议排障（Root/GPT-6）：HTTP localhost:5173/app/new-scan成功，Chrome独立环境实际渲染工作台，已用Edge打开正确HTTP地址；HTTPS同端口失败，Vite只提供HTTP。未改变浏览器安全策略或业务代码；真实API/异机验收未由本轮完成，三份协作记录发布当前功能分支。
-
-2026-09-09 本机演示启动（Root/GPT-6）：当前功能分支前端Vite已在 `http://127.0.0.1:5173/` 后台运行，首页与 `/app/new-scan` 实测HTTP200。仅Mock演示，非真实扫描或异机验收；无产品文件变更，本轮上传三份协作记录。
-
-2026-09-09 Git拉取复核（Root/GPT-6）：截图在父级独立master仓库执行，未使用子项目已配置的SSH443。进入实际OpenGuard仓库执行 `git pull --ff-only` 成功，当前分支与上游0/0；父级仓库保留。团队integration/p0已更新至e323509，本轮未合并/复验其产品功能；仅上传三份协作记录。
-
-## 2026-09-09 前后端与异机核查
-
-| 范围 | 状态与证据 | 下一步/责任 |
-|---|---|---|
-| 当前开发分支 `d2ffe4c` | 真实接线未完成：Mock前端构建通过，HTTP API路径返回HTML；后端67项局部回归通过，但正常ZIP受Windows POSIX门禁拒绝 | Root/主线实现审查集成差异；测试通过不等于HTTP闭环 |
-| 团队集成版 `5ad0073` | 代码已含真实API、前端请求及Compose；共同验收源码固定 `b86658e`，本轮仅静态审查 | 使用该固定源码独立部署，避免从旧本地分支验收 |
-| 异机运行 | 阻塞：本机Docker/WSL未就绪，第二机器执行条件/回执尚缺 | 设备操作者准备环境；Root核验实际Git/ZIP、报告及重建回执 |
-
-本轮仅发布四份协作/诊断文档，详情见[联调与异机报告](2026-09-09-connectivity-portability-audit.md)。未改变产品代码或main，未将远端历史实测算作本轮异机通过。
-
-## 2026-09-09 GitHub 连接复核
-
-- Root（GPT-6）：当前仓库 origin 已关联 `git@github.com:mumingce-star/OpenGuard.git`。默认 SSH 22 连接失败，改用仓库级 GitHub SSH 443 后实际读取通过，严格主机密钥校验保留。
-- 分支 `codex/scan-reliability-integration` 的本轮起始本地/远端 HEAD 均为 `be855ac`；本轮上传范围仅连接验收的工作日志、进度与 AI 记录。产品实现和竞赛门禁沿用下方历史记录，本轮未复验。
-
-## 2026-09-06 真实样例与评测证据更新
-
-| 工作包 | 状态 | 新增可复现证据 | 仍未关闭的门禁 |
-|---|---|---|---|
-| B6 | 进行中 | 5 个版本化源代码样例（模型、数据集、API、ModelScope、负样例）；真实 detector 输出含 AIAsset、Evidence locator 与 SHA-256；已修复 HF 数据集 URL 被重复识别为模型的问题 | AST、误报基线、人工许可/授权核验与 A4 接入 |
-| B7 | 进行中 | `benchmarks/run_static_assets.py` 从 case 运行 detector，`evaluate_scan_result` 从实际 JSON 计算 TP/FP/FN；记录输出哈希与运行命令 | 3–5 个独立项目或固定公开提交、双人标注、Linux ZIP 全链路、规模化公开仓库 |
-| Python 运行时 | 已完成 | 本机 Python 3.12.10 与 `.venv` 已恢复，`backend[dev]` / pytest 8.4.2 可运行 | 不纳入 Git；使用 `py -3.12` 或 `.venv\\Scripts\\python.exe` |
-| 本机开发工具 | 进行中 | pnpm 10.30.0 已通过 Node.js 全局安装并可执行；Docker Desktop 官方安装器正在下载 | Docker Desktop 仍须下载完成；当前会话无 Windows 管理员提升权限，WSL/VirtualMachinePlatform 启用与重启后 Docker daemon/Compose 验收尚未关闭 |
-| 当前集成分支发布 | 已完成 | `codex/scan-reliability-integration` 已推送至 GitHub，首个远端 HEAD 为 `c0e8ca1`；上传范围仅为既有源码历史和协作记录 | 待以 PR 审查后合并；Docker/WSL、A2-A7 安全整合与真实 Compose 验收不因本次推送而完成 |
-
-更新时间：2026-09-04 10:45（Asia/Shanghai）
+更新时间：2026-09-05 21:35（Asia/Shanghai）
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
-优先级口径：本台账当前展示的是截至提交日必须闭合的 **P0 竞赛主线**，尚未建立产品功能的 P1/P2 增强路线表。共享日志中出现的 P1/P2 通常表示缺陷严重度（P1 阻止任务证据批准，P2 为非阻断债务），不能与产品路线优先级混用。
+优先级口径：以《OpenGuard AI 详细项目规划与 Codex 交接执行书 V1.0》第3节和第15节为P0边界与最终DoD。产品P1包括Resource Graph、Model/Dataset Card增强、LICENSE/NOTICE草稿、整改任务、批量Bench、历史扫描和更丰富报告；P2为更多生态、完整兼容矩阵、自动PR、私有仓库和高级协作。本轮及后续默认不实施P1/P2。下方历史全景包含完整竞赛目标，不能全部反推为P0硬门禁。共享日志中的缺陷严重度P1/P2与产品路线优先级不同。
+
+### 项目负责人P0收工口径
+
+每次收工仅展示用户负责的A1-A8，区分本轮/累计完成、进行中、未开始、阻塞、验证证据、责任角色和发布状态。组员模块只列作这些任务的输入依赖，不算作用户尚未完成的独立工作包。
+P0结束依据：公开Git/ZIP、真实ScanCode/Syft、模型/数据/API带Evidence样例、首批许可证规则及可追溯风险、AI结构化降级、核心前端真实API、HTML/JSON/CSV、首批golden cases与指标、Compose陌生机复现、第三方与AI使用记录。完整竞赛材料及获奖竞争力证据另列。
+I2已获明确授权；Git恢复、lease/heartbeat和业务retry不自动成为下一任务。I2通过后先回到上述DoD的真实分析模块接线与Web/部署闭环，不扩张队列架构。2026-09-05最新用户要求：优先简单可运行第一版，最小适配，不新建包装性产物；当前核查结论见第8节。
+
+## 0. 真人责任边界（模型角色不能替代真人主责）
+
+| 真人角色 | 负责范围 | 本轮处理 |
+|---|---|---|
+| 项目负责人（用户） | A1领域、A2输入、A3 API/注册表、A4 Pipeline、A5 AI、A6报告、A7部署、A8集成与材料 | 本轮完成A3/A4-3a-I2，Terra实现、Luna独立验证、Root审查与发布；不代做B线、前端或部署 |
+| 扫描分析组员 | B1-B7：依赖解析、ScanCode、Syft、SPDX、许可证规则、AI 资产检测与 Bench 基础 | 远端 `codex/p0-external-tools-sync` 仍为 `f8bedfd`；本轮只读取当前分支已原样引入的 B5 公共输出，不改写组员引擎、规则、扫描器、测试或分支 |
+| 前端组员 | React/Vite 与 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 页面 | 本轮未修改；远端前端分支新提交保持组员在途状态 |
+
+Sol/Terra/Luna 是 Codex 的设计、实现、独立测试角色，不代表三位真人的任务归属。后续选题必须先按上表确定真人主责，再分派模型。
 
 ## 1. 当前任务点
 
+最新状态见第11节：最小Compose与ScanCode/Syft真实运行环境已完成，Chrome插件完成部署页面的上传、报告与刷新；Chrome文件保存确认仍未完成。当前功能分支`feat/a7-minimal-compose`，下一任务为复用组员适配器把工具事实接入现有ZIP Pipeline。
+以下历史里程碑表保留原证据，不能替代第11节的当前状态；不扩展P1/P2。
+
 | 任务点 | P级 | 主责模型 | 状态 | 已完成/当前证据 | 未完成/下一步 | GitHub状态 |
 |---|---|---|---|---|---|---|
+| A3/A4-3a-S ZIP 持久派发规格 | P0 | Root/Astra→Sol/Terra/Luna | 已完成 | 单机flock、prepared/ready、原profile幂等、queued恢复、managed running零重放收敛及DZ-01..15规格审查通过 | 规格已发布；I1/I2已验收；Git恢复/lease/heartbeat/业务retry不自动列入P0 | `docs/a3-a4-durable-zip-spec` 已推送，规格提交 `f9a59fa`；未创建/合并PR |
+| A3/A4-3a-I1 ZIP持久存储协议 | P0 | Terra→Luna→Root | 已完成 | 实现16项、独立29项、原并发P1闭合、受控全量952 passed,3 skipped；EVD-A3-DURABLE-ZIP-STORAGE-001绑定272f5cf | I2已另行验收，默认0、精确1启用单机ZIP派发 | `feat/a3-durable-zip-storage` 已推送，远端完整对象已核对；未创建/合并PR |
 | S1a/A1 P0领域契约 | P0 | Sol | 已完成 | 契约 v0.1.1、唯一公共模型、6个API、风险四态、证据与provenance；历史提交 `02c3d46` | 后续仅通过变更流程新增 ADR，不再并行维护第二套模型 | 已推送 `feat/p0-domain-contract` |
 | A1 领域模型实现 | P0 | Terra | 已完成 | Pydantic模型、Draft 2020-12 Schema、sample和 AI producer 条件字段；历史提交 `b2fd061` | 进入 A2 前保持兼容性回归 | 已推送 `feat/p0-domain-contract` |
 | L-A1 独立边界审计 | P0 | Luna | 已完成 | 46项测试全部通过；覆盖路径脱敏、partial语义及 AI producer 正反边界 | 进入 A2 后扩展输入安全测试 | 已推送 `feat/p0-domain-contract` |
 | A1.1 AI ProducerRef | P0 | Sol→Terra→Luna | 已完成 | `provider`、`model_id`、`prompt_schema_digest` 已完成契约、实现、Schema、sample和独立测试闭环 | 后续变更走 ADR 和回归门禁 | 已推送 `43493fb` |
 | 协作与发布治理 | P0 | Root | 已完成 | 进度表、目录规则、统一验收、每任务点GitHub推送和上传范围复核已固化 | 每个后续任务点持续执行 | 已推送 `43493fb` |
 | S0 竞赛规则与评分证据治理 | P0 | Sol→Root | 已完成 | 三份正式文件映射、官方100分评分追踪、提交清单、九章27项主张与非目标已形成 | 随竞赛通知变更复核；最终材料仍需按证据状态逐项冻结 | 已推送 `ffa9390` |
-| S2 条件性安全设计基线 | P0 | Sol→Terra→Luna | 已完成 | 20项安全控制、5项正向/36项负面设计；Terra 12/6/2实现审查与Luna逐项可测性审计完成 | 这只是设计任务完成；TrustedEgress、Linux profile、依赖台账和真实运行证据归 A2，不能声称控制已生效 | 已推送 `ffa9390` |
-| A2-0/A2-1 本地 ZIP 安全纵切 | P0 | Terra→Luna→Sol→Root | 已完成 | 服务端限额/POSIX能力探测、descriptor-safe流式解压、central/local header核验、稳定inventory/root digest与失败清理；独立36项、Terra 19项、P0 46项、全量101项通过；`EVD-A2-ZIP-IMPL-001` 已绑定 `53499ea` | A2总包仍缺完整ZIP corpus、inventory并发完整性、cleanup隔离、Git/TrustedEgress、Linux profile、registry/API映射；本地绿灯不得外推 | 已推送 `53499ea`；待PR合并 |
+| S2 条件性安全设计基线 | P0 | Sol→Terra→Luna | 已完成 | 20项安全控制、5项正向/36项负面设计；A2-3a 已在 macOS/POSIX profile 实现 TrustedEgress 并完成真实公开仓库纵切 | 条件性设计任务完成；Linux profile、完整攻击语料和部署级复验仍未关闭，不能声称 S2/A2 总门禁完成 | 已推送 `ffa9390`；A2-3a 已推送本分支 |
+| A2-0/A2-1 本地 ZIP 安全纵切 | P0 | Terra→Luna→Sol→Root | 已完成 | 服务端限额/POSIX能力探测、descriptor-safe流式解压、central/local header核验、稳定inventory/root digest与失败清理；独立36项、Terra 19项、P0 46项、全量101项通过；`EVD-A2-ZIP-IMPL-001` 已绑定 `53499ea` | Git/TrustedEgress/API 后由 A2-3a/A3 关闭；A2总包仍缺完整ZIP corpus、inventory并发完整性、cleanup隔离与 Linux profile，本地绿灯不得外推 | 已推送 `53499ea`；待PR合并 |
 | A2-1D 本地 ZIP CLI 演示 | P0 | Terra→Luna→Sol→Root | 已完成 | `python -m app.cli LOCAL_ZIP` 已实现稳定 JSON、0/1/2 退出语义、错误脱敏和临时清理；Terra 5项、Luna独立5项、当前全量111项通过；Sol终审与追踪更正闭环；`EVD-A2-ZIP-CLI-001` 绑定 `910f745` | 这不是完整Web、依赖/许可证扫描或A2总门禁；后续由A2/B1等任务继续 | 已推送 `feat/a2-zip-cli-demo`；待PR合并 |
-| A2-2 安全只读扫描会话 | P0 | Sol→Terra/Root→Luna→Sol→Root | 已完成 | 生命周期绑定 `ReadOnlyScanSession`、inventory 精确白名单、逐层 dirfd/no-follow identity seal、SHA-256 前后复验、2 MiB/16 MiB 默认配额、过期/线程/重入/异常/cleanup 失败关闭；Luna 独立46项、定向unit42项、全量175项、P0 46项通过；`EVD-A2-READONLY-SESSION-001` 已绑定 `1f03ce0` | 仅允许可信非执行性 parser；完整ZIP corpus、cleanup worker/orphan、Git/TrustedEgress、Linux profile、registry/API、B1和A2总门禁仍未完成 | 已推送 `feat/a2-readonly-scan-session`；待PR合并 |
+| A2-2 安全只读扫描会话 | P0 | Sol→Terra/Root→Luna→Sol→Root | 已完成 | 生命周期绑定 `ReadOnlyScanSession`、inventory 精确白名单、逐层 dirfd/no-follow identity seal、SHA-256 前后复验、2 MiB/16 MiB 默认配额、过期/线程/重入/异常/cleanup 失败关闭；Luna 独立46项、定向unit42项、全量175项、P0 46项通过；`EVD-A2-READONLY-SESSION-001` 已绑定 `1f03ce0` | 仅允许可信非执行性 parser；公开 Git 已在 A2-3a 复用该能力，完整ZIP corpus、cleanup worker/orphan、Linux profile 和 A2 总门禁仍未完成 | 已推送 `feat/a2-readonly-scan-session`；待PR合并 |
+| A2-3a 公开 Git/TrustedEgress 纵切 | P0 | Terra/Root | 已完成 | 公共 HTTPS URL/全地址公网门禁、固定 TLS DoH、逐连接 CONNECT 出口、Git no-checkout object 物化、revision/inventory/provenance、API→B1/A4→A6 接线；PyPA 真实仓库通过，受控完整 `872 passed`；`EVD-A2-PUBLIC-GIT-EGRESS-001` 绑定 `f6aea1e` | 仅批准当前 macOS/POSIX profile；A2 总包仍缺完整攻击 corpus、cleanup orphan/quarantine、Linux namespace/seccomp/cgroup 与陌生机部署复验 | 已推送 `feat/a2-public-git-egress`；未创建/合并 PR |
 | B1-1 Python manifest 解析纵切 | P0 | Sol→Terra→Luna→Sol→Root | 已完成 | 仅通过只读会话发现/解析 `requirements*.txt`、`pyproject.toml`；PEP 508/440、字段/行级证据草稿、确定性去重/冲突/partial、URL与配额门禁；Terra 40项、Luna独立63项、全量278项、P0 46项通过；`EVD-B1-PYTHON-MANIFEST-001` 已绑定 `7c0d365` | B1-2 已另行闭环；JS/TS与lockfile仍未开始 | 已推送 `feat/b1-python-manifest-parser`；待PR合并 |
 | B1-2 Python P0映射与CLI纵切 | P0 | Sol→Terra→Luna→Sol→Root | 已完成 | 冻结DTO映射为P0 `Component/Evidence`；UUIDv5稳定ID、证据定位/哈希/时间、exact pin、direct/VCS、partial诊断、固定时钟与旧CLI兼容；Sol终审发现并关闭2项P1；Terra 45项、Luna独立32项、全量355项、P0 46项通过；`EVD-B1-PYTHON-P0-CLI-001` 已绑定 `daee8a8` | B1总包下一步进入 JS/TS manifest 与选定 lockfile；本纵切不代表许可证、依赖求解或完整报告 | 已推送 `feat/b1-p0-mapper-cli`；待PR合并 |
 | B1-3/B1-4 JavaScript manifest、P0与CLI | P0 | Sol/Root→Terra→Luna→Terra→Luna→Root | 已完成 | 支持根 `package.json` 四类直接依赖与 `package-lock.json` v2/v3 enrichment；严格JSON、稳定Evidence/UUID/purl/URL、partial与新CLI；Luna首次发现5项P1，连同Root 4类探针均已关闭；Terra 37项、Luna独立32项、JS合计69项、全量424项通过；`EVD-B1-JAVASCRIPT-P0-CLI-001` 已绑定 `80ee2a9` | B1仍缺选定Python lockfile、Yarn/pnpm/workspace/传递依赖；本纵切不代表许可证或安装事实 | 已推送 `feat/b1-js-manifest-p0-cli`；待PR合并 |
+| A3-0 持久 ScanRun 注册表 | P0 | Sol→Terra→Luna→Terra→Luna→Sol→Root | 已完成 | 单机 POSIX SQLite canonical ScanRun、revision/CAS、跨实例/重启幂等、状态单向性、稳定分页、私有路径权限、损坏Schema与额外table/view/trigger失败关闭；两轮审计P1均已关闭；Terra32项、Luna45项、A3合计77项、全量501项通过；`EVD-A3-DURABLE-SCAN-REGISTRY-001` 已绑定 `d2b26b0` | A3仍缺FastAPI、OpenAPI、HTTP错误映射、ZIP/Git创建请求、worker与A4编排；不得外推多机容灾或exactly-once副作用 | 已推送 `feat/a3-durable-scan-registry`；实现 `d2b26b0`，证据 `0cadbbe`；待PR合并 |
+| A3-1 FastAPI Git API 纵切 | P0 | Root→Luna→Sol | 已完成 | FastAPI 六路由、Git queued 持久幂等、结果读取/过滤与统一脱敏错误；Luna 独立发现的404/405信封、控制字符、UTF-8字节上限三项P1已关闭；A3-1实现+独立48项、全量549项通过；证据绑定 `aedf65c` | ZIP/worker/A4/公开 Git 后由 A3-2/A4-1/A2-3a 关闭；本纵切自身仍只代表 API 契约，不外推 Linux 或完整扫描 | 已推送 `feat/a3-fastapi-api`；实现/独立证据 `aedf65c`，绑定 `68163de`；待PR合并 |
+| A4-0 显式单进程 Pipeline Worker | P0 | Sol→Terra→Luna→Root | 已完成 | 七阶段/固定进度、A3 CAS认领、Adapter聚合持久化、completed/partial/failed/cancelled与脱敏错误；Terra 21项、Luna独立25项，A4合计46项；Root定向169项、完整集合595项通过；`EVD-A4-PIPELINE-WORKER-001` 已绑定 `66fc2ae`；无开放P0/P1/P2 | A4父任务仍缺真实Adapter接线、API队列自动消费、重试/超时、lease/heartbeat、stale-running恢复与系统集成；stub结果不得外推真实扫描 | 已推送 `feat/a4-pipeline-worker`；实现证据 `66fc2ae`；待PR合并 |
+| A4-1 本地 ZIP 依赖 Pipeline 接线 | P0 | Sol→Terra→Root→Luna→Root | 已完成 | 本地 ZIP 经单次 A2 只读会话调用既有 B1 Python/JavaScript parser/mapper，持久化真实 P0 Component/Evidence、digest、producer与summary；规则未接线时诚实为partial；实现29项、Luna独立20项、A4-1合计49项、完整集合644项通过；`EVD-A4-LOCAL-ZIP-DEPENDENCY-PIPELINE-001` 已绑定 `fbed364`，无开放P0/P1/P2 | A4父任务继续接许可证规则、API/后台消费、AI与报告；A4-1不包含这些能力 | 已推送 `feat/a4-local-zip-pipeline`；待PR合并 |
+| A4-2 B5 许可证规则阶段接线 | P0 | Root/Astra | 已完成 | 原样引入组员 B5 引擎、15条规则、fixture/spec，并以薄适配器接入 A4 rules 阶段；verified 产生稳定义务/风险/整改，pending 保持证据门禁且不产生整改；A4+B5 聚焦 `68 passed`，受控完整 `888 passed, 2 skipped`，Schema 等值；`EVD-A4-B5-RULE-INTEGRATION-001` 绑定 `4752f2b` | 当前 ZIP/Git 尚未产生 B2/B3/B4 许可证事实，真实输入仍为 `partial/rules/70`；后续 A5-1c 已消费其公共 finding，不改变 B5 | 已推送 `feat/a4-b5-rule-integration`；未创建/合并 PR |
+| A3-2 ZIP HTTP 与进程内后台扫描 | P0 | Sol/Root→Luna→Root | 已完成 | 同一 POST 路径支持 Git JSON 与 ZIP multipart；请求/上传限额、私有暂存、摘要/幂等、queued→BackgroundTask→A4-1、清理与 OpenAPI 已实现；实现20项、Luna独立22项、完整集合等价686项通过；`EVD-A3-ZIP-BACKGROUND-SCAN-001` 已绑定 `530e930` | 当前 `partial/rules/70` 表示依赖结果可用但上游许可证事实未进入已接入的 B5；公开 Git 已由 A2-3a 接入，A3父任务仍缺持久队列/恢复 | 已推送 `feat/a3-zip-background-scan`；待PR合并 |
+| A5-0 可注入 AI Provider 与降级核心 | P0 | Sol→Terra/Root→Luna→Root | 已完成 | local/remote 统一接口、finding/evidence/license canonical 输入、64 KiB 严格 JSON、引用/敏感门禁、pending Remediation、稳定 ID、P0 入口重校验与 generated/skipped/disabled/degraded 原子语义；实现30项、Luna独立16项、完整非回环734项通过；`EVD-A5-AI-PROVIDER-001` 绑定 `2c824bf` | A5父任务继续 A5-1：真实 Qwen3/Ollama transport、超时、A4 AI_ASSIST 接线与消融；必须消费组员 B5 的真实 finding，不代做规则 | 已推送；PR #2 待团队审核 |
+| A5-1a Qwen3/Ollama 本地 Transport | P0 | Sol→Terra/Root→Luna→Root | 已完成 | 锁定 Ollama `0.33.3`、Qwen3 4B Instruct Q4_K_M 与完整 manifest；字面量回环、禁代理、版本/模型摘要校验、三步 HTTP、总 deadline、严格封装和稳定降级；实现60项、Luna独立17项，A5组合123项、完整非回环794项通过；`EVD-A5-OLLAMA-TRANSPORT-001` 绑定 `e4d8e2e` | A5-1b 已另行闭环；B5 pending finding 已可供下一项 A5-1c 接入 A4，不代做规则 | 已推送 `feat/a5-ollama-transport`；PR #2 待团队审核 |
+| A5-1b Ollama/Qwen3 本机真实运行 | P0 | Sol→Terra/Root→Luna→Root | 已完成 | 官方 Ollama `0.33.3` DMG 的 SHA-256、Developer ID、Gatekeeper、公证与 arm64 均通过；锁定 Qwen3 manifest/API/disk/blob 摘要一致；Root 探针与 Luna 独立脚本各完成真实 `3/3`，冷轮约 4.34/3.88 秒、热轮约 2.73/2.77 秒，均验证 generated、pending、来源绑定、事实保持和稳定 ID；加载约 3.175 GB、100% GPU、context 4096；runtime probe unit `5 passed`、A5 `128 passed`、全量 `818 passed`；`EVD-A5-OLLAMA-REAL-RUN-001` 已绑定不可变实现 `ca0c3ed` | 仅为当前 Apple-silicon 和单一样例实测，不是 Bench；A5-1c 可开始消费 B5 pending finding 并接 A4 AI_ASSIST，不代做规则；真实输入端到端仍需上游许可证事实 | 已推送 `feat/a5-ollama-transport`；PR #2 待团队审核 |
+| A5-1c Pipeline `AI_ASSIST` 接线 | P0 | Root/Astra→Luna→Root | 已完成 | shared plan、ZIP/Git runtime 与默认应用已接 A5；默认关闭，`OPENGUARD_ENABLE_AI=1` 才注入锁定 Ollama；B5 pending 生成待复核整改、verified 不重复、失败保留规则并进入 A6；实现与独立合计 `19 passed, 1 skipped`、真实 Ollama 单项 `1 passed, 10 deselected`、受控完整 `907 passed, 3 skipped`；`EVD-A5-PIPELINE-INTEGRATION-001` 绑定 `3237ab0` | 真实 ZIP/Git 仍因上游无许可证事实停在 `rules/70`，不等于完整 Web 端到端；多项目效果需 Bench | 已推送 `feat/a5-pipeline-integration`；未创建/合并 PR |
+| A6-0 确定性报告导出核心 | P0 | Terra/Root | 已完成 | 终态 `ScanRun` 可导出稳定 JSON、竞赛七字段 CSV/资源清单和安全静态 HTML；阶段性报告不补写缺失事实；专项 `12 passed`、A6+P0 `58 passed`、受控全量 `830 passed`，Schema/compileall/静态门禁通过；实现 `fda4ce6` | 内存核心由 A6-1 继续消费；真实许可证内容仍等待上游事实进入已接入 B5 | 已推送 `feat/a6-report-export-core`，远端实现 HEAD 已核对 |
+| A6-1 报告安全持久化与只读下载 | P0 | Terra/Root | 已完成 | 私有 `0700/0600` 内容寻址存储、原子 metadata 提交、重启/摘要/篡改验证、P0 `ReportLink`、同一冻结 GET 的只读下载和安全响应头已实现；A6-1 `16 passed`、受控全量 `846 passed` | A6-2 已完成 Pipeline 接线；前端接线归前端组员，完整许可证报告继续等待真实许可证事实 | 已推送 `feat/a6-report-delivery`；实现 `9ce9535`；`EVD-A6-REPORT-DELIVERY-001` 已绑定 |
+| A6-2 Pipeline 终态报告发布 | P0 | Terra/Root | 已完成 | publisher 在首次 terminal CAS 前发布四格式并只允许增加完整 `ReportLink`；ZIP HTTP 自动得到带链接的诚实 `partial/rules/70`；registry 是可见性门禁，orphan/元数据不一致/篡改均失败关闭；专项 `10 passed`、A6/A4/A3/P0 联合 `177 passed`、受控全量 `856 passed` | 前端真实下载接线归前端组员；A4-2 可把实际 B5 输出交给报告，但真实主链仍缺上游许可证事实；持久队列仍属 A3/A4 后续 | 已推送 `feat/a6-pipeline-publish`；实现 `eec66a6`；`EVD-A6-PIPELINE-PUBLISH-001` 已绑定 |
+| A8-1a P0团队集成基线 | P0 | Root/Sol | 已完成 | `integration/p0` 已汇合项目负责人六层后端纵切、前端组员壳和扫描组员B2/B3 Adapter候选；后端688项非回环+2项真实回环通过，前端锁文件供应链检查和生产构建通过；Schema不变；`EVD-P0-TEAM-INTEGRATION-001` 绑定 `f486ead` | 前端仍为mock；B2/B3仍缺本机真实工具和主链接线；不外推完整产品 | 已推送 `integration/p0`；团队后续从此创建短分支 |
+| A8-1b 冗余远端分支清理 | P0治理 | Root | 已完成 | 用户明确授权后复核并删除43个已被 `integration/p0` 完整包含、零独有提交的项目负责人历史远端分支；恢复SHA保留 | 以后只需按短分支策略随合并清理，不再保留每个发布记录分支 | GitHub仅保留 `main`、`integration/p0` 及两条组员分支；组员分支未修改 |
+| A8-1c A5 团队集成 PR | P0治理 | Root/Sol | 进行中 | 隔离 worktree 合并无冲突；沙箱原样 `807 passed, 11 failed, 1 warning` 的 11 项均为回环 bind 权限限制，受控环境原样 `818 passed, 1 warning`；P0 `46 passed`，Schema、compileall、diff、敏感/路径/大文件/上传范围门禁通过；PR #2 已创建且 GitHub 显示可自动合并 | 等待团队代码审核与明确合并决定；本任务不自动请求组员评审、不自动合并 | [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 已打开，base=`integration/p0`、head=`feat/a5-ollama-transport` |
+| A8-1d VS Code 本机复现演示 | P0治理 | Root/Sol | 已完成 | Python 3.12.14 启动 FastAPI；动态 ZIP POST `202`，SQLite 终态 `partial/rules/70`，得到 React/FastAPI/Pydantic 3 个组件和 3 条 verified evidence；Ollama/Qwen3 聚合探针 `2/2` 且全部校验通过；Vite 页面可见并明确 `MOCK MODE` | 该次演示只覆盖当时纵切；后续 A5-1c 已接 Pipeline，但前端仍未接真实 API、真实输入仍缺许可证事实，需另做更新后的完整演示 | 治理证据已推送当前 PR 分支；临时脚本、ZIP、SQLite、prompt/response 未上传 |
+| F0-0 前端应用壳 | P0 | 前端组员→Root验证 | 进行中 | React/Vite/Tailwind应用壳、基础页面与动效已由组员提交；Root按锁文件安装并完成TypeScript+Vite生产构建 | 当前仍使用mock，未接真实API；页面功能与视觉验收归前端组员 | 来源 `feat/xzb-frontend`，已纳入本地集成候选 |
 
 ## 2. P0 工作包全景
 
@@ -110,21 +70,20 @@
 |---|---|---|---|---|---|---|
 | S0 | 竞赛要求与评分追踪 | Sol | 已完成 | 正式来源、硬约束、官方评分、提交/补正/匿名/AI披露、27项报告主张与非目标均已映射 | 随正式通知复核；真实需求、实验、用户反馈和最终链接继续保持 planned/blocked | 9月3日前 |
 | S1/A1 | 领域模型与公共契约 | Sol/Terra/Luna | 已完成 | v0.1.1契约、实现、Schema、sample及46项测试完成 | 后续变更需 ADR；A2 不得破坏本契约 | 9月3日前 |
-| J0 | Java 核心实现必做门禁 | Root→Terra→Luna→Sol | 进行中 | 已有 `backend/java/` Maven 模块、离线 Bench 校验器及部分扫描纵切；2026-09-19 起，Java 核心代码正式列为项目不可省略的必须执行项；每次 Java 核心变更后，本地必须执行 `mvn -f backend/java/pom.xml test` | 至少一条覆盖扫描/规则/报告或编排的 Java 核心交付链须可编译、通过自动化测试并接入最终演示；Java Bench、CLI、示例或文档不能单独关闭门禁。该命令的 `target/` 产物、控制台输出和本地运行结果不得上传 GitHub。Luna 独立回归，Sol 审核与 Root 验收后方可标记完成 | 即日起至最终提交前 |
-| S2 | 威胁模型与安全验收 | Sol/Terra/Luna | 进行中 | 条件性设计基线已完成：20 SEC、5 POS、36 NEG，含实现审查、可测性审计和证据模板 | 最终安全验收需在 A2 关闭 TrustedEgress、Linux profile、阈值拆分、依赖台账与全量真实测试；当前不得写成控制已生效 | 9月3日前设计，A2实现 |
-| A2 | Git/ZIP安全输入与Inventory | Terra | 进行中 | A2-0/A2-1本地ZIP、A2-1D CLI 和 A2-2 只读扫描会话已完成；后续可信 parser 已可在清理前受限读取 inventory 文件；B1-2 已证明该会话可承载 Python parser/mapper | 继续完成完整ZIP corpus、cleanup隔离/清道夫、本地Git物化、受控公网Git、Linux隔离、registry/API与系统级证据冻结 | 9月4日-11日 |
+| S2 | 威胁模型与安全验收 | Sol/Terra/Luna | 进行中 | 条件性设计基线已完成；A2-3a 已关闭当前 macOS/POSIX profile 的 TrustedEgress/公开 Git 纵切，并登记 Git/DoH | 最终安全验收仍需 Linux profile、完整阈值/攻击语料、cleanup 隔离与陌生机全量真实测试；当前不得外推为部署级安全完成 | 9月3日前设计，A2实现 |
+| A2 | Git/ZIP安全输入与Inventory | Terra | 进行中 | 本地 ZIP、CLI、只读会话及 A2-3a 公开 HTTPS Git/TrustedEgress 已完成；两种输入均可进入 B1/A4/A6；真实公开仓库及受控完整 `872 passed` | 继续完成完整 ZIP/Git 攻击 corpus、cleanup orphan/quarantine、Linux namespace/seccomp/cgroup profile、陌生机部署与 A2 总证据冻结 | 9月4日-11日 |
 | B1 | Python/JS依赖解析 | Terra | 进行中 | Python requirements/pyproject 与 P0 CLI 已完成；根 package.json 四类直接依赖、package-lock v2/v3 enrichment 与 JS P0 CLI 已完成；当前全量424项通过 | 选定 Python lockfile；Yarn/pnpm/workspace/传递依赖列后续增强；再进入多来源合并 | 9月4日-11日 |
-| B2 | ScanCode适配器 | Terra | 进行中 | 安全 JSON 适配、描述符受控 ZIP 接入、许可证证据候选映射；2026-09-03 定向 5通过/1 Linux跳过，ScanCode 32.5.0 最小 MIT fixture 真实 JSON→Evidence 已验证 | 在 Linux 受控环境运行完整 ZIP→ScanCode 集成回归、固定运行 provenance；B4 规范化候选 SPDX | 9月4日-11日 |
-| B3 | Syft适配器 | Terra | 进行中 | 安全 JSON 适配、SBOM Component/Evidence 映射、跨来源合并、密封 ZIP 调用代码；新增 Syft 1.51.0 公开 npm fixture 的真实 JSON→P0 opt-in 回归 | 在受控 Linux 环境复跑 ZIP→descriptor→Syft，固定运行 provenance/二进制校验，并接入 A4 编排入口 | 9月4日-11日 |
-| B4 | SPDX标准化 | Sol/Terra | 未开始 | LicenseExpression契约已具备 | SPDX数据版本、别名、复合表达式、LicenseRef及测试 | 9月4日-20日 |
-| B5/S3 | 15种许可证义务规则 | Sol/Terra/Luna | 进行中 | YAML 数据驱动 B5 引擎已覆盖 MIT、Apache-2.0、BSD-3-Clause、GPL-3.0-only、CC-BY-4.0、CC-BY-NC-4.0；有逐规则 fixture、证据门禁、稳定 Obligation/RiskFinding/Remediation 输出；2026-09-04 在恢复的 Python 3.12 `.venv` 中定向 pytest 10/10 通过 | 补齐其余常见许可证、官方原文证据台账、复合 SPDX（B4）和 A4 集成 | 9月12日-20日 |
-| B6 | 模型/数据/API检测 | Terra | 未开始 | AIAsset/Evidence结构已具备 | HF/ModelScope/API/服务规则与AST检测、误报控制及证据定位 | 9月12日-20日 |
-| A3 | FastAPI扫描API | Terra | 未开始 | 6个端点契约已冻结；Root决定 durable task registry 归入 A3 前置 | 持久任务注册表、跨worker/重启幂等、OpenAPI、统一错误、状态与资源/风险/证据/报告接口 | 9月21日-28日 |
-| A4 | Pipeline编排 | Terra | 未开始 | ScanRun状态机已具备 | ingestion→scan→normalize→rules→AI→report，阶段错误与partial | 9月21日-28日 |
-| A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 未开始 | AI边界与A1.1字段方案已确定 | Qwen3/Ollama锁版、结构化输出、证据引用、失败降级、消融 | 9月12日-28日 |
-| F0 | P0前端核心页面 | Terra/团队前端 | 未开始 | sample可作为共同数据 | New Scan、Progress、Dashboard、Risk Detail、Resource List、Report接真实API | 9月21日-28日 |
-| A6 | HTML/JSON/CSV与资源清单 | Terra/Luna | 未开始 | ScanRun与ReportLink结构已具备 | 报告模板、七字段资源清单映射、导出验证与脱敏 | 9月21日-28日 |
-| S5/B7 | OpenGuard-Bench | Sol/Luna/Terra | 未开始 | 只有A1边界fixture，不等于Bench | 3-5个首批case→20-30公开仓库、50-100合成样例、指标/基线/消融 | 9月29日-10月5日 |
+| B2 | ScanCode适配器 | Terra | 进行中 | 安全 JSON 适配、超时/失败对象、许可证证据候选映射和单测已实现 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归；B4 规范化候选 SPDX | 9月4日-11日 |
+| B3 | Syft适配器 | Terra | 进行中 | 安全 JSON 适配、SBOM Component/Evidence 映射、跨来源合并和单测已实现 | 在受控运行环境固定实际工具版本/校验并完成真实工具回归 | 9月4日-11日 |
+| B4 | SPDX标准化 | 扫描组员 / Sol/Terra | 进行中 | 组员分支已有显式别名与复合表达式标准化回归，未知值保持 pending；本轮未导入或修改 | SPDX 官方数据版本台账、完整表达式语法、LicenseRef、人工复核及与许可证事实生产链集成 | 9月4日-20日 |
+| B5/S3 | 15种许可证义务规则 | 扫描组员 / Sol/Terra/Luna | 进行中 | 组员分支已有 15 条 JSON-subset YAML 规则、逐规则 fixture、证据门禁和稳定 P0 输出；其公共实现已由项目负责人 A4-2 原样消费，组员 B5 定向 `10 passed` | 官方许可证原文证据台账、人工复核状态和更完整冲突样例仍缺；不得因 A4 接线而标为 B5 完成 | 9月12日-20日 |
+| B6 | 模型/数据/API检测 | 扫描组员 / Terra | 进行中 | 组员分支已有离线 HF/ModelScope/API 静态识别与 Evidence 定位回归；本轮未导入或修改 | AST 覆盖、误报评测、授权/许可证人工核验与主链接入 | 9月12日-20日 |
+| A3 | FastAPI扫描API | 项目负责人 / Root | 进行中 | 6个端点、SQLite、Git JSON、ZIP multipart 与两种输入的进程内 BackgroundTask 已验证；公开 Git 需管理员显式开启，ZIP/Git 都可产生可查询终态 | ZIP持久派发及queued/running恢复已由I2完成；剩余核心Web联调与部署验收。Git恢复、lease/retry不自动排入P0 | 9月21日-28日 |
+| A4 | Pipeline编排 | 项目负责人 / Terra | 进行中 | A4 worker、ZIP/公开 Git 依赖接线、A6-2 报告发布、A4-2 B5 规则适配及 A5-1c AI 阶段接线已完成；注入合法许可证事实时可持久化 B5 与 AI 输出 | I2持久ZIP消费与恢复已完成；剩余真实许可证/AI资产事实接线及端到端证据，不继续扩张lease/retry | 9月21日-28日 |
+| A5/S4 | AI Provider与降级 | Sol/Terra/Luna | 已完成 | A5-0 Provider、A5-1a transport、A5-1b 本机真实运行和 A5-1c Pipeline 接线均已绑定不可变证据；已有 B5 pending→真实 Qwen3→SQLite→A6 单项证据，且 verified 确定性整改不重复、失败可降级 | 普通 Web 端到端仍需上游许可证事实，多项目质量需 Bench；这些属于集成/效果门禁，不回退 A5 P0 子系统完成状态 | 9月12日-28日 |
+| F0 | P0前端核心页面 | Terra/团队前端 | 进行中 | React/Vite/Tailwind 应用壳已提交并通过锁文件安装、TypeScript与Vite生产构建 | 当前仍为mock；继续完成 New Scan、Progress、Dashboard、Risk Detail、Resource List、Report 的真实API接线 | 9月21日-28日 |
+| A6 | HTML/JSON/CSV与资源清单 | 项目负责人 / Terra/Luna | 进行中 | 四格式渲染、私有持久化/下载与 Pipeline 发布已完成；A4-2 的实际 B5 输出可由既有报告器呈现；受控完整 `888 passed, 2 skipped` | 前端下载接线和最终匿名化验收；真实许可证内容仍需上游事实进入 B5 | 9月21日-28日 |
+| S5/B7 | OpenGuard-Bench | 扫描组员 / Sol/Luna/Terra | 进行中 | 组员分支已有版本化合成 smoke cases 与 TP/FP/FN/Precision/Recall/F1 评测器回归；本轮未导入或修改，smoke 不等于完整 Bench | 3–5 个独立复现 case、人工标注、20–30 公开仓库、50–100 合成样例、基线/消融与误差分析 | 9月29日-10月5日 |
 | A7 | Docker与一键部署 | Terra | 未开始 | deploy目录说明存在 | Compose、固定镜像版本、陌生机器复现与Demo仓库全链 | 9月21日-10月5日 |
 | S7/L10/L11 | 技术报告与材料证据 | Sol/Luna | 未开始 | 交接文档已有九章/匿名/资源表规则 | 证据映射、15页报告、3-5分钟视频、资源表、AI记录、匿名审计 | 10月6日-13日 |
 | FINAL | 提交前审计与上传 | Sol/Root/全员 | 未开始 | GitHub公开仓库已建立 | 100分模拟评审、链接/部署/视频复核、10月14日正式上传 | 10月11日-14日 |
@@ -142,7 +101,31 @@
 | 2026-09-02 | B1-1 Python manifest 解析纵切 | `feat/b1-python-manifest-parser` | `7c0d365`（证据实现提交；绑定`bb83e6b`） | Python parser、依赖锁版/台账、40项实现测试、63项独立测试、规格/审计/运行说明、AI/协作与进度记录 | 已推送；待PR合并 |
 | 2026-09-02 | B1-2 Python P0映射与CLI纵切 | `feat/b1-p0-mapper-cli` | `daee8a8`（不可变实现提交；绑定提交`69ca38c`） | Python P0 mapper、新依赖CLI、45项实现测试、32项独立测试、规格/终审、运行说明、AI/协作与进度记录 | 已推送；待PR合并 |
 | 2026-09-02 | B1-3/B1-4 JavaScript manifest、P0与CLI | `feat/b1-js-manifest-p0-cli` | `80ee2a9`（不可变实现提交；绑定提交`708bc08`） | JS parser、P0 mapper、JS CLI、37项实现测试、32项独立测试、规格/缺陷闭环、运行说明与协作证据 | 已推送；待PR合并 |
-| 2026-09-04 | B2/B3 外部扫描器 JSON 适配与跨来源合并 | `codex/p0-external-tools-sync` | `e244588`、`293c52b`、`9c504f4`、`79d887c` | 受限工具调用、ScanCode 密封 ZIP 接入、Syft 密封 ZIP 接入草案、跨来源合并与回归 | 已推送；待 PR 合并。ScanCode Linux ZIP、Syft 真实工具/fixture 与 A4 集成未完成 |
+| 2026-09-03 | A3-0 持久 ScanRun 注册表 | `feat/a3-durable-scan-registry` | `d2b26b0`（不可变实现提交；绑定提交 `0cadbbe`） | SQLite registry、32项实现测试、45项独立测试、冻结规格、两项P1闭环、运行/AI/协作说明与真人责任边界 | 已推送；待PR合并 |
+| 2026-09-03 | A3-1 FastAPI Git API 纵切 | `feat/a3-fastapi-api` | `aedf65c`（独立复核/P1闭环实现；绑定 `68163de`） | FastAPI应用、六路由、Git queued 创建、状态/结果读取、统一错误、23项实现测试、25项Luna独立测试、规格/运行/AI/协作与进度说明 | 已推送；待PR合并 |
+| 2026-09-03 | A4-0 显式单进程 Pipeline Worker | `feat/a4-pipeline-worker` | `66fc2ae`（不可变实现/独立证据；首轮发布 `b6311be`） | Pipeline worker、冻结规格、21项实现测试、25项Luna独立测试、运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
+| 2026-09-03 | A4-1 本地 ZIP 依赖 Pipeline 接线 | `feat/a4-local-zip-pipeline` | `fbed364`（不可变实现/独立证据；绑定 `d79da6e`） | A4-1 pipeline/export、冻结规格、29项实现测试、20项Luna独立测试、运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
+| 2026-09-03 | A3-2 ZIP HTTP 与进程内后台扫描 | `feat/a3-zip-background-scan` | `530e930`（不可变实现/独立证据；绑定 `bca0a2c`） | ZIP multipart API/runtime、进程内后台 A4-1、20项实现测试、22项Luna独立测试、精确依赖锁定及运行/安全/AI/协作与进度说明 | 已推送；待PR合并 |
+| 2026-09-03 | A8-1a P0团队集成基线 | `integration/p0` | `f486ead`（首次验收发布HEAD） | 项目负责人后端纵切、前端组员应用壳、扫描组员B2/B3 Adapter候选、集成测试与分支治理说明 | 已推送；作为团队当前开发入口 |
+| 2026-09-04 | A5-0 可注入 AI Provider 与降级核心 | `feat/a5-ai-provider` | `2c824bf`（不可变实现/独立证据） | A5 Provider、冻结规格、30项实现测试、16项Luna独立测试、P1闭环及根/后端/安全/AI/协作说明 | 已推送；待PR合并 |
+| 2026-09-04 | A5-1a Qwen3/Ollama 本地 Transport | `feat/a5-ollama-transport` | `e4d8e2e`（不可变实现/独立证据） | 标准库 Ollama adapter、冻结规格、60项实现测试、17项Luna独立 TCP 测试、第三方资源锁定、运行/安全/AI/协作说明 | 已推送；待PR合并 |
+| 2026-09-04 | A5-1b Ollama/Qwen3 本机真实运行 | `feat/a5-ollama-transport` | `ca0c3ed`（不可变实现/真实运行证据）；`26ebdc8`（治理记录） | 聚合 runtime probe、5项unit、官方运行时/模型摘要与本机聚合实测记录；不含安装包、权重、prompt 或完整 response | 已推送；远端已核对；不创建/合并PR |
+| 2026-09-04 | A8-1c A5 团队集成 PR | `feat/a5-ollama-transport` → `integration/p0` | `ea2f45c`（创建 PR 时的远端 HEAD；后续治理提交自动进入同一 PR） | 已验收的 A5-0/A5-1a/A5-1b 实现、测试、规格与证据；不含 B4-B7、前端、安装包、模型权重或缓存 | [PR #2](https://github.com/mumingce-star/OpenGuard/pull/2) 已打开、无冲突、可自动合并；待审核，未合并 |
+| 2026-09-04 | A8-1d VS Code 本机复现演示 | `feat/a5-ollama-transport` | `44c8cf1`（运行证据；本发布修正随后一并推送） | 仅运行证据、AI 辅助记录和协作日志；不含仓库外启动脚本、运行数据库、ZIP、模型内容或业务代码改动 | 已推送并进入 PR #2；演示终态保持 `partial/rules/70` 与前端 mock 边界 |
+| 2026-09-04 | A6-0 确定性报告导出核心 | `feat/a6-report-export-core` | `fda4ce6`（不可变实现/测试/证据） | A6 报告源码、12项专项测试、规格、复现说明、AI/协作/进度记录；不含 B5、前端、临时环境或产物文件 | 已推送；远端完整对象 `fda4ce6ba4361efaa3dcdba2a04aae6cf6067338` 已核对；未创建/合并 PR |
+| 2026-09-04 | A6-1 报告持久化与只读下载 | `feat/a6-report-delivery` | `9ce9535`（不可变实现/测试/证据） | 内容寻址私有存储、原子 metadata、ReportLink、同一路由只读下载、16项专项测试、规格与治理记录；不含生成报告文件、B5、Pipeline 或前端 | 已推送；远端完整对象 `9ce9535436372295eaf1598a9805ec415b79db86` 已核对；未创建/合并 PR |
+| 2026-09-04 | A6-2 Pipeline 终态报告发布 | `feat/a6-pipeline-publish` | `eec66a6`（不可变实现/测试/证据） | Pipeline publisher、worker/ZIP/default factory 接线、API 可见性一致性、10项专项测试、规格与治理记录；不含生成报告文件、B5、A5、前端或部署 | 已推送；远端完整对象 `eec66a6aa0458abdbadd912f17c6c9d54ce3a247` 已核对；未创建/合并 PR |
+| 2026-09-04 | A2-3a 公开 Git/TrustedEgress | `feat/a2-public-git-egress` | `f6aea1e`（不可变实现/测试/证据） | URL/DNS/CONNECT/Git object 安全摄取、公共依赖 Pipeline、API/A6 接线、实现与真实公网测试、规格/资源/治理记录；不含目标仓库内容、B5、A5、前端或部署 | 已推送；远端完整对象 `f6aea1eb2db1475be489f9ce8afc517e10f3c0e2` 已核对；未创建/合并 PR |
+| 2026-09-05 | A4-2 B5 许可证规则阶段接线 | `feat/a4-b5-rule-integration` | `4752f2b`（不可变实现/测试/证据） | 原样引入组员 B5 公共实现/15条规则/测试/规格；新增项目负责人 A4 薄适配器、8项集成测试和运行/治理说明；不含 B4/B6/B7、前端、部署或运行产物 | 已推送；远端完整对象 `4752f2b11252870c1b33306583390321c8d24397` 已核对；未创建/合并 PR |
+| 2026-09-05 | A5-1c Pipeline `AI_ASSIST` 接线 | `feat/a5-pipeline-integration` | `3237ab0`（不可变实现/测试/证据） | A5 plan/runtime/default factory 接线、9项实现测试、11项独立安全测试实例（含1项显式真实模型门禁）、规格与运行/AI/协作记录；不含 B4/B5/B6/B7、前端、部署或模型内容 | 已推送；远端完整对象 `3237ab0e8634ba5f0c62535100ef97785bd611a6` 已核对；未创建/合并 PR |
+
+## 3.1 当前远端分支入口
+
+- 团队日常入口：`integration/p0`；里程碑发布目标：`main`。
+- 项目负责人当前短分支：`feat/a3-zip-dispatcher-recovery`，基线`2368d91`；I2发布记录见第7节。既有PR、main/integration及组员分支均未自动修改或合并。
+- 组员在途分支：`feat/xzb-frontend`、`codex/p0-external-tools-sync`，均保留。
+- 待明确授权清理的项目负责人历史分支：`feat/p0-domain-contract`、`feat/s0-s2-design-gates`、`feat/a2-zip-ingestion`、`feat/a2-zip-cli-demo`、`feat/a2-readonly-scan-session`、`feat/b1-python-manifest-parser`、`feat/b1-p0-mapper-cli`、`feat/b1-js-manifest-p0-cli`、`feat/a3-durable-scan-registry`、`feat/a3-fastapi-api`、`feat/a4-pipeline-worker`、`feat/a4-local-zip-pipeline`、`feat/a3-zip-background-scan`。
+- 上述待清理分支的提交均已从 `integration/p0` 可达，删除分支引用不会删除集成线中的代码和证据；未获明确授权前保持现状。
 
 ## 4. 目录健康检查
 
@@ -150,170 +133,1186 @@
 |---|---|---|
 | 顶层目录 | 通过 | 使用既有工程目录，不新增含糊或重复目录 |
 | 临时环境/缓存 | 通过（Git层） | `.pytest_cache`、`__pycache__`、虚拟环境不纳入提交 |
-
-## 5. 2026-09-05 B1–B7 本轮更新
-
-| 工作包 | 状态 | 本轮可复现证据 | 仍未关闭的门禁 |
-|---|---|---|---|
-| B1 | 进行中 | 原有 Python/JavaScript parser 与 mapper 定向 133 项通过；Windows 上 POSIX ZIP CLI 用例准确跳过 | Python lockfile、Yarn/pnpm/workspace、传递依赖与 Linux ZIP 链路 |
-| B2/B3 | 进行中 | ScanCode 32.5.0、Syft 1.51.0 版本可用；真实输出回归 5 项通过 | POSIX descriptor ZIP→工具端到端、运行 provenance 与 A4 接入 |
-| B4 | 进行中 | 显式别名/复合表达式标准化回归通过，未知值保持 pending | SPDX 官方数据版本台账、完整表达式语法及 A4 接入 |
-| B5 | 进行中 | 15 条 JSON-subset YAML 规则、证据门禁与定向回归通过 | 官方原文证据台账、人工复核和 A4 接入 |
-| B6 | 进行中 | 本地静态 HF/ModelScope/API 识别和 Evidence 定位回归通过 | AST 覆盖、误报评测、授权/许可证人工核验 |
-| B7 | 进行中 | 版本化合成 smoke cases 与 TP/FP/FN/Precision/Recall/F1 评测器回归通过 | 3–5 个独立复现 case、人工标注、公开仓库扩展、基线/消融 |
 | 竞赛原始附件 | 通过 | 原始PDF/DOCX不复制进公开仓库，正式要求以脱敏规范文档表达 |
-| 敏感信息 | 本轮推送复核通过 | 不上传密钥、账号、本机绝对路径、学校/教师/成员隐私 |
+| 敏感信息 | I2 发布复核通过 | 不上传密钥、账号、本机绝对路径、学校/教师/成员隐私或目标仓库内容 |
 | 第三方资源 | 持续 | 首次真实引入时锁版本并更新 `third_party/` 与资源清单 |
 
-## 2026-09-10 图片五项交付核查（已获取集成版5611c00）
+## 5. A3/A4-3a 实施进展与下一任务（2026-09-05）
 
-- 本轮只读代码与测试，未将集成版合入当前codex/scan-reliability-integration；本轮记录尚未上传。
-- B4基础标准化已接入，但AGPL-3.0-only与B5规则覆盖不一致；括号/WITH未支持。B5已有15规则及fixture，B6已有静态识别和可定位证据，B7已有5个合成case的真实检测评测链；12条独立人工复核未完成。
-- 后端定向54通过/1失败（Windows os.geteuid缺失，持久化初始化失败）；前端真实API代码存在，但隔离副本缺typescript导致测试未启动。本机容器与浏览器闭环仍待验收。责任建议：Terra衔接/部署，Luna回归/标注，Sol语义审核。
+唯一规格：[ZIP持久派发与中断收敛](../spec/a3-a4-durable-zip-dispatch.md)。
+Sol完成架构审查，Terra确认可实现性，Luna批准15项独立oracle；Root关闭报告links可见性和配额预留歧义。
+I1存储和I2自动派发/恢复已分别验收，运行证据见规格第12–13节。
+未新增依赖或改变公共契约；本轮新增I1实现与独立测试，已有保护测试未放宽。
 
-## 2026-09-11 扫描结果人工标签方案（设计产物）
+| 范围 | 状态 | 责任 | 下一项可验证门禁 |
+|---|---|---|---|
+| 本轮规格门禁 | 已完成 | Root/Sol/Terra/Luna | 四文件范围、append-only、P0回归、DZ唯一ID通过；规格提交f9a59fa与远端完整对象一致 |
+| I1 descriptor与输入生命周期 | 已完成 | Terra→Luna→Root | 实现16项、独立29项、受控全量952 passed,3 skipped；已推送272f5cf并绑定证据 |
+| I2 dispatcher与恢复接线 | 已完成 | Terra→Luna→Root | 真实锁/kill/restart/零重放，独立70、完整1005 passed/3 skipped |
+| Git恢复、lease/heartbeat与业务retry | 未开始 | 项目负责人A线 | 不自动排入P0；本轮不承诺任意阶段续跑或exactly-once |
+| 前端与B线候选接入 | 进行中 | 各组员→Root集成 | 组员分支已有候选；前端拟定接口须适配冻结六API，B4/B6/B7不得重复生成 |
 
-- Root/GPT-6新增[详细方案](../spec/scan-result-human-annotation-plan.md)：五个评价维度、独立标签记录、两阶段真人复核、网页与持久化建议、指标口径、H1～H5工作包和16项验收用例。
-- 已核对集成副本5611c00：真实API模式人工处理选择器禁用，不能称为已具备标签保存功能。12条候选已有机器关联检查，人工24份记录仍未由本轮填写。
-- 本轮仅文档，未改变产品接口/Schema/规则，无新增依赖；方案一致性及diff检查通过，未运行业务测试、未启动服务、未提交推送。累计CLI/合成Bench及历史团队演示沿用既有证据，本机完整Web闭环未复验。
-- 下一步：真人负责人/Sol冻结标签与范围，两名真人完成首批；Luna整理复核与评测，Terra实现后续保存/页面，Root验收发布。标注专项剩余5个工作包；报名资格/权属、完整交付和真实评测竞争力门禁不因方案生成而关闭。
+现有可演示能力仍为安全ZIP/公开Git依赖纵切、持久查询与阶段性报告；普通输入仍为
+`partial/rules/70`，当前主控前端仍为mock。最新组员分支有请求/轮询与检测/Bench候选，
+不等于已完成主控真实Web联调。团队集成线尚未自动合入本轮工作，不以功能分支推送代替团队联调或合并。
 
-## 2026-09-11 扫描结果AI辅助初标
+报名/参赛资格门禁：Owner落实平台、缴费、主体和权属确认。完整作品门禁：上游许可证事实、
+前端契约对齐与真实Web链、部署/陌生机、安全与Bench、报告视频/资源表/匿名及Release。
+获奖竞争力门禁：真实案例、基线/消融、误差分析和稳定演示。不得由规格或P0回归推出完成率。
 
-- 已生成[12条初标结果](../../benchmarks/annotations/real-resource-20260911-ai-assisted/README.md)、结构化JSON、批次manifest、来源获取回执及真人待复核表，共5份文件；作者明确为GPT-6，已接触系统输出，真人0份。
-- 初标范围为12条既有候选的60项判断：资源引用10正确/2部分正确，许可12不确定，风险摘要9接受/3需修改，AI建议12过于笼统；均为草稿分布，不是准确率。优先补证R08数据集标识差异、R11类型导入、R12兼容性引用。
-- 上游原文12条获取未成功，浏览重试3条也未成功；基于既有表内片段标注，未重新认证上游hash、原始附件或全部额外AI引用。原始复核表hash保持不变，JSON/ID/60维标签/空真人签名校验通过；本轮不改产品或启动服务，无新依赖，未提交推送。
-- 下一步：真人补取原文与附件并复核；Luna整理差异、Sol审查语义、Terra按确认缺陷处理、Root验收发布。正式双人标注、完整gold、网页保存及整体作品门禁仍未关闭。既有CLI/合成Bench能力未变，本机完整Web未由本轮复验。
+文档发布证据：规格提交 `f9a59fa3eb722c2eb1eb0ec939bda5efe8587b78` 已推送并以
+`git ls-remote` 核对一致；规格轮仅上传上述四个文档，随后同分支回填发布记录。
+未创建/合并PR，未修改main、integration/p0或组员分支。该提交不是持久worker实现证据。
 
-## 2026-09-11 第一位真人复核确认
 
-- 用户明确确认12条AI辅助初标无误；已新增结构化 `human-confirmation.json` 并填写真人复核表。12条、60个维度均确认无修改，分歧数为0。
-- 本次复核发生在AI初标和系统结果已展示之后，状态登记为“单人AI辅助复核已确认”。不登记为盲标或双人独立复核，不把许可维度的12个 `uncertain` 提升为许可通过。
-- 批次 manifest 的人工复核数由0更新为1；原 `ai-draft.json` 保持AI作者与创建时状态，原扫描结果和固定复核表不变。
-- 标注专项当前完成AI初标和第一位真人确认；第二位独立复核、原文/原始附件补证、最终裁决冻结、完整gold和Web保存仍待完成。文件仅在本地，未提交或推送。
+## 6. I1 历史验收与发布（当前状态以第7节为准）
 
-## 2026-09-11 人工标签完整性审计
+- 本轮：私有ZIP/descriptor、实际摘要与身份绑定、prepared/ready协议、首字节前容量、原profile幂等、健康清理已验收；原跨线程P1及测试fsync定位误标均保留历史并闭环。
+- 累计：A1与A5 P0子系统完成；A2/A3/A4/A6已有可运行纵切但父包仍进行中，A7部署与完整材料未完成。
+- 阻塞/依赖：本轮技术缺陷已关闭；完整Web仍依赖B线真实许可证事实、前端契约对齐与团队集成。最终Release未发布。
+- 验证：Terra16、Luna29、受控全量952 passed/3 skipped；OpenAPI精确等值、Schema/sample、编译与前端构建通过。发布前再检查新增内容、敏感信息和append-only前缀。
+- 当前演示：既有安全ZIP/公开Git依赖扫描、持久查询与阶段性报告；I1仅内部注入时生成queued+ready，不运行worker。普通输入仍可诚实partial/rules/70，主控前端仍mock。
+- 紧接任务：A3/A4-3a-I2生命周期锁、dispatcher与中断收敛；继续复用当前store/registry/worker/A5/A6，不新建第二套实现。
+- 报名/参赛：Owner核对平台、主体及权属等资格事项；完整作品：真实许可证链、Web联调、部署/安全/Bench、报告视频/资源表/匿名及Release；获奖竞争力：真实案例、基线/消融、误差分析与稳定演示。
+- 发布：实现`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`已推送功能分支，远端完整哈希核对一致，EVD已绑定；本轮共12项文件，不修改main、不创建或合并PR、不发布Release。
 
-- 内容完整性通过：12个唯一候选、每条5个评价维度，共60项；判断值和理由齐全，资源/任务/风险/主证据关联齐全；真人表12行无占位符，确认回执覆盖12/12且分歧0。
-- 批次一致性通过：manifest显示1份真人确认和 `confirmed_single_human_review`；固定复核表SHA与批次记录一致；12条许可继续为 `uncertain`，未被误升为许可通过。`ai-draft.json`中的pending和0份真人是创建时不可变快照，最终状态由manifest和人类回执表达。
-- 最终验收未通过：第二位独立真人复核仍待完成；12/12上游原文重取状态为unavailable；原始JSON附件和全部额外Evidence未复核；该批次尚未成为完整漏检gold，不能计算召回率；标注目录仍未被Git跟踪或发布。
-- 本轮仅执行审计并追加协作记录，未修改标签值、产品接口/Schema/规则或运行服务。下一步由第二位真人、Luna、Sol及Root依次完成复核、补证、冻结和发布。
+I1不可变实现证据：`272f5cfed49c88b0bea4063b22d3cce5a8a9a6ee`；功能分支已发布，随后仅回填本轮发布治理记录。
 
-## 2026-09-11 许可证规则专项审计
+## 7. I2 最终验收与项目负责人P0状态
 
-- Root核查4c9e16b及已获取5611c00，规则核心一致，产出[八组问题与方案](../spec/2026-09-11-license-rule-audit.md)。AND/OR、覆盖集合、输入校验及共享义务聚合存在已复现缺口；本轮只审计未修复。
-- 本地10+5测试通过（后5含B6/B7）；集成纯规则17通过、1主动排除持久化。更正此前“每条规则有fixture”：15规则仅6条逐规则verified_cases，另9条未覆盖。
-- 新审计文档与协作增量仅本地，未提交/推送；原有人工方案/标签修改保持不变。Terra接续实现，Luna补回归，Sol/真人审核来源与场景，Root最终验收。完整Web、竞赛材料/权属、端到端人工签收与真实质量门禁未关闭。
+本轮I2已验收并推送`feat/a3-zip-dispatcher-recovery`；不可变实现`f48108f6da32ea36e6e757a3cd80a2b42baa0767`已与远端完整哈希核对。EVD-A3-DURABLE-ZIP-DISPATCH-001；unit28、独立70、受控完整1005 passed/3 skipped。OpenAPI/Schema/sample、编译及保护范围通过。Root承担本轮架构终审，未唤醒已停用Sol任务；Terra实现、Luna独立验证均已停止写入。
+下表仅计用户本人A1–A8，组员代码作为集成输入，不重复计作用户实现责任。
 
-## 2026-09-11 人工标签缺口补证与召回率基线
+| 用户任务 | 累计状态 | 本轮完成 / 累计完成 | 未完成、依赖或阻塞 | 责任角色 | 证据与发布 |
+|---|---|---|---|---|---|
+| A1 领域契约 | 已完成 | 本轮兼容复核；模型/Schema/六API已冻结 | 后续保持兼容 | 用户 / Root | OpenAPI精确等值、Schema/sample；既有提交已推送 |
+| A2 安全输入 | 进行中 | 既有ZIP/公开Git安全纵切 | 目标部署安全、完整攻击语料及清理隔离复验 | 用户 / Terra→Luna→Root | 既有真实输入证据；已推送 |
+| A3 API/注册表 | 进行中 | 本轮生命周期锁、queued恢复；已有六API/SQLite幂等 | 核心Web与目标环境总验收 | 用户 / Terra→Luna→Root | I2独立70；本轮发布绑定见下 |
+| A4 Pipeline | 进行中 | 本轮dispatcher及running零重放收敛；已有规则/AI/报告接线 | 真实scanner/SPDX/AI资产事实集成，依赖组员候选验证 | 用户 / Root集成 | 完整1005 passed/3 skipped；真实输入仍partial/rules/70 |
+| A5 AI辅助 | 已完成（子系统） | 既有Provider/Ollama/降级与Pipeline接线 | 全产品真实案例效果随P0总验收，不能由隔离测试外推 | 用户 / Root | 历史真实模型证据已发布；本轮仅隔离Provider计数 |
+| A6 报告 | 进行中 | 既有四格式导出、持久化与安全下载；本轮恢复可见性验证 | 真实许可证内容、Web下载和最终匿名验收 | 用户 / Root集成 | 四格式真实GET/摘要验证；实现已推送 |
+| A7 集成部署 | 进行中 | 已有集成基线和本机演示 | 真实Web适配、Compose/陌生机验收未开始；依赖前端候选契约对齐 | 用户 / Root集成 | 当前主控仍mock；最终部署未发布 |
+| A8 协调验收/材料 | 进行中 | 本轮独立证据、P0范围纠偏与进度治理 | 首批golden指标、资源/版本记录冻结与完整材料；最终Release未开始 | 用户 / Root | 既有记录已推送，本轮发布绑定见下 |
 
-- 已从三个公开仓库取得固定提交，12条记录对应11个唯一文件；使用 `git show HEAD:<path>` 原始对象字节计算SHA-256，11/11文件、12/12记录与既有复核表一致。旧 `source-checks.json` 作为首次联网失败回执保留，新结果见 `source-reverification.json`。
-- 完整原文复核确认R01–R04、R06–R10的既有判断；R11/R12继续为部分正确；R05新增分歧：文档链接写FLUX.1-dev，实际 `Tool.from_space` 参数为FLUX.1-schnell。因此AI裁决分布改为资源/证据9正确、3部分正确，风险8接受、4需修改。第一位真人确认发生在该新证据之前，R05需重新确认。
-- 新建真实来源完整gold：八个完整文件及一个固定窗口，共9个case、50个真值资源；按静态检测器0.1.0规则得到TP=11、FP=8、FN=39、Precision≈0.5789、Recall=0.22、F1≈0.3188。该结果解决候选集无法计算召回率的问题，并暴露docs/blog/papers链接误报及模型字符串、数据集参数漏检；gold仅由AI标注，不能外推整个扫描器或宣称独立人工质量。
-- 三份旧扫描JSON按已知SHA在当前工作区、Git历史、常用下载目录和项目父目录均未恢复；Docker引擎未运行，本轮未启动服务。25个去重Evidence ID中，12个主Evidence的固定来源已复核；13个额外Evidence只有2026-09-09历史机器核对回执，缺少旧对象字节，不能本轮逐字段复算。
-- 标注专项当前可验证新增产物为来源复核、AI二次复核、Evidence审计和召回率gold；仍有三个外部门禁：第二位真人、R05真人重新确认、三份旧附件/13份额外Evidence对象恢复。文件仍在本地，未暂存、提交或推送。
+当前可独立演示：安全ZIP/公开Git依赖纵切与阶段报告；显式durable ZIP可重启消费queued，中断running只收敛事实而不重放。缺少真实资源→许可证风险→AI→Web完整链和陌生机部署，不称完整P0成品。本轮无开放阻断I2的缺陷；剩余依赖是候选模块与目标环境验收。
 
-### GitHub发布回执（2026-09-11 17:14）
+P0剩余5个验收工作包：①A4真实scanner/SPDX/AI资产事实接线；②A7核心页面真实六API与报告下载；③A2/A7部署安全、Compose及陌生机；④A8首批golden cases、可计算指标与真实全链演示；⑤A8资源/版本/许可证/AI记录及P0冻结。此前30–50小时/7–14工作日估计依据不足，已撤回；以第8节基于候选代码核查的分项估算为当前参考。下一轮仅先做①的可验收窄切片。
+报名/参赛仍需Owner核实平台资格与权属；完整作品还需上述P0、报告/视频/资源表/匿名与Release；竞争力还需真实案例、基线/消融、误差分析和稳定演示。此处不授权实施产品P1批量Bench等扩展。
 
-- 上述人工标注、来源复核、Evidence审计、召回率gold、标注方案和许可证审计已提交为`2269f0c`，推送至`origin/codex/scan-reliability-integration`；共15个文件。历史段落中的“仅本地/未推送”保留为当时状态，由本回执更新当前状态。
-- 发布不改变剩余门禁：第二位独立真人、R05真人重新确认、3份旧扫描附件和13个额外Evidence直接复核仍未完成；未合并`main`或`integration/p0`。
+本次运行精确 token 数不可获得；开工非硬估算20k–35k，I2功能范围完整完成，实际是否在区间内不可确认；验证补证未扩大产品范围。
 
-## 2026-09-11 R05真人补充确认
+I2发布：精确11个源文件/测试/运行及治理文档；未上传运行产物、模型或凭据。功能分支已推送，未合并main/integration、未创建PR或发布Release；随后仅回填本次发布绑定记录。
 
-- 第一位真人已人工核对固定原文第258–265行，确认R05修订：资源识别和主证据为部分正确，许可保持不确定，风险需修改，AI建议保持过于笼统；原因是FLUX.1-dev链接与FLUX.1-schnell实际调用参数不一致。
-- 新增 `human-amendment-r05.json`，与原 `human-confirmation.json` 形成可追溯的补充关系。批次当前裁决标签已由第一位真人全部确认；同一复核人仍只计1名，不作为第二位独立真人。
-- R05重新确认门禁已关闭。人工标注剩余门禁为第二位独立真人，以及三份旧扫描附件和13个额外Evidence对象恢复复核；本轮变更尚未提交或推送。
+## 8. 第一版简单产品缺口核查（2026-09-05）
 
-### R05发布回执（2026-09-11 17:33）
+本轮完成核查，不宣称新增产品能力。代码基线5679113；fetch后组员扫描候选f8bedfd6bd823b7459ffbffda9d38c2903984a6c、前端83e89281e941801e1a62f0661d3def6de77f9a8b未变化。只更新既有三份治理文件；无新架构、规格或重复代码。
 
-- R05补充确认及六份关联状态文件已提交为 `afd41f6`，普通推送至 `origin/codex/scan-reliability-integration`；本地HEAD与远端引用均为 `afd41f64d6cb25837758de1314582f886774e31f`。上一段“尚未提交或推送”保留为当时状态，由本回执更新。
-- 本次发布只关闭R05第一位真人重新确认门禁；第二位独立真人、三份旧扫描JSON和13个额外Evidence对象复核仍未关闭，未合并 `main` 或 `integration/p0`。
-## 2026-09-13 Java 后端迁移纵切
+| 顺序 | 已有可复用代码 | 实测缺口与最小动作 | 有效工程小时估计 |
+|---|---|---|---|
+| 1 真实扫描链 | 候选scan_sealed_tree、normalize_license、detect_ai_assets；当前A4/B5/A5/A6 | 在现有输入会话内调用；Syft尚丢弃artifact licenses、ScanCode仅全局候选，需准确资源绑定；规则适配不能因一个未知资源阻断整批。修复dataset误识别及重复Evidence ID，不重写检测器 | 7–12 |
+| 2 核心Web | 已有NewScan/Progress/Overview/Risks/EvidenceReader与轮询 | 改为冻结请求字段和202→状态/资源/风险/证据读取，下载已有后端报告；不新增仓库validate或PATCH处理状态接口，不引入Graph等P1页面 | 4–7 |
+| 3 部署 | 已有API工厂、私有data目录、前端build；deploy仅说明 | 最小Compose/启动说明，固定工具版本与数据卷，目标Linux运行实际受限工具并验证一次重启与全链 | 3–5 |
+| 4 P0收口 | 候选指标计算器、已有资源与AI记录 | 从真实扫描结果产首批golden预测而非手填predicted，核验Git/ZIP与四类资源样例、AI降级及资源记录 | 2–4 |
 
-| 工作包 | 状态 | 已验证证据 | 未关闭门禁 |
+估计依据是上述具体适配点，尚非实测开发速度：先看到简单真实Web约11–19有效小时；原执行书完整P0约16–28有效小时，工具环境准备暂另留2–4小时（合计参考18–32小时）。安装/权限/目标机器阻塞没有可靠上限，因此不再给固定工作日承诺。正式报告、视频、竞争力对照/消融不计入该P0开发估算。
+
+核查证据：扫描候选原测试10 passed/2 skipped（真实工具两项跳过）；独立动态探针复现HF dataset URL额外model及同一行重复Evidence ID。前端候选原测试16 passed，但真实后端按候选multipart字段返回422，正确source_type=zip返回202，而候选validateSnapshot拒绝该真实202。故候选单测通过不等于联调通过。前端还请求冻结API不存在的repositories/validate与PATCH风险路径，报告页自行导出前端快照；应仅适配P0路径与既有报告，不扩后端契约。
+
+环境边界：当前PATH未发现docker/scancode/syft，常用Docker socket未发现；不能据此断言全机未安装。候选工具入口使用/proc/self/fd，本机无该路径；组员历史真实工具测试不等于本轮ZIP→受限工具→A4完成。不得用模拟工具冒充此门禁。
+
+下一任务只做第一行：复用组员候选接通一个ZIP样例，使已知与未知许可证资源都能诚实进入规则/AI降级/报告；不得把根LICENSE分配给全部依赖，也不得把pending自动提升verified。未知资源的处理需保持原公共模型和事实边界。按文件选择候选，避免覆盖旧ingestion导出而回退当前Git能力。
+
+用户A1–A8状态沿用第7节：A1/A5子系统完成，A2/A3/A4/A6已有纵切，A7真实Web与部署未完成，A8首批指标及收口未完成。本轮完成的是A4/A7/A8缺口核查，无新增产品功能；Root主责、独立审计辅助。当前可演示仍为真实依赖扫描、持久查询与阶段报告；完整风险Web和陌生机尚不可宣称。
+报名资格/权属由Owner核实；完整作品另需报告/视频/资源表/匿名与发布；竞争力另需案例对照、误差分析及稳定演示。这些不阻止先跑通简单产品，不作为当前扩展功能的理由。
+发布范围：docs/p0-first-product-gap-check，仅PROJECT_PROGRESS、AGENT_WORKLOG、05-ai-assistance-log；不合并主线或改组员分支。本次运行精确 token 数不可获得；开工6k–12k估算，核查范围完成，实际区间不可确认，无范围扩张。
+
+## 9. 一个真实ZIP到许可证风险报告（2026-09-05）
+
+本轮A4最小接线已验收：原样复用扫描组员f8bedfd的licenses两文件，新增一个A4薄模块，现有ZIP回调/normalize最小接线。无新接口/Schema/依赖/队列、图谱、B6或Web扩展。分支feat/a4-zip-license-report；仅必要源码、原测试增量与既有运行/治理记录，Root统一提交推送。
+
+动态ZIP真实Uvicorn/default factory：POST202→completed/100，2组件（MIT声明、NOASSERTION未知）、2条review_required；来源JSON pointer与SHA正确，声明保持pending，四格式GET摘要核对且重启后字节相同。没有可绑定许可证的旧输入仍partial/rules70。该完成是manifest扫描链，不是ScanCode/Syft真实工具验收或授权法律结论。
+实现46 passed、独立23 passed、最终完整1025 passed/3 skipped/2 warnings。新增读取预算曾使大合法ZIP从partial变failed，独立实测后修复为读前保守跳过，不提高A2限额；原始失败与修复前1023全量结果保留，最终结果单列。两个warning为既有AnyIO与刻意fork提示；三个skip为原可选门禁。原unit/独立定义AST、OpenAPI、Schema/sample和组员SPDX原字节核对通过。
+
+| 用户任务 | 累计状态 | 本轮完成／累计能力 | 未完成或依赖 | 责任／发布 |
+|---|---|---|---|---|
+| A1 | 已完成 | 本轮保持冻结契约 | 持续兼容 | 用户/Root；既有已推送 |
+| A2 | 进行中 | ZIP/Git输入已有；本轮大ZIP不退化 | 目标部署安全复验 | 用户/Root；既有已推送 |
+| A3 | 进行中 | 真实ZIP HTTP与重启报告已验 | 核心Web联调 | 用户/Root；既有已推送 |
+| A4 | 进行中 | 本轮npm声明→标准化→风险→报告完成 | ScanCode/Syft真实环境与精确来源绑定、AI资产/Python许可证/Git事实仍缺 | 用户/实现→审查→Root；本轮功能分支 |
+| A5 | 子系统已完成 | 本轮AI关闭仍完成报告 | 完整案例AI效果 | 用户/Root；既有已推送 |
+| A6 | 进行中 | 本轮真实风险内容与四格式重启下载 | Web下载、最终匿名检查 | 用户/Root；本轮验证 |
+| A7 | 进行中 | 前端候选和接口缺口已核清 | Web适配未完成；Compose/陌生机未开始 | 用户/Root集成；部署未发布 |
+| A8 | 进行中 | 本轮证据与发布记录 | 首批真实指标及P0收口 | 用户/Root；本轮记录 |
+
+当前可独立演示新增上述npm ZIP处理链，尚无完整真实扫描器/AI资产/Web/部署产品。下一步优先复用前端候选接现有六API和报告（此前估计4–7有效工程小时）；外部工具并行准备环境，剩余P0工期取决于该环境，不以本切片完成宣称P0完成。
+需要扫描组员提供：Linux/Docker可运行方式、固定ScanCode/Syft版本及校验/命令；一个可再分发小样例的真实输出与组件许可证归属说明（不提供密码/令牌）。已有SPDX无需重写。前端组员需将提交/轮询/报告下载对齐冻结六API，不新建仓库validate、PATCH或Graph；可提交候选由Root复用。由用户决定并发送组员协作消息，本轮未擅自联系真人组员。
+报名资格/权属仍由Owner核实；完整作品另需材料/匿名/发布；竞争力另需对照案例/误差分析。这些不计入当前简单产品开发。token开工非硬估算12k–22k；本次运行精确 token 数不可获得，manifest ZIP任务完整交付、实际区间不可确认；明确收窄到可实测声明链，外部工具门禁未关闭。
+
+## 10. 简单真实Web已跑通（2026-09-05）
+
+本轮A7 Web窄切片完成：选择复用组员83e8928核心页面，接当前8318f88后端；无新页面设计、Graph/React Flow、后端接口、运行依赖或锁文件变动。分支feat/a7-simple-web，Root验收后统一推送，未合并main/integration。
+默认API，ZIP为默认输入。POST字段按冻结契约，202后仅轮询status，completed/partial才读资源/风险/证据；终态JSON报告补真实许可证/时间/整改。四格式直接下载后端已发布产物，不信任任意href。pending与info保持含义，真实结果只读，未提供时间显示未提供；失败不降mock。
+
+验证：unit20 passed；TypeScript及Vite生产build通过；开发服务、生产preview各10项真实Chrome浏览器检查通过，含ZIP完成、资源/MIT/NOASSERTION、风险/Evidence、深链接刷新零重复POST、四格式SHA与后端相等、390px导航/无横向溢出、partial、无效ZIP异步failed、任务404、零未支持端点/运行异常。桌面与手机截图已人工查看，产物仅仓库外。
+两项真实阻断已关闭：queued直接读取resources导致409并停轮询；partial无报告实际409 report_not_ready/not_generated不应整页失败。测试初稿把无效ZIP误期望为POST拒绝，已按原异步协议修正为202→failed；选择器文本与响应式渲染等待修正，不修改后端或降低断言。Root新增重复cancelled判断的TS错误已修复后重新检查。一次测试服务退出导致connection refused，重启后验收通过；不混记为产品缺陷。实现子任务状态异常后Root中止并接手，源码归属无并发覆盖。
+后端源码/Schema/测试完全未变，未重复既有1025项后端全量；该计数仍属于8318f88历史验收，本轮证据是20前端测试和真实浏览器闭环。
+
+| 用户任务 | 累计状态 | 本轮／累计完成 | 未完成或依赖 | 责任与发布 |
+|---|---|---|---|---|
+| A1 | 已完成 | 公共契约保持不变 | 持续兼容 | 用户/Root；既有已推送 |
+| A2 | 进行中 | 真实ZIP上传、非法ZIP失败提示 | 目标部署安全复验 | 用户/Root；后端未改 |
+| A3 | 已完成（当前单机API范围） | 本轮真实页面消费冻结六API | 部署总验收归A7 | 用户/Root；本轮功能分支 |
+| A4 | 进行中 | npm声明风险报告已有，页面可查看 | 真实ScanCode/Syft及AI资产接线 | 用户/Root；后端未改 |
+| A5 | 已完成（子系统） | AI关闭的真实链仍可用 | 完整案例效果验收 | 用户/Root；既有证据 |
+| A6 | 已完成（本机报告链） | 本轮真实页面四格式下载及摘要一致 | 最终材料匿名检查归A8 | 用户/Root；本轮功能分支 |
+| A7 | 进行中 | 本轮简单Web、生产build/preview完成 | Compose、目标环境与陌生机未开始验收 | 用户/Root集成；未发布部署 |
+| A8 | 进行中 | 本轮复用来源、测试、运行和发布记录 | 首批真实golden指标及P0冻结 | 用户/Root；本轮记录 |
+
+当前能独立演示浏览器ZIP→真实扫描→资源/待核验风险/Evidence→报告，含刷新与失败提示。尚非完整扫描器/AI资产/陌生机P0产品。剩余主包：真实扫描器及资产接线、最小部署验收、首批样例指标和资源记录收口；下一任务优先最小Compose并落实扫描工具运行环境，不增加服务治理或多机架构。部署本身沿用此前3–5有效工程小时估计，环境未确认前不承诺整体剩余天数。
+报名资格/权属仍由Owner确认；完整作品另需材料/匿名/发布；竞争力另需对照案例与效果证据，均不扩张当前简单产品范围。token开工12k–22k非硬估算；本次运行精确 token 数不可获得，Web任务完整交付、实际区间不可确认，无功能范围扩张。
+
+## 11. 最小Compose与真实工具环境（2026-09-05）
+
+本轮分支`feat/a7-minimal-compose`，基线a1a710f。Root复核最新组员分支未变，没有重复部署代码；只增加既有deploy目录下必要配置和两个复现脚本、根.dockerignore，并更新既有运行/资源/治理文档。backend/frontend/Schema/规则/tests源码未改，未扩P1/P2。
+
+最小部署已完成：web/api健康；Chrome extension插件真实ZIP→completed报告与刷新恢复；真实HTTP9项及重建API后四格式SHA相等。API UID10001/data0700、只读根、cap_drop ALL与唯一127.0.0.1:8080端口核验。scanner按需profile，非root/断网/只读linux/amd64：ScanCode32.5.0实际识别MIT，Syft1.51.0实际识别is-number@7.0.0及lock来源。官方工具包SHA、基础镜像manifest digest已固定，命令及版本见deploy/README.md。
+Chrome JSON点击后download事件超时，下载管理页被插件策略禁止，未绕过；浏览器文件保存结果仍未确认，四格式下载内容由HTTP独立验证，不混为Chrome下载保存成功。此项不影响已运行部署和工具环境，但本轮浏览器下载验收项保持未完成。未运行历史1025后端全量，没有把工具原始输出映射成Web已使用工具。
+
+| 用户任务 | 累计状态 | 本轮完成／累计完成 | 未完成、未开始或依赖 | 责任角色 | 证据／发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 领域与六API冻结契约保持 | 持续兼容 | 用户/Root | 保护目录不变；既有已推送 |
+| A2 | 进行中 | 本轮Linux容器ZIP成功、路径穿越输入失败 | Linux公开Git与最终安全复验未完成 | 用户/Root | 真实HTTP，部署分支 |
+| A3 | 已完成（单机范围） | 单worker与既有持久派发在容器运行 | 无新队列任务；部署总验归A7 | 用户/Root | API健康、容器重建后原状态保持 |
+| A4 | 进行中 | 既有manifest链保留；本轮外部工具环境实跑 | 工具输出接主链与AI资产事实仍未完成 | 用户/Root，依赖组员适配器 | 两工具真实输出；未声称Web工具接线 |
+| A5 | 已完成（子系统） | 本轮默认AI关闭不影响Web报告 | 完整案例效果、容器模型运行未验 | 用户/Root | 既有本机模型证据，本轮未调用 |
+| A6 | 已完成（本机报告链） | 本轮四格式在容器重建后字节一致 | Chrome文件保存确认未完成；最终匿名归A8 | 用户/Root | HTTP四格式SHA通过 |
+| A7 | 进行中（最小部署已完成） | Compose、Docker安装与工具环境、Chrome真实页面完成 | 陌生机复现未开始；完整P0部署待A4收口 | 用户/Root；只读审查子任务 | 构建/健康/权限/HTTP/工具通过；功能分支发布 |
+| A8 | 进行中 | 本轮运行说明、来源、AI/验证记录 | 首批真实golden指标、P0冻结未完成 | 用户/Root | 本轮治理记录，未Release |
+
+当前可独立演示容器Web ZIP→资源/待核验风险/Evidence→报告，并独立运行外部工具样例。仍无工具与AI资产的完整产品主链；当前Compose明确关闭Git/AI，不能把既有宿主机能力外推为容器已支持。
+P0余下三包：①工具与AI资产接线及案例效果；②最终输入/容器安全与陌生机复现；③首批真实golden指标及资源记录冻结。下一任务只做①中的真实工具接现有ZIP Pipeline，预计4–8有效工程小时，先核准组员的精确来源绑定，继续不加新API/队列。
+剩余整体仅作条件排期约16–28有效工程小时（按每天8有效小时约2–4集中工作日），包含上述三包，前提组员候选可复用、没有新的环境或证据绑定阻断；不是实测工期或保证。环境从未就绪变为已实跑，本次已完成部署不再计入剩余工作，不沿用旧7–14工作日。
+报名/参赛仍须Owner核对平台、主体和权属；完整作品还需报告/视频/匿名/正式发布；竞争力另需对照案例、误差分析和稳定演示，不混入当前简单产品开发工期。
+本次运行精确 token 数不可获得；开工非硬估算12k–22k，最小部署与工具环境交付完成，Chrome文件保存确认仍未完成，实际token是否落在区间不可确认；无产品功能范围扩大。
+
+发布绑定：最小部署实现`a231d7273cf2e31da3b3d08bbcb3af5075a426a7`已推送`feat/a7-minimal-compose`并经远端完整哈希核对一致；本轮14文件，无业务源码改动，未合并/Release。随后仅追加发布记录。Chrome文件保存确认仍未完成，不改变本节限制。
+
+## 12. 真实 ZIP 工具接主链（2026-09-05）
+
+分支 feat/a4-real-zip-scanners，基线2dc451d。复用组员f8bedfd现有适配器，补齐受控执行和来源绑定；无新公共API、Schema、队列架构或P1/P2。真实ScanCode32.5.0/Syft1.51.0已进入现有Web报告，两个依赖精确合并且保留原ID，Syft另识别项目自身；根Apache LICENSE未赋给MIT或未知依赖。工具失败保留partial/report/95。内部接受profile仅增加可选工具布尔值，旧任务默认关闭。
+
+| 用户任务 | 累计状态 | 本轮完成／累计能力 | 未完成或未开始 | 责任角色 | 验证证据／发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共领域模型及六API保持 | 持续兼容 | 用户/Root | OpenAPI与基线等值、Schema等值；既有发布 |
+| A2 | 进行中 | 本轮可信fd回调、同树封印与异常清理 | Linux公开Git、部署安全总验收未完成 | 用户/Root | 独立生命周期/穿越/哈希检查；本轮分支 |
+| A3 | 已完成（单机范围） | 接受工具开关与恢复兼容 | 无新增队列任务 | 用户/Root；受限实现子任务 | 相关87项、全量通过；本轮分支 |
+| A4 | 进行中 | 本轮真实ScanCode/Syft→许可证/证据/风险/报告 | 最小AI资产事实接线未完成 | 用户/Root；复用组员输入 | 独立36项、真实HTTP与Chrome；本轮分支 |
+| A5 | 已完成（子系统） | 既有Provider/真实模型能力保留 | 完整产品案例效果与容器模型未验 | 用户/Root | 本轮AI关闭，未外推旧实测 |
+| A6 | 已完成（本机报告链） | 本轮报告含工具来源，重建后四格式SHA不变 | Chrome文件保存确认仍未完成 | 用户/Root | 真实HTTP四格式、Chrome报告/刷新；本轮分支 |
+| A7 | 进行中 | 两常驻容器健康，API共享工具层、独立venv | 陌生机复现未开始，完整P0部署待收口 | 用户/Root；部署子任务 | 构建、健康、Chrome通过；未Release |
+| A8 | 进行中 | 来源/说明/AI记录与回归同步 | 首批golden指标和P0冻结未完成 | 用户/Root | 全量1103 passed/3 skipped；待Root推送绑定 |
+
+当前可以独立演示Chrome ZIP→真实两工具→资源/待核验风险/来源证据→报告，并在API重建后恢复；没有把pending说成授权确认。仍无完整AI资产纵切，Compose关闭Git/AI，未完成陌生机复现和Chrome文件保存确认。三个skip是已有可选真实模型/公网门禁；本轮不重复前端构建，不宣称完整产品已验。
+
+P0剩余三包：最小AI资产及案例效果、最终输入/部署安全与陌生机复现、首批golden指标与资源冻结。下一任务只接一个明确模型/数据集样例的现有识别结果到资源/风险/报告，先复核组员代码，不加图谱或新接口。条件排期约12–20有效工程小时（按每天8有效小时约2–3集中工作日）；前提候选可复用且无新的环境阻断，不是保证，不把已完成工具接线重复计入。
+
+报名/参赛仍需Owner确认平台资格与权属；完整作品另需材料、视频、匿名与正式发布；竞争力另需对照效果与稳定演示。这些门禁不混入当前简单P0开发估算。本次运行精确 token 数不可获得；开工非硬估算12k–22k，技术范围交付完成、实际区间无法确认；范围仅补内部接受开关和真实格式修复，未扩大产品功能。发布绑定待Root补录。
+
+发布绑定：e50f4ce4fe94f9ce98e169c43286d25a28c70f99 已上传 feat/a4-real-zip-scanners，远端完整哈希核对一致；EVD-A4-REAL-ZIP-SCANNERS-001绑定该实现。上述本轮分支/待推送项现为已推送功能分支，29文件，未合并/Release。工具接线任务完成，A4/P0父任务仍进行中。
+
+## 13. 明确模型引用样例（2026-09-05）
+
+分支feat/a4-ai-asset-report，基线6a832f3。按执行书A4只挂接组员B6；detector沿用f8bedfd并作必要修正。ZIP有限文本中的明确模型引用已进入原AIAsset/风险/Evidence/报告；没有软件依赖的模型ZIP也能完成。复用本机已安装Qwen3身份作为样例背景，不安装、不推理、不上传权重；实际扫描只消费ZIP文本，不读取操作者模型目录。
+
+| 用户任务 | 累计状态 | 本轮完成／累计能力 | 未完成或未开始 | 责任角色 | 验证／发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共模型与六API保持 | 持续兼容 | 用户/Root | OpenAPI、Schema等值；既有发布 |
+| A2 | 进行中 | 模型读取复用原封印、限额和清理 | Linux公开Git、部署安全总验收未完成 | 用户/Root | 独立边界+全量通过；未改A2实现 |
+| A3 | 已完成（单机范围） | 现有资源/风险/报告直接返回模型 | 无新接口或队列 | 用户/Root | 真实HTTP通过；未改API实现 |
+| A4 | 进行中（本任务完成） | Qwen3模型引用→资源/待核验风险/报告，保留软件许可 | 真实公开项目完整链与范围覆盖总验收未完成 | 用户/Root；复用组员，Luna验收 | 82实现/9独立；待Root推送 |
+| A5 | 已完成（子系统） | 本机锁定manifest身份再次核对 | Compose模型推理与真实项目建议效果未验 | 用户/Root | 本轮AI关闭、未推理；保留旧证据 |
+| A6 | 已完成（本机链） | 模型条目、来源行号、四格式和重建恢复 | Chrome文件保存确认仍未完成 | 用户/Root | HTTP四SHA、Chrome详情/报告/刷新通过 |
+| A7 | 进行中 | 复用现有Compose，API/Web健康 | 陌生机复现未开始、完整部署待验 | 用户/Root | 仅API重建，无新服务；未Release |
+| A8 | 进行中 | 复现脚本、来源、独立测试和治理同步 | 首批golden指标、P0冻结未完成 | 用户/Root | 全量1146 passed/3 skipped；待发布绑定 |
+
+当前能独立演示软件依赖+明确模型引用→待核验风险→文件SHA/行号证据→现有报告；没有将引用当成实际使用或授权。静态链接保守匹配，未知许可证NOASSERTION；不会自动读取远程许可证、核验模型权重或证明完整B6覆盖。Git资产接线、Compose内AI、陌生机及Chrome保存仍未完成。
+
+下一任务：按执行书验收一个真实公开项目的扫描→风险/证据→AI建议→报告，只修阻断主链的问题；先核对已有Git与A5部署差距，不自动加图谱、重试或新接口。P0剩余三包：真实项目完整链/部署差距、陌生机和安全复验、首批golden指标与资源冻结。条件排期8–16有效工程小时，约1–2个集中工作日，前提已有Git/AI实现可复用且无新阻断；不计完整材料和竞争力实验，不是保证。
+
+可报名/参赛仍需Owner确认资格与权属；可提交完整作品另需报告、视频、匿名检查和正式发布；竞争力还需对照效果与稳定演示。无可靠分母，不报完成率。本次运行精确 token 数不可获得；开工10k–18k非硬估算，模型样例任务点完整完成，实际是否在区间无法确认；修复仅限候选接线缺陷，未扩P1/P2。发布绑定待补录。
+
+发布绑定：2ccb75cbd09e7950aa0a98656daea6014dc0e3f9已上传feat/a4-ai-asset-report并核对远端完整哈希；EVD-A4-AI-ASSET-ZIP-001绑定实现，17文件，未合并/Release。上述本轮待发布项现为已推送功能分支；模型样例任务完成，P0父任务仍进行中。
+
+公开项目选样（2026-09-05）：已只读核实huggingface/smolagents固定commit a3df1a21db6045aa9be15b4bdf2067041100e96a（v1.0.0），62文件、约1.20MiB展开，包含Python依赖、明确模型与数据集URL。作为下一轮真实ZIP端到端候选，尚未扫描验收，不改变本节A1–A8完成状态。选样来源与SHA见工作日志PublicSampleSelection；仅治理记录随feat/a4-ai-asset-report发布，未合并/Release。
+
+## 14. 固定公开 ZIP 与真实 Qwen3 报告验收（2026-09-06）
+
+复用分支 feat/a7-public-zip-qwen-acceptance，基线6ac3998。用户中断后检查原任务，发现后台已完成，继续验证原scan而未重新上传或扫描。仅修复 ScanCode 默认漏扫VCS文件、Docker Desktop本机模型连接和原结构校验拒绝的提示词问题；无新公共接口、Schema、队列或P1/P2。
+
+| 用户任务 | 累计状态 | 本任务完成／累计能力 | 未完成、未开始或待验证 | 责任角色 | 验证证据与发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共领域及六API保持 | 持续兼容 | 用户/Root | OpenAPI与6ac3998等值；本分支不改契约 |
+| A2 | 进行中 | 实际公开ZIP经原安全读取边界 | Linux公开Git与最终部署安全待验 | 用户/Root | 封印fd及预算回归；本分支待发布绑定 |
+| A3 | 已完成（单机范围） | 原持久任务正常完成并重建恢复 | 无新增队列任务 | 用户/Root | 同一scan重建后completed；既有实现保留 |
+| A4 | 进行中（本任务完成） | 227组件、4引用资产、283证据、231待核验提示进入报告 | 公开Git完整接线和覆盖总验收待完成 | 用户/Root，复用组员输入 | 真实两工具及原ZIP SHA；本分支待发布绑定 |
+| A5 | 已完成（本机ZIP链） | Compose调用已有锁定Qwen3，231条pending建议 | 建议效果的golden评测归A8；不声称语义全部正确 | 用户/Root | 模型身份、证据引用、AI前后确定性事实对照通过 |
+| A6 | 已完成（本机报告链） | Chrome正文及四格式持久化验收 | Chrome下载保存落盘确认仍待验证 | 用户/Root | 重建后四格式SHA不变；HTTP下载通过 |
+| A7 | 进行中（本机部署通过） | API/Web健康，本机Compose+Qwen3运行 | 陌生机复现未开始；公开Git部署待验 | 用户/Root | Chrome原任务刷新恢复；未Release |
+| A8 | 进行中 | 本任务复现说明、来源和AI记录同步 | 当前实现首批golden指标、P0最终资源/安全冻结未完成 | 用户/Root | 1200 passed、3 skipped、2既有warning；待发布绑定 |
+
+证据 EVD-A7-PUBLIC-ZIP-QWEN-001：smolagents commit a3df1a21db6045aa9be15b4bdf2067041100e96a，ZIP SHA256 c486d41688b937e208393b95e70fc7293c555b046f4284a8fca7a925fe6ef4a9。AI关闭scan scn_be55489e-b1c1-4de5-81b9-1b8f1b37a4ae，29.33秒；成功AI scan scn_58822f0b-c0c5-47f2-825d-2206103cd597，963.30秒，无errors。保留前述失败报告。Chrome报告有231条AI解释、4引用及文件行号；复用原scan重建后四格式SHA一致。没有重复推理或提交原始报告、目标源码与权重。
+
+当前可独立演示真实公开ZIP→两工具→软件和明确AI引用→待核验提示/证据→本机AI建议→Web与四格式报告。231条提示不等于231个已确认违规；引用不等于实际使用或授权。模型建议尚待人工复核和效果评测。三个skip仍是可选真实模型/公网测试门禁，未冒充通过。本轮真实模型链另有上述独立实跑证据。
+
+P0剩余三包：①现有公开Git输入到部署的最小接线与安全验收；②陌生机复现及Chrome下载保存确认；③当前detector首批golden指标、资源记录与P0冻结。下一任务只核清并补①的具体阻断，不增加Git恢复或调度。条件排期约6–10有效工程小时，加陌生机可用性等待；依据复用既有实现、不扩识别范围，若公网/环境出现阻断再按缺口调整，不保证日历完工时间，不计额外竞赛材料。
+
+可报名/参赛：Owner确认资格、平台与权属；可提交完整作品：上述P0门禁加正式材料、演示视频、匿名检查与正式发布；具备竞争力：还需真实对照、误差分析与稳定演示，不能由本次单案例推导获奖概率。仅列用户A线，不把组员B线算作用户完成项。
+
+本次运行精确 token 数不可获得。恢复收口开工估算6k–12k，任务范围内验收完成，实际token是否落在区间不可确认；未扩展范围。功能分支发布绑定随后追加，未合并main或Release。
+
+发布绑定：实现提交48f6267a27df792c8c248b45d54f4bc8b311346a已推送feat/a7-public-zip-qwen-acceptance，git ls-remote完整哈希与本地一致。19个源码/测试/既有说明文件；未合并main或Release。EVD-A7-PUBLIC-ZIP-QWEN-001绑定该实现，任务点完整交付，P0父任务仍进行中。 上表本轮待发布项现为已发布功能分支；随后提交仅补发布记录。
+
+## 15. 扫描组员首批 Bench 集成验收（2026-09-06）
+
+用户确认组员分支为codex/p0-external-tools-sync，fetch后HEAD=89c8ba2，增量实现1c7239e。保留本机0.1.1检测器和前轮真实ZIP/Qwen成果；精准复用既有组员bench目录/样例/评测代码，不整支覆盖。按执行书B7首批3–5例与第15节Bench、AI资源DoD推进用户A8集成验收，不将B7写成用户独立任务，不做P1批量Bench。
+
+| 用户任务 | 累计状态 | 本轮完成／累计能力 | 未完成或待验证 | 责任角色 | 证据／发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共契约保持 | 持续兼容 | 用户/Root | 公共源码/Schema不变，领域回归通过；既有发布 |
+| A2 | 进行中 | 5个源文本ZIP走原安全输入 | 公开Git部署与最终安全待验 | 用户/Root | 真实Compose HTTP；本轮分支待绑定 |
+| A3 | 已完成（单机） | 复用原5个scan ID验收，无重复任务 | 无新增队列工作 | 用户/Root | 重建后原终态可读；既有发布 |
+| A4 | 进行中（本轮验收完成） | 模型/数据集/API正例到Evidence/风险/四格式；普通链接负例不误识别 | 公开Git完整链仍待验 | 用户/Root，组员提供样例 | 5例检测器+动态ZIP+HTTP；不改业务检测器 |
+| A5 | 已完成（本机ZIP链） | 本批AI关闭；恢复原Qwen配置，前轮报告四SHA保持 | 建议效果评测未完成，不计作本批识别指标 | 用户/Root | 原Qwen报告verify通过；未重复推理 |
+| A6 | 已完成（本机报告链） | API资源在Chrome展示行号；4正例四报告通过 | Chrome保存落盘确认待验 | 用户/Root | Chrome src/client.py:1及真实四格式；本轮分支 |
+| A7 | 进行中 | 原Compose复用并恢复AI配置 | 陌生机复现未开始，公开Git部署待验 | 用户/Root | API健康，旧报告保留；未Release |
+| A8 | 进行中（首批Bench接入完成） | 复用5例、当前版本实测结果、可计算指标、来源/AI记录 | 标签独立人工复核、P0最终资源/安全冻结待完成 | 用户/Root，限定只读审查 | 159相关测试通过；待功能分支发布绑定 |
+
+EVD-A8-SCANNER-BENCH-001：固定5例不改源片段或expected；当前detector0.1.1 TP=4/FP=0/FN=0，micro precision/recall/F1=1.0；负例自身TP/FP/FN均0，其零分母指标定义为0。结果文件benchmarks/results/static-ai-assets-v1.actual.json SHA a66320164f14741b843341e42d5e3c2c5d575199d6af3d3b5cb02c861731bd0f。组员旧0.1.0结果仍留在原提交历史，未混为当前结果。没有声称真实项目总体准确率、许可证准确率或AI质量得分。
+
+部署实跑4正例全部completed/无errors，4种报告与证据SHA/行号通过；负例failed/scan/dependency_manifest_not_found，零资源summary及resources=409 scan_not_ready符合原契约，不生成报告。首次验收脚本误把负例响应当空列表，仅修正预期后复核同5个ID，未改API、未重复扫描。Chrome真实API条目openai、NOASSERTION及src/client.py第1行openai.responses可见。恢复AI配置后原Qwen报告四SHA通过；本轮正例原任务也再验证通过。完整原始HTTP输出保留仓库外，Git仅提交合成检测器结果及必要复现记录。
+
+当前可独立演示原公开ZIP完整链，并补齐模型/数据集/API带Evidence的首批回归样例和可计算识别指标。P0尚余：公开Git输入/部署安全最小验收、陌生机及浏览器下载确认、最终资源/安全记录冻结与标签人工复核；不再把首批Bench脚本接入算作未完成。下一任务回到公开Git现有缺口，只修阻断。条件估计约4–8有效工程小时，另加异机和人工复核等待；无新环境阻断才适用，不是日历保证，不计额外材料或P1/P2。
+
+报名/参赛仍由Owner核实平台资格及权属；完整作品提交还需材料/视频/匿名检查与正式发布；竞争力需更广真实样例、误差分析和对照效果，不由5例推导。当前任务无代码缺交阻塞，不要求扫描组员重复提交本批代码。
+
+本次运行精确 token 数不可获得。开工8k–16k非硬估算，本轮范围确定为组员首批Bench集成验收并完整收口，未扩P1/P2；实际是否落入区间不可确认。分支feat/a8-scanner-bench-acceptance，发布绑定随后追加。
+
+发布绑定：2f212dbd05079408e477ad7ebdd1e50d094af9eb已推送feat/a8-scanner-bench-acceptance，git ls-remote完整哈希一致；17个必要文件，EVD-A8-SCANNER-BENCH-001绑定该接入提交。首批Bench集成任务完整交付，P0父任务仍进行中，未合并main或Release。 上表本轮待发布项现为已推送功能分支；随后提交仅补发布事实。
+
+## 16. 公开 Git 最小接线与部署验收（2026-09-06）
+
+基线0dcca39，分支feat/a7-public-git-deploy-acceptance。按用户批准的下一任务和执行书P0输入DoD，只补三个缺口：API镜像Git包、Compose默认关闭但可显式开启、Git复用既有ZIP许可证/AI资产/真实工具处理。没有新接口/Schema、复制检测器、Git恢复/重试、图谱或P1/P2。
+
+| 用户任务 | 累计状态 | 本轮完成／累计能力 | 尚未完成、未开始或待验证 | 责任角色 | 验证证据／发布 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 六API/领域保持 | 持续兼容 | 用户/Root | OpenAPI与0dcca39等值、Schema无diff；既有发布 |
+| A2 | 进行中（Git/ZIP本机门禁通过） | Git实际HTTPS/对象物化/封印树；拒绝非法URL、失败清理 | 最终安全清单冻结、陌生机复验 | 用户/Root，受限实现子任务 | 真实公网+容器控制+Git边界测试；本轮分支待绑定 |
+| A3 | 已完成（单机范围） | Git沿用原任务机制、ZIP成果保留 | Git中断自动恢复明确不在本任务范围 | 用户/Root | 原终态及报告重建后恢复；无新队列 |
+| A4 | 已完成（P0样例链范围） | Git复用现有manifest许可/AI引用/真实两工具；9组件/11证据/9提示到报告 | 更广识别覆盖不由本样例证明；最终冻结待完成 | 用户/Root，复用组员输入 | 11条Evidence与独立同revision源文件SHA全部一致；本轮分支 |
+| A5 | 已完成（本机ZIP链） | Git沿用原Provider参数，恢复本机AI配置 | 本次Git AI关闭，未宣称Git新增实测建议；质量评测仍未完成 | 用户/Root | 旧Qwen四格式SHA保持、Ollama0.33.3可用 |
+| A6 | 已完成（本机报告链） | Chrome Git报告及四格式、重建留存通过 | Chrome下载落盘确认待验 | 用户/Root | Git及旧ZIP四格式字节保持；本轮分支 |
+| A7 | 进行中（本机Git/ZIP部署完成） | Debian Git包、现有容器控制、显式开关 | 陌生机复现未开始 | 用户/Root | UID10001/只读/cap0/NoNewPrivs/Seccomp/4GiB/128进程；未Release |
+| A8 | 进行中 | 运行说明、来源、测试与证据同步；既有首批Bench保留 | 资源/安全清单冻结、标签人工复核 | 用户/Root | 1221 passed/2 skipped/2既有warning；待功能分支发布 |
+
+EVD-A7-PUBLIC-GIT-DEPLOY-001：Chrome创建scn_fed61b87-fc58-4e70-a7af-0d0e5ead9330，公开PyPA sampleproject实际revision621e4974ca25ce531773def586ba3ed8e736b3fc，与事先ls-remote记录相同。13.838659秒，completed/无errors，Git2.39.5、ScanCode32.5.0、Syft1.51.0。9资源/11Evidence/9待核验提示不等于9个已确认违规；根MIT不继承给peppercorn等依赖。实际调用仍跟随公开默认分支，没有暗增pin参数或声称URL永久固定。
+
+HTTP/回环IP/元数据IP/query四类URL接收前422；example.invalid产生scn_8713935b-837a-4b05-8b59-eff6a7810110，failed/ingestion/invalid_source，报告409，工作目录为空。只允许named volume而非宿主目录；系统包来自Debian官方，具体版本与限额进入现有provenance。容器子进程仍共享API网络，不冒充逐进程网络隔离或完整攻击语料验收。
+
+当前可独立演示Git和ZIP→真实扫描→资源/待核验风险/Evidence→Web报告；模型/数据集/API已有样例，ZIP本机Qwen和首批Bench已有证据。本次Git实跑关闭AI，保留原Qwen成果。完整P0尚须两包：①陌生机启动/扫描/下载复现及Chrome保存确认；②最终资源和安全清单冻结、标签人工复核。不再计入已完成Git接线，不开展P1/P2。下一任务优先①，先利用现有部署说明和验收脚本，不新造部署框架。
+
+条件估计仍需约2–4有效工程小时用于复现与冻结准备，另加陌生机可用和人工复核等待；不能保证日历完工时间，遇实际阻断按缺口重估，不混入完整材料或竞争力实验。报名/参赛仍由Owner核对资格、平台及权属；完整作品另需报告/视频/匿名/正式发布；竞争力需更广真实案例、误差分析和对照，不由单案例推断。
+
+本次运行精确 token 数不可获得；开工8k–16k非硬估算，任务范围内技术交付完成，无产品范围扩大，实际是否落入区间不可确认。发布绑定随后追加。
+
+发布绑定：实现0f1bdcc22a01a5f1f91b666d1ae94040bd3929ae已推送feat/a7-public-git-deploy-acceptance并核对远端完整哈希一致；16个既有文件、无新增文件，EVD-A7-PUBLIC-GIT-DEPLOY-001绑定该实现。本任务完整交付，完整P0仍待陌生机及最终冻结；未合并main或Release。 上表本轮待发布项更新为已推送功能分支，随后提交仅补发布事实。
+
+## 17. 异机复现准备与Chrome下载确认（2026-09-06）
+
+基线341dc34，分支docs/a7-browser-download-handoff。用户明确回复目前没有另一台设备，因此真实异机验收尚无法执行，不能用同机容器替代。已在现有deploy/README.md补最短步骤：固定已有完整实现commit、现有Compose、ZIP/Git脚本、重建验证和最小匿名回传信息；不新增脚本、架构或重复样例。
+
+| 用户任务 | 累计状态 | 本轮完成／保留能力 | 待完成或阻塞 | 责任角色 | 证据／发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共契约保留 | 持续兼容 | 用户/Root | 本轮无源码变化；既有发布 |
+| A2 | 进行中（本机通过） | 原Git/ZIP安全证据保留 | 异机安全复验与最终冻结 | 用户/Root | 原证据不重算；无新增验收结论 |
+| A3 | 已完成（单机） | 原任务与报告保留 | 无新队列任务 | 用户/Root | 未重建或重扫 |
+| A4 | 已完成（P0样例链） | 原扫描、资产/风险/证据能力保留 | 更广覆盖非本轮范围 | 用户/Root | 原已发布实现 |
+| A5 | 已完成（本机ZIP链） | 原Qwen与降级能力保留 | 异机AI未测试 | 用户/Root | 本轮未调用模型 |
+| A6 | 已完成（本机报告链），下载待验 | Chrome点击原Git报告JSON链接 | 未确认实际落盘路径/摘要 | 用户/Root | 默认Downloads及桌面精确文件名未发现，已询问用户；不可称下载完成 |
+| A7 | 进行中；异机门禁阻塞 | 已整理固定版本最小复现步骤 | 用户当前没有另一台设备 | 用户/Root及异机操作者 | 文档准备不是异机通过；待功能分支发布 |
+| A8 | 进行中 | 本轮边界与回传要求同步 | 最终资源/安全冻结、标签人工复核 | 用户/Root | 文档范围，无需重跑原1221测试 |
+
+当前仍可在本机演示Git/ZIP→扫描→资源/风险/Evidence→报告及已验收ZIP/Qwen；未新增异机或浏览器保存成功的主张。下一步取得实际下载文件路径做SHA比对；另一台设备可用后再执行既有复现步骤。设备等待无法给出可靠日历工期；此前2–4有效工程小时仅是复现/冻结准备估算，不包含设备与人工等待。
+
+报名仍需Owner确认资格与权属；完整提交还需异机门禁、最终冻结、材料/视频/匿名及正式发布；竞争力需真实对照和误差分析。本次运行精确 token 数不可获得；开工6k–12k，受设备与下载落盘证据不足限制，本任务部分完成，实际token区间不可确认；未扩大范围。
+
+发布绑定：四份既有文档提交e902c8dd23e2c41d0186592083e8ee3ed4bb8efc已推送docs/a7-browser-download-handoff，远端完整哈希一致；本节待发布项更新为文档已上传。异机及Chrome落盘门禁保持未完成，未合并main或Release。
+
+## 18. Mac 下载修复与资源/安全清单核对（2026-09-06）
+
+基线15b12ec，任务分支feat/a6-download-csp-fix。用户已确认有Windows电脑，异机状态更正为“设备已有、环境待确认”，本轮只在Mac操作。Chrome失败提示为“不符合安全政策”；发现报告下载响应CSP sandbox未允许下载，增加allow-downloads并保留其他安全限制，未修改Chrome设置。61项A6/API相关测试通过（1既有warning）；API重建后原Git和ZIP/Qwen四格式摘要分别verify通过。实际Chrome保存仍需最后落盘证据，不能仅依据HTTP通过结案。
+
+| 用户任务 | 累计状态 | 本轮结果 | 未完成/阻塞 | 责任角色 | 验证及发布 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 无公共契约变更 | 持续兼容 | 用户/Root | 既有实现；本轮API回归 |
+| A2 | 进行中 | 核对实际cgroup/UID/挂载/端口与原安全清单 | API无CPU配额、隔离与磁盘/fd限制覆盖、供应链锁定待收口 | 用户/Root | 只读运行证据；冻结未通过 |
+| A3 | 单机已完成 | 原任务ID和报告重建留存 | 不增加队列/Git恢复 | 用户/Root | 两组原报告verify通过 |
+| A4 | P0样例链已完成 | 原Git/ZIP/组员Bench保留 | 本轮无新增识别任务 | 用户/Root | 不重复扫描 |
+| A5 | 本机ZIP链已完成 | 旧Qwen报告摘要不变 | 人工效果复核待做 | 用户/Root | 无新推理 |
+| A6 | 报告链完成，浏览器验收进行中 | CSP最小修复、相关测试通过 | Chrome实际文件与摘要待确认 | 用户/Root | 本轮修复待发布 |
+| A7 | 本机部署完成，异机未开始 | 原数据保留、API更新健康 | Windows环境待确认，本轮不操作 | 用户/Root及异机操作者 | 本机重建验收 |
+| A8 | 清单核对完成，最终冻结未完成 | 现有资源/安全文档明确具体差距 | 包版本与声明登记、依赖锁定、安全缺口、人工复核 | 用户/Root | 本轮清单待发布 |
+
+更正此前“主要只剩验收”的宽泛表述：本机演示链确已跑通，但本轮实际核对发现资源/安全冻结包内仍有上述实现和登记缺口，不能只签字关闭。既有2–4有效工程小时估算仅适用于复现/冻结准备，不能覆盖这些尚未完成的安全处理；先限定下一修复点再估时，不因此扩展P1/P2。
+
+当前仍可演示Git/ZIP→真实工具→资源/风险/Evidence→报告和已有ZIP/Qwen；不宣称完整隔离、依赖全部锁定、异机通过或人工确认。报名资格/权属由Owner确认；完整作品另需最终冻结、异机、材料/视频/匿名与正式发布；竞争力需真实对照/误差分析，不由本轮测试推断。
+
+18节结案补充：用户在修复后亲自点击，仍收到“贵组织屏蔽了该文件，因为它不符合安全政策”。A6实际落盘更新为组织策略阻塞；不改Chrome设置或借命令行绕过，待有权管理员处理或符合策略的异机验收。CSP缺失下载许可已最小修复，但不能据此称本机Chrome问题已解决。资源/安全检查已完成，完整任务PARTIAL；下一可在Mac执行的任务优先限定为API CPU配额最小修复与验收，其他隔离/供应链缺口分别按原清单推进，不新增架构。
+
+本次运行精确 token 数不可获得；开工6k–12k，部分完成，实际消耗是否在估算区间不可确认。范围从清单检查增加一处下载CSP及原测试修复，属于已授权阻断排查；未扩P1/P2。
+
+发布绑定：e90ba11466c112e8accd70c2237ec1fb0c22de7a已推送feat/a6-download-csp-fix，远端完整哈希一致，9个既有文件、无新增。上表本轮待发布项更新为任务分支已上传；Chrome组织策略及最终冻结差距保持未完成，未合并main或Release。
+
+## 19. 真实下载策略确认与 API CPU 配额（2026-09-06）
+
+基线d9a6aca，分支fix/a7-api-cpu-limit。Chrome原生下载详情直接确认组织屏蔽，未提供正常保存入口；演示JSON成功不能替代真实附件。本轮未修改组织策略或切换Blob/文件名等路径绕过。CPU配额最小修复仅Compose增加api.cpus:2，无新文件/接口/架构/扫描。
+
+| 用户任务 | 状态 | 本轮完成与证据 | 待完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 公共代码/契约不变 | 保持兼容 | 用户/Root | 既有发布 |
+| A2 | 进行中 | 2CPU实际cgroup与节流通过，原权限保持 | 网络隔离、磁盘/fd覆盖、供应链门禁 | 用户/Root | 本轮待绑定 |
+| A3 | 单机累计完成 | API重建后旧任务和报告保持 | 无新增队列任务 | 用户/Root | 既有发布 |
+| A4 | P0样例链累计完成 | 复用原Git/ZIP结果 | 本轮未复跑扫描性能 | 用户/Root | 既有发布 |
+| A5 | 本机ZIP累计完成 | 旧Qwen四SHA保持，无推理 | 人工质量复核 | 用户/Root | 既有发布 |
+| A6 | 报告链完成，下载阻塞 | Chrome原生详情直接验证组织屏蔽 | 正常策略环境下四格式落盘验收 | 用户/Root及有权管理员 | 旧修复已上传 |
+| A7 | 本机配额任务完成；异机未开始 | Compose配置有效、API健康、真实cgroup=200000/100000 | Windows环境及异机验收 | 用户/Root | 本轮待绑定 |
+| A8 | 进行中 | 本项实际结果和剩余边界记录 | 资源/间接依赖锁定、人工复核及最终冻结 | 用户/Root | 本轮待绑定 |
+
+受控4进程各约4秒正常退出，nr_throttled增量41，CPU使用8272191微秒；无目标代码、无新扫描。Git与旧Qwen的smoke --verify各通过，8份报告摘要保持。Compose一行配置修复，验证配置、实际内核节流与报告持久性，无需重跑全部业务单测；未把此前61或1221测试算成本轮新通过。
+
+当前仍能本机演示Git/ZIP→真实扫描→资源/风险/证据→报告及已有Qwen建议。未具备已验收的真实浏览器落盘、异机和完整隔离/供应链冻结。下一任务建议限定现有API Python间接依赖的锁定和重建复核；下载阻塞由有权管理员按组织政策处理或使用符合政策的异机，不能绕过。
+
+可报名/参赛仍由Owner核对资格/权属；完整作品需剩余P0门禁、材料/视频/匿名和正式发布；竞争力另需真实对照/误差分析。没有据此宣称完成率或获奖概率。本次运行精确 token 数不可获得，开工6k–12k，CPU子任务完成、下载仍阻塞，整轮部分完成；无范围扩大，实际token是否在区间不可确认。
+
+发布绑定：d70a1e55e89b0f903f68416823658d33ba3b7517已推送fix/a7-api-cpu-limit，远端完整哈希一致，6个既有文件、无新增。本节待发布更新为任务分支已上传；CPU子任务完成，下载/完整P0未完成，未合并main或Release。
+
+## 20. API Python 间接依赖锁定与真实下载复核（2026-09-06）
+
+基线1d11d01，分支fix/a7-api-python-lock。复用backend/pyproject.toml锁定当前CPython3.12/Linux amd64的15个API运行依赖，Docker从空venv按--no-deps精确安装，检查直接声明覆盖及pip check。实际安装层重建成功、15包集合严格等于重建前及锁定列表；API健康、2CPU保持，原Git/Qwen两组四格式摘要各verify通过。不升级依赖、不新增文件、不扫描/推理；不把API版本锁定外推为所有系统包/发行物hash/许可证已冻结。
+
+AMENDMENT下载诊断：此前把Chrome“组织屏蔽”直接定为组织策略原因不充分。浏览器工具拒绝chrome://policy且要求不绕道，已交用户手动查看，用户确认没有下载相关政策。普通Chrome页面操作已触发真实JSON保存框，用户完成保存后原Downloads文件28846字节，SHA e5af6091ec26877045d7b8c8b68f0d92c422bb5b17ae08667f94ef789fc6a73a，与原receipt完全一致。未改安全设置/文件名/传输路径或使用Blob转存；具体历史拦截触发原因尚未证明。HTML/CSV/资源清单实际文件待本轮后续确认。
+
+| 用户任务 | 累计状态 | 本轮完成/证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共契约不变 | 保持兼容 | 用户/Root | 既有成果 |
+| A2 | 进行中 | API间接版本漂移缺口关闭，2CPU保持 | Debian、隔离/磁盘/fd门禁 | 用户/Root | 本轮待绑定 |
+| A3 | 单机已完成 | 原ID/报告重建保持 | 无新增队列任务 | 用户/Root | 既有成果 |
+| A4 | P0样例链已完成 | 原链保留 | 本轮无新扫描性能结论 | 用户/Root | 既有成果 |
+| A5 | 本机ZIP已完成 | 旧Qwen四SHA保持 | 人工质量复核 | 用户/Root | 既有成果 |
+| A6 | JSON真实落盘通过 | 原文件可解析、SHA一致 | 其余三格式待确认 | 用户/Root | 本轮验收待绑定 |
+| A7 | 本机依赖锁定完成，异机未开始 | 镜像重建/pip check/15包集合通过 | Windows环境与复现 | 用户/Root | 本轮待绑定 |
+| A8 | 进行中 | 锁定边界与下载误判更正 | 来源/声明、剩余安全及人工冻结 | 用户/Root | 本轮待绑定 |
+
+当前可演示原Git/ZIP→扫描→资源/风险/Evidence→报告和已有ZIP/Qwen，真实JSON已可保存。异机、人工复核及剩余资源/安全冻结不算通过。可报名/参赛仍需Owner确认资格/权属；完整作品另需剩余P0门禁、材料/视频/匿名和正式发布；竞争力需真实对照/误差分析，不混入本次工期。
+
+20节最终验收：HTML/JSON/CSV/资源清单四份文件均已在用户Downloads实际保存。大小分别6722/28846/2024/2024字节，SHA全部等于原Git receipt；JSON真实scan_id通过、两CSV为7列9资源行。A6本机真实四格式下载门禁更新为完成，旧组织策略归因撤回为“历史拦截原因未证明”；未改安全设置或传输方式。依赖锁定和本机下载两项本轮均完成，完整P0仍待Debian/资源声明与隔离限制收口、人工和异机验收。
+
+下一任务建议限定实际Debian Git包及其构建可复现性核对，优先复用现有镜像/说明；不把API版本锁定扩称全部供应链已冻结。本次运行精确 token 数不可获得；开工6k–12k，本轮范围完成，实际是否在估算区间不可确认；未新增接口、架构或扫描。
+
+发布绑定：549d7c004c5288d9a443c866744399437b9e815e已推送fix/a7-api-python-lock，远端完整哈希一致。8个既有文件，无新增，本节待发布更新为任务分支已上传；两项本轮完成，完整P0未完成，未合并main或Release。
+
+## 21. Debian Git 构建版本固定（2026-09-06）
+
+基线1b5bb6b，分支fix/a7-debian-git-pin。仅在既有Dockerfile精确指定git与git-man均1:2.39.5-0+deb12u3，并分别检查安装后dpkg版本；默认签名验证保持，无新源、升级或无版本回退。实际安装层重建成功，API健康；运行Git2.39.5，Git二进制SHA2540879925a6881e3877ff7e3330746ba3027b04edf16a3a12dccd1644c4f32d、随包copyright SHA8ceacdebe13249ea8aba6e400418e2b503c83a1f19ad92377380fb32ecf48d0c均与原容器一致。15个API Python包集合与锁定列表相等、cpu.max200000/100000，旧Git与ZIP/Qwen两组四格式摘要各verify通过，无新扫描/推理。
+
+| 用户任务 | 累计状态 | 本轮结果/证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共契约不变 | 保持兼容 | 用户/Root | 既有成果 |
+| A2 | 进行中 | Git版本漂移缺口关闭 | 隔离/磁盘/fd及剩余安全门禁 | 用户/Root | 本轮待绑定 |
+| A3 | 单机已完成 | 原报告重建保持 | 无新增队列工作 | 用户/Root | 既有成果 |
+| A4 | P0样例链已完成 | 工具原版本/二进制保持 | 本轮不重测新扫描性能 | 用户/Root | 既有成果 |
+| A5 | 本机ZIP链已完成 | 旧Qwen四SHA通过 | 人工质量复核 | 用户/Root | 既有成果 |
+| A6 | 本机四格式下载已完成 | 原内容保持；不重复下载 | 异机确认 | 用户/Root | 既有成果 |
+| A7 | 本机Git固定完成，异机未开始 | 安装层重建、包版本/摘要、API健康通过 | Windows环境及复现 | 用户/Root | 本轮待绑定 |
+| A8 | 进行中 | Git来源/版本/边界记录同步 | 资源声明、人工与最终安全冻结 | 用户/Root | 本轮待绑定 |
+
+本轮任务完成不等于全部Debian依赖或镜像字节永久可复现；固定版本不可获取时构建失败，后续明确升级处理，不静默换版。未新增快照服务/文件/接口或P1/P2。当前仍可演示真实Git/ZIP扫描、资源/风险/Evidence、报告下载及已有ZIP/Qwen。下一任务优先核对现有运行资源的来源/许可证与必要声明，复用原台账；异机和其他安全限制分别保持未完成。
+
+报名/参赛需Owner资格/权属确认；完整作品仍需剩余P0门禁、材料/视频/匿名和正式发布；竞争力需真实对照/误差分析。不开新评测范围，不编造完成率。本次运行精确 token 数不可获得；开工4k–8k，本轮范围完成，无范围调整，实际消耗是否在区间不可确认。
+
+发布绑定：dbc0bf54c2e9ec959564d73aa88d2d11a51ee605已推送fix/a7-debian-git-pin，远端完整哈希一致，7个既有文件、无新增。本节待发布更新为任务分支已上传；本轮完成，完整P0仍待剩余门禁，未合并main或Release。
+
+## 22. 运行资源声明核验与前端许可保留（2026-09-06）
+
+基线39d062a，分支docs/a8-runtime-resource-audit。复用原台账核对15个API实际包与9个前端资源的官方固定版本元数据和随包许可，全部对应；纠正ScanCode检测数据CC-BY-4.0登记。发现浏览器产物缺完整版权许可，在原Vite配置从四个现有包自动读取全文生成部署附件；不手抄许可证、不增依赖或接口。构建附件不是新增源码清单。
+
+| 用户任务 | 累计状态 | 本轮完成/证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 已完成 | 公共契约保持 | 无本轮新增 | 用户/Root | 既有成果 |
+| A2 | 进行中 | 不改变权限或安全配置 | 网络隔离、磁盘/fd及最终安全验收 | 用户/Root | 既有成果 |
+| A3 | 单机已完成 | API未重建/未变更 | 无新增队列任务 | 用户/Root | 既有成果 |
+| A4 | P0样例链已完成 | 原扫描链保留 | 本轮无新性能结论 | 用户/Root | 既有成果 |
+| A5 | 本机ZIP链已完成 | 模型/权重不变 | 人工建议质量复核 | 用户/Root及Owner | 既有成果 |
+| A6 | 本机真实四格式下载已完成 | 不重复扫描/下载 | 异机验收 | 用户/Root | 既有成果 |
+| A7 | 本机Compose已完成；异机未开始 | web构建/更新成功，20前端测试通过 | Windows环境与复现 | 用户/Root | 本轮待绑定 |
+| A8 | 本轮资源核验完成；最终冻结进行中 | 24版本官方元数据一致；4份浏览器原许可全文保留，HTTP200/SHA通过 | 镜像再分发逐包义务（若分发）、服务条款与人工最终确认；Chrome插件附件打开被客户端阻止 | 用户/Root及Owner | 本轮待绑定 |
+
+实际本机与Docker各构建通过；HTML许可链接、部署附件4618字节及四份完整原文逐字包含断言通过，SHA见third_party。JS/CSS名称不变，未重建API、扫描或推理。Chrome插件ERR_BLOCKED_BY_CLIENT不外推为用户正常下载失败，不改保护、不称其可视验收通过。初次本机命令目录重复及PATH缺node失败，修正路径并使用已配置Node后原构建通过，未安装软件。
+
+当前已可本机演示真实Git/ZIP→扫描→资源/许可证风险证据→现有报告，ZIP链已有Qwen建议，真实四格式下载既有验收保持；仍未具备异机、完整安全和人工冻结的验收结论。本轮核验发现的缺失声明已修复，剩余发布方式门禁明确列出，未扩展P1/P2。下一任务：对照现有A2安全验收表，只确认P0网络隔离及磁盘/fd剩余项的实际缺口，再修确有阻断的一项。
+
+可报名/参赛仍需Owner确认资格/权属；可提交完整作品需剩余P0安全/资源人工及异机门禁、材料视频匿名与正式发布；竞争力需真实对照、误差分析和人工质量结果，不混入本轮开发范围。本次运行精确 token 数不可获得，开工6k–12k，本轮核验及发现缺口修复完成，实际是否在估算区间不可确认；范围内增加原Vite配置修改，没有新增仓库文件。
+
+发布绑定：702931556f83e457c5c5cbe2de400699fc07cb6c已推送docs/a8-runtime-resource-audit，远端完整哈希一致；6个既有文件，无新增源码文件。当前核验和必要声明修复完成，完整P0未完成，未合并main或Release。
+
+## 23. P0安全差距核对与文件描述符限制（2026-09-06）
+
+基线079b14c，分支fix/a2-nofile-limit，开工干净、Root单写。仅修一个实际缺口：API及tools的nofile从默认1048576/1048576落实安全表256/256。沿用Compose和tool-smoke，无新源码文件/依赖/API/Schema/队列/图谱。网络共享及data卷任务配额缺口已定位到原代码/配置，保持未完成，详情见安全表9.4。
+
+| 用户任务 | 状态 | 本轮结果与验证证据 | 待完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 契约不变 | 保持兼容 | 用户/Root | 既有成果已上传 |
+| A2 | 进行中；本轮fd配置完成 | 最终内核256/256、EMFILE及释放恢复；runner失败回收、后续调用成功 | 网络deny-egress、任务磁盘配额及完整耗尽/隔离验收 | 用户/Root | 本轮待绑定 |
+| A3 | 单机累计完成 | API重建后旧任务报告保持 | 无新调度工作 | 用户/Root | 既有成果已上传 |
+| A4 | P0样例链累计完成 | 两工具原小样例在256限制下通过 | 无新公开样例性能结论 | 用户/Root | 既有成果已上传 |
+| A5 | 本机ZIP累计完成 | 原Qwen四SHA保持，不推理 | 人工质量复核 | 用户/Root与Owner | 既有成果已上传 |
+| A6 | 本机四格式下载累计完成 | 原报告SHA保持，不重复下载 | 异机确认 | 用户/Root | 既有成果已上传 |
+| A7 | 本机配置完成；异机未开始 | Compose配置/重建成功，API健康/2CPU保持 | Windows环境及复现 | 用户/Root | 本轮待绑定 |
+| A8 | 资源核验完成；最终冻结进行中 | 无新增第三方资源，原声明保持 | 人工、服务条款、最终冻结；镜像再分发义务依发布方式确认 | 用户/Root与Owner | 既有成果已上传 |
+
+本机API与独立禁网tools分别通过nofile边界和ScanCode/Syft小样例。初始6+新增250=256，下一次打开EMFILE、释放恢复、hard提高失败；首次假定初始3的失败保留，查明Rosetta占用后按实际初始数断言。通过真实run_json_tool验证失败映射、子进程回收及下一次调用成功；不将其外推为API主进程整体fd耗尽恢复或完整NEG-A2-028。最终API重建后两组原receipt各verify四SHA保持。
+
+当前仍可本机演示Git/ZIP→真实工具→资源/待复核风险证据→四格式报告及已有ZIP/Qwen建议；未具备异机、完整安全和人工冻结验收结论。下一任务限定：复用现有上传/工作目录，确认并落实P0任务临时磁盘硬上限及失败清理；网络隔离单列，不以全API断网破坏Git/Qwen接线。
+
+可报名/参赛需Owner资格/权属确认；完整作品需剩余P0安全/异机/人工门禁及材料、视频、匿名和正式发布；竞争力需真实对照及误差分析。不编造完成率或获奖概率。本次运行精确 token 数不可获得，开工6k–12k，本轮范围完成、无扩大，实际是否在估算区间不可确认。
+
+发布绑定：06e3e54318811c2c93b5c7c115c59e17585f8acc已推送fix/a2-nofile-limit，远端完整哈希一致；7个既有文件，无新增文件。fd配置及本轮边界验收完成，全P0未完成，未合并main或Release。
+
+## 24. 工作目录临时磁盘硬上限（2026-09-06）
+
+基线780536b，分支fix/a2-workspace-disk-limit；Root单写。现有workspaces由无任务硬配额的data子目录改为1GiB共享tmpfs，保留已有目录名称和API。原ZIP写目标失败从误报损坏修为scanner_failed/workspace_write_failed。复用tool-smoke，不建新清单/配置/接口/依赖。更新前确认queued/running=0且原工作目录空，持久上传/数据库/报告未删除。
+
+| 用户任务 | 状态 | 本轮结果/验证 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 契约及既有错误码保持 | 保持兼容 | 用户/Root | 既有已上传 |
+| A2 | 本轮工作目录上限完成；整体进行中 | 真实1GiB容量、接收/解压ENOSPC、失败清理/恢复；190回归通过 | 默认deny-egress、持久上传累计预算等剩余安全/压力验收 | 用户/Root | 本轮待绑定 |
+| A3 | 单机累计完成 | 保留uploads/dispatch，相关持久派发测试通过 | 无新队列任务 | 用户/Root | 既有已上传 |
+| A4 | P0样例链累计完成 | 最终挂载上小ZIP正例/清理通过 | 本轮无Git磁盘耗尽全链结论 | 用户/Root | 既有已上传 |
+| A5 | 本机累计完成 | 原Qwen四SHA保持，不推理 | 人工质量复核 | 用户/Root及Owner | 既有已上传 |
+| A6 | 本机四格式下载累计完成 | 原报告保持，不重复下载 | 异机确认 | 用户/Root | 既有已上传 |
+| A7 | 本机完成；异机未开始 | API健康，实际mount/uid/mode/cpu/nofile通过 | Windows复现 | 用户/Root | 本轮待绑定 |
+| A8 | 资源核验完成；最终冻结进行中 | 无新资源 | 人工/服务条款/正式冻结与发布方式审查 | 用户/Root及Owner | 既有已上传 |
+
+1GiB为工作目录共享上限（不保证每任务预留），工具/tmp另有256MiB，持久上传/报告不在其中。写满只在无生产卷隔离容器执行；剩余1MiB和3MiB分别验证接收及解压失败后清理，底层errno=ENOSPC，恢复后同一摄取服务成功。首次回归107通过/2条回环监听PermissionError，原样受控复验2通过；追加81通过，合计190通过、1条既有弃用warning。最终生产挂载小正例与旧Git/Qwen各四SHA通过。
+
+当前仍可Mac本机演示Git/ZIP→真实扫描→资源/风险证据→报告及已有Qwen建议；缺少生产扫描子进程网络隔离、剩余存储预算/安全压力、人工和异机验收。下一任务：落实扫描子进程默认deny-egress，只允许既有Git获取与Qwen调用按原边界工作，不把整个API断网或新增队列作为替代。
+
+可报名/参赛仍需Owner资格/权属确认；完整作品需剩余P0门禁、材料视频匿名及正式发布；竞争力需真实对照/误差分析和人工质量结果。本次运行精确 token 数不可获得，估算6k–12k，范围完成无扩大，实际是否在区间不可确认。
+
+发布绑定：7ec1a418d018e03552361ab48fb27371bd7c1709已推送fix/a2-workspace-disk-limit，远端完整哈希一致；8个既有文件，无新增文件。本轮工作目录硬上限/真实超限清理完成，全P0未完成，未合并main或Release。
+
+## 25. 扫描子进程默认禁网（2026-09-06）
+
+基线872b2f1，分支fix/a2-scanner-no-network。当前Compose默认通过原生seccomp启动器执行既有扫描runner，禁非AF_UNIX socket/socketpair及io_uring，后代继承；Git/AI继续原路径。直接在Rosetta安装过滤失败已保留，BUILDPLATFORM原生启动器实际通过。新增一个必要C源码，不重复生成模块/队列/接口；构建GCC与静态运行库声明已登记。实际异机构建/运行仍未完成。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 契约无变化 | 保持兼容 | 用户/Root | 既有已上传 |
+| A2 | 本轮扫描禁网边界完成；整体进行中 | 4类socket EPERM、后代继承、失败关闭；真实工具及授权网络保持 | 跨任务文件/IPC隔离、持久累计预算、其他安全矩阵 | 用户/Root | 本轮待绑定 |
+| A3 | 单机累计完成 | 无队列变更、原报告保持 | 无新调度任务 | 用户/Root | 既有已上传 |
+| A4 | P0样例链累计完成 | 生产固定工具入口和目录fd通过；Git真实获取及清理 | 无总体准确率新结论 | 用户/Root | 本轮待绑定 |
+| A5 | 本机累计完成 | 原模型短generate成功、身份匹配 | 人工建议质量复核 | 用户/Root与Owner | 既有已上传 |
+| A6 | 本机四格式下载累计完成 | 原两组四SHA保持 | 异机确认 | 用户/Root | 既有已上传 |
+| A7 | 本机部署完成；异机未开始 | 原API健康，Git/Qwen开关及data卷保持 | Windows从源码build及运行验收，不能跨架构直接搬镜像 | 用户/Root | 本轮待绑定 |
+| A8 | 台账更新完成；最终冻结进行中 | 必要构建资源及静态库声明记录 | 构建依赖完整锁定/再分发义务、人工及最终冻结 | 用户/Root与Owner | 本轮待绑定 |
+
+182相关回归通过、1 opt-in网络测试跳过、1既有弃用warning；本轮另有生产Git实际获取（固定revision621e4974ca25ce531773def586ba3ed8e736b3fc）和Qwen短调用通过，不将跳过算通过。原生启动器下MIT/is-number样例与最终API固定入口Apache-2.0/is-number正例均通过。原两组报告四SHA保持。
+
+当前仍能Mac本机演示Git/ZIP真实扫描→资源/风险证据→四格式报告及已有Qwen建议；本轮解决扫描子进程网络创建边界，未宣称完整跨任务文件/IPC隔离、安全冻结或异机通过。下一任务优先对照剩余P0门禁核验跨任务工作目录读取边界，复用现有只读会话和受控fd，不扩展队列或图谱。
+
+可报名/参赛需Owner资格/权属确认；完整作品需剩余P0安全/异机/人工、材料视频匿名及正式发布；竞争力需真实对照及误差分析。本次运行精确 token 数不可获得；开工6k–12k，本轮目标完成，因转译限制新增必要原生启动器/构建阶段，未扩展产品范围，实际是否在估算区间不可确认。
+
+发布绑定：665bd3862c221d1648fde16a00f8f0e07119cb07已推送fix/a2-scanner-no-network，远端完整哈希一致；10个既有文件及1个必要C源码。当前扫描禁网/Git和Qwen保持验收完成，全P0未完成，未合并main或Release。
+
+
+## 26. 扫描跨任务工作目录读取边界（2026-09-06）
+
+基线d38f897，fix/a2-scanner-file-boundary；Root单写。原runner真实合成标记复现跨任务读取；原C启动器加入Landlock ABI>=3（本机原生8）、当前目录fd只读与独立temp白名单，失败关闭。复用全部原文件，ScanCode固定串行模式0，原Git/Qwen路径保持。无新接口/队列/图谱/依赖。
+
+| 用户任务 | 状态 | 本轮完成/累计证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 原契约兼容 | 保持兼容 | 用户/Root | 既有已上传 |
+| A2 | 本轮读取边界完成；整体进行中 | 六路径内核拒绝、输入只读/temp可写/fork继承；155相关回归 | 剩余安全表与持久累计预算核对、最终安全冻结 | 用户/Root | 本轮待绑定 |
+| A3 | 单机累计完成 | 原生命周期和报告保留，无调度变更 | 无新队列任务 | 用户/Root | 既有已上传 |
+| A4 | P0样例链累计完成 | 最终镜像真实ScanCode Apache-2.0、Syft is-number正例 | 不外推总体准确率或任意后代exec兼容 | 用户/Root | 本轮待绑定 |
+| A5 | 本机累计完成 | 原Qwen四SHA保持，本轮不重复推理 | 人工建议质量复核 | 用户/Root与Owner | 既有已上传 |
+| A6 | 本机四格式下载累计完成 | 旧Git/Qwen各四SHA保持，已有Chrome落盘验收保留 | 异机确认 | 用户/Root | 既有已上传 |
+| A7 | 本机完成；异机未开始 | 最终API健康，实际workspaces探针清理通过 | Windows设备尚未执行复现 | 用户/Root | 本轮待绑定 |
+| A8 | 资源核验完成；最终冻结进行中 | 无新依赖，复用Linux内核接口 | 人工/条款/构建资源与正式发布冻结 | 用户/Root与Owner | 既有已上传 |
+
+最终窄白名单不开放整个/proc或/dev/shm；整个/proc实验方案被自动审批拒绝，已撤回且未生产部署。当前Rosetta任意后代re-exec可能失败关闭，现有两工具固定入口实际可用；后代安全探针为fork。安全表9.7保留兼容失败和范围。最终更新前确认任务空闲及工作目录空，保留data，原两组报告各四SHA均通过。
+
+当前可在Mac演示Git/ZIP真实扫描→资源/许可证/风险证据→四格式报告及已有Qwen建议。尚无异机、完整安全矩阵与人工冻结结论。P0剩余工作包为：剩余安全/存储条目核清并仅修阻断、Windows复现、人工质量与资源发布冻结；不据局部测试编造完成率或新工期。下一任务：核对持久上传/报告累计占用与P0原要求，先确认是否存在需要修复的实际缺口。
+
+可报名/参赛需Owner资格与权属确认；完整作品需上述P0门禁及材料、视频、匿名、正式发布；竞争力需真实对照、误差分析及人工质量证据。本次运行精确 token 数不可获得，开工估算6k–12k，任务范围完成；为兼容转译改用既有串行模式，未扩大产品范围，实际用量是否在估算区间不可确认。
+
+发布绑定：103aa77a8ce1a2d9c76fd45b64a791fe9e02cf44已推送fix/a2-scanner-file-boundary，远端完整哈希一致；9个既有文件、无新增文件。本机已部署并验证，跨任务读取边界完成，完整P0未完成，未合并main或Release。
+
+## 27. 分支归并（2026-09-06）
+
+用户授权整理分支。47个远端分支中，41个历史头已完整包含于450b8eb；保留main、integration/p0、两位组员分支、异机验收分支及PR #2来源。通过保留历史的PR合并至integration/p0后，按未变化的远端头和祖先关系清理。恢复SHA见原协作说明，实际执行结果见PR与最终refs核对。不合并main，不将治理整理当P0已完成。
+
+本轮1222项unit/security通过、3项跳过、2条既有warning；前端20项通过，当前本地TypeScript/Vite构建成功。仅更新3个原治理文件，无业务代码、接口、扫描、推理或部署变化。
+
+| 用户任务 | 状态 | 证据 | 待完成/阻塞 | 责任/发布 |
+|---|---|---|---|---|
+| A1/A3/A4/A6 | 累计功能完成 | 契约、生命周期、真实扫描、本机四格式下载保留 | 最终异机验证 | 用户/Root；已有提交归并 |
+| A2 | 进行中 | 原边界验收及本轮完整回归 | 剩余安全/存储核清 | 用户/Root；已有提交归并 |
+| A5 | 本机完成 | 原Qwen证据保留 | 人工质量复核 | 用户/Root与Owner；已上传 |
+| A7 | Mac完成；异机未开始 | 固定验收版本保持 | 组员异机回传 | 用户集成/组员执行；未Release |
+| A8 | 治理审查完成；整体进行中 | 41分支清单、原SHA、完整回归 | PR及清理执行、最终人工冻结 | 用户/Root；本轮PR |
+
+当前可演示Git/ZIP到真实资源/风险/证据、四格式报告及已有Qwen建议。下一产品任务仍为P0剩余条目核对，异机由组员执行。报名需Owner资格权属；完整作品需P0冻结及材料/视频/匿名/正式发布；竞争力需真实对照与误差分析。精确token不可获得，开工3k–6k；按既有协作规则将目标由main调整为integration/p0，未扩产品范围。
+
+执行结果：PR #3已合并，integration/p0=4056069b7dce35eecf36652dfc98ad9b96d5e147，与源8d13765文件树完全一致。归并完成；自动审批拒绝删除41个远端分支，理由是需要明确批量删除授权，命令未执行、分支数量未减少。main/组员/异机版本保持；清理等待用户批准，非代码或测试失败。本条远端结果追加发布在原验收分支，集成分支业务内容已完成归并。
+
+## 28. 本人历史分支清理完成（2026-09-06）
+
+用户明确授权删除不用的本人分支并要求不触碰组员分支。刷新远端和PR状态后，PR #2/#3均已合并，PR #1仍使用前端组员分支。先把当前本人治理记录合入并推送integration/p0，再逐一确认43个本人历史远端头均未移动、为integration/p0祖先且零独有提交，随后删除这些远端引用及对应本地分支。恢复SHA继续保存在`docs/06-github-collaboration.md`；源码、部署、前端、规则、Bench、测试和第三方目录相对PR #3合并结果零变化。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 契约与Schema未变化 | 保持兼容 | 用户/Root | 已在integration/p0保留 |
+| A2 | 进行中 | 已完成的输入及安全边界提交均可追溯，未删除代码 | 剩余安全/持久预算核清与最终冻结 | 用户/Root | 历史分支已清理，提交保留 |
+| A3 | 单机累计完成 | API、注册表、持久派发与报告链源码树不变 | 无新增队列任务 | 用户/Root | 已在integration/p0保留 |
+| A4 | P0样例链累计完成 | 真实工具、许可证/风险/证据接线源码树不变 | 不外推总体准确率 | 用户/Root | 已在integration/p0保留 |
+| A5 | 本机累计完成 | PR #2已合并，Qwen与降级实现保留 | 人工建议质量复核 | 用户/Root与Owner | 来源分支已清理，提交保留 |
+| A6 | 本机四格式下载累计完成 | 报告生成、下载与原证据保留 | 异机确认 | 用户/Root | 已在integration/p0保留 |
+| A7 | Mac完成；异机未开始 | 固定复现提交450b8eb仍可追溯 | Windows复现 | 用户/Root | 已在integration/p0保留 |
+| A8 | 本轮分支治理完成；整体进行中 | 43个本人远端分支删除；远端仅四条预期分支 | 人工/资源/安全最终冻结 | 用户/Root与Owner | 治理结果待本轮记录推送 |
+
+GitHub保留分支为`main`、`integration/p0`、扫描组员`codex/p0-external-tools-sync`和前端组员`feat/xzb-frontend`。两条组员分支的SHA分别保持89c8ba2和83e8928，未删除、合并、改写或推送。未合并main、未改仓库权限、未force push，也未删除用户运行数据或未跟踪的说明书产物。本地`docs/project-flowchart`含独有未上传图表，因未证明可丢弃而保留。
+
+当前仍可在Mac演示Git/ZIP真实扫描到资源、许可证/风险证据、四格式报告及已有Qwen建议。尚无Windows异机、完整安全矩阵和人工冻结结论。报名/参赛仍需Owner资格与权属确认；完整作品还需上述P0门禁以及材料、视频、匿名和正式发布；获奖竞争力仍需真实对照、误差分析及人工质量证据。下一任务仍按P0剩余门禁推进，不因分支清理新增功能。
+
+## 29. 中国市场界面汉化（2026-09-06）
+
+基线`e0845c0`，短分支`feat/zh-cn-ui`。复用现有前端API适配层和许可证规则台账完成用户可见中文化：历史英文风险、规则判断和8条Qwen整改建议在显示层转换；资源类型、风险结果、证据来源、页面辅助标题改为中文；`NOASSERTION`显示为“待核验（NOASSERTION）”。新扫描的15条许可证规则和Qwen语言要求改为简体中文。品牌、包名、SPDX标识、文件路径、ID、Schema/API枚举和原始证据保持原值。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 领域模型、Schema和稳定枚举未改变；完整回归通过 | 保持兼容 | 用户/Root | 既有成果已上传 |
+| A2 | 进行中 | 本轮未改变安全边界；Compose重建后健康 | 持久上传/报告累计预算及剩余安全表核清、最终安全冻结 | 用户/Root | 既有成果已上传 |
+| A3 | Mac单机累计完成 | 保留30个终态历史任务；无queued/running，未新增队列逻辑 | 无本轮新增调度工作 | 用户/Root | 既有成果已上传 |
+| A4 | P0样例链累计完成 | 15条既有许可证规则用户文案中文化；规则ID、动作和版本保持 | 不外推总体准确率 | 用户/Root | 已并入`integration/p0` |
+| A5 | 本机累计完成；本轮中文输出完成 | Qwen输入语言为`zh-CN`，系统提示要求简体中文；旧8条建议显示层完整汉化 | 人工建议质量复核 | 用户/Root与Owner | 已并入`integration/p0` |
+| A6 | 本机四格式下载累计完成 | 当前Web报告的风险、资源和整改建议中文显示；原下载报告与证据未改写 | Windows异机确认 | 用户/Root | 已并入`integration/p0` |
+| A7 | Mac部署累计完成 | API/Web新镜像均健康；Chrome实查首页、真实风险、资源和报告 | Windows复现由组员执行 | 用户/Root；组员执行异机 | 已并入`integration/p0` |
+| A8 | 进行中 | 无新增依赖/接口/文件；用户界面语言边界和AI辅助记录已更新 | 人工/资源/安全最终冻结及正式发布 | 用户/Root与Owner | 已并入`integration/p0` |
+
+验证结果：前端21项测试和TypeScript/Vite生产构建通过；规则/AI定向94项通过；完整后端在受限环境为1192通过、30项仅因回环绑定EPERM失败，原样在受控权限复验为1222通过、3跳过、2条既有warning。Compose保留命名数据卷重建，API/Web均healthy。Chrome插件核对截图原任务、8条风险完整报告、资源类型筛选和首页；除品牌、技术标识和原始证据外未见遗留英文用户文案。没有重新扫描、调用模型或改写历史数据。实现`6c836ed`已并入`integration/p0`；本人短分支已删除，GitHub恢复`main`、`integration/p0`及两条组员分支，组员SHA未变。
+
+当前Mac可独立演示中文首页、Git/ZIP真实扫描、ScanCode/Syft、资源/许可证风险与证据、历史Qwen建议及四格式报告。仍不具备Windows异机、完整安全矩阵、AI建议人工质量和最终资源/发布冻结结论。可报名/参赛仍需Owner确认资格与权属；完整作品还需上述P0门禁以及材料、视频、匿名和正式成果链接；获奖竞争力仍需真实对照、误差分析和人工质量证据。下一任务回到P0主线：核对持久上传/报告累计占用与原安全要求，只修实际阻断项。
+
+本次运行精确token数不可获得；开工估算10k-16k，本轮汉化、测试和Chrome部署验收完整完成。范围内增加历史8条AI建议兼容翻译，未扩展接口、队列、图谱或P1/P2功能，无法确认实际token是否落入估算区间。
+
+## 30. 汉化后真实 Git 运行配置恢复（2026-09-06）
+
+用户提交的公开仓库任务`scn_3bd54e48-59e6-4deb-8214-189b183c3198`停在`queued/0%`。数据库无错误且工作目录为空；容器实查确认汉化后重建API时公开Git、AI及Docker到宿主Ollama三个开关均回到默认`0`。问题来自部署时未保留真实模式环境变量，汉化显示代码没有阻塞扫描。
+
+本轮按既有部署边界恢复三个开关，容器内核对Ollama 0.33.3、锁定Qwen3标签和完整模型摘要；通过现有`GitScanRuntime`执行原任务ID，没有为该仓库创建第二条记录。任务在42秒内完成：Git revision `e32b3e6cea77f65e2c10bd5b1a0fe3d745057bac`，8组件、10证据、8条待复核风险、8条Qwen3中文建议、零错误。Chrome原进度页显示7/7阶段、100%及已完成；四格式实际字节SHA与报告链接全部一致。部署说明已在原文件补充ZIP默认模式、Git/Qwen真实模式及每次重建保留开关的要求，不改变安全默认值、接口、队列或恢复架构。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 契约、Schema和稳定枚举未变 | 保持兼容 | 用户/Root | 既有成果已上传 |
+| A2 | 进行中 | 原网络与文件边界保持；本轮未放宽容器安全配置 | 持久上传/报告累计预算及最终安全冻结 | 用户/Root | 既有成果已上传 |
+| A3 | Mac单机累计完成；本轮配置回归已关闭 | 原排队任务复用同一ID到`completed/100%`；无active任务 | 不增加Git恢复架构；Windows异机仍待验 | 用户/Root | 本轮待绑定 |
+| A4 | P0样例链累计完成 | 用户所选真实Git仓库完成8组件/10证据/8风险 | 不外推总体识别准确率 | 用户/Root | 本轮待绑定 |
+| A5 | 本机累计完成 | 锁定Qwen3生成8条中文待复核建议，身份摘要匹配 | 人工建议质量复核 | 用户/Root与Owner | 本轮待绑定 |
+| A6 | 本机四格式累计完成 | HTML/JSON/CSV/资源清单下载字节与链接SHA一致 | Windows异机确认 | 用户/Root | 本轮待绑定 |
+| A7 | Mac真实模式恢复并验证；异机未开始 | API健康、三个开关为1、Chrome进度7/7 | Windows复现由组员执行 | 用户/Root；组员执行异机 | 本轮待绑定 |
+| A8 | 进行中 | 原部署说明补足真实模式重建规则，无新资源 | 人工/资源/安全最终冻结及正式发布 | 用户/Root与Owner | 本轮待绑定 |
+
+核验过程中有一次验收命令漏传`--public-git`，因而创建了一个自建`demo` ZIP任务`scn_379f4c01-dd3c-4eb5-a9b5-9dd1093c3579`；它已终态完成并诚实保留一条`ai_response_invalid`降级，没有触碰用户Git任务，也未删除运行数据。最终queued/running为0。该失误已记录，不把它算作本轮产品证据。
+
+当前Mac可独立演示中文界面、公开Git/ZIP真实扫描、ScanCode/Syft、资源/许可证风险与证据、Qwen3中文建议和四格式报告。仍缺Windows异机、持久数据累计预算核清、AI建议人工质量以及资源/安全/发布最终冻结。可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需上述P0门禁以及材料、视频、匿名和正式成果链接；具备获奖竞争力还需真实对照、误差分析和人工质量证据。下一任务回到P0主线：核对持久上传/报告累计占用与原安全要求，只修实际阻断项。
+
+本次运行精确token数不可获得；开工估算4k–8k，本轮诊断、运行配置恢复、原任务执行、报告/Chrome验证和原说明修订均完成，没有扩展P1/P2。实际消耗是否在估算区间不可确认。
+
+发布绑定：文档提交`65f532dd9c9751d8af284a19a148e6d7435302bf`已推送并通过普通非快进合并进入`integration/p0`，合并提交`6cb53eb45734c9f6571203e59345dd4315b7bb48`已推送。本人短分支已删除；`main`和两条组员分支未修改。
+
+## 31. 真实进度动态视觉与 AI 耗时诊断（2026-09-06）
+
+当前集成线的进度页沿用前端组员`46f1640`/`83e8928`相同页面结构。原条形图以`stageIndex/7`为值：后端进入摄取并返回5%时仍有0个阶段完成，因此截图表现为空条。现改用冻结API的`progress`作为唯一目标值，从0开始在浏览器内单调平滑到最新后端值；2.5秒轮询得到15/35/55/70/85/95/100时继续递增。动画绝不越过API值，减少动态效果时直接显示真实值，partial/failed不补到100。阶段列表保留，运行阶段增加脉冲/流光；AI阶段显示Qwen3逐条生成及持续轮询说明。
+
+AI诊断确认不是无限卡死。现有`apply_ai_remediations`对每个eligible finding串行调用一次Provider；每次在同一10秒上限内先核验Ollama 0.33.3、锁定模型名/摘要，再生成最多1024 token的结构化建议。8条风险样例42秒并全部生成；用户随后运行的`openai-python`任务有133条风险，总耗时172.40秒后进入partial，最终`ai_response_invalid`且0条AI整改，确定性133资源/165证据及四报告保留。当前存储不记录逐条推理耗时或失败在第几条，不能编造更细结论。规模越大，串行设计越慢；本轮只改善真实状态表达，不擅自改批处理、上限或模型契约。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | API进度字段及Schema未改 | 保持兼容 | 用户/Root | 既有已上传 |
+| A2 | 进行中 | 不改变扫描/模型权限边界 | 持久累计预算与最终安全冻结 | 用户/Root | 既有已上传 |
+| A3 | Mac单机累计完成 | 真实状态轮询仍为2.5秒；无新接口/SSE | Windows异机验收 | 用户/Root | 既有已上传 |
+| A4 | P0样例链累计完成 | 8资源成功样例与133资源partial样例均诚实展示 | 总体准确率和大仓库边界仍待人工判断 | 用户/Root | 既有已上传 |
+| A5 | 本机可用；质量复核进行中 | 8条样例成功；133条样例发现结构校验失败 | AI规模、耗时及建议质量需P0裁决 | 用户/Root与Owner | 诊断已记录，本轮待绑定 |
+| A6 | 本机四格式累计完成 | completed显示100，partial按后端停95；原报告可读 | Windows异机确认 | 用户/Root | 本轮待绑定 |
+| A7 | Mac部署累计完成 | Web单服务重建healthy；Chrome实查95/100真实值 | Windows复现 | 用户/Root；组员执行异机 | 本轮待绑定 |
+| A8 | 进行中 | 无新依赖/接口/文件；说明及AI日志更新 | 人工/资源/安全/发布最终冻结 | 用户/Root与Owner | 本轮待绑定 |
+
+当前Mac仍可独立演示中文Git/ZIP扫描、真实工具、资源/风险证据、Qwen3建议与四格式报告；本轮进度视觉已完成，AI大规模串行耗时和一次输出校验失败不能包装成完全解决。P0仍缺持久上传/报告累计预算核清、Windows异机、AI人工质量与规模裁决、资源/安全/发布冻结。下一任务保持P0主线：先核对持久累计占用；AI若被Owner认定为演示阻断，再以现有证据单独确定最小处理策略。
+
+可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需上述P0门禁及材料、视频、匿名和正式成果链接；具备获奖竞争力还需真实对照、误差分析和人工质量证据。本次运行精确token不可获得；开工估算6k–12k，本轮实现、诊断、构建及Chrome验收完成，未扩展P1/P2，实际是否在估算区间不可确认。
+
+发布绑定：实现提交`f23be24a314c1e2495ce1d5e8016086304171487`已推送，并以普通非快进合并进入`integration/p0`；合并提交`84ceb9f15ea2d9a9910761f1d1a1e92151d50993`已推送。本人短分支核对包含关系后删除；`main`和两条组员分支未修改。
+
+## 32. 恢复原扫描行为与大仓库页面阻断修复（2026-09-06）
+
+本轮撤销尚未推送的“每任务最多8条AI建议”后端实现，API镜像重新由`d9f4cad`基线构建；`backend/app`、API Dockerfile和Compose运行配置相对该基线零差异。对汉化前`e0845c0`与汉化实现的精确比较也确认Pipeline、公开Git摄取、ScanCode、Syft和容器资源限制没有改动。同一8组件`chatbot-streamlit-demo`在汉化前分别为42.39、42.27、41.02秒，汉化后为41.80、40.53秒，没有可复现的汉化性能回退。
+
+用户截图对应`crewAI`任务有627组件，258.54秒后以`partial/95%`终态保留627风险；该输入远大于8组件成功样例。汉化前227组件`smolagents`在Qwen成功生成231条建议时也用时963.30秒，因此不能把大输入耗时归因为汉化。本轮不新增加速策略、批处理、上限或超时调整。只在现有前端适配层修复终态报告再次逐条请求712条Evidence的问题：报告已有不可变证据快照时直接复用，只请求确实缺失的证据；同时把历史部分结果说明中文化并按错误码和消息去重。历史任务中的`ai_assist_limited`继续如实显示，后续任务不会再由当前后端生成该错误。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 稳定API、Schema和枚举未改 | 保持兼容 | 用户/Root | 既有已上传 |
+| A2 | 进行中 | 扫描安全边界和容器资源配置未改 | 持久上传/报告累计预算与最终安全冻结 | 用户/Root | 既有已上传 |
+| A3 | Mac单机累计完成 | 无active任务后保留数据卷重建；历史任务可恢复 | Windows异机验收 | 用户/Root | 本轮本地待发布 |
+| A4 | P0样例链累计完成 | 8组件成功任务及627组件部分结果均由既有API读取 | 大仓库外部工具完整率仍需样例边界说明 | 用户/Root | 本轮本地待发布 |
+| A5 | 本机可用；人工复核进行中 | 恢复汉化前逐条Qwen行为，撤销未发布的8条限额 | 大规模耗时及建议质量仍需Owner裁决 | 用户/Root与Owner | 本轮本地待发布 |
+| A6 | 本机四格式累计完成 | 终态JSON证据直接复用；既有报告数据未改 | Windows异机确认 | 用户/Root | 本轮本地待发布 |
+| A7 | Mac部署累计完成 | API/Web均healthy，三项真实模式开关为1；Chrome实查95%部分结果及100%成功任务 | Windows复现 | 用户/Root；组员执行异机 | 本轮本地待发布 |
+| A8 | 进行中 | 无新依赖、接口或文件；前端22项及生产构建通过 | 人工/资源/安全/发布最终冻结 | 用户/Root与Owner | 本轮本地待发布 |
+
+当前Mac可独立演示中文Git/ZIP扫描、真实ScanCode/Syft、资源/风险证据、Qwen3建议及四格式报告；小样例既有成功任务可在Chrome正常恢复，大仓库工具超时或解析不完整时诚实保留部分结果。尚未具备大仓库全部外部工具必然成功、Windows异机、AI建议人工质量、持久累计预算及最终资源/安全/发布冻结。
+
+可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需上述P0门禁及材料、视频、匿名和正式成果链接；具备获奖竞争力还需真实对照、误差分析和人工质量证据。下一任务回到P0主线：核对持久上传/报告累计占用与原安全要求，只修实际阻断项。本次运行精确token数不可获得；开工估算4k–8k，本轮在原范围内完成恢复、直接阻断修复、构建和Chrome验收，未扩展P1/P2。
+
+## 33. 产品完整回退至汉化前基线（2026-09-06）
+
+用户明确要求放弃汉化后改动并完整恢复汉化前版本。当前产品源码、规则、测试、根说明、前端说明及部署说明已逐文件恢复到汉化前最后提交`e0845c00aabfb46443e59e3bbc861f5887748234`，`git diff --exit-code e0845c0`对这些路径为零。Git历史未重写；仅三个治理记录继续按追加规则保留汉化、诊断和本次回退事实。用户`output/`、SQLite数据卷、既有报告和组员分支均未修改。
+
+回退前最后一个crewAI任务`scn_c790c3da-158d-44b4-a822-391e914861b0`在重建前自然终态：308.82秒、627组件、712证据、627风险、0条AI整改，`partial/report/95%`，外部工具及AI服务降级错误原样保留。回退后API/Web均healthy，公开Git、AI及宿主Ollama开关仍为1，active任务为0。Chrome确认8组件既有任务可在4秒内恢复到7/7、100%；627组件历史结果页在汉化前实现中超过20秒仍读取中，因为原实现会逐批读取大量Evidence。本轮完全回退，因此没有保留后来增加的证据快照复用、中文错误去重或动态进度。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 汉化前稳定API与Schema原样恢复 | 保持兼容 | 用户/Root | 既有基线已上传；回退提交待发布 |
+| A2 | 进行中 | 汉化前安全实现保持，运行数据未删 | 持久上传/报告累计预算与最终安全冻结 | 用户/Root | 回退提交待发布 |
+| A3 | Mac单机累计完成 | 重建前等待Git任务自然终态；重建后active=0 | Windows异机验收 | 用户/Root；组员执行异机 | 回退提交待发布 |
+| A4 | P0样例链累计完成 | 8组件成功任务和627组件部分结果均保留 | 大仓库外部工具完整率和读取耗时边界 | 用户/Root | 回退提交待发布 |
+| A5 | 本机可用；质量复核进行中 | 恢复汉化前英文提示与逐条Qwen行为 | AI大规模耗时、服务可用性和建议质量裁决 | 用户/Root与Owner | 回退提交待发布 |
+| A6 | 本机四格式累计完成 | 既有持久数据未改 | Windows下载确认；大报告原版读取较慢 | 用户/Root | 回退提交待发布 |
+| A7 | Mac部署累计完成 | 双容器healthy，三项真实模式开关为1，Chrome成功样例通过 | Windows复现 | 用户/Root；组员执行异机 | 回退提交待发布 |
+| A8 | 进行中 | 产品树与`e0845c0`一致；20前端及117相关后端测试通过 | 资源/安全/发布最终冻结 | 用户/Root与Owner | 回退提交待发布 |
+
+当前Mac仍可独立运行汉化前版本的Git/ZIP扫描、ScanCode/Syft、资源/风险证据、Qwen3建议和报告。中文风险文案、动态0–100进度、部分结果中文去重以及大报告Evidence快照复用均已撤销。大仓库扫描与历史结果页仍可能较慢，这是所选汉化前版本的已验证行为。
+
+P0仍缺持久累计预算、Windows异机、AI人工质量与规模裁决、资源/安全/发布冻结。可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需关闭P0门禁并准备材料、视频、匿名和成果链接；具备获奖竞争力仍需真实对照、误差分析和人工质量证据。下一任务应先决定是否接受汉化前版本的大仓库耗时边界，再继续持久累计占用核查。本次运行精确token数不可获得；开工估算5k–9k，完整回退、测试、部署和Chrome验收均在原范围内完成。
+
+## 34. 公开 Git 容量失败修复与汉化前产品链复验（2026-09-06）
+
+用户截图任务`scn_2a8b4e19-b530-498a-b0cd-ec2ae2d36913`的来源为`https://github.com/run-llama/llama_index`。生产容器内复用原`GitIngestionService`得到内部原因`scanner_failed:git_materialized_limit_exceeded`：Git/TLS/公网获取已通过，仓库物化超过512MiB安全上限。该上限及原通用错误消息均已存在于汉化前`e0845c0`，不是汉化引入的扫描故障。本轮不提高或绕过上限，只让四类既有容量错误返回“Public Git repository exceeds the configured scan capacity limit.”，保留原错误码、Schema和接口。
+
+Root在Chrome正常“新建扫描”页亲自提交`https://github.com/andreped/chatbot-streamlit-demo`，产生任务`scn_eac4fbff-99de-4c3e-9849-a81a8416c789`。页面依次显示5%、85%和100%，46.30秒完成7/7阶段；固定Git revision为`e32b3e6cea77f65e2c10bd5b1a0fe3d745057bac`，得到8组件、10证据、8条待复核风险和8条Qwen3整改建议，零错误。四报告实际下载均为200：HTML 6208字节/SHA `5c544669...c7ad0`，JSON 40466字节/SHA `370e36ba...c51b`，CSV与资源清单各1769字节/SHA `e056dff8...5a17`。
+
+API/Web均healthy；公开Git、AI和Docker宿主Ollama开关为1；容器能读取锁定模型`qwen3:4b-instruct-2507-q4_K_M`及摘要`0edcdef3...ba0`。API保持只读根文件系统、drop ALL capabilities、no-new-privileges、2 CPU、4GiB内存、128 PID、nofile 256及1GiB工作目录tmpfs；成功与容量失败后工作目录为空。25项公开Git相关回归通过、2项需要受控网络的测试按声明跳过、1条既有AnyIO弃用warning。
+
+本轮API重建时未先确认活动任务，导致更早的`smolagents`任务`scn_0bb32fbb-89d0-44ef-bcec-fe13576569ae`失去内存执行线程并停在85%。按现有worker中断语义一次性收敛为`partial/ai_assist/85%`，保留80组件、6个AI资源及全部既有事实，追加`worker_interrupted`并生成四报告；没有重放Git或Qwen，也没有删除记录。最终注册表`queued/running=0`。依既定范围不新增Git恢复、lease或队列；后续重建前必须先核对活动任务为0。
+
+| 用户任务 | 状态 | 本轮完成/验证证据 | 未完成/阻塞 | 责任角色 | 发布状态 |
+|---|---|---|---|---|---|
+| A1 | 累计完成 | 错误码、API、Schema和稳定枚举不变，仅细化容量提示 | 保持兼容 | 用户/Root | 本轮待绑定 |
+| A2 | 进行中 | 512MiB Git物化上限保持；容器安全配置和失败清理通过 | 持久上传/报告累计预算及最终安全冻结 | 用户/Root | 本轮待绑定 |
+| A3 | Mac单机累计完成 | 新真实任务正常终态；被重建中断的旧任务诚实收敛且active=0 | Windows异机；不在P0扩展Git恢复 | 用户/Root；组员执行异机 | 本轮待绑定 |
+| A4 | P0样例链累计完成 | 小型公开Git真实完成8组件/10证据/8风险；超限输入明确拒绝 | 大仓库支持边界需写入最终使用说明，不外推总体准确率 | 用户/Root | 本轮待绑定 |
+| A5 | 本机可用；人工复核进行中 | 锁定Qwen3生成8条建议，模型身份摘要匹配 | AI建议质量与规模裁决 | 用户/Root与Owner | 本轮待绑定 |
+| A6 | 本机四格式累计完成 | 新任务四报告200、实际字节和SHA已核验 | Windows下载确认 | 用户/Root | 本轮待绑定 |
+| A7 | Mac部署累计完成 | Docker双服务healthy；Chrome真实提交、进度、结果和报告页面通过 | Windows复现 | 用户/Root；组员执行异机 | 本轮待绑定 |
+| A8 | 进行中 | 无新依赖、接口或文件；根因、限制和操作失误均已留痕 | 人工/资源/安全/发布最终冻结 | 用户/Root与Owner | 本轮待绑定 |
+
+当前Mac可独立运行和演示汉化前版本的公开Git/ZIP扫描、ScanCode/Syft、资源/许可证风险与证据、Qwen3建议及四格式报告；合规规模的公开Git仓库已重新实跑通过。当前不具备超过512MiB物化上限的仓库扫描、运行中安全重启自动恢复、Windows异机、AI人工质量、持久累计预算及最终资源/安全/发布冻结。
+
+可报名/参赛仍需Owner确认资格与权属；可提交完整作品还需关闭上述P0门禁并完成材料、视频、匿名和正式成果链接；具备获奖竞争力仍需真实对照、误差分析和人工质量证据。下一任务回到P0主线：核对持久上传与报告累计占用，只修明确缺口。本次运行精确token数不可获得；开工估算8k–14k，本轮根因修复、Docker重建、Chrome真实扫描、Qwen和四报告验收完整完成；额外发现并安全收敛一条由本轮重建中断的旧任务，未扩展产品架构。
+
+
+## 35. Git 真实扫描、AI 长输入与报告读取修复（2026-09-07）
+
+本轮 GPT-6 Astra / Root 在用户 A 线集成分支修复，未操作 cz/xzb 分支。开始时 Docker 未运行；恢复原数据卷、API/Web及原真实模式开关。修复前两仓库均能获取，但分别出现 AI provider 不可用与 response identity mismatch，不能据此认定 Sol 改坏 Git 获取。
+
+前端复用同任务 JSON 报告的 Evidence 快照，校验任务、状态与证据 ID，只补取缺失项；历史两仓库真实 HTTP 适配读取各 8 次请求、约 125/124 ms，避免逐条重复读取证据。进度使用实际百分比；partial/report 明示已结束、报告已生成，不伪装 completed 或 100%。
+
+AI 最大样例输入 11279 字符，原配置实际触发 response identity mismatch。现有输出 Schema 按请求约束 finding/evidence ID，生产单条预算 10→30 秒，上下文 4096→8192；原严格校验和整批失败语义保留，不补写编号、不重试、不截断前几条。相同输入修复后 13.42 秒通过原校验。原锁定模型不变，本机模型占用约 3.9 GB。两仓库全部建议通过后，下列真实扫描终态均仍为 partial/report/95，因为扫描器覆盖限制未解决。
+
+| 真实仓库 | 任务 | 固定 revision | 耗时 | 组件/资产/证据/风险/AI建议 |
+|---|---|---|---|---|
+| https://github.com/huggingface/smolagents | scn_94080cf0-f2dd-4389-8f9c-1d3b5a102770 | 30bb1161095dbae2271e6bc3cc4c219cc3897a57 | 437.39 秒 | 80/6/156/86/86 |
+| https://github.com/openai/openai-python | scn_9b16cf5c-864d-4afd-a49c-9ad7d5f9a656 | be928151372e4b62adb4a1571cda52ad759b38be | 694.1 秒 | 133/0/165/133/133 |
+
+两次四格式 HTTP 下载、SHA-256及证据引用核验均通过；Chrome 真实报告页面显示结果和下载入口。与各自同 revision 的修复前报告比较，去除 observed_at/remediation_id 后 components/ai_assets/licenses/evidence/findings/obligations 全部相等。AI 没有改变确定性扫描事实。
+
+openai-python 的 ScanCode 独立复现：1953 文件，固定入口触发 scanner_timeout（工具预算 120 秒）；不提升既有工具资源限额。两库还存在 ai_asset_scan_incomplete、python_dependency_scan_partial；无 AI 降级错误。不能宣称两个仓库已完整扫描或 P0 已冻结。
+
+| 用户 A 线任务 | 状态 | 验证 | 未完成/下一步 | 发布 |
+|---|---|---|---|---|
+| Git/API/Docker真实链 | 本轮修复验证通过 | 两库取得固定 revision，双容器 healthy | 异机验收仍待组员执行 | integration/p0 本次修复提交 |
+| AI解释与整改接线 | 本轮219条通过严格校验 | smolagents 86、openai-python 133；无事实漂移 | 逐条耗时与人工质量复核 | 同上 |
+| 前端联调/四格式报告 | 本轮通过 | Chrome 两库报告、8次HTTP适配读取、四SHA | 解析覆盖和工具超时不能靠UI消除 | 同上 |
+| P0最终交付 | PARTIAL | 既有主链成果保留 | 持久累计预算、异机、人工质量及资源/安全/发布冻结 | 未宣布完成 |
+
+回归：后端 1224 passed、3 opt-in skipped、2 warnings；前端 22 passed，TypeScript/Vite及Docker Web生产构建通过。没有新增依赖、API、Schema字段、规则、队列、图谱或P1/P2功能。生产重建先确认 active=0，保留数据和用户 output 文件。
+
+当前可以独立演示上述真实 Git→事实/风险/证据→AI建议→报告→Web 路径，不能保证大仓库工具全覆盖、秒级逐条AI或Windows复现。可参赛的资格/权属仍由Owner确认；完整作品提交还需原P0门禁和材料，竞争力仍需真实对照、误差与人工质量证据。下一步最小范围是核对ScanCode预算内的有效工作与大仓库支持边界，不能自动提高预算或扩P1/P2。
+
+本次运行精确 token 数不可获得；开工记录未给出数值区间，不能事后伪造。范围从页面重复读取扩展到实测确认的AI长输入阻断；这些修复已验证，完整扫描覆盖仍未完成。
+
+下载摘要（真实输出，不是新增基准样例）：
+
+- `scn_94080cf0-f2dd-4389-8f9c-1d3b5a102770`
+  - json: `82304e6bae5f6a27f0768b00629546c724f3453fcf0b05737b23c147a8d4ed9b`
+  - html: `93f78b9e1de31d140b937342562a0b48ecd80f8ec886eb927e5103f421b00ad1`
+  - csv: `7c309967613005684b29b363c8a8f1ccde46c3d2183d7013bd6259b4129c44c1`
+  - resource_inventory: `7c309967613005684b29b363c8a8f1ccde46c3d2183d7013bd6259b4129c44c1`
+
+- `scn_9b16cf5c-864d-4afd-a49c-9ad7d5f9a656`
+  - json: `8ffd03da19a66d14ab54d18fd0c7630bf148bad1e015dc0ce7667c448a3eafab`
+  - html: `6724853fa4518a33dd50073ef4e5e3dc925cf800478788f609db07deab5fb1a8`
+  - csv: `39388afa03e403bef5108d674ed4ad7d59617c0e700feac8f4295de6a763fcd9`
+  - resource_inventory: `39388afa03e403bef5108d674ed4ad7d59617c0e700feac8f4295de6a763fcd9`
+
+
+[20260907-1345-RootAstra-GitScanRepair-Publish] 发布绑定：修复提交 `894153f` 已普通推送至 `origin/integration/p0`（远端由 `d19bb62` 前进至该提交，同时上传原有本地 `4c56c1d`）。上传范围为既有后端/前端代码、测试、部署说明及治理记录；无 force push、main 合并或组员分支操作。最终 active=0、workspaces 为空；工作区仅原用户 output 未跟踪。完整扫描覆盖仍 PARTIAL，见上述验收边界。
+
+
+## 36. openai-python完整扫描与Docker到Ollama连接修复（2026-09-07）
+
+作者：GPT-6 Astra / Root。Owner范围：A线P0真实扫描集成；没有修改组员分支、main或前端，没有新增服务/依赖/HTTP接口/P1/P2。起点integration/p0@f2040b5，提交及推送绑定见后续记录。
+
+用户原任务`scn_5985936a-cbc9-43b8-9b5e-25a3b41baf92`的3类不完整诊断均已复现并修复：ScanCode120秒不足、AI资源读取以整个仓库两倍体积预留导致额度耗尽、静态dependency-groups未解析。实跑随后发现全树反复Hash、长证据JSON截断、Docker到Ollama TCP建连超时；已逐项保留失败并修复，未清除历史错误冒充成功。
+
+最终Chrome真实Git任务：`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`，输入https://github.com/openai/openai-python，固定解析revision `be928151372e4b62adb4a1571cda52ad759b38be`。16:32:32至16:46:04，811.80秒。completed/100、errors=[]；144软件组件、1API资产、227证据、145风险、145AI整改。每条风险关联有效证据及对应整改，AI均为pending，不能解释为许可已核验。JSON/HTML/CSV/资源清单HTTP下载与SHA-256均一致，Chrome显示7/7、100%、报告及AI文本且无错误条。
+
+| A线项目 | 状态 | 本轮验证 | 剩余边界/下一步 |
+|---|---|---|---|
+| 真实Git→工具→资源→风险/证据 | COMPLETED（本样例） | 原3类扫描错误消失；ScanCode/Syft真实输出 | 不承诺任意大仓库或复杂依赖组覆盖 |
+| AI解释与整改集成 | COMPLETED（本样例） | 全145条通过原严格校验；TCP失败仅在请求发送前恢复 | 人工质量复核仍需Owner验收 |
+| 现有报告与Web联调 | COMPLETED | Chrome真实页面与4格式SHA；无前端源码改动 | 旧任务不会自动重扫 |
+| Docker部署 | COMPLETED（本机） | 双服务healthy、active=0、工作目录为空、容器代码SHA与工作区一致 | 异机复现仍待回执 |
+| P0最终交付 | PARTIAL | 累计真实Git/ZIP、规则、证据、AI、报告、Web成果保留 | 持久累计预算、异机、人工质量及资源/安全/发布冻结 |
+
+实现边界：ScanCode主扫/补扫共享360秒；Syft/Git各120秒不变。文本读取4MiB/文件、16MiB总量、4096文件，仍受封印和实际余量约束。批次前后整树+逐文件Hash校验，不返回未完整验证的批次。开发依赖仅静态字符串、development内部scope，复杂include仍partial；外部Schema不变。模型输入共享重复Evidence，输出引用最多3条，原报告保留全部证据。Ollama TCP建连最多3次、每次最多3秒，消耗原30秒单条时限；已发送的生成请求绝不自动重放。模型/8192上下文/1024输出及安全校验不变。
+
+与上一轮同revision、已完整扫描但AI失败的dadfe87b报告比较，去除observed_at/remediation_id后components/ai_assets/licenses/evidence/findings/obligations全部相等。AI没有改变扫描事实。原133组件/0资产/165证据的报告缺少覆盖，不能要求修复后的事实数量仍等于它。
+
+回归：`PYTHONPATH=backend python -m pytest -q -rs -p no:cacheprovider tests`：1240 passed、3显式opt-in skipped、2既有fork warnings（60.61秒）；65项传输定向测试通过。`docker compose -f deploy/compose.yaml build api`及带真实Git/AI/Docker宿主三个既有开关的up --no-build --wait通过；git diff --check通过。前端未修改，本轮用真实Chrome验收，不将旧前端测试冒充新执行。
+
+本轮可独立演示本样例完整真实链，尚不能保证任意仓库全覆盖、秒级AI、自动人工核验或异机结果。可报名资格及权属仍由Owner确认；完整提交需上述P0门禁，获奖竞争力仍需对照、误差和人工质量证据。本次只关闭该仓库的实际阻断，不自动扩大后续开发范围。
+
+本次运行精确token数不可获得；开工估算12k–22k，范围因实测暴露的批次读取、AI输入及TCP故障扩大，无法据此判定实际用量是否落入原区间。
+
+下载SHA-256：
+- json: `e4fb87439276fc1d8d96bc234045ecea7744d5f08f21e02857f832313b012864`
+- html: `22dc30a19006ba1cf4862b2510b6a387c438a43dc42d8d0328d677af1fefab4a`
+- csv: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+- resource_inventory: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+
+
+[20260907-1649-RootAstra-OpenaiScanCoverage-Publish] 发布绑定：修复提交`1df7cca`已普通推送至`origin/integration/p0`，远端由`f2040b5`前进至该提交。上传26个既有源代码/测试/部署与治理文档，无新分支、force push、main合并或组员分支操作。实测通过任务`scn_3cdfb3ab-6e3c-45d6-a30f-0c227fe50b06`及四SHA见进度36节；工作区仅原用户output未跟踪。AMENDMENT：上条COMPLETE中的spec文档数量应为4份，其余文件范围不变。
+
+
+## 37. 2026-09-07 P0 Git 有界扫描与 AI 效率实测交付
+
+用户批准大型仓库采用有界扫描并明确未覆盖内容。当前 integration/p0，基线 a65a940；仅复用现有获取、AI、报告及测试，无新服务、HTTP接口、图谱、队列、P1/P2，不操作组员分支。
+
+| 仓库 | 任务 | 固定 revision | 全链秒数 | 终态 | 风险/AI建议 | 未覆盖路径数 |
+|---|---|---|---:|---|---:|---:|
+| openai-python | `scn_abd52930-829d-438a-a36d-79717dee3990` | `be928151372e4b62adb4a1571cda52ad759b38be` | 332.58 | completed | 145/145 | 0 |
+| litellm | `scn_34e7f56e-b4a1-4291-ae97-7b06f6c612d8` | `168a0055a244acdcf97c330c52e085ab40b1424c` | 254.28 | partial | 1407/1407 | 10083 |
+| autogen | `scn_eb6253c0-ce35-4405-8e2d-84910f3c4790` | `027ecf0a379bcc1d09956d46d12d44a3ad9cee14` | 375.73 | partial | 2412/2412 | 24 |
+| llama_index | `scn_ca2913c3-6b7c-43da-8593-eb0df4f6e0db` | `d2ac544a27c73d2a68e9c57efec4b2ac0ef99892` | 59.87 | partial | 441/441 | 9525 |
+
+四库最终均无 ScanCode、Syft、AI 调用/输出错误，四种附件通过真实API落盘及元数据SHA核验，风险关联证据、建议关联本风险证据且pending。大库的partial是有界覆盖及原解析限制的真实提示，不是全库无遗漏成功。LiteLLM含JS/Python partial，AutoGen和LlamaIndex含Python partial。通用策略没有按这四个仓库白名单特判；私有、无权限、拼接错误、不安全地址及网络/硬预算失败仍不能承诺扫描成功。拼接autogen与llama_index地址验收422，分别合法地址如上通过。
+
+同revision openai-python：上轮3cdfb3ab全链811.803秒，本轮332.582秒，缩短59.03%；AI从145次逐条调用、约8分38秒变成7个等价核验上下文调用、约14秒（独立同事实AI测量12.933秒）。组件、资产、许可、证据、义务、风险剔除时间/整改关联后完全一致，CSV及资源清单字节一致。不是145次独立事实判定被压缩：明确标注同类风险AI核验建议、未逐项确认许可；各风险仍有自身Evidence关联，模型只提供3条中文工作步骤，不得确定授权。其他规则仍走逐条生成，失败不冒充AI成功，并保留已成功组。
+
+有界Git：同一可信出口及256MiB/120秒硬预算，blob过滤和显式批取，禁止隐式联网；大库优先512文件，4MiB单文件/16MiB文本总量，保留解析器既有预算。锁定ScanCode忽略路径最多8个补扫候选，超额逐路径显示遗漏原因，未放宽扫描工具完整性校验。所有遗漏作为既有Evidence和HTML附录保存；没有资源也可报告真实零资源。跨manifest JS合并保留成对锁证据且验证全部版本/URL，不随机选冲突值。报告阶段任何已记录错误统一partial，不再误标completed。
+
+验证：冻结源码全量后端1274 passed、3显式opt-in skipped、2既有警告（63.47秒）；额外受控Git loopback42 passed；前端22 passed、TypeScript及Vite构建通过，无前端产品改动。最后ZIP scn_fc3127e4-91d4-40ce-b48a-d338728406cb completed，4条真实AI及本风险Evidence绑定、真实ScanCode/Syft、AI资源、四SHA、缺声明、恶意ZIP拒绝和404通过。smoke原AI资源断言写死False，与--expect-ai冲突；已改为按该既有参数验证，完整重跑通过，原失败保留。
+
+Docker双服务healthy、active=0、工作目录空；六个关键运行源码SHA与工作区一致，最终镜像manifest f4853ebfd8dd36407aa9052baaf2bdf5e67a84966b63630fc64582df1dd268fd。Chrome实查openai100%、风险详情与中文AI、LiteLLM报告和覆盖提示。大报告扩展AX传输超过64MiB工具限制，原生Chrome可访问性仍正常；保存框可打开但自动保存disabled，已取消，本轮不声称Chrome自动落盘通过。API四格式实际落盘已通过。历史失败任务及中间失败证据保留，没有改历史任务状态。
+
+| 本人任务 | 本轮/累计状态 | 未完成与下一步 | 负责人 | 发布 |
+|---|---|---|---|---|
+| A1数据模型、A3 API | 保留已接通契约，回归通过 | 最终契约冻结 | 本人，Root验收 | 本轮待绑定提交 |
+| A2 Git/ZIP、A4 Pipeline | 四Git及ZIP真实链通过；有界partial可解释 | 网络不可用/权限/硬预算不保证成功 | 本人，Root集成 | 本轮待绑定提交 |
+| A5 AI解释整改 | 真实分组建议及失败保留，145风险无事实变化 | 人工质量复核；非等价规则仍逐条 | 本人，Root实现 | 本轮待绑定提交 |
+| A6 Report | 四库四附件SHA通过，覆盖附录明确 | 人工权属/证据复核 | 本人，Root验收 | 本轮待绑定提交 |
+| A7 Docker、A8 Integration | 本机健康、清理及前后对照通过 | 异机结果、持久数据累计预算、最终资源/安全/发布冻结 | 本人负责最终交付 | 本轮待绑定提交 |
+
+本机可独立演示真实Git/ZIP至现有前端报告；整体P0仍需以上门禁，不扩大为P1/P2。报名资格及权属由Owner确认，正式提交与获奖质量不能由运行通过替代。精确剩余工期需异机和人工回执后确定，不以本轮技术通过宣称全P0完成。本次运行精确token数不可获得；开工20k–35k估算因实际JS、终态及VCS缺口扩大，无法判定实际用量是否落入区间。
+
+四格式SHA-256（下载内容与现有API元数据一致）：
+
+openai-python:
+- json: `ef0ad44027da9c57e689ec749f13ca90fb26e59ce364e6364123cf410613aa98`
+- html: `548f24e7a491566af178c67de60b08df0bfc22a77e80a0c63f2457e2765ee677`
+- csv: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+- resource_inventory: `d580d2073059785b52b3d465b35b7b55b676b2472372955c28072729549be9b0`
+
+litellm:
+- json: `e92e13ee42fe964819a3cb31b891dcb5c2ce97fe135b2c26a2d4ea008cb1d860`
+- html: `351f51a781fb549e5877638e6098b94ce56c336760a423621b9181a1a75ba8d7`
+- csv: `4d17d816004e49ade55a94f2f97e3949c408e75d228dc17a8a132b6af1bdc656`
+- resource_inventory: `4d17d816004e49ade55a94f2f97e3949c408e75d228dc17a8a132b6af1bdc656`
+
+autogen:
+- json: `e022da9243cf547999d94b1d1938a45f2a3c6918ff9c955270f3f6a85893ed60`
+- html: `aa4ba466da7ed925ab188cf359070674fc140ce9b938f4f204a1f1e2cec3857a`
+- csv: `3db1ba9a194e3cb9cba9a1a76cf19ace5698bc5e43ab2fa3eedc5170fb253ab6`
+- resource_inventory: `3db1ba9a194e3cb9cba9a1a76cf19ace5698bc5e43ab2fa3eedc5170fb253ab6`
+
+llama_index:
+- json: `bda3fd9e85400d74a0e0a63c426f3a654e4b439890249ddc23be5be609b2040e`
+- html: `0baddf755ff2481ff1e42222de20f70d689da4ac8ae560492e4299cc5d0e3ae1`
+- csv: `ce85173bda859580eeb7a66ba47adc067c6a898b5b228e6794e2e582f921d7d7`
+- resource_inventory: `ce85173bda859580eeb7a66ba47adc067c6a898b5b228e6794e2e582f921d7d7`
+
+
+[20260907-1835-RootAstra-P0PerformanceReliability-Publish] 发布绑定：修复提交 `306fb76` 已普通推送 `origin/integration/p0`（a65a940→306fb76），26个既有文件，无新分支、force push、main合并、组员分支操作或用户output上传。源码已在本机Docker验收运行；四Git/ZIP结果及边界见进度37。本条发布回执随随后文档提交上传。
+
+## 38. 三天P0收尾启动与第一项容量准入（2026-09-08）
+
+用户完成grilling全部决策并确认开始：北京时间2026-09-08 20:04至2026-09-11 20:04，截止仍有阻断则交付已完成版本及阻断清单，明确P0未通过，不自动延期。用户个人工作由Root安排，cz/xzb日程不安排。两位各自Windows独立无AI主链，至少一台真实Qwen，执行人由团队情况决定；用户汇总回执给Root核验。真实人工记录四类各3条，用户与cz独立复核，不能用合成样例补数。
+
+已确认冻结边界：允许有界扫描，不要求所有仓库都快；卡死、虚假成功、证据错误、报告不可用阻断。每个验收样例的等待上限须依据现有预算核定；超过上限仍running、失败残留进程或持续阻塞后续正常任务均不通过。当前工具预算不等于端到端硬deadline，具体统一样例与等待上限仍待锁定，不能宣称已经通过卡死门禁。
+
+本轮容量：默认API增加单进程POST准入，2GiB水位、每active及新任务256MiB余量、可用盘512MiB底线。低容量拒绝Git/ZIP（解析正文前），已有状态与报告GET不受影响；无自动删历史报告。明确新增503错误语义并同步现有A3规格及部署说明；未新增接口路径、依赖、队列。独立审查发现普通本地workspace漏计并关闭，仅独立挂载目录排除。并发ASGI探针确认202之后释放受理锁但保留active计数。它不是OS硬配额，多进程/外部写入/已受理任务突破水位等边界仍保留，G2不能直接标为全部通过。
+
+隔离生产镜像HTTP：真实ZIP996719d0完成并导出四报告；2GiB稀疏测试占位触发503，Git/ZIP非法正文均先被容量拒绝且无新增任务；旧四报告SHA一致；移除测试文件后202。首次脚本误用archive字段422，按现有file契约修正脚本后原流程通过，产品未为脚本改契约。该镜像测试关闭外部工具/AI以隔离容量，不替代前轮工具实测。
+
+真实人工候选已在benchmarks/spec.md追加R01–R12：软件pydantic/pycparser/anyio，模型Qwen3-Next/FLUX/intfloat，三个smolagents数据集，API anthropic/google/openai。固定revision原文件Hash均重新验证；未填人工标签。候选由系统检出结果选取，必须披露选择偏差，不能据此计算总体召回率。12条人工复核仍为待回执。
+
+| 本人任务 | 本轮状态 | 仍未完成 | 责任与下一步 |
+|---|---|---|---|
+| A2/A3/A7容量 | 实现准入并隔离验证 | 物理硬配额不声称完成；最终G2签收 | Root完成最终回归/部署及发布 |
+| A5/A6人工质量 | 12真实候选原Hash核验 | 两份人工判断、分歧与AI复核 | 用户+cz填写，Root核验 |
+| A7 Windows | 统一三天与两机标准 | 两台无AI及至少一台Qwen回执 | 用户汇总，Root核验，不代填 |
+| A8冻结 | 既有f6d3bd6成果保留 | 样例时间上限、资源/安全/版本最终冻结 | 当前仍不宣布P0完成 |
+
+第一天先容量及候选；第二天汇总人工/异机问题，只修阻断；第三天停止非必要优化并复验签收。尚未收到组员Windows或人工回执，不会在无人回复时推测通过。公开发布及最终测试结果在本节后续绑定。精确token数不可获得，开工估算12k–22k，仅用于工作量预估。
+
+本轮最终验证：后端1278 passed、3显式skipped、2既有warning；27项API定向；独立并发探针及隔离生产HTTP容量验证通过。无活动任务后部署，双服务healthy、两个运行源码SHA一致；新ZIP78837347与既有openai四报告校验通过。容量准入子任务完成，G1/G2最终签收/G3/G4尚未齐备；发布绑定见随后记录。
+
+[20260908-2045-RootAstra-P0Capacity-Publish] 实现cca70a4已普通推送origin/integration/p0，10个既有文件；本地运行验收完成，未操作main/组员分支/用户output。敏感模式与本机路径检查无命中，active=0。随后仅上传本发布绑定记录。
+
+
+## 39. 两台Windows验收协议与等待留证（2026-09-08）
+
+复用[部署说明](../../deploy/README.md#两台-windows-的共同验收2026-09-08等待实测回执)。共同源码提交`b86658e37286f132bf098f0e7642bf25e557ffa9`，包含前轮容量准入。当前文档提交仅补充说明，不要求改用漂移的最新分支。发布范围smoke及4个原文档，Root普通推送integration/p0，不影响运行服务。
+
+| 本人任务 | 已完成 | 未完成/待验证 | 验证及下一步 |
+|---|---|---|---|
+| A7统一部署入口 | 旧分支纠正、固定SHA、PowerShell命令和真实样例 | 两台Windows实际执行 | 本机Compose配置检查通过；等待用户汇总 |
+| A7执行上限 | 无AI900秒/真实Qwen1200秒；超时留证，晚到成功仍失败 | 异机预算及失败后残留/后续任务实测 | 5终态探针、3非法参数、真实CLI超时HTTP通过 |
+| A6报告验收 | 既有Git与ZIP四SHA复核通过；Chrome回执要求明确 | 两台浏览器真实保存 | 不用HTTP代替浏览器保存 |
+| A5人工质量 | 上轮12条真实候选保留 | 用户+cz独立判断及分歧核验 | 下一步本人协助逐条复核，不代签 |
+| A8最终冻结 | 原功能/容量成果保留，固定收尾期限 | 两机回执、人工复核、资源/安全签收 | 截止2026-09-11 20:04；有阻断如实P0未通过 |
+
+本轮只改验收入口和原文档，无产品实现变化，未重建运行容器、未重复真实扫描。P0可在Mac运行演示但尚未总验收；完整提交须关闭上述门禁，不能推断竞赛报名资格或获奖竞争力。全部本轮验证及一次回执格式误用记录见工作日志。精确token数不可获得，估算6k–10k不替代实测。
+
+[20260908-2331-RootAstra-WindowsAcceptance-Publish] 发布绑定：b86658e验收脚本及ab16e66原文档已普通推送origin/integration/p0，远端0f46b68→ab16e66；本地仅原output未跟踪。上述COMPLETE条目ID中的2340为录入时间笔误，实际收工/首次发布为23:30 CST，本条追加更正不改历史。共同验收源码仍固定b86658e。
+
+
+## 40. 12真实记录预核对及人工填写入口（2026-09-09）
+
+[逐条复核表](../../benchmarks/real-resource-review.md)与原Bench规格关联，无产品变更。12条原报告Resource/Risk/AI关联检查通过，25份源文件/34次Evidence引用Hash及已有行号片段核验通过。R10/R12原候选误选同名软件证据已纠正；R01–R03固定具体版本/资源ID。三个现存JSON附件Hash核对通过，不新扫描。历史partial不改为completed；此批不是召回率或当前固定版本端到端重跑。
+
+| 本人任务 | 本轮完成 | 仍未完成 | 下一步 |
+|---|---|---|---|
+| A5/A6证据一致性 | 12条机器预核对、两处清单纠正、报告绑定 | 当前版本最终验收签收 | 结合Windows回执判定 |
+| A5人工质量组织 | 原文上下文、折叠系统对照、双阶段空白表 | 本人及cz各12条独立答案、分歧处理 | 本人先填写，Root辅助核验 |
+| A7异机 | 既有说明保留 | 两台无AI及至少一台Qwen实测 | 用户汇总结果后Root判断 |
+| A8冻结 | 既有本机演示成果保留 | 人工/异机/资源安全签收 | 保持9月11日20:04截止；阻断未关则P0未通过 |
+
+收到人工答案0/24份，不等于现实无人做过；本轮未代填。只有候选检出样本，不据此推断准确率、完整授权或获奖竞争力。完整提交仍需上述门禁；本轮不重新审查报名资格。精确token数不可获得，开工估算6k–12k，准备工作完成、真人判断待回执。
+
+[20260909-1705-RootAstra-Real12Review-Publish] 发布绑定：9056787已普通推送origin/integration/p0，5个复核/协作文档；业务代码、原报告及组员分支未改，用户output未上传。人工答案和P0总验收仍待回执。
+
+
+## 41. 四项定向优化实测与剩余验收（2026-09-09）
+
+用户确认边界：资源级中文 Qwen 建议、风险分类折叠、真实 partial 诊断、严重度传递核验。沿用当前本地模型、Git/ZIP、API 和四报告；没有扩大扫描覆盖承诺、放宽隔离或添加 P1/P2 功能。
+
+### 固定输入的交付前后对照
+
+基线 OpenGuard `186527c`；目标 Flask `d73fa1cdcbd8b1465c151db8924ba58b1dd14e35`。旧任务 `scn_d9cdc591-424a-44ff-9b9f-cb2e9aa8b90a`，新任务 `scn_0b8c545a-8904-410e-908e-8dbeee4a9dc1`。新任务从 Chrome 的真实 Git 表单创建，未复用旧 AI 答案。测量时原 Qwen 已加载；模型请求的加载耗时包含在测量内，未验证冷启动。
+
+| 指标 | 交付前 | 本次实测 |
+|---|---|---|
+| 相同扫描事实的真实 AI 重放 | 8.394 秒、4 次共享计划调用 | 41.406 秒、13 次资源上下文批调用；142/142 有效，无 AI 错误 |
+| Chrome 新扫描总时长 | 74.242 秒 | 115.786 秒；质量改动增加耗时，不能宣称整链提速 |
+| 实际组件 / Evidence / Finding | 142 / 191 / 142 | 相同；Evidence 仅观察时间变化，ID/片段/Hash 不变 |
+| AI 内容 | 2 套共享步骤 | 10 种情境核验重点及逐资源证据、版本、查找入口；84 条锁文件重点相同，不是 142 份深度独立法律分析 |
+| 风险首屏 | 逐条相似标题 | 分类→同类组→原始条目；首批25，可展开至全部142 |
+| partial | 通用 Python partial | 5条重复声明、9条多约束，逐条文件/字段/行定位；另1条最终扫描诊断 |
+| 严重度 | 142 info | 仍142 info，现有规则并无应升危事实，不制造高中危 |
+
+5个 Python 清单单独解析均 COMPLETE；跨文件合并产生既有诊断。未证明语法解析缺陷，因此仅改诊断透传，保留 PARTIAL/report/95，不假称提高覆盖或完成全部扫描。批次仍受原执行预算及24000字节请求上限约束，超过/无有效回答明确回退；资源级输出的结构门禁不能替代人工质量判断。无版本记录、用途未知、许可证版本关系缺失仍明确显示。
+
+AI 原文与程序生成的证据导航分区显示；模型不猜链接。PyPI 首页仅是检索入口，不是验证过的授权证据。软件、模型、数据集、API 有各自导航分支；本轮真实新样例仅 Flask 软件，其他类型代码测试不冒充新真实模型/数据集验收。新增的12条技术抽核覆盖声明、依赖组、示例和锁记录，不替代原四类12条双人复核。
+
+### 验证记录
+
+- 后端全量1300 passed、3 skipped、2 warnings（66.30秒）；随后最终输出约束变更重跑123条AI相关测试通过。3 skipped为既有真实网络/模型 opt-in，不能算通过；本轮另走生产 Git/Qwen 实测。
+- 前端29 tests passed、TypeScript/Vite build通过；无独立lint配置。compileall、diff检查通过。现有 browser-smoke 脚本更新并语法检查，本轮未运行其整套 headless 场景。
+- Chrome实测：新建真实Git；running→partial；分类折叠；逐批25→50→75→100→125→142；celery筛选2/142；high筛选0/142；刷新保持筛选；具体风险与原始证据一致；15诊断完整展开。既有completed显示100%/7阶段，既有failed保持5%/失败，不改写历史任务。
+- Docker仅按既有配置重建应用服务，无活动任务时进行；API/Web healthy，三份后端运行文件SHA与工作区一致。未升级或重启Docker Desktop/模型。
+- 四个新附件HTTP正文与metadata SHA一致；旧四附件再次取回SHA保持不变。CSV/资源清单新旧逐字相同。新JSON：`07236dd45d17b645b15c6b7ccaee4586da2d13ac54e2d81e3dfeba7aea8b1786`；HTML：`4fdf4b20a7378330047b258a95a4e871bbc0a7bf0a335fc18141380afa13280e`；CSV/资源清单：`a7442d463ab38428589ae00494b65226eca02b640fb2a24e84895383c962a4a8`。
+- **浏览器落盘未通过**：Chrome实际点击JSON并确认原生保存后，下载记录明确显示“已被您的组织屏蔽”，未发现保存文件。不修改保护、不通过其他通道伪装Chrome下载；其余三种本次未完成浏览器落盘验收。HTTP通过不抵消这项阻塞。
+
+### 本人 A 线收口表
+
+| 本人任务 | 已完成 | 未完成 / 待验证 | 下一步 |
+|---|---|---|---|
+| A5 AI集成与质量 | 资源上下文批处理、有效性门禁、显式回退；固定Flask AI低于60秒 | 真人判断建议是否可操作；非Flask真实新样例及冷启动没有本轮结论 | 本人按新提示独立找一条实际许可证据 |
+| A4/A6事实与报告集成 | partial原因透传；风险分级与关联保留；四附件HTTP和旧报告不变 | Chrome组织策略下载阻塞 | 经正常允许的浏览器保存后核对四SHA |
+| A7前后端联调/部署 | 复用前端实现完成分类/筛选/状态实测，运行服务对应代码 | 两台Windows无AI、至少一台真实Qwen及浏览器回执 | 用户汇总后Root判定；组员分支未修改 |
+| A8最终签收 | 保留原成果和固定截止时间 | 原12条双人复核、异机、最终资源/安全和下载签收 | 9月11日20:04仍有阻断则交付版本及阻断表，P0尚未通过 |
+
+本机已经可演示真实Git/ZIP、确定性扫描、证据关联、Qwen和报告页面；这不证明所有仓库完整、全资源授权或全部AI内容优质。未引入图谱/账户/新接口等未授权功能。可提交完整作品仍须上述签收；本轮未重新判定报名资格，亦不能从单一样例推断获奖竞争力。发布提交见下方绑定。精确token数不可获得；开工估算25k–45k，无法核定实际是否在区间内，四项边界未扩展。
+
+[20260909-1855-RootAstra-FourTargeted-Publish] 发布绑定：63cdbc546aea81a32bb0eed224cfc2e43e6e4b03已普通推送origin/integration/p0（186527c→63cdbc5），21份本轮源码/测试/原文档。main及组员分支未操作，output未上传。运行后端三文件及前端构建对应本次代码；浏览器组织策略落盘、真人试用/双人复核和两Windows验收仍未关闭，发布不等于P0通过。
+
+
+## 42. V2 分组报告与组级AI整改（2026-09-09，代码阶段）
+
+最新优先级为生成前等价情境归组，共同指导一次，保留原成员事实/差异/证据。基线integration/p0@e323509，不扩P1/P2、不改变扫描工具和安全限额，不重写历史报告。
+
+| 本人A线工作包 | 已完成 | 尚未完成/待验 |
+|---|---|---|
+| AI/Pipeline | 145发现归为9组；有限缓存、真实调用数与AI阶段保守ETA | 新运行版整链/冷启动性能、真人质量签收 |
+| Report | 摘要/紧凑明细/离线证据，原CSV语义不变 | 新四附件下载及浏览器打印 |
+| API/前端联调 | 原接口可选字段兼容；三页按需分段，真实进度插值 | 新部署三页面截图、刷新/错误/ETA操作记录 |
+| 最终交付 | Root复核Sol/Terra/Luna实现与独立测试 | 本轮维护确认、两Windows、12条双人复核等既有门禁 |
+
+同事实热模型单次52.943→22.101秒，13→9请求；答案缓存单列0.010秒/0请求。145资源/145发现/227证据逐项字段关系保留。后端全量1310 passed/3 skipped/2 warnings是阶段结果，最终提交测试另绑定；构建成功不代表已部署或P0通过。
+
+
+[20260909-2038-RootAstra-GroupV2-CodeValidation] 源码候选78127c8整套1313 passed/3 skipped/2 warnings（66.55秒），前端31 passed、tsc/Vite通过；两镜像核心源码及前端bundle与候选一致。3项跳过为显式网络/真实模型/受控回环门禁，不能冒称已运行。独立HTML Chrome完整打印预览已验证折叠明细展开，完整证据版179页，不等同摘要。运行服务保持旧版，本轮维护确认尚待，新三页/动态进度/真实整链/新四附件下载验收仍PARTIAL。普通推送候选分支不代表部署或最终签收；output证据保留本机，不操作组员分支。
+
+
+## 43. V2 实际部署与Chrome验收（2026-09-09）
+
+维护确认已收到，两次更新前均活动扫描0；API/Web运行新代码，追加修复运行中时间字段从状态接口读取。详细证据在本机原output/group-v2-evidence，Git不上传扫描产物。
+
+| 本人A线工作包 | 本轮已完成及验证 | 尚未完成 / 下一步 |
+|---|---|---|
+| AI/Pipeline | openai9组9请求22.225秒全成功；Flask6组6请求17.614秒；Express3组2请求1缓存5.471秒。组级指导绑定每项自身证据 | 冷启动和真人可操作性签收；不能宣称全部仓库速度保证 |
+| 事实/Report | 同revision openai145资源/145发现/227证据逐项保留，旧四文件SHA不变；三任务新四格式HTTP和SHA通过 | Chrome自动下载仍组织屏蔽；四文件实际落盘待验证。完整证据打印较长 |
+| API/Web联调 | 三页真实前后截图、分组/筛选/25项分段、5→85真实插值、刷新恢复、completed100/partial95/failed5；实际AI阶段ETA | 冷启动/断网重连/估计超界完整UI矩阵待补；ETA仅AI阶段，不虚构全链倒计时 |
+| Docker/交付 | 授权空闲更新且保留卷，运行源码和最终Web构建一致；前端33测试/tsc/build通过，后端原1313/3跳过 | 最终提交日志单独记录；两Windows、12条双人复核及最终签收仍待 |
+
+整链单次openai364.385秒（旧353.201秒），Flask88.733秒，Express57.352秒。openai没有整链提速；5%的安全读取内部包含获取及外部工具工作，不能把整个阶段当Git下载或AI时间。三个扫描均有可用报告，Flask的parser限制原样保留。Requests未额外运行，不用新增无目标扫描凑数量。
+
+本机可独立演示真实Git/ZIP→事实/证据→规则→组级Qwen→报告及分组页面；未引入P1/P2。报名资格本轮未重新判定，完整作品交付仍受下载、Windows与人工签收门禁约束；获奖竞争力不能由这3例推断。本轮PARTIAL，P0尚未最终通过。精确token数不可获得，本段估算8k–16k，无法核定实耗。
+
+
+## 44. 进度反馈修正（2026-09-09）
+
+| 本人A线任务 | 已完成与验收 | 未完成 / 下一步 |
+|---|---|---|
+| 进度/API集成 | 临时work_progress接真实Git/ZIP/工具里程碑及AI组计数，原事实/终态不变 | 工具无内部计数时不虚构连续完成量 |
+| 前端联调 | 大百分比/渐变填充/持续活动光带、当前操作；真实Requests采样5→15→40→91→92→95，Express100、Flask95及刷新保持 | Windows/断网实测仍属既有门禁 |
+| 部署/交付 | 再查无活动后更新API/Web；本机实际截图/加速GIF；Express同revision事实逐项未变；36前端测试/tsc及相关61后端通过 | 最终回归日志单独绑定；P0人工/异机/下载签收未关闭 |
+
+默认用户入口始终提供OpenGuard首页 http://127.0.0.1:8080/ 。本轮完成的是实际进度反馈，百分比是工作步骤权重，不是资源覆盖/合规率或固定时长估算。单个工具无事件时数值可停留，活动光带持续，不用随机或计时假增至99。未引入P1/P2。精确token数不可获得，8k–18k开工估算无法核定实耗。
+
+
+## 45. V3 cz成果复核与扫描补扫局部提速（2026-09-10）
+
+基线integration/p0@5611c00；Root独占修改，两位只读代理独立核对cz成果与18份实测事实。cz远端89c8ba2/0200ce5的扫描产品和Bench已采用，没有可整批引入的新增提速代码；不修改组员分支。保留上一轮分组、报告、页面及动态进度成果。
+
+| 本人A线任务 | 本轮已完成与验证 | 未完成 / 下一步 | GitHub状态 |
+|---|---|---|---|
+| 扫描集成复核 | 产品/既有采用/测试/文档分开核对，未重复导入 | 无整分支替换需求 | 未提交/未推送 |
+| 局部扫描优化 | 仅external_tools.py、scancode_pipeline.py；同任务补扫初始化复用，7→5工具进程。补扫约10.7→3.66秒 | 整树ScanCode约286秒成本仍在 | 未提交/未推送 |
+| 固定条件验收 | Flask/openai/ZIP各前3后3串行；中位66.590→57.526、340.452→327.945、29.921→29.951秒，最后一项不声称提速 | 未做严格整机冷启动；网络波动保留 | 证据仅原output本机 |
+| 事实、AI和Report | 18份完整事实/Hash/Evidence一致；Flask保持partial。真实AI同热模型15.022→15.207秒，均6请求/0缓存/142关联；四报告字节/SHA保留 | 真人质量及浏览器下载不由Pipeline测试替代 | AI/报告源码未改 |
+| 最终回归与交付 | 全后端1360 passed/3 skipped/2 warnings，前端36 passed，diff检查；当前服务healthy/活动0 | 待用户维护确认，仅更新API后做线上HTTP/Chrome验收 | 运行服务仍旧版 |
+
+额外两个Git获取失败日志完整保留，未当成快速成功；最终候选Flask使用2/3/4三轮。总时间的网络/物化差异不能全部归因补丁；可以归因的是约7.1秒补扫初始化减少。详细轮次、阶段表、输入revision/SHA、源码摘要与证据限制见本机output/scanner-v3-evidence/verification.md。
+
+现有运行版仍可演示真实Git/ZIP→事实/规则/证据→组级Qwen→报告和分组页面；本候选不增加P1/P2功能。两Windows、12条双人复核、下载和最终签收仍属原门禁，不能宣称P0已通过或获奖竞争力已验证。精确token不可获得，开工20k–40k无法核定实耗；源码/隔离验证完成、运行部署未完成，不扩大范围。
+
+
+## 46. V3限定API更新与真实网页验收（2026-09-10）
+
+| 本人A线任务 | 已完成与实证 | 尚未完成 | 发布状态 |
+|---|---|---|---|
+| API部署/数据保护 | 空闲停机备份，旧镜像/配置可回退；新镜像8ffe27fbcd8f绑定5611c00+补丁c3a578eb62ca；93旧任务/648旧报告Hash不变 | 无部署回退发生 | 已本机部署，未提交/推送 |
+| Git/ZIP真实联调 | Chrome Flask78.638秒partial95；smolagents ZIP51.477秒completed100；原事实/证据/树摘要匹配固定基线 | 大树耗时及Flask覆盖限制仍在 | 新任务与报告持久化 |
+| AI/Report | 两任务6/9真实请求均全成功、缓存0；142/231建议绑定证据；两任务四格式HTTP/Hash通过 | ChromeJSON保存后仍被组织屏蔽，四格式浏览器落盘门禁未关闭 | AI/报告源码未改 |
+| 页面与进度 | 首页、新建、刷新进度、AI组数/ETA、风险组/详情、资源分类、报告和概览截图通过；Web容器未重建 | Windows与既有打印/断网矩阵不由本次替代 | 仍用既有前端 |
+| 最终交付 | 本机真实链可演示，备份/Hash/截图/回执在原output/scanner-v3-evidence/deployment-20260910 | 两Windows至少一台Qwen、负责人/cz双人12条及最终资源安全冻结签收 | P0未最终通过 |
+
+详情见本机receipt.md、deployment.json和live-results.json。此前18轮不重复，本次单次实际耗时不作为新性能统计。精确token不可得，开工8k–16k无法核定实耗。入口统一首页 http://127.0.0.1:8080/ 。
+
+## 47. V4 项目评估与本地问答（2026-09-10，本机隔离实现）
+
+承接§46而非回退旧代码。HEAD仍5611c00，V3两文件补丁SHA仍c3a578eb62ca1a770cc6a853e3f60a85f2a66fe25f77139e88effa30d054983b；无commit/push/merge/生产更新。完整源码摘要与逐文件Hash见`output/v4-evidence/version-manifest.json`。
+
+| A线工作包 | 本次完成 | 仍待／边界 | 负责人亲手检查 |
 | --- | --- | --- | --- |
-| Java 受限仓库扫描与报告 | 部分完成 | `backend/java` Maven 测试通过；对固定 Flask 检出 `d73fa1c` 真实只读扫描，输出 JSON/CSV/HTML，含 27 个组件、4 个 BSD-3-Clause 候选、31 条证据和 4 条 `review_required` 提示 | 不构成许可证法律结论；完整 P0 图、API/SQLite、外部工具隔离、完整 SPDX 与部署未迁移 |
-| Python 到 Java 运行时迁移 | 进行中 | 已审计 `backend/app` 的 security、ingestion、scanners、licenses、rules、detectors、domain 与 CLI；直接依赖、许可证候选、AI URL 与报告已有 Java 纵切 | 不删除 Python 基线；安全 ZIP 会话、完整 parser/mapper、ScanCode/Syft、规则 AST、AI 降级、API/持久化与流水线须逐段契约对照 |
+| 用途与项目评估 | 可跳过用途；六维确定性结论+义务；独立范围/许可证据门槛；版本、事实Hash、用途Hash、有限MIT/GPL规则 | cz与负责人规则金标准/12条复核仍待，不把真实pending升为VERIFIED | 评估6版，打开依据，确认partial/未知仍在 |
+| 中文评估和报告 | 复用同一快照、主页面/右侧问答、明细折叠；旧四格式保留 | 最近20版界面选择，更早版本API可读但界面分页待完善；窄屏/Windows未做实机签收 | 打开合规报告，核对版本与用途一致 |
+| Qwen和历史 | 整体1次生成、有界本地问答、明确用途重评估、GET不生成、缓存、幂等、清空代次、重启恢复 | 自动校验非完整语义保证，旧测试答复错误保留审计；须人工抽查 | 追问、刷新、查看其他版本历史；不会改正式报告 |
+| 集成与维护准备 | 隔离8010/5174运行；受控ZIP用途→自动评估；Compose开关及8081来源校验 | 生产8080未部署V4；该预览不启用Git/外部工具；生产维护另批 | 始终从5174首页进入审阅；生产日常入口仍8080 |
 
-Java 真实扫描产物仅用于本机验收，未纳入 Git；当前分支未提交、未推送，`main` 未变更。
-### 2026-09-13：第二位独立真人盲审工作包（进行中）
+最终后端1399通过/3按条件跳过/2警告；前端49通过、tsc/Vite build通过、diff检查及Compose配置检查通过。3跳过为受控网络Git/回环用例及旧A5真实Ollama开关；V4本次另有真实本地Qwen HTTP验收。未再跑18轮扫描性能矩阵；未使用Mock代替真实Qwen。
 
-- 已新增 `benchmarks/annotations/real-resource-20260911-ai-assisted/blind-second-review/`：协调人生成的隔离盲审包、R01-R12 五维空白回执、严格提交校验器和盲审锁定后才可使用的分歧/仲裁模板。
-- 不能宣称完成：尚未收到第二位真人的独立盲审回执；首位评审已接触 AI 草稿，不能计作盲审；缺少第三位真人的仲裁记录时，任何实质分歧必须保留为 `disputed` 或 `uncertain`。
-- 责任：第二位真人填写并签收；Luna 复核材料可用性；Sol 复核仲裁语义；Root 协调提交后完整性检查。GitHub：本轮仅本地工作包，尚未提交或推送。
+最终prompt openguard-project-qa/v5：Flask评估6（asm_0f61f27f-f956-5949-a3cd-fe7611237941）9.539秒、ZIP评估4（asm_5e0fee33-e983-5e25-b256-03af8067c760）9.407秒，各1调用、无答案缓存；同用途缓存0.017秒/0调用。两轮追问6.898/7.848秒。均为已就绪模型；不是冷启动统计，也不是V3同工作量基准。扫描事实旧Flask partial95、ZIP completed100不变；之前各6/9组调用与本次整体1次的输出目标不同，不计算扫描器提速百分比。
 
-## 2026-09-17：单人时间隔离盲化复标工作包
+已核实生产98旧run_json、688旧报告文件Hash全部不变，运行API镜像8ffe27fbcd8f未变，检查时活动0；两历史任务8份四格式HTTP下载与旧ReportLink SHA一致。Chrome实操首页、评估、同版报告、证据、两个任务问答隔离、刷新、复制、受控清空确认；隔离API真实重启恢复已保存历史。HTML已正常弹出保存框，实际浏览器落盘仍待确认。Windows、cz/负责人人工语义复核、资源安全最终冻结、P0签收继续待办。
 
-- 已新增 `single-human-rereview/` 离线工作包：固定来源哈希绑定、盲化包和空白复标表生成、至少72小时冷却门禁、12条/60维逐项校验、两轮一致率、冲突复核与最终冻结哈希链。
-- 合成闭环14项通过：空白回执、冷却期不足、未解决冲突和篡改比较文件均失败关闭；合法样例可生成`single_human_time_separated_rereview_finalized`快照。
-- 当前状态是“工具完成、真人尚未执行”。只有用户本人完成72小时后的第二轮复标、冲突查证与冻结，才能形成单人最终回执；不得称为双人独立复核或正式gold盲标。
-- 责任：用户执行真实复标；Luna复核回执完整性与指标；Sol复核披露语义；Root验收和发布。GitHub：本轮变更尚未提交或推送，`main`未改变。
 
-## 2026-09-18：B-P1-05 Bench 2.0 可执行契约包
+## 48. 2026-09-11 V4 Git扫描阻断修复（本地已验收）
 
-| 工作包 | 状态 | 已验证证据 | 未关闭门禁 | 责任与 GitHub 状态 |
-| --- | --- | --- | --- | --- |
-| Draft 2020-12 Schema | 本地完成 | 七区封闭对象、类型/枚举/format/局部条件；classpath 离线加载 | 尚未由独立模型复核跨语言实现兼容性 | Root 已实现；本轮尚未提交/推送 |
-| Java 库与 CLI | 本地完成 | 稳定 JSON 报告；退出码 0/1/2/3；artifact/引用/split/holdout/parent/amendment/准入双层校验；Java 离线测试 17/17；Maven package 含库类、CLI 和 classpath Schema | 尚未生成单独签名的 CLI 分发包；未接自动 manifest 生成器或评测运行器 | Root 直接实现（CR-20260918-bench2-java-contract）；待发布 |
-| 正反例契约 | 本地完成 | 四组正例、七组反例全部纳入 Maven 回归；直接 JVM 子进程确认策略拒绝退出 3 | 真实 Bench 批次仍需按 2.0 迁移，不能把历史 P0 manifest 改名冒充 | Luna 范围待独立复核；本轮尚未提交/推送 |
+A线本轮：关闭Git时503拒绝且不建任务；5174接独立完整工具Docker8011，保留8080。3个永不执行的旧queued经用户授权、备份后CAS取消，99个其他旧run和696旧报告SHA不变。
+真实Chrome创建Flask scn_19bbb01c-8db4-4bce-9c36-1caf61c22838：扫描59.260817秒、partial、142组件/142发现/191证据，整体AI9.583724秒成功；Express scn_65cc9c41-a8af-4bce-8a21-e0f332686130：46.114028秒、completed、53组件/53发现/71证据，整体AI7.910738秒成功。两者四报告SHA通过。1400后端通过/3跳过/2警告，无新前端产品修改。
+本轮未提交推送。正式8080 V4上线、Windows、人工复核、浏览器保存与最终P0签收仍待；本次只关闭两个扫描阻断，不能声称所有Git仓库必成功。证据output/v4-git-runtime。
 
-本工作包未新增 Web API、数据库或服务启动逻辑，不改变 P0/P1 Schema、历史人工标签或 gold。它关闭的是“manifest 可离线验证”门禁，不关闭真实数据权属、第二真人盲审、正式 gold 冻结、评测执行和获奖质量指标门禁。
+## 49. 2026-09-11 最新集成成果发布
 
-## 2026-09-18：人工标签全自动一致性审计
+用户已明确授权提交及推送 integration/p0。此次范围为此前已验收的V3扫描提速、V4评估/用途/问答/报告/前端，以及Git执行器关闭时拒绝创建任务。保留1400后端通过/3跳过、49前端通过、类型检查/构建与两仓库实际验收证据；代码文件与验收manifest一致。output、本地运行副本、数据库、报告、备份不上传；新增output忽略规则。组员分支不修改、不自动合并新成果。发布不代表部署变更、Windows通过或P0最终签收。具体提交以本节所属Git提交及Root发布回执为准。
 
-| 工作包 | 状态 | 已验证证据 | 未关闭门禁 | 责任与 GitHub 状态 |
-| --- | --- | --- | --- | --- |
-| 12 条人工标签自动审计 | 本地完成 | 12 条/60 维、8 个输入摘要、固定 commit 来源、R05 修订、第二次 AI 审阅、最终分布和召回率重算全部一致；16 项正反测试通过；真实批次 0 error、16 warning、0 quarantine；输出哈希链复算通过 | 仅证明结构、证据链和内部一致性；第二位独立真人、三份旧扫描附件、额外 Evidence 对象和真人 gold 仍缺失 | Root 执行；可复现工具与本地报告尚未提交/推送，`main` 未改变 |
+发布确认：产品提交 `b7329cf` 已推送 `origin/integration/p0`，共50文件。此后发布回执为文档提交，不改变产品代码。main与组员分支未修改；本机运行版本未因此自动重启。
 
-正式状态为 `human_labels_with_automated_consistency_audit`。16 个警告由 12 条“完整旧扫描报告未直接复核”、第二真人缺失、旧附件缺失、R05 已应用人工修订和召回率 gold 仅由 AI 构成；没有把警告提升为通过事实，也没有修改原人工标签。该结果可用于项目内部质量门禁和演示材料的保守披露，但不能宣称双人独立核验、观察者间一致性或语义真值已证明。
+## 50. 2026-09-13 P1 A03 Scan Diff Backend（待评审）
 
-## 2026-09-19：B-P1-01 `ResourceProfileDraft` 与 HF fixture 映射设计
+基线为`integration/p1`/`feat/p1-history-diff`@`9822c8668683f0be475086b81642f2d8b41aa453`。本轮仅完成A03及已批准ERRATUM-01，未合并`integration/p1`，未开始A04，未修改cz/xzb分支，未部署、真实扫描或调用Qwen。
 
-| 工作包 | 状态 | 本轮交付 | 未关闭门禁 | 责任与 GitHub 状态 |
-| --- | --- | --- | --- | --- |
-| provider-neutral Draft 契约 | 设计完成 | 定义身份、生命周期、声明元数据、字段证据、诊断、稳定 ID 和长度/拒绝边界；明确它不是许可证、授权或合规结论 | 尚未批准为公共 P1 Schema；未实现 parser/materializer | Sol/Root 设计完成；Terra 待实现；本轮未提交/推送 |
-| HF model/dataset fixture 映射 | 设计完成 | 完成 `/id`、`/sha`、`/lastModified`、`/private`、`/gated`、`/disabled`、`/cardData/license`、`/tags` 等 JSON Pointer 映射及 8 组回归口径 | Luna 尚未创建脱敏 fixture；未验证真实 provider 响应兼容性 | Luna 待实现 fixture/回归；本轮未提交/推送 |
-| P0 投影边界 | 设计完成 | `license_expression_id` 保持 null、`authorization_status` 保持 pending；不以 public/ungated/license/sha 提升任何结论 | `detected_by` 新枚举和实际 Evidence materialization 需负责人批准 | Sol/Root 审核；Terra 待接入 |
+| A线工作包 | 已完成与证据 | 仍待 / 边界 | 当前状态 |
+|---|---|---|---|
+| Contract V1 Erratum | 仅放宽ScanDiffView五类change-value的10个string branch；`""`与`null`分离；其余P1/common及P0 schema不变 | 不构成全套P1重冻结 | PASS |
+| Diff API / 匹配 | 同项目Gate；resource identity/instance双键；exact instance→unique identity；多候选ambiguous；无可靠身份unmatched；partial不误判removed | 只推导已存储P0事实，不fuzzy/LLM | READY FOR REVIEW |
+| 事实 / Assessment分区 | resource、license observation、verification/authorization、finding分区；Assessment Formal Diff独立；usage hash不同不可比；rule版本差异披露；AI文本排除 | 显式Assessment ID错scan拒绝；缺失仍为unavailable | PASS |
+| 只读 / 回归 | GET禁止scanner、Assessment create、Qwen、metadata、DB write；A03+Contract 109 passed，A02 24 passed，全unit 1068 passed/1 skipped，相关security 81 passed | 1 skipped是既有显式条件用例；Starlette有1条已知deprecation warning | PASS |
+| OpenAPI / 发布 | 基线11 paths→当前12；仅新增`GET /api/v1/scans/{target_scan_id}/diff`；既有paths及schemas语义相同 | 仅推送功能分支，不merge | 已推送功能分支，等待负责人Review/Integration |
 
-设计文档见 `docs/spec/b-p1-01-resource-profile-draft.md`。本轮没有修改 P0/P1 公共接口、业务代码、历史 fixture 或网络行为；只关闭“实施前字段与映射不明确”的设计门禁，不关闭 HF 集成、许可核验、授权确认或合规评估门禁。
+评审者现可在功能分支上对两个已存储同项目scan调用Diff GET，获取通过Frozen `ScanDiffView 1.0` + ERRATUM-01的稳定派生视图。这不是运行环境上线或P1完成；A04以及后续Graph/Task/Report/UI/异机门禁仍未由本轮开始。P0状态沿用已批准交接结论，本轮不重新声称竞赛整体交付或获奖竞争力。精确token不可得；开工估算20k–40k，不以估算替代验收结果。
 
-### 2026-09-19 补充：B-P1-01 离线 Java 实现（待 Maven 环境复验）
+发布状态核实（A03-DOC-01）：implementation commit 为 `66dfdd18bb07726eb8a18a6b8fd7d147a277668b`，已普通 push 至 `origin/feat/p1-history-diff`；本次文档收尾 preflight 已核实 local HEAD 与 remote 同为该提交。实施说明见 [A03 Scan Diff](../p1/a03-scan-diff.md)。未 force push、未 merge `integration/p1`、未 rebase、未 deploy、未操作 cz/xzb 分支、未开始 A04。状态仍为待评审，不标为 CLOSED。
 
-- 已新增离线 Java `ResourceProfileDraft` mapper 和 JUnit：仅接受内存中的本地 JSON、字段级 fixture SHA/JSON Pointer 证据、HF model/dataset 映射、身份失败关闭、license 冲突保留证据、P0 candidate 的 pending 授权边界。
-- 未变更 P0/P1 Schema、API 或网络行为；P0 candidate 保留既有报告模型外部，直到负责人批准正式 Schema/检测方法。
-- `git diff --check` 通过；Maven 因全局设置强制使用不可访问的 `C:\\.m2\\repository` 而未启动测试，即使指定项目受控仓库仍被覆盖。状态为“实现已写入、测试运行阻塞”，不可宣称门禁关闭。
-- 端到端报告、正式评测、第二真人独立盲审、权属/平台回执仍分别需要实现、可运行环境与真人/Owner 输入；本轮未伪造任何外部事实。
 
-### 2026-09-19 补充：Java 本地仓库、扫描与报告接入
+## 51. 2026-09-13 P1 A04 Resource Graph Backend（READY FOR REVIEW）
 
-- 新增仓库受控 `.mvn/settings.xml`，Maven 可离线使用已忽略的 `.tools/m2-java-migration` 缓存，不再依赖不可访问的 `C:\\.m2\\repository`；不改用户级 settings。
-- `ResourceProfileDraft` 已接入 Java `RepositoryScanner`：受信 checkout 内 `huggingface/models/*.json`、`huggingface/datasets/*.json` 按本地内容和 SHA-256 生成 Draft；JSON、CSV、HTML 报告均展示该候选，且显式保持 `authorization=pending` 与无许可证表达式。
-- 定向 Maven 回归 4/4 通过。全量 Maven 编译、Bench 示例/CLI 测试及新增扫描测试通过；但 `BenchManifestServiceTest` 的 13 项在 JUnit Windows 临时目录自动清理时均报 `AccessDeniedException`，没有业务断言失败，故全量绿灯门禁仍未关闭。
+负责人批准 A04 clarification，Contract 1.0 不变。当前 A03 已 CLOSED + INTEGRATED，基线为 integration/p1@5ad3b9622af444086023514e6a4fe8c3572be98f；第50节保留当时待评审历史，本节记录最新事实。
 
-## 2026-09-19：B-P1-06 Bench 2.0 公开语料与治理补充
+| 负责人 A 线 | 本次状态 | 证据 / 剩余 |
+|---|---|---|
+| A01 / A02 / A03 | CLOSED；A02/A03 INTEGRATED | A02/A03/Contract 本次重跑通过 |
+| A04 Graph Backend | READY FOR REVIEW | 七节点七边、严格filter/closure、capacity413、formal=false、只读；430相关回归通过；仅负责人功能分支发布 |
+| A04 Integration / UI / Production | 未由本轮完成 | 等待负责人Review；未合并集成线或部署 |
+| A05及后续负责人任务 | 本轮未开始 | 不扩大范围 |
 
-| 工作区 | 状态 | 本轮交付 | 未关闭门禁 | 责任方 | GitHub 状态 |
-| --- | --- | --- | --- | --- | --- |
-| 公开仓库候选与治理 | 设计完成 | 新增选择/排除原则、10 个候选、真人审查、holdout、amendment、FN/FP taxonomy 和公共字段批准边界 | 候选尚未固定 commit、未完成权利筛查、fixture、gold、独立审查、holdout 评测或字段批准 | Luna / Sol / Terra / 真人 reviewer / Root | 本轮未提交或推送 |
+实施说明：`docs/p1/a04-resource-graph.md`。Root接入并统一验收；Terra实现graph核心、Luna独立测试、Sol只读审计。无cz/xzb分支操作。提交及普通push结果以本节所属A04提交和Root最终回执为准；不代表整个P1或竞赛交付完成。
 
-该规范只提供可审查的设计输入，不构成公开仓库已纳入、许可证/授权通过、双人独立质量或可报告指标的声明。
 
-## 2026-09-20：Hugging Face Resource Profile 真实固定快照包
+### A04-R1 — 状态 Gate 优先级修复
 
-| 工作包 | 状态 | 本轮交付 | 未关闭门禁 | 责任与 GitHub 状态 |
-| --- | --- | --- | --- | --- |
-| HF 真实最小元数据快照 | 本地完成 | `tests/fixtures/huggingface/resource-profile-v1/` 固定 5 个 model、5 个 dataset 的官方 API 最小脱敏响应；每条记录登记 canonical ID、revision、provider、visibility、gated、disabled 与原始许可证声明的 JSON Pointer、源文件 SHA-256 和 Evidence 映射 | 远端资源可变；本包仅证明 2026-09-20 的固定观察，不证明当前远端状态、可用性、权属或再分发权 | Root 实现；未提交/推送，`main` 未改变 |
-| 失败关闭反例 | 本地完成 | 分离标注 3 个合成负例：缺失 revision/许可证、冲突声明许可证、`NOASSERTION`/`gated="auto"`；未冒充为远端事实 | 尚未接入 public P1 Schema、Gold 或 detector；公共字段批准仍待负责人裁决 | Root 实现；待 Luna 独立扩展回归 |
-| 可复现性校验 | 本地完成 | Java 定向测试核验 10/3 数量、所有 JSON、每个 source SHA、字段 Pointer、`authorization=pending` 与 `license_expression_id=null` | Maven 全量 Windows 临时目录清理问题仍与本包无关；本轮不宣称全量绿灯 | `HuggingFaceResourceProfileFixtureTest` 2/2 通过 |
+A04 首轮负责人 Review 为 CONDITIONAL PASS。本次仅将 scan status gate 提到资源存在性验证之前，语法级400仍最先；新增12项组合测试，原430集合扩为442 passed/0 failed。仅负责人feat/p1-graph-api独立修复提交及普通push，等待FINAL REVIEW。Contract/Schema和integration/p1不变，不部署、不操作cz/xzb分支、不开始A05；SHA以本节所属修复提交及Root远端回执为准。
 
-该数据包只保留 provider 的原始声明，明确禁止把 `NOASSERTION`、`other`、`private=false`、`gated=false`、revision 或成功采集自动转换为正式许可证表达式、授权状态或合规结论。
 
-## 2026-09-21：NOTICE 与许可证关系事实包
+### 2026-09-14 A05 — 整改任务后端（本机未提交，待Review）
 
-| 工作包 | 状态 | 本轮交付 | 未关闭门禁 | 责任与 GitHub 状态 |
-| --- | --- | --- | --- | --- |
-| 三类许可证来源事实 | 本地完成 | 根项目 1 条、依赖 4 条、AI 资源 3 条；统一记录 LICENSE/NOTICE/copyright 来源、hash、locator、短摘录、关系状态和 gap | 事实包尚未接公共 Domain/API；正式许可证表达式与合规结论仍须规则/人工复核 | Root 实现；本地提交 `e2d8c01`，远端信任确认门禁阻止推送，`main` 未改变 |
-| 真实义务演示输入 | 本地完成 | Jackson/Spring Boot Apache LICENSE+NOTICE；Hamcrest BSD copyright/保留条件；Mockito MIT copyright/许可声明；均绑定固定 Maven archive 与 entry SHA-256 | 只证明归档观察，不自动推导最终分发义务 | 后端 B 事实输入；Sol 待审核语义 |
-| Report V2 草稿输入 | 本地完成 | `openguard.notice-license-facts/1` 内部 Draft 2020-12 Schema 与 8 条可直接消费 rows，七组附件字段齐全，状态统一“待核验” | 不包含最终 Report V2 snapshot、持久化或下载 API | 后端 A 后续只读消费；本轮不代建 API |
+A04已由负责人PASS并fast-forward集成，当前基线6e32044。A05在负责人feat/p1-remediation-tasks实现固定评估任务derive/list/PATCH、独立sidecar、CAS/version审计、严格note及局部写入护栏；Formal/Scan facts不变。主回归204通过、P1回归145通过，0失败；1既有真实uvicorn测试按本轮禁socket/subprocess要求未运行。无生产接线/部署、无提交推送或集成、无cz/xzb分支操作。下一步负责人Review；A06未开始，不标记P1交付完成。
 
-本事实包将根 NOTICE/copyright 缺失、AI NOTICE/copyright/许可证原文未观察到、`other` 未解析等情况作为稳定 gap 输出；不会以空字符串或默认许可证掩盖证据缺口。
+### 2026-09-14 A05-R1 — 窄修验收完成，仍未发布
+
+修复公共EvidenceRef兼容及A05写入结构验证400语义；补POST derive写边界测试，修正PATCH OpenAPI默认值表达。362 passed/0 failed/0 skipped，既有real_uvicorn按授权排除；Contract及存储/derive不改。仅本机feat/p1-remediation-tasks未提交成果，等待负责人最终Review；不commit/push/merge/deploy，不开始A06。
+
+### 2026-09-14 A05-R2 — Content-Type语义窄修，等待最终Review
+
+仅Task写路由非JSON改为400 invalid_argument/request_invalid；A05 61项、全部授权集合364 passed/0 failed/0 skipped，1既有real_uvicorn排除。最终receipt使用测试时9文件SHA，生成后复算一致；未提交推送合并部署，A06未开始。
+
+### 2026-09-15 A06 Report V2 — 审查修复本地验证完成，待负责人Review
+
+当前工作分支feat/p1-report-v2基于2f67aa1（A05集成成果），A06为既有未提交实现。R1重放优先/旧指纹兼容、R2完整正文和附件关联、R3固定来源核验及C1/C2/C3限定补强已隔离验证：548 passed/0 failed/0 skipped，1既有real_uvicorn排除、1既有warning。源码回执及包含新增文件的差异保存在ignored output/manual-fixes/a06-review-repairs-20260915-194029。未暂存提交推送合并部署，不改Frozen Schema，不调用生产/扫描/Qwen。中文展示和完整审计版隐私边界保留。
+
+尚未交付：Notice/Profile reader、Graph引用的正式前端选择说明、生产接线部署、前端真实按钮/下载联调、负责人最终Review及A06发布。此处不标记A06或P1整体完成，后续工作等待单独授权。
+
+### 2026-09-15 A06 D1/D2 — 补丁与永久兼容测试交付整理
+
+永久旧writer兼容测试进入tests/unit，必要旧源码及来源/Hash说明进入tests/fixtures/p1/report-v2-legacy-writer；不依赖output或固定/workspace路径。原writer创建合成报告，当前服务离线重放和双附件/DB Hash保持不变。替换后统一548 passed/0 failed/0 skipped，唯一real_uvicorn排除，未重复计数。Git原生完整补丁独立HEAD应用及逐文件Hash验证记录位于ignored output/manual-fixes/a06-delivery-check-20260915-205208。backend业务代码未变；仍未暂存提交推送合并部署，停止等待负责人Review，不代表A06上线。
+
+
+### 2026-09-16 P1 隔离联调入口（本地验证，等待负责人Review）
+
+AMENDMENT：A06本批已集成至integration/p1@62d78da；之前未提交条目保留历史。本轮负责人分支feat/p1-dev-integration仅新增隔离开发接线，不部署生产、不发布。
+
+| 负责人A线范围 | 已完成与验证 | 尚待 | 发布状态 |
+|---|---|---|---|
+| A01–A06本批基线 | 冻结契约及已集成后端复用，156既有源码/配置Hash不变 | 不代表全部P1完成 | 既有62d78da保留 |
+| 开发seed/factory/lifecycle | 私有v2合成空间、真实服务、精确stop/start、Origin与禁用边界；新增71测试 | 负责人Review | 本地未提交 |
+| 接口和报告联调 | HTTP25请求、真实重启/代理恢复，Task/CAS/基础及Graph报告Hash通过 | 任意扫描Graph引用产品接口未做 | 本地未提交 |
+| 代理/交接 | 首页Chrome实际可见，HTTP代理、59前端测试/tsc通过；docs/p1/dev-integration.md | Chrome直接API导航被客户端拦截；新P1页面、Windows未验收 | 本地未提交 |
+| 后续工作 | 本轮619后端通过，所有临时实例已停止，数据保留 | Notice/Profile、生产接线部署、P1最终交付另行授权 | 不自动推进 |
+
+### 2026-09-17 A07-1 — Metadata受限传输基础层，本地待Review
+
+AMENDMENT：前节“本地未提交”是历史状态；A01–A06及隔离联调/DEV-R1/R2/T1已由负责人集成，当前基线为integration/p1@ac6753fd48467eb39d7f4606f1e54e6931d2e386。
+
+| 范围/责任 | 本轮结果 | GitHub与下一步 |
+|---|---|---|
+| A线A07-1内部transport | 默认关闭；HF model/dataset类型化目标，数值IP/TLS、共享网络预算、零redirect、流式上限/严格JSON、临时bytes和来源绑定；实际运行实现而非NotImplemented | feat/p1-metadata-transport未暂存/提交/推送，负责人Review |
+| A线离线验证 | 原668明确集合+本轮99节点+既有A2离线46节点，最终计数/日志以output/manual-fixes/a07-1-metadata-20260917-1153回执为准；真实外部Git验收未运行 | 不作为真实HF/TLS握手或生产验收 |
+| cz B01 | 提供synthetic consumer及docs/p1/metadata-transport.md；未实现业务parser/真实5模型5数据集 | 待双方接口Review与cz实现 |
+| Profile/NOTICE/生产 | 未实现sidecar/cache/refresh/job/API/reader/前端；旧扫描和报告不受影响 | A与cz/xzb分别后续授权，不自动推进 |
+
+已可独立运行/演示的仍是既有扫描/评估/报告和隔离合成联调；本批仅新增可离线验证的内部传输层，未接产品。参赛完整作品仍需真实授权联调、业务页面、Profile/NOTICE、Bench人工核验、异机/恢复和提交材料；获奖竞争力需可复现对比/消融/用户效果证据，不能以本批测试数替代或给出无分母百分比。
+
+### 2026-09-18 Frontend Acceptance Seed Pack v1 — 本地实现及隔离验证完成，待Review
+
+AMENDMENT：A07-1已由负责人集成至944a00e；此前本地未提交描述保留为历史。本轮工作分支feat/p1-frontend-acceptance-seed未暂存/提交/推送/合并。
+
+| 范围/责任 | 当前结果与验证 | 发布状态/下一步 |
+|---|---|---|
+| A线验收基础设施 | 独立synthetic seed，205 History、D1–D4 Diff、100/300/500图、15真实derive Task及空列表、四类Report；原dev v2保持 | 本轮本地未发布，负责人源码Review |
+| A线验证 | 最终834通过，原813唯一节点保留+21；96真实loopback HTTP和40重启GET，实际绑定Task CAS与旧报告不变，逻辑GET审计通过 | 证据output/manual-fixes/p1-frontend-acceptance-20260918-112553；本轮容器已停，数据保留 |
+| xzb F01/F03/F04/F05/F06 | 已有可定位ID/快照/Hash及操作文档，未修改页面或恢复stash | 由xzb按后续安排接真实API并做浏览器/F07验收；不把后端通过当UI完成 |
+| A07-2/cz B01/NOTICE | 当前基线无可用Profile/NoticeDraft，manifest明确未提供 | 负责人后续单独安排，不伪造成功或扩大本轮 |
+
+当前可独立演示新增合成History/Diff/Graph/Task/Report链路，不是真实仓库扫描、Gold或合规证明。前端未改/未重跑，Windows/原生Linux/生产build/性能分布未验收。本批不关闭竞赛整体报名/作品/获奖门禁；仍需业务页面、Profile/NOTICE、真实授权联调、人工Bench、异机恢复与提交材料，以及可复现对比/消融证据。无无分母完成率。
+
+### 2026-09-18 Acceptance Owner Review R1/R2 — 窄修完成，待负责人最终Review
+
+| 范围/责任 | 本轮结果 | 发布与下一步 |
+|---|---|---|
+| A线R1 | manifest完整集合与正式事实/sidecar只读绑定，失败init不可启动，独立篡改副本start/print拒绝且文件Hash不变 | 本地未暂存提交推送合并；负责人Review |
+| A线R2 | audit及live validator exec前检查实际完整容器配置，异常自有实例仍可安全stop | 复用原launcher要求，不改变生产 |
+| 回归/隔离验收 | 31定向、141旧dev/Acceptance、最终865通过；原834全部保留，仅原1节点精确排除。fresh prepare52+smoke96+restart40=188回执请求；两个本轮使用容器均exited | 新R1/R2目录保留成功与失败日志、JUnit、Hash及回执 |
+| 累计合成能力 | 205 History、D1–D4、三档图、15/0 Task、四Report/CAS/不可变报告/GET审计保持 | 仍非真实仓库/Gold或页面验收 |
+| 待办/负责人、xzb、cz | 最终Review；后续另行授权xzb页面/代理、A07-2/B01/Profile/NOTICE及真实授权联调 | 本轮不进入后续包，不动组员分支 |
+
+当前可独立演示的仅既有合成后端链路；尚未具备的前端/Profile/NOTICE与上一记录一致。本轮不代表关闭报名/完整作品/获奖竞争力门禁：人工Bench、异机恢复、材料、真实授权验收、对比/消融证据仍需单独验证。未改前端，Windows/原生Linux/生产build未实测，不编造完成率。
+
+## 2026-09-19 A07-2 本地实现验收 / 待负责人 Review
+
+| 范围 | 本轮状态与验证 | 责任/发布状态/下一步 |
+|---|---|---|
+| A07-2 Profile/metadata/refresh/job | 实现与功能验收通过：55新增定向；统一920 unique passed，原865保留；99 A07-1及172旧dev/Acceptance回归 | A线Codex本地单写；未暂存提交推送合并部署，负责人源码Review |
+| 验收流程偏差 | 初始只有7项fail-first，未完整先执行20类；其他负向测试过程中补齐并通过，不能倒置时序 | 总状态PARTIAL，负责人决定是否接纳流程偏差，不伪称全门槛COMPLETE |
+| Acceptance /2 F02 | P1–P5正式API、独立metadata.db、显式synthetic refresh；额外未预取资源真实HTTP0→1；smoke127+重启53 GET | 新空间才启用，原/1恢复+40 GET通过且无metadata库；NOTICE仍unsupported |
+| 累计本地能力 | A01–A06、受限A07-1与205 History/D1–D4/100-300-500 Graph/Task/四Report保持；现在可合成演示Profile | 不代表生产启用或xzb业务页面完成 |
+| 剩余包/门禁 | 真实cz B01、真实HF、NOTICE、Report/Profile、人工核验接纳；xzb页面；异机/Windows/生产build | 各自责任人另行授权；本轮STOP等待Review |
+
+四个使用过的确切容器均恢复exited，全部数据/失败轨迹保留；外部业务请求0，无新依赖。
+报名/完整作品/获奖竞争力仍需人工Bench、材料、真实授权验收、跨平台及对比/消融等独立证据；
+本轮没有相应验收，不能从920测试或synthetic API推断完成率。详见新A07-2回执和工作日志。
+
+## 2026-09-19 Owner R1/R2/T1 窄修完成，待FINAL Review
+
+| 范围 | 当前结果 | 责任/发布/下一步 |
+|---|---|---|
+| A07-2 R1/R2/T1 | 真实生成时间与稳定语义ID、空provider仅投影null+gap、Profile专属错误文案 | A线Codex本地COMPLETE；负责人FINAL Review |
+| 验证 | 本轮fail-first5失败/2保护通过；修补后7定向、62Profile、99transport、172兼容；统一927通过，原920全保留、新增7 | 仅原精确1项排除；未暂存提交推送合并部署 |
+| 合成链路 | 新/2 HTTP131+5+52，旧/1只读40；Profile及既有History/Diff/Graph/Task/Report保持，三容器停止 | 不是前端页面/真实授权/生产验收 |
+| 原流程偏差 | 负责人接受不阻止代码交付；旧7项fail-first历史及PARTIAL回执不重写 | accepted_for_code_delivery_without_rewriting_chronology |
+| 剩余范围 | 真实B01/HF、NOTICE、人工接纳、页面、Report/Profile与跨平台/生产门禁 | 分属负责人/cz/xzb后续授权，本轮STOP |
+
+竞赛完整作品与获奖门禁仍需既有人工Bench、材料、真实授权/异机/对比证据，不从本轮回归编造完成率。

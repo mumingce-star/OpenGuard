@@ -1,4 +1,5 @@
 {
+  "case_sha256": "61af8a6011c59ce43711a96ab1df580907285a45f2d4d92bbb457ff709d450c5",
   "cases": [
     {
       "assets": [
@@ -10,7 +11,7 @@
             "static_pattern"
           ],
           "evidence_ids": [
-            "evd_af4527f2-d9ec-526d-b3fe-c4a1db46569b"
+            "evd_aecc7e7e-7107-558d-b68d-ddb1f06e98e2"
           ],
           "id": "ast_c60f603d-3cfa-556f-a697-1a53531f3603",
           "license_expression_id": null,
@@ -24,12 +25,12 @@
         {
           "content_hash": {
             "algorithm": "sha256",
-            "value": "a744649fadb408557ca008f4bce275c72fda1c694d37cf812974164904fadd9a"
+            "value": "8a52f9c88c30cb741bf0e697b9aba89fa884c11ed73887d6d348e66702c55ccc"
           },
           "detected_by": "static_pattern",
           "end_line": 1,
-          "excerpt": "MODEL = 'https://huggingface.co/acme/demo-model'",
-          "id": "evd_af4527f2-d9ec-526d-b3fe-c4a1db46569b",
+          "excerpt": "https://huggingface.co/acme/demo-model",
+          "id": "evd_aecc7e7e-7107-558d-b68d-ddb1f06e98e2",
           "kind": "file",
           "locator": "src/model.py",
           "observed_at": "2026-09-06T00:00:00Z",
@@ -40,7 +41,7 @@
             "prompt_schema_digest": null,
             "provider": null,
             "type": "parser",
-            "version": "0.1.0"
+            "version": "0.1.1"
           },
           "start_line": 1,
           "verification_status": "pending"
@@ -64,7 +65,7 @@
             "static_pattern"
           ],
           "evidence_ids": [
-            "evd_d474909e-ecb0-553b-bb25-fca978cc3130"
+            "evd_fde324ab-38b4-59c5-9d3a-8e2b09c7c79a"
           ],
           "id": "ast_d8fd32eb-2238-5e21-a773-8776751b6446",
           "license_expression_id": null,
@@ -78,12 +79,12 @@
         {
           "content_hash": {
             "algorithm": "sha256",
-            "value": "56812a862f3addba9ddd6d0d43d6ed78f4c03a04b95f5a809b33a2b5c154319b"
+            "value": "f5af234a92a0fd51df2b272f534c9ad146bcebed0ef7e988fd85c4d5a2a288ce"
           },
           "detected_by": "static_pattern",
           "end_line": 1,
-          "excerpt": "DATASET = 'https://huggingface.co/datasets/acme/demo-dataset'",
-          "id": "evd_d474909e-ecb0-553b-bb25-fca978cc3130",
+          "excerpt": "https://huggingface.co/datasets/acme/demo-dataset",
+          "id": "evd_fde324ab-38b4-59c5-9d3a-8e2b09c7c79a",
           "kind": "file",
           "locator": "src/data.py",
           "observed_at": "2026-09-06T00:00:00Z",
@@ -94,7 +95,7 @@
             "prompt_schema_digest": null,
             "provider": null,
             "type": "parser",
-            "version": "0.1.0"
+            "version": "0.1.1"
           },
           "start_line": 1,
           "verification_status": "pending"
@@ -118,7 +119,7 @@
             "static_pattern"
           ],
           "evidence_ids": [
-            "evd_de8970ad-c85d-59ad-93b4-b63a135bcbae"
+            "evd_859473d4-585e-584e-825f-4f290a523acf"
           ],
           "id": "ast_eff857a0-0163-55be-94d5-d5658cab8a39",
           "license_expression_id": null,
@@ -132,12 +133,12 @@
         {
           "content_hash": {
             "algorithm": "sha256",
-            "value": "9336244c9e7dae340a930d79aa816ccc71c5d5137afad5117947299d7ba9c7df"
+            "value": "23632d0d3608d9d10aecbdf7bd2ab85cf2cc68a9c0486bb93b19a1b17d1bc34d"
           },
           "detected_by": "static_pattern",
           "end_line": 1,
-          "excerpt": "result = openai.responses.create()",
-          "id": "evd_de8970ad-c85d-59ad-93b4-b63a135bcbae",
+          "excerpt": "openai.responses",
+          "id": "evd_859473d4-585e-584e-825f-4f290a523acf",
           "kind": "file",
           "locator": "src/client.py",
           "observed_at": "2026-09-06T00:00:00Z",
@@ -148,7 +149,7 @@
             "prompt_schema_digest": null,
             "provider": null,
             "type": "parser",
-            "version": "0.1.0"
+            "version": "0.1.1"
           },
           "start_line": 1,
           "verification_status": "pending"
@@ -172,7 +173,7 @@
             "static_pattern"
           ],
           "evidence_ids": [
-            "evd_2d744a20-585d-5f9f-8d16-f7b1e74e338f"
+            "evd_a9dab10d-c241-5a1f-a9a1-f241df74f096"
           ],
           "id": "ast_ac599c18-79a6-5225-8550-3345fb191eef",
           "license_expression_id": null,
@@ -186,12 +187,12 @@
         {
           "content_hash": {
             "algorithm": "sha256",
-            "value": "f948720d1f5bc31c25d3c536d1364898cc9026dbc7a72c70ec73badf96fc76f3"
+            "value": "86258e64008872d3ea553199669b08d9032390c31243b834a8322c3b065c6fa8"
           },
           "detected_by": "static_pattern",
           "end_line": 1,
-          "excerpt": "MODEL = 'https://modelscope.cn/models/acme/demo-model'",
-          "id": "evd_2d744a20-585d-5f9f-8d16-f7b1e74e338f",
+          "excerpt": "https://modelscope.cn/models/acme/demo-model",
+          "id": "evd_a9dab10d-c241-5a1f-a9a1-f241df74f096",
           "kind": "file",
           "locator": "config/resources.py",
           "observed_at": "2026-09-06T00:00:00Z",
@@ -202,7 +203,7 @@
             "prompt_schema_digest": null,
             "provider": null,
             "type": "parser",
-            "version": "0.1.0"
+            "version": "0.1.1"
           },
           "start_line": 1,
           "verification_status": "pending"
@@ -224,6 +225,6 @@
       "predicted": []
     }
   ],
-  "scanner": "openguard-static-ai-detector/0.1.0",
+  "scanner": "openguard-static-ai-detector/0.1.1",
   "version": "0.1.0"
 }

@@ -1,0 +1,137 @@
+{
+  "schema_version": "benchmark-migration-receipt/1",
+  "migrated_at": "2026-09-12",
+  "source_commit": "c9dcbad633431328545a2ac6ab8d1a4e2ab3125a",
+  "integration_base": "b9338474dc2e0d9554ebd676dbff87dba01d49a6",
+  "metrics_classification": "historical artifact metrics",
+  "current_detector_live_performance": false,
+  "formal_assessment_input": false,
+  "license_verification_promoted": false,
+  "evaluation": {
+    "evaluator": "benchmarks/evaluate.py",
+    "evaluator_sha256": "aa63fb017e3c6d911f96bdcba05b12d556cc36b0edd564f60e6c66683312398a",
+    "entrypoint": "evaluate_scan_result",
+    "artifact": "real-source-recall-v1.json",
+    "artifact_sha256": "72cad06a343bd170bdd8f6cf94ba6dc9d1c9cf7640b67a52342b42f8659748a0",
+    "reported_metrics_match": true,
+    "version": "real-source-recall/v1",
+    "case_count": 9,
+    "metrics": {
+      "true_positive": 11,
+      "false_positive": 8,
+      "false_negative": 39,
+      "precision": 0.5789473684210527,
+      "recall": 0.22,
+      "f1": 0.3188405797101449
+    },
+    "cases": [
+      {
+        "id": "smolagents-multiagents-full",
+        "true_positive": 1,
+        "false_positive": 1,
+        "false_negative": 0,
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.6666666666666666
+      },
+      {
+        "id": "smolagents-tools-full",
+        "true_positive": 2,
+        "false_positive": 0,
+        "false_negative": 1,
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1": 0.8
+      },
+      {
+        "id": "smolagents-open-deep-research-full",
+        "true_positive": 1,
+        "false_positive": 1,
+        "false_negative": 1,
+        "precision": 0.5,
+        "recall": 0.5,
+        "f1": 0.5
+      },
+      {
+        "id": "smolagents-benchmark-run-full",
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 2,
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1": 0.5
+      },
+      {
+        "id": "smolagents-readme-full",
+        "true_positive": 2,
+        "false_positive": 6,
+        "false_negative": 5,
+        "precision": 0.25,
+        "recall": 0.2857142857142857,
+        "f1": 0.26666666666666666
+      },
+      {
+        "id": "litellm-sync-together-full",
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 26,
+        "precision": 1.0,
+        "recall": 0.037037037037037035,
+        "f1": 0.07142857142857142
+      },
+      {
+        "id": "litellm-anthropic-readme-full",
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 3,
+        "precision": 1.0,
+        "recall": 0.25,
+        "f1": 0.4
+      },
+      {
+        "id": "litellm-google-genai-readme-full",
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 1,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666
+      },
+      {
+        "id": "litellm-router-window-960-985",
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    ]
+  },
+  "review_boundary": {
+    "annotation_record_count": 12,
+    "human_reviewers": 1,
+    "independent_second_human_review_complete": false,
+    "recall_gold_human_reviewers": 0,
+    "license_uncertain_count": 12
+  },
+  "limitations": [
+    "Only stored expected/predicted labels were evaluated; no detector or source fetching ran.",
+    "Historical predictions were a Node reproduction of static_assets.py 0.1.0 regexes, not a live product run.",
+    "Original source/evidence audit receipts are historical; this migration did not repeat their verification.",
+    "Three original scan attachments and 13 additional evidence objects remain unverified in this migration."
+  ],
+  "source_file_sha256": {
+    "README.md": "6c66e82353deeae62cf8ad10a7c7424bdbd02acea55b4087097fa2eb303d5a09",
+    "ai-draft.json": "4408e59389eca9f7164fb69e23687bd235691f3dd3ec3abbb28c85e07faea7b5",
+    "evidence-audit.md": "9e246b65ef315400e2ab9b929e9c700281a643841c9a76e9f9be6e04f74f4abb",
+    "human-amendment-r05.json": "3313a7d10c0909926c2c5dfd99768068e77393c43520fe4f3a2c50a12cb5e979",
+    "human-confirmation.json": "7102eddae728cfc04781ee0aca3c37034e614a0d454e946b0a483ff856618747",
+    "human-review.md": "3ffe70b4aea457c3178e0ddcfa2c836c95f083b055e09985e9e003934bf7613a",
+    "manifest.json": "a9ac28863d9e7a8fee02955e96d89127beb9691201f2365fdd5a744ee251ddd5",
+    "real-source-recall-v1.json": "72cad06a343bd170bdd8f6cf94ba6dc9d1c9cf7640b67a52342b42f8659748a0",
+    "second-ai-review.json": "e9ce55ce5379302a4fa2ccae211f117b927a422b07bebba7da7dd98b9ed7a4d2",
+    "source-checks.json": "14971fe681c4d6c44d2f8dc79f1094aee3b3ae889b9e026e6008e03cca9248c7",
+    "source-reverification.json": "5bb36486af83c32b0b7fa59c5f2d5a4d33bf051c4e30d066a59743848db36b5e"
+  }
+}

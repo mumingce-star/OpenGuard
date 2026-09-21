@@ -14,10 +14,20 @@
 - License: MIT
 - Usage: Vite integration and shared theme foundation.
 
-No paid prompt, restricted template, icon pack, image, or third-party component source is bundled in this frontend.
+No paid prompt, restricted template, paid component source, icon pack or image is copied into this frontend. Open-source runtime packages are installed through the lockfile and listed below.
 
 ## React Bits — Glow Cursor
 
 - Reference: https://reactbits.dev/animations/glow-cursor
 - Usage: visual reference for the cyan-to-violet cursor trail on the landing page.
 - Implementation: `src/components/GlowCursor.tsx` is an original Canvas 2D implementation. It does not copy or redistribute React Bits component source, keeps pointer events available to the page, pauses in background tabs, and disables itself for coarse pointers and reduced-motion users.
+
+## Implementation references
+
+- React state organization: https://react.dev/learn/choosing-the-state-structure
+- Contrast guidance: https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
+- These informed state separation and visual review; the frontend does not claim full accessibility certification.
+
+## P0 integration
+
+Core pages reused from team commit 83e8928. Graph pages and React Flow dependencies were not imported. Existing React, Tailwind and Vite lockfile dependencies are unchanged.

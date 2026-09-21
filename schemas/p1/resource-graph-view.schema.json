@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:resource-graph-view:1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "view_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "formal": {
+      "const": false
+    },
+    "scan_ref": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/ScanRef"
+    },
+    "filter": {
+      "type": "object",
+      "properties": {
+        "resource_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "resource_kinds": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "component",
+              "ai_asset"
+            ]
+          }
+        }
+      },
+      "required": [
+        "resource_ids",
+        "resource_kinds"
+      ],
+      "additionalProperties": false
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "project",
+              "component",
+              "ai_asset",
+              "license_observation",
+              "evidence",
+              "finding",
+              "obligation"
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "source_id",
+          "label"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "enum": [
+              "PROJECT_HAS_RESOURCE",
+              "RESOURCE_HAS_LICENSE_OBSERVATION",
+              "RESOURCE_SUPPORTED_BY_EVIDENCE",
+              "RESOURCE_HAS_FINDING",
+              "FINDING_SUPPORTED_BY_EVIDENCE",
+              "FINDING_REFERENCES_OBLIGATION",
+              "LICENSE_HAS_RULE_OBLIGATION"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/SourcePointer"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "source",
+          "target",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "view_complete": {
+          "const": true
+        },
+        "scope": {
+          "enum": [
+            "all",
+            "filtered"
+          ]
+        },
+        "node_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "edge_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scan_gaps": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "view_complete",
+        "scope",
+        "node_count",
+        "edge_count",
+        "scan_gaps"
+      ],
+      "additionalProperties": false
+    },
+    "capacity": {
+      "type": "object",
+      "properties": {
+        "max_nodes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_edges": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "max_nodes",
+        "max_edges"
+      ],
+      "additionalProperties": false
+    },
+    "provenance": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "schema_version",
+    "view_id",
+    "formal",
+    "scan_ref",
+    "filter",
+    "nodes",
+    "edges",
+    "coverage",
+    "capacity",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

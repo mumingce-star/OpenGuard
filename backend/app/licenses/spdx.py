@@ -9,11 +9,13 @@ from __future__ import annotations
 import re
 import uuid
 from collections.abc import Sequence
+from dataclasses import dataclass
 
 from app.domain.models import Evidence, LicenseExpression, VerificationStatus
 
 _NAMESPACE = uuid.UUID("c6bcaa52-7231-5a29-a4c0-3db3ec3f2d8d")
 _ALIASES = {
+    "agpl 3.0": "AGPL-3.0-only", "agpl-3.0-only": "AGPL-3.0-only",
     "apache 2.0": "Apache-2.0", "apache-2.0": "Apache-2.0", "apache license 2.0": "Apache-2.0",
     "bsd 2 clause": "BSD-2-Clause", "bsd-2-clause": "BSD-2-Clause",
     "bsd 3 clause": "BSD-3-Clause", "bsd-3-clause": "BSD-3-Clause",
@@ -32,24 +34,46 @@ _ALIASES = {
 _TOKEN = re.compile(r"\s+")
 
 
+@dataclass(frozen=True)
+class ParsedLicenseExpression:
+    """The deliberately small expression subset supported by the P0 engine."""
+
+    expression: str
+    normalized_ids: tuple[str, ...]
+    operators: tuple[str, ...]
+    supported: bool
+
+
 def _canonical_token(value: str) -> str:
     return _TOKEN.sub(" ", value.strip().lower().replace("/", " ").replace("_", " "))
 
 
-def _normalise_expression(text: str) -> tuple[str, list[str]]:
+def parse_license_expression(text: str) -> ParsedLicenseExpression:
+    """Parse aliases and flat AND/OR expressions without guessing unsupported syntax."""
+
     parts = re.split(r"\s+(AND|OR)\s+", text.strip(), flags=re.IGNORECASE)
     normalized: list[str] = []
     expression: list[str] = []
+    operators: list[str] = []
     for part in parts:
         if part.upper() in {"AND", "OR"}:
-            expression.append(part.upper())
+            operator = part.upper()
+            expression.append(operator)
+            operators.append(operator)
             continue
         candidate = _ALIASES.get(_canonical_token(part))
         if candidate is None:
-            return text.strip(), []
+            return ParsedLicenseExpression(text.strip(), (), (), False)
         normalized.append(candidate)
         expression.append(candidate)
-    return " ".join(expression), sorted(set(normalized))
+    return ParsedLicenseExpression(
+        " ".join(expression), tuple(sorted(set(normalized))), tuple(operators), True
+    )
+
+
+def _normalise_expression(text: str) -> tuple[str, list[str]]:
+    parsed = parse_license_expression(text)
+    return parsed.expression, list(parsed.normalized_ids)
 
 
 def normalize_license(text: str, evidence: Sequence[Evidence]) -> LicenseExpression:

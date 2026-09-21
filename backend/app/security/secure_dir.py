@@ -6,6 +6,7 @@ import errno
 import os
 import secrets
 import stat
+import re
 from pathlib import Path
 from typing import BinaryIO, Callable
 
@@ -14,6 +15,7 @@ from .errors import IngestionSecurityError
 
 _OPEN_DIR_FLAGS = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_CLOEXEC", 0)
 _OPEN_NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)
+_TRUSTED_PROCESS_PART = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 def _capability_error() -> IngestionSecurityError:
@@ -189,6 +191,18 @@ class SecureWorkspace:
 
     def open_directory(self, parts: tuple[str, ...]) -> int:
         return self._open_directory(parts, create=False)
+
+    def trusted_process_path(self, parts: tuple[str, ...]) -> Path:
+        """Render a path made solely from code-owned components for a fixed tool.
+
+        Untrusted archive or Git paths must continue to use descriptor-relative
+        methods. This narrow escape hatch exists only because Git requires a
+        filesystem path for its own private object database.
+        """
+
+        if not parts or any(part in {".", ".."} or _TRUSTED_PROCESS_PART.fullmatch(part) is None for part in parts):
+            raise IngestionSecurityError("scanner_failed", "workspace_integrity_failed")
+        return self._root._path.joinpath(self._name, *parts)
 
     def cleanup(self, retries: int) -> None:
         if self._cleaned:

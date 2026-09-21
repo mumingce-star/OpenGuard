@@ -155,3 +155,29 @@ def test_final_audit_p1_extras_order_identity_order_and_ipv6() -> None:
     assert next(item for item in parsed.dependencies if item.extras).extras == ("x-y",)
     ipv6 = parsed.dependencies[-1]
     assert ipv6.direct_reference == "https://[::1]/pkg"
+
+
+def test_static_development_groups_have_distinct_scope_and_mappable_evidence():
+    from datetime import datetime, timezone
+    from app.scanners import map_python_manifest_result
+    result = _parse({"pyproject.toml": """[project]
+dependencies=['example==1']
+[dependency-groups]
+Dev_Test=['example==2', 'pytest>=8']
+[tool.hatch.build]
+packages=['src/example']
+"""})
+    assert result.status is ParseStatus.COMPLETE
+    assert len(result.dependencies) == 3
+    dev = [d for d in result.dependencies if d.scope is DependencyScope.DEVELOPMENT]
+    assert len(dev) == 2 and all(d.group == 'dev-test' for d in dev)
+    mapped = map_python_manifest_result(result, root_digest='a' * 64, observed_at=datetime.now(timezone.utc))
+    assert len(mapped.components) == 3
+    assert any(e.locator.endswith('dependency-groups.Dev_Test[1]') for e in mapped.evidence)
+
+
+@pytest.mark.parametrize('groups', ["dev=[{include-group='base'}]", "dev=[123]", "dev='pytest'", "Dev_Test=['a']\ndev-test=['b']", "'bad name'=['a']"])
+def test_complex_or_invalid_dependency_groups_remain_partial(groups):
+    result = _parse({'pyproject.toml': '[dependency-groups]\n' + groups})
+    assert result.status is ParseStatus.PARTIAL
+    assert result.diagnostics

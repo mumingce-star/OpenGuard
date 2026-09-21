@@ -1,0 +1,330 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:resource-profile:1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scan_ref": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/ScanRef"
+    },
+    "resource_ref": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/ResourceRef"
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ecosystem": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "ecosystem",
+        "provider",
+        "source_url"
+      ],
+      "additionalProperties": false
+    },
+    "license_observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "license_expression_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expression": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relation_scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+            }
+          },
+          "verification_status": {
+            "enum": [
+              "verified",
+              "pending",
+              "not_applicable",
+              "rejected"
+            ]
+          }
+        },
+        "required": [
+          "license_expression_id",
+          "expression",
+          "relation_scope",
+          "evidence_refs",
+          "verification_status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "authorization_fact": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "verified",
+                "pending",
+                "not_applicable",
+                "rejected"
+              ]
+            },
+            "source_ref": {
+              "$ref": "urn:openguard:p1:common:1.0#/$defs/SourcePointer"
+            }
+          },
+          "required": [
+            "status",
+            "source_ref"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "metadata_observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resource_identity_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requested_revision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "resolved_revision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          },
+          "fetched_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "Z$"
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "parser_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bounded_excerpt": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "verification_status": {
+                  "enum": [
+                    "verified",
+                    "pending",
+                    "not_applicable",
+                    "rejected"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "value",
+                "locator",
+                "verification_status"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "verification_status": {
+            "enum": [
+              "verified",
+              "pending",
+              "not_applicable",
+              "rejected"
+            ]
+          },
+          "coverage_gaps": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "producer": {
+            "$ref": "urn:openguard:p1:common:1.0#/$defs/Producer"
+          },
+          "provenance": {
+            "$ref": "urn:openguard:p1:common:1.0#/$defs/Provenance"
+          },
+          "full_response_replay_available": {
+            "const": false
+          }
+        },
+        "required": [
+          "observation_id",
+          "provider",
+          "resource_identity_key",
+          "requested_revision",
+          "resolved_revision",
+          "source_url",
+          "fetched_at",
+          "content_hash",
+          "parser_version",
+          "bounded_excerpt",
+          "fields",
+          "verification_status",
+          "coverage_gaps",
+          "producer",
+          "provenance",
+          "full_response_replay_available"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "coverage_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+      }
+    },
+    "provenance": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "schema_version",
+    "profile_id",
+    "scan_ref",
+    "resource_ref",
+    "identity",
+    "license_observations",
+    "authorization_fact",
+    "metadata_observations",
+    "coverage_gaps",
+    "evidence_refs",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

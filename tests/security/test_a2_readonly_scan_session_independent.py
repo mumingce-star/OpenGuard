@@ -296,7 +296,7 @@ def test_total_limit_counts_repeated_reads_and_rejects_one_byte_over(tmp_path: P
         ScanReadLimits(single_file_max_bytes=0),
         ScanReadLimits(single_file_max_bytes=True),  # type: ignore[arg-type]
         ScanReadLimits(single_file_max_bytes=1.0),  # type: ignore[arg-type]
-        ScanReadLimits(single_file_max_bytes=2 * MIB + 1),
+        ScanReadLimits(single_file_max_bytes=4 * MIB + 1),
         ScanReadLimits(single_file_max_bytes=64 * 1024, total_max_bytes=64 * 1024 - 1),
     ],
 )
@@ -322,7 +322,7 @@ def test_invalid_call_limits_are_rejected_before_archive_stream_consumption(
     assert list(root.iterdir()) == []
 
 
-@pytest.mark.parametrize("max_bytes", [0, True, 1.0, 2 * MIB + 1])
+@pytest.mark.parametrize("max_bytes", [0, True, 1.0, 4 * MIB + 1])
 def test_invalid_read_max_bytes_are_rejected_without_leaking_input(
     tmp_path: Path, max_bytes: object
 ) -> None:
@@ -836,4 +836,89 @@ def test_public_session_surface_is_read_only_and_has_no_path_or_descriptor_capab
     public_names = {name for name in dir(ReadOnlyScanSession) if not name.startswith("_")}
     forbidden_fragments = ("path", "fd", "open", "write", "stream", "fileno")
     assert all(not any(fragment in name.lower() for fragment in forbidden_fragments) for name in public_names)
-    assert public_names == {"inventory", "read_bytes"}
+    assert public_names == {"inventory", "read_bytes", "read_many_bytes", "remaining_read_bytes"}
+
+
+def test_remaining_quota_is_readonly_decreases_and_expires(tmp_path: Path):
+    service, root = _service(tmp_path)
+    saved = []
+    def consume(session):
+        saved.append(session)
+        assert session.remaining_read_bytes == 6
+        assert session.read_bytes("a.txt", max_bytes=5) == b"alpha"
+        assert session.remaining_read_bytes == 1
+        with pytest.raises(AttributeError):
+            session.remaining_read_bytes = 100
+        assert session.remaining_read_bytes == 1
+    try:
+        service.ingest_with_consumer(_zip([("a.txt", b"alpha")]), consume,
+                                    read_limits=ScanReadLimits(single_file_max_bytes=5, total_max_bytes=6))
+        with pytest.raises(IngestionSecurityError, match="scan_session_expired"):
+            _ = saved[0].remaining_read_bytes
+    finally:
+        service.close()
+    assert list(root.iterdir()) == []
+
+
+def test_batch_read_validates_tree_twice_without_per_file_rescans(tmp_path, monkeypatch):
+    service, root = _service(tmp_path)
+    paths = tuple(f'f{i}.txt' for i in range(140))
+    calls = []
+    original = zip_stream_module.validate_inventory_snapshot
+    def validate(*args):
+        calls.append(1)
+        return original(*args)
+    monkeypatch.setattr(zip_stream_module, 'validate_inventory_snapshot', validate)
+    def consume(session):
+        calls.clear()
+        result = session.read_many_bytes(paths, max_bytes=1)
+        assert result == {p: b'x' for p in paths}
+        assert len(calls) == 2
+        assert session.remaining_read_bytes == 16 * MIB - 140
+    try:
+        service.ingest_with_consumer(_zip([(p,b'x') for p in paths]), consume)
+    finally:
+        service.close()
+    assert not list(root.iterdir())
+
+
+def test_batch_returns_no_bytes_if_an_already_read_file_changes(tmp_path, monkeypatch):
+    service, root = _service(tmp_path)
+    original = read_session_module.read_snapshot_file
+    escaped = []
+    def consume(session):
+        def read(*args, **kwargs):
+            data = original(*args, **kwargs)
+            if args[2] == 'b.txt':
+                _replace_with_file(session, 'a.txt', b'evil')
+            return data
+        monkeypatch.setattr(read_session_module, 'read_snapshot_file', read)
+        escaped.append(session.read_many_bytes(('a.txt','b.txt')))
+    try:
+        with pytest.raises(IngestionSecurityError):
+            service.ingest_with_consumer(_zip([('a.txt',b'alpha'),('b.txt',b'beta')]), consume)
+    finally:
+        service.close()
+    assert escaped == []
+    assert not list(root.iterdir())
+
+
+def test_batch_reserves_all_bytes_before_reading_and_rejects_duplicates(tmp_path, monkeypatch):
+    service, root = _service(tmp_path)
+    reads = []
+    original = read_session_module.read_snapshot_file
+    def read(*args, **kwargs):
+        reads.append(args[2]); return original(*args, **kwargs)
+    monkeypatch.setattr(read_session_module, 'read_snapshot_file', read)
+    try:
+        with pytest.raises(IngestionSecurityError, match='scan_read_limit_exceeded'):
+            service.ingest_with_consumer(_zip([('a',b'abc'),('b',b'def')]),
+                                        lambda s:s.read_many_bytes(('a','b')),
+                                        read_limits=ScanReadLimits(single_file_max_bytes=3,total_max_bytes=5))
+        assert not reads
+        with pytest.raises(IngestionSecurityError, match='scan_read_limit_invalid'):
+            service.ingest_with_consumer(_zip([('a',b'a')]),lambda s:s.read_many_bytes(('a','a')))
+    finally:
+        service.close()
+    assert not reads
+    assert not list(root.iterdir())

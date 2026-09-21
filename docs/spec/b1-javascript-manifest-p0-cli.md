@@ -2,6 +2,8 @@
 
 状态：`FROZEN_DESIGN_BASELINE`
 
+2026-09-07 A线集成修复（待扫描负责人复核，不改其分支）：monorepo 同名依赖已由原parser聚合，但原mapper只接受首个package/lock证据，导致LiteLLM真实JS结果整lane丢失。现接受各已登记manifest中该依赖的有效字段，核对内容Hash、locator和对应目录的package/lock配对，完整保留证据。选择器或锁定版本/来源冲突时输出原冲突诊断，version/source_url为空；没有冲突诊断时全部lock版本和URL必须与聚合字段一致，篡改次要lock仍拒绝。外部DTO/Component API、解析预算与不执行代码原则不变。
+
 日期：2026-09-02
 
 证据候选：`EVD-B1-JAVASCRIPT-P0-CLI-001`

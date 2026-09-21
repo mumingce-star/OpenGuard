@@ -681,15 +681,18 @@ def test_amendment_eof_dangling_backslash_is_invalid_and_produces_no_dependency(
     _assert_clean(root)
 
 
-def test_amendment_top_level_dependency_groups_is_unsupported(tmp_path: Path) -> None:
+def test_top_level_string_dependency_groups_are_parsed_with_development_scope(tmp_path: Path) -> None:
     result, error, _, _, _, root = _run_zip(
         tmp_path,
         {"pyproject.toml": "[dependency-groups]\ndev=['a==1']\n"},
     )
     parsed = _result(result)
     assert error is None
-    assert parsed.dependencies == ()
-    assert "pyproject_tool_table_unsupported" in _diagnostic_codes(result)
+    assert len(parsed.dependencies) == 1
+    dependency = parsed.dependencies[0]
+    assert (dependency.normalized_name, dependency.scope.value, dependency.group) == ("a", "development", "dev")
+    assert dependency.evidence[0].field_locator == "dependency-groups.dev[0]"
+    assert not parsed.diagnostics
     _assert_clean(root)
 
 
