@@ -2438,3 +2438,35 @@
 - **下一步与责任模型**：Root 复核本日志回执推送；Sol 审核事实语义，Luna 独立复核来源/再分发边界，后端 A 后续实现最终 Report V2 snapshot/API。
 - **关联分支、提交、PR、Issue 或 evidence_id**：远端已从 `0c87306` 前进至 `2f4923e`；本发布日志提交 SHA 将在推送后由 HEAD/远端一致性检查确认；无 PR/Issue，`main` 未改变。
 - **token 使用说明**：本次运行精确 token 数不可获得；开工估算 3,000～6,000，已在范围内完成检查、定向测试与推送，范围未扩大。
+## 20260921-GPT5-GitHub最新内容拉取
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / Git 同步协调）
+- **日期时间**：2026-09-21 09:30（Asia/Shanghai）
+- **任务目标**：按用户要求从 GitHub 拉取当前项目分支的最新内容。
+- **开始前确认**：已完整阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支 `codex/scan-reliability-integration`、工作区与最近提交；工作区干净，未发现其他模型正在修改同一工作区文件。
+- **预计修改文件**：仅追加本共享日志；不修改产品代码、Schema、接口或规则。
+- **验收方法**：执行 `git fetch origin`，比较本地 `HEAD` 与当前跟踪分支，并核对 ahead/behind。
+- **token 用量估算**：2,000～4,000；系统未提供精确 token 遥测。
+
+## 20260921-GPT5-GitHub最新内容拉取
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / Git 同步协调）
+- **日期时间**：2026-09-21 09:31（Asia/Shanghai）
+- **任务目标与实际结果**：已执行 `git fetch origin` 并复核当前跟踪分支；`codex/scan-reliability-integration` 的本地 HEAD 与 `origin/codex/scan-reliability-integration` 无提交差异，因此没有可执行的快进拉取或合并。
+- **修改文件**：仅追加本共享日志；未修改产品文件、Schema、接口或规则。
+- **命令与测试结果**：`git fetch origin` 成功；`git status --short --branch` 显示当前分支与远端同步；`git log --left-right HEAD...origin/codex/scan-reliability-integration` 无输出。远端新增若干独立 feature/fix 分支，且 `origin/integration/p1` 从 `944a00e` 前进至 `2bd9ff2`，但未合并到当前分支。
+- **接口、Schema、规则或重要决策**：不跨分支自动合并，避免将未审查的功能分支或集成分支变更带入当前发布分支。
+- **已知风险与未完成项**：如果用户希望接入 `integration/p1` 或某个 feature/fix 分支，需要明确指定目标分支和合并策略；`main` 不直接改动。
+- **下一步与责任模型**：Root 可在用户指定目标分支后执行安全的 fetch/merge 或创建 PR；当前无需继续操作。
+- **关联分支、提交、PR、Issue 或 evidence_id**：当前分支 `codex/scan-reliability-integration`；HEAD 与 origin 相同，`main` 未改变。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 2,000～4,000，已在范围内完成，范围未扩大。
+## 20260921-GPT5-集成分支完整拉取
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / Git 集成协调）
+- **日期时间**：2026-09-21 09:35（Asia/Shanghai）
+- **任务目标**：按用户“从 GitHub 拉取全部最新项目内容”授权，将远端 `integration/p1` 的完整集成内容合并到当前 `codex/scan-reliability-integration`，同时保留当前分支已发布的扫描、Bench、ResourceProfile 与 NOTICE fixture 工作。
+- **开始前确认**：已完整阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，并执行远端比较。`integration/p1` 当前为 `2bd9ff2`，相对共同祖先包含 P0/P1 生产后端、前端、部署、测试与文档更新；当前分支也有独立的已发布提交。工作区仅有上一轮同步检查留下的共享日志追加，未发现产品代码未提交修改。
+- **预计修改文件**：合并可能涉及生产代码、测试、Schema、前端、部署及协调文档；如出现冲突，仅解决 Git 冲突，不在本轮扩展产品需求。
+- **验收方法**：先将仅含协作日志的现有本地修改单独提交，执行非快进合并，核验冲突状态、`git diff --check`、相关最小构建/测试及最终分支历史。
+- **接口、Schema、规则或决策**：合并不等于重置或选择一侧覆盖；公共接口、Schema 和风险语义以 `integration/p1` 已集成的正式契约为准，当前分支的独立 fixture 仅在无冲突且不破坏该契约时保留。
+- **token 用量估算**：10,000～18,000；系统未提供精确 token 遥测。
