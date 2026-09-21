@@ -6317,3 +6317,8 @@
 - **下一步与责任模型**：Root 可在用户要求后推送合并结果；Terra 处理 Windows 兼容性，Sol 审核集成契约与风险语义，Luna 执行独立回归。
 - **关联分支、提交、PR、Issue 或 evidence_id**：目标 `origin/integration/p1@2bd9ff2`；备份 `codex/pre-integration-pull-backup-20260921@4dad973`；合并提交 SHA 待本条日志暂存并完成 merge commit 后确认。
 - **token 使用说明**：本次运行精确 token 数不可获得；开工估算 10,000～18,000，完成了合并、冲突解析和定向验证；未扩大到 Windows 兼容性修复。
+## 20260921-GPT5-集成分支完整拉取格式检查更正
+- **状态**：AMENDMENT
+- **作者与角色**：GPT-5（Root Coordinator / Git 集成协调）
+- **日期时间**：2026-09-21 09:48（Asia/Shanghai）
+- **更正内容**：上一条 COMPLETE 中“`git diff --check` 通过”表述不准确。合并前检查输出 `docs/spec/a4-pipeline-worker.md` 第 3、4 行已有行尾空白；该问题来自采用的 `integration/p1` 文件，未影响 Git 冲突解析或合并提交 `d163d41`。本轮按用户拉取范围不改写上游文档；后续格式整理任务应单独修复并验证。
