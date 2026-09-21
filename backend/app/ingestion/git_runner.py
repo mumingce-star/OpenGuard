@@ -58,6 +58,30 @@ def _kill_process_group(process: subprocess.Popen[bytes]) -> None:
             pass
 
 
+def _close_process_pipes(process: subprocess.Popen[bytes]) -> None:
+    for stream in (process.stdin, process.stdout, process.stderr):
+        if stream is not None:
+            try:
+                stream.close()
+            except OSError:
+                pass
+
+
+def _terminate_and_reap(process: subprocess.Popen[bytes]) -> None:
+    """Best-effort group termination, bounded parent reap; preserve the error.
+
+    Kill the group even if the parent has exited: descendants can still live.
+    A kernel-stalled child must not impose an unbounded wait on the worker.
+    """
+    _kill_process_group(process)
+    try:
+        process.wait(timeout=1.0)
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+    finally:
+        _close_process_pipes(process)
+
+
 class GitProcessRunner:
     def __init__(self, executable: Path, limits: GitSafetyLimits, *, bounded: bool = False) -> None:
         if not isinstance(executable, Path) or not executable.is_absolute() or type(limits) is not GitSafetyLimits:
@@ -192,6 +216,7 @@ class GitProcessRunner:
         )
         if self.bounded:
             arguments = (*arguments[:1], "--filter=blob:none", *arguments[1:])
+        self._remaining(deadline)
         process = self._spawn(
             self._argv(arguments, proxy_url=proxy_url),
             cwd=destination.parent,
@@ -199,14 +224,20 @@ class GitProcessRunner:
             proxy_url=proxy_url,
             stdout=subprocess.DEVNULL,
         )
+        completed = False
         try:
-            process.wait(timeout=self._remaining(deadline))
+            remaining = self._remaining(deadline)
+            process.wait(timeout=remaining)
+            if process.returncode != 0:
+                raise IngestionSecurityError("invalid_source", "git_fetch_failed")
+            completed = True
         except subprocess.TimeoutExpired as error:
-            _kill_process_group(process)
-            process.wait()
             raise IngestionSecurityError("scanner_timeout", "git_fetch_timeout") from error
-        if process.returncode != 0:
-            raise IngestionSecurityError("invalid_source", "git_fetch_failed")
+        finally:
+            if not completed:
+                _terminate_and_reap(process)
+            else:
+                _close_process_pipes(process)
 
     def fetch_objects(self, repository: Path, object_ids: tuple[str, ...], *, home: Path,
                       proxy_url: str, deadline: float) -> None:
@@ -217,14 +248,19 @@ class GitProcessRunner:
         process = self._spawn(self._argv(("-c", "fetch.negotiationAlgorithm=noop", "-C", str(repository), "fetch", "--quiet", "--no-tags",
             "--no-recurse-submodules", "--no-write-fetch-head", "--filter=blob:none", "--stdin", "origin"), proxy_url=proxy_url),
             cwd=repository.parent, home=home, proxy_url=proxy_url, stdout=subprocess.DEVNULL, stdin=subprocess.PIPE)
+        completed = False
         try:
             process.communicate(("\n".join(object_ids) + "\n").encode("ascii"), timeout=remaining)
+            if process.returncode:
+                raise IngestionSecurityError("invalid_source", "git_fetch_failed")
+            completed = True
         except subprocess.TimeoutExpired as error:
-            _kill_process_group(process)
-            process.wait()
             raise IngestionSecurityError("scanner_timeout", "git_fetch_timeout") from error
-        if process.returncode:
-            raise IngestionSecurityError("invalid_source", "git_fetch_failed")
+        finally:
+            if not completed:
+                _terminate_and_reap(process)
+            else:
+                _close_process_pipes(process)
 
     def object_sizes(self, repository: Path, object_ids: tuple[str, ...], *, home: Path,
                      deadline: float) -> dict[str, int]:
@@ -233,23 +269,28 @@ class GitProcessRunner:
         remaining = self._remaining(deadline)
         process = self._spawn(self._argv(("-C", str(repository), "cat-file", "--batch-check")),
             cwd=repository.parent, home=home, proxy_url=None, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        completed = False
         try:
             output, _ = process.communicate(("\n".join(object_ids) + "\n").encode("ascii"), timeout=remaining)
-        except subprocess.TimeoutExpired as error:
-            _kill_process_group(process)
-            process.wait()
-            raise IngestionSecurityError("scanner_timeout", "git_process_timeout") from error
-        if process.returncode or len(output) > 1024 * 1024:
-            raise IngestionSecurityError("invalid_source", "git_object_invalid")
-        sizes = {}
-        for line in output.decode("ascii").splitlines():
-            fields = line.split()
-            if len(fields) != 3 or fields[0] not in object_ids or fields[1] != "blob" or not fields[2].isdigit():
+            if process.returncode or len(output) > 1024 * 1024:
                 raise IngestionSecurityError("invalid_source", "git_object_invalid")
-            sizes[fields[0]] = int(fields[2])
-        if set(sizes) != set(object_ids):
-            raise IngestionSecurityError("invalid_source", "git_object_invalid")
-        return sizes
+            sizes = {}
+            for line in output.decode("ascii").splitlines():
+                fields = line.split()
+                if len(fields) != 3 or fields[0] not in object_ids or fields[1] != "blob" or not fields[2].isdigit():
+                    raise IngestionSecurityError("invalid_source", "git_object_invalid")
+                sizes[fields[0]] = int(fields[2])
+            if set(sizes) != set(object_ids):
+                raise IngestionSecurityError("invalid_source", "git_object_invalid")
+            completed = True
+            return sizes
+        except subprocess.TimeoutExpired as error:
+            raise IngestionSecurityError("scanner_timeout", "git_process_timeout") from error
+        finally:
+            if not completed:
+                _terminate_and_reap(process)
+            else:
+                _close_process_pipes(process)
 
     def capture(
         self,
@@ -262,6 +303,7 @@ class GitProcessRunner:
     ) -> bytes:
         if output_max <= 0:
             raise ValueError("invalid Git output limit")
+        self._remaining(deadline)
         process = self._spawn(self._argv(arguments), cwd=cwd, home=home, proxy_url=None, stdout=subprocess.PIPE)
         assert process.stdout is not None
         timed_out = threading.Event()
@@ -270,26 +312,37 @@ class GitProcessRunner:
             timed_out.set()
             _kill_process_group(process)
 
-        timer = threading.Timer(self._remaining(deadline), expire)
-        timer.start()
+        timer: threading.Timer | None = None
         output = bytearray()
+        completed = False
         try:
+            timer = threading.Timer(self._remaining(deadline), expire)
+            timer.start()
             while True:
                 chunk = process.stdout.read(64 * 1024)
                 if not chunk:
                     break
                 output.extend(chunk)
                 if len(output) > output_max:
-                    _kill_process_group(process)
                     raise IngestionSecurityError("scanner_failed", "git_object_limit_exceeded")
-            process.wait()
+            process.wait(timeout=max(0.001, deadline - time.monotonic()))
+            if timed_out.is_set():
+                raise IngestionSecurityError("scanner_timeout", "git_process_timeout")
+            if process.returncode != 0:
+                raise IngestionSecurityError("invalid_source", "git_object_invalid")
+            completed = True
+            return bytes(output)
+        except subprocess.TimeoutExpired as error:
+            raise IngestionSecurityError("scanner_timeout", "git_process_timeout") from error
         finally:
-            timer.cancel()
-        if timed_out.is_set():
-            raise IngestionSecurityError("scanner_timeout", "git_process_timeout")
-        if process.returncode != 0:
-            raise IngestionSecurityError("invalid_source", "git_object_invalid")
-        return bytes(output)
+            if timer is not None:
+                timer.cancel()
+                if timer.ident is not None:
+                    timer.join(timeout=1.0)
+            if not completed:
+                _terminate_and_reap(process)
+            else:
+                _close_process_pipes(process)
 
     def spawn_batch(self, *, cwd: Path, home: Path) -> subprocess.Popen[bytes]:
         return self._spawn(

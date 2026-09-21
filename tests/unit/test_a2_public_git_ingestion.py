@@ -837,3 +837,266 @@ def test_bounded_three_vcs_files_remain_fully_scanned(tmp_path: Path, monkeypatc
     finally:
         manager.cleanup(workspace)
         manager.close()
+
+
+# Linux supervisor is test-only: it acts as init for orphaned descendants.
+# It never reaps the runner parent before recording the product's wait state.
+_AUDIT009_SUPERVISOR = r'''
+import ctypes,json,os,signal,subprocess,sys,time
+from pathlib import Path
+from app.ingestion.git_runner import GitProcessRunner
+from app.security.errors import IngestionSecurityError
+case,root=sys.argv[1],Path(sys.argv[2])
+assert ctypes.CDLL(None,use_errno=True).prctl(36,1,0,0,0)==0
+helper = """
+import json,os,subprocess,sys,time
+from pathlib import Path
+child=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+Path(sys.argv[1]).write_text(json.dumps({'parent':os.getpid(),'child':child.pid,'pgid':os.getpgrp(),'child_pgid':os.getpgid(child.pid)}))
+if sys.argv[2]=='output':
+    os.write(1,b'x'*131072)
+elif sys.argv[2]=='abnormal':
+    sys.exit(7)
+time.sleep(60)
+"""
+pidfile=root/'pids.json';captured=[]
+runner=object.__new__(GitProcessRunner);runner.executable=Path(sys.executable);runner.bounded=False
+spawn=runner._spawn
+def controlled(argv,**kwargs):
+    p=spawn([sys.executable,'-c',helper,str(pidfile),case],**kwargs);captured.append(p)
+    end=time.monotonic()+3
+    while not pidfile.exists():
+        if time.monotonic()>end:raise RuntimeError('helper not ready')
+        time.sleep(.005)
+    return p
+runner._spawn=controlled
+def exists(pid):
+    try:os.kill(pid,0);return True
+    except ProcessLookupError:return False
+def reap_child(pid,seconds):
+    end=time.monotonic()+seconds
+    while time.monotonic()<end:
+        try:
+            got,status=os.waitpid(pid,os.WNOHANG)
+            if got:return status
+        except ChildProcessError:
+            if not exists(pid):return None
+        time.sleep(.005)
+    return 'still_present'
+result={};started=time.monotonic()
+try:
+    try:
+        kwargs=dict(home=root,deadline=time.monotonic()+1)
+        if case in ('timeout','output','abnormal'):
+            runner.capture(('fixture',),cwd=root,output_max=1024,**kwargs)
+        elif case=='clone':runner.clone_no_checkout('https://example.invalid/repo',root/'repo',proxy_url='http://127.0.0.1:1',**kwargs)
+        elif case=='fetch':runner.fetch_objects(root,('a'*40,),proxy_url='http://127.0.0.1:1',**kwargs)
+        elif case=='sizes':runner.object_sizes(root,('a'*40,),**kwargs)
+    except IngestionSecurityError as e:result['error']=[e.code,e.reason]
+    p=captured[0];ids=json.loads(pidfile.read_text());result.update(ids)
+    result['returncode_before_test_reap']=p.returncode
+    try:
+        status=os.waitid(os.P_PID,p.pid,os.WEXITED|os.WNOHANG|os.WNOWAIT)
+        result['parent_reaped']=False
+        result['parent_waitable']=status is not None
+    except ChildProcessError:result['parent_reaped']=True
+    result['parent_present']=exists(p.pid)
+    result['child_reap_status']=reap_child(ids['child'],1)
+    result['child_present']=exists(ids['child'])
+    result['pipes_closed']=all(s is None or s.closed for s in (p.stdin,p.stdout,p.stderr))
+    result['elapsed']=time.monotonic()-started
+finally:
+    if captured:
+        p=captured[0]
+        try:os.killpg(p.pid,signal.SIGKILL)
+        except ProcessLookupError:pass
+        p.wait(timeout=3)
+        for stream in (p.stdin,p.stdout,p.stderr):
+            if stream is not None:stream.close()
+        if pidfile.exists():
+            ids=json.loads(pidfile.read_text());reap_child(ids['child'],3)
+            result['test_final_parent_present']=exists(ids['parent'])
+            result['test_final_child_present']=exists(ids['child'])
+print(json.dumps(result))
+'''
+
+
+@pytest.mark.parametrize('case', ['timeout', 'output', 'abnormal', 'clone', 'fetch', 'sizes'])
+def test_audit009_real_process_cleanup(tmp_path, case):
+    import json
+    import sys
+    result = subprocess.run([sys.executable, '-c', _AUDIT009_SUPERVISOR, case, str(tmp_path)],
+                            capture_output=True, text=True, timeout=15, check=True)
+    record = json.loads(result.stdout)
+    evidence = os.environ.get('REPAIR_RUNTIME_ROOT')
+    if evidence:
+        destination = Path(evidence)
+        destination.mkdir(parents=True, exist_ok=True)
+        with (destination / 'pid-records.jsonl').open('a') as output:
+            output.write(json.dumps({'case': case, **record}) + '\n')
+    expected = ('scanner_failed', 'git_object_limit_exceeded') if case == 'output' else (
+        ('invalid_source', 'git_object_invalid') if case == 'abnormal' else
+        ('scanner_timeout', 'git_fetch_timeout' if case in ('clone', 'fetch') else 'git_process_timeout'))
+    assert record['error'] == list(expected), record
+    assert record['parent'] == record['pgid'] == record['child_pgid'], record
+    assert record['parent_reaped'] and not record['parent_present'], record
+    assert not record['child_present'], record
+    assert record['pipes_closed'], record
+    assert record['elapsed'] < 6, record
+    assert not record['test_final_parent_present'] and not record['test_final_child_present'], record
+
+
+def test_audit009_cleanup_bounded_and_preserves_primary_error(monkeypatch):
+    import app.ingestion.git_runner as module
+    calls = []
+    class Pipe:
+        def close(self):
+            calls.append('close')
+            raise OSError('closed pipe race')
+    class Process:
+        pid = 123456789
+        stdin = stdout = stderr = Pipe()
+        def kill(self):
+            calls.append('fallback-kill')
+            raise ProcessLookupError()
+        def wait(self, *, timeout):
+            assert 0 < timeout <= 1
+            calls.append(('wait', timeout))
+            raise subprocess.TimeoutExpired('fixture', timeout)
+    def gone(*args):
+        calls.append('killpg')
+        raise ProcessLookupError()
+    monkeypatch.setattr(module.os, 'killpg', gone)
+    original = IngestionSecurityError('scanner_failed', 'git_object_limit_exceeded')
+    with pytest.raises(IngestionSecurityError) as caught:
+        try:
+            raise original
+        finally:
+            module._terminate_and_reap(Process())
+    assert caught.value is original
+    assert calls == ['killpg', 'fallback-kill', ('wait', 1.0), 'close', 'close', 'close']
+
+
+def test_audit009_success_and_expired_deadline_controls(tmp_path, monkeypatch):
+    import sys
+    import app.ingestion.git_runner as module
+    runner = GitProcessRunner(Path(PYTHON), GitSafetyLimits())
+    assert runner.capture(('--version',), cwd=tmp_path, home=tmp_path,
+                          deadline=time.monotonic()+5, output_max=256).startswith(b'git version ')
+    captured = []
+    original_spawn = runner._spawn
+    def local_success(argv, **kwargs):
+        captured.append(argv)
+        code = "import sys;sys.stdin.buffer.read()" if kwargs.get('stdin') == subprocess.PIPE else 'pass'
+        if '--batch-check' in argv:
+            code += ";print('" + 'a'*40 + " blob 3')"
+        p = original_spawn([sys.executable, '-c', code], **kwargs)
+        processes.append(p)
+        return p
+    processes = []
+    monkeypatch.setattr(runner, '_spawn', local_success)
+    def unexpected_kill(_process):raise AssertionError('normal process killed')
+    monkeypatch.setattr(module, '_kill_process_group', unexpected_kill)
+    common = dict(home=tmp_path, deadline=time.monotonic()+5)
+    runner.clone_no_checkout('https://example.invalid/repo', tmp_path/'repo', proxy_url='http://127.0.0.1:1', **common)
+    runner.fetch_objects(tmp_path, ('a'*40,), proxy_url='http://127.0.0.1:1', **common)
+    assert runner.object_sizes(tmp_path, ('a'*40,), **common) == {'a'*40: 3}
+    assert '--no-checkout' in captured[0] and '--no-write-fetch-head' in captured[1]
+    assert all(p.returncode == 0 and all(s is None or s.closed for s in (p.stdin,p.stdout,p.stderr)) for p in processes)
+    before = len(captured)
+    with pytest.raises(IngestionSecurityError):
+        runner.capture(('fixture',), cwd=tmp_path, home=tmp_path, deadline=time.monotonic()-1, output_max=256)
+    with pytest.raises(IngestionSecurityError):
+        runner.clone_no_checkout('https://example.invalid/repo', tmp_path/'repo', home=tmp_path,
+                                 proxy_url='http://127.0.0.1:1', deadline=time.monotonic()-1)
+    assert len(captured) == before
+
+
+def test_audit009_materializer_existing_abnormal_cleanup(tmp_path, monkeypatch):
+    import sys
+    from app.ingestion.git_materializer import materialize_git_blobs, GitTreeEntry
+    runner = GitProcessRunner(Path(PYTHON), GitSafetyLimits())
+    p = runner._spawn([sys.executable, '-c', "import sys,time;print('invalid header',flush=True);time.sleep(60)"],
+                      cwd=tmp_path, home=tmp_path, proxy_url=None, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    monkeypatch.setattr(runner, 'spawn_batch', lambda **kwargs: p)
+    entry = GitTreeEntry('100644', 'a'*40, 3, ('a.txt',), 'a.txt', 'a.txt')
+    try:
+        with pytest.raises(IngestionSecurityError) as error:
+            materialize_git_blobs(runner, tmp_path, None, (entry,), home=tmp_path, deadline=time.monotonic()+2)
+        assert error.value.reason == 'git_object_invalid'
+        assert p.returncode is not None and p.stdin.closed and p.stdout.closed
+        with pytest.raises(ChildProcessError):os.waitpid(p.pid, os.WNOHANG)
+    finally:
+        if p.poll() is None:p.kill()
+        p.wait(timeout=3)
+
+
+@pytest.mark.parametrize('operation', ['capture', 'clone'])
+@pytest.mark.parametrize('exhausted', [False, True])
+def test_audit009_r1_slow_spawn_absolute_deadline(tmp_path, monkeypatch, operation, exhausted):
+    import json
+    import sys
+    import app.ingestion.git_runner as module
+    runner = object.__new__(GitProcessRunner)
+    runner.executable = Path(PYTHON)
+    runner.bounded = False
+    spawn = runner._spawn
+    processes, waits, timers = [], [], []
+    timer_factory = threading.Timer
+    def measured_timer(interval, callback):
+        timers.append(interval)
+        return timer_factory(interval, callback)
+    monkeypatch.setattr(module.threading, 'Timer', measured_timer)
+    budget, delay = (0.6, 0.8) if exhausted else (0.8, 0.3)
+    returned_at = None
+    def slow_spawn(argv, **kwargs):
+        nonlocal returned_at
+        p = spawn([sys.executable, '-c', 'import time;time.sleep(60)'], **kwargs)
+        processes.append(p)
+        wait = p.wait
+        def measured_wait(timeout=None):
+            waits.append(timeout)
+            return wait(timeout=timeout)
+        p.wait = measured_wait
+        time.sleep(delay)
+        returned_at = time.monotonic()
+        return p
+    monkeypatch.setattr(runner, '_spawn', slow_spawn)
+    started = time.monotonic()
+    deadline = started + budget
+    try:
+        with pytest.raises(IngestionSecurityError) as error:
+            if operation == 'capture':
+                runner.capture(('fixture',), cwd=tmp_path, home=tmp_path, deadline=deadline, output_max=128)
+            else:
+                runner.clone_no_checkout('https://example.invalid/repo', tmp_path/'repo', home=tmp_path,
+                                         proxy_url='http://127.0.0.1:1', deadline=deadline)
+        elapsed = time.monotonic() - started
+        p = processes[0]
+        assert p.returncode is not None
+        with pytest.raises(ChildProcessError):os.waitpid(p.pid, os.WNOHANG)
+        with pytest.raises(ProcessLookupError):os.kill(p.pid, 0)
+        assert all(s is None or s.closed for s in (p.stdin,p.stdout,p.stderr))
+        record = dict(operation=operation, exhausted=exhausted, budget=budget, spawn_delay=delay,
+                      post_spawn_remaining=deadline-returned_at, elapsed=elapsed, wait_timeouts=waits[:],
+                      timer_intervals=timers[:], error=[error.value.code,error.value.reason], pid=p.pid,
+                      reaped=True, pipes_closed=True)
+        evidence = os.environ.get('REPAIR_RUNTIME_ROOT')
+        if evidence:
+            destination = Path(evidence);destination.mkdir(parents=True,exist_ok=True)
+            with (destination/'deadline-records.jsonl').open('a') as out:out.write(json.dumps(record)+'\n')
+        if exhausted:
+            assert not timers and waits == [1.0], record # only bounded cleanup, no fresh work budget
+            expected = 'git_process_timeout'
+        else:
+            actual_budget = timers[0] if operation == 'capture' else waits[0]
+            assert 0 < actual_budget <= deadline-returned_at, record
+            expected = 'git_process_timeout' if operation == 'capture' else 'git_fetch_timeout'
+        assert (error.value.code,error.value.reason) == ('scanner_timeout',expected), record
+        assert elapsed < max(budget,delay)+0.3, record
+    finally:
+        for p in processes:
+            if p.poll() is None:p.kill()
+            p.wait(timeout=3)
+            for stream in (p.stdin,p.stdout,p.stderr):
+                if stream is not None:stream.close()

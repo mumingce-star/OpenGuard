@@ -4830,3 +4830,43 @@
 - full后10项fresh DB独立复验通过：missing三read fail closed不重建且backup不变、DELETE三read及reopen保持mode/main bytes/目录Hash、WAL三read和reopen目录名/Hash不变、低层query_only拒绝DDL/DML、正式replace revision2仍WAL。首次初始化/create和WAL/FULL控制由永久测试保持。mode=rw不是文件系统只读，允许SQLite正常WAL协调/关闭生命周期；不宣称任意并发场景目录绝对不变。未用immutable、手动清理副文件、chmod、exclusive locking、schema或连接生命周期重构。
 - schema verification/row decoder/transaction/create/replace/CAS/idempotency/close/错误映射不变；其他Store、History/Diff/Graph测试、API/Schema/Contract未改。原002 BLOCKED/失败证据逐文件Hash保持，新ignored目录audit-002-r1-query-only-20260920T140537Z含preflight、fail-first/全部命令/源码Hash/JUnit/collection/fresh probe/diff/receipt。业务网络guard无尝试，不称OS防火墙，无真实扫描/AI/生产访问。
 - exact A06已恢复exited，docker ps为空，未remove。仍仅4个授权文件未暂存，diff check通过；未add/commit/push/merge/deploy。002 R1本地完成待Owner Review；003/004/007 integrated，009 unresolved。主控串行无子代理；精确token不可获得，6k–12k为开工估算，不能确认实耗区间，任务范围未扩大。下一步仅Owner Review，STOP。
+
+### [20260920-1433-GPT-6-Astra-AUDIT-009-start] START — bounded Git abnormal process cleanup
+
+- fetch后integration/p1本地/远端0d567dd9183a8746f109943f1512debbcf22f085且clean，创建fix/audit-009-git-process-cleanup。仅009；已集成002/003/004/007不改。只读检查runner/materializer；先真实helper父子同组timeout/output-limit永久fail-first，再按结果最小修补runner，未复现则停止。
+- 允许runner、test_a2_public_git_ingestion及两份append-only日志；materializer仅有独立缺陷复现才可改。测试监督进程使用Linux subreaper模拟正常init后代回收，分开记录Runner直属parent wait与child终止/监督回收，避免容器PID1 zombie误判。使用精确PID/wait语义，不模糊ps匹配。正常路径/固定argv/env/proxy/错误码保持。
+- 主控串行无子代理，exact A06/Python3.12.14及进程网络guard，本地helper不联网；原1063节点保留，targeted/consumer/已集成finding/full后fresh probe，完成停容器。新ignored证据audit-009-git-cleanup-20260920T143346Z；旧证据不覆盖。不add/commit/push/merge/deploy，STOP待Owner Review。预计10k–18k token，精确实耗不可获得。
+
+### [20260920-1447-GPT-6-Astra-AUDIT-009-complete] COMPLETE — local Git cleanup repair; pending Owner Review
+
+- 先6项真实父子同组永久测试，旧产品4失败/2控制通过：output PID27可wait且returncode=None/未reap，abnormal parent31已退出但child32仍活；capture timeout及object_sizes timeout管道未关闭；clone/fetch timeout回收控制通过。所有旧失败均在测试finally中清理并确认PID消失，保留fail-first命令/JUnit/PID记录，未用mock假装真实进程缺陷。之后增加3项bounded/error-preservation、成功/过期deadline、materializer现有异常控制，不冒称这3项先于修补fail-first。
+- 产品仅git_runner.py：异常路径统一killpg/fallback、parent wait(timeout=1.0)、管道close并保留原异常；非零退出仍杀存活同组descendants，capture取消并有界join原timer。capture/clone先检查deadline再spawn，避免已过期时遗留子进程；正常成功只关闭管道，不kill。固定argv/config/env/proxy/start_new_session/shell/对象选择/错误码未改。materializer字节不变，真实Git正常物化和invalid header异常清理控制均通过。
+- Python3.12.14：新增9通过，Git+readonly-session73，Git/API consumer111，已集成002/003/004/007回归299通过。完整1090 unique passed/0failed/0skipped/原1精确deselect/原1Starlette warning；原1063全保留并PASS，增加27=9真正新增+18既有readonly-session节点首次纳入full，collection1091。各阶段计数不相加。
+- full后独立fork-based fresh probe2通过：timeout parent2366/child2368，limit parent2370/child2372；精确os.kill(pid,0)确认不存在，waitpid ChildProcessError证明直属parent已reap，后代wait status9且管道closed。测试专用subreaper模拟init回收孤儿，不在产品引入subreaper；child被group SIGKILL和监督回收分开记录，不将后代wait归功于Runner。没有后台cleanup线程；1秒wait失败保持原错误，不宣称可消除任意逃逸进程组或内核不可中断I/O。
+- 新ignored证据audit-009-git-cleanup-20260920T143346Z保留失败/通过日志、PID、命令/源码Hash、JUnit/collection、独立probe、diff和receipt；旧002证据保持。没有外部业务网络/真实扫描/AI/生产访问；Python guard不是OS防火墙。正常clone/fetch采用本地真实subprocess传输替身，不宣称真实公网HTTPS clone验收；capture/object/materialization使用实际Git对象控制。
+- exact A06已exited，docker ps为空，未remove。仅4授权文件未暂存，diff check通过；不add/commit/push/merge/deploy，不改其他分支。009本地完成待Owner Review，002/003/004/007 integrated。主控串行无子代理；精确token不可获得，10k–18k仅开工估算，无法核定实耗是否在区间。下一步仅Owner Review，STOP。
+
+### [20260920-1513-GPT-6-Astra-AUDIT-009-R1-start] START — preserve absolute deadline after spawn
+
+- 当前fix/audit-009-git-process-cleanup/HEAD0d567dd，4个未暂存文件Hash与Owner Review的009回执一致。仅clone/capture重算post-spawn remaining；保留pre-check及现有cleanup/materializer，其他路径不扩改。按已批准具体方案直接执行，不开子代理。
+- 先真实helper slow-spawn四场景（clone/capture各剩余/耗尽预算）永久fail-first，再最小修改；验证R1/原9/Git/API/002003004007/full，保留原1090节点及唯一既有deselect。新ignored证据audit-009-r1-deadline-20260920T151355Z，旧证据不覆盖。exact A06/Python3.12.14，最后exited；无业务外网/扫描/AI/生产，不add/commit/push/merge/deploy。估算5k–10k token，精确实耗不可获得；STOP待Owner Review。
+
+### [20260920-1520-GPT-6-Astra-AUDIT-009-R1-complete] COMPLETE — absolute deadline preserved; pending Owner Review
+
+- R1四项永久真实helper fail-first先于产品修改：0.8s预算+0.3s spawn，旧capture/clone约1.118/1.112s返回，实际Timer/wait仍获0.8s而非余下约0.495s；0.6s预算在0.8s spawn后耗尽，旧两路径仍约1.41s返回。均记录精确wait/Timer参数、PID/reap/pipes/error，不以环境错误冒充fail-first。
+- 仅clone/capture改动：保留spawn前_remaining检查；clone在try内重算wait预算，capture在try内按当前remaining建立可空Timer；post-spawn剩余耗尽抛scanner_timeout/git_process_timeout且finally调用原cleanup。正常clone wait超时仍git_fetch_timeout；helper/kill/pipe/timer回收策略、fetch/object、materializer均未改。AST核对runner除这两个方法外不变，其他产品字节不变。
+- 修后四场景约0.810/0.804/0.810/0.810s；未耗尽时Timer/wait约0.495s，已耗尽时无工作Timer/wait、只执行原1s有界cleanup。进程kill/reap及管道close均通过；原过期deadline零spawn控制保留。spawn自身不能被这一检查抢占，返回后不再追加旧工作预算，cleanup仍允许原有界收尾时间。
+- Python3.12.14：R1四项、原009九项、Git77、consumer115、002/003/004/007回归299通过；full1094 unique passed/0failed/0skipped/原1精确deselect/原1warning，原1090全保留+4，collection1095；阶段计数不相加。新audit-009-r1-deadline-20260920T151355Z保留preflight/旧证据Hash/修前产品/失败/命令/JUnit/时间记录/源码Hash/diff/receipt，旧009目录逐文件未变。
+- Docker Desktop初始未运行，先恢复引擎并核对无运行容器，再仅启动exact A06；此环境恢复不计fail-first。结束A06为exited、docker ps为空，未remove，未生产部署/业务外网/扫描/AI；不称OS网络隔离。仍仅4授权文件未暂存，diff check通过，不add/commit/push/merge/deploy。主控串行无子代理；精确token不可获得，5k–10k仅估算，无法核定实耗区间。009 R1本地完成仅待Owner Review，002/003/004/007 integrated，STOP。
+
+### [20260920-1522-GPT-6-Astra-AUDIT-009-R1-amendment] AMENDMENT / BLOCKED — runtime final-state correction
+
+- 更正上一COMPLETE记录中未经成功收尾断言支持的“docker ps为空/仅待Owner Review”：stop_runtime已成功将exact A06停止为exited，但随后全局运行列表断言失败；finalizer亦因此停止，未生成成功回执。6个其他容器正在运行：openguard-handoff-new-20260913-133254-03、openguard-handoff-old-20260913-133254-02、openguard-handoff-old-20260913-133254-01、openguard-v4-api-rollback-step61-20260912-143523、openguard-api-1、openguard-web-1。完整ID见docker-final.json，失败证据保留。
+- 它们StartedAt均约2026-09-20T15:17:10Z，RestartPolicy均no，无法确认是谁或何种机制启动；不能将其归因于restart policy，也不能声称生产运行状态未改变。主控命令仅显式启动exact A06及恢复Docker Desktop，没有向这6个容器发出start/stop或部署命令；后续仅只读inspect，不擅自停止生产/归属不明实例。
+- 代码/测试结果仍为R1四项及完整1094通过，旧证据与cleanup/materializer不变；整体最终状态改为BLOCKED（运行环境收尾待负责人确认），不报告R1_LOCAL_REPAIR_COMPLETE。请求Owner确认这6个实例是否为有意启动及应保持运行；如需停止，需明确目标授权。未commit/push/merge/deploy；本轮到此停止。
+
+### [20260920-AUDIT-009-R1-owner-runtime-confirmation] AMENDMENT / LOCAL COMPLETE — Owner runtime scope clarification
+
+- Owner确认：上述6个来源未确认的OpenGuard容器统一记录为PRE_EXISTING_OR_EXTERNAL_RUNTIME、NOT_OWNED_BY_AUDIT_009、LEFT_UNCHANGED；不停止、删除、重启或修改，不再作为本任务blocker。此分类不推断其实际启动来源。
+- 本轮唯一受控测试容器openguard-a06-dev已exited，满足本任务runtime cleanup要求。保留前述BLOCKED AMENDMENT、失败轨迹及旧回执；追加状态更正回执owner-runtime-confirmation.json，最终状态R1_LOCAL_REPAIR_COMPLETE，pending Owner Review。
+- 本次仅追加日志及更正状态证据；不重新运行测试、不修改源码/测试、不操作容器。沿用4项fail-first后修复、full 1094/1094 passed、0 failed、0 skipped、1 deselected、1 warning的既有证据。HEAD不变、4授权文件未暂存；未commit/push/merge/deploy。
