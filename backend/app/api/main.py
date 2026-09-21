@@ -50,6 +50,9 @@ from app.pipeline.zip_dispatcher import ZipDispatcher
 from app.reporting import PipelineReportPublisher, ReportArtifactStore
 
 
+_P1_GRAPH_MAX_NODES = 20_000
+_P1_GRAPH_MAX_EDGES = 60_000
+
 _ERROR_RESPONSES = {
     404: {"model": ErrorEnvelope},
     409: {"model": ErrorEnvelope},
@@ -515,8 +518,8 @@ def create_app(
     from app.p1.profile import ProfileService
     app.state.profile_service = profile_service or ProfileService(registry)
     app.state.history_cursor_key = secrets.token_bytes(32)
-    app.state.p1_graph_max_nodes = 20_000
-    app.state.p1_graph_max_edges = 60_000
+    app.state.p1_graph_max_nodes = _P1_GRAPH_MAX_NODES
+    app.state.p1_graph_max_edges = _P1_GRAPH_MAX_EDGES
 
     @app.middleware("http")
     async def v4_write_boundary(request: Request, call_next):
@@ -818,11 +821,34 @@ def create_default_app() -> FastAPI:
         else None
     )
     assessment_service = None
+    remediation_service = None
+    report_v2_service = None
     if v4_enabled == "1":
         from app.assessment.service import AssessmentService
         from app.assessment.store import AssessmentStore
-        assessment_service = AssessmentService(registry, AssessmentStore(data_dir / "assessment.db"), ai_provider)
+        from app.p1.remediation import RemediationService
+        from app.p1.remediation_store import RemediationTaskStore
+        from app.p1.report_v2 import ReportV2Service
+        from app.p1.report_v2_store import ReportV2Store
+        from app.p1.report_v2_graph import ReportGraphReader
+
+        assessment_store = AssessmentStore(data_dir / "assessment.db")
+        assessment_service = AssessmentService(registry, assessment_store, ai_provider)
         assessment_service.initialize()
+        # Initialize the entire opt-in workflow before publishing an app. Store
+        # failures propagate: never serve a partially configured workflow, and
+        # never delete existing sidecars as a startup rollback.
+        remediation_store = RemediationTaskStore(data_dir / "remediation.db")
+        remediation_store.initialize()
+        report_v2_store = ReportV2Store(data_dir / "report_v2.db")
+        report_v2_store.initialize()
+        remediation_service = RemediationService(registry, assessment_store, remediation_store)
+        report_v2_service = ReportV2Service(
+            registry, assessment_store, remediation_store, report_v2_store,
+            graph_reader=ReportGraphReader(
+                max_nodes=_P1_GRAPH_MAX_NODES, max_edges=_P1_GRAPH_MAX_EDGES,
+            ),
+        )
         # Optional terminal observation is separate from report publication and ScanRun CAS.
         registry.assessment_observer = assessment_service.on_terminal
     return create_app(
@@ -834,6 +860,8 @@ def create_default_app() -> FastAPI:
         zip_dispatcher=dispatcher,
         persistent_capacity=_PersistentCapacity(data_dir, registry),
         assessment_service=assessment_service,
+        remediation_service=remediation_service,
+        report_v2_service=report_v2_service,
     )
 
 

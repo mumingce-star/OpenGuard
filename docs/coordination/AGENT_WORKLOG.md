@@ -4870,3 +4870,19 @@
 - Owner确认：上述6个来源未确认的OpenGuard容器统一记录为PRE_EXISTING_OR_EXTERNAL_RUNTIME、NOT_OWNED_BY_AUDIT_009、LEFT_UNCHANGED；不停止、删除、重启或修改，不再作为本任务blocker。此分类不推断其实际启动来源。
 - 本轮唯一受控测试容器openguard-a06-dev已exited，满足本任务runtime cleanup要求。保留前述BLOCKED AMENDMENT、失败轨迹及旧回执；追加状态更正回执owner-runtime-confirmation.json，最终状态R1_LOCAL_REPAIR_COMPLETE，pending Owner Review。
 - 本次仅追加日志及更正状态证据；不重新运行测试、不修改源码/测试、不操作容器。沿用4项fail-first后修复、full 1094/1094 passed、0 failed、0 skipped、1 deselected、1 warning的既有证据。HEAD不变、4授权文件未暂存；未commit/push/merge/deploy。
+
+### [20260921-1244-GPT-6-Astra-workflow-wiring-start] START — P1 production workflow wiring
+
+- GPT-6 Astra / Root单写者；本地及fetch后的origin/integration/p1均ef9d4aa2fce09dc2cf9f77e57b96520649f14ec0、clean，从该基线创建fix/p1-production-workflow-wiring。002/003/004/007/009已集成，旧未发布记录只反映历史。
+- 项目负责人批准本任务使用近期完整阅读 + 历史定向检索，替代完整读取共享历史日志。已核查A05/A06、Acceptance、近期审计与生产接线/契约/所有权边界，以当前源码为事实优先。
+- 仅main.py默认工厂、一个新增wiring测试文件、deploy/README.md及两份追加日志；Compose已有数据卷和默认关闭开关，预计不改。先正式default app两项fail-first，再复用现有Service/Store/Graph reader，同根sidecars、disabled/fail-closed/API/immutable/Graph/NOTICE验证，原1094集合及新增回归。核心业务、Frozen/P0、组员代码不改；需核心改动即STOP。
+- Docker socket当前不存在，不启动引擎或触碰既有未知实例；优先本机Python3.12.14离线依赖缓存验证。独立Compose/HTTP仅在Docker可用且可确认隔离时执行，未执行不冒称通过。证据output/manual-fixes/p1-production-workflow-wiring-20260921T044426Z，保留失败。未暂存commit/push/merge/deploy。预计15k–25k token，精确遥测不可得；无子代理，最终待Owner Review。
+
+### [20260921-workflow-wiring-complete] COMPLETE — P1 production workflow wiring local verification
+
+- 旧default app真实Remediation/Report V2 API均503，2项fail-first保留后最小接线；仅assessment开关严格等于1初始化同根三store及共享registry/services，Graph统一20000/60000，关闭不创建sidecars，初始化失败不发布app且不删除历史DB。核心业务/Contract/前端/Compose源文件均未改；NOTICE非空仍409 not_ready。
+- 新增15项、本机15通过；独立容器targeted395通过，full1109 unique通过，0failed/0skipped、原精确1deselected及1warning。JUnit原1094节点全部保留+15，全部被测backend/tests Hash收尾无漂移；AUDIT-002/003/004/007/009既有测试包含在回归中。未宣称独立Owner签收。
+- 用户开启Docker后仅创建openguard-p1-wiring-09210444：缓存runtime image+只读候选源码，不是重建生产image；tests network none，API internal网络，web独立ingress发布127.0.0.1:18091。入口bridge不等于全面禁外联；AI/publicGit/external scanners关闭。初始本机缺依赖，在ignored venv安装项目已声明依赖；Docker复用既有测试依赖，无产品依赖变化。
+- 真实合成HTTP20请求通过Assessment→Task derive/page/PATCH/CAS→Report JSON/HTML/Graph，报告固定task version及hash/size；后续Task改变不改报告，GET数据库逻辑内容不变。仅重启自有API后2下载再次通过。前三份smoke失败证据保留：验收脚本Path类型、误用count方法、internal网络端口未发布；修正仅ignored harness/override，最终docker-smoke-r4.json及docker-verify-r4.json PASS。
+- 三个自有容器结束均exited、专属volume保留；6个PRE_EXISTING_OR_EXTERNAL_RUNTIME / LEFT_UNCHANGED，前后StartedAt/status相同，无生命周期操作。未真实扫描/AI/生产部署；合成验收不代表真实仓库、Windows或生产image build验收。
+- 证据output/manual-fixes/p1-production-workflow-wiring-20260921T044426Z含命令、JUnit、失败轨迹、源码Hash和最终receipt；5授权文件未暂存，HEAD仍ef9d4aa2fce09dc2cf9f77e57b96520649f14ec0。LOCAL_REPAIR_COMPLETE，pending Owner Review；无commit/push/merge/deploy，无子代理；token精确消耗不可得，不伪造统计。

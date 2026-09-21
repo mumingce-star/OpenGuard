@@ -357,6 +357,28 @@ Windows仍使用本说明既有步骤：两台各跑无AI主链，至少一台�
 
 ## V4 隔离验收与后续维护（2026-09-10）
 
+### P1 Workflow 生产工厂接线（2026-09-21）
+
+`OPENGUARD_ENABLE_ASSESSMENTS=1` 现在在正式 `create_default_app()` 中同时启用
+Formal Assessment、Remediation Tasks 和 Report V2。三者共享同一个 ScanRun registry、
+AssessmentStore 和 RemediationTaskStore，使用 `OPENGUARD_DATA_DIR` 下的
+`assessment.db`、`remediation.db`、`report_v2.db`。Compose 已将该根目录
+`/var/lib/openguard` 放在 `data` 持久卷中，无需新增卷；开关仍默认 `0`，
+关闭时不创建上述三个 sidecar。任一初始化失败时工厂抛错，不提供半配置的健康应用；
+已创建的合法 sidecar 保留，不通过删除历史库回滚。
+
+Report V2 使用既有 ReportGraphReader 和正式 Graph 相同的容量上限
+（20,000 nodes / 60,000 edges），仅接受服务器重建后核对成功的 graph version/hash。
+Task 的 done/dismissed 需要非空 note，PATCH 使用 expected_version CAS。
+Report POST 固定 Assessment 和 Task 版本；JSON/HTML GET 读取已存字节，不重新生成。
+Profile metadata 和 NOTICE 不属于本开关的接线范围；`notice_refs=[]` 可生成报告，
+非空 NOTICE 引用仍返回 `not_ready / notice_snapshot_reader_not_available`。
+
+源码接线不等于部署授权。更新任何既有环境仍须负责人单独批准；验证应使用独立
+Compose project、专属新数据卷和空闲 loopback 端口，AI/Public Git 关闭。
+不要对默认 `openguard` project 执行清理，也不要删除共享或来源不明的数据卷。
+下述旧 V4 运行记录保留为历史，不能作为本次已更新生产环境的证明。
+
 本轮仅更新源文件并在历史数据副本上验证，运行中的8080容器仍是V3。Compose增加默认0的`OPENGUARD_ENABLE_ASSESSMENTS`透传；可信Web来源自动跟随`OPENGUARD_WEB_PORT`（8080/8081配置均已校验），未应用到容器。启用V4需要后续负责人批准Web/API共同更新，不能沿用此前“仅API”授权。
 
 本机评估/问答审阅首页为 `http://127.0.0.1:5174/`，代理独立API8010，数据为`output/v4-evidence/data`。它用于旧真实扫描快照的新功能验收；该隔离启动未启用公开Git获取和外部扫描器。真实外部工具覆盖沿用固定历史Flask/ZIP事实，本轮新增ZIP用途接线另用标注受控样例测试，不能把它算作新的完整工具实测。
