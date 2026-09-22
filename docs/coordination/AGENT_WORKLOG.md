@@ -6709,3 +6709,16 @@
 - 预计修改：当前 `git status` 所列产品/测试/fixture/文档，以及本日志和 PROJECT_PROGRESS 的发布回执；如评审发现缺陷，仅做阻塞合并的必要窄修。不会纳入被 `.gitignore` 排除或敏感扫描拒绝的本地产物。
 - 验收：逐文件 diff/统计与敏感信息检查；Python/Node/Java 相关定向测试、`git diff --check`；fetch 后核对 `origin/integration/p1`，创建 PR，检查 CI 与 mergeability，完成审阅后合并并核验远端分支 SHA。若门禁失败则不合并并如实记录。
 - token 用量估算：20,000～35,000；系统未提供精确 token 遥测，收工时报告估算范围与实际范围变化。
+
+## 20260922-1018-GPT5-P1全量发布合并
+- 状态 COMPLETE
+- 作者与角色：GPT-5 / Root Coordinator（代码审阅、GitHub 发布与集成合并）；时间：2026-09-22 10:18 Asia/Shanghai；工作分支：`codex/scan-reliability-integration`。
+- 任务目标与实际结果：完成当前全部竞赛所需未提交代码、测试、fixture 和文档的逐文件范围复核、门禁验证、提交、GitHub 推送及 `integration/p1` 集成。产品批次提交为 `f3e51f5173cb316b68377cf15ea17725d9b84a1e`；任务分支和 `origin/integration/p1` 均已读回为该 SHA，集成是从 `2bd9ff2` 到 `f3e51f5` 的非强制 fast-forward，未改写历史、未操作 `main`。
+- 修改或新增文件：产品批次共 67 个文件，覆盖 B01 parser、B02 detector、B03/B04 facts v2/v3、B05 development 输入、P1 固定联验样本、Python/Node/Java 测试及配套规格/进度/AI/日志；本条另追加发布回执到 PROJECT_PROGRESS 和共享日志。未上传 `.venv`、`.tools`、`target`、缓存、output、本机绝对路径、密钥或个人信息。
+- 命令与测试结果：新增直接范围 Python `67 passed`；Node 全部当前 `.test.mjs` 为 `13 passed`；Java 定向及 `mvn -q -s .mvn/settings.xml -f backend/java/pom.xml test` 均退出码 0；`git diff --check`、发布文件类型排除和高置信凭据模式扫描无命中。全量 Python unit 在 Windows 收集阶段被既有 `fcntl` POSIX 依赖阻断；首次系统 Python 缺 FastAPI/h11、首次沙箱 Maven 因 JUnit temp ACL 失败，均在受控现有依赖/环境中复验，不修改产品掩盖。
+- 接口、Schema、规则和重要决策：新增内部 `HuggingFaceMetadataParser` 与 `detect_license_notice_candidates` 导出，不改变公共 HTTP 或 Frozen Schema；facts/detector 继续只输出 `pending`、`review_required`、`confirmed_violation=false`，不自动填许可证表达式、授权或 Obligation。B05 仍是 `not_executed` development placeholder，不宣称正式指标。
+- 评审与合并说明：已核对远端 `integration/p1` 是当前 HEAD 的祖先且没有分叉，完整累计差异通过发布检查。本机未安装 `gh` CLI，无法创建 GitHub PR 对象；用户要求的评审由本地逐文件审阅、测试/敏感信息门禁及远端 SHA 核验完成，合并采用 Git 可拒绝非快进的直接 fast-forward。没有远端 Review/CI 对象可冒充。
+- 已知风险与未完成项：Windows 全量 Python `fcntl` 门禁、B06 真人 Gold/FN、B07 性能、真实 HF transport/异机独立验收、A 线生产 Profile/NOTICE/Report 接入、前端端到端和最终材料仍待关闭；当前发布不等于完整作品或获奖竞争力达标。
+- 建议下一步及责任模型：Root/A 线接入不可变 Profile/NOTICE/Report；Luna完成真实资源、篡改、异机和真人 Gold/FN 验收；Terra/xzb完成生产链与前端端到端；Sol复核 provenance/风险语义和最终竞赛门禁。
+- 关联分支、提交、PR、Issue或 evidence_id：`codex/scan-reliability-integration`、`integration/p1`、产品提交 `f3e51f5173cb316b68377cf15ea17725d9b84a1e`；无 PR/Issue/evidence_id。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 20,000～35,000，已在原范围内完成审阅、测试、提交、推送和集成；仅因 `gh` CLI 缺失把“创建 PR 对象”调整为可验证的直接 fast-forward，不扩大产品范围。

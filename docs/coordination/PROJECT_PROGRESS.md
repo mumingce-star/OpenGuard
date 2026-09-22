@@ -1395,3 +1395,11 @@ AMENDMENT：上一段“本机 B02 pytest 回执未具备”已关闭。B02 现�
 - 严格限制：prediction/result 都是 `not_executed`，metrics 为 `null`，`formal_metrics_claimed=false`；Bench CLI 仅推导 `development`。没有准确率、召回率、F1、真人 Gold 或 reportable 声明。
 - 验证：Node 输入格式/Hash 2/2，Bench CLI 对该 manifest 输出 valid + development；Java Bench 定向测试在受控环境通过。未联网、未执行 detector、未启动服务、未写 Assessment/Report、未提交或推送。
 - 未完成：真实 detector 运行产物、B06 人工 Gold/FN 治理、不可变的新 revision、独立验收及高等级资格。
+
+## 2026-09-22：P1 后端 B 批次发布并快进集成
+
+- 发布结果：P1 固定联验包、B01 Hugging Face metadata parser/coverage v2、B02 License/NOTICE 候选检测器、B03/B04 facts v2/v3、B05 development 输入及配套测试/文档已提交为 `f3e51f5173cb316b68377cf15ea17725d9b84a1e`，推送至 `origin/codex/scan-reliability-integration`，并以非强制 fast-forward 合并至 `origin/integration/p1`；两个远端引用均已读回为同一 SHA。`main` 未改变。
+- 评审结果：完整累计差异未包含 `.env`、缓存、虚拟环境、构建产物、二进制包或已知凭据模式；本轮新增 Python/安全/联验定向测试 `67 passed`，Node `13 passed`，Java 定向与完整 Maven 测试均退出码 0，`git diff --check` 通过。全量 Python unit 在 Windows 收集阶段仍被既有 POSIX `fcntl` 依赖阻断，未冒充通过；新增范围的测试未失败。
+- 接口与语义：新增内部 B01 parser export 和 B02 detector API；未改变公共 HTTP/Frozen Schema。所有 license/NOTICE/provider 结论继续保持 `pending`/`review_required`，不自动生成授权、正式许可证表达式、确认违规或 Obligation。
+- GitHub 状态：任务分支与 `integration/p1` 已发布；本机未安装 `gh` CLI，故没有创建 GitHub PR 对象或远端 Review 记录，本轮采用本地逐文件审阅、测试门禁、远端基线/祖先核对和可拒绝非快进的直接 fast-forward 集成。后续若仓库要求 integration 分支也必须经 PR，应安装 `gh` 或在网页补建治理记录，但无需重写本次提交。
+- 尚未关闭：B06 真人 Gold/FN、B07 性能分布、真实 HF transport 独立验收、A 线生产 Profile/NOTICE/Report 绑定、前端端到端、Windows `fcntl` 可移植性、异机复现和最终材料门禁。
