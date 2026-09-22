@@ -6768,3 +6768,32 @@
 - 验证：6项永久fail-first全部按预期失败后修复；Notice targeted 83 passed/0 failed/0 skipped/1 warning；完整tests/unit+tests/security为2555 passed/11 failed/4 skipped/2 warnings，失败集合与冻结baseline一致，无新增skip/xfail/deselect。原2487 baseline节点及上一轮2564节点全部保留，本次新增6项均通过；测试期间源码Hash不变，测试后仅追加日志。
 - 本轮相对已Review现场只改2份Notice源码、2份Notice测试和2份日志，累计原16项未提交成果保留；原证据不覆盖。新receipt/source-hashes/working-tree.patch写入output/manual-fixes/p1-notice-draft-owner-r1-20260922T100320Z。两个旧worktree HEAD/branch/status/文件Hash核验不变；PREVIOUS_TASK_WORKTREE_PRESERVED；PREVIOUS_UNCOMMITTED_LOGS_LEFT_UNCHANGED。
 - 未修改cz facts/v3/Report V2/Profile/History产品；仅隔离本地测试loopback，无外网、Docker或生产API操作。NO COMMIT / NO PUSH / NO MERGE / NO DEPLOY。等待Owner最终Review，不自动开展其他工作；精确token不可获得，无法核定估算符合性。STOP。
+
+### [20260922-1905-GPT-6-Astra-report-notice] START — persisted Notice snapshot binding only
+
+- Owner授权 Backend A；BASE=603bf4dd7fe706ca0d3bfd0efe1861218b3f8ded，定向fetch一致，clean后新建feat/p1-report-v2-notice-binding，复用Notice worktree。两旧现场HEAD/status/未提交Hash已记录，不迁移、不操作其成果。
+- 使用Owner批准的近期相关完整阅读+历史定向检索例外，仅减少重复上下文，不放宽门槛。复用既有Report service/store/integrity/HTML和Notice store严格校验；预计只改Report service/integrity/HTML、新只读notice adapter、对应测试、必要说明及两份追加日志。无Schema/API/DDL/生产工厂变更，无cz输入/Notice生成存储语义变更。
+- Python3.12.14与上一轮同解释器；全部非日志源码Hash匹配已审tested版本，开工收集2570节点。先真实保存Notice→Report fail-first，定向Report/Notice，再一次完整unit/security；冻结11失败精确指纹/4 opt-in skip不扩大。新证据output/manual-fixes/p1-report-v2-notice-binding-20260922T110515Z，旧证据不覆盖。
+- 串行无子代理；仅离线fixture/TestClient/临时SQLite及测试loopback，无Docker/外网/AI/生产；NO COMMIT/PUSH/MERGE/DEPLOY。token估算15,000–25,000，精确遥测不可获得。完成后待Owner Review。
+
+### [20260922-1905-GPT-6-Astra-report-notice] COMPLETE — local binding, pending Owner Review
+
+- GPT-6 Astra / Backend A；最小消费已保存NoticeDraft，ReportNoticeReader只调用scoped Store.get，不initialize、不生成、不读facts；默认reader=None。新增请求无reader保留409 not_ready，空refs不读Notice，旧幂等重放先返回保存内容。新增按draft_id稳定排序的observation完整章节，固定scan_ref/assessment_ref而非整个Binding，支持Task/Graph同时存在。
+- 完整性：复用Notice strict/schema/content Hash校验，资源/Evidence闭包对照固定Scan Facts；引用/章节一一对应，Graph/Notice严格区分，错Hash/绑定/缺失/重复/损坏拒绝，失败不创建Report或幂等业务记录。Notice数量/entries/字节纳入生成和Store容量，不截断；GET只读保存artifact bytes。HTML新增待人工核验区，转义text、保留null/missing/gaps及完整附录，不制造授权或履行结论。生成器/渲染器1.2，Schema仍1.0，无DDL/API/生产工厂/Notice Core变更。
+- 验证：真实保存Notice→旧Report fail-first 1项预期not_ready；修后新增38项全部通过。Report+Notice targeted 305 passed/1 warning；最终仅一次完整unit/security 2593 passed/11 known failed/4 existing skipped/2 warnings，2608 unique节点，126.71s。原2570节点全部保留；失败node及原因类别与冻结基线一致，无新增skip/xfail/deselect。补充只读执行同14项安全测试并断言12种篡改均在完整性校验以invalid_argument拒绝、非snapshot冲突假阳性，不重复计为新增节点。全部源码/测试保持最终full时Hash。
+- FIXTURE_BACKED_REAL_SERVICE_ACCEPTANCE：8 entries/2保存摘录，真实Notice/Report Service、SQLite、FastAPI TestClient，Task+Graph共存；重开Report Store并清空全部上游后重放及6次下载字节不变，源库Hash不变。新目录output/manual-fixes/p1-report-v2-notice-binding-20260922T110515Z含JSON/HTML样例、JUnit/命令、失败指纹比较和最终receipt/source-hashes/完整patch；旧证据不覆盖，无额外Review Package。
+- 修改9文件：Report service/integrity/HTML、新report_v2_notice.py、2份对应unit/security测试、1份说明、2份追加日志。feat/p1-report-v2-notice-binding，HEAD=603bf4dd7fe706ca0d3bfd0efe1861218b3f8ded不变；未暂存。History/Graph与Profile旧worktree HEAD/status/未提交文件Hash不变。cz inputs/Scanner/Bench/Schema/Assessment/Remediation/Notice Core/生产API/Compose未改。
+- 当前可离线演示保存Notice进入完整Report；既有Notice Core和旧Report replay/Graph/Task能力保留。尚未具备生产Notice reader/facts及端到端部署验收；PRODUCTION_NOTICE_READER_NOT_CONFIGURED；PRODUCTION_DEPLOYMENT_NOT_PERFORMED。Owner负责本包源码Review，后续生产接线需单独授权；xzb页面/真实事实与跨平台/竞赛人工评测和材料门禁仍待各负责人关闭，不编造整体完成率。本轮未发布GitHub。NO COMMIT/PUSH/MERGE/DEPLOY。
+- 精确token遥测不可获得；开工15,000–25,000仅估算，已完成原范围但无法核定是否在估算内；主控串行无子智能体。STOP。
+
+### [20260922-1934-GPT-6-Astra-report-notice-test-r1] START — Owner test-only assertion
+
+- Owner授权仅在12个rehashed Notice篡改场景捕获异常并精确断言invalid_argument，保留全部攻击和DB不变断言；只改该security测试及两份追加日志。当前feat/p1-report-v2-notice-binding@603bf4dd7fe706ca0d3bfd0efe1861218b3f8ded，9项已审Hash匹配，两个旧现场HEAD/status/未提交Hash不变，暂存区空。
+- 原Python环境执行security文件和原Report+Notice定向集合；不重跑full，沿用原2593 passed/11 known failed/4 skipped/2 warnings，仅作历史证据。断言失败即停止，不改产品。新test-r1证据目录，旧证据不覆盖；无外网/Docker/子代理/commit/push/merge/deploy。token估算2,000–4,000，精确数不可获得。
+
+### [20260922-1934-GPT-6-Astra-report-notice-test-r1] COMPLETE — test only, pending final Owner check
+
+- 仅捕获ReportV2StoreError as caught并断言caught.value.code == "invalid_argument"，12种原篡改场景和DB不变断言全部保留，不接受conflict。产品实现无改动；新旧源码Hash匹配。
+- 本轮真实执行：security文件14 passed/0 failed/0 skipped/1 warning；原Report+Notice定向305 passed/0 failed/0 skipped/1 warning（6.27s），节点集合不变。full_not_rerun=true；2593 passed/11 known failed/4 skipped/2 warnings仅沿用上一轮full.xml，不是本轮新执行结果。
+- 本轮只改1测试+2追加日志；累计9文件完整patch含新增文件，最终receipt/source-hashes位于output/manual-fixes/p1-report-v2-notice-binding-test-r1-20260922T113403Z；旧证据保持。BASE/分支不变，未暂存，diff check PASS；两个旧worktree HEAD/status/未提交Hash保持。
+- 可演示能力仍为fixture-backed Notice→固定Report，未扩展业务；生产reader、部署、cz/前端/跨平台及竞赛端到端门禁仍待原负责人。等待Owner最终核对，不继续生产任务。无Docker/外网/子代理/commit/push/merge/deploy。精确token不可获得，2,000–4,000为估算、无法核定实际；原范围完成。STOP。

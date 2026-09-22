@@ -12,7 +12,7 @@ import json
 
 from app.assessment.review_groups import review_view
 
-HTML_RENDERER_VERSION = "report-v2-html/1.1"
+HTML_RENDERER_VERSION = "report-v2-html/1.2"
 
 DIMENSIONS = {
     "commercial": "商业使用",
@@ -206,6 +206,25 @@ def _graph_summary(document: dict) -> str:
     return "".join(parts)
 
 
+def _notice_summary(document: dict) -> str:
+    drafts = [row['content'] for row in document['sections']
+              if row['authority'] == 'observation' and 'draft_id' in row['content']]
+    if not drafts:
+        return ''
+    parts = ['<section class="panel"><h2>NOTICE 草稿／待人工核验</h2>',
+             '<p class="notice">摘录不等于完整原文，草稿不代表义务已履行。缺口不是违规，生成成功不是合规通过。</p>']
+    for draft in drafts:
+        parts.append(f'<h3>固定草稿 {_esc(draft["draft_id"])}</h3>'
+                     f'<p>内容 Hash：{_esc(draft["content_hash"])}</p>')
+        for entry in draft['entries']:
+            text = entry['text'] if entry['text'] is not None else '材料缺失：未保存原文，不补写法律文本。'
+            parts.append(f'<details open><summary>{_esc(entry["entry_id"])}</summary><pre>{_esc(text)}</pre>'
+                         '<p>缺失材料（missing）：</p>' + _items(entry['missing']) + '</details>')
+        parts.append('<p>覆盖缺口（coverage_gaps）：</p>' + _items(draft['coverage_gaps']))
+    parts.append('<p>完整草稿保留在下方固定快照附录中。</p></section>')
+    return ''.join(parts)
+
+
 def render_report_html(document: dict) -> bytes:
     """Render a saved-content document without modifying it or opening sources."""
     assessment = _one_content(document, "formal_assessment")
@@ -263,6 +282,7 @@ def render_report_html(document: dict) -> bytes:
                      '<p>当前快照没有义务记录；不代表没有义务。</p></section>')
     parts.append('<section class="panel"><h2>整改处理进度</h2>' + _workflow(workflow) + '</section>')
     parts.append(_graph_summary(document))
+    parts.append(_notice_summary(document))
     ai_state = AI_STATES.get(ai["ai_status"], "AI 状态未识别，保留原始记录")
     ai_text = ai["ai_summary"] if ai["ai_summary"] is not None else "当前快照未保存 AI 正文。"
     parts.append('<section class="panel"><h2>已有 AI 说明</h2>'

@@ -5,7 +5,8 @@ explicit Task versions. It never scans, reassesses, calls AI, mutates Tasks, or
 changes Formal Assessment state.
 
 Graph inclusion requires an explicitly configured fixed-scan reader and a
-matching algorithm version/hash. Notice and Profile remain unavailable;
+matching algorithm version/hash. Notice requires a persisted snapshot reader;
+Profile remains unavailable;
 client-provided hashes never substitute for a source reader.
 """
 
@@ -51,7 +52,7 @@ from .report_v2_store import (
 )
 
 
-REPORT_V2_VERSION = "report-v2/1.1"
+REPORT_V2_VERSION = "report-v2/1.2"
 
 
 class ReportV2ServiceError(RuntimeError):
@@ -128,6 +129,7 @@ class ReportV2Service:
         report_store: ReportV2Store,
         *,
         graph_reader=None,
+        notice_reader=None,
         max_included_items: int = 20000,
         max_document_bytes: int = 16 * 1024 * 1024,
     ):
@@ -136,6 +138,7 @@ class ReportV2Service:
         self.task_store = task_store
         self.report_store = report_store
         self.graph_reader = graph_reader
+        self.notice_reader = notice_reader
         if any(type(v) is not int or v<1 for v in (max_included_items,max_document_bytes)):
             raise ValueError('invalid report generation budget')
         self.max_included_items=max_included_items
@@ -374,6 +377,30 @@ class ReportV2Service:
             raise ReportV2ServiceError(error.code, reason=error.reason) from error
         return [reference], graph
 
+    def _notice_sources(self, refs, scan_ref, assessment_ref, stored):
+        from .report_v2_notice import ReportNoticeError, validate_notice_content, validate_notice_binding
+        normalized = sorted(refs, key=lambda ref: ref.draft_id)
+        snapshots = []
+        scan = stored.run.model_dump(mode='json')
+        for ref in normalized:
+            try:
+                draft = self.notice_reader.read(scan_ref.scan_id, assessment_ref.assessment_id, ref)
+            except ReportNoticeError as error:
+                raise ReportV2ServiceError(error.code, reason=error.reason) from error
+            if draft is None:
+                raise ReportV2ServiceError('not_found', reason='notice_draft_not_found')
+            try:
+                validate_notice_content(draft)
+            except (ValueError, KeyError, TypeError, RecursionError) as error:
+                raise ReportV2ServiceError('upstream_unavailable', reason='notice_snapshot_integrity') from error
+            try:
+                validate_notice_binding(draft, ref.model_dump(mode='json'), scan_ref.model_dump(mode='json'),
+                                        assessment_ref.model_dump(mode='json'), scan)
+            except ValueError as error:
+                raise ReportV2ServiceError('conflict', reason='notice_binding_mismatch') from error
+            snapshots.append(draft)
+        return normalized, snapshots
+
     @staticmethod
     def _fingerprint(
         scan_ref: P1ScanRef,
@@ -464,7 +491,7 @@ class ReportV2Service:
 
         # Do not trust client-supplied immutable Notice or observation hashes
         # until those source stores/readers are actually available.
-        if notice_refs:
+        if notice_refs and self.notice_reader is None:
             raise ReportV2ServiceError(
                 "not_ready",
                 reason="notice_snapshot_reader_not_available",
@@ -500,11 +527,20 @@ class ReportV2Service:
 
         fixed_algorithm_refs, graph_content = self._graph_source(stored, algorithm_refs)
 
+        fixed_notice_refs, notice_snapshots = self._notice_sources(notice_refs, scan_ref, assessment_ref, stored)
+        if notice_snapshots:
+            included = (sum(len(v) for v in normalized) + len(assessment.resource_evaluations)
+                        + sum(len(getattr(run, name)) for name in
+                              ('components','ai_assets','evidence','findings','licenses','obligations','remediations'))
+                        + sum(len(draft['entries']) for draft in notice_snapshots))
+            if included > self.max_included_items:
+                raise ReportV2ServiceError('upstream_unavailable', reason='report_generation_capacity_exceeded')
+
         binding = P1Binding(
             scan_ref=scan_ref,
             assessment_ref=assessment_ref,
             task_refs=fixed_task_refs,
-            notice_refs=[],
+            notice_refs=fixed_notice_refs,
             algorithm_refs=fixed_algorithm_refs,
         )
 
@@ -512,7 +548,7 @@ class ReportV2Service:
             scan_ref,
             assessment_ref,
             fixed_task_refs,
-            [],
+            fixed_notice_refs,
             fixed_algorithm_refs,
         )
 
@@ -585,6 +621,8 @@ class ReportV2Service:
                 "observation", graph_content["schema_version"],
                 [graph_content["view_id"]], graph_content,
             ))
+        for draft in notice_snapshots:
+            raw_sections.append(('observation', draft['schema_version'], [draft['draft_id']], draft))
 
         sections: list[P1SnapshotSection] = []
         document_sections: list[dict] = []
@@ -623,7 +661,7 @@ class ReportV2Service:
         provenance = P1HistoryProvenance(
             producer=P1Producer(
                 name="openguard-report-v2",
-                version="1.1",
+                version="1.2",
             ),
             source_refs=[scan_ref],
             assessment_refs=[assessment_ref],
