@@ -1,5 +1,4 @@
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,7 +11,10 @@ const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const fileBytes = (path) => readFileSync(path);
 const fileHash = (path) => sha256(fileBytes(path));
 const canonical = (value) => JSON.stringify(value);
-const sourceRevision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: rootDir, encoding: 'utf8' }).trim();
+// This fixture captures bytes from the published P1 baseline.  It must not
+// inherit the caller's current HEAD, otherwise any unrelated merge makes the
+// immutable facts package appear stale without changing a source input.
+const sourceRevision = '9d67b88f39fa4aaa8ab24048aea224204eabd490';
 const evidence = [];
 const facts = [];
 

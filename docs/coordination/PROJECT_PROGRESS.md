@@ -1404,6 +1404,13 @@ AMENDMENT：上一段“本机 B02 pytest 回执未具备”已关闭。B02 现�
 - GitHub 状态：任务分支与 `integration/p1` 已发布；本机未安装 `gh` CLI，故没有创建 GitHub PR 对象或远端 Review 记录，本轮采用本地逐文件审阅、测试门禁、远端基线/祖先核对和可拒绝非快进的直接 fast-forward 集成。后续若仓库要求 integration 分支也必须经 PR，应安装 `gh` 或在网页补建治理记录，但无需重写本次提交。
 - 尚未关闭：B06 真人 Gold/FN、B07 性能分布、真实 HF transport 独立验收、A 线生产 Profile/NOTICE/Report 绑定、前端端到端、Windows `fcntl` 可移植性、异机复现和最终材料门禁。
 
+## 2026-09-23 B01--B07/P2B 与 P1 生产接线集成发布
+
+- 集成审阅：`integration/p1` 的 NoticeDraft、Report V2 Notice binding 与 opt-in Profile production wiring 三项远端提交先合入 `codex/scan-reliability-integration`；仅 `docs/05-ai-assistance-log.md` 出现追加式日志冲突，已保留双方完整记录。B01--B07/P2B 离线质量门禁批次随之合并，未覆盖 `main`。
+- 修复：合并后发现 v3 facts 生成器将调用时 `HEAD` 写入不可变来源 revision，导致无输入字节变化的合并也会报 stale。生成器现显式固定其已发布的来源提交 `9d67b88f39fa4aaa8ab24048aea224204eabd490`，重新通过漂移检查；不改变 facts、授权、许可证表达式或风险语义。
+- 验证：B01/B02/P1 fixture Python 定向 `76 passed`；B01--B07/P2B/NOTICE Node 门禁 `15 passed`；Java完整 Maven 测试通过。NoticeDraft、Report Notice、Profile wiring Python 集合在 Windows 收集阶段被既有 Linux-only `fcntl` 依赖阻断，未进入断言，不能作为通过声称；Linux/既有提交的独立回归证据保留。
+- 发布状态：待本段与收工回执提交后，Root 将任务分支推送并以非强制合并更新 `integration/p1`，随后读回远端 SHA；不建立 `main` 合并或发布声明。
+
 ## 2026-09-22：P0B01 离线 fixture 5+5 扩展（待 Python 回归）
 
 - 已完成：`resource-profile-v2` 现固定 5 个 model、5 个 dataset；正例各自的 `source_file_sha256` 与 `source_observation_sha256` 都可离线复算。新增非法 identity fixture，保留既有缺字段、声明冲突和不支持字段反例。

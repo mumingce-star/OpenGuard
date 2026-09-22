@@ -6999,6 +6999,19 @@
 - 开始前确认：已阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区、最近提交与上一轮发布记录；0300 任务已 COMPLETE 且记录 Luna 最终复验允许发布，当前无其他模型对该批文件的在途修改记录。
 - 验收方法：fetch 后核验远端祖先关系与分叉；复核提交范围、`git diff --check`、敏感信息和忽略产物门禁；读取既有 Python/Node/Java/Luna 回归证据；推送任务分支后仅以非强制 fast-forward 集成并读回两个远端 SHA。
 - token 用量估算：4,000--8,000；系统未提供精确 token 遥测。
+
+## 20260923-0330-GPT5-B批次发布与P1集成
+
+- 状态：COMPLETE
+- 作者与角色：GPT-5 / Root Coordinator（GitHub 发布、审阅与集成）；时间：2026-09-23 03:30 Asia/Shanghai；分支：`codex/scan-reliability-integration`。
+- 任务目标与实际结果：完成 B01--B07/P2B 离线批次与远端 P1 NoticeDraft/Report/Profile 接线的审阅整合。远端 `integration/p1` 已在本轮前进至 `b76e532`，故先在任务分支创建保留双方历史的合并提交 `a1d6367`；仅 AI 辅助日志冲突，删除冲突标记后完整保留两侧记录。合并后修复 facts v3 generator 使用动态 HEAD 导致的虚假 stale，以已发布 source revision 常量替代，不修改事实内容或保守语义。
+- 修改或新增文件：合并纳入 NoticeDraft/Report Notice/Profile 生产接线的远端代码与测试；本轮直接修改 `tests/fixtures/notice-license-facts-v3/generate.mjs`、PROJECT_PROGRESS 和共享日志。未引入缓存、虚拟环境、构建产物、密钥、个人信息或第三方未授权材料。
+- 命令与测试结果：B01/B02/P1 fixture Python `76 passed`；B01--B07/P2B/NOTICE Node `15 passed`；完整 Java Maven 测试通过；v3生成漂移检查与 `git diff --check` 通过。NoticeDraft、Report V2 Notice 与 Profile wiring Python 集合因 Windows 缺失 Linux-only `fcntl` 在收集阶段失败，未进入产品断言；保留为平台门禁，不通过跳过、xfail或改产品掩盖。
+- 接口、Schema、规则和重要决策：不改变公共 P1 Schema/HTTP 契约。v3 fixture 的 source revision 固定为其实际已发布输入基线，事实仍为 pending/null/review-required；B05不冻结 Gold、B06不以脚本代替双独立真人、B07不宣称生产性能。
+- 已知风险与未完成项：Windows `fcntl` 可移植性、Notice/Profile/Report 的当前 Windows 动态回归、B06 Gold/FN、B07真实受控 receipts、真实HF/异机验收、前端端到端和竞赛材料仍未关闭。
+- 建议下一步及责任模型：Terra/环境负责人解决或明确Linux执行的 `fcntl` 平台边界并重跑生产接线测试；Luna完成真人/异机验收；A/前端完成生产消费和浏览器回执；Sol最终审计竞赛门禁。
+- 关联分支、提交、PR、Issue或 evidence_id：合并提交 `a1d6367`；本收工记录与 generator 修复将作为后续发布提交推送至任务分支和 `integration/p1`。无 PR/Issue/evidence_id。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 4,000--8,000，实际范围因远端分叉合并、日志冲突和 fixture漂移修复扩大，不能确认是否仍在原区间；未扩大产品功能范围。
 ### [20260922-1349-GPT-6-Astra-notice-core-gate] BLOCKED — untouched full baseline exceeds approved failures
 
 - GPT-6 Astra / Backend A，Owner 指定任务 P1 NoticeDraft Backend Core。fetch 后 origin/integration/p1=9d67b88f39fa4aaa8ab24048aea224204eabd490；从 exact SHA 新建 feat/p1-notice-draft-backend 隔离 worktree，初始 clean。History/Graph 与 Profile worktree 保留，未复制或移动其未提交文件。
