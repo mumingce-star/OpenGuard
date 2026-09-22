@@ -294,6 +294,8 @@ def test_openapi_preserves_business_routes_with_additive_history_diff_and_graph_
         "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/{task_id}": {"patch": response.json()["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/{task_id}"]["patch"]},
         "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2": {"post": response.json()["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2"]["post"]},
         "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2/{snapshot_id}": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2/{snapshot_id}"]["get"]},
+        "/api/v1/scans/{scan_id}/assessments/{assessment_id}/notice-drafts": {"post": response.json()["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/notice-drafts"]["post"]},
+        "/api/v1/scans/{scan_id}/assessments/{assessment_id}/notice-drafts/{draft_id}": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/assessments/{assessment_id}/notice-drafts/{draft_id}"]["get"]},
         "/api/v1/scans/{scan_id}": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}"]["get"]},
         "/api/v1/scans/{scan_id}/evidence/{evidence_id}": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/evidence/{evidence_id}"]["get"]},
         "/api/v1/scans/{scan_id}/report": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/report"]["get"]},

@@ -466,6 +466,7 @@ def create_app(
     assessment_service=None,
     remediation_service=None,
     report_v2_service=None,
+    notice_draft_service=None,
     profile_service=None,
     profile_routes_enabled=True,
 ) -> FastAPI:
@@ -515,6 +516,7 @@ def create_app(
     app.state.assessment_service = assessment_service
     app.state.remediation_service = remediation_service
     app.state.report_v2_service = report_v2_service
+    app.state.notice_draft_service = notice_draft_service
     from app.p1.profile import ProfileService
     app.state.profile_service = profile_service or ProfileService(registry)
     app.state.history_cursor_key = secrets.token_bytes(32)
@@ -536,7 +538,10 @@ def create_app(
         )
         profile_write = (profile_routes_enabled and request.method == 'POST' and len(segments) == 6
                          and segments[:3] == ['api', 'v1', 'scans'] and segments[4:] == ['resource-profiles', 'refresh'])
-        if task_write or report_write or existing_write or profile_write:
+        notice_write = (request.method == 'POST' and len(segments) == 7
+                        and segments[:3] == ['api', 'v1', 'scans']
+                        and segments[4] == 'assessments' and segments[6] == 'notice-drafts')
+        if task_write or report_write or existing_write or profile_write or notice_write:
             from urllib.parse import urlsplit
             configured = os.environ.get("OPENGUARD_WEB_ORIGINS", "http://127.0.0.1:8080,http://localhost:8080")
             allowed = configured.split(",")
@@ -547,7 +552,7 @@ def create_app(
                 return _error_response(request, ApiError(status_code=403,code="origin_rejected",message="仅允许本地产品页面提交此操作。",reason="origin_rejected"))
             if request.method in {"POST", "PATCH"}:
                 if request.headers.get("content-type", "").split(";")[0] != "application/json":
-                    if task_write or report_write or profile_write:
+                    if task_write or report_write or profile_write or notice_write:
                         return _error_response(request, ApiError(status_code=400,code="invalid_argument",message="请求必须为JSON。",reason="request_invalid"))
                     return _error_response(request, ApiError(status_code=422,code="request_invalid",message="请求必须为JSON。",reason="request_invalid"))
                 chunks=[]; size=0
@@ -649,6 +654,8 @@ def create_app(
                 message="Profile刷新请求参数无效。", reason="request_invalid",
             ))
         if (request.method, getattr(route, "path", None)) in {
+            ("POST", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/notice-drafts"),
+            ("GET", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/notice-drafts/{draft_id}"),
             ("POST", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2"),
             ("GET", "/api/v1/scans/{scan_id}/assessments/{assessment_id}/report-v2/{snapshot_id}"),
         }:
@@ -715,6 +722,8 @@ def create_app(
     app.include_router(_router())
     from app.api.report_v2 import router as report_v2_router
     app.include_router(report_v2_router())
+    from app.api.notice_draft import router as notice_draft_router
+    app.include_router(notice_draft_router())
     if profile_routes_enabled:
         from app.api.profile import router as profile_router
         app.include_router(profile_router())
@@ -725,6 +734,9 @@ def create_app(
 
 
 def create_default_app() -> FastAPI:
+    profile_metadata_enabled = os.environ.get("OPENGUARD_ENABLE_PROFILE_METADATA", "0")
+    if profile_metadata_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_PROFILE_METADATA")
     external_scanners = os.environ.get("OPENGUARD_ENABLE_EXTERNAL_SCANNERS", "0")
     if external_scanners not in {"0", "1"}:
         raise RuntimeError("invalid OPENGUARD_ENABLE_EXTERNAL_SCANNERS")
@@ -851,6 +863,22 @@ def create_default_app() -> FastAPI:
         )
         # Optional terminal observation is separate from report publication and ScanRun CAS.
         registry.assessment_observer = assessment_service.on_terminal
+    profile_service = None
+    if profile_metadata_enabled == "1":
+        from app.p1.profile import ProfileService
+        from app.p1.profile_store import MetadataStore
+        from app.ingestion.metadata_egress import MetadataTransport
+        from app.scanners.huggingface_metadata import HuggingFaceMetadataParser
+
+        # Independent opt-in observation sidecar, not Formal Assessment.
+        # Fail closed on initialization; construction must not fetch metadata.
+        metadata_store = MetadataStore(data_dir / "metadata.db")
+        metadata_store.initialize()
+        profile_service = ProfileService(
+            registry, metadata_store,
+            transport=MetadataTransport(enabled=True),
+            parser=HuggingFaceMetadataParser(),
+        )
     return create_app(
         registry,
         zip_runtime=runtime,
@@ -862,6 +890,7 @@ def create_default_app() -> FastAPI:
         assessment_service=assessment_service,
         remediation_service=remediation_service,
         report_v2_service=report_v2_service,
+        profile_service=profile_service,
     )
 
 

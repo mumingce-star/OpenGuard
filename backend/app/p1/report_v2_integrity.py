@@ -126,8 +126,25 @@ def validate_full_sections(snapshot, rows):
         ai_status=assessment['ai_status'],ai_summary=assessment['ai_summary'],ai_evidence_ids=assessment['ai_evidence_ids'])
     if canonical(ai)!=canonical(expected):raise ValueError('report_ai_content_mismatch')
     observations=by.get('observation',[])
-    if len(observations)!=len(binding['algorithm_refs']):raise ValueError('report_observation_missing')
-    for row,reference in zip(observations,binding['algorithm_refs']):
+    notices=binding['notice_refs']
+    if len(observations)!=len(binding['algorithm_refs'])+len(notices):raise ValueError('report_observation_missing')
+    notice_rows=[row for row in observations if 'draft_id' in row['content']]
+    graph_rows=[row for row in observations if 'draft_id' not in row['content']]
+    if len(notice_rows)!=len(notices) or len(graph_rows)!=len(binding['algorithm_refs']):
+        raise ValueError('report_observation_binding')
+    from .report_v2_notice import validate_notice_content, validate_notice_binding
+    refs={r['draft_id']:r for r in notices}
+    if len(refs)!=len(notices):raise ValueError('report_notice_duplicate')
+    seen=set()
+    for row in notice_rows:
+        draft=row['content'];did=draft['draft_id']
+        if did not in refs or did in seen:raise ValueError('report_notice_binding')
+        seen.add(did)
+        validate_notice_content(draft)
+        validate_notice_binding(draft, refs[did], scan_ref, assessment_ref, scan)
+        if row['source_ids']!=[did] or row['schema_version']!=draft['schema_version']:
+            raise ValueError('report_notice_section')
+    for row,reference in zip(graph_rows,binding['algorithm_refs']):
         from .report_v2_graph import graph_content_hash
         graph=complete(P1ResourceGraphView,row['content'])
         if (reference['kind']!='graph' or reference['version']!=graph['provenance']['algorithm_version']
