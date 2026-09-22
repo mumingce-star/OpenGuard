@@ -1,0 +1,18 @@
+{
+  "schema": "openguard.resource-profile-fixture-manifest/2",
+  "provider": "huggingface",
+  "captured_at": "2026-09-22T10:00:00Z",
+  "fixture_policy": "Offline regression snapshots are fixed test inputs. They are observations only, not claims about current upstream state, authorization, license applicability, or access rights.",
+  "source_quality_policy": "The parser must bind provider, kind, exact API target, UTC capture timestamp, body SHA-256, response revision and revision mode. Invalid provenance fails closed; no raw body is returned.",
+  "records": [
+    {"case_id":"hf-model-bloom-560m","fixture":"snapshots/models/bigscience--bloom-560m.json","source_file_sha256":"570a1ce14344d3153d9b8389161e3ed6c21a1be04591696d2718ca9bcf7bf5b1","resource_kind":"model","observed":{"canonical_id":"bigscience/bloom-560m","revision":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","declared_license_raw":"bigscience-openrail-m","access_gate":"ungated"}},
+    {"case_id":"hf-model-stable-diffusion-2-1","fixture":"snapshots/models/stabilityai--stable-diffusion-2-1.json","source_file_sha256":"9eba414801dc6d8ddda29c66340f59c4ba481ceb6aa1c1b09c11185190851871","resource_kind":"model","observed":{"canonical_id":"stabilityai/stable-diffusion-2-1","revision":"cccccccccccccccccccccccccccccccccccccccc","declared_license_raw":"creativeml-openrail-m","access_gate":"gated"}},
+    {"case_id":"hf-dataset-openr1-math-220k","fixture":"snapshots/datasets/open-r1--openr1-math-220k.json","source_file_sha256":"43e319d8c6b876cc62cdb967f9bff18e3676c8b9ee01f8be7bb1a92c11dbdd2c","resource_kind":"dataset","observed":{"canonical_id":"open-r1/OpenR1-Math-220k","revision":"dddddddddddddddddddddddddddddddddddddddd","declared_license_raw":"apache-2.0","access_gate":"ungated"}},
+    {"case_id":"hf-dataset-c4","fixture":"snapshots/datasets/allenai--c4.json","source_file_sha256":"14b7742adf51991a99b934e4f0a275a9830767d72c80f3b19f303750416b43f8","resource_kind":"dataset","observed":{"canonical_id":"allenai/c4","revision":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","declared_license_raw":["odc-by"],"access_gate":"gated"}}
+  ],
+  "counterexamples": [
+    {"case_id":"hf-missing-observation-fields","fixture":"counterexamples/missing-observation-fields.json","source_file_sha256":"9bb758de318920f2a5fb5388084cbcd68695d5703911f1f5c06af9376ee90898","expected_gaps":["private_value_unavailable","gate_value_unavailable","disabled_value_unavailable"]},
+    {"case_id":"hf-conflicting-license-array","fixture":"counterexamples/conflicting-license-array.json","source_file_sha256":"001e9894a858e6e1fea781e888084fe2b5c6c33e6749a162bf4d41f5d359501f","expected_gaps":["conflicting_declared_license"]},
+    {"case_id":"hf-unsupported-metadata-fields","fixture":"counterexamples/unsupported-metadata-fields.json","source_file_sha256":"b1beb19e60c5ab46a911821674df9e3786b5b6f022848aae5a62a03a06668899","expected_gaps":["unsupported_last_modified_value","unsupported_pipeline_tag_value","unsupported_library_name_value","declared_license_unavailable"]}
+  ]
+}

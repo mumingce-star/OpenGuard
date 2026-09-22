@@ -1,0 +1,43 @@
+{
+  "schema_version": "openguard.p1-remediation-upstream-input/1",
+  "status": "fixed_upstream_input",
+  "endpoint_template": "/api/v1/scans/{scan_id}/assessments/{assessment_id}/remediation-tasks/derive",
+  "binding": {
+    "scan_ref": {
+      "scan_id": "scn-p1-fixed-target-completed",
+      "revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+      "input_hash": "e8e1fabd6f93a3d5ada1609cf57044f0e6245704515456916a5b2e886c5794ad",
+      "inventory_hash": "8d70aa1a3bf6f02b7366d1b2f30ba6f927e2880c83ed77e17fce15a10757f6a2",
+      "status": "completed",
+      "registry_revision": 2
+    },
+    "assessment_ref": {
+      "assessment_id": "asm-p1-fixed-notice-review",
+      "version": 1,
+      "scan_id": "scn-p1-fixed-target-completed",
+      "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+      "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+      "rule_version": "assessment-1.0-facts2:2026.09.2",
+      "formal": true
+    }
+  },
+  "derive_request": {
+    "idempotency_key": "p1-fixed-notice-review-v1",
+    "expected_facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5"
+  },
+  "eligible_origins": [
+    {
+      "kind": "obligation",
+      "source_pointer": "/obligations/0",
+      "source_hash": "43022eda6ccc01ff0cdf4dd003bd2a6596885afff2d46bd032271570a4185890",
+      "obligation_id": "obl-p1-apache-notice-review",
+      "rule_id": "LIC-APACHE-2.0-NOTICE"
+    }
+  ],
+  "expected_task_ref": {
+    "task_id": "task-p1-review-notice",
+    "version": 1,
+    "status": "todo"
+  }
+}

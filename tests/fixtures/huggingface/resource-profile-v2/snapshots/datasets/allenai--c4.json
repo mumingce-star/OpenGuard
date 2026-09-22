@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"dataset","payload":{"id":"allenai/c4","sha":"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","private":false,"gated":true,"disabled":false,"lastModified":"2026-09-21T08:13:00Z","cardData":{"license":["odc-by"]}}}

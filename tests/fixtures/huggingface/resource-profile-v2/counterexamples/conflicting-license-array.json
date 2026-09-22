@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"dataset","payload":{"id":"example/conflicting-license-array","sha":"2222222222222222222222222222222222222222","private":false,"gated":false,"disabled":false,"license":["mit","apache-2.0"],"cardData":{"license":"mit"}}}

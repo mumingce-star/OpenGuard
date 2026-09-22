@@ -21,7 +21,8 @@ Transport 独占 provider/repository/revision/source_url/fetched_at/body_sha256 
 `bounded_content_revision_unconfirmed` 保留 resolved_revision=null，加入
 `metadata_revision_unconfirmed`，不升级 verified revision。
 `content_hash` 是 transport 原响应 SHA256；规范化 DTO 的完整性 Hash 另存数据库。
-真实 HF/B01 parser 未实现；`app.profile_synthetic` 只供测试和 Acceptance 显式注入，
+真实 HF/B01 parser 已由 `app.scanners.huggingface_metadata.HuggingFaceMetadataParser`
+实现并通过固定 5 model + 5 dataset 离线回归；`app.profile_synthetic` 仍只供测试和 Acceptance 显式注入，
 不在生产 default factory 中导入或启用。
 
 ## 独立存储
@@ -93,6 +94,6 @@ HTTP smoke 重放 refresh/job/幂等/冲突，相同已播种观察去重；scan
 测试/HTTP harness 的 loopback guard 是进程级防误操作，不是 OS firewall。
 raw sentinel 检查主 DB、非空 WAL、SHM、API、job、error、repr/log，不通过删库掩盖泄露。
 
-未验收/未实现：真实 B01 parser、真实 HF 内容、NOTICE、人工核验接纳、Report/Profile integration、
+未验收/未实现：B01 的默认工厂接线、真实 HF 在线内容独立验收、NOTICE、人工核验接纳、Report/Profile integration、
 前端业务页面、Windows/原生 Linux/生产部署。Docker Desktop UID 0 策略不代表跨平台许可。
 负责人源码 Review 前不提交、推送、合并或部署。

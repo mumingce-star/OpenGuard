@@ -1,0 +1,1876 @@
+{
+  "schema_version": "1.0",
+  "view_id": "graph-p1-fixed-100",
+  "formal": false,
+  "scan_ref": {
+    "scan_id": "scn-p1-fixed-target-completed",
+    "revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+    "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+    "input_hash": "e8e1fabd6f93a3d5ada1609cf57044f0e6245704515456916a5b2e886c5794ad",
+    "inventory_hash": "8d70aa1a3bf6f02b7366d1b2f30ba6f927e2880c83ed77e17fce15a10757f6a2",
+    "status": "completed",
+    "registry_revision": 2
+  },
+  "filter": {
+    "resource_ids": [],
+    "resource_kinds": []
+  },
+  "nodes": [
+    {
+      "id": "node-project",
+      "kind": "project",
+      "source_id": "openguard",
+      "label": "OpenGuard"
+    },
+    {
+      "id": "node-root-license",
+      "kind": "license_observation",
+      "source_id": "fact.root.openguard",
+      "label": "根 LICENSE 标题观察"
+    },
+    {
+      "id": "node-root-evidence",
+      "kind": "evidence",
+      "source_id": "ev.root.license",
+      "label": "LICENSE 字节证据"
+    },
+    {
+      "id": "node-root-finding",
+      "kind": "finding",
+      "source_id": "finding.root.notice-missing",
+      "label": "根 NOTICE 缺口"
+    },
+    {
+      "id": "node-obligation",
+      "kind": "obligation",
+      "source_id": "obl-p1-apache-notice-review",
+      "label": "Apache NOTICE 待复核义务"
+    },
+    {
+      "id": "node-jackson",
+      "kind": "component",
+      "source_id": "cmp-jackson-databind",
+      "label": "Jackson Databind 2.21.5"
+    },
+    {
+      "id": "node-jackson-license",
+      "kind": "license_observation",
+      "source_id": "fact.dep.jackson-databind",
+      "label": "Jackson LICENSE 观察"
+    },
+    {
+      "id": "node-jackson-notice",
+      "kind": "evidence",
+      "source_id": "ev.jackson.notice",
+      "label": "Jackson NOTICE 证据"
+    },
+    {
+      "id": "node-bert",
+      "kind": "ai_asset",
+      "source_id": "huggingface:model:google-bert/bert-base-uncased",
+      "label": "BERT 固定快照"
+    },
+    {
+      "id": "node-bert-license",
+      "kind": "license_observation",
+      "source_id": "fact.ai.bert",
+      "label": "BERT provider 声明"
+    },
+    {
+      "id": "node-bert-evidence",
+      "kind": "evidence",
+      "source_id": "ev.hf.bert.license",
+      "label": "BERT provider snapshot"
+    },
+    {
+      "id": "node-component-0000",
+      "kind": "component",
+      "source_id": "cmp-fixed-0000",
+      "label": "固定组件 0000"
+    },
+    {
+      "id": "node-component-0001",
+      "kind": "component",
+      "source_id": "cmp-fixed-0001",
+      "label": "固定组件 0001"
+    },
+    {
+      "id": "node-component-0002",
+      "kind": "component",
+      "source_id": "cmp-fixed-0002",
+      "label": "固定组件 0002"
+    },
+    {
+      "id": "node-component-0003",
+      "kind": "component",
+      "source_id": "cmp-fixed-0003",
+      "label": "固定组件 0003"
+    },
+    {
+      "id": "node-component-0004",
+      "kind": "component",
+      "source_id": "cmp-fixed-0004",
+      "label": "固定组件 0004"
+    },
+    {
+      "id": "node-component-0005",
+      "kind": "component",
+      "source_id": "cmp-fixed-0005",
+      "label": "固定组件 0005"
+    },
+    {
+      "id": "node-component-0006",
+      "kind": "component",
+      "source_id": "cmp-fixed-0006",
+      "label": "固定组件 0006"
+    },
+    {
+      "id": "node-component-0007",
+      "kind": "component",
+      "source_id": "cmp-fixed-0007",
+      "label": "固定组件 0007"
+    },
+    {
+      "id": "node-component-0008",
+      "kind": "component",
+      "source_id": "cmp-fixed-0008",
+      "label": "固定组件 0008"
+    },
+    {
+      "id": "node-component-0009",
+      "kind": "component",
+      "source_id": "cmp-fixed-0009",
+      "label": "固定组件 0009"
+    },
+    {
+      "id": "node-component-0010",
+      "kind": "component",
+      "source_id": "cmp-fixed-0010",
+      "label": "固定组件 0010"
+    },
+    {
+      "id": "node-component-0011",
+      "kind": "component",
+      "source_id": "cmp-fixed-0011",
+      "label": "固定组件 0011"
+    },
+    {
+      "id": "node-component-0012",
+      "kind": "component",
+      "source_id": "cmp-fixed-0012",
+      "label": "固定组件 0012"
+    },
+    {
+      "id": "node-component-0013",
+      "kind": "component",
+      "source_id": "cmp-fixed-0013",
+      "label": "固定组件 0013"
+    },
+    {
+      "id": "node-component-0014",
+      "kind": "component",
+      "source_id": "cmp-fixed-0014",
+      "label": "固定组件 0014"
+    },
+    {
+      "id": "node-component-0015",
+      "kind": "component",
+      "source_id": "cmp-fixed-0015",
+      "label": "固定组件 0015"
+    },
+    {
+      "id": "node-component-0016",
+      "kind": "component",
+      "source_id": "cmp-fixed-0016",
+      "label": "固定组件 0016"
+    },
+    {
+      "id": "node-component-0017",
+      "kind": "component",
+      "source_id": "cmp-fixed-0017",
+      "label": "固定组件 0017"
+    },
+    {
+      "id": "node-component-0018",
+      "kind": "component",
+      "source_id": "cmp-fixed-0018",
+      "label": "固定组件 0018"
+    },
+    {
+      "id": "node-component-0019",
+      "kind": "component",
+      "source_id": "cmp-fixed-0019",
+      "label": "固定组件 0019"
+    },
+    {
+      "id": "node-component-0020",
+      "kind": "component",
+      "source_id": "cmp-fixed-0020",
+      "label": "固定组件 0020"
+    },
+    {
+      "id": "node-component-0021",
+      "kind": "component",
+      "source_id": "cmp-fixed-0021",
+      "label": "固定组件 0021"
+    },
+    {
+      "id": "node-component-0022",
+      "kind": "component",
+      "source_id": "cmp-fixed-0022",
+      "label": "固定组件 0022"
+    },
+    {
+      "id": "node-component-0023",
+      "kind": "component",
+      "source_id": "cmp-fixed-0023",
+      "label": "固定组件 0023"
+    },
+    {
+      "id": "node-component-0024",
+      "kind": "component",
+      "source_id": "cmp-fixed-0024",
+      "label": "固定组件 0024"
+    },
+    {
+      "id": "node-component-0025",
+      "kind": "component",
+      "source_id": "cmp-fixed-0025",
+      "label": "固定组件 0025"
+    },
+    {
+      "id": "node-component-0026",
+      "kind": "component",
+      "source_id": "cmp-fixed-0026",
+      "label": "固定组件 0026"
+    },
+    {
+      "id": "node-component-0027",
+      "kind": "component",
+      "source_id": "cmp-fixed-0027",
+      "label": "固定组件 0027"
+    },
+    {
+      "id": "node-component-0028",
+      "kind": "component",
+      "source_id": "cmp-fixed-0028",
+      "label": "固定组件 0028"
+    },
+    {
+      "id": "node-component-0029",
+      "kind": "component",
+      "source_id": "cmp-fixed-0029",
+      "label": "固定组件 0029"
+    },
+    {
+      "id": "node-component-0030",
+      "kind": "component",
+      "source_id": "cmp-fixed-0030",
+      "label": "固定组件 0030"
+    },
+    {
+      "id": "node-component-0031",
+      "kind": "component",
+      "source_id": "cmp-fixed-0031",
+      "label": "固定组件 0031"
+    },
+    {
+      "id": "node-component-0032",
+      "kind": "component",
+      "source_id": "cmp-fixed-0032",
+      "label": "固定组件 0032"
+    },
+    {
+      "id": "node-component-0033",
+      "kind": "component",
+      "source_id": "cmp-fixed-0033",
+      "label": "固定组件 0033"
+    },
+    {
+      "id": "node-component-0034",
+      "kind": "component",
+      "source_id": "cmp-fixed-0034",
+      "label": "固定组件 0034"
+    },
+    {
+      "id": "node-component-0035",
+      "kind": "component",
+      "source_id": "cmp-fixed-0035",
+      "label": "固定组件 0035"
+    },
+    {
+      "id": "node-component-0036",
+      "kind": "component",
+      "source_id": "cmp-fixed-0036",
+      "label": "固定组件 0036"
+    },
+    {
+      "id": "node-component-0037",
+      "kind": "component",
+      "source_id": "cmp-fixed-0037",
+      "label": "固定组件 0037"
+    },
+    {
+      "id": "node-component-0038",
+      "kind": "component",
+      "source_id": "cmp-fixed-0038",
+      "label": "固定组件 0038"
+    },
+    {
+      "id": "node-component-0039",
+      "kind": "component",
+      "source_id": "cmp-fixed-0039",
+      "label": "固定组件 0039"
+    },
+    {
+      "id": "node-component-0040",
+      "kind": "component",
+      "source_id": "cmp-fixed-0040",
+      "label": "固定组件 0040"
+    },
+    {
+      "id": "node-component-0041",
+      "kind": "component",
+      "source_id": "cmp-fixed-0041",
+      "label": "固定组件 0041"
+    },
+    {
+      "id": "node-component-0042",
+      "kind": "component",
+      "source_id": "cmp-fixed-0042",
+      "label": "固定组件 0042"
+    },
+    {
+      "id": "node-component-0043",
+      "kind": "component",
+      "source_id": "cmp-fixed-0043",
+      "label": "固定组件 0043"
+    },
+    {
+      "id": "node-component-0044",
+      "kind": "component",
+      "source_id": "cmp-fixed-0044",
+      "label": "固定组件 0044"
+    },
+    {
+      "id": "node-component-0045",
+      "kind": "component",
+      "source_id": "cmp-fixed-0045",
+      "label": "固定组件 0045"
+    },
+    {
+      "id": "node-component-0046",
+      "kind": "component",
+      "source_id": "cmp-fixed-0046",
+      "label": "固定组件 0046"
+    },
+    {
+      "id": "node-component-0047",
+      "kind": "component",
+      "source_id": "cmp-fixed-0047",
+      "label": "固定组件 0047"
+    },
+    {
+      "id": "node-component-0048",
+      "kind": "component",
+      "source_id": "cmp-fixed-0048",
+      "label": "固定组件 0048"
+    },
+    {
+      "id": "node-component-0049",
+      "kind": "component",
+      "source_id": "cmp-fixed-0049",
+      "label": "固定组件 0049"
+    },
+    {
+      "id": "node-component-0050",
+      "kind": "component",
+      "source_id": "cmp-fixed-0050",
+      "label": "固定组件 0050"
+    },
+    {
+      "id": "node-component-0051",
+      "kind": "component",
+      "source_id": "cmp-fixed-0051",
+      "label": "固定组件 0051"
+    },
+    {
+      "id": "node-component-0052",
+      "kind": "component",
+      "source_id": "cmp-fixed-0052",
+      "label": "固定组件 0052"
+    },
+    {
+      "id": "node-component-0053",
+      "kind": "component",
+      "source_id": "cmp-fixed-0053",
+      "label": "固定组件 0053"
+    },
+    {
+      "id": "node-component-0054",
+      "kind": "component",
+      "source_id": "cmp-fixed-0054",
+      "label": "固定组件 0054"
+    },
+    {
+      "id": "node-component-0055",
+      "kind": "component",
+      "source_id": "cmp-fixed-0055",
+      "label": "固定组件 0055"
+    },
+    {
+      "id": "node-component-0056",
+      "kind": "component",
+      "source_id": "cmp-fixed-0056",
+      "label": "固定组件 0056"
+    },
+    {
+      "id": "node-component-0057",
+      "kind": "component",
+      "source_id": "cmp-fixed-0057",
+      "label": "固定组件 0057"
+    },
+    {
+      "id": "node-component-0058",
+      "kind": "component",
+      "source_id": "cmp-fixed-0058",
+      "label": "固定组件 0058"
+    },
+    {
+      "id": "node-component-0059",
+      "kind": "component",
+      "source_id": "cmp-fixed-0059",
+      "label": "固定组件 0059"
+    },
+    {
+      "id": "node-component-0060",
+      "kind": "component",
+      "source_id": "cmp-fixed-0060",
+      "label": "固定组件 0060"
+    },
+    {
+      "id": "node-component-0061",
+      "kind": "component",
+      "source_id": "cmp-fixed-0061",
+      "label": "固定组件 0061"
+    },
+    {
+      "id": "node-component-0062",
+      "kind": "component",
+      "source_id": "cmp-fixed-0062",
+      "label": "固定组件 0062"
+    },
+    {
+      "id": "node-component-0063",
+      "kind": "component",
+      "source_id": "cmp-fixed-0063",
+      "label": "固定组件 0063"
+    },
+    {
+      "id": "node-component-0064",
+      "kind": "component",
+      "source_id": "cmp-fixed-0064",
+      "label": "固定组件 0064"
+    },
+    {
+      "id": "node-component-0065",
+      "kind": "component",
+      "source_id": "cmp-fixed-0065",
+      "label": "固定组件 0065"
+    },
+    {
+      "id": "node-component-0066",
+      "kind": "component",
+      "source_id": "cmp-fixed-0066",
+      "label": "固定组件 0066"
+    },
+    {
+      "id": "node-component-0067",
+      "kind": "component",
+      "source_id": "cmp-fixed-0067",
+      "label": "固定组件 0067"
+    },
+    {
+      "id": "node-component-0068",
+      "kind": "component",
+      "source_id": "cmp-fixed-0068",
+      "label": "固定组件 0068"
+    },
+    {
+      "id": "node-component-0069",
+      "kind": "component",
+      "source_id": "cmp-fixed-0069",
+      "label": "固定组件 0069"
+    },
+    {
+      "id": "node-component-0070",
+      "kind": "component",
+      "source_id": "cmp-fixed-0070",
+      "label": "固定组件 0070"
+    },
+    {
+      "id": "node-component-0071",
+      "kind": "component",
+      "source_id": "cmp-fixed-0071",
+      "label": "固定组件 0071"
+    },
+    {
+      "id": "node-component-0072",
+      "kind": "component",
+      "source_id": "cmp-fixed-0072",
+      "label": "固定组件 0072"
+    },
+    {
+      "id": "node-component-0073",
+      "kind": "component",
+      "source_id": "cmp-fixed-0073",
+      "label": "固定组件 0073"
+    },
+    {
+      "id": "node-component-0074",
+      "kind": "component",
+      "source_id": "cmp-fixed-0074",
+      "label": "固定组件 0074"
+    },
+    {
+      "id": "node-component-0075",
+      "kind": "component",
+      "source_id": "cmp-fixed-0075",
+      "label": "固定组件 0075"
+    },
+    {
+      "id": "node-component-0076",
+      "kind": "component",
+      "source_id": "cmp-fixed-0076",
+      "label": "固定组件 0076"
+    },
+    {
+      "id": "node-component-0077",
+      "kind": "component",
+      "source_id": "cmp-fixed-0077",
+      "label": "固定组件 0077"
+    },
+    {
+      "id": "node-component-0078",
+      "kind": "component",
+      "source_id": "cmp-fixed-0078",
+      "label": "固定组件 0078"
+    },
+    {
+      "id": "node-component-0079",
+      "kind": "component",
+      "source_id": "cmp-fixed-0079",
+      "label": "固定组件 0079"
+    },
+    {
+      "id": "node-component-0080",
+      "kind": "component",
+      "source_id": "cmp-fixed-0080",
+      "label": "固定组件 0080"
+    },
+    {
+      "id": "node-component-0081",
+      "kind": "component",
+      "source_id": "cmp-fixed-0081",
+      "label": "固定组件 0081"
+    },
+    {
+      "id": "node-component-0082",
+      "kind": "component",
+      "source_id": "cmp-fixed-0082",
+      "label": "固定组件 0082"
+    },
+    {
+      "id": "node-component-0083",
+      "kind": "component",
+      "source_id": "cmp-fixed-0083",
+      "label": "固定组件 0083"
+    },
+    {
+      "id": "node-component-0084",
+      "kind": "component",
+      "source_id": "cmp-fixed-0084",
+      "label": "固定组件 0084"
+    },
+    {
+      "id": "node-component-0085",
+      "kind": "component",
+      "source_id": "cmp-fixed-0085",
+      "label": "固定组件 0085"
+    },
+    {
+      "id": "node-component-0086",
+      "kind": "component",
+      "source_id": "cmp-fixed-0086",
+      "label": "固定组件 0086"
+    },
+    {
+      "id": "node-component-0087",
+      "kind": "component",
+      "source_id": "cmp-fixed-0087",
+      "label": "固定组件 0087"
+    },
+    {
+      "id": "node-component-0088",
+      "kind": "component",
+      "source_id": "cmp-fixed-0088",
+      "label": "固定组件 0088"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0000",
+      "type": "RESOURCE_HAS_LICENSE_OBSERVATION",
+      "source": "node-project",
+      "target": "node-root-license",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/licenses/root"
+        }
+      ]
+    },
+    {
+      "id": "edge-0001",
+      "type": "RESOURCE_SUPPORTED_BY_EVIDENCE",
+      "source": "node-project",
+      "target": "node-root-evidence",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/evidence/ev.root.license"
+        }
+      ]
+    },
+    {
+      "id": "edge-0002",
+      "type": "RESOURCE_HAS_FINDING",
+      "source": "node-project",
+      "target": "node-root-finding",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/findings/0"
+        }
+      ]
+    },
+    {
+      "id": "edge-0003",
+      "type": "FINDING_SUPPORTED_BY_EVIDENCE",
+      "source": "node-root-finding",
+      "target": "node-root-evidence",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/findings/0/evidence_ids/0"
+        }
+      ]
+    },
+    {
+      "id": "edge-0004",
+      "type": "FINDING_REFERENCES_OBLIGATION",
+      "source": "node-root-finding",
+      "target": "node-obligation",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/obligations/0"
+        }
+      ]
+    },
+    {
+      "id": "edge-0005",
+      "type": "LICENSE_HAS_RULE_OBLIGATION",
+      "source": "node-root-license",
+      "target": "node-obligation",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/obligations/0/rule_id"
+        }
+      ]
+    },
+    {
+      "id": "edge-0006",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-jackson",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/0"
+        }
+      ]
+    },
+    {
+      "id": "edge-0007",
+      "type": "RESOURCE_HAS_LICENSE_OBSERVATION",
+      "source": "node-jackson",
+      "target": "node-jackson-license",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/0/license_expression_id"
+        }
+      ]
+    },
+    {
+      "id": "edge-0008",
+      "type": "RESOURCE_SUPPORTED_BY_EVIDENCE",
+      "source": "node-jackson",
+      "target": "node-jackson-notice",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/0/evidence_ids/0"
+        }
+      ]
+    },
+    {
+      "id": "edge-0009",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-bert",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/ai_assets/0"
+        }
+      ]
+    },
+    {
+      "id": "edge-0010",
+      "type": "RESOURCE_HAS_LICENSE_OBSERVATION",
+      "source": "node-bert",
+      "target": "node-bert-license",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/ai_assets/0/license_expression_id"
+        }
+      ]
+    },
+    {
+      "id": "edge-0011",
+      "type": "RESOURCE_SUPPORTED_BY_EVIDENCE",
+      "source": "node-bert",
+      "target": "node-bert-evidence",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/ai_assets/0/evidence_ids/0"
+        }
+      ]
+    },
+    {
+      "id": "edge-0012",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0000",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0000"
+        }
+      ]
+    },
+    {
+      "id": "edge-0013",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0001",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0001"
+        }
+      ]
+    },
+    {
+      "id": "edge-0014",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0002",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0002"
+        }
+      ]
+    },
+    {
+      "id": "edge-0015",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0003",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0003"
+        }
+      ]
+    },
+    {
+      "id": "edge-0016",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0004",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0004"
+        }
+      ]
+    },
+    {
+      "id": "edge-0017",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0005",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0005"
+        }
+      ]
+    },
+    {
+      "id": "edge-0018",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0006",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0006"
+        }
+      ]
+    },
+    {
+      "id": "edge-0019",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0007",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0007"
+        }
+      ]
+    },
+    {
+      "id": "edge-0020",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0008",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0008"
+        }
+      ]
+    },
+    {
+      "id": "edge-0021",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0009",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0009"
+        }
+      ]
+    },
+    {
+      "id": "edge-0022",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0010",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0010"
+        }
+      ]
+    },
+    {
+      "id": "edge-0023",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0011",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0011"
+        }
+      ]
+    },
+    {
+      "id": "edge-0024",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0012",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0012"
+        }
+      ]
+    },
+    {
+      "id": "edge-0025",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0013",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0013"
+        }
+      ]
+    },
+    {
+      "id": "edge-0026",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0014",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0014"
+        }
+      ]
+    },
+    {
+      "id": "edge-0027",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0015",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0015"
+        }
+      ]
+    },
+    {
+      "id": "edge-0028",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0016",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0016"
+        }
+      ]
+    },
+    {
+      "id": "edge-0029",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0017",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0017"
+        }
+      ]
+    },
+    {
+      "id": "edge-0030",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0018",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0018"
+        }
+      ]
+    },
+    {
+      "id": "edge-0031",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0019",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0019"
+        }
+      ]
+    },
+    {
+      "id": "edge-0032",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0020",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0020"
+        }
+      ]
+    },
+    {
+      "id": "edge-0033",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0021",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0021"
+        }
+      ]
+    },
+    {
+      "id": "edge-0034",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0022",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0022"
+        }
+      ]
+    },
+    {
+      "id": "edge-0035",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0023",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0023"
+        }
+      ]
+    },
+    {
+      "id": "edge-0036",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0024",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0024"
+        }
+      ]
+    },
+    {
+      "id": "edge-0037",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0025",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0025"
+        }
+      ]
+    },
+    {
+      "id": "edge-0038",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0026",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0026"
+        }
+      ]
+    },
+    {
+      "id": "edge-0039",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0027",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0027"
+        }
+      ]
+    },
+    {
+      "id": "edge-0040",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0028",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0028"
+        }
+      ]
+    },
+    {
+      "id": "edge-0041",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0029",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0029"
+        }
+      ]
+    },
+    {
+      "id": "edge-0042",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0030",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0030"
+        }
+      ]
+    },
+    {
+      "id": "edge-0043",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0031",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0031"
+        }
+      ]
+    },
+    {
+      "id": "edge-0044",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0032",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0032"
+        }
+      ]
+    },
+    {
+      "id": "edge-0045",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0033",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0033"
+        }
+      ]
+    },
+    {
+      "id": "edge-0046",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0034",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0034"
+        }
+      ]
+    },
+    {
+      "id": "edge-0047",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0035",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0035"
+        }
+      ]
+    },
+    {
+      "id": "edge-0048",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0036",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0036"
+        }
+      ]
+    },
+    {
+      "id": "edge-0049",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0037",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0037"
+        }
+      ]
+    },
+    {
+      "id": "edge-0050",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0038",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0038"
+        }
+      ]
+    },
+    {
+      "id": "edge-0051",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0039",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0039"
+        }
+      ]
+    },
+    {
+      "id": "edge-0052",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0040",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0040"
+        }
+      ]
+    },
+    {
+      "id": "edge-0053",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0041",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0041"
+        }
+      ]
+    },
+    {
+      "id": "edge-0054",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0042",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0042"
+        }
+      ]
+    },
+    {
+      "id": "edge-0055",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0043",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0043"
+        }
+      ]
+    },
+    {
+      "id": "edge-0056",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0044",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0044"
+        }
+      ]
+    },
+    {
+      "id": "edge-0057",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0045",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0045"
+        }
+      ]
+    },
+    {
+      "id": "edge-0058",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0046",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0046"
+        }
+      ]
+    },
+    {
+      "id": "edge-0059",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0047",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0047"
+        }
+      ]
+    },
+    {
+      "id": "edge-0060",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0048",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0048"
+        }
+      ]
+    },
+    {
+      "id": "edge-0061",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0049",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0049"
+        }
+      ]
+    },
+    {
+      "id": "edge-0062",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0050",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0050"
+        }
+      ]
+    },
+    {
+      "id": "edge-0063",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0051",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0051"
+        }
+      ]
+    },
+    {
+      "id": "edge-0064",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0052",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0052"
+        }
+      ]
+    },
+    {
+      "id": "edge-0065",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0053",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0053"
+        }
+      ]
+    },
+    {
+      "id": "edge-0066",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0054",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0054"
+        }
+      ]
+    },
+    {
+      "id": "edge-0067",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0055",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0055"
+        }
+      ]
+    },
+    {
+      "id": "edge-0068",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0056",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0056"
+        }
+      ]
+    },
+    {
+      "id": "edge-0069",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0057",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0057"
+        }
+      ]
+    },
+    {
+      "id": "edge-0070",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0058",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0058"
+        }
+      ]
+    },
+    {
+      "id": "edge-0071",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0059",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0059"
+        }
+      ]
+    },
+    {
+      "id": "edge-0072",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0060",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0060"
+        }
+      ]
+    },
+    {
+      "id": "edge-0073",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0061",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0061"
+        }
+      ]
+    },
+    {
+      "id": "edge-0074",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0062",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0062"
+        }
+      ]
+    },
+    {
+      "id": "edge-0075",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0063",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0063"
+        }
+      ]
+    },
+    {
+      "id": "edge-0076",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0064",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0064"
+        }
+      ]
+    },
+    {
+      "id": "edge-0077",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0065",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0065"
+        }
+      ]
+    },
+    {
+      "id": "edge-0078",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0066",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0066"
+        }
+      ]
+    },
+    {
+      "id": "edge-0079",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0067",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0067"
+        }
+      ]
+    },
+    {
+      "id": "edge-0080",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0068",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0068"
+        }
+      ]
+    },
+    {
+      "id": "edge-0081",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0069",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0069"
+        }
+      ]
+    },
+    {
+      "id": "edge-0082",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0070",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0070"
+        }
+      ]
+    },
+    {
+      "id": "edge-0083",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0071",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0071"
+        }
+      ]
+    },
+    {
+      "id": "edge-0084",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0072",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0072"
+        }
+      ]
+    },
+    {
+      "id": "edge-0085",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0073",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0073"
+        }
+      ]
+    },
+    {
+      "id": "edge-0086",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0074",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0074"
+        }
+      ]
+    },
+    {
+      "id": "edge-0087",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0075",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0075"
+        }
+      ]
+    },
+    {
+      "id": "edge-0088",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0076",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0076"
+        }
+      ]
+    },
+    {
+      "id": "edge-0089",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0077",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0077"
+        }
+      ]
+    },
+    {
+      "id": "edge-0090",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0078",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0078"
+        }
+      ]
+    },
+    {
+      "id": "edge-0091",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0079",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0079"
+        }
+      ]
+    },
+    {
+      "id": "edge-0092",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0080",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0080"
+        }
+      ]
+    },
+    {
+      "id": "edge-0093",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0081",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0081"
+        }
+      ]
+    },
+    {
+      "id": "edge-0094",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0082",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0082"
+        }
+      ]
+    },
+    {
+      "id": "edge-0095",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0083",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0083"
+        }
+      ]
+    },
+    {
+      "id": "edge-0096",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0084",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0084"
+        }
+      ]
+    },
+    {
+      "id": "edge-0097",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0085",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0085"
+        }
+      ]
+    },
+    {
+      "id": "edge-0098",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0086",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0086"
+        }
+      ]
+    },
+    {
+      "id": "edge-0099",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0087",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0087"
+        }
+      ]
+    },
+    {
+      "id": "edge-0100",
+      "type": "PROJECT_HAS_RESOURCE",
+      "source": "node-project",
+      "target": "node-component-0088",
+      "source_refs": [
+        {
+          "scan_id": "scn-p1-fixed-target-completed",
+          "pointer": "/components/cmp-fixed-0088"
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "view_complete": true,
+    "scope": "all",
+    "node_count": 100,
+    "edge_count": 101,
+    "scan_gaps": []
+  },
+  "capacity": {
+    "max_nodes": 20000,
+    "max_edges": 60000
+  },
+  "provenance": {
+    "producer": {
+      "name": "openguard-p1-integration-fixture",
+      "version": "1.0.0"
+    },
+    "source_refs": [
+      {
+        "scan_id": "scn-p1-fixed-target-completed",
+        "revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+        "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+        "input_hash": "e8e1fabd6f93a3d5ada1609cf57044f0e6245704515456916a5b2e886c5794ad",
+        "inventory_hash": "8d70aa1a3bf6f02b7366d1b2f30ba6f927e2880c83ed77e17fce15a10757f6a2",
+        "status": "completed",
+        "registry_revision": 2
+      }
+    ],
+    "assessment_refs": [
+      {
+        "assessment_id": "asm-p1-fixed-notice-review",
+        "version": 1,
+        "scan_id": "scn-p1-fixed-target-completed",
+        "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+        "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+        "rule_version": "assessment-1.0-facts2:2026.09.2",
+        "formal": true
+      }
+    ],
+    "generated_at": "2026-09-21T14:30:00Z",
+    "algorithm_version": "resource-graph/1",
+    "parameters_hash": "40f1c17a362afd01fbba258d95d7fb7009109bff07aa1bc338f5b0d0615b7b3b"
+  }
+}

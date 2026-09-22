@@ -1,0 +1,2682 @@
+{
+  "schema_version": "openguard.notice-license-facts/3",
+  "package_status": "draft_facts_only",
+  "generated_at": "2026-09-22T09:30:00Z",
+  "producer": {
+    "name": "openguard-b03-b04-inventory-generator",
+    "version": "3.0.0"
+  },
+  "source_inputs": [
+    {
+      "path": "LICENSE",
+      "source_file_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1"
+    },
+    {
+      "path": "backend/java/pom.xml",
+      "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1"
+    },
+    {
+      "path": "frontend/package.json",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+      "source_file_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+      "source_revision": "resource-profile-v1"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "evidence.root.license",
+      "kind": "repository_file",
+      "locator": "LICENSE",
+      "source_path": "LICENSE",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "whole_file",
+      "source_file_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "selected_content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.fastapi",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.dependencies[fastapi]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "8d4541f2b94805fd330493f77ec273a03deb89a623d6408b919bcb2e07af9d72",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.packaging",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.dependencies[packaging]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "b0ed3d65d95fc15ccc8dc5e02e997f2de85358cdcd15c0fdb1c0a4de13a25f97",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.pydantic",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.dependencies[pydantic]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "f7357a287249977e5e98778e77cb343901a033ba817758e4a7c64f2837df096b",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.python-multipart",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.dependencies[python-multipart]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "994d37da08546ddcd189ee201f24b7cce420186a8d7cdb6a61be43e3ffccb04f",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.uvicorn",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.dependencies[uvicorn]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "8b180c7986941523ee77737c2dcc4f2a568f1351f41fb4a85711104ca7b56a7b",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.httpx2",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.optional-dependencies.dev[httpx2]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "1900e0a7a5a3fa89b64470f7cf07b465372233cf45c24e4c72155cfa4cac1c98",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.jsonschema",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.optional-dependencies.dev[jsonschema]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "26c5a68f7225b548eda60ab6442a39deb2a532775129951916c67cf84d01be7b",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.python.pytest",
+      "kind": "repository_file",
+      "locator": "backend/pyproject.toml#project.optional-dependencies.dev[pytest]",
+      "source_path": "backend/pyproject.toml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "toml_declaration",
+      "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+      "selected_content_sha256": "59c2cfda3ce5d2e0c764f970febd72f2e945d11be273986db54e59f6f3fb547f",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.java.spring-boot-starter-web",
+      "kind": "repository_file",
+      "locator": "backend/java/pom.xml#dependency[groupId=org.springframework.boot;artifactId=spring-boot-starter-web]",
+      "source_path": "backend/java/pom.xml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "xml_dependency",
+      "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+      "selected_content_sha256": "666701249b83228c54bb2e024ea094014deef39fcbaf087138bf939eaa282eb2",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.java.jackson-databind",
+      "kind": "repository_file",
+      "locator": "backend/java/pom.xml#dependency[groupId=com.fasterxml.jackson.core;artifactId=jackson-databind]",
+      "source_path": "backend/java/pom.xml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "xml_dependency",
+      "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+      "selected_content_sha256": "7edc56060e48d63e66b499ef0ab124edca32475dc15611cae19f7db21e7b6365",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.java.json-schema-validator",
+      "kind": "repository_file",
+      "locator": "backend/java/pom.xml#dependency[groupId=com.networknt;artifactId=json-schema-validator]",
+      "source_path": "backend/java/pom.xml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "xml_dependency",
+      "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+      "selected_content_sha256": "c30bf92ab4547fe519cb1309d29073bb8696a6ea3abef137df5c8b1d8cee85cb",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.java.spring-boot-starter-test",
+      "kind": "repository_file",
+      "locator": "backend/java/pom.xml#dependency[groupId=org.springframework.boot;artifactId=spring-boot-starter-test]",
+      "source_path": "backend/java/pom.xml",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "xml_dependency",
+      "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+      "selected_content_sha256": "d4379a87a8daf53abeac32b81ce0b0619123214bfe334fdf83c00f3fa6da69d4",
+      "selected_json_pointer": null,
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.@tailwindcss--vite",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/dependencies/@tailwindcss~1vite",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde",
+      "selected_json_pointer": "/dependencies/@tailwindcss~1vite",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.react",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/dependencies/react",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+      "selected_json_pointer": "/dependencies/react",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.react-dom",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/dependencies/react-dom",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+      "selected_json_pointer": "/dependencies/react-dom",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.tailwindcss",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/dependencies/tailwindcss",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde",
+      "selected_json_pointer": "/dependencies/tailwindcss",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.@types--react",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/devDependencies/@types~1react",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+      "selected_json_pointer": "/devDependencies/@types~1react",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.@types--react-dom",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/devDependencies/@types~1react-dom",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+      "selected_json_pointer": "/devDependencies/@types~1react-dom",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.typescript",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/devDependencies/typescript",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "3af9aa1515fb306719690d68faeeba3baa17e906ed76725825dc7cf2755f00d4",
+      "selected_json_pointer": "/devDependencies/typescript",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.vite",
+      "kind": "repository_file",
+      "locator": "frontend/package.json#/devDependencies/vite",
+      "source_path": "frontend/package.json",
+      "source_url": null,
+      "source_revision": "a34c29f1773480ea498f28ac19f8dedd0d96e8e1",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "2b25487b72c9ea7a8328bea959487b5dfe3efe583eb2c25713e8f339b34303fc",
+      "selected_json_pointer": "/devDependencies/vite",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-model-gpt2.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json",
+      "source_url": "https://huggingface.co/api/models/openai-community/gpt2",
+      "source_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9",
+      "selected_content_sha256": "78198e7ab262449ad56e4ca48e10a36f98dda6fd5a377875dd7425afcca2312b",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-model-bert-base-uncased.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json",
+      "source_url": "https://huggingface.co/api/models/google-bert/bert-base-uncased",
+      "source_revision": "86b5e0934494bd15c9632b12f734a8a67f723594",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc",
+      "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-model-roberta-base.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json",
+      "source_url": "https://huggingface.co/api/models/FacebookAI/roberta-base",
+      "source_revision": "e2da8e2f811d1448a5b465c236feacd80ffbac7b",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f",
+      "selected_content_sha256": "78198e7ab262449ad56e4ca48e10a36f98dda6fd5a377875dd7425afcca2312b",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-model-distilbert-base-uncased.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json",
+      "source_url": "https://huggingface.co/api/models/distilbert/distilbert-base-uncased",
+      "source_revision": "12040accade4e8a0f71eabdb258fecc2e7e948be",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916",
+      "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-model-all-minilm-l6-v2.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json",
+      "source_url": "https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2",
+      "source_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86",
+      "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-dataset-imdb.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json",
+      "source_url": "https://huggingface.co/api/datasets/stanfordnlp/imdb",
+      "source_revision": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766",
+      "selected_content_sha256": "c8c317de489c9971a7dbb62622af5caf41de5c0c20095c1ac0f1ac5fda104d6d",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-dataset-squad.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json",
+      "source_url": "https://huggingface.co/api/datasets/rajpurkar/squad",
+      "source_revision": "7b6d24c440a36b6815f21b70d25016731768db1f",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648",
+      "selected_content_sha256": "f47afee7611dc74d2f76585dce91fbcd78899496e40ab9d868cdf5a9e2c9db3d",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-dataset-glue.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json",
+      "source_url": "https://huggingface.co/api/datasets/nyu-mll/glue",
+      "source_revision": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06",
+      "selected_content_sha256": "c8c317de489c9971a7dbb62622af5caf41de5c0c20095c1ac0f1ac5fda104d6d",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-dataset-numinamath-tir.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json",
+      "source_url": "https://huggingface.co/api/datasets/AI-MO/NuminaMath-TIR",
+      "source_revision": "77a91d7b7a1a98ac4b1beb7d86c09d156b935dcd",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5",
+      "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "evidence_id": "evidence.ai.hf-dataset-fineweb.declared-license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json#/payload/cardData/license",
+      "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json",
+      "source_url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb",
+      "source_revision": "9bb295ddab0e05d785b879661af7260fed5140fc",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795",
+      "selected_content_sha256": "5857b430bff9459a18ccd4bec31fad9d3711b90f37f5a263fbe21d5eab9ce1f9",
+      "selected_json_pointer": "/payload/cardData/license",
+      "captured_at": "2026-09-22T09:30:00Z",
+      "producer": {
+        "name": "openguard-b03-b04-inventory-generator",
+        "version": "3.0.0"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "fact.root.openguard",
+      "subject": {
+        "category": "root_project",
+        "canonical_id": "openguard",
+        "display_name": "OpenGuard",
+        "version": null,
+        "usage_scope": "root_project"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.root.license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "text_observed",
+          "evidence_ids": [
+            "evidence.root.license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_ROOT_NOTICE_FILE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_ROOT_COPYRIGHT_ASSERTION_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.fastapi",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:fastapi",
+        "display_name": "fastapi",
+        "version": "0.141.1",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.fastapi"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.packaging",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:packaging",
+        "display_name": "packaging",
+        "version": "26.3",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.packaging"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.pydantic",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:pydantic",
+        "display_name": "pydantic",
+        "version": "2.13.4",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.pydantic"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.python-multipart",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:python-multipart",
+        "display_name": "python-multipart",
+        "version": "0.0.32",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.python-multipart"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.uvicorn",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:uvicorn",
+        "display_name": "uvicorn",
+        "version": "0.52.4",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.uvicorn"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.httpx2",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:httpx2",
+        "display_name": "httpx2",
+        "version": "2.12.0",
+        "usage_scope": "development"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.httpx2"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.jsonschema",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:jsonschema",
+        "display_name": "jsonschema",
+        "version": "4.26.0",
+        "usage_scope": "development"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.jsonschema"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.python.pytest",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pypi:pytest",
+        "display_name": "pytest",
+        "version": "8.4.2",
+        "usage_scope": "development"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.pytest"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.java.spring-boot-starter-web",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "maven:org.springframework.boot:spring-boot-starter-web",
+        "display_name": "spring-boot-starter-web",
+        "version": null,
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.spring-boot-starter-web"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.java.jackson-databind",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "maven:com.fasterxml.jackson.core:jackson-databind",
+        "display_name": "jackson-databind",
+        "version": null,
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.jackson-databind"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.java.json-schema-validator",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "maven:com.networknt:json-schema-validator",
+        "display_name": "json-schema-validator",
+        "version": "2.0.4",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.json-schema-validator"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.java.spring-boot-starter-test",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "maven:org.springframework.boot:spring-boot-starter-test",
+        "display_name": "spring-boot-starter-test",
+        "version": null,
+        "usage_scope": "test"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.spring-boot-starter-test"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.@tailwindcss--vite",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:@tailwindcss/vite",
+        "display_name": "@tailwindcss/vite",
+        "version": "^4.3.0",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.@tailwindcss--vite"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.react",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:react",
+        "display_name": "react",
+        "version": "^19.2.0",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.react"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.react-dom",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:react-dom",
+        "display_name": "react-dom",
+        "version": "^19.2.0",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.react-dom"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.tailwindcss",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:tailwindcss",
+        "display_name": "tailwindcss",
+        "version": "^4.3.0",
+        "usage_scope": "runtime"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.tailwindcss"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.@types--react",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:@types/react",
+        "display_name": "@types/react",
+        "version": "^19.2.0",
+        "usage_scope": "development"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.@types--react"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.@types--react-dom",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:@types/react-dom",
+        "display_name": "@types/react-dom",
+        "version": "^19.2.0",
+        "usage_scope": "development"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.@types--react-dom"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.typescript",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:typescript",
+        "display_name": "typescript",
+        "version": "^5.9.0",
+        "usage_scope": "development"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.typescript"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.dependency.npm.vite",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "npm:vite",
+        "display_name": "vite",
+        "version": "^8.1.0",
+        "usage_scope": "development"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.vite"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-model-gpt2",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "model:openai-community/gpt2",
+        "display_name": "openai-community/gpt2",
+        "version": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+        "usage_scope": "model"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-gpt2.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-model-gpt2.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-model-bert-base-uncased",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "model:google-bert/bert-base-uncased",
+        "display_name": "google-bert/bert-base-uncased",
+        "version": "86b5e0934494bd15c9632b12f734a8a67f723594",
+        "usage_scope": "model"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-bert-base-uncased.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-model-bert-base-uncased.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-model-roberta-base",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "model:FacebookAI/roberta-base",
+        "display_name": "FacebookAI/roberta-base",
+        "version": "e2da8e2f811d1448a5b465c236feacd80ffbac7b",
+        "usage_scope": "model"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-roberta-base.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-model-roberta-base.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-model-distilbert-base-uncased",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "model:distilbert/distilbert-base-uncased",
+        "display_name": "distilbert/distilbert-base-uncased",
+        "version": "12040accade4e8a0f71eabdb258fecc2e7e948be",
+        "usage_scope": "model"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-distilbert-base-uncased.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-model-distilbert-base-uncased.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-model-all-minilm-l6-v2",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "model:sentence-transformers/all-MiniLM-L6-v2",
+        "display_name": "sentence-transformers/all-MiniLM-L6-v2",
+        "version": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+        "usage_scope": "model"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-all-minilm-l6-v2.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-model-all-minilm-l6-v2.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-imdb",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "dataset:stanfordnlp/imdb",
+        "display_name": "stanfordnlp/imdb",
+        "version": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+        "usage_scope": "dataset"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-imdb.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-imdb.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-squad",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "dataset:rajpurkar/squad",
+        "display_name": "rajpurkar/squad",
+        "version": "7b6d24c440a36b6815f21b70d25016731768db1f",
+        "usage_scope": "dataset"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-squad.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-squad.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-glue",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "dataset:nyu-mll/glue",
+        "display_name": "nyu-mll/glue",
+        "version": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c",
+        "usage_scope": "dataset"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-glue.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-glue.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-numinamath-tir",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "dataset:AI-MO/NuminaMath-TIR",
+        "display_name": "AI-MO/NuminaMath-TIR",
+        "version": "77a91d7b7a1a98ac4b1beb7d86c09d156b935dcd",
+        "usage_scope": "dataset"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-numinamath-tir.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-numinamath-tir.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-fineweb",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "dataset:HuggingFaceFW/fineweb",
+        "display_name": "HuggingFaceFW/fineweb",
+        "version": "9bb295ddab0e05d785b879661af7260fed5140fc",
+        "usage_scope": "dataset"
+      },
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-fineweb.declared-license"
+      ],
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "relationships": {
+        "license": {
+          "state": "provider_declared_unverified",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-fineweb.declared-license"
+          ]
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": []
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": []
+        }
+      },
+      "gaps": [
+        {
+          "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        },
+        {
+          "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "severity": "unknown",
+          "evidence_ids": []
+        }
+      ],
+      "review": {
+        "required": true,
+        "reason": "authorization_and_legal_interpretation_out_of_scope"
+      }
+    }
+  ],
+  "report_v3_rows": [
+    {
+      "fact_id": "fact.root.openguard",
+      "subject_id": "openguard",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.root.license"
+      ],
+      "relationship_states": {
+        "license": "text_observed",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_ROOT_NOTICE_FILE_NOT_OBSERVED",
+        "GAP_ROOT_COPYRIGHT_ASSERTION_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.fastapi",
+      "subject_id": "pypi:fastapi",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.fastapi"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.packaging",
+      "subject_id": "pypi:packaging",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.packaging"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.pydantic",
+      "subject_id": "pypi:pydantic",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.pydantic"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.python-multipart",
+      "subject_id": "pypi:python-multipart",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.python-multipart"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.uvicorn",
+      "subject_id": "pypi:uvicorn",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.uvicorn"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.httpx2",
+      "subject_id": "pypi:httpx2",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.httpx2"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.jsonschema",
+      "subject_id": "pypi:jsonschema",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.jsonschema"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.python.pytest",
+      "subject_id": "pypi:pytest",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.python.pytest"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.java.spring-boot-starter-web",
+      "subject_id": "maven:org.springframework.boot:spring-boot-starter-web",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.spring-boot-starter-web"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.java.jackson-databind",
+      "subject_id": "maven:com.fasterxml.jackson.core:jackson-databind",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.jackson-databind"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.java.json-schema-validator",
+      "subject_id": "maven:com.networknt:json-schema-validator",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.json-schema-validator"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.java.spring-boot-starter-test",
+      "subject_id": "maven:org.springframework.boot:spring-boot-starter-test",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.java.spring-boot-starter-test"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.@tailwindcss--vite",
+      "subject_id": "npm:@tailwindcss/vite",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.@tailwindcss--vite"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.react",
+      "subject_id": "npm:react",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.react"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.react-dom",
+      "subject_id": "npm:react-dom",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.react-dom"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.tailwindcss",
+      "subject_id": "npm:tailwindcss",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.tailwindcss"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.@types--react",
+      "subject_id": "npm:@types/react",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.@types--react"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.@types--react-dom",
+      "subject_id": "npm:@types/react-dom",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.@types--react-dom"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.typescript",
+      "subject_id": "npm:typescript",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.typescript"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.dependency.npm.vite",
+      "subject_id": "npm:vite",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.dependency.npm.vite"
+      ],
+      "relationship_states": {
+        "license": "gap",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+        "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+        "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-model-gpt2",
+      "subject_id": "model:openai-community/gpt2",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-gpt2.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-model-bert-base-uncased",
+      "subject_id": "model:google-bert/bert-base-uncased",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-bert-base-uncased.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-model-roberta-base",
+      "subject_id": "model:FacebookAI/roberta-base",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-roberta-base.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-model-distilbert-base-uncased",
+      "subject_id": "model:distilbert/distilbert-base-uncased",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-distilbert-base-uncased.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-model-all-minilm-l6-v2",
+      "subject_id": "model:sentence-transformers/all-MiniLM-L6-v2",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-model-all-minilm-l6-v2.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-imdb",
+      "subject_id": "dataset:stanfordnlp/imdb",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-imdb.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-squad",
+      "subject_id": "dataset:rajpurkar/squad",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-squad.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-glue",
+      "subject_id": "dataset:nyu-mll/glue",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-glue.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-numinamath-tir",
+      "subject_id": "dataset:AI-MO/NuminaMath-TIR",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-numinamath-tir.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    },
+    {
+      "fact_id": "fact.ai.hf-dataset-fineweb",
+      "subject_id": "dataset:HuggingFaceFW/fineweb",
+      "authorization_status": "pending",
+      "license_expression_id": null,
+      "fact_provenance_evidence_ids": [
+        "evidence.ai.hf-dataset-fineweb.declared-license"
+      ],
+      "relationship_states": {
+        "license": "provider_declared_unverified",
+        "notice": "gap",
+        "copyright": "gap"
+      },
+      "gap_codes": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED"
+      ]
+    }
+  ]
+}

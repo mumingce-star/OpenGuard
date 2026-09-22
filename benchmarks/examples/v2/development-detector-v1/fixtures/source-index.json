@@ -1,0 +1,1 @@
+{"schema":"openguard.b05.source-index/1","source_index_id":"art_source_index","split":"dev","source_commit":"a34c29f","sources":[{"source_id":"src_b03b04_v2","path":"tests/fixtures/notice-license-facts-v2/facts.json","commit":"a34c29f","sha256":"36fa84ded555530848ea47d88cfa28dec1414653f87d00664cc0ead22c42e95c","redistribution":"repository_allowed"}]}

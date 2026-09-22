@@ -10,6 +10,7 @@ from .python_manifest import (
 )
 from .python_p0_mapper import MAPPER_SCHEMA_VERSION, PythonP0MappingResult, map_python_manifest_result
 from .javascript_manifest import JavascriptParseStatus, JavascriptManifestParseResult, parse_javascript_manifests
+from .huggingface_metadata import HuggingFaceMetadataParser
 from .javascript_p0_mapper import JavascriptP0MappingResult, map_javascript_manifest_result
 from .external_tools import (
     ComponentMergeResult,
@@ -34,6 +35,7 @@ __all__ = [
     "map_python_manifest_result",
     "JavascriptParseStatus",
     "JavascriptManifestParseResult",
+    "HuggingFaceMetadataParser",
     "parse_javascript_manifests",
     "JavascriptP0MappingResult",
     "map_javascript_manifest_result",

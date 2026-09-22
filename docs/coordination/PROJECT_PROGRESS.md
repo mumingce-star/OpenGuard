@@ -1316,3 +1316,82 @@ AMENDMENT：A07-1已由负责人集成至944a00e；此前本地未提交描述�
 | 剩余范围 | 真实B01/HF、NOTICE、人工接纳、页面、Report/Profile与跨平台/生产门禁 | 分属负责人/cz/xzb后续授权，本轮STOP |
 
 竞赛完整作品与获奖门禁仍需既有人工Bench、材料、真实授权/异机/对比证据，不从本轮回归编造完成率。
+
+## 2026-09-21 P1 固定联验样本包 v1
+
+| 范围 | 本轮结果 | 验证 / 发布状态 / 下一步 |
+|---|---|---|
+| 两个 revision 与扫描状态 | 同一 `github.com/mumingce-star/OpenGuard`，固定祖先 commit `23fae26485db2fe3449ec8e7cccc3af64a487002` 为 partial、后继 commit `e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1` 为 completed | Git 对象存在及祖先关系由生成器和测试复算；本地未提交、未推送 |
+| Assessment / Remediation | 根 NOTICE gap 形成真实 `review_required` Finding；复用规则 `LIC-APACHE-2.0-NOTICE` 形成 `pending` Obligation；提供固定 derive 请求、来源 hash 与预期 Task | Finding→Assessment引用→Obligation→Task `/obligations/0` 闭包通过；不构成法律结论 |
+| Graph / History | 静态 100、300、500 节点 Graph；205 条 History，均绑定两个固定 commit、input/facts/inventory hash | Node 离线测试 3/3 通过；pytest 契约测试已提交但本机 Python 解释器缺失，未在本机执行 |
+| Report V2 输入 | 引用真实 HF Resource Profile 与 NOTICE/license facts；含 Apache NOTICE、MIT/BSD 署名观察和 gap | `authorization=pending`、`license_expression_id=null`、禁止自动填表达式；只提供草稿输入，无 Report V2 快照和下载 API |
+| 可复算性 | `manifest.json` 记录源文件工作树 SHA-256、固定 commit blob SHA-256、全部产物 SHA-256、源 commit 与预期计数 | `node generate.mjs --check` 与 Node test 通过；生成器仅用 Node 标准库 |
+
+当前可独立运行/演示：既有扫描、Assessment、Task、Report V2 后端和隔离合成联调不变；本批新增无需服务即可演示的固定 P1 数据链与完整性复算。尚未具备：本包没有最终 Report V2 快照/下载 API、真实生产扫描回执、前端浏览器联验、Python 本机 Schema 回归和 GitHub 发布。可报名/可参赛仍需关闭材料清单、规则核对与基本异机运行门禁；可提交完整作品还需真实 Profile/NOTICE 生产 reader、前端端到端与发布回执；获奖竞争力还需人工金标准、可复现对比/消融及用户效果证据。无统一分母，不给出完成百分比。
+
+## 2026-09-21 后端 B B03/B04 NOTICE/license facts v2
+
+| 范围 | 本轮结果 | 验证 / 发布状态 / 下一步 |
+|---|---|---|
+| B03 License 关系事实 | 在保持 v1 字节不变的前提下新增 v2；区分 `text_observed` 与 `provider_declared_unverified`，关系适用性保持 `pending_review`，正式许可证表达式始终为空 | Node v2 语义测试 3/3；本地未提交、未推送，待负责人 Review |
+| B04 NOTICE 内容事实 | 新增机器字段 `authorization_status=pending`、逐 Evidence 采集/producer、根 commit/source URL、source/container/selected-value 三层 hash；缺证据继续以 gap 表达 | Java v1+v2 Schema/闭包/hash 测试 4/4；不把缺 NOTICE 自动判为违规 |
+| Report V2 草稿输入 | `report_v2_rows` 由结构化 facts 确定性生成并逐字段校验，消除手工双份漂移；只提供稳定事实和草稿行 | 既有 P1 固定联验回归 3/3；未实现不可变 NoticeDraft reader/store/API 或最终 Report V2 快照 |
+| 协作边界 | 未修改并行 B01 HF parser、公共 P1 Schema、生产 factory、Profile/Report 服务或 P1 联验包 | B01 仍在途；B02/B05/B06/B07及 A 线生产接入分别继续 |
+
+当前可独立运行/演示：无需网络或服务即可从固定 v1 来源复算 v2 NOTICE/license facts，并用 Node 与 Java 双路径验证引用闭包、保守授权语义和 hash 层级。尚未具备：完整实际依赖/AI资源库存、真人适用性裁决、不可变 NoticeDraft 生产存储与 Report V2 reader/API、正式 Bench/result 绑定及固定语料性能分布。可报名/可参赛仍需材料、规则和异机基本运行门禁；可提交完整作品还需真实 B01/B02 数据链、A 线 NOTICE/Profile 接入、前端端到端和发布回执；具备获奖竞争力还需 B05/B06 人工金标准、FN治理及可复现对比/消融证据。无统一分母，不给出完成百分比。
+
+## 2026-09-21 后端 B B01 Hugging Face metadata parser
+
+| 范围 | 本轮结果 | 验证 / 发布状态 / 下一步 |
+|---|---|---|
+| B01 parser | 新增纯离线 `HuggingFaceMetadataParser`，严格绑定 provider/kind/identity/descriptor/body hash/revision；解析 model/dataset 的身份、可见性、gate、disabled、revision 与原始 license 声明 | parser 与既有 `metadata-parser-port/1` 兼容；本地未提交、未推送 |
+| 保守语义 | 总状态保持 pending；不生成 `license_expression_id`、authorization、Evidence、Assessment 或 Report；冲突/缺失/不支持值转稳定 gap，未知字段与完整 raw response 不外泄 | Sol 后续独立语义 Review；不能由测试数推断法律或授权结论 |
+| 固定样本 | 复用既有 5 model + 5 dataset 官方最小快照和 3 个合成反例，不新增项目运行依赖 | B01 单元/安全 32/32、解析器语句覆盖率 87%；连同直接依赖的 metadata transport 共 131/131；coverage 仅临时安装到系统临时目录 |
+| 平台回归 | `compileall` 与 scoped `git diff --check` 通过；扩大到旧 manifest scanner 套件时为 246 passed、1 skipped、64 failed | 64 项均因 Windows 明确拒绝 POSIX `SecureRoot` 能力，非 B01 回归；交跨平台生产验收包处理 |
+| 生产接入 | 本批未修改默认 factory、Profile/Report 服务、公共 Schema、sidecar 或服务生命周期 | A/Root 负责显式 opt-in 工厂接线与 Profile/Report 冻结引用；Luna负责真实资源和异机独立验收；xzb随后接页面 |
+
+当前可独立运行/演示：既有项目能力保持，并新增无需网络/服务即可复算的真实 provider 快照解析与失败关闭演示。尚未具备：B01 默认生产接线、授权网络下的真实 HF transport 回执、Profile/Report 最终集成、前端端到端以及 Linux 生产镜像/Windows 支持边界的跨平台签收。可报名/可参赛仍需规则、材料和基本异机运行门禁；可提交完整作品还需上述生产链路、真实资源、页面与发布回执；具备获奖竞争力还需 B05/B06 Gold/FN 治理、固定语料性能、对比/消融和用户效果证据。无统一分母，不给出完成百分比。
+
+## 2026-09-22 后端 B B02 License/NOTICE facts detector
+
+| 范围 | 本轮结果 | 验证 / 发布状态 / 下一步 |
+|---|---|---|
+| B02 候选检测 | 新增纯内存 `detect_license_notice_candidates`，从 B03/B04 v2 facts 仅生成 gap 与 provider声明未验证的 `review_required` 候选；稳定携带 fact、canonical ID、JSON Pointer、Evidence引用 | 单元/安全测试已编写；本机 Python 3.12 入口失效，未执行 pytest，待可用解释器复验 |
+| 保守边界 | 只接收封闭 v2 facts 结构；非pending授权、非空expression、悬空Evidence、重复gap/fact及未知字段均拒绝；不创建 Formal Assessment/Task/NoticeDraft/Report | Node B03/B04 v2 3/3、P1 v1 3/3通过；Java Bench+NOTICE 19/19通过 |
+| B05/B06/B07 | 既有 Bench 2.0离线manifest仍可验证；真人Gold/FN治理与固定语料性能没有伪造结果 | B05 Java定向19/19；B06/B07仍待真人回执与实测 |
+| 协作边界 | 未修改 P1 v1 固定产物、并行 B01 scanner、公共Schema或A线服务 | 本地未提交、未推送；待Python环境恢复、独立Review和发布 |
+
+当前可独立运行/演示：B01快照解析、B03/B04 facts复算、B05 Bench manifest与B02候选检测代码均可离线组成后端B事实链。尚未具备：本机B02 pytest回执、完整资源库存、正式Bench result、真人Gold/FN治理、性能分布、A线不可变NoticeDraft/Report绑定及生产API。可报名/可参赛仍需材料、规则与异机基本运行；可提交完整作品仍需上述事实链生产接入、前端端到端和发布回执；获奖竞争力仍需人工基准、性能/对比/消融与用户效果证据。无统一分母，不给出完成百分比。
+
+### 2026-09-22 后端 B 总览与本地验收回填
+
+后端 B 的单一实施索引已整理至 `docs/p1/b-backend-work-packages.md`：B01、B02、B03/B04、B05、B06、B07 的边界、现有交付、关闭条件、责任人与依赖顺序均已列明。B01+B02 联合 Python 回归 48/48 通过；B02 unit/security 16/16、语句覆盖率85%；B02+B03/B04+P1固定 Node 链路7/7通过；B05 Bench 与 NOTICE v1/v2 Maven定向测试离线成功。此前记录的“B02 pytest未执行”已由既有 AMENDMENT 关闭，本轮再次复验。
+
+本机临时依赖目录的 `h11` 包目前损坏为不含 `Request`/`ProtocolError` 的命名空间，故 metadata transport 联合套件出现53项环境失败；这不是 B01/B02 代码失败，未通过改产品或放宽断言掩盖。Root/环境负责人需重建隔离、锁定的 Python 依赖环境后复跑该套件。B06真人 Gold/FN、B07性能实测、真实资源独立验收、A线生产接入、前端和GitHub发布仍未完成。
+
+### 2026-09-22 B02 Hash/Pointer 失败关闭补强
+
+AMENDMENT：上一段“本机 B02 pytest 回执未具备”已关闭。B02 现在要求调用方提供外部固定的 facts canonical SHA-256；输出分为 17 个 Finding 候选与 0 个 Obligation 候选，并为每项固定 package/fact Hash、fact JSON Pointer及上下文 Evidence 对象 Pointer和source/container/selected-content Hash。完整对象未知字段、Hash/Pointer异常、策略提升、Report row闭包漂移、悬空引用、非pending授权和非空许可证表达式均失败关闭。gap继续只是`review_required`且`confirmed_violation=false`；provider声明不升级为适用许可证或授权；没有已验证适用表达式时不得生成Obligation候选。
+
+验证：B02 unit/security 16/16通过；detectors兼容回归161/161通过；Node B02+B03/B04+P1固定包7/7通过；Java NOTICE v2定向1/1通过；compileall与scoped diff-check通过。新增固定预期 `tests/fixtures/p1-integration-b-v1/expected.json`，source package canonical Hash=`9cdcb294c7e46ce57a2e3b4a92e5693439dbc6b82f15e138b61b6cc6df172577`。本批仍是本地未提交候选，未接A线Formal Assessment/Task/NoticeDraft/Report API，未完成B05正式result、B06真人Gold/FN、B07性能分布或独立异机签收。
+
+## 2026-09-22：P0B03/B04 真实事实库存 v3（本地完成，待审阅/发布）
+
+- 已完成：新增 `openguard.notice-license-facts/3` 离线事实包，覆盖根 LICENSE、Python/Java/npm 真实直接依赖与 B01 固定 Hugging Face 资源，共 31 facts、31 Evidence；每项有来源、粒度化 SHA-256、locator、必要时的 JSON Pointer、采集时间和 producer/version。
+- 语义门禁：全体授权均为 `pending`、正式 expression 均为 `null`；根 LICENSE 仅文本观察，provider license 仅未验证声明；gap（包括缺 NOTICE/copyright）不是违规。v3 不改变 B02 的 v2 输入契约。
+- 验证：生成漂移检查、Node 4/4、Java v3 Draft 2020-12 定向测试通过；未启动服务、未联网、未提交或推送。
+- 未完成：上游许可证/NOTICE/权属正文采集及人工复核、v3 消费适配器冻结、Luna 独立篡改/未知结构验收、B05/B06/B07、生产绑定与发布。
+
+## 2026-09-22：P1B01 解析覆盖扩展（本地完成，待独立验收/发布）
+
+- 已完成：新增 resource-profile-v2 固定离线包（2 model、2 dataset、3 个字段缺失/冲突/不支持值反例），保留 v1 不变；新增来源质量验证，严格绑定 API target、UTC 采集时间、正整数 body size、小写 SHA-256、revision 与 revision mode。
+- 语义门禁：解析只输出 `ParsedMetadataObservation` 的 pending 字段和 coverage gap；来源绑定异常统一 `metadata_invalid`，字段可解析但不完整/冲突时不猜测。无授权、Assessment、Report、正式 license expression 或 raw response 输出。
+- 验证：B01 unit/security 定向 45/45、`compileall`、`git diff --check` 通过；未启动服务、未联网、未提交或推送。
+- 未完成：Luna 对 v2 fixture 的独立篡改/异机验收；真实 transport 新观察回执、A 线 opt-in 接线、Profile/Report 冻结消费仍不属于本项。
+
+## 2026-09-22：P1B05 development Bench 执行输入（本地完成，非正式评测）
+
+- 已完成：新增固定 detector development 输入集，包含 source index、detector 描述、输入、policy、config、prediction、result 与 placeholder gold。每个 artifact 由 Bench manifest 固定大小/SHA-256，payload 绑定 source commit、source SHA、dev split 与来源索引。
+- 严格限制：prediction/result 都是 `not_executed`，metrics 为 `null`，`formal_metrics_claimed=false`；Bench CLI 仅推导 `development`。没有准确率、召回率、F1、真人 Gold 或 reportable 声明。
+- 验证：Node 输入格式/Hash 2/2，Bench CLI 对该 manifest 输出 valid + development；Java Bench 定向测试在受控环境通过。未联网、未执行 detector、未启动服务、未写 Assessment/Report、未提交或推送。
+- 未完成：真实 detector 运行产物、B06 人工 Gold/FN 治理、不可变的新 revision、独立验收及高等级资格。

@@ -1,0 +1,42 @@
+{
+  "schema_version": "openguard.p1-fixed-scans/1",
+  "project_key": "github.com/mumingce-star/OpenGuard",
+  "items": [
+    {
+      "scan_id": "scn-p1-fixed-base-partial",
+      "revision": "23fae26485db2fe3449ec8e7cccc3af64a487002",
+      "facts_hash": "45e2f4978adb0827b8650473ba9cb6f5044c856d7f5134e02f03b3845e6ce87e",
+      "input_hash": "ba6cf60df4fcec662812fa4a8b133e3ff190b7b2245e3cb3c707544ebbdc8549",
+      "inventory_hash": "16a3df902ac241bd56a56401720230baef5b45590d9fd300f6fa003f2d6bfcde",
+      "status": "partial",
+      "registry_revision": 1,
+      "coverage_gaps": [
+        "NOTICE facts were not present at this revision"
+      ]
+    },
+    {
+      "scan_id": "scn-p1-fixed-target-completed",
+      "revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+      "input_hash": "e8e1fabd6f93a3d5ada1609cf57044f0e6245704515456916a5b2e886c5794ad",
+      "inventory_hash": "8d70aa1a3bf6f02b7366d1b2f30ba6f927e2880c83ed77e17fce15a10757f6a2",
+      "status": "completed",
+      "registry_revision": 2,
+      "coverage_gaps": [],
+      "findings": [
+        {
+          "id": "finding.root.notice-missing",
+          "status": "review_required",
+          "severity": "medium",
+          "code": "GAP_ROOT_NOTICE_MISSING",
+          "resource_id": "cmp-openguard-root",
+          "message": "根项目未观察到 NOTICE 文件；不得据此推定无需 NOTICE。",
+          "evidence_ids": [
+            "ev.root.license"
+          ],
+          "source_fact_pointer": "/facts/0/relationships/notice"
+        }
+      ]
+    }
+  ]
+}

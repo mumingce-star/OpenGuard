@@ -73,7 +73,9 @@ version、full_response_replay_available=false。不生成parser_version、旧Ev
 缺少/null `sha` 时仅标 `bounded_content_revision_unconfirmed`，不复制requested值。
 有可靠 `/sha` 时标 `revision_observed`：仅确认本次响应报告的仓库revision，
 不是声明整个远端 API JSON 永久不可变。响应 body SHA256不是Git SHA，也不是ETag，
-更不是后续规范化观察内容Hash。后续cz提供实际parser版本、字段locator、缺口，
+更不是后续规范化观察内容Hash。B01 已提供
+`app.scanners.huggingface_metadata.HuggingFaceMetadataParser`、稳定字段 locator 与缺口；
+其输入/输出边界见 `docs/p1/b01-huggingface-metadata-parser.md`。
 存储仍只允许规范化观察、最多1000字符excerpt与来源，不保存完整raw。
 
 ## 地址、TLS、DoH 与时间
