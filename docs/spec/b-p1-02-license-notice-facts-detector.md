@@ -34,3 +34,8 @@ P1 v1 仍固定引用 B03/B04 v1 facts，保证旧 commit/hash 可复现；本 d
 - security：无网络/子进程能力、NOTICE缺失不升级为违规；
 - Node：固定预期的 source package canonical Hash、Finding代码分布、0 Obligation和保守语义；
 - B05 Bench、B06 真人 Gold/FN 与 B07 性能仍需各自独立的 artifact、治理和实测，不由本模块伪造。
+
+`tests/fixtures/p1-integration-b-v1/candidate-matrix.json` 补充固定 facts 的完整候选矩阵：
+它覆盖现有 gap/provider declaration 正例、零候选 dependency 反例、NOTICE gap 不得变为违规的
+误报保护，以及所有 facts/gap/declaration 必须映射的漏报保护。它只是 detector 回归 oracle，
+不是 B06 Gold、FP/FN 指标、Assessment 或正式风险结论。

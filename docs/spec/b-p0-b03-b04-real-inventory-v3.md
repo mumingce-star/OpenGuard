@@ -18,6 +18,14 @@
 
 所有事实的 `authorization_status` 固定为 `pending`，`license_expression_id` 固定为 `null`。扫描到可见性、版本、provider 标签或根 LICENSE 均不得提升为授权或许可证结论。
 
+## 已许可 archive 旁路观察
+
+`approved-archive-observations.json` 增补四条已在 v1 固定的 archive 观察：Jackson Databind、Spring
+Boot、Hamcrest 和 Mockito。每项携带 v1 facts 路径与文件 Hash、archive locator、内容 Hash、容器 Hash、
+来源 URL、来源版本和 License/NOTICE/copyright 关系状态。它们不复制 LICENSE 或 NOTICE 正文、excerpt
+或任何未获再分发许可的归档内容；只引用固定摘要和 locator。许可证 expression 仍为 `null`，并且被观察到
+的许可证不替代 NOTICE，也不表示 NOTICE 适用性或授权已确认。
+
 ## 验收
 
 `generate.mjs --check` 验证生成物未漂移；Node 和 Java 测试分别验证 Hash 粒度、locator、证据引用闭包、Draft 2020-12 schema 及 pending/null 失败关闭条件。所有过程不访问网络也不启动服务。

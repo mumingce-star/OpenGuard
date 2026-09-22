@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const fixture = join(root, 'tests', 'fixtures', 'notice-license-facts-v3');
 const facts = JSON.parse(readFileSync(join(fixture, 'facts.json'), 'utf8'));
+const approved = JSON.parse(readFileSync(join(fixture, 'approved-archive-observations.json'), 'utf8'));
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 
 test('v3 facts are reproducible from real project inputs', () => {
@@ -59,4 +60,28 @@ test('tampering an observed source hash is detectable without inventing a conclu
   const tampered = `${readFileSync(join(root, 'LICENSE'), 'utf8')}\nmutation`;
   assert.notEqual(rootLicense.source_file_sha256, hash(tampered));
   assert.equal(facts.facts.find((item) => item.fact_id === 'fact.root.openguard').authorization_status, 'pending');
+});
+
+test('approved archive observations retain relationships and hashes without NOTICE bodies', () => {
+  const sourcePath = join(root, approved.source_facts_path);
+  const source = JSON.parse(readFileSync(sourcePath, 'utf8'));
+  const sourceEvidence = new Map(source.evidence.map(item => [item.evidence_id, item]));
+  assert.equal(approved.notice_body_stored, false);
+  assert.equal(approved.source_facts_sha256, hash(readFileSync(sourcePath)));
+  assert.equal(approved.observations.length, 4);
+  for (const item of approved.observations) {
+    assert.equal(item.source_path, approved.source_facts_path);
+    assert.equal(item.authorization_status, 'pending');
+    assert.equal(item.license_expression_id, null);
+    assert.match(item.archive_locator, /!\//);
+    assert.match(item.content_sha256, /^[a-f0-9]{64}$/);
+    assert.match(item.container_sha256, /^[a-f0-9]{64}$/);
+    assert.ok(item.source_evidence_ids.every(id => sourceEvidence.has(id)));
+    assert.ok(['text_observed', 'gap'].includes(item.relationships.notice));
+    assert.equal(Object.hasOwn(item, 'notice_text'), false);
+    const archiveEvidence = sourceEvidence.get(item.source_evidence_ids.at(-1));
+    assert.equal(archiveEvidence.locator, item.archive_locator);
+    assert.equal(archiveEvidence.content_sha256, item.content_sha256);
+    assert.equal(archiveEvidence.container_sha256, item.container_sha256);
+  }
 });

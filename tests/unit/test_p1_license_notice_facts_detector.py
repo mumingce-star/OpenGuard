@@ -12,11 +12,16 @@ from app.detectors.license_notice_facts import canonical_facts_sha256
 
 
 FACTS_PATH = Path("tests/fixtures/notice-license-facts-v2/facts.json")
+MATRIX_PATH = Path("tests/fixtures/p1-integration-b-v1/candidate-matrix.json")
 EXPECTED_PACKAGE_SHA256 = "9cdcb294c7e46ce57a2e3b4a92e5693439dbc6b82f15e138b61b6cc6df172577"
 
 
 def _facts() -> dict:
     return json.loads(FACTS_PATH.read_text(encoding="utf-8"))
+
+
+def _matrix() -> dict:
+    return json.loads(MATRIX_PATH.read_text(encoding="utf-8"))
 
 
 def _detect(value: dict, *, expected_hash: str = EXPECTED_PACKAGE_SHA256):
@@ -76,6 +81,39 @@ def test_evidence_bindings_include_object_pointer_and_all_declared_hash_scopes()
     assert len(binding.source_file_sha256) == 64
     assert len(binding.selected_content_sha256) == 64
     assert binding.source_file_sha256 != binding.selected_content_sha256
+
+
+def test_fixed_candidate_matrix_covers_positive_negative_false_positive_and_false_negative_guards() -> None:
+    matrix = _matrix()
+    result = _detect(_facts())
+    actual: dict[str, list[dict[str, str]]] = {}
+    for candidate in result.findings:
+        actual.setdefault(candidate.fact_id, []).append(
+            {"category": candidate.category, "code": candidate.code}
+        )
+        assert candidate.status == "review_required"
+        assert candidate.authorization_status == "pending"
+        assert candidate.license_expression_id is None
+        assert candidate.confirmed_violation is False
+
+    expected = matrix["expected_candidates_by_fact"]
+    assert matrix["source_package_sha256"] == result.source_package_sha256
+    assert set(expected) == {fact["fact_id"] for fact in _facts()["facts"]}
+    assert {
+        fact_id: sorted(items, key=lambda item: (item["category"], item["code"]))
+        for fact_id, items in actual.items()
+    } == {
+        fact_id: sorted(items, key=lambda item: (item["category"], item["code"]))
+        for fact_id, items in expected.items() if items
+    }
+
+    guards = matrix["false_positive_guards"]
+    assert all(not actual.get(fact_id) for fact_id in guards["zero_candidate_facts"])
+    assert not {candidate.category for candidate in result.findings} & set(guards["forbidden_candidate_categories"])
+    assert all(candidate.confirmed_violation is not guards["forbidden_confirmed_violation"] for candidate in result.findings)
+    assert {
+        candidate.code for candidate in result.findings if candidate.code in guards["notice_gap_is_not_violation"]
+    } == set(guards["notice_gap_is_not_violation"])
 
 
 @pytest.mark.parametrize(

@@ -298,3 +298,18 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 2026-09-22 P1B01 解析覆盖扩展：GPT-5 / Root 编写离线来源质量校验、固定 v2 model/dataset snapshots、字段缺失/冲突反例与定向 Python 测试；未调用外部 AI、网络或项目服务。解析器只消费内存中受 transport 绑定的 JSON，拒绝无效 API target、UTC 时间、body hash/size 或 revision provenance，且不输出 raw response、授权、Assessment、Report 或许可证表达式。45 项 B01 unit/security 定向测试通过；本地未提交、未推送、未部署。
 
 2026-09-22 P1B05 development Bench 输入：GPT-5 / Root 编写固定 detector/source-index/prediction/result artifact、development manifest、Node 格式/Hash 测试与说明；未调用外部 AI、网络、detector 或项目服务。prediction/result 显式为 not_executed、metrics=null、formal_metrics_claimed=false，Bench CLI 只返回 development。未生成或宣称正式指标、人工 Gold、Assessment 或 Report；本地未提交、未推送、未部署。
+
+2026-09-22 P0B01 fixture 5+5 扩展：GPT-5 / Root 在用户明确授权下，仅编辑固定离线 v2 JSON fixture、manifest、测试和说明；未调用外部 AI、网络或项目服务。由既有离线快照整理为 5 个模型与 5 个数据集，并将每个正例的文件 SHA-256 同时标为来源观察 Hash；新增非法 identity 反例，缺失/冲突保持 pending gap。Hash 只校验仓库内脱敏字节，未将其用作当前上游、授权、许可证表达式或适用性结论。PowerShell 已复算 5+5 与全部 Hash；因项目 Python 解释器路径失效，pytest/compileall 待恢复环境后运行；未提交、推送或部署。
+
+2026-09-23 P0B01 Java 替代验收：按用户请求新增 Java 离线 fixture 契约测试，未调用外部 AI、网络或服务。该测试使用现有内部 `ResourceProfileDraft` 只验证 fixture 的 5+5 双 Hash、pending/空许可证表达式、反例不升级与非法 identity 拒绝；Maven 定向编译和 3 项测试通过。它不替代 Python parser 实现，也不用于作出授权、许可证表达式或适用性判断；Python 环境恢复后仍需补跑原 pytest/compileall。未提交、推送或部署。
+
+2026-09-23 P0B02 candidate matrix：GPT-5 / Root 在用户明确授权下新增固定 facts 候选矩阵、Python 直接 detector 回归和 Node 离线 oracle；未调用外部 AI、网络或项目服务，未修改 detector、公共 API、Assessment 或正式风险结论。矩阵把已有 facts 的 gap/provider declaration 映射为保守候选，并增加零候选、NOTICE gap 非违规及全量映射漏报保护；不作为 Gold 或 FP/FN 指标。Node 2/2 通过；Python 解释器失效，直接 detector 动态回归待环境恢复后补跑。未提交、推送或部署。
+
+2026-09-23 P0B03/B04 approved archive observations：GPT-5 / Root 按用户许可从已有 v1 固定 facts 引用四条 archive License/NOTICE/copyright/source relationship 观察，记录路径、locator、来源/内容/容器 Hash、URL 和版本；不调用外部 AI、网络或服务。新增旁路库存不复制 NOTICE 正文或 excerpt，不用 license expression 替代 NOTICE，全部保持 pending/null；Node 离线 5/5 通过。未提交、推送或部署。
+2026-09-23 P0B05 run preparation artifacts：GPT-5 / Root 按用户要求固化 detector/config/input/prediction/result 的离线运行准备闭包及 manifest SHA-256 校验，不调用外部 AI、网络、detector 或项目服务。人工 Gold 未冻结时，manifest freeze 为 draft、Gold 标记为未冻结、evaluation 只请求 smoke，result 固定 metrics=null；错误入口仅为 Hash、输入、detector、结果验证和 Gold 未冻结。未计算或展示 Precision/Recall/F1，未修改公共 API、Assessment 或正式风险结论。Node 合同测试 3/3 通过，Java Bench CLI 返回 valid=true、derived/requested tier=smoke；JUnit 定向套件因 Windows 临时目录 ACL 清理失败而未作为通过依据。未提交、推送或部署。
+## 2026-09-23 B 工件统一回归与发布准备
+
+- 角色：GPT-5 / Root；使用本地编程辅助，不使用外部 AI 生成业务事实。
+- 操作：在用户授权下恢复本机 CPython 3.12 并重建项目 `.venv`；所有 B01--B07/P2B 工件仅离线读取、测试和 Hash 校验，无联网抓取、无项目服务启动、无生产扫描。
+- 约束：B01/B03/B04 的来源仅作为可复现观察，不认定授权或许可证适用性；B02 不生成 Assessment/正式风险结论；B05/B06 不冻结 Gold 或计算 Precision/Recall/F1；B07 不形成生产性能结论。
+- 复核：独立 Luna 验收指出 B06 盲审字段路径与 P2B 来源校验缺口；Root 据此将双盲声明统一为 `reviewer.independence_attestation` 五项，增加真实盲审校验器到分歧汇总器闭环测试、前后工件 Hash amendment 校验、机器可校验 taxonomy，以及 provenance 门禁。

@@ -1,0 +1,14 @@
+{
+  "schema_version": "openguard-b06-fn-fp-taxonomy/1",
+  "status": "draft_not_gold",
+  "purpose": "Human-review classification only; this artifact neither freezes Gold nor calculates detector metrics.",
+  "categories": [
+    {"code": "FP_LICENSE_EXPRESSION", "kind": "false_positive"},
+    {"code": "FP_NOTICE_SUBSTITUTION", "kind": "false_positive"},
+    {"code": "FP_SOURCE_MISMATCH", "kind": "false_positive"},
+    {"code": "FN_MISSING_LICENSE", "kind": "false_negative"},
+    {"code": "FN_MISSING_NOTICE", "kind": "false_negative"},
+    {"code": "FN_MISSING_COPYRIGHT", "kind": "false_negative"},
+    {"code": "FN_SOURCE_RELATION", "kind": "false_negative"}
+  ]
+}

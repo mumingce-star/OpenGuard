@@ -12,7 +12,7 @@ const digest = (value) => createHash('sha256').update(value).digest('hex');
 
 test('B05 development input artifacts are fixed and source-index bound', () => {
   assert.equal(manifest.schema_version, 'openguard-bench-manifest/2.0');
-  assert.equal(manifest.evaluations[0].requested_tier, 'development');
+  assert.equal(manifest.evaluations[0].requested_tier, 'smoke');
   for (const artifact of manifest.artifacts) {
     const bytes = readFileSync(join(fixture, artifact.path));
     assert.equal(bytes.length, artifact.size_bytes, artifact.artifact_id);
@@ -41,4 +41,46 @@ test('prediction and result are format-valid development placeholders, not metri
   assert.equal(result.metrics, null);
   assert.equal(result.formal_metrics_claimed, false);
   assert.equal(result.declared_tier, 'development');
+});
+
+test('B05 run preparation fails closed before human Gold freeze', () => {
+  const artifact = (id) => manifest.artifacts.find((item) => item.artifact_id === id);
+  const payload = (id) => JSON.parse(readFileSync(join(fixture, artifact(id).path), 'utf8'));
+  const detector = payload('art_detector');
+  const input = payload('art_detector_input');
+  const config = payload('art_config');
+  const prediction = payload('art_prediction');
+  const result = payload('art_result');
+  const gold = payload('art_gold');
+
+  assert.equal(manifest.governance.freeze.status, 'draft');
+  assert.equal(gold.human_gold_frozen, false);
+  assert.equal(config.gold_gate, 'not_frozen');
+  assert.equal(config.metrics, 'not_computed_before_gold_freeze');
+  assert.equal(detector.required_input_artifact_id, 'art_detector_input');
+  assert.equal(input.detector_artifact_id, 'art_detector');
+  assert.equal(input.run_config_artifact_id, 'art_config');
+  assert.equal(prediction.input_artifact_id, 'art_detector_input');
+  assert.equal(prediction.run_config_artifact_id, 'art_config');
+  assert.equal(result.artifact_hash_verification, 'not_run');
+  assert.equal(result.metrics_visibility, 'blocked_until_human_gold_freeze');
+  assert.deepEqual(result.error_classification, {
+    entrypoint: 'run_preparation', status: 'not_observed', errors: [],
+  });
+  assert.deepEqual(config.error_classification.allowed_codes, [
+    'artifact_hash_mismatch', 'input_validation_failed', 'detector_unavailable',
+    'detector_execution_failed', 'result_validation_failed', 'gold_not_frozen',
+  ]);
+
+  const forbiddenMetricKeys = new Set(['precision', 'recall', 'f1']);
+  const assertNoFormalMetric = (value) => {
+    if (Array.isArray(value)) value.forEach(assertNoFormalMetric);
+    else if (value && typeof value === 'object') {
+      for (const [key, nested] of Object.entries(value)) {
+        assert.equal(forbiddenMetricKeys.has(key.toLowerCase()), false, key);
+        assertNoFormalMetric(nested);
+      }
+    }
+  };
+  [detector, input, config, prediction, result, gold].forEach(assertNoFormalMetric);
 });

@@ -6722,3 +6722,271 @@
 - 建议下一步及责任模型：Root/A 线接入不可变 Profile/NOTICE/Report；Luna完成真实资源、篡改、异机和真人 Gold/FN 验收；Terra/xzb完成生产链与前端端到端；Sol复核 provenance/风险语义和最终竞赛门禁。
 - 关联分支、提交、PR、Issue或 evidence_id：`codex/scan-reliability-integration`、`integration/p1`、产品提交 `f3e51f5173cb316b68377cf15ea17725d9b84a1e`；无 PR/Issue/evidence_id。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 20,000～35,000，已在原范围内完成审阅、测试、提交、推送和集成；仅因 `gh` CLI 缺失把“创建 PR 对象”调整为可验证的直接 fast-forward，不扩大产品范围。
+
+## 20260922-2227-GPT5-图片任务验收完善
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 图片任务验收与最小完善）
+- **日期时间**：2026-09-22 22:27（Asia/Shanghai）
+- **任务范围**：根据用户提供的任务清单核对并完善 B01 fixture 收口、真实 NOTICE 事实输出、Git/ZIP 来源协议语义，以及扫描/评测收尾的现有实现与验收证据；不重做已发布实现，不修改已由其他工作包占用的 B02 检测器、公共 Schema、生产 API 或前端。
+- **开始前确认**：已阅读根 README、完整共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支/工作区/最近提交；当前分支 `codex/scan-reliability-integration@9d67b88`，工作区干净。B01 v2、B03/B04 事实包与 B05 development 输入已在 `f3e51f5` 发布，B02 仍为独立在途范围。
+- **预计修改文件**：仅追加共享工作日志；若验收发现明确、未被占用的最小文档缺口，再按变更流程处理。不得改写已发布 fixtures、NOTICE facts 或 B02 检测器。
+- **验收方法**：运行 B01 unit/security、NOTICE facts unit/security、Git/ZIP 定向协议回归、B05 development 输入校验与 `git diff --check`；逐项映射图片要求，明确已关闭项与需要真人/A线输入的门禁。
+- **token 用量估算**：4,000～8,000；系统未提供精确 token 遥测。
+
+## 20260922-2240-GPT5-图片任务验收完善
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / 图片任务验收与最小完善）
+- **日期时间**：2026-09-22 22:40（Asia/Shanghai）
+- **任务目标与实际结果**：完成图片任务的实现状态对照与离线验收。B01 已具备 2 个模型 JSON（并扩展为 2 模型 + 2 数据集）、来源文件 SHA-256 固定、ignore/敏感字段不外泄与缺失/冲突反例；NOTICE 已由 facts v2/v3 与候选检测器输出证据、来源关系和实际来源，明确不以许可证表达式代替 NOTICE 正文；B05 仅形成固定 development 输入，不误称为 Gold、FN/FP 或性能结论。
+- **修改或新增文件**：仅追加 `docs/coordination/AGENT_WORKLOG.md` 的 START/PARTIAL 验收记录；未修改产品代码、Schema、规则、fixture、基准或公共接口。
+- **命令与测试结果**：B01/NOTICE 定向离线回归 `61 passed`；`node --test tests/bench_detector_development_input.test.mjs` 为 `2 passed`；`git diff --check` 通过。原 `.venv` 解释器路径失效；系统 Python 直跑包含 Git/ZIP 的回归时，A2 Git 因缺少 `fastapi` 无法收集，A4 ZIP 有 59 项失败，根因是 Windows 没有 `os.geteuid` 以及 `pass_fds`，属于既有 POSIX 安全运行时前提，非 B01/NOTICE 实现回归。
+- **接口、Schema、规则和重要决策**：无接口变更。Git/ZIP 不得为通过 Windows 测试而绕过属主/权限校验或用不等价的子进程传递替代安全边界；保留现有 fail-closed 语义。
+- **已知风险、失败项和未完成内容**：图片中的“Git / ZIP 来源协议对齐”尚未在 Windows 环境完整复现，仍需经 A/Terra 设计并实现 Windows 等价安全持久化/进程能力，或在 POSIX 受控环境复验；真实 NOTICE 正文采集与人工原文复核、B06 真人 Gold/FN、B07 性能分布、真实 HF transport/异机验收、A线 Profile/NOTICE/Report 绑定和前端端到端均未关闭。
+- **建议下一步及责任模型**：A/Terra 提供 Windows 等价安全实现或受控 POSIX 验收回执；Luna 完成真实资源、篡改、异机及 Gold/FN 独立验收；Sol 复核 NOTICE 原文/证据语义；Root 在获得上述回执后更新正式 P0/P1 门禁状态。
+- **关联分支、提交、PR、Issue或 evidence_id**：当前 `codex/scan-reliability-integration@9d67b88`；本轮无提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 4,000～8,000，已在范围内完成核对与验收，未扩大到跨平台安全架构改造。
+
+## 20260922-2245-GPT5-图片四项状态答复
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 只读状态答复）
+- **日期时间**：2026-09-22 22:45（Asia/Shanghai）
+- **任务目标与实际结果**：按用户追问逐项确认图片中的四项任务是否全部完善。结论：B01 fixture 收口为已实现并通过定向回归；真实 NOTICE 事实输出为部分完成；Git/ZIP 来源协议对齐为部分完成；扫描与评测收尾为部分完成。未修改产品实现。
+- **修改文件**：仅追加本共享工作日志；未修改代码、Schema、规则、fixture、基准、进度台账或接口，未暂存、提交、推送、部署或启停服务。
+- **核对证据**：复核上条验收记录、发布回执 `f3e51f5`/`9d67b88`、最新工作区与定向测试结果；`git status` 仅含本日志未提交修改。
+- **未关闭门禁**：NOTICE 正文采集与人工核验；Windows Git/ZIP 等价安全运行时或受控 POSIX 复验；真实 detector 结果、B06 真人 Gold/FN、B07 性能分布；真实 HF/异机验收；A线 Profile/NOTICE/Report 绑定与前端端到端。
+- **建议下一步及责任模型**：A/Terra 关闭 Git/ZIP 跨平台或 POSIX 验收，Sol 复核 NOTICE 原文语义，Luna 完成 Gold/FN/异机验收，Root 收齐回执后更新门禁。
+- **关联分支与 token**：`codex/scan-reliability-integration@9d67b88`；本次运行精确 token 数不可获得，仅只读核对，未新增可发布产品变更。
+
+## 20260922-2300-GPT5-后端B完善与跨线依赖
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B 收口与跨线协调）
+- **日期时间**：2026-09-22 23:00（Asia/Shanghai）
+- **任务范围**：在冻结 P1 契约内收口后端 B 已交付内容的可验收边界，明确 B06/B07 不能由后端 B 单独完成的门禁，并形成后端 A 与前端所需输入、接口和验收回执清单；不改写 B02、公共 Schema、生产 API、前端或真实标注结论。
+- **开始前确认**：已阅读 README、共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF、P1 Contract、B06 治理规范、B05 输入规范和现有 Bench/annotation 工具，检查分支和工作区。当前仅有此前验收日志未提交；B01-B05 已发布，B06/B07 尚缺真人/运行环境证据。
+- **预计修改文件**：新增 `docs/coordination/backend-b-dependency-contract.md`，并在收工时追加共享工作日志；必要时仅更新该文档，不改业务实现。
+- **验收方法**：逐项对照 P1 Contract B01-B07 ownership、现有已发布工件、B06 Gold/FN 治理约束与 B07 profiler 边界；运行文档链接/路径检查和 `git diff --check`。
+- **token 用量估算**：7,000～12,000；系统未提供精确 token 遥测。
+
+## 20260922-2320-GPT5-后端B完善与跨线依赖
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B 收口与跨线协调）
+- **日期时间**：2026-09-22 23:20（Asia/Shanghai）
+- **任务目标与实际结果**：已新增后端 B 收口与跨线依赖清单，逐项确认 B01--B05 的已发布产物、B06 的真人 Gold/FN 依赖、B07 的受控性能运行依赖；明确 A 与前端的最小交付、验收格式、联调顺序、DoD 与禁止事项。未将合成输入、单人复核、AI 草稿或单次耗时误报为正式指标。
+- **修改或新增文件**：新增 `docs/coordination/backend-b-dependency-contract.md`；追加本共享工作日志。未修改后端业务实现、B02、公共 Schema/API、前端、真实 Bench Gold 或生产部署。
+- **命令与测试结果**：`node --test tests/bench_detector_development_input.test.mjs benchmarks/annotations/real-resource-20260911-ai-assisted/automated-consistency-audit/test-audit.mjs benchmarks/annotations/real-resource-20260911-ai-assisted/single-human-rereview/test-workflow.mjs` 为 4/4 通过；路径存在性检查与 `git diff --check` 通过。
+- **接口、Schema、规则和重要决策**：未改变任何接口或 Schema。新增协作约束：B 只消费 A 固定 revision/hash，不直接写 NoticeDraft/Report/Assessment；前端必须显式呈现 pending/review_required/development/partial；Gold freeze 必须先于 detector 运行。
+- **已知风险、失败项和未完成内容**：B06 缺两名真人独立标注、暴露声明、裁决与冻结 Gold；B07 缺 A/Terra 提供的受控 POSIX 多次 Pipeline receipt；B01缺真实 transport/5+5覆盖，B03/B04缺 NOTICE/上游原文人工核验，B05缺真实 prediction/result。A 线 Profile/NOTICE/Report绑定、前端真实展示/浏览器验收、Windows Git/ZIP安全等价实现仍未关闭。
+- **建议下一步及责任模型**：A/Terra 先交付 A-1 至 A-5 固定输入与受控运行位；前端按 F-1 至 F-6 提供真实消费与浏览器回执；Luna/两名真人完成 B06 Gold；B 随后运行 B05、汇总 B07；Root 收齐回执后验收发布。
+- **关联分支、提交、PR、Issue或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；本轮无提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 7,000～12,000，已在该范围内完成，未扩大为跨线生产开发。
+
+## 20260922-2345-GPT5-P0B01-fixture五加五扩展
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / B01 离线 fixture 与验收）
+- **日期时间**：2026-09-22 23:45（Asia/Shanghai）
+- **任务范围**：按用户明确要求，把 B01 `resource-profile-v2` 固定离线回归样本从 2 个模型 + 2 个数据集扩至 5 + 5，新增来源观察 Hash 和缺失/冲突/非法输入反例；不联网、不启动服务、不认定授权或许可证适用性。
+- **开始前确认**：已阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支 `codex/scan-reliability-integration`、工作区状态和最近提交；没有发现其他在途记录修改 v2 fixture。因用户明确授权，已在 `change-requests.md` 记录跨所有权变更。
+- **预计修改文件**：`tests/fixtures/huggingface/resource-profile-v2/`、B01 unit/security 测试、B01 规格、AI/进度/共享日志；不修改 parser、公共 Schema/API、默认工厂或 v1 fixture。
+- **验收方法**：manifest 计数与 file/source-observation SHA-256 绑定；5+5 正例均为 pending observation；缺失/冲突仅为 gap、非法输入失败关闭；禁止 socket/subprocess，运行定向 pytest、compileall、diff/sensitive 检查。
+- **token 用量估算**：8,000～14,000；精确 token 遥测不可获得。
+
+## 20260922-2355-GPT5-P0B01-fixture五加五扩展
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / B01 离线 fixture 与验收）
+- **日期时间**：2026-09-22 23:55（Asia/Shanghai）
+- **任务目标与实际结果**：`resource-profile-v2` 已从 2 model + 2 dataset 扩为精确 5 + 5；10 个正例在 manifest 中同时绑定 `source_file_sha256` 和 `source_observation_sha256`。新增非法 identity 反例，既有缺失、冲突和不支持字段反例保留为非结论性覆盖缺口。
+- **修改或新增文件**：修改 v2 `manifest.json`、README、B01 单测和规格；新增 3 model、3 dataset 与 1 非法 identity 离线 JSON；追加 `change-requests.md`、AI 使用记录、PROJECT_PROGRESS 和本日志。未修改 v1、parser、公共 Schema/API、默认工厂、服务或生产接线。工作区已有未跟踪 `docs/coordination/backend-b-dependency-contract.md` 不属于本轮，未触碰。
+- **命令与测试结果**：PowerShell 离线检查确认 5 model、5 dataset、10 个双 Hash 正例与 4 个反例 file Hash，未发现 hash placeholder；`git diff --check` 通过。尝试 `.venv\\Scripts\\python.exe -m pytest`、`compileall` 失败，原因是 venv 目标 `C:\\Users\\cz180\\AppData\\Local\\Programs\\Python\\Python312\\python.exe` 缺失；`py -3.10` 也因现有解释器不可启动而失败。因此新增 pytest 尚未获得执行回执。
+- **接口、Schema、规则和重要决策**：未改变公共接口、Schema 或 parser 行为。source observation Hash 只绑定仓库中的脱敏离线文件；全部正例保持 `pending`，缺失/冲突仅是 gap，非法 identity `metadata_invalid` 失败关闭。未联网抓取，未认定授权、许可证表达式或许可证适用性。
+- **已知风险、失败项和未完成内容**：受控 Python 恢复前不能将本轮标为 COMPLETE；还需 B01 unit/security 回归、Luna 独立篡改/异机复验、真实 transport 观察和 A 线冻结消费。未提交、未推送、未创建 PR。
+- **建议下一步及责任模型**：环境负责人恢复锁定 Python 3.12 后先运行 B01 两份定向 pytest 与 compileall；Luna 独立复算 10 个双 Hash、篡改/非法输入与无网络副作用；Root 通过验收后再按发布门禁处理。
+- **关联分支、提交、PR、Issue或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；无提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 8,000～14,000，扩展与静态完整性验收已在范围内完成；因解释器失效，动态 Python 门禁未关闭。
+
+## 20260923-0005-GPT5-P0B01-Java离线验收替代
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / B01 Java 离线验收）
+- **日期时间**：2026-09-23 00:05（Asia/Shanghai）
+- **任务范围**：按用户授权，新增 Java/Maven 离线 fixture 契约测试以替代当前不可运行的 Python pytest/compileall 回执。验证 v2 5+5、双 Hash、pending 无升级、缺失/冲突反例和非法 identity 失败关闭；不迁移 Python parser，不改公共 Schema/API，不联网或启动服务。
+- **开始前确认**：已阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、工作区和最近提交；已在现有 P0B01 跨所有权变更请求中记录 Java 替代边界。当前无其他在途记录占用该新增 Java 测试文件。
+- **预计修改文件**：新增 `backend/java/src/test/java/dev/openguard/scan/HuggingFaceResourceProfileV2FixtureTest.java`，并追加 B01 规格、AI/进度/共享日志；不触碰已有 Java 业务实现、Python parser 或 fixture 字节。
+- **验收方法**：Maven 定向 test 编译+执行；逐项复算 SHA-256；检查 5+5、无许可证/授权升级与非法输入拒绝，之后运行 `git diff --check`。
+- **token 用量估算**：5,000～9,000；精确 token 遥测不可获得。
+
+## 20260923-0015-GPT5-P0B01-Java离线验收替代
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / B01 Java 离线验收）
+- **日期时间**：2026-09-23 00:15（Asia/Shanghai）
+- **任务目标与实际结果**：已完成 Python 不可运行期间的 Java fixture 门禁替代。新增 Java 测试复算 v2 5 model + 5 dataset 的双 SHA-256、构造仅 `pending`/空 expression 的内部候选、验证缺失/冲突反例不升级，并验证非法 identity 被拒绝。
+- **修改或新增文件**：新增 `backend/java/src/test/java/dev/openguard/scan/HuggingFaceResourceProfileV2FixtureTest.java`；更新 B01 规格、PROJECT_PROGRESS、AI 记录、本日志和既有变更请求。未修改 Java 业务实现、Python parser、fixture 字节、公共 Schema/API、服务或部署。
+- **命令与测试结果**：`mvn -q -s .mvn/settings.xml -f backend/java/pom.xml -Dtest=HuggingFaceResourceProfileV2FixtureTest test` 成功；Surefire 回执为 3 tests、0 errors、0 failures、0 skipped。`git diff --check` 通过；未联网、未启动或停止服务。
+- **接口、Schema、规则和重要决策**：无公共接口或 Schema 变化。Java 只作为离线 fixture 契约验证器；`source_observation_sha256` 仍仅绑定离线文件字节。该替代不迁移、删除或证明 Python parser 的完整行为，也不升级 pending 观察为授权、许可证表达式或许可证适用性结论。
+- **已知风险、失败项和未完成内容**：项目 Python 解释器仍失效，B01 原 Python unit/security 与 compileall 回执仍待恢复环境后补跑；Luna 独立篡改/异机复验、真实 transport、A 线冻结消费未关闭。未提交、未推送、未创建 PR。
+- **建议下一步及责任模型**：环境负责人恢复锁定 Python 3.12 后补跑原定向 pytest/compileall；Luna 复算 Java/manifest 双 Hash 并做篡改测试；Root 在所有门禁通过后统一提交发布。
+- **关联分支、提交、PR、Issue或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；无提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 5,000～9,000，已在范围内完成 Java 离线替代门禁；未扩大为 Python 迁移或生产接线。
+
+## 20260923-0030-GPT5-P0B02-候选矩阵扩展
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / B02 离线候选测试）
+- **日期时间**：2026-09-23 00:30（Asia/Shanghai）
+- **任务范围**：按用户要求基于固定 License/NOTICE facts 添加正例、反例、误报和漏报候选测试；不改 detector 导出、公共 API、Assessment、Task、NoticeDraft、Report 或正式风险结论。
+- **开始前确认**：已阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，核对分支、工作区、最近提交和 B02 既有完成记录；未发现其他在途记录修改 B02 测试或固定预期。用户授权及跨所有权范围已写入 `change-requests.md`。
+- **预计修改文件**：新增 B02 candidate matrix fixture，修改 B02 Python/Node 测试和 B02 规格、AI/进度/共享日志；不修改 `license_notice_facts.py` 或任何公共契约文件。
+- **验收方法**：直接调用 detector 的 Python unit 检查候选映射和零候选事实；Node 离线检查 matrix/facts/hash；检查所有输出为 pending/review_required/非违规；`git diff --check`。
+- **token 用量估算**：7,000～12,000；精确 token 遥测不可获得。
+
+## 20260923-0045-GPT5-P0B02-候选矩阵扩展
+- **状态**：PARTIAL
+- **作者与角色**：GPT-5（Root Coordinator / B02 离线候选测试）
+- **日期时间**：2026-09-23 00:45（Asia/Shanghai）
+- **任务目标与实际结果**：新增固定 v2 facts 的完整 candidate matrix。它穷举 8 个 fact 的 17 个已有候选，包含 gap/provider declaration 正例、Jackson/Spring Boot 两个零候选反例、NOTICE gap 非违规误报保护和“全部 facts/gap/declaration 均被映射”的漏报保护；未变更 detector 行为。
+- **修改或新增文件**：新增 `tests/fixtures/p1-integration-b-v1/candidate-matrix.json`；修改 B02 Python unit、Node contract test、B02 规格、PROJECT_PROGRESS、AI 记录、本日志与变更请求。未修改 `backend/app/detectors/license_notice_facts.py`、公共 API、Assessment、Task、NoticeDraft、Report 或正式风险对象。
+- **命令与测试结果**：`node --test tests/p1_license_notice_facts_detector_contract.test.mjs` 为 2/2 通过；测试复算 canonical facts Hash，确认矩阵与 fixed facts 的候选映射完全一致。`git diff --check` 通过。新增 Python direct-detector 断言因项目 Python 3.12 入口失效未执行，不能宣称动态 detector 回归已经通过。
+- **接口、Schema、规则和重要决策**：无公共接口或 Schema 变化。候选仍只允许 `evidence_gap`/`unverified_license_declaration`、`review_required`、`pending`、空正式 expression 和 `confirmed_violation=false`；“误报/漏报”仅表示此固定 regression oracle 的候选覆盖，不是 Bench Gold 或检测质量指标。
+- **已知风险、失败项和未完成内容**：待恢复 Python 后运行 B02 unit/security（含新矩阵）并进行独立篡改/异机复验；B05/B06/B07、A 线消费和正式风险绑定仍不属于本项。未提交、未推送、未创建 PR。
+- **建议下一步及责任模型**：环境负责人恢复锁定 Python 3.12 后运行 B02 两份 pytest；Luna 独立检查 zero-candidate、NOTICE non-violation 和矩阵篡改；Root 通过所有动态门禁后再发布。
+- **关联分支、提交、PR、Issue或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；无提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 7,000～12,000，矩阵与 Node 离线门禁在范围内完成；未扩大到 B05/B06/B07、Python 环境修复或生产接线。
+
+## 20260923-0100-GPT5-P0B03B04-已许可离线观察扩展
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / B03/B04 离线事实库存）
+- **日期时间**：2026-09-23 01:00（Asia/Shanghai）
+- **任务范围**：按用户许可，把既有 v1 固定 archive 观察扩充为 v3 旁路的已许可离线 License/NOTICE/copyright/source relationship inventory。每项绑定路径、locator、Hash、来源版本；不保存或构造 NOTICE 正文、不将许可证表达式视为 NOTICE，不改 B02/API/Assessment/正式风险。
+- **开始前确认**：已阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、工作区和最近提交；现有 v3 仅含清单与 provider 快照，v1 含四条可复算 archive observation，适合以独立旁路 inventory 增补。用户授权已写入 change request。
+- **预计修改文件**：新增 v3 approved observations fixture 与 Node/Java 测试，更新 v3 README/规格、AI/进度/日志；不改 v1/v2 facts、B02 detector 或业务实现。
+- **验收方法**：复算固定来源文件 Hash，验证关系引用、版本和 container/content Hash，禁止 notice_text/body 字段，所有授权 pending/expression null；Node/Java 定向测试及 diff check。
+- **token 用量估算**：8,000～14,000；精确 token 遥测不可获得。
+
+## 20260923-0115-GPT5-P0B03B04-已许可离线观察扩展
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / B03/B04 离线事实库存）
+- **日期时间**：2026-09-23 01:15（Asia/Shanghai）
+- **任务目标与实际结果**：新增 v3 archive 旁路观察库存，引用 v1 中已固定的 Jackson Databind、Spring Boot、Hamcrest、Mockito 四条 License/NOTICE/copyright/source relationship 事实。每条绑定 source facts 路径、archive locator、文件/内容/容器 Hash、来源 URL、版本和关系状态。
+- **修改或新增文件**：新增 `tests/fixtures/notice-license-facts-v3/approved-archive-observations.json`；修改 v3 Node 测试、README、B03/B04 规格、PROJECT_PROGRESS、AI 记录、本日志和 change request；用既有 generator 重生成 `facts.json` 以对齐当前 source revision。未改 v1/v2、B02 detector、公共 API、Assessment、正式风险、服务或部署。
+- **命令与测试结果**：初次 v3 生成校验暴露 `facts.json` 对旧 source revision 漂移；执行既有 `node .../generate.mjs` 后，`node --test tests/notice_license_facts_v3.test.mjs` 为 5/5 通过，`git diff --check` 通过。全程未联网、未启动或停止服务。
+- **接口、Schema、规则和重要决策**：不改变公共接口或 Schema。旁路库存不存储 NOTICE 正文/摘要，只保存固定 Hash、locator 和关系状态；`notice_body_stored=false`。所有观察的 authorization 继续 pending、license expression null；许可证文本不替代 NOTICE，也不构成适用性、授权、义务或违规结论。
+- **已知风险、失败项和未完成内容**：这不是 archive 原文独立复核、NOTICE Draft、B02 输入迁移、正式许可证结论或生产消费。仍需 Luna 篡改/异机验收、v3 adapter 冻结和人工原文核验；未提交、未推送、未创建 PR。
+- **建议下一步及责任模型**：Luna 独立复算 source/container/content Hash 和 notice body 禁止项；Sol 审查来源关系语义；Root 在 adapter 契约冻结后再评估 B02 消费，禁止直接替换 v2。
+- **关联分支、提交、PR、Issue或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；无提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 8,000～14,000，已在范围内完成离线旁路库存、重生成和 Node 门禁；未扩大到生产接线或原文抓取。
+
+## 20260923-0130-GPT5-P0B05-评测运行准备固化
+- **状态**：START
+- **作者与角色**：GPT-5 / Root Coordinator（B05 离线评测准备与验收）
+- **日期时间**：2026-09-23 01:30 Asia/Shanghai；分支：`codex/scan-reliability-integration@9d67b88`。
+- **任务范围**：按用户明确授权，固化 development fixture 的 detector/config/input/result 运行准备格式、artifact SHA-256 校验和错误分类入口；在真实人工 Gold 未冻结前，禁止计算或展示 Precision/Recall/F1。仅修改 `benchmarks/examples/v2/development-detector-v1/`、对应 Node 测试、B05 规范和协调台账；不改公共 API、Assessment、正式风险结论、Bench 公共 Schema 或人工 Gold。
+- **开始前确认**：已完整阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支/工作区/最近提交；现有 B01/B02/B03-B04 本地未提交修改与本任务并存，未发现其他在途记录占用 B05 fixture。用户已通过本轮要求和 CR-20260923-P0B05-run-preparation-artifacts 授权跨所有权修改。
+- **预计修改与验收**：更新 development artifact payload/manifest hash、Node 合同测试、B05 说明与进度/AI 台账；运行 `node --test tests/bench_detector_development_input.test.mjs`、Bench Java 定向测试、`git diff --check`。预计 token 4,000–7,000；系统未提供精确 token 遥测。
+
+## 20260922-Root-CZ来源契约实际能力确认
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / CZ 接口能力核查）
+- **日期时间**：2026-09-22（Asia/Shanghai）
+- **任务范围**：按用户要求审阅所附 NOTICE 生产来源契约提案，核查现有采集入口可实际输出的字段、关系依据及限额/异常语义，仅回传确认或差异；不修改公共 Schema、数据库、API、Report、A 侧保存/绑定/reader/工厂或扫描范围。
+- **开始前确认**：已核验附件 SHA-256 与用户给出的值一致；已阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，并检查 `codex/scan-reliability-integration` 分支、工作区及最近提交。现有 B05 有在途 START，故本轮仅追加协调日志并做只读代码核查，不触碰其文件。
+- **预计修改文件**：仅追加本日志的 START/收工记录；不修改产品文件。
+- **验收方法**：逐项以 `local_zip`、`public_git`、`ai_assets`、受控读取会话、库存和 P1 facts 实现及测试为依据；复核附件散列与工作区差异。
+- **token 用量估算**：3,000～6,000；系统未提供精确 token 遥测。
+
+## 20260923-0145-GPT5-P0B05-评测运行准备固化
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5 / Root Coordinator（B05 离线评测准备与验收）
+- **日期时间**：2026-09-23 01:45 Asia/Shanghai；分支：`codex/scan-reliability-integration@9d67b88`。
+- **任务目标与实际结果**：固化 detector → input → config → prediction → result 离线 artifact 闭包、Hash 校验前置要求与错误分类入口。将 development placeholder 的 freeze 纠正为 `draft`，显式标识 `human_gold_frozen=false`；没有人工 Gold 时 evaluation 仅请求 `smoke`，没有计算或展示 Precision/Recall/F1。
+- **修改或新增文件**：修改 B05 fixture manifest、6 个 artifact payload、B05 README/规范、Node 合同测试、AI/进度台账、change request 和本日志。未修改公共 API、Assessment、正式风险结论、Bench 公共 Schema、人工 Gold、detector 业务实现、服务或部署。
+- **命令与测试结果**：先运行新增 Node 门禁得到预期失败（原 freeze 为 `frozen`），完成实现后 `node --test tests/bench_detector_development_input.test.mjs` 为 3/3 通过；Java Bench CLI 对 manifest 返回 `valid=true`、`derived_tier=smoke`、`requested_tiers=[smoke]`、无诊断；`git diff --check` 通过。`BenchManifestServiceTest` 的 13 个用例均在 JUnit Windows 临时目录 ACL 清理阶段报 AccessDeniedException，未出现断言失败，不作为通过依据。
+- **接口、Schema、规则和重要决策**：无公共接口/Schema 变化。Hash 仅绑定仓库 artifact 字节；允许的离线错误码为 artifact Hash、输入验证、detector 不可用/执行、结果验证及 Gold 未冻结。Gold 未冻结时 result 必须 `metrics=null`、`metrics_visibility=blocked_until_human_gold_freeze`、无实际 errors 和无正式指标。
+- **已知风险、失败项和未完成内容**：未执行 detector、未生成实际 prediction/result、未冻结 B06 人工 Gold/FN、未进行独立篡改/异机验证或 B07 性能评测。JUnit 临时目录 ACL 环境问题仍待环境负责人处理；未提交、未推送、未创建 PR。
+- **建议下一步及责任模型**：Luna/两名独立人工完成 B06 Gold、暴露/裁决与冻结；随后 B/Luna 在新 immutable revision 运行 B05；Sol 复核指标治理；Terra/环境负责人处理 Windows JUnit 临时目录 ACL 或在受控环境复验。
+- **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；本轮无提交、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 4,000–7,000，实际在范围内完成，未扩大为真实评测、Gold 生成或生产接线。
+
+## 20260922-Root-CZ来源契约实际能力确认-收工
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / CZ 接口能力核查）
+- **日期时间**：2026-09-22（Asia/Shanghai）
+- **任务目标与实际结果**：已核验附件 SHA-256=`a1bc050f1d48d6d95cb9adc3f9698fc9067f5ad1946b2f4fcfc561ceb8e33089` 一致，并完成现有采集输出与提案逐项比对。结论为 `CZ_SOURCE_CONTRACT_CHANGES_NEEDED`：现有入口可提供 ZIP 原始输入 Hash、Git revision、库存根摘要及逐文件大小/SHA-256、局部 Evidence、UTC observed_at 和 producer；但未实现独立 `openguard.notice-source/1` 包、正文/摘录状态机、读取范围/保留字节 Hash、coverage/gap、observation_key/relation/binding/package_hash 及其终态生产输出。
+- **修改或新增文件**：仅追加本共享日志；未修改产品代码、公共 Schema、数据库、API、Report、A 侧存储/终态绑定/reader/工厂或扫描功能。
+- **命令与测试结果**：`Get-FileHash` 附件 SHA-256 匹配；静态核查 `local_zip.py`、`public_git.py`、`ai_assets.py`、`read_session.py`、`inventory.py`、`manifest_licenses.py`、领域模型及 P1 facts；全仓检索未发现 `openguard.notice-source/1` 或提案状态字段实现；`git diff --check` 通过。未启动/停止服务、未联网。
+- **接口、Schema、规则和重要决策**：当前 Evidence 只有 `locator`、可空 `excerpt`（最多1000字符）、可空完整内容 `content_hash`、行号、producer、UTC `observed_at` 和 verification；不含正文、byte_range、截断标识或 retained Hash。库存虽有逐文件完整 SHA-256 与 root digest，读取会话仅返回完整受控字节或失败，不能把清单 Hash 说成已读正文 Hash。AI/组件关联仅由同一资源自身的 evidence_ids 支撑，不存在根项目/依赖/AI资源通用 relation 语义或 `unresolved` 字段。实际读取预算为单文件4MiB、总计16MiB；AI 支路还受4MiB/文件、16MiB/总计、4096文件限制，UTF-8 解码失败仅使 AI scan incomplete，不输出提案所列状态。
+- **已知风险、失败项和未完成内容**：不能承诺提案的全文/摘录/not_observed/not_scanned/read_failed 五态、统一 coverage、读取 Hash、collector 封装、关系 unresolved 或终态 binding 已能生产。现有 Git bounded omission 仅生成扫描覆盖 Evidence/可恢复错误；ZIP 入口无等价逐项 coverage 输出。现有 v3 facts 是固定离线库存，且明确不存 NOTICE 正文，不能当作生产来源 reader。
+- **建议下一步及责任模型**：CZ 最小补充一个纯采集输出 adapter（不改公共 P0 Schema）：严格 validator 与 `openguard.notice-source/1` DTO，受控回调内返回状态、范围、保留原始字节 Hash、collector/coverage/gap、relation=`resolved|unresolved`；A 只消费经验证包并负责其存储、终态 binding、reader、工厂接线。先由 Owner 确认限额与 partial 语义，再实现；不得伪填 revision、verification、正文或关系。
+- **关联分支、提交、PR、Issue或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；无产品提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算3,000～6,000，已在范围内完成，只读核查与协调日志均未扩大为实现任务。
+
+## 20260922-Root-CZ来源契约-A侧反馈整理
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / CZ-to-A 接口反馈整理）
+- **日期时间**：2026-09-22（Asia/Shanghai）
+- **任务范围**：根据已完成的实际能力核查，整理一份可直接转交后端 A 的反馈；不重新核查、不修改产品、公共 Schema、数据库、API、Report 或 A 侧职责。
+- **开始前确认**：已复读上一条 `CZ_SOURCE_CONTRACT_CHANGES_NEEDED` 收工结论、当前分支与工作区；并行未提交变更不属于本任务，不触碰。
+- **预计修改文件与验收**：仅追加本日志 START/收工记录；以已核验的 SHA-256 与静态代码核查结果为唯一事实来源，确认文本不声称 A 侧已接线。
+- **token 用量估算**：500～1,500；系统未提供精确 token 遥测。
+
+## 20260922-Root-CZ来源契约-A侧反馈整理-收工
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / CZ-to-A 接口反馈整理）
+- **日期时间**：2026-09-22（Asia/Shanghai）
+- **任务目标与实际结果**：已输出可转发的 A 侧接口反馈，状态保持 `CZ_SOURCE_CONTRACT_CHANGES_NEEDED`，明确 CZ 需新增纯采集输出 adapter、A 只承担验证后存储/终态绑定/reader/工厂接线，且不伪填事实。
+- **修改或新增文件**：仅本共享日志；未改产品文件、未运行服务、未提交或推送。
+- **命令与测试结果**：复读上一轮附件散列核验和代码核查结论；无新增测试。
+- **接口、Schema、规则和重要决策**：无变化；反馈不能视为对 `openguard.notice-source/1` 已实现或 A 侧已消费的确认。
+- **已知风险与下一步**：须先由 Owner 确认容量及 partial 语义，CZ 提交 validator/DTO/测试后，A 再接入私有存储和终态 binding。
+- **关联分支、提交、PR、Issue或 evidence_id**：`codex/scan-reliability-integration@9d67b88`；无提交、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算500～1,500，已在范围内完成。
+
+## 20260923-0200-GPT5-B06-B07-P2B-offline-gates
+- **状态**：START
+- **作者与角色**：GPT-5 / Root Coordinator
+- **范围**：实现离线 B06 盲审/分歧/taxonomy/amendment、B07 receipt 汇总和 P2B B 工件质量门禁；不改 A 线或生产服务。
+- **开始前确认**：已阅读 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、状态和近期提交；现有 B01-B05 未提交改动保持不覆盖。
+- **验收**：Node 定向测试、Hash/漂移反例和 `git diff --check`；预计 token 8,000–14,000，精确 token 不可获得。
+
+## 20260923-0230-GPT5-B06-B07-P2B-offline-gates
+- **状态**：COMPLETE
+- **结果**：新增 B06 双人盲审分歧汇总（只接收不同 human reviewer，输出非 Gold 的待真人裁决状态）与 amendment 校验（Hash、目标、原因、不同真人批准）；既有盲审包/校验器继续禁止 AI、第一位评审和单人复核替代独立真人 Gold。新增 B07 受控 receipt 汇总器，只接受至少两条非生产 receipt，输出样本数、p50/p95、失败率、阶段耗时和一致环境摘要。新增 P2B B 工件离线质量门禁，生成稳定排序的 Hash 清单并检查 JSON/敏感模式；保留 Bench fragment fixture 的 opaque-artifact 语义，避免误报。
+- **修改文件**：新增 `summarize-disagreements.mjs`、`validate-amendment.mjs`、`b07-summarize-receipts.mjs`、`p2b-verify-b-artifacts.mjs` 与 Node 合同测试；未修改 A snapshot、Report、Task、前端、公共 API 或生产服务。
+- **验证**：`node --test tests/b06_b07_p2b_contract.test.mjs` 2/2 通过；B05 Node 回归 3/3 通过；`git diff --check` 通过。未启动生产扫描、未联网、未生成真人 Gold、未把单次耗时称为性能结论。
+- **未完成**：需要两名真实独立审查人实际提交盲审、第三人裁决、Gold freeze 与不可变 revision；B07 仍需受控 Pipeline receipt 的真实采集，P2B 仍需独立/异机发布前复验。未提交、未推送。
+- **token**：精确 token 不可获得；开工估算 8,000–14,000，实际缩小到离线工具与合同测试范围。
+
+## 20260922-2347-GPT5-P1后端B完整分析
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B P1 现状与依赖审计）
+- **日期时间**：2026-09-22 23:47（Asia/Shanghai）
+- **任务范围**：按用户要求，对 P1 规划、当前代码、fixture、测试证据、协作台账和 Git 发布状态做完整对照，详细列出后端 B 尚需完成或改善的任务，并区分可立即开展、依赖后端 A、依赖前端及依赖真人/独立验收的部分。本轮只读分析，不修改产品代码、Schema、规则、测试或现有 B01–B07 在途成果，不启动或停止服务。
+- **开始前确认**：已阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区和最近提交。当前 `codex/scan-reliability-integration@9d67b88` 与 `origin/integration/p1` 同点；工作区存在 B01/B02/B03-B04/B05/B06/B07/P2B 的未提交成果，本轮不得覆盖、整理、暂存、提交或推送。
+- **预计修改文件**：仅向本共享日志追加 START/收工记录；不把分析结论写成产品完成状态。
+- **验收方法**：核对 B 线总览、B01/B02/B03-B04/B05/B06/B07规格与实现、A 线 P1 接口/生产接线、前端验收资料和当前 Git 差异；必要时只运行不启服务的离线校验，输出状态、优先级、依赖输入、交付物、DoD、禁止事项和竞赛门禁。
+- **token 用量估算**：10,000～18,000；系统未提供精确 token 遥测，收工时如实报告范围与调整。
+
+## 20260922-2358-GPT5-P1后端B完整分析
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / 后端 B P1 现状与依赖审计）
+- **日期时间**：2026-09-22 23:58（Asia/Shanghai）
+- **任务目标与实际结果**：完成“规划范围 × Frozen Contract × 当前实现 × 测试 × Git × A/F 依赖”的只读审计。核心结论：B01–B04 已形成离线、保守、可复算事实链，B05–B07 已有治理/运行/汇总脚手架，但真实生产消费、真人 Gold、实际评测与性能分布未闭环；规划书中的 AI 资源 `Detector 0.3` 与仓库当前名为 B02 的 License/NOTICE facts detector 发生范围错位，后者不能替代前者。当前静态 AI detector 为 0.2.0，而既有 9-case 指标来自 0.1.0、AI 单人 Gold、非当前重跑，只能作为缺口证据。
+- **修改或新增文件**：仅向 `docs/coordination/AGENT_WORKLOG.md` 追加本轮 START/COMPLETE。未修改、整理、暂存或提交现有 25 个 tracked change 与 13 个 untracked B 线在途文件；未修改产品、Schema、规则、测试、前端或部署。
+- **命令与测试结果**：本轮组合 Node 合同测试 12/12 通过，覆盖 B02 固定候选矩阵、B03/B04 v3 与 archive 观察、B05 development 运行准备、B06/B07/P2B 离线门禁；`HuggingFaceResourceProfileV2FixtureTest` Maven 定向命令退出 0。项目 `py`/`.venv` 启动器仍指向已删除的 Python 3.12，故当前未提交 B01/B02 Python 增量没有新鲜动态回归；未以 Java fixture 替代 parser 行为测试。日志 scoped `git diff --check` 通过。未启动服务、联网、扫描或调用模型。
+- **接口、Schema、规则与重要决策**：未改变任何接口、Schema、规则或状态。分析确认 A 已有 History/Diff/Graph/Task/Report V2/Profile 骨架，但 Profile 默认生产工厂仍关闭、NoticeDraft 路由/生产 reader 未形成；当前前端源码没有 P1 History/Diff/Graph/Profile/Task/NoticeDraft/Report V2 业务页面。`openguard.notice-source/1` 生产采集包仍未实现，需 Owner/A 先冻结容量、partial 与正文保留语义。
+- **已知风险与未完成内容**：当前最新 B01 5+5、B02 matrix、B03/B04 archive、B05 运行准备、B06/B07工具均未提交/推送；状态索引存在 2+2/5+5、3/4反例、B07未开始/已有汇总器等陈旧描述。真实 Detector 0.3、当前版本真实语料重跑、两名真人独立 Gold、第三人裁决、冻结 revision、B07多次受控 receipt、A线不可变消费、前端E2E、跨平台和发布回执仍未关闭。
+- **建议下一步及责任模型**：先由 Sol/Root 消除 B02 编号/范围错位并冻结 Detector 0.3 与 License/NOTICE detector 的独立任务编号；Root/环境负责人恢复锁定 Python，Luna独立验收并发布当前离线批次；后端 B 随后并行推进 Detector 0.3、B04生产来源 adapter 和 Bench/错误分类准备。A 提供固定 scan/facts、metadata 生命周期、NoticeDraft/Report binding、受控 runner/POSIX receipts；前端按冻结 API 完成状态忠实展示与浏览器回执；真人完成 Gold 与权利/适用性复核。
+- **关联分支、提交、PR、Issue或 evidence_id**：当前 `codex/scan-reliability-integration@9d67b88f39fa4aaa8ab24048aea224204eabd490`，与 `origin/integration/p1` 同点；本轮无提交、推送、PR、Issue 或 evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 10,000～18,000，已在范围内完成全部只读分析、定向复验与依赖分层，未扩大到实现或发布。
+
+## 20260923-0300-GPT5-统一回归与发布准备
+- **状态**：START
+- **作者与角色**：GPT-5 / Root Coordinator（Python 环境恢复、统一回归、状态收口、发布）
+- **范围**：按用户授权恢复 Python 3.12、执行 B01/B02 unit/security/compileall 与 B01-B07/P2B 离线回归，纠正文档状态漂移，交 Luna 独立验收；门禁通过后仅提交并推送当前 B 工件。不得修改 A snapshot/Report/Task/前端或启动服务。
+- **开始前确认**：已阅读 README、完整工作日志、PROJECT_PROGRESS、SOL_HANDOFF、分支/状态/提交；启用 python-testing 规范。当前 `.venv` 指向缺失 3.12，`py` 仅发现 3.10；现有未提交 B 工件由本轮用户明确授权统一处理。
+- **验收与估算**：Python 3.12 版本/依赖核验、B01/B02 pytest/security/compileall、Node/Java/P2B 门禁、Luna 只读验收、diff/敏感信息/Git 发布检查；预计 12,000–20,000 token，精确 token 不可得。
+### 20260923-0300-GPT5-统一回归与发布准备 COMPLETE
+
+- 作者：GPT-5 / Root；时间：2026-09-23 Asia/Shanghai。
+- 目标与结果：按用户授权恢复 Python 3.12、统一回归 B01/B02/B03/B04/B05/B06/B07/P2B，并纠正文档漂移。已安装用户级 CPython 3.12.10、重建 `.venv`（环境文件未纳入仓库）；B01 v2 确认 5 模型+5 数据集和 4 类离线反例；B02 candidate matrix、B03/B04 v3、B05 运行准备、B06 工具、B07 receipt 汇总和 P2B 交付门禁均已覆盖。
+- 修改：B fixtures/tests/bench 工具与基线、`docs/p1`、`docs/spec`、本日志、项目进度和 AI 使用日志；未修改 A 快照、报告、任务或前端。
+- 验收：`pytest ...test_p1_huggingface_metadata_parser... test_p1_license_notice_facts_detector...` 为 70 passed；`compileall -q backend/app` 成功；`mvn ... -Dtest=HuggingFaceResourceProfileV2FixtureTest test` 成功；四个 Node 合同套件 15 passed；P2B 基线门禁 valid=true、204 artifacts、12 来源绑定、稳定排序与漂移检查均为 true。
+- 决策与边界：B06 坚持双独立真人，不冻结 Gold；amendment 校验 human 提议/审批及前后目标工件 SHA-256；B07 只接收受控 receipt 且强制环境/总耗时；P2B 校验直接和 `source_refs` provenance。无联网 fixture 抓取，不认定授权或许可证适用性。
+- 独立复核：Luna 首轮发现 B06 和来源门禁缺口，已修复并已请求最终复验；在最终结论到达前不提交、不推送。风险：`backend` editable install 仍因 flat-layout 的 `app`/`java` package discovery 失败，本轮使用显式开发依赖完成测试；该打包配置问题未改动。
+- 分支/发布：`codex/scan-reliability-integration`；Luna 最终复验已允许发布当前 B01--B07/P2B 离线批次，Git diff 门禁通过；本记录随统一提交，随后由 Root 推送。精确 token 不可获得；开工估算 20k--35k。

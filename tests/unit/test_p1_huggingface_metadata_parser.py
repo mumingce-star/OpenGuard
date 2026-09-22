@@ -219,7 +219,9 @@ def test_existing_parser_port_accepts_implementation_output() -> None:
 @pytest.mark.parametrize("record", V2_MANIFEST["records"], ids=lambda row: row["case_id"])
 def test_v2_fixed_snapshots_extend_model_dataset_coverage(record: dict) -> None:
     path = V2_FIXTURE_ROOT / record["fixture"]
-    assert hashlib.sha256(path.read_bytes()).hexdigest() == record["source_file_sha256"]
+    source_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert source_hash == record["source_file_sha256"]
+    assert source_hash == record["source_observation_sha256"]
     snapshot = json.loads(path.read_text(encoding="utf-8"))
 
     result = _parse(snapshot)
@@ -238,7 +240,34 @@ def test_v2_fixed_snapshots_extend_model_dataset_coverage(record: dict) -> None:
     assert "license_expression_id" not in fields
 
 
-@pytest.mark.parametrize("case", V2_MANIFEST["counterexamples"], ids=lambda row: row["case_id"])
+def test_v2_fixture_contract_has_exactly_five_models_and_five_datasets() -> None:
+    kinds = [record["resource_kind"] for record in V2_MANIFEST["records"]]
+    assert kinds.count("model") == 5
+    assert kinds.count("dataset") == 5
+
+
+def test_v2_illegal_input_fixture_fails_closed_without_a_conclusion() -> None:
+    case = next(case for case in V2_MANIFEST["counterexamples"] if case["case_id"] == "hf-illegal-identity")
+    path = V2_FIXTURE_ROOT / case["fixture"]
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == case["source_file_sha256"]
+    snapshot = json.loads(path.read_text(encoding="utf-8"))
+    temporary = _temporary(snapshot)
+
+    with pytest.raises(ValueError, match=case["expected_error"]):
+        HuggingFaceMetadataParser().parse(
+            provider="huggingface",
+            resource_kind="model",
+            resource_identity=snapshot["payload"]["id"],
+            temporary_metadata=temporary,
+            source_descriptor=temporary.source,
+        )
+
+
+@pytest.mark.parametrize(
+    "case",
+    [case for case in V2_MANIFEST["counterexamples"] if "expected_gaps" in case],
+    ids=lambda row: row["case_id"],
+)
 def test_v2_counterexamples_preserve_gaps_without_raw_leakage(case: dict) -> None:
     path = V2_FIXTURE_ROOT / case["fixture"]
     assert hashlib.sha256(path.read_bytes()).hexdigest() == case["source_file_sha256"]

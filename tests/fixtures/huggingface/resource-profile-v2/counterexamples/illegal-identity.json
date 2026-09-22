@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"model","payload":{"id":"invalid identity","sha":"ffffffffffffffffffffffffffffffffffffffff","private":false,"gated":false,"disabled":false,"cardData":{"license":"mit"}}}

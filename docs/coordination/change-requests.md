@@ -1,5 +1,37 @@
 # Cross-owner change requests
 
+## CR-20260923-P0B05-run-preparation-artifacts
+
+- 提出者：用户，2026-09-23；状态：执行中。
+- 目标：固化 B05 离线评测运行准备的 detector、config、input、prediction/result artifact 格式、manifest SHA-256 校验与错误分类入口；在真实人工 Gold 冻结前，禁止计算、写入或展示 Precision、Recall、F1。
+- 所有权与影响：Bench fixture、测试与 B05 规范通常属于 Luna；用户明确授权 Root 直接修改这些离线材料。不得修改公共 API、Assessment、正式风险结论、现有 Gold 人工结论或 Bench 2.0 公共 Schema。
+- 契约边界：Hash 仅绑定仓库内 artifact 字节；`gold.json` 继续是非人工的 development placeholder。运行前置条件和错误分类仅为离线准备协议，不执行 detector、不联网、不形成实际 prediction/result 或任何正式评测指标。
+- 验收：Node 复算 manifest 中每个 artifact 的大小/SHA-256、provenance 和 artifact 闭包；显式断言 Gold 未冻结时 `metrics=null`，且所有 artifact 不含 Precision/Recall/F1；错误分类入口必须固定且不产生误导性指标。
+
+## CR-20260922-P0B01-five-by-five-offline-fixture
+
+- 提出者：用户，2026-09-22；状态：执行中。
+- 目标：将 `tests/fixtures/huggingface/resource-profile-v2/` 的固定离线回归样本由 2 个模型 + 2 个数据集扩展为 5 + 5，并补齐来源观察 SHA-256、缺失/冲突/非法输入反例和离线副作用门禁。
+- 所有权与影响：该目录和对应测试通常由 Luna 负责；用户已明确授权 Root 直接修改。保留 v1/v2 既有记录，不改公共 Schema、默认工厂、transport 或生产 API。
+- 契约边界：fixture 仅为固定、脱敏的离线 JSON 观察。Hash 只证明仓库内文件字节与 manifest 的绑定；不联网抓取，不认定当前上游状态、授权、许可证表达式或许可证适用性。
+- 验收：manifest 精确固定 5 model + 5 dataset 和每个 source observation hash；缺失/冲突保持 pending gap，非法输入失败关闭；单测禁止 socket/subprocess，运行 B01 定向 pytest、compileall 与 diff 检查。
+- 2026-09-23 补充：用户明确授权以 Java 离线契约测试与 Maven 编译替代当前不可运行的 Python pytest/compileall 回执。替代范围只验证 fixture 结构、Hash、pending/无升级与非法 identity 失败关闭；不宣称已替代 Python parser 的行为回归，也不迁移或删除 Python 实现。
+
+## CR-20260923-P0B02-candidate-matrix
+
+- 提出者：用户，2026-09-23；状态：执行中。
+- 目标：基于已冻结 `notice-license-facts-v2` 增加 B02 detector 的正例、反例、误报与漏报候选矩阵及回归测试。
+- 所有权与影响：B02 Python detector/fixture/test 通常分别属于 Terra/Luna；用户明确授权 Root 仅增加离线 fixture、测试和规格。不得修改检测器公共导出、公共 API、Assessment、Task、NoticeDraft、Report 或正式风险结论。
+- 契约边界：正例只是 `review_required` 候选；反例是零候选事实；误报保护禁止把 NOTICE gap 变为违规；漏报保护只断言既有 fact gap/provider declaration 必须产生候选。该矩阵不是 Gold、FP/FN 指标或法律结论。
+- 验收：Python unit 直接调用内部 detector 并比对固定矩阵；Node 复算 facts/hash/matrix 一致性；无网络、无服务操作，`git diff --check` 通过。
+
+## CR-20260923-P0B03B04-approved-offline-observations
+
+- 提出者：用户，2026-09-23；状态：执行中。
+- 目标：扩充 B03/B04 已获许可的离线 License、NOTICE、版权和来源关系观察；每条绑定路径、locator、Hash、来源版本。
+- 所有权与影响：fixture/doc/test 通常属于 Luna；用户明确授权 Root 直接增加离线事实。不得生成或伪造 NOTICE 正文，不得以许可证表达式取代 NOTICE，不改 B02 输入、公共 API、Assessment 或正式风险结论。
+- 验收：来源必须为已有仓库内固定 v1 观察，每条带 source path/locator/content/container Hash/source version；Node/Java 验证零正文、pending/null、关系闭包和固定 Hash。
+
 ## CR-20260905-B1-B7-closure
 
 - Requested by: CZ, 2026-09-05.
@@ -54,3 +86,8 @@
 - 已有设计依据：`docs/spec/b-p1-01-resource-profile-draft.md` 第 6～8 节、`docs/spec/b-p1-05-bench-2-manifest.md`、`docs/spec/b-p1-06-bench-public-corpus-governance.md` 第 5～6 节。
 - 批准前约束：只允许离线、脱敏 fixture 和 Java 内部 Draft；不得联网、不得实现 metadata transport、不得修改 Domain/Assessment/公共 API，且不得从 provider 元数据推导许可证、授权或合规结论。
 - 请负责人逐项给出 `批准`、`驳回` 或 `需修订`，并记录 Schema/API 版本、迁移/回滚、脱敏与再分发策略、责任人和生效 revision。批准后才可进入 parser 接入、Gold、Detector 0.3、License Provenance/NOTICE Facts 与 holdout 阶段。
+## CR-20260923-B06-B07-P2B-offline-gates
+
+- 提出者：用户，2026-09-23；状态：执行中。
+- 范围：B06 双人独立真人盲审/分歧/FN-FP taxonomy/amendment 校验，B07 仅消费受控 Pipeline receipt 的性能汇总，以及 P2B B 工件交付质量门禁。
+- 边界：不生成或伪造真人 Gold，不允许 AI 或单人复核替代双人独立真人 Gold；不启动生产扫描，不把单次耗时作为性能结论；不修改 A 的 snapshot、Report、Task 或前端。

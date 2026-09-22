@@ -1403,3 +1403,49 @@ AMENDMENT：上一段“本机 B02 pytest 回执未具备”已关闭。B02 现�
 - 接口与语义：新增内部 B01 parser export 和 B02 detector API；未改变公共 HTTP/Frozen Schema。所有 license/NOTICE/provider 结论继续保持 `pending`/`review_required`，不自动生成授权、正式许可证表达式、确认违规或 Obligation。
 - GitHub 状态：任务分支与 `integration/p1` 已发布；本机未安装 `gh` CLI，故没有创建 GitHub PR 对象或远端 Review 记录，本轮采用本地逐文件审阅、测试门禁、远端基线/祖先核对和可拒绝非快进的直接 fast-forward 集成。后续若仓库要求 integration 分支也必须经 PR，应安装 `gh` 或在网页补建治理记录，但无需重写本次提交。
 - 尚未关闭：B06 真人 Gold/FN、B07 性能分布、真实 HF transport 独立验收、A 线生产 Profile/NOTICE/Report 绑定、前端端到端、Windows `fcntl` 可移植性、异机复现和最终材料门禁。
+
+## 2026-09-22：P0B01 离线 fixture 5+5 扩展（待 Python 回归）
+
+- 已完成：`resource-profile-v2` 现固定 5 个 model、5 个 dataset；正例各自的 `source_file_sha256` 与 `source_observation_sha256` 都可离线复算。新增非法 identity fixture，保留既有缺字段、声明冲突和不支持字段反例。
+- 语义门禁：所有正例仍只能生成 `pending` observation；缺失/冲突为 coverage gap，非法 identity 为 `metadata_invalid` 失败关闭。Hash 只绑定仓库中的脱敏离线字节，未联网抓取，也不表示上游当前状态、授权、许可证表达式或适用性。
+- 验证：PowerShell 离线 manifest 检查确认 5+5、10 个正例双 Hash、4 个反例 file Hash；`git diff --check` 通过。项目 `.venv` 引用缺失的 Python 3.12，本机 `py -3.10` 也无法启动，故新增 pytest/compileall 尚无可执行回执。
+- 未完成：恢复受控 Python 环境后运行 B01 unit/security，Luna 独立篡改与异机复验，真实 transport 观察及 A 线 Profile/Report 冻结消费仍不属于本项；未提交、未推送。
+
+### Java 替代门禁回执
+
+Python 环境不可用期间，新增 Java 离线 fixture 契约门禁并已通过 Maven 编译与执行：`HuggingFaceResourceProfileV2FixtureTest` 为 3/3 通过。它复算 5+5 正例的双 SHA-256、保持 `pending`/空许可证表达式，并验证缺失/冲突不升级及非法 identity 拒绝。该回执替代本轮的 fixture 完整性门禁，**不**替代 Python parser 的行为回归或 `compileall`；Python 解释器恢复后仍须补跑原定向测试。
+
+## 2026-09-23：P0B02 固定候选矩阵扩展（Python 动态回归待补）
+
+- 已完成：新增 B02 candidate matrix，覆盖固定 v2 facts 的全部 17 个 `review_required` 候选、2 条零候选 dependency 反例、NOTICE gap 非违规误报保护和所有既有 gap/provider declaration 不得漏报的闭包检查。
+- 语义门禁：矩阵只断言内部候选；全部保持 `pending`、空正式 expression、`confirmed_violation=false`，禁止 `formal_risk`/`obligation` 候选。它不是 B06 Gold、FP/FN 指标、Assessment 或正式风险结论。
+- 验证：Node 离线契约测试 2/2 通过，复算 fixed facts canonical Hash、矩阵穷举映射与保守边界；`git diff --check` 通过。Python unit 已新增直接 detector 断言，但项目 Python 解释器仍不可用，待环境恢复后补跑。
+- 未完成：Python B02 unit/security 动态回归、Luna 独立篡改/异机验证、B05/B06/B07 与 A 线冻结消费；未提交、未推送。
+
+## 2026-09-23：P0B03/B04 已许可 archive 离线观察扩充
+
+- 已完成：v3 旁路库存新增四条已在 v1 固定的 archive License/NOTICE/copyright/source relationship 观察，分别绑定 facts 路径、archive locator、内容/容器/来源文件 Hash、来源 URL 和版本。
+- 语义门禁：不复制或伪造 NOTICE 正文/摘要；NOTICE 仅由独立关系状态表达。全部授权仍为 `pending`、正式 expression 为 `null`，许可证文本观察不替代 NOTICE 或其适用性。
+- 验证：重新生成 v3 facts 以对齐当前固定 source revision，Node v3 离线测试 5/5 通过、`git diff --check` 通过；未联网、未启停服务、未提交/推送。
+- 未完成：archive 原文的独立人工核验、v3→B02 适配器冻结、Luna 独立篡改/异机验收和生产消费仍待完成。
+
+## 2026-09-23 B05 评测运行准备固化（本地完成，非正式评测）
+
+- 已完成：`development-detector-v1` 固化 detector → input → config → prediction → result artifact 闭包、manifest 文件大小/SHA-256 与 provenance 复算、运行前 Hash 验证要求和错误分类入口。
+- Gold/指标门禁：development placeholder 显式为 `human_gold_frozen=false`，Bench freeze 为 `draft`；因此 evaluation 仅请求 `smoke`。`prediction/result` 均为 `not_executed`，`metrics=null`，结果可见性锁定到人工 Gold 冻结之后；未计算、写入或展示 Precision/Recall/F1。
+- 验证：Node 离线合同测试 3/3 通过；Java Bench CLI 验证 manifest `valid=true` 且 derived/requested tier 均为 `smoke`；`git diff --check` 通过。JUnit 定向套件仅在 Windows 临时目录 ACL 清理阶段 13 errors，未出现断言失败，故不用作本项通过依据。
+- 未完成：B06 人工 Gold/FN 治理和冻结、真实 detector 运行生成不可变 prediction/result revision、独立篡改/异机验收与 B07 性能评测；未提交、未推送、未创建 PR。
+
+## 2026-09-23 B06/B07/P2B 离线工具门禁
+
+- B06：双人盲审包既有隔离规则不变；新增分歧汇总和 amendment 校验，明确 AI/单人不能替代独立真人 Gold。尚无真实第二审、裁决或冻结 Gold。
+- B07：新增仅消费受控非生产 Pipeline receipt 的汇总器；要求至少两个样本，输出样本数、p50/p95、失败率、阶段耗时和环境摘要，禁止把单次或生产扫描当性能结论。
+- P2B：新增 B 工件 Hash、敏感模式、JSON、稳定排序与 fixture 漂移质量门禁；不修改 A 线快照、报告、任务或前端。
+- 验证：Node 合同测试 2/2、B05 回归 3/3、`git diff --check` 通过；未提交、未推送。
+## 2026-09-23 B 工件统一回归状态更正
+
+本节优先于本文件中较早的 B 状态快照。B01 的离线 fixture 已为 **5 个模型 + 5 个数据集**，含来源观察 Hash 与 4 类不联网反例；B02 已有固定 License/NOTICE facts candidate matrix，且未改公共 API、Assessment 或正式风险结论；B03/B04 已是绑定路径、locator、内容/容器 Hash、来源版本的 v3 事实库存，不包含或伪造 NOTICE 正文，也不以许可证表达式取代 NOTICE。
+
+B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误分类入口，在 Gold 冻结前不展示 Precision、Recall 或 F1。B06 仅提供双人盲审、分歧、taxonomy 与 amendment 校验工具，仍等待独立真人审阅，绝不冻结 Gold。B07 receipt 汇总器已存在且只汇总受控样本；它不启动生产扫描、不会把单次耗时解释为性能结论。P2B 门禁现校验 B 工件 Hash、已声明来源、敏感信息、稳定排序和基线 fixture 漂移；不改动 A 的快照、报告、任务或前端。
+
+本轮验收：Python 3.12 环境已修复；B01/B02 Python unit/security 为 70 passed，`compileall backend/app` 通过；B01 Java fixture 合同测试通过；B02、B03/B04、B05、B06、B07、P2B Node 统一回归为 15 passed。发布状态：待 Root 完成最终独立验收、提交与推送。

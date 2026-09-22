@@ -75,3 +75,7 @@ Bench artifact / Gold / 性能回执 ─> B05 / B06 / B07（独立后续）
 - 固定 fixture 仅代表采集时刻；远端当前响应只能形成新的观察回执。
 - B05–B07 未有原始 artifact、人工记录或测量回执时，不得报告准确率、召回率、F1、性能或
   真人审查完成度。
+
+## 2026-09-23 状态更正（AMENDMENT）
+
+本节优先于本文件中较早的状态快照：B01 `resource-profile-v2` 已是 5 model + 5 dataset，具有 4 类反例；B02 已有固定 candidate matrix；B03/B04 已扩展为 v3 离线库存及已许可 archive 观察（仍非 NOTICE 原文或许可证适用性结论）；B05 是 Gold 未冻结时的 smoke 运行准备；B06 有双人盲审/分歧/amendment 工具但没有实际双人 Gold；B07 已有受控 receipt 汇总器但没有真实性能结论。所有结论仍以当前 revision、Hash、独立验收和人工治理为准。

@@ -54,8 +54,10 @@ observation。
 
 离线验收保留 `tests/fixtures/huggingface/resource-profile-v1` 的 5 个 model、5 个
 dataset 固定快照与 3 个合成反例；新增独立的
-`tests/fixtures/huggingface/resource-profile-v2`，补充 2 个 model、2 个 dataset、
-字段缺失、声明冲突和不支持字段反例。v2 文件是固定回归输入，不是远端当前状态声明。
+`tests/fixtures/huggingface/resource-profile-v2`，固定为 5 个 model、5 个 dataset，
+并覆盖字段缺失、声明冲突、不支持字段和非法 identity。每个正例以 manifest 内
+`source_file_sha256` 与 `source_observation_sha256` 固定离线字节；Hash 仅用于可复算的
+fixture 完整性，不能证明远端当前状态、授权、许可证表达式或适用性。v2 不联网抓取。
 测试覆盖 manifest 精确映射、冲突/缺失语义、端口兼容、descriptor/body/revision/来源
 URL/采集时间篡改、重复键、非 object、非法 UTF-8、未知字段不泄漏、无 socket/subprocess
 副作用和输入不变性。
@@ -65,6 +67,14 @@ URL/采集时间篡改、重复键、非 object、非法 UTF-8、未知字段不
 ```powershell
 $env:PYTHONPATH='backend'
 python -m pytest -q tests/unit/test_p1_huggingface_metadata_parser.py tests/security/test_p1_huggingface_metadata_parser_independent.py
+```
+
+若受控 Python 解释器不可用，可运行 Java 离线 fixture 契约门禁作为**受限替代**：它复算 v2
+的 5+5 双 Hash、确认 pending/空许可证表达式，并验证非法 identity 拒绝；它不替代 Python
+parser 的语义回归或 `compileall`。
+
+```powershell
+mvn -q -s .mvn/settings.xml -f backend/java/pom.xml -Dtest=HuggingFaceResourceProfileV2FixtureTest test
 ```
 
 ## 后续责任

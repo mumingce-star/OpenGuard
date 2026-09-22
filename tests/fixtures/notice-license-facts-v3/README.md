@@ -7,3 +7,8 @@
 - 根 `LICENSE` 仅记录为文本已观察；依赖清单只证明其声明存在；AI 卡片的 license 值仅为 `provider_declared_unverified`。未发现 NOTICE/copyright 时是 `gap`，不等于违规。
 - 所有 `authorization_status` 均为 `pending`，所有 `license_expression_id` 均为 `null`。本包不构成授权、许可证解释、兼容性或合规结论。
 - v3 不替换 B02 所冻结的 v2 检测输入；接入 B02 前须另行冻结适配器和评审契约。
+
+`approved-archive-observations.json` 仅从既有 v1 固定 archive observations 引用四条已获许可的
+License/NOTICE/copyright/source relationship 事实。它保存 source path、archive locator、内容与容器
+Hash、来源版本和关系状态，但**不**保存 NOTICE 正文或 excerpt；`license_expression_id` 继续为 null，
+许可证观察绝不被当作 NOTICE 正文或适用性结论。

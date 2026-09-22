@@ -32,3 +32,22 @@ test('B02 fixed expectation stays conservative and hash pinned', () => {
     license_expression_autofill: false, provider_declaration_is_verified_license: false,
   });
 });
+
+test('B02 candidate matrix exhaustively guards fixed-fact omissions and overstatement', () => {
+  const facts = load('tests/fixtures/notice-license-facts-v2/facts.json');
+  const matrix = load('tests/fixtures/p1-integration-b-v1/candidate-matrix.json');
+  const expected = Object.fromEntries(facts.facts.map(fact => {
+    const candidates = fact.gaps.map(code => ({ category: 'evidence_gap', code }));
+    if (fact.relationships.license.state === 'declared_unverified') {
+      candidates.push({ category: 'unverified_license_declaration', code: 'LICENSE_DECLARATION_UNVERIFIED' });
+    }
+    return [fact.fact_id, candidates];
+  }));
+
+  assert.equal(digest(facts), matrix.source_package_sha256);
+  assert.deepEqual(matrix.expected_candidates_by_fact, expected);
+  assert.deepEqual(Object.keys(matrix.expected_candidates_by_fact).sort(), facts.facts.map(fact => fact.fact_id).sort());
+  assert.deepEqual(matrix.false_positive_guards.zero_candidate_facts, ['fact.dep.jackson-databind', 'fact.dep.springboot']);
+  assert.equal(matrix.false_positive_guards.forbidden_confirmed_violation, true);
+  assert.deepEqual(matrix.false_positive_guards.forbidden_candidate_categories, ['formal_risk', 'obligation']);
+});
