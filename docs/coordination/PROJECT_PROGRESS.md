@@ -1553,3 +1553,16 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 产品工厂仍未向 `create_default_app()` 注入 `notice_draft_service`，`ReportV2Service` 仍未提供 `notice_reader`；因此真实 NOTICE POST 仍为503，非空 notice refs 仍会409。
 - 205 History 与100/300/500 Graph 仍由 `frontend_acceptance.py` 生成，源文档明确标记 `synthetic only; no repository scan, legal conclusion or frontend performance claim`；仓库中没有正式 Registry SQLite 数据文件。
 - 因此，最新提交关闭的是后端 B 线离线算法/质量门禁，不是默认生产服务接线或真实运行数据导入。前端未完成门禁结论不变。
+
+## 2026-09-23 F01—F07 前端功能分支发布
+
+| 项目 | 当前结果 | 验证/发布状态 |
+|---|---|---|
+| 基线与分支 | 基于 `integration/p1@f63a581` 创建 `p1/xzb-frontend-f01-f07` | 功能提交 `ea374cb30051`；不合并 integration/main |
+| F01—F06 | History、Resource Cards、Graph、Remediation、Diff、Report V2 已集成现有 P1 React 工作台 | 102/102 测试、TypeScript、生产构建通过 |
+| F07 | 真实 API 只读全链路、URL 恢复、键盘、reduced-motion、窄屏、打印和 GET 无副作用 | 隔离 `8082` 浏览器 smoke 14/14；14 张截图留在 ignored output |
+| 安全与合规 | 无新依赖、无 Mock 进入真实模式、无前端推断许可证/授权/Obligation/正式结论 | diff check、冲突标记和新增内容敏感信息检查通过 |
+| 最新后端判断 | `f63a581` 新增内容属于离线 Bench/fixtures/tests/docs | 未解除生产 Notice/Report reader、真实规模数据和非空 Obligation 门禁 |
+| GitHub | 独立前端功能分支准备推送 | 不创建 PR、不合并，等待用户与团队验收 |
+
+当前可独立运行/演示：F01—F06、F07 只读链路、真实 Profile Metadata 刷新、已有 Remediation/Report 快照，以及后端缺失/partial/error 的不误导表达。尚未具备：生产 NoticeDraft 与 Report Notice reader、非空 Obligation、真实 205+ History、真实 100/300/500 Graph、可重复 CAS 双会话数据和异机发布回执。可报名、完整作品与获奖竞争力仍分别受真实生产数据/材料、发布审计/最终签收、人工 Gold/FN/对比和用户效果证据门禁约束；无统一分母，不换算百分比。

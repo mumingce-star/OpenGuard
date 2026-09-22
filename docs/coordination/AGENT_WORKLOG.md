@@ -7288,3 +7288,15 @@
 - 计划：快进本地基线至 `f63a581`，创建独立 `p1/xzb-frontend-f01-f07`分支并恢复成果；解决追加日志冲突；复跑单测、TypeScript/构建、真实API浏览器、diff-check、敏感信息与提交清单审计。验收通过后提交并推送功能分支，不合并 `integration/p1`/`main`。
 - 后续：推送后再获取团队最新远程，核对生产 Notice/Profile/Report/Obligation 与真实数据；仅在契约和真实API支持时继续改前端。最终在项目目录交付经渲染质检的 `.docx`。
 - 边界：不修改后端业务、DB、公共API、冻结语义或依赖；不用Mock/synthetic冒充真实结果；推送前不包含密钥、个人信息、本机路径或验收临时产物。预计20k—45k token，精确遥测不可得。
+
+### [20260923-0156-GPT6Astra-P1FrontendPublish] COMPLETE — F01—F07 前端成果完成发布前验收
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 01:56 +08:00。用户授权将既有前端成果上传团队仓库；本轮已在最新可获取的 `origin/integration/p1@f63a581` 上创建独立分支 `p1/xzb-frontend-f01-f07`，功能提交为 `ea374cb30051`。
+- 实际结果：完整恢复并提交 F01 History、F02 Resource Cards、F03 Graph、F04 Remediation、F05 Diff、F06 Report V2/Notice 缺失态与 F07 自动验收。没有修改后端业务、数据库、公共 API、依赖版本或正式评估语义，没有把 Mock、synthetic fixture、Finding、done/dismissed 或 AI 内容提升为正式结论。
+- 验证：`npm test` 102/102；`npm run build` 含 TypeScript 检查并通过，Vite 55 modules，JS 391.15 kB（gzip 120.54 kB）、CSS 57.27 kB（gzip 13.44 kB）；隔离 Docker `8082` 重建成功；真实 API 浏览器 smoke 14/14；`git diff --check`、合并标记检查和新增内容敏感信息检查通过。浏览器请求全部为 GET，运行前后持久化扫描身份不变。
+- 最新后端复验：`f63a581` 相对 `b76e532` 仅新增 Bench、fixtures、tests 与 docs，没有新增 `backend/app`、`deploy` 或前端生产代码。默认工厂仍未注入 NoticeDraft service，Report V2 仍无 Notice reader；205 History 与 100/300/500 Graph 仍为明确标记的 synthetic-only 验收基础设施。因此没有可安全新增的前端正式成功态，现有页面继续展示真实 503/409/缺失状态。
+- 修改范围：40 个文件、4524 行新增/34 行删除，集中在 `frontend/`、`docs/p1/f-p1-07-e2e-acceptance.md`、只追加协调日志和 `.dockerignore`。未纳入 `output/` 截图、运行数据、node_modules、本机绝对路径、密钥或临时产物。
+- 已知剩余：生产 NoticeDraft/Report reader、非空 Obligation、真实 205+ History、真实 100/300/500 Graph、可重复 CAS 双会话数据与跨机发布回执仍需后端或发布环境；前端已具备对应读取、错误、partial、回滚和语义保护。
+- 发布状态/下一步：目标为推送 `origin/p1/xzb-frontend-f01-f07`，不创建或合并 PR，不改 `integration/p1`/`main`；具名 stash 在远端推送成功前保留作恢复点。后端到位后复用现有真实浏览器脚本补成功态证据。
+- 项目门禁：当前可独立演示 F01—F06 与 F07 只读链路、真实 Profile Metadata 刷新、既有 Remediation/Report 快照和安全缺失态。可报名/可参赛仍需真实生产数据、异机与材料门禁；完整作品还需发布审计、CAS/受控失败和最终下载/打印签收；获奖竞争力还需人工 Gold、FN 治理、对比/消融和用户效果证据。无统一分母与权重，不报告百分比。
+- Token：本次运行精确 token 数不可获得；开工估算 20k—45k，任务在既定前端发布与文档范围内执行，未扩展到后端实现或合并。
