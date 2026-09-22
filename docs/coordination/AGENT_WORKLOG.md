@@ -6722,3 +6722,49 @@
 - 建议下一步及责任模型：Root/A 线接入不可变 Profile/NOTICE/Report；Luna完成真实资源、篡改、异机和真人 Gold/FN 验收；Terra/xzb完成生产链与前端端到端；Sol复核 provenance/风险语义和最终竞赛门禁。
 - 关联分支、提交、PR、Issue或 evidence_id：`codex/scan-reliability-integration`、`integration/p1`、产品提交 `f3e51f5173cb316b68377cf15ea17725d9b84a1e`；无 PR/Issue/evidence_id。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 20,000～35,000，已在原范围内完成审阅、测试、提交、推送和集成；仅因 `gh` CLI 缺失把“创建 PR 对象”调整为可验证的直接 fast-forward，不扩大产品范围。
+
+### [20260922-1349-GPT-6-Astra-notice-core-gate] BLOCKED — untouched full baseline exceeds approved failures
+
+- GPT-6 Astra / Backend A，Owner 指定任务 P1 NoticeDraft Backend Core。fetch 后 origin/integration/p1=9d67b88f39fa4aaa8ab24048aea224204eabd490；从 exact SHA 新建 feat/p1-notice-draft-backend 隔离 worktree，初始 clean。History/Graph 与 Profile worktree 保留，未复制或移动其未提交文件。
+- 本轮 Owner 单独批准近期相关完整阅读+历史定向检索替代全文历史日志，不降低验收门槛。实际时序明确：为满足 Q1 untouched baseline，先运行完整测试并记录 clean/源码 Hash，再追加本条；没有产品 START 或实现，不倒填先于测试的日志。已读 AGENTS、任务书、Frozen Notice/common/Schema 说明及 NOTICE/B03/B04 相关日志；其余深入实现阅读因基线门禁停止。
+- 命令：现有 Python3.12.14，PYTHONDONTWRITEBYTECODE=1，PYTHONPATH=backend，OPENGUARD_RUN_LOOPBACK_TESTS=1；pytest -q -p no:cacheprovider --tb=short tests/unit tests/security --junitxml=<new-evidence>/baseline.xml。无 -k/deselect、无修改 skip/xfail/断言；不启用真实 Git/Qwen/外部工具 opt-in，未操作 Docker、未启动生产 API。
+- 完整结果 2472 passed / 11 failed / 4 skipped / 2 warnings，122.40s，2487 节点；测试结束 tracked/untracked 非 ignored 状态 clean 且全部受管文件 Hash 不变。2 个已知 B01 v2 model 缺件真实复现；额外6个 AUDIT-009 real_process_cleanup 测试使用 Linux prctl（本机 macOS 无此符号），1个 P1 fixture generator 因 PATH 无 node 失败，另2个为 ScanCode 错误文案 regex 与旧六路由 OpenAPI 精确集合不一致。后两者不是 NoticeDraft 回归，本轮尚无产品改动。
+- 4 skipped 是既有 real ScanCode、Syft、public Git、Ollama 测试自身 opt-in 条件，不冒充通过、不删除或主动跳过既有节点；2 warning 为 Starlette alias 与多线程 fork 提示。未满足 Owner 仅允许2项失败的门槛，Result=BLOCKED。不能将额外失败静默加入许可清单或开始越界修复 scanner/既有测试。
+- 仅新 worktree 两份 append-only 日志与 ignored evidence 改变；NoticeDraft DTO/Store/Service/API/adapter/fail-first/targeted 未实施，Report V2、cz inputs、Profile 全不改。证据 output/manual-fixes/p1-notice-draft-backend-20260922T054545Z，含命令、untouched input Hash、JUnit、原始日志和分类回执；不生成虚假实现通过证明。
+- 下一步 Owner 决定额外基线问题的独立修复/环境复验安排；本任务不继续开发。既有产品能力未改变，NoticeDraft、Report NOTICE 接入、前端/跨平台/竞赛验收仍待，无完成百分比。本轮没有新增可演示业务能力或发布。NO add/commit/push/merge/deploy；两个旧现场全文件 Hash/HEAD/status 收尾复核。无子智能体。未在执行前给出 token 估算，属记录遗漏，不补造；本次运行精确 token 数不可获得。STOP。
+
+### [20260922-1403-GPT-6-Astra-notice-core-resume] START — Owner Q2 baseline fingerprint
+
+- GPT-6 Astra / Backend A；Owner Q2 明确批准冻结 untouched baseline 11 个失败，不修这些既有问题，解除上一记录的基线数量 blocker。原 BLOCKED 与证据保留；已由原 JUnit 固化完整 node ID、分类、断言及 traceback，不重跑或改写基线。
+- 仍为 feat/p1-notice-draft-backend@9d67b88f39fa4aaa8ab24048aea224204eabd490；开工只有上一轮两份日志 dirty。原 History/Graph 和 Profile worktree 不修改。Owner approved a task-scoped exception to full-worklog reading: recent relevant records were read completely and older history searched by targeted keywords; this changes context-loading only.
+- 范围：新增 NoticeDraft DTO、A-owned v2 reader/校验边界、immutable SQLite store、Service、API、定向 unit/security 测试和最小说明；必要修改 models.py/main.py；两份日志仅追加。Frozen Schema、cz facts/detector/scanner、Report V2 产品不改；默认工厂不接 fixture。无网络、生产 API、Docker、子代理、stage/commit/push/merge/deploy。
+- 验收：先永久 fail-first，targeted + fixture-backed real service TestClient/SQLite restart，再完整 unit/security；新增 Notice 全通过，最终失败节点只能为冻结 11 项的子集，4 既有 opt-in skips 不增，不新增 xfail/deselect/skip。独立 Notice OpenAPI 测试，不修旧六路由 stale mismatch。证据写 ignored output/manual-fixes/p1-notice-draft-backend-resume-20260922T060321Z，保留全部失败轨迹。
+- 开工 token 估算 20,000–35,000；精确 token 遥测不可获得。收尾验证源码/测试与旧现场 Hash、日志 append-only、diff check，交 Owner Review 后停止。
+
+### [20260922-1432-GPT-6-Astra-notice-core-local] COMPLETE — local only, pending Owner Review
+
+- GPT-6 Astra / Backend A；P1 NoticeDraft Backend Core 本地实施及 Owner Q2 门禁完成。分支 feat/p1-notice-draft-backend，HEAD 仍 9d67b88f39fa4aaa8ab24048aea224204eabd490。此前 BLOCKED 及全套基线证据不改写；Q2 冻结的11失败仍保留，不宣称全套零失败。未暂存、提交、推送、合并或部署。
+- 新增 NoticeDraft DTO、notice_facts.py A-owned v2注入式port与结构/Hash/闭包校验、notice_draft.py Service、notice_draft_store.py私有immutable SQLite、api/notice_draft.py、4份永久unit/security测试和docs/p1/notice-draft-backend.md。必要修改main.py/models.py及3份公开路由契约测试；后者仅补正式Notice两路由/数量16→18，基线旧六路由stale断言不改。两份日志仅追加，合计16个本地新增/修改文件，完整清单和Hash见回执。
+- 语义：只消费未修改v2；pending不升级，expression/obligation不推断，gap不是违规；仅源关系支持的NOTICE excerpt进入text，其余null+missing。resource/evidence只唯一精确映射，归档/provider在P0无法完整证明时空引用+稳定gap；不把ev.*冒充scan evidence。固定completed/partial ScanRun+Formal Assessment及facts_hash；queued/running not_ready，failed/cancelled not_comparable。content_hash仅排除自身，包含ID、时间和provenance；package独立可信Hash与fixed binding共同约束内部幂等fingerprint。
+- Store显式初始化0700/0600、exact schema/version、只读非创建GET、异常库不迁移、行↔payload/content hash/请求key绑定、BEGIN IMMEDIATE幂等。相同固定输入的新key复用快照，不覆盖。GET不调用上游registry/Assessment/reader/scanner/AI/网络；default生产不接fixture、不初始化Notice库。公开POST未配置503 feature_disabled，GET无存储404 not_found；保留Acceptance /1和/2原不可用GET行为，不隐藏新API。
+- fail-first：4项预期失败（DTO、Store、Service缺失和404路由），保留原日志。中间失败轨迹：沙箱loopback权限导致1失败→同baseline权限复验；新Store journal exists/stat并发竞态→原子lstat；首轮full新增3个旧Acceptance GET期待404而收到503→仅修新Notice GET默认语义，不改Acceptance断言/产品。另补严格UTC格式拒绝compact日期。未改测试来掩盖这些失败。
+- 最终命令：Python3.12.14，PYTHONDONTWRITEBYTECODE=1，PYTHONPATH=backend，OPENGUARD_RUN_LOOPBACK_TESTS=1，pytest -q -p no:cacheprovider --tb=short tests/unit tests/security --junitxml=.../regression-final.xml；无过滤/deselect/新增skip/xfail。最终targeted-reviewed 183 passed / 0 failed / 0 skipped / 1 warning；完整2549 passed / 11 failed / 4既有opt-in skipped / 2 warnings，125.63s，2564 unique节点；原2487节点全部保留，77新增Notice节点全部PASS。失败node集合与untouched baseline相同，无新失败；B01×2、prctl×6、Node×1、ScanCode×1、旧OpenAPI×1根因仍属已冻结类别。测试前后源文件Hash完全一致。
+- FIXTURE_BACKED_REAL_SERVICE_ACCEPTANCE：真实Service+SQLite+FastAPI TestClient，v2 root/dependency/AI共8 entries、2 observed NOTICE excerpts；重开Store后5次GET字节相同，DB Hash不变，ScanRun/Assessment未改。只用本地固定输入，不是production live NOTICE scan，不运行Docker/生产API/Live HF/外部AI。被复用的既有测试可能启动自身loopback进程，不是生产服务。
+- 证据：output/manual-fixes/p1-notice-draft-backend-resume-20260922T060321Z，含baseline-failure-fingerprint、所有fail-first/中间失败/最终JUnit和命令、regression-comparison、最终fixture acceptance、测试源码Hash及最终receipt/source-hashes/working-tree.patch。最后3项在日志追加后固化，包含未跟踪新文件，绝不git add。原output证据保留。
+- 保护核验：原History/Graph与Profile两个worktree HEAD/branch/status及受管/未忽略文件Hash与untouched baseline快照完全一致。PREVIOUS_TASK_WORKTREE_PRESERVED；PREVIOUS_UNCOMMITTED_LOGS_LEFT_UNCHANGED。cz fixtures/detector/scanner、Frozen Schema、Report V2产品无变化；v3不消费，Report notice_refs仍未接。
+- 进度：本轮Backend A本地Notice Core可注入reader演示并等Owner Review；此前Backend A审计修复及Remediation/Report接线能力保留。生产per-scan Notice facts reader、Report Notice消费、前端联调/生产验收、cz缺件及跨平台环境修复仍待相应Owner/A/cz/xzb关闭；未新增GitHub发布。可参赛/完整作品/获奖门槛还需真实资源、端到端、部署安全、独立评测和材料验证，不编造百分比。建议Owner审查当前exact源码与证据，再单独批准下一包。
+- token：本次运行精确token数不可获得；开工估算20,000–35,000，完成原范围但无法核定实际是否处于估算内。串行无子代理，未增加任务范围。NO COMMIT / NO PUSH / NO MERGE / NO DEPLOY；STOP。
+
+### [20260922-1803-GPT-6-Astra-notice-owner-r1] START — two Owner findings only
+
+- GPT-6 Astra / Backend A；Owner CHANGES REQUESTED，仅修 NoticeDraftService malformed scan ID 分类和 NoticeDraftStore parent/DB/sidecar euid 检查，不重构。预计只改 notice_draft.py、notice_draft_store.py、既有 Notice API/Store 测试及两份append-only日志。
+- feat/p1-notice-draft-backend@9d67b88f39fa4aaa8ab24048aea224204eabd490；原16个本地文件Hash与已Review清单全部一致，两个旧worktree HEAD/状态/受管及未忽略文件Hash与基线一致，保留全部成果。沿用本任务已批准日志阅读例外，不重复读取未变的大文件。
+- 先新增永久R1 fail-first，再最小实现、Notice targeted、完整unit/security；仍以冻结11失败集合/4既有skip为上限，无新增skip/xfail/deselect。新证据output/manual-fixes/p1-notice-draft-owner-r1-20260922T100320Z，不覆盖旧证据；无外网/Docker/生产API/子代理/commit/push/merge/deploy。token估算4,000–8,000，精确值不可获得。
+
+### [20260922-1803-GPT-6-Astra-notice-owner-r1] LOCAL COMPLETE — pending Owner Final Review
+
+- R1-1：registry_invalid_argument现映射invalid_argument/scan_id_invalid；永久POST用例确认HTTP400、facts_reader零调用、Notice DB字节Hash不变。not_found及其他storage分类保留，GET immutable store-only路径未改。
+- R1-2：parent、notice_draft.db及存在的-wal/-shm/-journal均校验st_uid==os.geteuid()，异常storage_unavailable；保留原symlink/regular/nlink/private/schema检查，不自动chmod/chown。5项ownership测试通过stat/lstat模拟异主，不要求真实root/chown。
+- 验证：6项永久fail-first全部按预期失败后修复；Notice targeted 83 passed/0 failed/0 skipped/1 warning；完整tests/unit+tests/security为2555 passed/11 failed/4 skipped/2 warnings，失败集合与冻结baseline一致，无新增skip/xfail/deselect。原2487 baseline节点及上一轮2564节点全部保留，本次新增6项均通过；测试期间源码Hash不变，测试后仅追加日志。
+- 本轮相对已Review现场只改2份Notice源码、2份Notice测试和2份日志，累计原16项未提交成果保留；原证据不覆盖。新receipt/source-hashes/working-tree.patch写入output/manual-fixes/p1-notice-draft-owner-r1-20260922T100320Z。两个旧worktree HEAD/branch/status/文件Hash核验不变；PREVIOUS_TASK_WORKTREE_PRESERVED；PREVIOUS_UNCOMMITTED_LOGS_LEFT_UNCHANGED。
+- 未修改cz facts/v3/Report V2/Profile/History产品；仅隔离本地测试loopback，无外网、Docker或生产API操作。NO COMMIT / NO PUSH / NO MERGE / NO DEPLOY。等待Owner最终Review，不自动开展其他工作；精确token不可获得，无法核定估算符合性。STOP。

@@ -330,6 +330,44 @@ class P1Binding(P1Model):
     algorithm_refs: list[P1AlgorithmRef]
 
 
+class P1NoticeObligationRef(P1Model):
+    namespace: Literal['scan', 'assessment']
+    source_id: Text
+    obligation_id: Text
+
+
+class P1NoticeEntry(P1Model):
+    entry_id: Text
+    resource_ids: list[Text]
+    license_expression_ids: list[Text]
+    obligation_refs: list[P1NoticeObligationRef]
+    evidence_refs: list[P1EvidenceRef]
+    text: Text | None
+    missing: list[Text]
+
+
+class P1NoticeDraft(P1Model):
+    schema_version: Literal['1.0']
+    draft_id: Text
+    binding: P1Binding
+    created_at: Utc
+    generator_version: Text
+    entries: list[P1NoticeEntry]
+    coverage_gaps: list[Text]
+    content_hash: Hash
+    provenance: P1HistoryProvenance
+
+    @model_validator(mode='after')
+    def utc_timestamps(self):
+        from datetime import datetime
+        import re
+        for value in (self.created_at, self.provenance.generated_at):
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z', value):
+                raise ValueError('notice_timestamp_invalid')
+            datetime.fromisoformat(value[:-1] + '+00:00')
+        return self
+
+
 class P1SnapshotSection(P1Model):
     authority: Literal[
         'scan_facts',
