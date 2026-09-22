@@ -1,5 +1,54 @@
 # 最小本机部署
 
+## Resource Profile metadata（独立 opt-in）
+
+正式入口仍为 `app.api.main:create_default_app`，使用Python 3.12及项目现有锁定依赖。
+`OPENGUARD_ENABLE_PROFILE_METADATA`只接受精确0/1，默认0；
+与ASSESSMENTS、AI、PUBLIC_GIT、EXTERNAL_SCANNERS独立。Compose只透传该开关，
+沿用原data卷，不新增卷或放宽安全配置。
+
+关闭时基础Profile GET可用，refresh返回503 feature_disabled；不创建缺失的metadata.db，
+不删除或改写已有库（关闭时不承诺展示sidecar观察）。启用时在现有私有数据根初始化metadata.db，
+初始化失败拒绝启动、不自动修库。启动和GET不抓取，只有显式POST refresh访问HF metadata。
+不下载权重/数据集，不接受任意URL、headers、token或revision override。
+
+已有环境可复用现有uvicorn入口（示例不是部署授权；data根应私有，端口须空闲）：
+
+```sh
+export OPENGUARD_DATA_DIR="$PWD/profile-local-data"
+export OPENGUARD_ENABLE_PROFILE_METADATA=1
+export OPENGUARD_ENABLE_AI=0 OPENGUARD_ENABLE_PUBLIC_GIT=0
+export OPENGUARD_ENABLE_EXTERNAL_SCANNERS=0 OPENGUARD_ENABLE_DURABLE_ZIP=0
+export OPENGUARD_ENABLE_ASSESSMENTS=0
+export OPENGUARD_WEB_ORIGINS=http://127.0.0.1:8000
+PYTHONPATH=backend python -m uvicorn app.api.main:create_default_app --factory --host 127.0.0.1 --port 8000
+```
+
+xzb从真实扫描创建响应或既有History取得scan_id；从
+`GET /api/v1/scans/{scan_id}/resources`取得resource_id；
+再从`GET /api/v1/scans/{scan_id}/resources/{resource_id}/profile`
+取得`scan_ref.facts_hash`，不要从局部页面JSON自行计算Hash。
+仅刷新服务支持的HF AI资源；普通依赖不是任意URL抓取入口。
+
+```http
+POST /api/v1/scans/{scan_id}/resource-profiles/refresh
+Content-Type: application/json
+
+{"resource_ids":["<resource_id>"],"expected_facts_hash":"<Profile.scan_ref.facts_hash>","idempotency_key":"profile-refresh-001"}
+```
+
+随后`GET /api/v1/scans/{scan_id}/resource-profiles/jobs/{job_id}`及上述Profile GET。
+相同幂等请求返回原Job、不重复fetch；新观察用新幂等键。facts_hash冲突返回409，
+非法输入400；上游失败通常体现为HTTP200 Job的failed及items[].error_code，不能仅看HTTP状态。
+pending/gap和metadata字段verified均不等于authorization verified或许可证授权。
+ScanRun、Formal Assessment、许可证与授权事实不会被metadata刷新改写。
+
+保持同一数据根和开关重启可读取原Job/Observation，不重新fetch；
+仅Profile顶层provenance.generated_at允许变化，已保存Observation与Hash保持。
+前端沿用已批准的同源代理/Origin配置，不伪造Sec-Fetch-Site，不放宽网络边界。
+本说明不依赖Mac绝对路径/旧数据库；验收子进程结束后停止，不代表长期在线服务。
+NOTICE生产reader仍未配置，当前Notice路由、Task/Report业务保留。
+
 当前提供两个常驻容器：`web`（生产静态文件与同源代理）、`api`（现有单进程 FastAPI、ZIP dispatcher、SQLite、报告）。API 复用 Dockerfile.scanner 的工具阶段，在现有 ZIP 生命周期内执行 ScanCode/Syft；scanner 保留为按需独立工具检查。Compose 默认启用 ZIP；AI、公开 Git 默认关闭，可按下文显式启用。
 
 ## 启动

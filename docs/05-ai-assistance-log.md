@@ -316,3 +316,7 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 2026-09-22 Report Notice TEST-ONLY R1 START：GPT-6 Astra / Backend A，仅加强12项篡改拒绝的invalid_argument精确断言及追加两日志；9项已审Hash匹配，旧现场保护通过。只跑security与原定向集合，full_not_rerun；产品不改。新test-r1证据保留原证据，无外网/Docker/子代理/提交推送合并部署。token估算2,000–4,000，精确数不可获得。
 
 2026-09-22 Report Notice TEST-ONLY R1 COMPLETE：GPT-6 Astra / Backend A仅将12项异常捕获并精确断言invalid_argument，不接受conflict；原攻击/DB不变断言保留。实际security14 passed、原定向305 passed，各1 warning、无失败/skip；full_not_rerun，原2593/11/4/2仅沿用旧full证据。产品Hash未变，两个旧现场保护不变；累计9文件patch与新receipt/source-hashes在p1-report-v2-notice-binding-test-r1-20260922T113403Z，旧证据不覆盖。只改测试+两日志，未暂存提交推送合并部署，无外网/Docker/子代理；待Owner最终核对。精确token不可获得，估算范围符合性无法核定。STOP。
+
+2026-09-22 Profile wiring resume START：GPT-6 Astra / Backend A，exact ca4827e7基线与远端核验，旧9d67b88草稿最小迁移，保护两旧现场；Owner日志阅读例外。6授权文件，窄fail-first→真实工厂/cz parser定向→一次full→专属进程HF/HTTP/重启。既有11失败按node/原因增量比较，旧结果不冒充新运行。不改parser/业务/前端/Schema，无Docker安装或生产操作；单一ignored证据，未暂存提交推送合并部署，估算12k–22k token非实耗。
+
+2026-09-22 Profile wiring resume COMPLETE（incremental、待Owner Review）：GPT-6 Astra / Backend A仅恢复6授权文件，旧草稿最小迁移不覆盖Notice/Task/Report。strict默认0开关、metadata.db显式初始化、真实Transport/cz parser工厂链、Compose一行与xzb文档。窄fail-first1→修复，旧24设计复验+5边界=29 wiring全过；定向242过/2既有缺件失败，消费者323过，full2622过/11冻结失败/4既有skip/2warnings，原节点保留、失败node/原因未扩大。开发4项比较错误仅修测试字典键序假差异，轨迹保留。合成ScanRun+真实HF metadata经过专属HTTP工厂/Transport/parser/DB，9请求及同root重启通过，authority pending/事实未改，PID66522/66523停止并保留数据；非Git全链或部署。两旧现场HEAD/status/hash不变，无Docker/安装/业务越界。11外部/旧基线项仍未关闭，A08未实施；日志完成后单一证据固化，未暂存提交推送合并部署，待Owner。精确token不可获得，12k–22k仅估算、无法核定。

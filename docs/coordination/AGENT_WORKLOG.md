@@ -6797,3 +6797,19 @@
 - 本轮真实执行：security文件14 passed/0 failed/0 skipped/1 warning；原Report+Notice定向305 passed/0 failed/0 skipped/1 warning（6.27s），节点集合不变。full_not_rerun=true；2593 passed/11 known failed/4 skipped/2 warnings仅沿用上一轮full.xml，不是本轮新执行结果。
 - 本轮只改1测试+2追加日志；累计9文件完整patch含新增文件，最终receipt/source-hashes位于output/manual-fixes/p1-report-v2-notice-binding-test-r1-20260922T113403Z；旧证据保持。BASE/分支不变，未暂存，diff check PASS；两个旧worktree HEAD/status/未提交Hash保持。
 - 可演示能力仍为fixture-backed Notice→固定Report，未扩展业务；生产reader、部署、cz/前端/跨平台及竞赛端到端门禁仍待原负责人。等待Owner最终核对，不继续生产任务。无Docker/外网/子代理/commit/push/merge/deploy。精确token不可获得，2,000–4,000为估算、无法核定实际；原范围完成。STOP。
+
+### [20260922-2146-GPT-6-Astra-profile-resume] START — restore minimal Profile wiring
+
+- Owner授权Backend A，BASE ca4827e7be3cc7691c07f182a764d70e4456c5e7，本地/remote-tracking/实际远端一致，clean后创建fix/p1-profile-production-wiring-resume。复用旧9d67b88草稿最小差异，不覆盖当前Notice/Task/Report。两旧worktree HEAD/status/未提交Hash已记录，旧成果不迁移。
+- Owner批准近期相关日志完整阅读+历史定向检索；仅6个授权文件。旧24项设计复用但结果不冒充本轮验证；先窄fail-first，离线真实工厂/真实cz parser，定向+一次full，再专属loopback子进程真实HF metadata及重启。仅现有Python3.12，无Docker/安装/生产修改。
+- 增量门槛按11既有node/原因，不skip/xfail/deselect；旧full源码与当前仅TEST-ONLY R1断言及日志不同，R1独立定向已验。单一ignored证据p1-profile-production-wiring-resume-20260922T134627Z，原证据保留。预计12k–22k token，精确数不可获得；串行无子代理，NO COMMIT/PUSH/MERGE/DEPLOY。
+
+### [20260922-2200-GPT-6-Astra-profile-resume-complete] COMPLETE — incremental gates passed; Owner Review pending
+
+- exact BASE ca4827e7be3cc7691c07f182a764d70e4456c5e7，fix/p1-profile-production-wiring-resume。只迁入旧9d67b88草稿的最小接线，保留Notice routes/Task/Report；仅main.py、compose.yaml、deploy/README.md、新wiring test及两日志。旧日志不复制；两旧worktree HEAD/status/未提交Hash实核一致。
+- 工厂新增严格默认关闭PROFILE_METADATA开关，显式MetadataStore.initialize→MetadataTransport(enabled=True)→真实cz HuggingFaceMetadataParser→ProfileService。Compose仅一行默认0透传。原24项复验通过后增加5项（共29）；覆盖PROFILE×ASSESSMENTS四组合及缺省、非法flag、初始化拒绝/保库、disabled已有库字节不变、幂等单fetch、冲突/非法资源/上游失败、GET/重启/事实与授权隔离。窄fail-first真实1 failed(store=None)，后修复；开发中的4项JSON字典键序序列化比较失败改成完整对象+facts_digest比较，轨迹保留，无产品越界修改。
+- 本轮真实定向242 passed/2既有B01缺件failed/1 warning；Task/Report/Notice等消费者323 passed/1 warning；一次full 2622 passed/11 failed/4既有skipped/2 warnings(128.23s)，新增29节点全通过，原2608节点保留。失败node和原因类别与已冻结基线一致：B01缺件2/cz、macOS prctl6/平台、Node PATH1/环境、ScanCode文案1/cz、OpenAPI旧断言1/A08另包。无新增skip/xfail/deselect，不把非零退出包装成全绿。
+- 基线复用同Python3.12.14/macOS旧full evidence；与当前BASE仅R1已审security断言和两日志不同，逐Hash与R1证据一致。本轮PYTHONPATH额外加tests/unit供helper导入，loopback opt-in保留；非产品修复，不升级安装依赖或修外部缺件。
+- LIVE_HF_HTTP_ACCEPTANCE_PASS：专属新root/端口56113，真实create_default_app进程，合成ScanRun+真实google-bert/bert-base-uncased HF metadata（不是Git全链）。9个HTTP请求含显式refresh/幂等重放/GET/重启，真实安全Transport与cz parser生成1持久Observation及succeeded Job；不保存完整raw响应，不下载权重。ScanRun业务表不变、authorization pending；排除仅Profile顶层generated_at后重启语义一致，保存Observation/content_hash不变。PID66522/66523均terminate+wait收尾，数据与证据保留；未操作Docker或既有服务。
+- xzb最小启动/三个API/ID及facts_hash取得/状态/持久读取说明已补deploy/README.md，不依赖Mac路径、旧库或仍在线验收服务。当前能用本分支显式启用真实Profile metadata API；未集成/部署，NOTICE生产接线、前端UI、11既有失败、跨平台及最终竞赛验收仍未关闭，无完成百分比。
+- 单一ignored证据p1-profile-production-wiring-resume-20260922T134627Z，日志结束后统一固化receipt/source-hashes/含新增文件patch；原证据不改，未暂存，diff check PASS。无子代理/commit/push/merge/deploy，等待Owner Review。本次精确token不可获得，12k–22k为开工估算，无法核定实际区间；按原范围完成。STOP。

@@ -734,6 +734,9 @@ def create_app(
 
 
 def create_default_app() -> FastAPI:
+    profile_metadata_enabled = os.environ.get("OPENGUARD_ENABLE_PROFILE_METADATA", "0")
+    if profile_metadata_enabled not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_ENABLE_PROFILE_METADATA")
     external_scanners = os.environ.get("OPENGUARD_ENABLE_EXTERNAL_SCANNERS", "0")
     if external_scanners not in {"0", "1"}:
         raise RuntimeError("invalid OPENGUARD_ENABLE_EXTERNAL_SCANNERS")
@@ -860,6 +863,22 @@ def create_default_app() -> FastAPI:
         )
         # Optional terminal observation is separate from report publication and ScanRun CAS.
         registry.assessment_observer = assessment_service.on_terminal
+    profile_service = None
+    if profile_metadata_enabled == "1":
+        from app.p1.profile import ProfileService
+        from app.p1.profile_store import MetadataStore
+        from app.ingestion.metadata_egress import MetadataTransport
+        from app.scanners.huggingface_metadata import HuggingFaceMetadataParser
+
+        # Independent opt-in observation sidecar, not Formal Assessment.
+        # Fail closed on initialization; construction must not fetch metadata.
+        metadata_store = MetadataStore(data_dir / "metadata.db")
+        metadata_store.initialize()
+        profile_service = ProfileService(
+            registry, metadata_store,
+            transport=MetadataTransport(enabled=True),
+            parser=HuggingFaceMetadataParser(),
+        )
     return create_app(
         registry,
         zip_runtime=runtime,
@@ -871,6 +890,7 @@ def create_default_app() -> FastAPI:
         assessment_service=assessment_service,
         remediation_service=remediation_service,
         report_v2_service=report_v2_service,
+        profile_service=profile_service,
     )
 
 
