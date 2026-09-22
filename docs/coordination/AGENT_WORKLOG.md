@@ -6990,3 +6990,12 @@
 - 决策与边界：B06 坚持双独立真人，不冻结 Gold；amendment 校验 human 提议/审批及前后目标工件 SHA-256；B07 只接收受控 receipt 且强制环境/总耗时；P2B 校验直接和 `source_refs` provenance。无联网 fixture 抓取，不认定授权或许可证适用性。
 - 独立复核：Luna 首轮发现 B06 和来源门禁缺口，已修复并已请求最终复验；在最终结论到达前不提交、不推送。风险：`backend` editable install 仍因 flat-layout 的 `app`/`java` package discovery 失败，本轮使用显式开发依赖完成测试；该打包配置问题未改动。
 - 分支/发布：`codex/scan-reliability-integration`；Luna 最终复验已允许发布当前 B01--B07/P2B 离线批次，Git diff 门禁通过；本记录随统一提交，随后由 Root 推送。精确 token 不可获得；开工估算 20k--35k。
+
+## 20260923-0310-GPT5-B批次发布与P1集成
+
+- 状态：START
+- 作者与角色：GPT-5 / Root Coordinator（GitHub 发布、审阅与集成）；时间：2026-09-23 03:10 Asia/Shanghai；分支：`codex/scan-reliability-integration@3ce2143`。
+- 任务范围：按用户明确授权，复核并上传 2026-09-23 新增 B01--B07/P2B 离线质量门禁批次，随后将其评审合并至 `integration/p1`；不操作 `main`、不启动服务、不上传缓存/虚拟环境/构建产物或敏感信息。
+- 开始前确认：已阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF，检查当前分支、工作区、最近提交与上一轮发布记录；0300 任务已 COMPLETE 且记录 Luna 最终复验允许发布，当前无其他模型对该批文件的在途修改记录。
+- 验收方法：fetch 后核验远端祖先关系与分叉；复核提交范围、`git diff --check`、敏感信息和忽略产物门禁；读取既有 Python/Node/Java/Luna 回归证据；推送任务分支后仅以非强制 fast-forward 集成并读回两个远端 SHA。
+- token 用量估算：4,000--8,000；系统未提供精确 token 遥测。
