@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Scan } from "./types/domain";
-import { useRoute, scanPath, type Page } from "./hooks/useRoute";
+import { useRoute, historyPath, scanPath, type Page } from "./hooks/useRoute";
 import { useScan } from "./hooks/useScan";
 import { createDemo } from "./services/scans";
 import { presentDiagnostic } from "./services/assessmentPresentation";
@@ -17,21 +17,32 @@ import { Overview } from "./pages/Overview";
 import { Progress } from "./pages/Progress";
 import { Risks, RiskDetail } from "./pages/Risks";
 import { Resources } from "./pages/Resources";
+import { Graph } from "./pages/Graph";
+import { Remediation } from "./pages/Remediation";
+import { ScanDiff } from "./pages/ScanDiff";
 import { Assessment } from "./pages/Assessment";
 import { Report } from "./pages/Report";
+import { ReportV2 } from "./pages/ReportV2";
+import { History } from "./pages/History";
 const items: [Page, string][] = [
   ["new-scan", "新建扫描"],
+  ["history", "扫描历史"],
   ["assessment", "项目评估"],
   ["chat", "项目答疑"],
   ["overview", "扫描概览"],
   ["progress", "扫描进度"],
   ["risks", "风险中心"],
   ["resources", "资源清单"],
+  ["graph", "资源关系图"],
+  ["remediation", "整改任务"],
+  ["diff", "扫描差异"],
   ["report", "合规报告"],
+  ["report-v2", "固定版本报告"],
 ];
 function Icon({ index }: { index: number }) {
   const paths = [
     "M12 4v16M4 12h16",
+    "M4 6h16M4 12h10M4 18h8M18 14v6M15 17h6",
     "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
     "M12 3a9 9 0 1 0 9 9M12 7v5l4 2",
     "M12 3 2 21h20ZM12 9v5M12 17v1",
@@ -92,10 +103,12 @@ export function App() {
     }
   }
   function navigate(page: string, query = "", riskId?: string) {
-    if (!query && ["assessment", "chat", "report"].includes(page) && route.query.get("assessment_id")) {
+    if (!query && ["assessment", "chat", "report", "report-v2", "remediation"].includes(page) && route.query.get("assessment_id")) {
       const preserved = new URLSearchParams(); preserved.set("assessment_id", route.query.get("assessment_id")!); query = preserved.toString();
     }
-    if (page === "new-scan" || !route.scanId)
+    if (page === "history")
+      go(historyPath(new URLSearchParams(query)));
+    else if (page === "new-scan" || !route.scanId)
       go("/app/new-scan?mode=" + route.mode);
     else
       go(
@@ -118,8 +131,9 @@ export function App() {
       return !v;
     });
   }
-  function navButton([page, label]: [Page, string], i: number) { return <button key={page} className={page === route.page ? "active" : ""} aria-current={page === route.page ? "page" : undefined} disabled={page !== "new-scan" && !route.scanId} onClick={() => { setMobile(false); navigate(page); }}><Icon index={i} />{label}{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>; }
-  const nav = <nav aria-label="工作台导航">{items.filter(([p]) => p !== "risks" && p !== "resources").map(navButton)}<details open={route.page === "risks" || route.page === "resources"}><summary>扫描明细</summary>{items.filter(([p]) => p === "risks" || p === "resources").map(navButton)}</details></nav>;
+  function navButton([page, label]: [Page, string], i: number) { return <button key={page} className={page === route.page ? "active" : ""} aria-current={page === route.page ? "page" : undefined} disabled={!(["new-scan", "history"].includes(page)) && !route.scanId} onClick={() => { setMobile(false); navigate(page); }}><Icon index={i} />{label}{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>; }
+  const detailPages: Page[] = ["risks", "resources", "graph", "remediation", "diff"];
+  const nav = <nav aria-label="工作台导航">{items.filter(([p]) => !detailPages.includes(p)).map(navButton)}<details open={detailPages.includes(route.page)}><summary>扫描明细</summary>{items.filter(([p]) => detailPages.includes(p)).map(navButton)}</details></nav>;
   const active = scan && ["queued", "running"].includes(scan.status);
   let content;
   if (route.page === "new-scan")
@@ -131,12 +145,16 @@ export function App() {
         onCreated={created}
       />
     );
+  else if (route.page === "history")
+    content = <History query={route.query} go={go} />;
   else if (route.page === "not-found")
     content = (
       <Empty title="页面不存在">
         <button onClick={() => navigate("new-scan")}>新建任务</button>
       </Empty>
     );
+  else if (route.page === "diff")
+    content = <ScanDiff targetId={route.scanId} mode={route.mode} query={route.query} go={go} />;
   else if (loading)
     content = (
       <Empty
@@ -184,6 +202,7 @@ export function App() {
         scan={scan}
         query={route.query}
         selectVersion={id => filter("assessment_id", id)}
+        openResources={() => navigate("resources")}
         initialChatOpen={route.page === "chat"}
       />
     );
@@ -219,7 +238,15 @@ export function App() {
         openRisk={(id) => navigate("risks", "", id)}
       />
     );
+  else if (route.page === "graph") content = <Graph scan={scan} query={route.query} filter={filter} />;
+  else if (route.page === "remediation") content = <Remediation scan={scan} query={route.query} filter={filter} openRisk={id => navigate("risks", "", id)} />;
   else if (route.page === "report") content = <><Assessment key={scan.mode + scan.id + "report"} compact scan={scan} query={route.query} selectVersion={id => filter("assessment_id", id)} /><details className="og-historical-report"><summary>查看历史扫描报告、四种原始附件与全部明细</summary><Report key={scan.mode + scan.id} scan={scan} /></details></>;
+  else if (route.page === "report-v2") content = <ReportV2 scan={scan} query={route.query} open={(assessmentId, snapshotId) => {
+    const params = new URLSearchParams();
+    if (assessmentId) params.set("assessment_id", assessmentId);
+    if (snapshotId) params.set("snapshot_id", snapshotId);
+    go(scanPath(scan.id, "report-v2", scan.mode, params));
+  }} />;
   return (
     <NoticeContext.Provider value={notify}>
       {route.page === "home" ? (
@@ -232,9 +259,9 @@ export function App() {
           <aside className="og-sidebar">
             <Brand onClick={() => go("/")} />
             <div className="og-sidebar-context">
-              <span>当前任务</span>
-              <strong>{scan?.project ?? "等待输入项目"}</strong>
-              <small>{route.scanId || "尚未创建"}</small>
+              <span>{route.page === "history" ? "历史视图" : "当前任务"}</span>
+              <strong>{route.page === "history" ? "全部扫描任务" : scan?.project ?? "等待输入项目"}</strong>
+              <small>{route.page === "history" ? "真实接口 · 只读查询" : route.scanId || "尚未创建"}</small>
             </div>
             {nav}
             <footer>
@@ -256,7 +283,9 @@ export function App() {
                 {items.find(([p]) => p === route.page)?.[1] ?? "工作台"}
               </strong>
               <div className="og-actions">
-                {scan ? (
+                {route.page === "history" ? (
+                  <span>只读历史</span>
+                ) : scan ? (
                   <StatusBadge status={scan.status} />
                 ) : (
                   <span>

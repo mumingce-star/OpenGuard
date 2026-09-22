@@ -7,8 +7,9 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test tests/model.test.mjs tests/assessment.test.mjs",
-    "test:browser": "node tests/browser-smoke.mjs"
+    "test": "node --test tests/model.test.mjs tests/assessment.test.mjs tests/history.test.mjs tests/resource-cards.test.mjs tests/p1-graph.test.mjs tests/remediation.test.mjs tests/scan-diff.test.mjs tests/report-v2.test.mjs tests/notice-drafts.test.mjs",
+    "test:browser": "node tests/browser-smoke.mjs",
+    "test:browser:p1": "node tests/p1-browser-smoke.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",

@@ -9,6 +9,12 @@ export type ScanStatus =
   | "cancelled";
 export type Handling = "open" | "reviewing" | "resolved";
 export type Verification = "unverified" | "passed" | "failed";
+export type FactVerification =
+  | "verified"
+  | "pending"
+  | "unknown"
+  | "not_applicable"
+  | "rejected";
 export type ResourceType =
   | "Package"
   | "Model"
@@ -27,6 +33,7 @@ export interface Evidence {
   startLine?: number;
   highlightLines?: number[];
   text: string | null;
+  verificationStatus?: FactVerification;
 }
 export interface Risk {
   id: string;
@@ -52,6 +59,12 @@ export interface Resource {
   license: string | null;
   licenseStatus: "confirmed" | "review_required" | "unknown";
   evidenceIds: string[];
+  provider?: string | null;
+  ecosystem?: string | null;
+  authorizationStatus?: FactVerification;
+  licenseVerification?: FactVerification;
+  detectedBy?: string[];
+  confidence?: number | null;
 }
 export type GroupAdviceKind = "group_ai" | "historical" | "rule" | "unavailable";
 export interface RiskGroupingGroup {
@@ -138,5 +151,13 @@ export const resourceTypes: ResourceType[] = [
   "Service",
   "Asset",
 ];
+
+export const factVerificationLabels: Record<FactVerification, string> = {
+  verified: "已核验",
+  pending: "待核验",
+  unknown: "未知",
+  not_applicable: "不适用",
+  rejected: "已驳回",
+};
 
 export type ReportFormat = "html" | "json" | "csv" | "resource_inventory";

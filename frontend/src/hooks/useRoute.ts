@@ -4,12 +4,17 @@ import { defaultMode } from "../services/scans";
 export type Page =
   | "assessment"
   | "chat"
+  | "history"
   | "overview"
   | "new-scan"
   | "progress"
   | "risks"
   | "resources"
+  | "graph"
+  | "remediation"
+  | "diff"
   | "report"
+  | "report-v2"
   | "not-found"
   | "home";
 export function readRoute() {
@@ -25,8 +30,10 @@ export function readRoute() {
     return { page: "home" as Page, scanId: "", riskId: "", query, mode };
   if (pathname === "/app/new-scan")
     return { page: "new-scan" as Page, scanId: "", riskId: "", query, mode };
+  if (pathname === "/app/history" || pathname === "/app/history/")
+    return { page: "history" as Page, scanId: "", riskId: "", query, mode: "api" as Mode };
   const m = pathname.match(
-    /^\/app\/scans\/([^/]+)\/(assessment|chat|overview|progress|risks|resources|report)(?:\/([^/]+))?\/?$/,
+    /^\/app\/scans\/([^/]+)\/(assessment|chat|overview|progress|risks|resources|graph|remediation|diff|report|report-v2)(?:\/([^/]+))?\/?$/,
   );
   if (m && (!m[3] || m[2] === "risks")) {
     try {
@@ -43,7 +50,7 @@ export function readRoute() {
   }
   // Legacy taskless routes never load an arbitrary previous demo.
   const legacy =
-    /^\/app\/(overview|progress|risk|risks|resources|report)\/?$/.test(
+    /^\/app\/(overview|progress|risk|risks|resources|graph|remediation|diff|report|report-v2)\/?$/.test(
       pathname,
     );
   return {
@@ -53,6 +60,12 @@ export function readRoute() {
     query,
     mode,
   };
+}
+export function historyPath(query?: URLSearchParams) {
+  const p = new URLSearchParams(query);
+  p.delete("mode");
+  const search = p.toString();
+  return "/app/history" + (search ? "?" + search : "");
 }
 export function scanPath(
   id: string,

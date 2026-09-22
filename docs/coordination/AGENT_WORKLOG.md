@@ -7102,3 +7102,189 @@
 - LIVE_HF_HTTP_ACCEPTANCE_PASS：专属新root/端口56113，真实create_default_app进程，合成ScanRun+真实google-bert/bert-base-uncased HF metadata（不是Git全链）。9个HTTP请求含显式refresh/幂等重放/GET/重启，真实安全Transport与cz parser生成1持久Observation及succeeded Job；不保存完整raw响应，不下载权重。ScanRun业务表不变、authorization pending；排除仅Profile顶层generated_at后重启语义一致，保存Observation/content_hash不变。PID66522/66523均terminate+wait收尾，数据与证据保留；未操作Docker或既有服务。
 - xzb最小启动/三个API/ID及facts_hash取得/状态/持久读取说明已补deploy/README.md，不依赖Mac路径、旧库或仍在线验收服务。当前能用本分支显式启用真实Profile metadata API；未集成/部署，NOTICE生产接线、前端UI、11既有失败、跨平台及最终竞赛验收仍未关闭，无完成百分比。
 - 单一ignored证据p1-profile-production-wiring-resume-20260922T134627Z，日志结束后统一固化receipt/source-hashes/含新增文件patch；原证据不改，未暂存，diff check PASS。无子代理/commit/push/merge/deploy，等待Owner Review。本次精确token不可获得，12k–22k为开工估算，无法核定实际区间；按原范围完成。STOP。
+### [20260920-1000-GPT6Astra-FP1OrderedIntegration] START — F-P1-01→06 有序前端整合与 F-P1-07 验收
+
+- 作者：GPT-6 Astra / Root Coordinator；时间：2026-09-20（Asia/Shanghai）。用户授权按顺序完善功能。已将原 `codex/p1-report-v2-ui` 的 F06/F07/文档及审计改动完整保存为具名 stash，F01～F05 原 stash 保留；从最新 `origin/integration/p1@13e02db` 创建 `codex/p1-frontend-integration`，开工时 clean。
+- 范围：按 F01 History、F02 Resource Card/Profile、F03 Graph、F04 Remediation、F05 Diff、F06 Report V2 顺序恢复并整合已验收的前端成果，最后执行 F07 同一构建验收。仅改现有 P1 React 工作台、测试和必要文档；不修改后端、DB、Frozen/Public API，不增依赖，不把 synthetic/Mock 当生产真值，不提交、推送或合并。
+- 预计文件：`frontend/src` 的路由、页面、服务、类型与样式，`frontend/tests`、`frontend/package.json`、`frontend/vite.config.ts`，以及只追加的协作记录。不从 F04 stash 恢复其历史 backend/compose 改动。
+- 验收：每阶段先合并代码并跑定向测试，最终跑全部前端测试、类型检查、构建、`git diff --check`，启动后端开发验收包与前端预览后做浏览器 smoke。对 dismissed、大量 Diff、NOTICE、真实 metadata/生产数据仍按证据报告限制。估算 25k—45k token，精确遥测不可得。
+
+### [20260920-1337-GPT6Astra-FP1OrderedIntegration] PARTIAL — F01→F06 前端完成，F07 受真实验收数据阻塞
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；分支 `codex/p1-frontend-integration`，基线及 HEAD 仍为 `origin/integration/p1@13e02db`。未暂存、提交、推送、合并或部署；本地预览保留在 `http://127.0.0.1:4179/`。
+- 实际结果：按 F01 History、F02 Resource Cards/Profile、F03 Graph、F04 Remediation、F05 Diff、F06 Report V2 顺序整合进现有 P1 React 工作台。只渲染真实 API 字段；不推断许可证、授权、图边或 Diff；unknown/pending/verified、Finding、partial、done/dismissed 语义保持。未恢复 F04 历史 stash 中的 backend/compose 改动，后端/DB/Public API 均未修改，无新增依赖。
+- 主要修改/新增：`frontend/src/App.tsx`、`hooks/useRoute.ts`、`pages/{Assessment,Resources,History,Graph,Remediation,ScanDiff,ReportV2}.tsx`、`components/AIResourceCard.tsx`、对应 `services/` 与 `types/`、`styles/workspace.css`、`vite.config.ts`、`package.json`；新增六组前端测试；新增 `docs/p1/f-p1-07-e2e-acceptance.md`。共享日志和进度仅追加。
+- 分阶段定向结果：History 6/6、Resource Cards 8/8、Graph 10/10、Remediation 5/5、Diff 6/6、Report V2 5/5；每阶段构建均通过。最终 `npm test` 95 passed/0 failed；`npm run build` TypeScript+Vite通过（54 modules，JS约379.37 kB/gzip117.98 kB，CSS约55.63 kB/gzip13.17 kB）；`git diff --check`通过。
+- 真实浏览器/API：8081 当前 History 10 条；Formal Assessment v1；Graph 123节点/136边；partial Progress 显示3项覆盖限制；Task 0条；Report V2 探针404并正确显示P0独立回退；Resource Profile 404显式显示未提供。浏览器 smoke 覆盖 Landing、New Scan、Progress、History、Assessment、Cards、Graph、Diff、Remediation、Report V2；URL筛选恢复通过，真实模式未回退Mock。验收过程未提交扫描、生成Assessment/AI、derive/patch Task。
+- F07未完成：当前生产实例没有205 History、非空Task/CAS、成功Profile及完整Report V2快照，不能用Mock代替；Windows bind目录在容器内为0777，`/2`验收包被后端`root_unsafe`安全门禁拒绝，未降低权限或绕过安全检查。100/300/500 Graph、205 History、CAS/回滚、500 Diff、长报告/下载失败由自动测试覆盖，但不冒称当前8081真实浏览器数据验收。
+- 下一步/责任：后端负责人提供可访问的验收数据或解决Windows bind安全根目录冲突；前端随后补真实205 History、非空Task/CAS、Profile成功态、完整Report V2及下载/打印/窄屏人工签收。详见验收文档失败项、截图清单、演示脚本、第三方清单及建议PR描述。
+- 可独立演示：现有真实10条History、正式Assessment、Cards缺失态、123节点Graph、Diff、partial、空Task与Report/P0回退。尚不具备：上述F07四类成功态和最终人工签收。报名/完整作品仍需关闭这些真实数据门禁及既有Bench、跨平台、材料与发布审计；获奖竞争力还需可复现对比/消融和用户效果证据，不以95项测试换算完成百分比。
+- Token：本次运行精确 token 数不可获得；开工估算25k—45k，无法核定是否在区间。范围未扩到后端、依赖或发布。
+
+### [20260921-0033-GPT6Astra-FP1PreviewState] AMENDMENT — 收工后本机 Docker Engine 暂不可达
+
+- 2026-09-21恢复被中断的交付步骤时，4179 Vite预览已重新启动并保留；此前2026-09-20记录的真实浏览器/API验收结果不变。
+- 当次环境中Docker Desktop进程可启动，但Linux Engine命名管道始终不存在；`docker desktop restart`等待后仍未恢复，已停止等待命令。8081因此暂不可达，History页面当前会如实显示HTTP 502；这不是新的前端测试或构建失败。
+- 未重置Docker/WSL、未删除容器/卷/数据、未改Compose或后端。用户启动Docker Engine并恢复既有Compose服务后，4179会继续代理至8081；正式验收应在两端同时可用时进行。
+
+### [20260921-0112-GPT6Astra-DockerSocketRecovery] START — Docker Desktop AF_UNIX socket 安全恢复
+
+- 作者/角色：GPT-6 Astra / Root Coordinator。用户提供 Docker Desktop 崩溃截图；错误明确指向 `%LOCALAPPDATA%\Docker\run\sailor-ingest.sock` 无法重命名为 `.stale`。本轮仅恢复本机验收基础设施，不修改 OpenGuard 前后端、数据库、Compose、依赖、Git 分支或历史验收结论。
+- 先只读核对 Docker/WSL 进程、发行版、run目录及ReparsePoint/socket状态。复用2026-09-09同类故障经验：禁止恢复出厂、禁止强删被占用socket；若确认无非Docker WSL工作负载，则完全停止Docker/WSL，将异常父目录改名为带时间戳备份，再启动并验证Engine、既有容器、8081和4179。
+- 验收：Docker Engine可读，既有Compose服务恢复且不重建数据，8081 health/History与4179代理返回成功；失败则保留备份并报告，不扩大到系统重置。预计4k—10k token，精确遥测不可得。
+
+### [20260921-0121-GPT6Astra-DockerSocketRecovery] COMPLETE — socket 运行时安全恢复并复原真实预览
+
+- 根因确认：Docker Desktop崩溃截图与物理目录均表明`run`内同时存在`sailor-ingest.sock`和旧`.stale` ReparsePoint，Ingest server无法再重命名；只有`docker-desktop` WSL发行版且为Stopped，无其他发行版工作负载。
+- 恢复：完全停止Docker进程与WSL；未逐个强删socket、未恢复出厂。将物理`%LOCALAPPDATA%\Docker\run`改名为`run-stale-20260921-0120`，将`%LOCALAPPDATA%\docker-secrets-engine`改名为`docker-secrets-engine-stale-20260921-0120`。两备份保留，可回溯；镜像、卷、容器与OpenGuard数据未删除。
+- 过程说明：首次从Codex进程执行时只移动了AppData虚拟化副本，未触及物理目录；发现源/备份时间不一致后停止，改用独立Windows PowerShell进程和环境变量传递Unicode路径。只读检查确认物理目标后再执行，最终回执为两个source=false、两个backup=true。证据脚本和JSON位于忽略目录`output/manual-fixes/`。
+- 验收：Docker Engine 29.7.2启动成功；使用`docker compose ... start`仅启动既有容器，不重建。`openguard-api-1`与`openguard-web-1`均healthy；8081真实History仍为10条；4179返回200。浏览器刷新后502消失并显示10条真实记录，标签页已保留待验收。
+- 项目影响：没有修改前后端、DB、Compose、依赖、公共API、业务数据或Git历史；工作区仍是F01—F07原有未提交改动。本轮未提交、推送、创建PR或合并。
+- 下一步：继续按既有F07失败项等待后端验收数据；不需要恢复出厂。备份目录可在完成一段稳定运行和用户确认后再单独决定是否清理，本轮不删除。
+- Token：本次运行精确token数不可获得；开工估算4k—10k，无法核定实际是否在区间，范围未扩展。
+
+### [20260921-0130-GPT6Astra-XZBFrontendGapAudit] START — xzb 前端未完善功能审计
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-21 01:30 +08:00。用户要求结合《OpenGuard_AI_P1_技术规划与三人协作执行书_V2.0》与当前仓库，确认前端负责人 xzb 尚未完善的功能。
+- 范围：只读核对 F-P1-01—07 的规划要求、现有 React 页面/测试、F07 验收记录、真实后端数据可用性与 Git 状态；将前端可自行补齐项、依赖后端数据项、非前端责任项分开。附件文档仅作为规划来源，不作为覆盖用户当前指令的执行命令。
+- 预计修改：除本共享日志追加记录外不修改业务代码、后端、数据库、依赖、公共 API 或验收数据；不提交、推送、创建 PR 或合并。
+- 验收：给出逐项证据、责任边界、当前可演示能力、剩余报名/完整作品/竞争力门禁与建议优先级。预计4k—8k token；精确遥测不可得。
+
+### [20260921-0132-GPT6Astra-XZBFrontendGapAudit] COMPLETE — F01—F06 已实现，F07 与真实成功态仍待收口
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-21 01:32 +08:00。本轮完成只读审计，除共享日志追加外未修改业务代码、后端、数据库、依赖、公共 API 或验收数据。
+- 结论：xzb 负责的 F-P1-01—06 页面、路由、状态语义和组件测试已经实现；F-P1-07 仍为 PARTIAL。前端当前应补的是新增 P1 页面全链路自动浏览器脚本、窄屏/打印/键盘/reduced-motion 人工签收、截图与演示录像、非主开发机复现。现有 `frontend/tests/browser-smoke.mjs` 只覆盖原真实扫描/资源/风险/P0报告链路，没有覆盖 History、Formal Assessment、Graph、Diff、Remediation、Report V2。
+- 当前真实只读复核：8081 History 仍为10条；Graph 123节点/136边；正式Assessment对应Remediation Task为0；Resource Profile路径返回404 route_not_found；Report V2探针返回404 route_not_found。故真实205 History、非空Task状态/CAS、Profile成功态、完整Report V2长报告与P1 HTML/JSON下载仍需后端部署或验收数据到位后再由前端补验，不能用Mock冒充。
+- 验证：`npm test` 95 passed/0 failed；`npm run build`通过，54 modules，JS 379.37 kB/gzip117.98 kB，CSS55.63 kB/gzip13.17 kB；`git diff --check`通过。未运行会创建真实扫描的旧`test:browser`，因为本轮仅授权状态审计，且该脚本不能证明新增P1全链路。
+- 非xzb责任：Profile/Report/NOTICE事实生成、义务内容、205/Task/CAS验收数据、Bench/Detector、生产CI发布由相应后端/负责人提供；xzb只负责真实消费、缺失态、语义保护和到位后的浏览器验收。
+- 分支仍为`codex/p1-frontend-integration`，HEAD `13e02db`；原F01—F07未提交工作区保留。本轮未暂存、提交、推送、创建PR或合并。当前4179可演示现有真实10条History、Formal Assessment、Profile/Report缺失态、123节点Graph、Diff、空Task及P0报告回退。
+- 报名/参赛前需至少关闭P1自动E2E与人工可访问性/视觉证据，并获得后端成功态样本；完整作品还需跨机复现、真实下载/打印与发布审计；获奖竞争力另需Bench、对比/消融和用户效果证据。无统一分母，不换算完成百分比。
+- Token：本次运行精确token数不可获得；开工估算4k—8k，无法核定是否在范围内，任务范围未扩大。
+
+### [20260921-0158-GPT6Astra-FP1FrontendCloseout] START — F07 前端可独立收口项
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-21 01:58 +08:00。用户授权先完成无需后端新增能力的前端工作。
+- 范围：在现有 P1 React 工作台内补只读真实接口 P1 浏览器 smoke、URL 刷新恢复、GET 无副作用、键盘、reduced-motion、窄屏、打印与自动截图；更新 F07 验收记录。后端、数据库、公共 API、业务数据和正式结论不改，不新增依赖，不用 Mock 冒充真实数据。
+- 预计修改：`frontend/tests` 的独立 P1 浏览器脚本、`frontend/package.json` 脚本入口、`docs/p1/f-p1-07-e2e-acceptance.md`，必要时仅修复本轮真实验收发现的前端缺陷；共享日志只追加。
+- 验收：前端95项回归、类型检查/构建、git diff check；在4179→8081上只读浏览器走通 History→Assessment→Cards→Graph→Diff→Remediation→Report V2，输出截图/请求审计/窄屏/打印证据。后端缺失成功态继续列为阻塞，不点击提交扫描、生成Assessment、derive/PATCH Task或报告创建。预计12k—24k token，精确遥测不可得。
+
+### [20260921-0210-GPT6Astra-FP1FrontendCloseout] COMPLETE — F07 前端可独立收口项
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-21 02:10 +08:00；分支 `codex/p1-frontend-integration`，HEAD 仍为 `13e02db`。COMPLETE 仅指本轮“前端可独立完成项”，F-P1-07 整体仍为 PARTIAL。
+- 实际结果：新增 `frontend/tests/p1-browser-smoke.mjs` 和 `test:browser:p1` 入口，以真实 4179→8081 动态发现 History、Formal Assessment、模型/数据集、Graph 与 Diff 数据；完成 Landing、New Scan、partial Progress、History、Assessment、Resource Cards、Graph、Diff、Remediation、Report V2、窄屏及打印共 14 项只读浏览器验收。没有请求拦截、Mock 回退或 synthetic 成功态。
+- 安全/语义：浏览器记录的全部 `/api/` 请求均为 GET；运行前后 History 扫描身份和关键状态签名一致；没有提交扫描、生成 Assessment、调用 Qwen、derive/PATCH Task 或创建 Report。Profile 与 Report V2 的真实 404、Remediation 0 Task 均保留为明确缺失态，未伪造许可证、授权、Obligation、关系或正式结论。
+- 可访问性与证据：History 行及 Graph 节点键盘操作、浏览器 Back、URL 刷新恢复、`prefers-reduced-motion`、390px History/Graph 无页面级横向溢出、打印媒体隐藏应用 chrome 并保留报告内容均通过。14 张截图与完整请求回执位于 `output/manual-fixes/p1-frontend-browser-20260921-0225/`。
+- 修改/新增：本轮新增 `frontend/tests/p1-browser-smoke.mjs`；修改 `frontend/package.json`、`frontend/README.md`；更新 `docs/p1/f-p1-07-e2e-acceptance.md`；共享日志和项目进度仅追加。没有修改后端、数据库、公共 API、依赖版本或第三方 NOTICE。
+- 验证：`npm run test:browser:p1` 14/14；`npm test` 95/95；`npm run build` 通过（TypeScript、Vite 54 modules，JS 379.37 kB/gzip117.98 kB，CSS55.63 kB/gzip13.17 kB）；`node --check frontend/tests/p1-browser-smoke.mjs`、`git diff --check`通过。当前真实 History 为11条。
+- 已知风险/未完成：真实 205 History、100/300/500 Graph、非空 Remediation/CAS、Profile 成功态、完整 Report V2/NOTICE/P1下载仍需后端部署或数据；非主开发机复现需最终发布环境。自动测试覆盖对应算法/异常状态，但不冒称真实成功态验收。
+- 发布状态/下一步：未暂存、提交、推送、创建 PR 或合并；预览继续保留 `http://127.0.0.1:4179/` 待用户验收。后端成功态到位后复用同一脚本补验并补截图。
+- Token：本次运行精确 token 数不可获得；开工估算12k—24k，无法核定实际是否在区间。本轮范围未扩到后端、依赖或发布，并在计划范围内完整完成前端可独立项。
+
+### [20260922-0030-GPT6Astra-P1BackendFrontendIntegration] START — 最新后端成功态前端联调
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-22 00:30 +08:00。用户确认后端团队已补交验收能力，授权继续完善此前受阻的前端功能。
+- 开工状态：当前分支 `codex/p1-frontend-integration`、HEAD `13e02db`，保留 F01—F07 未提交前端成果；远端 `origin/integration/p1` 已只读获取至 `2bd9ff2`，新增6个后端提交。远端不改前端，唯一重叠文件为追加式共享日志；同步时完整保留双方记录。
+- 范围：以具名 stash 保存全部已跟踪/未跟踪前端成果，快进至最新团队基线后恢复；使用隔离或现有安全本地环境核对真实 History、Graph、Profile、Remediation、Report V2 契约与成功态，在现有 P1 React 工作台补联调、测试、浏览器 smoke、截图和 F07 记录。图片仅作线索，正式结论以远端提交和真实 API 为准。
+- 边界：不修改后端、数据库、公共 API、冻结语义或依赖；不把 synthetic/Mock 冒充真实扫描，不推断许可证、授权、关系、Obligation 或 NOTICE；GET 不触发扫描、Assessment、Qwen、Task derive 或 Report create。当前远端未包含图片所称 NOTICE/真实 Metadata Parser 时保留 pending，不伪造成功态。
+- 预计文件：现有 `frontend/src`、`frontend/tests/p1-browser-smoke.mjs`、必要前端测试、`docs/p1/f-p1-07-e2e-acceptance.md` 与只追加协作记录。验收包含前端回归、类型/构建、真实接口浏览器全链路、GET 审计、205 History、100/300/500 Graph、Task/CAS、Profile 与 Report V2 到位项；未到位项单列。
+- 发布与预算：不提交、不推送、不创建 PR、不合并，等待用户验收。预计18k—36k token；系统不提供精确遥测。
+
+### [20260922-0108-GPT6Astra-P1BackendFrontendIntegration] PARTIAL — Profile/Task/Report 成功态关闭，剩余正式数据门禁
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-22 01:08 +08:00；分支 `codex/p1-frontend-integration`，HEAD 与 `origin/integration/p1` 均为 `2bd9ff2`。本轮任务按可用后端能力完成，F-P1-07 整体因仍缺正式数据而保持 PARTIAL。
+- 同步结果：全部既有未提交前端成果先保存为 `stash@{0}: codex-p1-frontend-before-2bd9ff2-sync`，随后快进基线并恢复；`AGENT_WORKLOG.md` 冲突按时间完整保留双方记录。再次 `git fetch origin integration/p1` 确认远端仍为 `2bd9ff2`；截图中注明未推送的真实 Metadata Parser/NOTICE facts 不作为已发布能力。
+- 前端实现：`frontend/src/services/reportV2.ts` 新增固定快照创建与严格响应校验；`frontend/src/pages/ReportV2.tsx` 新增明确写操作入口，绑定 Formal Assessment 与非 superseded Task 版本，成功后写回可分享 URL；请求不拼装 NOTICE/Graph 引用。`workspace.css` 增加对应布局，`report-v2.test.mjs` 增加创建契约测试；`.dockerignore` 排除 Windows 本机 `frontend/node_modules/` junction，不改变依赖。
+- 隔离环境：创建并使用 `openguard-p1-frontend-new` Compose 项目、独立复制数据卷与 `http://127.0.0.1:8082/`；AI 与公网 Git 关闭。原 Docker 8081 不替换、不迁移并保持 healthy；旧 4179 Vite 进程本轮收尾时未运行，本轮未重启或替换。一次未带端口环境变量的 web 重建尝试因默认8080占用失败，立即以8082与原安全配置恢复，两隔离容器最终 healthy，未影响8081。
+- 真实联调：Profile 基础 GET 200，模型/数据集返回正式 `profile_id`、provider、pending 与 `metadata_observation_unavailable`；从真实 `asm_0b42...` 显式派生 88 项 Task，todo→in_progress→done、备注、服务端 version 1→2及刷新恢复通过；显式创建 `rptv2_94d3...`，固定88项 Task，完整 HTML/JSON、长正文、URL恢复和390px无横向溢出通过。JSON下载313,209 bytes、HTML下载605,940 bytes，均200且有attachment头。
+- 安全审计：写操作只在复制数据卷。随后对 History、Assessment、Profile、Graph、Diff、Task、Report V2 执行连续 GET，`scans.db`、`assessment.db`、`remediation.db`、`report_v2.db` 的 SHA-256 前后一致；未触发扫描、Assessment、Task derive、Report create 或 Qwen。Formal Assessment、AI建议、NOTICE草稿和Provenance继续分层；当前无Obligation/NOTICE时明确显示缺失。
+- 验证：`npm test` 96 passed/0 failed；`npm run build` 包含TypeScript检查并通过（54 modules，JS383.52kB/gzip119.01，CSS55.84kB/gzip13.21）；容器生产构建通过；`git diff --check`通过；真实 API 七类GET均200。浏览器通过 Profile、Task派生/状态/刷新、Report创建/读取、窄屏；打印样式保留既有自动验收结论，本轮未发送物理打印任务。
+- 修改/新增：`.dockerignore`、`frontend/src/services/reportV2.ts`、`frontend/src/pages/ReportV2.tsx`、`frontend/src/styles/workspace.css`、`frontend/tests/report-v2.test.mjs`、`docs/p1/f-p1-07-e2e-acceptance.md`，以及只追加的本日志/项目进度。其余 F01—F07 文件为此前恢复的未提交成果；未修改后端业务代码、数据库、公共 API、依赖或冻结契约。
+- 未完成/风险：正式环境仍只有11条History；100/300/500 Graph尚缺正式数据浏览器回执；当前Assessment无Obligation；真实 Metadata Parser/verified样本与NOTICE Draft未在远端；CAS 409/失败回滚仅有自动测试，尚缺双会话浏览器截图；异机复现与最终材料/发布审计未做。F07因此不标COMPLETE。
+- 发布与下一步：无暂存、提交、推送、PR或合并。隔离预览 `http://127.0.0.1:8082/` 保留待用户验收；建议后端先正式发布 Metadata/NOTICE 与非空 Obligation/规模数据，再补最后一轮 F07 浏览器签收。
+- 项目门禁：当前可独立演示 F01—F05、Profile基础、88项Task与完整Report V2。可报名/参赛仍需真实规模、Obligation/NOTICE、异机和材料门禁；完整作品还需发布审计、受控失败/CAS及最终下载/打印签收；获奖竞争力仍需 Bench Gold、对比/消融及用户效果证据。无统一权重，不报告百分比。
+- Token：本次运行精确 token 数不可获得；开工估算18k—36k，当前无法确认精确落点；范围未扩到后端业务、依赖或发布。
+
+### [20260922-0115-GPT6Astra-RemoteCommitAudit] START — 后端提交位置与集成状态核验
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-22 01:15 +08:00。用户质疑后端成员已显示提交但当前集成线未见对应内容，要求确认是否未更新团队仓库。
+- 范围：只读获取全部远端分支、标签与提交对象，核对截图中的 `e2d8c01`、`2f4923e`、`d163d41`、`a34c29f` 是否存在、位于哪个远端分支，以及是否被 `origin/integration/p1` 包含；不修改业务代码、DB/API、依赖或工作区前端成果。
+- 验收：记录远端 HEAD、目标提交可达分支、与 integration/p1 的祖先关系和实际差异，给出明确的团队协作结论与下一步；不提交、推送、PR或合并。估算2k—6k token，精确遥测不可得。
+
+### [20260922-0130-GPT6Astra-RemoteCommitAudit] COMPLETE — 后端提交已推送但尚未进入协作基线
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-22 01:30 +08:00。本轮完成远端只读审计，除共享日志/进度追加外未修改业务代码、后端、数据库、公共 API、依赖或现有前端成果。
+- 核验结论：GitHub 确有成员提交；`codex/scan-reliability-integration` 已到 `a34c29f`，包含 `d163d41`、`e2d8c01`、`2f4923e`，并以 `2bd9ff2` 为祖先。但正式协作基线 `origin/integration/p1` 仍为 `2bd9ff2`，且不包含 `a34c29f`。因此不是远端仓库未更新，而是成员分支尚未合入指定基线。
+- 拉取差异：本地 origin fetch refspec 仅跟踪 `integration/p1`，普通 `git fetch --all` 不会建立其他远端分支；本轮通过 `git ls-remote` 和显式 fetch 核实了成员分支。没有改写 refspec，也没有合并或 cherry-pick。
+- 内容审计：`e2d8c01` 仅新增 Java fixture 测试、`notice-license-facts-v1` JSON/Schema/README 与文档记录；`2f4923e` 仅更新协调文档。它们没有新增当前 Python 生产服务的 Metadata/NOTICE API。成员分支相对 `integration/p1` 涉及约124个文件及历史跨层变更，`d163d41` 的提交说明记录34个冲突已在该分支解决，不能在未评审情况下直接覆盖当前未提交前端。
+- 验证命令：`git ls-remote --heads --tags origin`、显式 fetch 两个远端分支、`git merge-base --is-ancestor`、`git branch -r --contains`、`git show --stat e2d8c01 2f4923e`、分支差异/日志检查。结果一致证明提交位置与基线关系。
+- 发布状态/下一步：未暂存、提交、推送、创建 PR 或合并。建议后端负责人将可发布的生产接线提交经评审合入 `integration/p1`；如果团队要改用 `codex/scan-reliability-integration`，需先明确变更协作基线并审查其大范围前后端差异。当前前端继续以 `2bd9ff2` 和隔离 8082 环境为可验收基线。
+- 项目门禁未改变：当前可演示 Profile 基础、88项 Remediation 与 Report V2；真实 Metadata Observation、NOTICE Draft、非空 Obligation、正式规模数据和跨机发布仍未因这两个 fixture/文档提交而关闭。
+- Token：本次运行精确 token 数不可获得；开工估算2k—6k，范围内完成远端审计，未扩展到代码集成或发布。
+
+### [20260923-Current-GPT6Astra-P1FinalGates] START — P1 剩余门禁更新与可关闭项核验
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；日期：2026-09-23。用户提供截图称 NOTICE 后端核心已合入 `integration/p1`，询问能否关闭此前约15%的剩余门禁。
+- 开工状态：分支 `codex/p1-frontend-integration`、HEAD `2bd9ff2`，现有 F01—F07 前端成果仍为未提交工作区；不得覆盖。先核对远端 `integration/p1` 的真实 HEAD、截图提交可达性、生产 API/数据接线与现有隔离 8082 状态，再决定安全同步和前端补齐范围。
+- 预计范围：如新提交确已进入正式基线，使用具名 stash 完整保护工作区，快进基线后恢复；只修改现有 P1 React 前端、定向测试和验收记录。后端代码只读，不修改 DB/公共 API，不新增依赖，不用 Mock 或 fixture 冒充真实成功态。
+- 验收：真实 History/Graph/Profile/Obligation/NOTICE/Remediation/Report V2 接口与浏览器链路，GET 无副作用，前端回归、类型检查、构建和 `git diff --check`；明确仍由后端数据或跨机环境阻塞的门禁。预计12k—28k token，精确遥测不可得；不提交、不推送、不创建 PR、不合并。
+
+### [20260923-0025-GPT6Astra-P1FinalGates] AMENDMENT — 更正本轮 START 唯一 ID
+
+- 上一条 START 的 ID 中误用了 `Current`；本条按只追加规则更正为 `20260923-0020-GPT6Astra-P1FinalGates`。任务范围、开工状态和验收边界不变，历史记录不删除、不改写。
+
+### [20260923-0026-GPT6Astra-P1FinalGates] PARTIAL — 新基线可关闭部分门禁，但不能关闭全部约15%
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 00:26 +08:00。本轮完成远端与源码契约核验；除共享日志/进度追加外，未修改业务代码、后端、数据库、公共 API、依赖或现有前端成果。
+- 远端事实：通过本机代理核实 GitHub，`origin/integration/p1` 已从 `2bd9ff2` 前进到 `b76e532`；其中 `603bf4d` 新增 NoticeDraft 后端核心，`ca4827e` 将固定 NoticeDraft 接入 Report V2，`b76e532` 完成显式 opt-in Profile Metadata 生产接线。截图所述合入事实成立，且远端已有更新提交。
+- 可关闭项：Profile Metadata 默认工厂已有 `OPENGUARD_ENABLE_PROFILE_METADATA=1` 显式接线，可在隔离环境验证真实 transport→parser→metadata.db→Profile；NoticeDraft/Report V2 的前端契约、固定引用、HTML/JSON展示可以据新代码完善和测试。
+- 仍未关闭：NoticeDraft 文档与代码明确说明默认生产工厂未注入 `notice_draft_service`，POST 仍会返回 `503 feature_disabled`；Report V2 的生产 notice reader 仍未配置，非空 `notice_refs` 会保持 `409 notice_snapshot_reader_not_available`。NoticeDraft 当前也按设计保持 `obligation_refs` 为空，不可伪造非空 Obligation。205 History 与100/300/500 Graph 新增的是 fixture 验收包，不是正式真实历史/图数据；跨机复现和真实 CAS 双会话证据也尚未由本批提交关闭。
+- 工作区状态：当前分支仍在 `2bd9ff2`，相对新基线落后72个提交；现有未提交前端成果完整保留。因为用户本轮询问“现在能否”而未明确要求立即执行大范围同步，且新基线有213文件/47,732行增量，本轮未自动 stash/快进/重建，避免在结论确认前改变演示环境。
+- 验证：`git ls-remote`、代理 fetch、提交日志、`git show`、远端文件与生产工厂源码检查、`git diff --check`通过。终端直连 GitHub 失败，显式使用本机127.0.0.1:7897代理后远端核验成功；未改全局 Git 代理配置。
+- 发布状态/下一步：未提交、推送、创建 PR 或合并。若用户确认继续，下一轮应先具名 stash，快进到 `b76e532` 并恢复前端；重建独立8082副本，先关闭 Profile Metadata 和 Notice UI可完成项，再把生产 Notice service/reader、真实规模数据、Obligation、CAS与跨机门禁列为后端/最终验收阻塞。
+- Token：本次运行精确 token 数不可获得；开工估算12k—28k，本轮只完成核验与分界，未进入实现，故范围缩小。
+
+### [20260923-0029-GPT6Astra-P1RemainingFrontend] START — 同步新基线并关闭前端可完成门禁
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 00:29 +08:00。用户明确要求先完成前端能够完成的内容，并说明其余阻塞原因及后端交付要求。
+- 开工状态：分支 `codex/p1-frontend-integration`、HEAD `2bd9ff2`，相对 `origin/integration/p1@b76e532` 落后72个提交；F01—F07 前端成果和协调记录均未提交，必须完整保护后再同步。
+- 范围：具名 stash 跟踪/未跟踪文件，快进到新基线并恢复；在现有 P1 React 工作台增量接入 Profile Metadata 真实刷新状态及 NoticeDraft/Report V2 后端契约，不修改后端、数据库、公共 API、冻结语义或依赖。仅在独立复制数据环境做必要写操作；正式验收不用 Mock/fixture 冒充真实数据。
+- 预计文件：现有 `frontend/src/services`、`frontend/src/pages/Resources.tsx`/`ReportV2.tsx`、相关类型/样式/测试、`docs/p1/f-p1-07-e2e-acceptance.md` 与只追加协调记录；以实际契约缺口为准。
+- 验收：前端测试、TypeScript/构建、`git diff --check`；独立8082真实 Profile refresh/读取、Notice/Report缺失或成功契约、GET无副作用和浏览器smoke。后端尚未接线的生产 NOTICE、Obligation、正式规模数据、CAS/跨机证据不得伪造。预计18k—40k token，精确遥测不可得；不提交、不推送、不创建PR、不合并。
+
+### [20260923-0058-GPT6Astra-P1RemainingFrontend] PARTIAL — 前端可完成项关闭，生产事实门禁保留
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 00:58 +08:00；分支 `codex/p1-frontend-integration`，HEAD 与 `origin/integration/p1` 均为 `b76e532`。PARTIAL 表示前端可完成范围已完成，F-P1-07 仍受真实后端数据/生产接线阻塞。
+- 同步与保护：使用 `codex-p1-frontend-before-b76e532-sync` 具名 stash 保护全部已跟踪/未跟踪成果，快进 72 个提交至新基线后恢复。唯一冲突为 `PROJECT_PROGRESS.md` 追加记录，已按时间保留双方内容；stash 作为可恢复备份保留。
+- 前端实现：Resource Card 增加显式 Profile Metadata refresh、job/result 严格解析与 observation 详情（provider、requested/resolved revision、source、time、fields/gaps/status）；Report V2 增加 NoticeDraft 显式创建、不可变 `draft_id`/`content_hash` 引用与真实错误表达。页面不推断许可、授权、Obligation 或 NOTICE。
+- 真实联调：重建隔离 `openguard-p1-frontend-new` 至 `http://127.0.0.1:8082/`，开启 `OPENGUARD_ENABLE_PROFILE_METADATA=1`。Hugging Face 模型刷新成功，返回 job `prj_92561eb02616451fa469b5dcd65b2850` 与 observation `obs_d80f343e65013ddb432bd7ecdd65b3d4ebf742bdc8cc1c8c1d028568a35f2f3f`；页面显示 verified 身份/可见性字段，license `apache-2.0` 声明仍为 pending。
+- NOTICE/Report 真实结果：NoticeDraft POST 返回 `503 feature_disabled` / `notice_not_configured`，页面明确提示后端需注入 NoticeDraftService/NoticeFactsReader；历史 `rptv2_94d3...` JSON/HTML 与固定 URL 读取正常。没有用 Mock 或前端拼装冒充成功态。
+- 安全/无副作用：History、Assessment、Profile、Graph、Diff、Task、Report V2 JSON/HTML 真实 GET 矩阵均可读。连续读取前后 `scans.db`、`assessment.db`、`remediation.db`、`report_v2.db`、`metadata.db` SHA-256 完全一致；不触发扫描、Assessment、Task/Report 创建或 Qwen。
+- 验证：`npm test` 102/102；`npm run build` 通过 TypeScript 和 Vite（55 modules，JS391.15kB/gzip120.54kB，CSS57.27kB/gzip13.44kB）；`npm run test:browser:p1` 对真实8082 API 14/14；`git diff --check` 通过。截图/回执在 ignored `output/p1-browser-20260923/`。Docker Desktop 旧 AF_UNIX socket 通过可恢复的 run/secrets 目录改名备份恢复，未删数据卷、未恢复出厂。
+- 修改/新增：`frontend/src/types/p1ResourceProfile.ts`、`services/p1ResourceProfiles.ts`、`components/AIResourceCard.tsx`、`services/noticeDrafts.ts`、`services/reportV2.ts`、`pages/ReportV2.tsx`、`styles/workspace.css`、相关前端测试/`package.json`/`frontend/README.md`、`docs/p1/f-p1-07-e2e-acceptance.md`及只追加协作记录。未修改后端业务逻辑、DB/Public API、依赖版本或冻结语义。
+- 未完成/后端责任：默认生产工厂仍需注入 NoticeDraft store/service 与 ReportV2 notice reader；提供非空真实 Obligation 与绑定样本、真实205+ History、真实100/300/500 Graph scan_id、可重置Task/CAS双会话数据和跨机发布回执。前端不得伪造上述事实。
+- 发布/下一步：未暂存、提交、推送、创建 PR 或合并。隔离预览 `http://127.0.0.1:8082/` 保留等待用户验收；后端交付上述能力后回到同一前端链路补最终签收。
+- 项目门禁：当前可独立演示 F01—F05、Formal Assessment、真实 HF Profile Metadata、已有 Remediation/Report V2 和 NOTICE 缺失态。可报名/可参赛仍需真实规模/义务/异机/材料门禁；可提交完整作品还需发布审计、CAS/受控失败与下载/打印签收；获奖竞争力还需 Bench Gold、FN治理、对比/消融及用户效果证据。无统一分母，不报百分比。
+- Token：本次运行精确 token 数不可获得；开工估算18k—40k，在该范围内完成新基线同步、前端补齐、隔离真实联调和全部验证；未扩大到后端实现或发布。
+
+### [20260923-0112-GPT6Astra-LatestRemoteAudit] START — 最新团队仓库与数据缺口复核
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 01:12 +08:00。用户反馈后端工作人员已补齐并截图，质疑当前缺数据结论，要求确认是否已查看最新团队仓库。
+- 范围/验收：只读查询全部远程分支，获取最新 `integration/p1`，核对新提交文件、默认生产工厂、Notice/Report reader 与205/100/300/500数据性质；不合并、不修改业务代码或运行数据。预计2k—6k token，精确遥测不可得。
+
+### [20260923-0117-GPT6Astra-LatestRemoteAudit] COMPLETE — 已查看 `f63a581`，缺口为生产接线与真实数据
+
+- 最新远程：`integration/p1` 与 `codex/scan-reliability-integration` 均已到 `f63a581`；相对上次基线 `b76e532` 新增 `3ce2143`、`1e47c74`、`f63a581`。后端人员的新提交确已进入团队仓库与协作基线。
+- 内容定性：新增43个文件为 Bench、fixtures、tests 和 docs，没有修改 `backend/app`、`deploy` 或前端生产代码。它们关闭 B01—B07 离线质量门禁，不等于默认工厂/API生产接线或运行数据已部署。
+- 生产证据：最新 `create_default_app()` 仍没有构造/注入 `notice_draft_service`，`ReportV2Service` 仍以空 `notice_reader` 创建。`notice_draft.py` 仍明确标注 unavailable by default；无service时POST返503，非空notice refs时Report返409。
+- 数据证据：205 History 与100/300/500 Graph 由 `backend/app/frontend_acceptance.py` 生成，其源码明确标注 synthetic-only/developer infrastructure，验证范围声明为 `synthetic only; no repository scan, legal conclusion or frontend performance claim`。仓库只有Graph JSON fixtures，没有可作正式验收的Registry DB。
+- 结论：截图中“已完成/已提交”在后端 B 线离线交付范围内是真实的；但不能推导生产 NoticeDraft/Report reader、非空Obligation或真实历史/图数据已可用。前端对这些门禁保持PARTIAL是符合真实API和仓库代码的。
+- 修改/发布：除协作日志与进度说明追加外，未修改业务文件、后端、DB、API或依赖；未暂存、提交、推送、PR或合并。
+- Token：本次精确 token 数不可获得；开工估算2k—6k，在范围内完成全远程分支与最新产品代码/数据性质核验。
+
+### [20260923-0144-GPT6Astra-P1FrontendPublish] START — 前端成果发布与最新后端复验
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 01:44 +08:00。用户明确授权按建议流程将当前 F01—F07 前端成果上传团队仓库，再基于后端最新提交继续补齐可完成项，并交付 Word 未完善清单。
+- 当前状态：本地 `codex/p1-frontend-integration@b76e532`，已获取的 `origin/integration/p1@f63a581`；工作区包含全部未提交前端成果和追加式协作记录，必须先具名 stash 保护。
+- 计划：快进本地基线至 `f63a581`，创建独立 `p1/xzb-frontend-f01-f07`分支并恢复成果；解决追加日志冲突；复跑单测、TypeScript/构建、真实API浏览器、diff-check、敏感信息与提交清单审计。验收通过后提交并推送功能分支，不合并 `integration/p1`/`main`。
+- 后续：推送后再获取团队最新远程，核对生产 Notice/Profile/Report/Obligation 与真实数据；仅在契约和真实API支持时继续改前端。最终在项目目录交付经渲染质检的 `.docx`。
+- 边界：不修改后端业务、DB、公共API、冻结语义或依赖；不用Mock/synthetic冒充真实结果；推送前不包含密钥、个人信息、本机路径或验收临时产物。预计20k—45k token，精确遥测不可得。

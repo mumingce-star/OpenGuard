@@ -13,6 +13,7 @@
 !frontend/pnpm-lock.yaml
 !frontend/tsconfig.json
 !frontend/vite.config.ts
+frontend/node_modules/
 !rules/
 !rules/**
 !deploy/

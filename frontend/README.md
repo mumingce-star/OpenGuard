@@ -43,6 +43,21 @@ pnpm build
 OPENGUARD_TEST_URL=http://127.0.0.1:5173 pnpm test:browser
 ```
 
+P1 工作台另提供只读全链路 smoke。它动态选择真实 History、Assessment、Resource、Graph 与 Diff 数据，不创建扫描、评估、任务或报告；同时检查 URL 恢复、GET-only、键盘、reduced-motion、390px 窄屏和打印媒体，并生成截图与 JSON 回执：
+
+```bash
+# OPENGUARD_PLAYWRIGHT 指向现有 Playwright 包；不会安装新依赖。
+OPENGUARD_TEST_URL=http://127.0.0.1:4179 \
+OPENGUARD_QA_OUTPUT=../output/manual-fixes/p1-frontend-browser \
+pnpm test:browser:p1
+```
+
+后端未提供的 Profile、Remediation 非空状态或 Report V2 快照会按真实缺失态验收，不会由 Mock 补成成功结果。
+
+Profile Metadata 只在用户点击“刷新真实元数据”后发起 `POST /resource-profiles/refresh`；普通页面读取不会抓取远程元数据。页面逐字段展示后端 observation 的 `pending` / `verified` 状态，声明中的 license 不会被前端提升为已核验许可。
+
+Report V2 中的 NOTICE 同样是显式写操作：前端先请求后端不可变 NoticeDraft，再将返回的 `draft_id` 和 `content_hash` 原样固定到报告请求。未配置 NoticeDraft 生产服务时显示真实 503 缺失态，浏览器不自行生成 NOTICE 或 Obligation。
+
 本轮unit20通过、TypeScript及生产构建通过；开发服务和生产preview各通过同一套10项真实浏览器检查。覆盖上传/进度/资源风险证据/四格式报告SHA/刷新不重复POST/手机导航/partial/无效ZIP异步failed/404无mock降级/无不支持接口和浏览器运行错误。运行产物留临时目录，不提交仓库。
 
 排队、执行、失败和取消状态只读status；completed/partial才读取结果。明确report_not_ready/not_generated允许展示已有事实而无下载；存储500与任务404仍报错。视觉及来源登记见 `THIRD_PARTY_UI.md`；未引入 React Flow 或新增运行依赖。

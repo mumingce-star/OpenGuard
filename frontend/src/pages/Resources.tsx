@@ -13,6 +13,8 @@ import {
   useNotice,
 } from "../components/ui";
 import { EvidenceReader } from "../components/EvidenceReader";
+import { AIResourceCard } from "../components/AIResourceCard";
+import { factVerificationLabels } from "../types/domain";
 export function Resources({
   scan,
   query,
@@ -27,14 +29,15 @@ export function Resources({
   const [selected, setSelected] = useState<string | null>(null),
     notify = useNotice();
   const rows = filterResources(scan, query),
-    resource = scan.resources.find((r) => r.id === selected);
-  const sections = resourceTypes.map(type => ({ type, rows: rows.filter(r => r.type === type) })).filter(section => section.rows.length);
+    resource = scan.resources.find((r) => r.id === (selected ?? query.get("resource_id")));
+  const aiRows = rows.filter((item) => item.type === "Model" || item.type === "Dataset");
+  const sections = resourceTypes.filter(type => type !== "Model" && type !== "Dataset").map(type => ({ type, rows: rows.filter(r => r.type === type) })).filter(section => section.rows.length);
   return (
     <>
       <Header
         title="第三方资源清单"
         eyebrow={"INVENTORY / " + scan.id}
-        description="未知许可保持待确认，未发现风险不等于许可已通过。"
+        description="模型、数据集与其他第三方资源均只展示扫描事实；未知保持未知，Finding 只是待核查线索。"
         action={
           scan.mode === "api" ? (scan.reportFormats?.includes("resource_inventory") ? <a href={reportDownloadUrl(scan.id, "resource_inventory")} download>下载完整资源清单</a> : <span>资源清单尚未发布</span>) : <button
             onClick={() =>
@@ -98,11 +101,30 @@ export function Resources({
         </label>
       </div>
       <Panel
-        title={"筛选结果 · " + rows.length + " / " + scan.resources.length}
+        title={`模型与数据集资源卡片 · ${aiRows.length}`}
+        caption="Resource、Profile 与 Evidence 分层展示；Profile 缺失不会由名称、Logo、provider 或 source URL 补造。"
+      >
+        {!aiRows.length ? (
+          <Empty
+            title="当前筛选没有模型或数据集"
+            detail={scan.resources.some(item => item.type === "Model" || item.type === "Dataset")
+              ? "调整筛选条件后查看已有模型或数据集资源。"
+              : "本次真实扫描未返回模型或数据集 Resource；页面不会使用演示数据填充。"}
+          />
+        ) : (
+          <div className="og-ai-resource-grid">
+            {aiRows.map(item => (
+              <AIResourceCard key={item.id} scan={scan} resource={item} onEvidence={() => setSelected(item.id)} />
+            ))}
+          </div>
+        )}
+      </Panel>
+      <Panel
+        title={"其他资源 · " + sections.reduce((total, section) => total + section.rows.length, 0) + " / " + scan.resources.length}
         caption={scan.mode === "api" ? "筛选仅影响当前页面，下载包含完整资源清单" : "全量任务快照 · CSV 仅包含当前筛选结果"}
       >
-        {!rows.length ? (
-          <Empty title="没有符合条件的资源" detail="尝试调整搜索和筛选条件。" />
+        {!sections.length ? (
+          <Empty title="没有符合条件的其他资源" detail="尝试调整搜索和筛选条件。" />
         ) : (
           <div className="og-resource-list">
             {sections.map(section => <ResourceSection key={section.type} type={section.type} rows={section.rows} scan={scan} select={setSelected}/>)}
@@ -112,20 +134,27 @@ export function Resources({
       {resource && (
         <Dialog
           title={"资源详情 · " + resource.name}
-          onClose={() => setSelected(null)}
+          onClose={() => { setSelected(null); filter("resource_id", ""); }}
         >
           <dl className="og-meta">
+            <dt>资源 ID</dt>
+            <dd className="og-wrap-id">{resource.id}</dd>
+            <dt>类型</dt>
+            <dd>{resource.type === "Model" ? "模型" : resource.type === "Dataset" ? "数据集" : resource.type}</dd>
+            <dt>provider</dt>
+            <dd>{resource.provider ?? "未获取"}</dd>
             <dt>版本</dt>
-            <dd>{resource.version ?? "待补充"}</dd>
+            <dd>{resource.version ?? "未获取"}</dd>
             <dt>来源</dt>
-            <dd>{resource.origin ?? "待补充"}</dd>
-            <dt>许可证</dt>
+            <dd>{resource.origin ?? "未获取"}</dd>
+            <dt>扫描观测许可</dt>
             <dd>
-              {resource.license ?? "未知"} ·{" "}
-              {resource.licenseStatus === "confirmed" ? "已核验" : "待确认"}
+              {resource.license ?? "未获取"} · {factVerificationLabels[resource.licenseVerification ?? "unknown"]}
             </dd>
+            <dt>授权状态</dt>
+            <dd>{factVerificationLabels[resource.authorizationStatus ?? "unknown"]}</dd>
           </dl>
-          <h3>相关风险</h3>
+          <h3>相关待核查线索</h3>
           {scan.risks
             .filter((r) => r.resourceId === resource.id)
             .map((r) => (
@@ -150,5 +179,5 @@ export function Resources({
 function ResourceSection({ type, rows, scan, select }: { type: string; rows: Scan["resources"]; scan: Scan; select: (id: string) => void }) {
   const [open, setOpen] = useState(false), [limit, setLimit] = useState(25), visible = open ? rows.slice(0, limit) : [];
   const label = ({ Package: "代码组件", Model: "模型", Dataset: "数据集", API: "接口", Service: "服务", Asset: "素材" } as Record<string, string>)[type];
-  return <section className="og-resource-section"><button className="og-risk-preview" aria-expanded={open} onClick={() => setOpen(v => !v)}><div><strong>{label}</strong><small>{rows.length} 项资源 · 默认按需显示</small></div><span>{open ? "收起" : "展开"}</span></button>{open && <><div className="og-resource-head"><span>名称 / 版本</span><span>许可状态</span><span>来源</span><span>关联发现</span></div>{visible.map(r => <button className="og-resource-row" key={r.id} onClick={() => select(r.id)}><div><strong>{r.name}</strong><small>{r.version ?? "版本未知"}</small></div><span>{r.license ?? "许可证未知"}<small>{r.licenseStatus === "confirmed" ? "许可已核验" : "许可待确认"}</small></span><span>{r.origin ?? "未提供来源网址"}<small>{scan.evidence.filter(e => r.evidenceIds.includes(e.id)).map(e => e.path ?? e.url ?? e.label).join("；") || "证据位置未知"}</small></span><span>{scan.risks.filter(x => x.resourceId === r.id).length} 个风险 →</span></button>)}<p>当前显示 {visible.length} / {rows.length} 项资源</p>{limit < rows.length && <div className="og-actions"><button onClick={() => setLimit(n => n + 25)}>继续显示后 25 项</button><button onClick={() => setLimit(rows.length)}>显示全部</button></div>}</>}</section>;
+  return <section className="og-resource-section"><button className="og-risk-preview" aria-expanded={open} onClick={() => setOpen(v => !v)}><div><strong>{label}</strong><small>{rows.length} 项资源 · 默认按需显示</small></div><span>{open ? "收起" : "展开"}</span></button>{open && <><div className="og-resource-head"><span>名称 / 版本</span><span>观测许可</span><span>来源</span><span>待核查线索</span></div>{visible.map(r => <button className="og-resource-row" key={r.id} onClick={() => select(r.id)}><div><strong>{r.name}</strong><small>{r.version ?? "版本未获取"}</small></div><span>{r.license ?? "许可未获取"}<small>{factVerificationLabels[r.licenseVerification ?? "unknown"]}</small></span><span>{r.origin ?? "来源未获取"}<small>{scan.evidence.filter(e => r.evidenceIds.includes(e.id)).map(e => e.path ?? e.url ?? e.label).join("；") || "证据不足"}</small></span><span>{scan.risks.filter(x => x.resourceId === r.id).length} 条线索 →</span></button>)}<p>当前显示 {visible.length} / {rows.length} 项资源</p>{limit < rows.length && <div className="og-actions"><button onClick={() => setLimit(n => n + 25)}>继续显示后 25 项</button><button onClick={() => setLimit(rows.length)}>显示全部</button></div>}</>}</section>;
 }
