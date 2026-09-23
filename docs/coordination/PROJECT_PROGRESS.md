@@ -1566,3 +1566,5 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | GitHub | 独立前端功能分支准备推送 | 不创建 PR、不合并，等待用户与团队验收 |
 
 当前可独立运行/演示：F01—F06、F07 只读链路、真实 Profile Metadata 刷新、已有 Remediation/Report 快照，以及后端缺失/partial/error 的不误导表达。尚未具备：生产 NoticeDraft 与 Report Notice reader、非空 Obligation、真实 205+ History、真实 100/300/500 Graph、可重复 CAS 双会话数据和异机发布回执。可报名、完整作品与获奖竞争力仍分别受真实生产数据/材料、发布审计/最终签收、人工 Gold/FN/对比和用户效果证据门禁约束；无统一分母，不换算百分比。
+
+发布回执：`origin/p1/xzb-frontend-f01-f07` 已成功接收功能提交 `ea374cb30051` 与验收记录提交 `a43f98f34839`；`origin/integration/p1@f63a5818b3ef` 未被修改，未创建 PR、未合并。

@@ -7300,3 +7300,8 @@
 - 发布状态/下一步：目标为推送 `origin/p1/xzb-frontend-f01-f07`，不创建或合并 PR，不改 `integration/p1`/`main`；具名 stash 在远端推送成功前保留作恢复点。后端到位后复用现有真实浏览器脚本补成功态证据。
 - 项目门禁：当前可独立演示 F01—F06 与 F07 只读链路、真实 Profile Metadata 刷新、既有 Remediation/Report 快照和安全缺失态。可报名/可参赛仍需真实生产数据、异机与材料门禁；完整作品还需发布审计、CAS/受控失败和最终下载/打印签收；获奖竞争力还需人工 Gold、FN 治理、对比/消融和用户效果证据。无统一分母与权重，不报告百分比。
 - Token：本次运行精确 token 数不可获得；开工估算 20k—45k，任务在既定前端发布与文档范围内执行，未扩展到后端实现或合并。
+
+### [20260923-0212-GPT6Astra-P1FrontendPublishReceipt] AMENDMENT — 独立前端分支已成功推送
+
+- 2026-09-23 02:12 +08:00 通过 GitHub 远端回执确认 `origin/p1/xzb-frontend-f01-f07` 已包含 `ea374cb30051` 与 `a43f98f34839`；`origin/integration/p1` 仍为 `f63a5818b3ef`，未被改写。
+- 未创建 Pull Request，未合并 `integration/p1` 或 `main`，未强推。具名 stash 暂保留为本地恢复点，不进入仓库。
