@@ -7434,3 +7434,16 @@
 - 范围：A）基于报告 binding、source_ids 和已有结构区分 graph observation 与 NOTICE observation，覆盖 Graph-only、NOTICE-only、两者、均无四种测试；B）为创建失败提供受控手动重试，保留 Assessment/Task/Notice refs 与 idempotency key，不自动 POST、不改变 GET 只读行为。禁止后端、Schema、公共 API、依赖和无关重构。
 - 验收：定向 fetch 并验证远端 SHA；merge 后验证 integration 为祖先且原三个 xzb 提交保留；运行本次真实测试数、TypeScript、Vite build、diff check 和直接相关浏览器验收；复用已经实跑通过的真实 Obligation 固定样本回执，不对它做 CAS。CAS 继续使用独立可重置验收数据。
 - 预计文件：现有 Report V2 页面/适配器及其测试、两份只追加协调文档。若出现 backend/app 或 frontend 产品代码 merge 冲突立即停止。预计 18k—34k token；本次运行精确 token 遥测不可得。
+
+### [20260924-1734-GPT6Astra-P1FinalNarrowFix] COMPLETE — 最新 integration 同步、Report V2 窄修与真实 Obligation 签收完成
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-24 17:34 +08:00。定向 fetch 后远端严格匹配锁定值：`origin/integration/p1=6352b84bce1f3dbee192c9065049f4dda3fdb45f`、原 feature `aa38f1656aa814075aac12f0e20ac387059530cc`。先用具名 stash 保护上一轮只追加日志，再执行普通 `git merge --no-ff origin/integration/p1`；ort 自动合并，无冲突，merge commit `52a0263`。未 rebase/reset/cherry-pick/force，原 `ea374cb`、`a43f98f`、`aa38f16` 均仍为 HEAD 祖先，Owner Reviewed Obligation 记录保留。
+- 窄修 A：`frontend/src/services/reportV2.ts` 与 `frontend/src/pages/ReportV2.tsx` 不再以 `authority=observation` 直接宣称图谱。新分类同时核对 report binding、section `source_ids` 和现有 content 结构；Graph、NOTICE、未绑定 observation 分开，unknown 不提升为 Graph。Provenance 同步显示“图谱观察摘要”“NOTICE 草稿观察”或“其他观测”。
+- 窄修 B：将 Assessment/Task 读取错误与 Report 创建错误分离。创建失败后按钮提供显式“重试创建（沿用同一请求标识）”；失败不会自动 POST，也不会更新 key。手动重试保留同一 idempotency key、Assessment、Task refs 与 NOTICE refs；读取错误仍阻止创建。
+- 测试：定向 `report-v2.test.mjs` 9/9；完整 `npm test` 104/104；独立 `npx tsc --noEmit` 通过；`npm run build` 通过（TypeScript + Vite 55 modules，JS 392.72 kB / gzip 121.11 kB，CSS 57.27 kB / gzip 13.44 kB）；`git diff --check` 与变更敏感模式检查通过。没有沿用旧 102/102 数字。
+- 浏览器：仅测试环境注入 NOTICE observation 与 503 创建失败，验证 NOTICE 不冒充 Graph、失败后零自动 POST、两次手动请求 body/key/refs 完全相同；未把注入数据作为真实结果。真实 `acceptance_real_reviewed` Obligation 六页链重新通过，68 个 API 请求全部 GET，pending/todo/Task≠义务履行语义不变。
+- 真实接收回执：Scan `scn_6c0f972a-18c1-4566-a7fa-df623053bea5`、Assessment `asm_87baf091-31fe-54f7-88d6-8d3fb788181a`、Obligation `obl_ab81fa16-f42f-5c32-ab20-621ddef958b4`、Task `tsk_a0a72e5b-4772-54e9-91b4-7bfa70d02eb8` v1、Report `rptv2_5ba69c69-7b03-463c-9ba7-bcaeca1120c4` 均保持；JSON `bb5e0084...3dcc`、HTML `9bd61fbc...20fa` 再次实算匹配。没有第二次 init/apply，没有修改固定样本。
+- CAS：本轮按要求未修改真实 Obligation 样本；双会话 CAS 已在独立可重置 `real_backend_api + acceptance_synthetic` 接收数据完成 200→真实 409→重读 v2，当前不待执行，也未因本轮无关窄修改写重跑。
+- 提交/发布：窄修 commit `3caad4a` 已普通推送至唯一目标 `origin/p1/xzb-frontend-f01-f07`；未推送 integration/main/p0/cz，未 force、未建 PR、未合并 Owner 分支。推送后 `origin/integration/p1` 为 feature 祖先且相对 integration `behind=0`、`ahead=5`；本条发布回执将以独立 docs commit 追加。
+- 标记：`XZB_LATEST_INTEGRATION_SYNCED`、`REPORT_OBSERVATION_CLASSIFICATION_FIXED`、`REPORT_CREATE_RETRY_FIXED`、`REAL_OBLIGATION_RECEIVER_VALIDATED`、`REAL_OBLIGATION_BROWSER_VALIDATED`、`NO_SECOND_APPLY`、`NO_BACKEND_SCOPE_CHANGE`、`READY_FOR_OWNER_FINAL_REVIEW`、`STOP`。
+- Token：本次运行精确 token 数不可获得；开工估算 18k—34k，范围内完成同步、实现、测试、浏览器签收和发布，未扩大后端或全仓测试范围。

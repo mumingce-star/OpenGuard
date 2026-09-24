@@ -1653,3 +1653,18 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 安全边界 | 仅收紧恢复副本权限；未 init/apply、未 chmod 777、未关闭门禁、未覆盖既有空间 | 通过 |
 
 本次已关闭“真实非空 Obligation 样本交付与前端表达”门禁：现有 F02/F04/F06 页面无需新增业务代码即可展示真实义务、资源、Evidence、任务和固定报告关系。该结果仅适用于经人工确认的 `acceptance_real_reviewed` 固定样本；义务履行仍为 `pending`，不能推出项目合规。生产 NOTICE 生成链、生产仓库数据签收、P0 历史报告回退 409、最终 PR/合并与发布审计仍需单独关闭。
+
+### 2026-09-24 最新 integration 同步与 Report V2 最终窄修
+
+| 工作包 | 本轮结果 | 验证/发布状态 |
+|---|---|---|
+| Integration 同步 | 普通 `--no-ff` merge `6352b84`，无冲突；原 3 个 xzb 提交保留 | merge `52a0263` |
+| Observation 分类 | binding + source_ids + content 结构区分 Graph/NOTICE/其他 | 四种组合单测 + 浏览器 NOTICE-only 通过 |
+| 创建失败重试 | 显式手动重试，同 key/Assessment/Task/NOTICE refs；无自动 POST | 单测 + 浏览器 503 两次同 body 通过 |
+| 前端回归 | 104/104；独立 TypeScript；Vite 55 modules；diff check | 全部通过 |
+| 真实 Obligation | 六页链、68 个 GET、pending/todo 语义、刷新 URL、重启读取 | 通过；无第二次 init/apply |
+| 报告 Hash | JSON `bb5e0084...3dcc`；HTML `9bd61fbc...20fa` | 与清单一致 |
+| CAS | 独立可重置验收数据已完成成功 PATCH、真实 409、重读 v2 | 不在真实 Obligation 样本重跑 |
+| GitHub | 窄修 `3caad4a` 已推送 feature；integration 为其祖先 | `behind=0`、`ahead=5`，待 Owner final review |
+
+当前可独立运行/演示：F01—F07 工作台、205 History、三档 Graph、Remediation CAS/持久化、真实非空 Obligation 关联、Report V2 固定快照、下载与两项最终窄修。尚未具备或仍需关闭：Owner 最终 review/PR/快进集成、P0 历史报告回退 409 的契约/数据处理、生产 NOTICE 链和生产数据/材料签收。可报名/可参赛仍需生产材料门禁；完整作品还需最终集成与发布审计；获奖竞争力仍需 Gold/FN、对比/消融和用户效果证据。没有统一分母和权重，不换算百分比。
