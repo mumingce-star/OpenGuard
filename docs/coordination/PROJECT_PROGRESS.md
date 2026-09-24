@@ -1568,3 +1568,88 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 当前可独立运行/演示：F01—F06、F07 只读链路、真实 Profile Metadata 刷新、已有 Remediation/Report 快照，以及后端缺失/partial/error 的不误导表达。尚未具备：生产 NoticeDraft 与 Report Notice reader、非空 Obligation、真实 205+ History、真实 100/300/500 Graph、可重复 CAS 双会话数据和异机发布回执。可报名、完整作品与获奖竞争力仍分别受真实生产数据/材料、发布审计/最终签收、人工 Gold/FN/对比和用户效果证据门禁约束；无统一分母，不换算百分比。
 
 发布回执：`origin/p1/xzb-frontend-f01-f07` 已成功接收功能提交 `ea374cb30051` 与验收记录提交 `a43f98f34839`；`origin/integration/p1@f63a5818b3ef` 未被修改，未创建 PR、未合并。
+
+## 2026-09-23 P1 接收机运行验收（等待交付文件）
+
+| 检查项 | 本机结果 | 下一步/责任 |
+|---|---|---|
+| 锁定源码 | 后端 `f63a581...`、前端 `aa38f165...` 完全匹配 | 接收机已满足 |
+| 锁定镜像 | 本机不存在 `sha256:8ffe27...b7b9` | 需接收离线 tar 并核验 `e262713c...6b26` |
+| 交付 ZIP | 仓库、GitHub Releases/Artifacts、常用本机目录均未找到 | 用户/发送方提供文件或本机绝对路径；随后核验 `7cfb28c...a61469` |
+| receiver runtime | 尚未启动；未复用发送机 root/回执 | ZIP 到机后按 `receiver-runtime.md` 创建全新 root |
+| 既有环境 | 8081/8082 未覆盖、未停止；安全门禁未降低 | 保持不变 |
+
+当前接收机验收不能计为通过或失败：源码版本正确，但运行交付包尚未到机，205 History、三档 Graph、真实 CAS 与重启持久化均尚未执行。
+
+## 2026-09-23 最新远端与前端完成度复核
+
+| 维度 | 结论 | 证据/后续 |
+|---|---|---|
+| 前端开发 | F01—F07 开发范围全部完成 | `aa38f165...`；102/102 测试、TypeScript、Vite 构建通过 |
+| 远端更新 | integration 仍为 `f63a581...`，前端仍为 `aa38f165...` | 无新增生产提交需适配；本地/远端前端代码一致 |
+| 团队集成 | 尚未完成 | 前端分支尚未合入 `integration/p1`，本轮未创建 PR/合并 |
+| 接收机验收 | 尚未完成 | 等待交付 ZIP/镜像；205 History、三档 Graph、CAS、重启 Hash 未签收 |
+
+结论：可以把 xzb 的前端“开发工作”标记为完成；不能把 P1 团队集成和最终接收机验收标记为完成。剩余动作是交付文件到机后的运行验收，以及验收通过后由团队授权 PR/合并。
+
+接收机补充回执（2026-09-24）：交付 ZIP SHA-256 已匹配且条目路径安全，但 ZIP 不含离线镜像；目标 tar `openguard-api-8ffe27fb-linux-amd64.tar`（522,509,312 字节，SHA-256 `e262713c...6b26`）仍未到机，目标镜像也不存在。因此接收机 launcher 与全新 root 验收尚不能开始。
+
+### 2026-09-24 接收机镜像与 Windows launcher 回执
+
+| 项目 | 实际结果 | 状态 |
+|---|---|---|
+| 离线 tar | 大小与 `e262713c...6b26` SHA-256 完全匹配 | 通过 |
+| Docker 镜像 | ID `8ffe27...b7b9`，平台 `linux/amd64` | 通过 |
+| 全新 receiver root | 独立空目录，未复制发送机数据 | 已创建但初始化失败 |
+| 原生 Windows launcher | `_private_directory` 返回 `root_unsafe`，退出码 1 | 保留错误，未绕过 |
+| 既有服务 | 8081/8082 API/Web 均保持 healthy | 未影响 |
+| 页面/CAS/重启验收 | 无 manifest/业务 ID，未开始 | 等待独立、已批准 POSIX 环境 |
+
+当前结论仍为 PARTIAL：镜像接收和平台验证已经完成；运行交付包在本机原生 Windows 文件系统触发预期安全拒绝。下一步不是修改权限或后端，而是在独立 Ubuntu WSL2/Linux 接收环境中使用相同锁定源码、镜像与全新 Linux root 重跑 launcher。
+
+### 2026-09-24 D 盘 Ubuntu WSL2 接收环境进展
+
+| 项目 | 实际结果 | 状态 |
+|---|---|---|
+| 独立 POSIX 环境 | `OpenGuard-Receiver-Ubuntu`，WSL2，虚拟磁盘位于项目 D 盘 ignored output | 通过 |
+| 接收工具 | Python 3.12.3、Git 2.43.0、CA/curl | 通过 |
+| 锁定源码 | WSL 内 detached HEAD `aa38f165...`，来自完整且已验证的 Git bundle | 通过 |
+| 锁定镜像 | `8ffe27...b7b9`、`linux/amd64`，可经临时代理只读 inspect | 通过 |
+| launcher bind | Docker daemon 看不到 `/opt/openguard-aa38/backend` | 等待显式开启该发行版的 Docker Desktop WSL integration |
+| 安全边界 | 未持久链接 Docker socket，未 chmod/绕过门禁，8081/8082 未重启 | 保持 |
+
+接收机验收仍为 PARTIAL。环境和锁定输入已齐，剩余阻塞是一次明确的安全授权：允许 `OpenGuard-Receiver-Ubuntu` 控制 Docker Desktop daemon。授权并启用后，继续生成本机 manifest、页面/CAS/重启证据。
+
+### 2026-09-24 锁定交付包接收机签收结果
+
+| 验收项 | 本机实际结果 | 状态 |
+|---|---|---|
+| 版本/镜像 | 后端 `f63a581...`，前端 `aa38f165...`，镜像 `8ffe27...b7b9` / linux/amd64 | 通过 |
+| 新 root/本机身份 | `dev_eb4091acf9164af18be1467d2a075814`，实际容器 `3438465e6a89...` | 通过 |
+| 205 History | 100 + 100 + 5，首/中/末批页面与 API 一致 | 通过 |
+| Graph 三档 | 100/283、300/883、500/1483 节点/边 | 通过 |
+| 双上下文 CAS | A PATCH 200 升到 v2；B 旧 v1 PATCH 真实 409，提示并重读 v2 | 通过 |
+| 重启持久化 | Task/TaskVersion/ReportSnapshot/Artifact 行数和 hash 重启前后不变 | 通过 |
+| GET 无副作用 | launcher verify 40 requests PASS，全部持久化表 hash 读取前后相同 | 通过 |
+| 前端单测/构建 | 102/102；TypeScript + Vite 55 modules | 通过 |
+| 通用 P1 浏览器 smoke | 前 13 项通过；P0 报告回退实际返回 HTTP 409，最终 API failure 断言失败 | 已记录失败，未伪装全绿 |
+| 环境恢复 | 8081/8082 既有四容器 running/healthy；15174 预览保留 | 通过 |
+
+本次数据属性为 `real_backend_api + acceptance_synthetic`，仅证明真实后端 API 下的分页、规模、关联、CAS 和持久化能力；不是生产历史、真实仓库规模或真实义务证明。本次接收机执行范围已完成，但 P0 报告兼容回退的 409 仍是 F07 全绿门禁，需由后端/验收数据所有者确认该历史扫描的报告可用性或明确 409 为预期契约。
+
+当前可独立运行/演示：接收包的 205 History、三档 Graph、Remediation CAS/持久化、Report V2 固定快照和前端 F01—F07 主链路。尚未具备：生产真实数据签收和 P0 历史报告回退全绿。距离“可报名/可参赛”仍需生产数据和材料门禁；“可提交完整作品”还需最终 PR/发布审计与下载/打印签收；“具备获奖竞争力”还需 Gold/FN、对比/消融和用户效果证据。没有统一分母和权重，不换算百分比。
+
+### 2026-09-24 `acceptance_real_reviewed` 非空 Obligation 接收验收
+
+| 验收项 | 接收机实际结果 | 状态 |
+|---|---|---|
+| 交付包 | ZIP SHA-256 `7201d27...62d7`；包内 SHA256SUMS 全部通过 | 通过 |
+| 锁定运行身份 | 后端 `f63a581...`；镜像 `8ffe27...b7b9` / linux/amd64；独立容器 `4b17bade...c8ba` | 通过 |
+| 正式关联链 | Scan → Assessment → pending Obligation → v1 todo Task → Report 引用完整 | 通过 |
+| Resource / Evidence | `pydantic 2.13.4`、MIT 已核验，两个 Evidence 可追溯 | 通过 |
+| Report 下载 | JSON `bb5e0084...3dcc`；HTML `9bd61fbc...20fa`，与清单一致 | 通过 |
+| 重启持久化 | 同一恢复根重启后关联、报告 hash 和四库 hash 均不变 | 通过 |
+| 浏览器语义 | 6 个页面/状态通过；68 个 API 请求均为 GET；Task 未被表达为义务已履行 | 通过 |
+| 安全边界 | 仅收紧恢复副本权限；未 init/apply、未 chmod 777、未关闭门禁、未覆盖既有空间 | 通过 |
+
+本次已关闭“真实非空 Obligation 样本交付与前端表达”门禁：现有 F02/F04/F06 页面无需新增业务代码即可展示真实义务、资源、Evidence、任务和固定报告关系。该结果仅适用于经人工确认的 `acceptance_real_reviewed` 固定样本；义务履行仍为 `pending`，不能推出项目合规。生产 NOTICE 生成链、生产仓库数据签收、P0 历史报告回退 409、最终 PR/合并与发布审计仍需单独关闭。

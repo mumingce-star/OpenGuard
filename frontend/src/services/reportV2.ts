@@ -16,12 +16,56 @@ export type ReportSection = {
 export type ReportDocument = {
   schema_version: '1.0';
   snapshot_id: string;
-  binding: { scan_ref: { scan_id: string; status: string; revision: string | null }; assessment_ref: { assessment_id: string; version: number }; notice_refs: NoticeRef[] };
+  binding: {
+    scan_ref: { scan_id: string; status: string; revision: string | null };
+    assessment_ref: { assessment_id: string; version: number };
+    notice_refs: NoticeRef[];
+    algorithm_refs?: { kind: string; version: string; content_hash: string }[];
+  };
   created_at: string;
   generator_version: string;
   sections: ReportSection[];
   provenance: Row;
 };
+
+export type ReportObservationGroups = {
+  graph: ReportSection[];
+  notice: ReportSection[];
+};
+
+export function classifyReportObservations(document: ReportDocument): ReportObservationGroups {
+  const graphRefs = (document.binding.algorithm_refs ?? []).filter(ref => ref.kind === 'graph');
+  const noticeRefs = new Map(document.binding.notice_refs.map(ref => [ref.draft_id, ref.content_hash]));
+  const groups: ReportObservationGroups = { graph: [], notice: [] };
+  for (const section of document.sections) {
+    if (section.authority !== 'observation' || !row(section.content)) continue;
+    const content = section.content;
+    const provenance = row(content.provenance) ? content.provenance : null;
+    if (nonempty(content.view_id) && section.source_ids.includes(content.view_id) && provenance &&
+        nonempty(provenance.algorithm_version) && graphRefs.some(ref => ref.version === provenance.algorithm_version)) {
+      groups.graph.push(section);
+      continue;
+    }
+    if (nonempty(content.draft_id) && section.source_ids.includes(content.draft_id) &&
+        nonempty(content.content_hash) && noticeRefs.get(content.draft_id) === content.content_hash) {
+      groups.notice.push(section);
+    }
+  }
+  return groups;
+}
+
+export function reportCreateControl(input: {
+  assessmentId: string;
+  createLoading: boolean;
+  creating: boolean;
+  loadError: string;
+  createError: string;
+}) {
+  return {
+    disabled: !input.assessmentId || input.createLoading || input.creating || !!input.loadError,
+    label: input.creating ? '正在由后端保存…' : input.createError ? '重试创建（沿用同一请求标识）' : '创建并打开固定报告',
+  };
+}
 
 export type ReportSnapshot = {
   schema_version: '1.0';
@@ -95,6 +139,9 @@ export function validateReportDocument(value: unknown, scanId: string, assessmen
       !nonempty(value.generator_version) || !rows(value.sections) || !row(value.provenance)) return invalid();
   const allowed = new Set(['scan_facts', 'formal_assessment', 'workflow', 'observation', 'ai_explanation']);
   if (!value.binding.notice_refs.every(ref => row(ref) && nonempty(ref.draft_id) && nonempty(ref.content_hash) && /^[a-f0-9]{64}$/.test(ref.content_hash))) return invalid();
+  if ('algorithm_refs' in value.binding && (!Array.isArray(value.binding.algorithm_refs) ||
+      !value.binding.algorithm_refs.every(ref => row(ref) && nonempty(ref.kind) && nonempty(ref.version) &&
+        nonempty(ref.content_hash) && /^[a-f0-9]{64}$/.test(ref.content_hash)))) return invalid();
   const sections = value.sections;
   if (!sections.every(section => allowed.has(String(section.authority)) && nonempty(section.schema_version) &&
       Array.isArray(section.source_ids) && section.source_ids.every(nonempty) &&

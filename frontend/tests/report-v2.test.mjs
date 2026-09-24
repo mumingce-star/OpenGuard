@@ -13,6 +13,20 @@ function fixture(status = 'completed', extra = []) {
   };
 }
 
+function graphObservation() {
+  return {
+    authority: 'observation', schema_version: '1.0', source_ids: ['graph-view-1'], content_hash: hash,
+    content: { view_id: 'graph-view-1', provenance: { algorithm_version: 'graph/1.0' }, nodes: [], edges: [] },
+  };
+}
+
+function noticeObservation() {
+  return {
+    authority: 'observation', schema_version: '1.0', source_ids: ['ntc_1'], content_hash: 'b'.repeat(64),
+    content: { draft_id: 'ntc_1', content_hash: hash, entries: [] },
+  };
+}
+
 function snapshot() {
   return {
     schema_version: '1.0', snapshot_id: 'rptv2_1', content_hash: hash,
@@ -53,6 +67,45 @@ test('Report V2 includes only an exact backend NoticeDraft id and content hash',
   assert.deepEqual(body.notice_refs, [{ draft_id: 'ntc_1', content_hash: hash }]);
   assert.equal(created.binding.notice_refs[0].draft_id, 'ntc_1');
   await assert.rejects(async () => service.createReportV2('scn_1', 'asm_1', 'bad', [], [{ draft_id: 'ntc_1', content_hash: 'bad' }]), /参数无效/);
+});
+
+test('observation classification uses binding, source ids and content structure instead of authority alone', () => {
+  const service = runtime().load('services/reportV2.ts');
+  const cases = [
+    { name: 'only Graph', extra: [graphObservation()], binding: { algorithm_refs: [{ kind: 'graph', version: 'graph/1.0', content_hash: hash }], notice_refs: [] }, expected: [1, 0] },
+    { name: 'only NOTICE', extra: [noticeObservation()], binding: { algorithm_refs: [], notice_refs: [{ draft_id: 'ntc_1', content_hash: hash }] }, expected: [0, 1] },
+    { name: 'Graph and NOTICE', extra: [graphObservation(), noticeObservation()], binding: { algorithm_refs: [{ kind: 'graph', version: 'graph/1.0', content_hash: hash }], notice_refs: [{ draft_id: 'ntc_1', content_hash: hash }] }, expected: [1, 1] },
+    { name: 'neither', extra: [], binding: { algorithm_refs: [], notice_refs: [] }, expected: [0, 0] },
+  ];
+  for (const item of cases) {
+    const value = fixture('completed', item.extra);
+    value.binding = { ...value.binding, ...item.binding };
+    const groups = service.classifyReportObservations(value);
+    assert.deepEqual([groups.graph.length, groups.notice.length], item.expected, item.name);
+  }
+  const unbound = fixture('completed', [graphObservation(), noticeObservation()]);
+  const unboundGroups = service.classifyReportObservations(unbound);
+  assert.deepEqual([unboundGroups.graph.length, unboundGroups.notice.length], [0, 0]);
+});
+
+test('failed creation exposes a manual retry and reuses the same idempotency key and references', async () => {
+  const r = runtime({ VITE_API_BASE_URL: '/api/v1' }), service = r.load('services/reportV2.ts');
+  const calls = [];
+  r.setFetch(async (_url, init) => {
+    calls.push(JSON.parse(init.body));
+    if (calls.length === 1) throw new TypeError('offline');
+    return Response.json(snapshot());
+  });
+  const taskRefs = [{ task_id: 'tsk_1', version: 3 }];
+  const noticeRefs = [{ draft_id: 'ntc_1', content_hash: hash }];
+  await assert.rejects(service.createReportV2('scn_1', 'asm_1', 'stable-key', taskRefs, noticeRefs), /连接|失败|offline/);
+  const control = service.reportCreateControl({ assessmentId: 'asm_1', createLoading: false, creating: false, loadError: '', createError: '网络失败' });
+  assert.equal(control.disabled, false);
+  assert.match(control.label, /重试创建/);
+  await service.createReportV2('scn_1', 'asm_1', 'stable-key', taskRefs, noticeRefs);
+  assert.deepEqual(calls[0], calls[1]);
+  assert.equal(calls[1].idempotency_key, 'stable-key');
+  assert.equal(service.reportCreateControl({ assessmentId: 'asm_1', createLoading: false, creating: false, loadError: 'Task 读取失败', createError: '' }).disabled, true);
 });
 
 test('only a bound Formal Assessment snapshot is accepted', () => {

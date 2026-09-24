@@ -7331,3 +7331,106 @@
 - CLI --result 在 apply 前验证私有目录并 O_EXCL 预留 pending；本次私有预留才能原子转为 success/failure，已存在或不安全路径均在 apply 前拒绝；结果写出失败明确标记可能已完成/不可自动重试。错绑测试逐条使用错误记录自身 canonical SHA、断言精确 code 及无新 scan/confirmation/attempt，另留 expected hash 错误控制用例；非法时间/字段类型稳定拒绝。初始 fail-first 为 8 failed/4 deselected（开发过程控制台观察），修复后 Linux R1 定向 14 passed；ZIP/Assessment/Remediation/Report 消费者 301 passed/1 warning。
 - 同一现有 linux/amd64 镜像、Linux 原生测试依赖、只读源码和禁网络的一次性容器最终 full：2645 passed/11 failed/4 skipped/2 warnings，非零退出如实保留。相对上轮 full JUnit：失败节点集合完全相同，新增 9 节点全部通过，旧节点零减少；一个旧 opt-in Git egress skip 本次通过，无新增 skip。首次临时 full 因缺 Git 对象库出现第 12 个环境失败；只读挂载对象库并用进程级 safe.directory 后该项定向通过，最终 full 收敛为原 11 节点，过程 JUnit 保留。macOS 消费者曾因沙箱回环 bind 权限 2 failed，Linux 同组 301 全过；Mac 依赖/初始 tmpfs 不足导致的中间采集/初始化问题不是产品结论。
 - 仅本分支 A 侧工具、CLI、单测、说明和两份日志；未改 cz/规则/公共 Schema/前端/NOTICE/旧工作区/真实扫描 DB。Docker Desktop 经 Owner 明确授权启动，既有容器自动恢复者保持现状、未操作；本轮 docker run --rm 临时测试容器已退出删除。新 ignored 证据 p1-reviewed-obligation-r1-20260923T155119Z，旧证据保留。未暂存、提交、推送、合并或部署；真实人工确认仍待 Owner，真实非空链尚未执行。STOP。
+### [20260923-1557-GPT6Astra-P1ReceiverAcceptance] START — 锁定版本接收机运行验收
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 15:57 +08:00。用户要求在本机接收并验收后端运行交付包与离线镜像，锁定后端 `f63a5818b3ef59997ca6d365b75b12099a475079`、前端 `aa38f1656aa814075aac12f0e20ac387059530cc`。
+- 开工核验：当前分支与 HEAD 完全匹配锁定前端，`origin/integration/p1` 匹配锁定后端；工作区开工前干净。本机不存在目标镜像 `sha256:8ffe27fbcd8f3e7484df6dd8adc7a53b50eb5e08865b9180cc8c1ff05ad6b7b9`，因此后续必须先取得并核验交付 ZIP `7cfb28c...a61469` 与 tar `e262713c...6b26`，再按 `receiver-runtime.md` 加载。
+- 范围：仅使用锁定源码、交付包现有 launcher 和全新 receiver root；不得复用发送机 root/manifest/receipt，不得 chmod 777、关闭 root_unsafe/权限门禁或覆盖现有 8081/8082 服务。数据必须标记 `real_backend_api + acceptance_synthetic`。
+- 验收目标：本机 manifest/实际 ID；205 History 首中末页；100/300/500 Graph 页面及节点/边；两个独立浏览器上下文完成同一旧 version 的成功 PATCH、真实 409、服务器重读与最终 version；容器重启后 Task/Report Hash 不变；记录任何平台、权限或启动失败原文。
+- 预计产物：ignored `output/receiver-acceptance-*` 全新 root、截图与回执，以及只追加协作日志/项目进度。本轮不实现后端，不补造 NOTICE/Obligation，不提交或推送；预计 18k—40k token，精确遥测不可得。
+
+### [20260923-1605-GPT6Astra-P1ReceiverAcceptance] PARTIAL — 锁定版本匹配，等待交付 ZIP/离线 tar 到机
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 16:05 +08:00。本轮已完成接收前只读核验；未启动 launcher、未创建或复用 acceptance root，原因是交付文件尚未出现在本接收机可访问路径。
+- 版本：本地后端基线 `f63a5818b3ef59997ca6d365b75b12099a475079`、前端 `aa38f1656aa814075aac12f0e20ac387059530cc` 均与用户锁定值完全一致，工作区开工前干净。
+- 镜像：`docker image inspect sha256:8ffe27fbcd8f3e7484df6dd8adc7a53b50eb5e08865b9180cc8c1ff05ad6b7b9` 返回 `No such image`；`docker image ls --digests --no-trunc` 也无该 digest，因此必须接收并核验离线 tar 后才能继续。没有加载其他镜像冒充目标镜像。
+- 交付物定位：仓库锁定树、所有已知远端分支、GitHub Releases（0）、GitHub Actions artifacts（0）、`D:\workspace`、用户 Downloads/Desktop、微信文件目录和常见临时目录均未找到 `receiver-runtime.md`、匹配交付 ZIP 或离线 tar。故无法核验 ZIP `7cfb28c...a61469`、tar `e262713c...6b26`，也不能安全推断 launcher 参数。
+- 安全边界：未 chmod、未关闭 root_unsafe/权限检查、未覆盖或停止现有 8081/8082 服务、未复用发送机 manifest/receipt、未修改后端/前端业务代码、数据库、API 或依赖。
+- 未完成：全新 root 启动、本机 manifest/ID、205 History、三档 Graph、双上下文 CAS、重启后 Task/Report Hash 和页面截图。解除条件是用户提供交付 ZIP 的本机绝对路径或直接附加交付 ZIP；若 tar 独立提供，也需给出路径。
+- 发布状态/Token：仅追加本地协作记录；未提交、推送、PR或合并。本次运行精确 token 数不可获得；开工估算 18k—40k，当前因输入文件缺失提前停止，未消耗完整范围。
+
+### [20260923-1606-GPT6Astra-P1FrontendRemoteRefresh] START — 最新团队仓库与前端完成度复核
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-23 16:06 +08:00。用户要求重新更新团队仓库并判断前端工作是否全部完成。
+- 范围：只读 fetch 全部远端分支，比较 `integration/p1`、`p1/xzb-frontend-f01-f07` 与本地锁定前端；复跑前端测试、TypeScript/生产构建和 diff check。保留上一轮未提交接收验收日志，不合并、不覆盖、不推送。
+- 预计修改：仅追加协调日志与进度；不修改前端/后端业务、DB、API、依赖或验收数据。预计 3k—8k token，精确遥测不可得。
+
+### [20260923-1607-GPT6Astra-P1FrontendRemoteRefresh] COMPLETE — 前端开发范围完成，集成与接收机签收未完成
+
+- 远端事实：完整 fetch 后，`origin/integration/p1` 仍为 `f63a5818b3ef59997ca6d365b75b12099a475079`，`origin/p1/xzb-frontend-f01-f07` 与本地 HEAD 均为 `aa38f1656aa814075aac12f0e20ac387059530cc`；没有更新的前端或生产后端提交需要继续适配。
+- 前端结论：F01—F07 的页面、路由、真实 API 消费、状态语义、URL 恢复、可访问性、打印和异常处理均已实现并上传。`npm test` 102/102，`npm run build`（TypeScript + Vite 55 modules）通过，`git diff --check` 通过；本地与远端前端分支没有代码差异。
+- 边界：该结论是“前端开发工作完成”，不是“团队集成/接收机正式验收完成”。前端提交尚未合入 `integration/p1`；接收机交付 ZIP/离线镜像仍未到机，故 205 History、三档 Graph、真实双上下文 CAS 与重启 Hash 尚未在接收机签收。
+- 当前可演示：现有 8081/8082 的 F01—F06、F07 只读链路、Profile Metadata、既有 Remediation/Report 及明确缺失态。尚未具备的项目来自交付包/验收环境，而非待开发前端组件。
+- 发布状态：前端分支已在 GitHub；本轮未提交、推送、创建 PR 或合并。建议在接收机验收通过后，由团队授权创建 PR/合入 `integration/p1`。
+- Token：本次运行精确 token 数不可获得；开工估算 3k—8k，在范围内完成远端刷新、测试与结论复核。
+
+### [20260924-0011-GPT6Astra-P1ReceiverAcceptance] AMENDMENT — 交付 ZIP 已到机并通过，离线镜像 tar 仍缺失
+
+- 用户已提供 `xzb-backend-runtime-handoff.zip`、`receiver-runtime.md` 与 `image-manifest.json`。接收机实算 ZIP SHA-256 为 `7cfb28c599ed06b6504dc6b525ab91d5854e6c29680e06b21dddc10df6a61469`，与锁定值完全一致。
+- ZIP 仅 29,926 字节，包含 runtime 说明、发送机旧 manifest/verify/smoke/CAS 回执和辅助脚本；逐条检查无绝对路径或 `..` 路径穿越。按用户与文档约束，这些旧回执不作为本机验收结果。
+- `image-manifest.json` 声明离线镜像归档必须是 `openguard-api-8ffe27fb-linux-amd64.tar`，大小 522,509,312 字节、SHA-256 `e262713c5cdbb8e8f15709c8ca59ed5528eadf0f796cfd38273325520ad56b26`。该 tar 未包含在 ZIP，同目录、用户目录与 `D:\workspace` 均未找到；目标镜像 ID 仍返回 `No such image`。
+- 因此保持 PARTIAL：未执行 `docker image load`、launcher、全新 root、页面/CAS/重启验收。解除条件仅为提供上述 tar 文件或其本机绝对路径；不会 pull 未验证仓库、重建替代镜像、改标签或使用发送机结果冒充。
+
+### [20260924-0110-GPT6Astra-P1ReceiverAcceptance] PARTIAL — 镜像验收通过，原生 Windows root 被安全门禁拒绝
+
+- 离线归档已到机。接收机实算大小 `522509312` 字节、SHA-256 `e262713c5cdbb8e8f15709c8ca59ed5528eadf0f796cfd38273325520ad56b26`，均与交付 manifest 完全一致。
+- 执行 `docker image load --input` 成功；随后按完整 ID 检查，结果为 `sha256:8ffe27fbcd8f3e7484df6dd8adc7a53b50eb5e08865b9180cc8c1ff05ad6b7b9`、`linux/amd64`、inspect size `522477770`。没有依赖 Tag 或未验证 RepoDigest。
+- 接收机只有 Docker Desktop 的内部 `docker-desktop` WSL2 发行版，没有独立、已批准的 Linux/WSL 项目环境。按交付说明先实际探测原生 Windows launcher，使用全新 root `output/manual-fixes/p1-frontend-acceptance-xzb-receiver-20260924-0115`；未复制发送机 DB、manifest、ID 或 receipt。
+- `init` 失败原文：`app.dev_integration.DevIntegrationError: root_unsafe`，调用链为 `deploy/p1_frontend_acceptance.py -> deploy/p1_dev.py -> backend/app/frontend_acceptance.py initialize -> backend/app/dev_integration.py _private_directory`。launcher 退出码 1，仅留下空 root 目录。
+- 安全处理：未 chmod 777、未改 ACL、未关闭 `_private_directory`/`root_unsafe`、未改 launcher、未使用 docker-desktop 内部发行版冒充已批准 POSIX 环境。原 8081/8082 四个容器仍 healthy，未覆盖或重启。
+- 未完成：本机 manifest/业务 ID、205 History、100/300/500 Graph、双浏览器 CAS、Task/Report 重启 Hash。解除条件是团队/用户批准并提供独立 POSIX 环境（如 Ubuntu WSL2 或 Linux 接收机），再从新的 Linux 文件系统 root 重跑现有 launcher；不需要重新提供镜像。
+- 修改/发布/Token：除只追加日志与空 ignored root 外未修改项目；未提交、推送、PR或合并。本次精确 token 数不可获得；原估算 18k—40k，镜像门禁完成，运行验收因平台安全门禁保持 PARTIAL。
+
+### [20260924-1023-GPT6Astra-P1ReceiverAcceptanceWSL] PARTIAL — D 盘 Ubuntu 接收环境就绪，等待显式授权 Docker WSL 集成
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-24 10:23 +08:00。用户授权继续完成接收机验收，并要求有益安装均放置在 D 盘。
+- 已完成：从官方 `ubuntu:24.04` 镜像导出根文件系统，在 `output/receiver-runtime/wsl` 注册独立 WSL2 发行版 `OpenGuard-Receiver-Ubuntu`；安装 Python 3.12.3、Git 2.43.0、CA 证书与 curl。虚拟磁盘、rootfs tar 和 Git bundle 均位于项目 D 盘 ignored output，未纳入仓库。
+- 锁定输入：Docker 镜像仍为 `sha256:8ffe27fbcd8f3e7484df6dd8adc7a53b50eb5e08865b9180cc8c1ff05ad6b7b9`、`linux/amd64`；从本地锁定分支生成完整 Git bundle，并在 WSL Linux 文件系统 `/opt/openguard-aa38` 检出 detached HEAD `aa38f1656aa814075aac12f0e20ac387059530cc`。
+- 实际失败：使用 Docker Desktop 临时代理调用 launcher 时，daemon 返回 `invalid mount config for type "bind": bind source path does not exist: /opt/openguard-aa38/backend`。原因是 Docker Desktop 未为新发行版启用 WSL integration，daemon 无法解析该发行版的 Linux 文件系统绑定路径；不是源码、镜像或 `root_unsafe` 错误。
+- 安全处理：尝试建立持久 Docker CLI/socket 链接被安全审查拒绝，未执行；未修改 Docker Desktop 设置、未 chmod、未降低权限检查、未覆盖或重启既有 8081/8082 服务。后续必须由用户显式授权让该 WSL 发行版获得本机 Docker daemon 控制能力，再从同一全新 root 继续。
+- 未完成：receiver manifest/实际 ID、205 History、100/300/500 Graph、双浏览器真实 409 CAS、重启后 Task/Report Hash。当前状态仍为 PARTIAL，不使用发送机旧回执冒充。
+- 发布/Token：没有业务文件修改、提交、推送、PR或合并。本次运行精确 token 数不可获得；原估算 18k—40k，环境安装已完成，运行验收因 Docker WSL 权限边界暂停。
+
+### [20260924-1044-GPT6Astra-P1ReceiverAcceptanceWSL] COMPLETE — 锁定交付包接收机验收完成
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-24 10:44 +08:00。本轮在用户明确授权后启用 `OpenGuard-Receiver-Ubuntu` 的 Docker Desktop WSL integration，使用锁定源码、锁定镜像和全新 Linux root 完成指定接收机验收。
+- 锁定身份：后端 `f63a5818b3ef59997ca6d365b75b12099a475079`，前端 `aa38f1656aa814075aac12f0e20ac387059530cc`，镜像 `sha256:8ffe27fbcd8f3e7484df6dd8adc7a53b50eb5e08865b9180cc8c1ff05ad6b7b9` / `linux/amd64`。ZIP 与 tar SHA-256 分别为 `7cfb28c599ed06b6504dc6b525ab91d5854e6c29680e06b21dddc10df6a61469` 和 `e262713c5cdbb8e8f15709c8ca59ed5528eadf0f796cfd38273325520ad56b26`，全部匹配。
+- 本机运行身份：root `/opt/openguard-aa38/output/manual-fixes/p1-frontend-acceptance-xzb-receiver-20260924-1034`，`root_id=dev_eb4091acf9164af18be1467d2a075814`，容器 `openguard-p1-acceptance-f72a12a6e07965b2`，实际 container ID `3438465e6a894b74d5a552043e2494efa91c11ed2d6afaa543d7e9c8910eacb7`，API `127.0.0.1:18011`，前端预览 `127.0.0.1:15174`。数据属性严格保留为 `real_backend_api + acceptance_synthetic`，不代表生产历史、真实仓库规模或真实义务证明。
+- History：真实 API 与页面验证三批 `100 + 100 + 5 = 205`；首批 `2711—2774`，中批 `2775—27d8`，末批 `27d9—27dd`，游标分页可恢复。
+- Graph：页面实际 DOM 读取为 `100/283`、`300/883`、`500/1483` 节点/边；浏览器 ready 耗时分别 `213.24 ms`、`270.46 ms`、`312.75 ms`。
+- CAS：两个隔离 Playwright 浏览器上下文同时读取任务 `tsk_055fea99-4b03-5bc1-8b52-631d1f16b609` 旧 `version=1`；A 上下文 PATCH 200 并升到 `version=2/in_progress`，B 上下文使用旧版本获得真实 409，页面明示冲突并重读到 `version=2`，最终服务器状态一致。
+- 重启持久化：容器重启前后 tasks 15 行 hash `092733e2...a89`，task_versions 16 行 hash `cd13661c...a38`，report_snapshots 4 行 hash `7177b653...0f7`，report_artifacts 8 行 hash `f9e097af...edc`，均完全不变。重启后 launcher `verify` 40 个请求 PASS，GET audit 前后所有持久化表 hash 一致。
+- 前端回归：`npm test` 102/102；`npm run build` 含 TypeScript 检查通过，Vite 55 modules，JS 391.15 kB / gzip 120.54 kB，CSS 57.27 kB / gzip 13.44 kB。自定义接收机浏览器矩阵全部通过。
+- 如实失败项：通用 `test:browser:p1` 前 13 项通过，最终“无 API 失败”检查因 P0 报告回退端点对验收数据返回真实 HTTP 409 而失败，故记录为 13/14，没有弱化断言或隐藏。首次 stop→start 立即重启还曾遇到 `loopback port unavailable; no process was stopped`，等待 Docker Desktop 释放 18011 后原 launcher 重试成功。
+- 安全/恢复：未 chmod 777，未关闭 root_unsafe/权限检查，未复用发送机 root/回执。Docker 设置变更前已备份，仅开启该具名 WSL 发行版集成。既有 8081/8082 四个容器已恢复 `running/healthy`，HTTP 均为 200。
+- 产物：本机 manifest 和三份 verify 回执已复制到 ignored `output/receiver-runtime/receiver-receipts/`；页面/CAS 结果与截图位于 `output/receiver-runtime/receiver-browser/`；通用 smoke 截图位于 `output/receiver-runtime/browser-smoke/`。不作为仓库业务资产提交。
+- 修改/发布：没有修改前端/后端业务代码、DB、公共 API 或依赖；未提交、推送、PR 或合并。本次运行精确 token 数不可获得；开工估算 18k—40k，已在原接收机验收范围内完成。
+
+### [20260924-1220-GPT6Astra-RealObligationReceiver] START — acceptance_real_reviewed 非空 Obligation 接收验收
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-24 12:20 +08:00。用户交付 `xzb-real-obligation-handoff.zip`，要求在接收机上关闭“真实非空 Obligation 样本”门禁。
+- 范围：校验 ZIP SHA-256 `7201d27ddfa64de34eba6f76ea71142e2a344cccc36769ac25dbf89a205662d7`；读取包内 README/清单；将 `backup-root/` 恢复到全新私有 Linux 数据根；只使用说明锁定源码和匹配镜像启动。严禁重新 `init`、运行 `apply`、覆盖现有生产数据或 205 条合成验收空间。
+- 验收链：`scn_6c0f972a-18c1-4566-a7fa-df623053bea5` → `asm_87baf091-31fe-54f7-88d6-8d3fb788181a` → `obl_ab81fa16-f42f-5c32-ab20-621ddef958b4` (`LIC-MIT-NOTICE/1.0.0`, pending) → `tsk_a0a72e5b-4772-54e9-91b4-7bfa70d02eb8` (`version=1`, `origin.kind=obligation`) → `rptv2_5ba69c69-7b03-463c-9ba7-bcaeca1120c4`。
+- 验收方法：先只读校验 Obligation、Resource、Evidence、Task 和 Report 引用，再下载 JSON/HTML 与清单 hash 比对，最后使用同一恢复根重启并重读。页面不得把 Task 状态表达为 Obligation 已履行。
+- 预计修改：仅在 ignored `output/receiver-runtime/` 生成隔离恢复根、回执和截图，并只追加本日志与 `PROJECT_PROGRESS.md`。不修改业务代码、DB 契约或依赖，不提交/推送/PR/合并。预计 12k—28k token，精确遥测不可得。
+
+### [20260924-1241-GPT6Astra-RealObligationReceiver] COMPLETE — 非空正式 Obligation 样本接收机验收通过
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-24 12:41 +08:00。本轮严格按交付 README 在独立接收环境完成 `acceptance_real_reviewed` 非空 Obligation 样本验收；未重新 `init`、未运行 `apply`，未覆盖生产数据或既有 205 条合成验收空间。
+- 输入与版本：交付 ZIP 实算 SHA-256 `7201d27ddfa64de34eba6f76ea71142e2a344cccc36769ac25dbf89a205662d7`、共 78 个安全条目；包内 `SHA256SUMS` 全部通过。锁定源码 `f63a5818b3ef59997ca6d365b75b12099a475079`，镜像 `sha256:8ffe27fbcd8f3e7484df6dd8adc7a53b50eb5e08865b9180cc8c1ff05ad6b7b9` / `linux/amd64`。
+- 独立运行身份：恢复根 `/opt/openguard-real-obligation-handoff-20260924-1220/restored-root`，容器 `openguard-real-obligation-receiver-20260924`，实际 container ID `4b17badeccc681df310f312fa4720ca9ded906a3fb03a6b308a965eb8ca2c8ba`，API `127.0.0.1:18117`，前端预览 `127.0.0.1:15175`。原 18011/15174 与 8081/8082 环境均未被替换。
+- 启动失败如实保留：首次报 `RuntimeError: OpenGuard runtime directory must be private`，第二次报 `app.persistence.scan_registry.ScanRegistryError: registry_permission_denied`。仅在全新恢复副本内将目录收紧为 `0700`、文件收紧为 `0600` 后通过；没有 chmod 777、关闭权限门禁或修改备份源。
+- 实际关联链通过：Scan `scn_6c0f972a-18c1-4566-a7fa-df623053bea5` → Assessment `asm_87baf091-31fe-54f7-88d6-8d3fb788181a` → Obligation `obl_ab81fa16-f42f-5c32-ab20-621ddef958b4`（`LIC-MIT-NOTICE/1.0.0`，`fulfillment=pending`）→ Task `tsk_a0a72e5b-4772-54e9-91b4-7bfa70d02eb8`（`version=1`、`status=todo`、`origin.kind=obligation`）→ Report `rptv2_5ba69c69-7b03-463c-9ba7-bcaeca1120c4`。资源为 `pydantic 2.13.4`，两个 Evidence 均为真实 API 返回并显示 `verified`。
+- 报告下载：JSON `320508` 字节、SHA-256 `bb5e0084e39fbb699e0bf724e509cec433f079f6d82a8273c0c564958aec3dcc`；HTML `599543` 字节、SHA-256 `9bd61fbc30d42bb37d6ce7b710380882c3ae3c5024ac26aaed11add494fb20fa`，均与交付清单完全一致；正文包含上述 scan/assessment/obligation/resource/task 引用和 `pending` 状态。
+- 重启验证：使用同一私有恢复根重启后全部只读 HTTP 检查再次 PASS，JSON/HTML hash 不变；四个数据库 hash 重启前后及与包内清单完全一致。容器实际 ID保持 `4b17bade...c8ba`。
+- 浏览器验收：Assessment、Evidence、Resource、Remediation、Report V2 六个页面/状态均通过，共观察 68 个 API 请求且全部为 GET，无写请求。页面明确显示“识别出义务不代表已经履行”以及“任务完成也不表示相关义务已经履行”，没有把 todo/done 与义务履行或项目合规混同。
+- 产物：HTTP 回执位于 ignored `output/receiver-runtime/real-obligation-receiver-20260924-1220/`；浏览器结果和 6 张截图位于 ignored `output/receiver-runtime/real-obligation-browser-20260924-1220/`。未修改前后端业务代码、公共 API、DB 或依赖。
+- 范围结论：本轮关闭“非空正式 Obligation 样本可被真实 API 与现有前端完整读取/关联/重启恢复”的门禁；不关闭生产 NOTICE 生成链、生产仓库真实性或整个项目合规结论。未提交、推送、创建 PR 或合并。本次运行精确 token 数不可获得；开工估算 12k—28k，验收在该范围内完整完成。
+
+### [20260924-1250-GPT6Astra-P1FinalNarrowFix] START — 同步最新 integration 并完成 Report V2 两项窄修
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-24 12:50 +08:00。用户锁定 `origin/integration/p1=6352b84bce1f3dbee192c9065049f4dda3fdb45f`、feature/HEAD `aa38f1656aa814075aac12f0e20ac387059530cc`，要求普通 `--no-ff` merge 后完成两项 Report V2 前端窄修并仅推送 feature 分支。
+- Preflight：当前分支和 HEAD 匹配；索引无 staged 内容，产品代码无未保存修改。工作树存在 181 行已知、仅追加的上一轮接收验收日志（`AGENT_WORKLOG.md`、`PROJECT_PROGRESS.md`），将用具名 stash 临时保护，在同步 merge 后按追加语义恢复；不覆盖任何用户或其他模型成果。
+- 范围：A）基于报告 binding、source_ids 和已有结构区分 graph observation 与 NOTICE observation，覆盖 Graph-only、NOTICE-only、两者、均无四种测试；B）为创建失败提供受控手动重试，保留 Assessment/Task/Notice refs 与 idempotency key，不自动 POST、不改变 GET 只读行为。禁止后端、Schema、公共 API、依赖和无关重构。
+- 验收：定向 fetch 并验证远端 SHA；merge 后验证 integration 为祖先且原三个 xzb 提交保留；运行本次真实测试数、TypeScript、Vite build、diff check 和直接相关浏览器验收；复用已经实跑通过的真实 Obligation 固定样本回执，不对它做 CAS。CAS 继续使用独立可重置验收数据。
+- 预计文件：现有 Report V2 页面/适配器及其测试、两份只追加协调文档。若出现 backend/app 或 frontend 产品代码 merge 冲突立即停止。预计 18k—34k token；本次运行精确 token 遥测不可得。

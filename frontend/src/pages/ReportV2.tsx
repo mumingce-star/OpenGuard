@@ -3,16 +3,22 @@ import type { Scan } from '../types/domain';
 import { reportDownloadUrl } from '../services/scans';
 import { listAssessments, type Assessment } from '../services/assessments';
 import { listAllTasks, type RemediationTask } from '../services/remediationTasks';
-import { createReportV2, downloadReportV2, loadReportV2, type ReportDocument } from '../services/reportV2';
+import { classifyReportObservations, createReportV2, downloadReportV2, loadReportV2, reportCreateControl, type ReportDocument, type ReportSection } from '../services/reportV2';
 import { createNoticeDraft, type NoticeDraft } from '../services/noticeDrafts';
 import { Header, Panel, useNotice } from '../components/ui';
 
 type State = { kind: 'idle' | 'loading' | 'ready' | 'error'; document?: ReportDocument; html?: string; message?: string };
 const names: Record<string, string> = {
   scan_facts: '扫描事实', formal_assessment: 'Formal Assessment · 正式评估',
-  workflow: 'Action Plan · 整改进度快照', observation: '图谱观察摘要',
+  workflow: 'Action Plan · 整改进度快照', observation: '其他观测',
   ai_explanation: 'AI 建议 · 非正式结论',
 };
+
+function sectionName(section: ReportSection, graph: Set<ReportSection>, notice: Set<ReportSection>) {
+  if (graph.has(section)) return '图谱观察摘要';
+  if (notice.has(section)) return 'NOTICE 草稿观察';
+  return names[section.authority] ?? section.authority;
+}
 
 export function ReportV2({ scan, query, open }: {
   scan: Scan;
@@ -34,6 +40,7 @@ export function ReportV2({ scan, query, open }: {
   const [noticeCreating, setNoticeCreating] = useState(false);
   const [noticeDraft, setNoticeDraft] = useState<NoticeDraft | null>(null);
   const [noticeError, setNoticeError] = useState('');
+  const [loadError, setLoadError] = useState('');
   const [createError, setCreateError] = useState('');
   const createKey = useRef(crypto.randomUUID());
   const noticeKey = useRef(crypto.randomUUID());
@@ -43,31 +50,31 @@ export function ReportV2({ scan, query, open }: {
   useEffect(() => {
     if (scan.mode !== 'api') { setAssessments([]); setCreateLoading(false); return; }
     const controller = new AbortController();
-    setCreateLoading(true); setCreateError('');
+    setCreateLoading(true); setLoadError('');
     listAssessments(scan.id, controller.signal).then(value => {
       if (controller.signal.aborted) return;
       const formal = value.items.filter(item => item.scan_id === scan.id && item.formal === true && !!item.facts_hash);
       setAssessments(formal);
       setCreateAssessmentId(current => formal.some(item => item.id === current) ? current : formal[0]?.id ?? '');
-    }).catch(error => { if (!controller.signal.aborted) setCreateError(error instanceof Error ? error.message : 'Formal Assessment 读取失败。'); })
+    }).catch(error => { if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : 'Formal Assessment 读取失败。'); })
       .finally(() => { if (!controller.signal.aborted) setCreateLoading(false); });
     return () => controller.abort();
   }, [scan.id, scan.mode]);
   useEffect(() => {
     if (scan.mode !== 'api' || !createAssessmentId) { setReportTasks([]); return; }
     const controller = new AbortController();
-    setCreateLoading(true); setCreateError('');
+    setCreateLoading(true); setLoadError('');
     listAllTasks(scan.id, createAssessmentId, controller.signal).then(value => {
       if (!controller.signal.aborted) setReportTasks(value.filter(task => !task.superseded));
     }).catch(error => {
-      if (!controller.signal.aborted) { setReportTasks([]); setCreateError(error instanceof Error ? error.message : '整改任务版本读取失败。'); }
+      if (!controller.signal.aborted) { setReportTasks([]); setLoadError(error instanceof Error ? error.message : '整改任务版本读取失败。'); }
     }).finally(() => { if (!controller.signal.aborted) setCreateLoading(false); });
     return () => controller.abort();
   }, [scan.id, scan.mode, createAssessmentId]);
   useEffect(() => {
     createKey.current = crypto.randomUUID();
     noticeKey.current = crypto.randomUUID();
-    setNoticeDraft(null); setNoticeError('');
+    setNoticeDraft(null); setNoticeError(''); setCreateError('');
   }, [createAssessmentId, reportTasks.map(task => `${task.task_id}:${task.version}`).join('|')]);
   useEffect(() => {
     if (scan.mode !== 'api' || !assessmentId || !snapshotId) { setState({ kind: 'idle' }); return; }
@@ -85,7 +92,7 @@ export function ReportV2({ scan, query, open }: {
     finally { setDownloading(null); }
   }
   async function create() {
-    if (!createAssessmentId || createLoading || creating || createError) return;
+    if (!createAssessmentId || createLoading || creating || loadError) return;
     setCreating(true); setCreateError('');
     try {
       const snapshot = await createReportV2(
@@ -113,6 +120,10 @@ export function ReportV2({ scan, query, open }: {
   const document = state.document;
   const sections = document?.sections ?? [];
   const has = (authority: string) => sections.some(section => section.authority === authority);
+  const observations = document ? classifyReportObservations(document) : { graph: [], notice: [] };
+  const graphSections = new Set(observations.graph);
+  const noticeSections = new Set(observations.notice);
+  const createControl = reportCreateControl({ assessmentId: createAssessmentId, createLoading, creating, loadError, createError });
   return <div className="og-v2-page">
     <Header title="Assessment Report V2" description="读取后端已保存的固定版本报告；浏览器不生成、修改或重新判断正式结论。" eyebrow="OPENGUARD / IMMUTABLE REPORT" />
     <Panel title="创建固定版本报告" caption="这是明确的写操作：后端固定当前 Formal Assessment 与所列 Task 版本并保存报告；不会触发扫描、重新评估或 Qwen。">
@@ -125,9 +136,10 @@ export function ReportV2({ scan, query, open }: {
           {noticeDraft && <div role="status"><strong>已固定 {noticeDraft.draft_id}</strong><span>hash {noticeDraft.content_hash} · {noticeDraft.entries.length} 项 · {noticeDraft.coverage_gaps.length} 个缺口</span></div>}
           {noticeError && <p role="alert" className="og-error">{noticeError}</p>}
         </div>
-        <button type="button" onClick={create} disabled={!createAssessmentId || createLoading || creating || !!createError}>{creating ? '正在由后端保存…' : '创建并打开固定报告'}</button>
+        <button type="button" onClick={create} disabled={createControl.disabled}>{createControl.label}</button>
         {createLoading && <span role="status">正在读取 Assessment 与 Task 版本…</span>}
-        {createError && <p role="alert" className="og-error">{createError}</p>}
+        {loadError && <p role="alert" className="og-error">{loadError}</p>}
+        {createError && <div role="alert" className="og-error"><p>{createError}</p><p>不会自动再次提交；手动重试会沿用同一请求标识、Assessment、Task 与 NOTICE 引用，避免产生第二份报告。</p></div>}
       </div>}
     </Panel>
     <Panel title="选择固定快照" caption="当前后端没有报告列表接口。请使用显式创建报告后返回的 assessment_id 和 snapshot_id；刷新、分享 URL 可恢复。">
@@ -161,10 +173,10 @@ export function ReportV2({ scan, query, open }: {
           <section id="v2-executive" className="og-v2-boundary"><h2>Executive Summary</h2><p>正文中的项目整体评价来自报告绑定的 Formal Assessment；不在此处重新摘要或推断风险数量。</p></section>
           <section id="v2-formal" className="og-v2-boundary formal"><h2>Formal Assessment · 正式评估</h2><p>{has('formal_assessment') ? '以下嵌入的是后端保存的原始 HTML 报告，不是前端重组的评估。' : '正式评估章节缺失；不能作为正式报告使用。'}</p></section>
           <section id="v2-ai" className="og-v2-boundary ai"><h2>AI 建议 · 辅助解释</h2><p>{has('ai_explanation') ? '后端报告保留历史 AI 状态与正文；AI 不进入 Formal Conclusion。' : '此快照没有 AI 说明。'}</p></section>
-          <section id="v2-graph" className="og-v2-boundary"><h2>图谱摘要</h2><p>{has('observation') ? '后端快照包含已有图谱观察；不代表未知关系或授权已确认。' : '此快照没有图谱观察章节；不补造节点或关系。'}</p></section>
+          <section id="v2-graph" className="og-v2-boundary"><h2>图谱摘要</h2><p>{observations.graph.length ? '后端快照包含已绑定的图谱观察；不代表未知关系或授权已确认。' : '此快照没有已绑定的图谱观察章节；NOTICE 观察不会被当作图谱，也不补造节点或关系。'}</p></section>
           <section id="v2-actions" className="og-v2-boundary"><h2>Action Plan</h2><p>{has('workflow') ? '后端报告中保存了任务版本与处理状态；done 不等于项目合规，dismissed 不等于不适用。' : '此快照没有任务章节。'}</p></section>
           <section id="v2-notice" className="og-v2-boundary draft"><h2>NOTICE 草稿 · 非正式结论</h2>{document.binding.notice_refs.length ? <><p>以下引用来自后端固定快照；完整草稿、缺失字段与来源保留在原始报告中。</p><ul>{document.binding.notice_refs.map(ref => <li key={ref.draft_id}><code>{ref.draft_id}</code> · hash {ref.content_hash}</li>)}</ul></> : <p>当前快照未包含 NOTICE 草稿；后端 reader 尚未提供时不会由前端生成。</p>}</section>
-          <section id="v2-provenance" className="og-v2-boundary"><h2>Provenance · 来源</h2><p>以下章节元数据来自报告快照；详情及完整依据保留在后端 HTML 的附录中。</p><ul>{sections.map((section, index) => <li key={index}><strong>{names[section.authority] ?? section.authority}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul><details><summary>查看后端保存的 Provenance 原始字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details></section>
+          <section id="v2-provenance" className="og-v2-boundary"><h2>Provenance · 来源</h2><p>以下章节元数据来自报告快照；详情及完整依据保留在后端 HTML 的附录中。</p><ul>{sections.map((section, index) => <li key={index}><strong>{sectionName(section, graphSections, noticeSections)}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul><details><summary>查看后端保存的 Provenance 原始字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details></section>
           <section className="og-v2-boundary formal" aria-label="后端固定 HTML 报告"><h2>后端固定报告正文</h2><iframe ref={frame} title="Report V2 后端原始 HTML 正文" srcDoc={state.html} sandbox="allow-same-origin" /></section>
           <section id="v2-download" className="og-v2-boundary"><h2>下载固定附件</h2><div className="og-actions"><button disabled={!!downloading} onClick={() => save('html')}>下载 P1 HTML</button><button disabled={!!downloading} onClick={() => save('json')}>下载 P1 JSON</button><button onClick={() => frame.current?.contentWindow?.print()}>打印后端报告</button></div><p>附件由后端 GET 返回；下载失败会提示，不用旧版报告静默代替。</p></section>
         </div>
