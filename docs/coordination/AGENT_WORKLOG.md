@@ -7305,3 +7305,29 @@
 
 - 2026-09-23 02:12 +08:00 通过 GitHub 远端回执确认 `origin/p1/xzb-frontend-f01-f07` 已包含 `ea374cb30051` 与 `a43f98f34839`；`origin/integration/p1` 仍为 `f63a5818b3ef`，未被改写。
 - 未创建 Pull Request，未合并 `integration/p1` 或 `main`，未强推。具名 stash 暂保留为本地恢复点，不进入仓库。
+
+### [20260923-1441-GPT-6-Astra-reviewed-obligation-start] START — real reviewed obligation handoff
+
+- GPT-6 Astra / Backend A；Owner 指定 BASE f63a5818b3ef59997ca6d365b75b12099a475079。核验实际远端一致，干净的 xzb handoff worktree 新建 feat/p1-reviewed-obligation-handoff；History/Graph、NOTICE、旧 Profile、pydantic 复核 worktree 的 HEAD/status/未提交文件 Hash 已记录，仅本分支写入。
+- 本任务沿用近期相关日志阅读＋历史定向检索，复用现有真实 ZIP/Pipeline→B5规则→Formal Assessment→Task→Report 服务。先核验固定版本 pydantic 来源、真实扫描资源与许可证原文；仅在 A 侧新增必要的 prepare/apply 薄工具、受信任接缝、测试和简要运行说明，不修改 cz scanner/parser/rules/YAML、公共 Schema、前端、NOTICE 或生产库。
+- 人工确认必须是操作者在具体卡片与材料 Hash 下显式提交；旧人工查阅文档与自动化测试批准均不视为真实确认。缺确认时只交付一张 pending 卡，不实际 apply 或宣称真实非空链通过。验证采用隔离运行环境和专属数据根，先定向，必要时完整回归；保留失败与 partial，不部署、不提交/推送/合并。预计 18k–35k token；精确遥测不可获得。
+
+### [20260923-GPT-6-Astra-reviewed-obligation-partial] PARTIAL — code and pending card ready; no real human apply
+
+- exact BASE/远端 f63a5818b3ef59997ca6d365b75b12099a475079。新分支 feat/p1-reviewed-obligation-handoff，仅A侧内部 reviewed_obligation prepare/apply、CLI、单测、简要说明和两份追加日志；没有修改cz规则/扫描器、前端、NOTICE、公共Schema或生产数据库。
+- 固定BASE真实tracked源码导出ZIP SHA256=6927e8bac8e2c9e13b84aa988ef7f0125f3283ac4d3712cb9937219f6100ea04，专属隔离root真实ZIP/Pipeline扫描 scn_f0bbdd55-3125-49cc-8753-304918ca3d3c completed，原扫描0 Obligation。唯一pydantic 2.13.4资源 cmp_0c32e291-83e7-5bc9-b474-1e5921b668b2、manifest Evidence evd_99c84e41-a588-5c8e-ac02-104ad689f7c4；PyPI固定2.13.4 sdist与LICENSE SHA已核验。仅生成pending卡，未有人类适用性签收、未对真实样本运行apply，不能给出真实新scan/正式非空义务/Task/Report ID。
+- 内部apply要求独立提交的具体确认记录及显式canonical SHA，检查scan/资源/版本/材料/范围，保存不可覆盖的确认和尝试记录；若获批准，才在新真实ZIP扫描的NORMALIZE阶段注入单资源已核验材料，让原B5规则→正式Assessment→Task→Report生成结果。旧ScanRun/Assessment/Report不改，失败/重放不改写旧事实。永久测试中approval仅TEST-ONLY模拟，不是现实证明。
+- 最终定向241 passed/1 warning；同Linux隔离镜像最终full 2635 passed/11 failed/5 skipped/2 warnings，非零退出如实保留。11个失败node均在同镜像未修改BASE导出源码的对应文件定向复现；基线导出因无.git额外失败一项，该项不在当前full失败中。初次当前full与最终full的失败集合相同；新增测试全部通过，不称发布门禁全绿。macOS沙箱full另有loopback/prctl等环境失败，不用于Linux对照。
+- 一份ignored证据目录 p1-reviewed-obligation-20260923T064250Z 保留源ZIP、固定版本sdist、完整pending卡、私有扫描DB与P0报告、targeted/full及基线JUnit。仅本任务自有容器/一次性测试容器操作，运行容器已停止；其他容器/旧worktree不动。NO COMMIT/PUSH/MERGE/PRODUCTION DEPLOY。下一步仅待负责人对这张具体卡片作真实人工确认，之后才可执行真实apply和完整链路验收；当前只可进入Owner代码审查。
+
+### [20260923-2345-GPT-6-Astra-reviewed-obligation-r1-start] START — Owner R1 narrow repair
+
+- GPT-6 Astra / Backend A；沿用 feat/p1-reviewed-obligation-handoff 的未提交成果与 pending 卡，按 Owner CHANGES REQUESTED 仅修材料同字节绑定、source ZIP 写前绑定、CLI result 预留及负向测试独立性。旧证据不覆盖，真实 pydantic 不 apply，不改 cz、规则、前端、NOTICE、公共 Schema、旧工作区或真实扫描库。
+- 预计修改 reviewed_obligation.py、reviewed_obligation_cli.py、对应单测、必要操作说明及两份 append-only 日志。先 fail-first 与定向，再消费者和同 Linux 环境一次 full；新 ignored R1 evidence 固化 receipt、Hash 与累计 patch。预计 12k–22k token；精确遥测不可获得。NO COMMIT/PUSH/MERGE/DEPLOY。
+
+### [20260924-0040-GPT-6-Astra-reviewed-obligation-r1-complete] COMPLETE — Owner R1 local repair; pending final review
+
+- 同字节绑定：固定 2 MiB sdist 有界读取后先核验 ARTIFACT SHA256，再从同一不可变 bytes 解出 PKG-INFO、pyproject、LICENSE；源 ZIP 64 MiB 有界读取、同字节 Hash/manifest，apply 在任何正式写入前重新核验并给原 Pipeline 私有已验证快照。替换路径及读取中增长故障注入均拒绝或使用已核验字节。原 pending 卡内容与 SHA256 0ec32feaca3ad50a68a62375e3d105d4554ab1b327fb07664651e7a07f8e5075 不变，真实 pydantic apply 未运行。
+- CLI --result 在 apply 前验证私有目录并 O_EXCL 预留 pending；本次私有预留才能原子转为 success/failure，已存在或不安全路径均在 apply 前拒绝；结果写出失败明确标记可能已完成/不可自动重试。错绑测试逐条使用错误记录自身 canonical SHA、断言精确 code 及无新 scan/confirmation/attempt，另留 expected hash 错误控制用例；非法时间/字段类型稳定拒绝。初始 fail-first 为 8 failed/4 deselected（开发过程控制台观察），修复后 Linux R1 定向 14 passed；ZIP/Assessment/Remediation/Report 消费者 301 passed/1 warning。
+- 同一现有 linux/amd64 镜像、Linux 原生测试依赖、只读源码和禁网络的一次性容器最终 full：2645 passed/11 failed/4 skipped/2 warnings，非零退出如实保留。相对上轮 full JUnit：失败节点集合完全相同，新增 9 节点全部通过，旧节点零减少；一个旧 opt-in Git egress skip 本次通过，无新增 skip。首次临时 full 因缺 Git 对象库出现第 12 个环境失败；只读挂载对象库并用进程级 safe.directory 后该项定向通过，最终 full 收敛为原 11 节点，过程 JUnit 保留。macOS 消费者曾因沙箱回环 bind 权限 2 failed，Linux 同组 301 全过；Mac 依赖/初始 tmpfs 不足导致的中间采集/初始化问题不是产品结论。
+- 仅本分支 A 侧工具、CLI、单测、说明和两份日志；未改 cz/规则/公共 Schema/前端/NOTICE/旧工作区/真实扫描 DB。Docker Desktop 经 Owner 明确授权启动，既有容器自动恢复者保持现状、未操作；本轮 docker run --rm 临时测试容器已退出删除。新 ignored 证据 p1-reviewed-obligation-r1-20260923T155119Z，旧证据保留。未暂存、提交、推送、合并或部署；真实人工确认仍待 Owner，真实非空链尚未执行。STOP。
