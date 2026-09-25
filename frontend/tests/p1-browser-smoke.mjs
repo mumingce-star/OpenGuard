@@ -5,11 +5,17 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import {
+  assertExactNotGeneratedCoverage,
+  isExpectedNotGeneratedFailure,
+  readP0Scenario,
+} from './p0-report-contract.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.OPENGUARD_PLAYWRIGHT || 'playwright');
 const base = (process.env.OPENGUARD_TEST_URL || 'http://127.0.0.1:4179').replace(/\/$/, '');
 const output = process.env.OPENGUARD_QA_OUTPUT || await fs.mkdtemp(path.join(os.tmpdir(), 'openguard-p1-browser-'));
+const p0Scenario = readP0Scenario(process.env);
 await fs.mkdir(output, { recursive: true });
 
 const browser = await chromium.launch({ channel: process.env.OPENGUARD_BROWSER || 'chrome', headless: true });
@@ -26,6 +32,7 @@ const consoleErrors = [];
 const apiRequests = [];
 const apiFailures = [];
 const resourceFailures = [];
+const responseAudits = [];
 const screenshots = [];
 let checks = 0;
 
@@ -38,9 +45,22 @@ page.on('request', request => {
 page.on('response', response => {
   const url = new URL(response.url());
   if (response.status() >= 400) {
-    const failure = { status: response.status(), path: url.pathname + url.search };
-    resourceFailures.push(failure);
-    if (url.pathname.startsWith('/api/')) apiFailures.push(failure);
+    const audit = (async () => {
+      let body;
+      if (url.pathname.startsWith('/api/')) {
+        body = await response.json().catch(() => undefined);
+      }
+      const failure = {
+        method: response.request().method(),
+        status: response.status(),
+        path: url.pathname + url.search,
+        body,
+      };
+      failure.expected_p0_not_generated = isExpectedNotGeneratedFailure(p0Scenario, failure);
+      resourceFailures.push(failure);
+      if (url.pathname.startsWith('/api/')) apiFailures.push(failure);
+    })();
+    responseAudits.push(audit);
   }
 });
 
@@ -234,30 +254,55 @@ try {
   passed('narrow History navigation and Graph have no page-level horizontal overflow');
 
   await page.setViewportSize({ width: 1440, height: 900 });
-  await goto(`/app/scans/${encodeURIComponent(assessed.scan_id)}/report?mode=api`, /项目评估摘要|合规报告/);
+  await goto(`/app/scans/${encodeURIComponent(p0Scenario.scanId)}/report?mode=api`, /项目评估摘要|合规报告/);
+  await page.waitForLoadState('networkidle');
+  await page.getByText('查看历史扫描报告、四种原始附件与全部明细', { exact: true }).click();
+  if (p0Scenario.kind === 'available') {
+    await page.getByRole('link', { name: '下载 HTML' }).waitFor();
+    await page.getByRole('link', { name: '下载 JSON' }).waitFor();
+    assert.ok((await page.locator('.og-report').innerText()).includes('合规信息与风险提示报告'));
+  } else {
+    await page.getByText('当前任务没有已发布报告', { exact: true }).waitFor();
+    assert.equal(await page.getByRole('link', { name: /下载 (HTML|JSON|CSV|资源清单)/ }).count(), 0);
+    assert.equal(await page.locator(`a[href*="/api/v1/scans/${p0Scenario.scanId}/report"]`).count(), 0);
+  }
   await page.emulateMedia({ media: 'print', reducedMotion: 'reduce' });
   assert.equal(await page.locator('.og-sidebar').evaluate(element => getComputedStyle(element).display), 'none');
   assert.equal(await page.locator('.og-topbar').evaluate(element => getComputedStyle(element).display), 'none');
+  assert.notEqual(await page.locator('.og-report').evaluate(element => getComputedStyle(element).display), 'none');
   await shot('14-p0-report-print');
   await page.emulateMedia({ media: 'screen', reducedMotion: 'reduce' });
-  passed('print media hides application chrome and preserves report content');
+  passed(p0Scenario.kind === 'available'
+    ? 'P0_AVAILABLE_PASS: published report downloads are present and print preserves its body'
+    : 'P0_NOT_GENERATED_CONTRACT_PASS: unpublished state remains explicit in print without false downloads');
 
   const historyAfter = await api('/api/v1/scans?limit=100');
+  await Promise.all(responseAudits);
+  assertExactNotGeneratedCoverage(assert, p0Scenario, apiFailures);
   assert.deepEqual(historySignature(historyAfter.items), historySignature(historyBefore.items));
   assert.ok(apiRequests.length > 0);
   assert.ok(apiRequests.every(request => request.method === 'GET'), JSON.stringify(apiRequests.filter(request => request.method !== 'GET')));
   assert.deepEqual(pageErrors, []);
-  const unexpectedFailures = apiFailures.filter(({ status, path }) =>
-    status !== 404 || (!path.endsWith('/profile') && !path.includes('/report-v2/')));
+  const unexpectedFailures = apiFailures.filter(({ status, path, expected_p0_not_generated }) =>
+    !expected_p0_not_generated && (status !== 404 || (!path.endsWith('/profile') && !path.includes('/report-v2/'))));
   assert.deepEqual(unexpectedFailures, []);
-  const unexpectedResources = resourceFailures.filter(({ status, path }) =>
-    !(status === 404 && (path === '/favicon.ico' || path.endsWith('/profile') || path.includes('/report-v2/'))));
+  const unexpectedResources = resourceFailures.filter(({ status, path, expected_p0_not_generated }) =>
+    !expected_p0_not_generated && !(status === 404 && (path === '/favicon.ico' || path.endsWith('/profile') || path.includes('/report-v2/'))));
   assert.deepEqual(unexpectedResources, []);
-  assert.deepEqual(consoleErrors.filter(message => !message.startsWith('Failed to load resource: the server responded with a status of 404')), []);
+  let expected409ConsoleBudget = apiFailures.filter(failure => failure.expected_p0_not_generated).length;
+  const unexpectedConsoleErrors = consoleErrors.filter(message => {
+    if (message.startsWith('Failed to load resource: the server responded with a status of 404')) return false;
+    if (message.startsWith('Failed to load resource: the server responded with a status of 409') && expected409ConsoleBudget > 0) {
+      expected409ConsoleBudget -= 1;
+      return false;
+    }
+    return true;
+  });
+  assert.deepEqual(unexpectedConsoleErrors, []);
   passed('all browser API traffic is GET-only and persisted scan identity is unchanged');
 
   const receipt = {
-    schema_version: 'openguard-p1-browser-smoke/1',
+    schema_version: 'openguard-p1-browser-smoke/2',
     base,
     checks,
     history_count: historyBefore.items.length,
@@ -267,9 +312,16 @@ try {
     resource_ai_asset_count: aiAssets.length,
     partial_scan_id: partial?.scan_id ?? null,
     diff: { base_scan_id: baseScan.scan_id, target_scan_id: targetScan.scan_id },
+    p0_report: {
+      result: p0Scenario.kind === 'available' ? 'P0_AVAILABLE_PASS' : 'P0_NOT_GENERATED_CONTRACT_PASS',
+      scenario: p0Scenario.kind,
+      scan_id: p0Scenario.scanId,
+      declared_not_generated_scan_ids: p0Scenario.kind === 'not_generated' ? p0Scenario.scanIds : [],
+      expected_failures: apiFailures.filter(failure => failure.expected_p0_not_generated),
+    },
     api_requests: apiRequests,
-    expected_backend_404s: apiFailures,
-    expected_resource_404s: resourceFailures,
+    expected_backend_failures: apiFailures.filter(failure => failure.expected_p0_not_generated || failure.status === 404),
+    expected_resource_failures: resourceFailures.filter(failure => failure.expected_p0_not_generated || failure.status === 404),
     screenshots,
     page_errors: pageErrors,
     console_errors: consoleErrors,
