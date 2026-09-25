@@ -1668,3 +1668,16 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | GitHub | 窄修 `3caad4a` 已推送 feature；integration 为其祖先 | `behind=0`、`ahead=5`，待 Owner final review |
 
 当前可独立运行/演示：F01—F07 工作台、205 History、三档 Graph、Remediation CAS/持久化、真实非空 Obligation 关联、Report V2 固定快照、下载与两项最终窄修。尚未具备或仍需关闭：Owner 最终 review/PR/快进集成、P0 历史报告回退 409 的契约/数据处理、生产 NOTICE 链和生产数据/材料签收。可报名/可参赛仍需生产材料门禁；完整作品还需最终集成与发布审计；获奖竞争力仍需 Gold/FN、对比/消融和用户效果证据。没有统一分母和权重，不换算百分比。
+
+### 2026-09-25 P0 smoke 场景窄修验收
+
+| 验收项 | 实际结果 | 状态 |
+|---|---|---|
+| 合成空间缺失态 | 预声明完整 scan IDs；精确 409/code/reason/四格式；通用 smoke 14/14 | `P0_NOT_GENERATED_CONTRACT_PASS` |
+| P0 正向固定样本 | JSON/HTML 200；Hash `d62331ca...4782` / `269dbc4e...7d94` 与交付清单一致；正文和打印通过 | `P0_AVAILABLE_PASS` |
+| 错误不降级 | 错 ID/reason/code/接口、额外下载参数、500、无 body、正向 409 均由单测拒绝 | 通过 |
+| GET-only/状态保持 | 两个场景均无非 GET；合成 History 与真实样本 scan 状态读取前后不变 | 通过 |
+| 前端回归 | 110/110；TypeScript + Vite 55 modules；diff check | 通过 |
+| 修改边界 | 仅测试、测试入口与验收文档；backend 与 `frontend/src` 无变化 | 通过 |
+
+该项关闭此前通用 smoke 的场景不匹配，不代表 P1 整体完成。Owner review/集成发布与生产 NOTICE 仍为独立门禁。

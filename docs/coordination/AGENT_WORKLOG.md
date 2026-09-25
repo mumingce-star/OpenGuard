@@ -7447,3 +7447,21 @@
 - 提交/发布：窄修 commit `3caad4a` 已普通推送至唯一目标 `origin/p1/xzb-frontend-f01-f07`；未推送 integration/main/p0/cz，未 force、未建 PR、未合并 Owner 分支。推送后 `origin/integration/p1` 为 feature 祖先且相对 integration `behind=0`、`ahead=5`；本条发布回执将以独立 docs commit 追加。
 - 标记：`XZB_LATEST_INTEGRATION_SYNCED`、`REPORT_OBSERVATION_CLASSIFICATION_FIXED`、`REPORT_CREATE_RETRY_FIXED`、`REAL_OBLIGATION_RECEIVER_VALIDATED`、`REAL_OBLIGATION_BROWSER_VALIDATED`、`NO_SECOND_APPLY`、`NO_BACKEND_SCOPE_CHANGE`、`READY_FOR_OWNER_FINAL_REVIEW`、`STOP`。
 - Token：本次运行精确 token 数不可获得；开工估算 18k—34k，范围内完成同步、实现、测试、浏览器签收和发布，未扩大后端或全仓测试范围。
+### [20260925-1810-GPT6Astra-P0SmokeScenarioFix] START — P0 smoke 正负场景 TEST-ONLY 窄修
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-25 18:10 +08:00。Owner 已在候选 `8946f6c5a679f5b6026f814fa187f9aa861a4b01` 完成连接验收，唯一通用 smoke 失败为合成 ScanRun 没有 P0 `report_links`，后端按契约返回 `409/report_not_ready/not_generated`。
+- Preflight：当前分支 `p1/xzb-frontend-f01-f07`、HEAD `8946f6c5`，索引与工作树干净。本轮仅在该 feature 工作线上修订测试，不更新 integration/main/其他成员分支，不强推、不部署。
+- 范围：优先修改 `frontend/tests/p1-browser-smoke.mjs`，新增必要的 P0 场景契约辅助与测试；把“报告存在”与预先声明的“报告未生成”拆开，固定完整 scan_id、精确路径/参数/409/error code/reason，并修正打印/回执措辞。禁止修改 backend、`frontend/src`、公共 Schema、依赖、seed 或业务数据库。
+- 验收：覆盖精确 `not_generated` 可通过，以及错 scan_id、错 reason、其他接口 409、500、缺失响应体、正向场景 409、未声明场景均失败；随后分别复验合成空间通用 smoke 与获准 P0 正向固定样本。保留 GET-only、状态不变、pageerror 与非预期资源/控制台错误断言。
+- 预计修改：测试脚本、对应测试/辅助文件、只追加协调记录。预计 12k—24k token；系统不提供精确 token 遥测。
+
+### [20260925-1907-GPT6Astra-P0SmokeScenarioFix] COMPLETE — P0 正负 smoke 场景已拆分并真实复验
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-25 19:07 +08:00。完成 TEST-ONLY 窄修 commit `ca53668`；没有修改 backend、`frontend/src`、公共 Schema、依赖版本、seed 或业务数据库。原 13/14 失败截图与回执未覆盖、未删除。
+- 实现：`p1-browser-smoke.mjs` 现在必须由验收输入显式声明 `available` 或 `not_generated`、完整 P0 scan_id；合成通用链还要预先列出会读取的完整 scan IDs。响应体读取完成后才断言，只允许精确 GET 路径/参数、HTTP 409、`report_not_ready/not_generated`；其他扫描、下载参数、reason/code、接口、500 或缺失 body 均失败。回执按实际写 `P0_AVAILABLE_PASS` 或 `P0_NOT_GENERATED_CONTRACT_PASS`，无正文时不再声称下载/正文通过。
+- 自动测试：新增 6 项契约测试并纳入前端套件；`npm test` 实跑 110/110。错 scan、额外 download 参数、错 reason/code、其他接口 409、500、无 body、available 遇 409、未声明场景与缩写 ID 均被拒绝。`npm run build` 通过 TypeScript 与 Vite（55 modules，JS 392.72 kB/gzip 121.11 kB，CSS 57.33 kB/gzip 13.46 kB）；`git diff --check` 通过。
+- 合成负向浏览器：既有隔离 `15174 → 18011`，数据等级 `real_backend_api + acceptance_synthetic`；预声明 `scn_...2711` 与 `scn_...2713` 完整 ID，通用 smoke 14/14，回执 `P0_NOT_GENERATED_CONTRACT_PASS`，所有 API 均 GET，History 前后身份不变，页面无虚假 P0 下载入口。
+- 正向浏览器：既有 `acceptance_real_reviewed` 固定样本 `scn_6c0f972a-18c1-4566-a7fa-df623053bea5`；P0 JSON/HTML 下载 200，实算 Hash `d62331ca...4782` / `269dbc4e...7d94`，与已验交付包 `SHA256SUMS.txt` 中 P0 artifact 完全一致；正文、下载入口和打印正文通过，回执 `P0_AVAILABLE_PASS`，全部 API 均 GET，scan 状态前后不变。
+- 产物/恢复：新回执与截图位于 ignored `output/receiver-runtime/p0-smoke-negative-20260925/` 和 `p0-smoke-positive-20260925/`。本轮临时 Vite 15174/15175 已停止，两个隔离容器已恢复为任务前 exited 状态；8081/8082 容器未启动、覆盖或修改。
+- 范围结论：只关闭 Owner 指出的 P0 smoke 场景不匹配；不能标记 P1 整体完成，生产 NOTICE 仍独立待完成。功能提交仅位于 `p1/xzb-frontend-f01-f07`，未更新 integration/main/其他成员分支，未 force、未部署；文档回执提交与普通 feature push 随后执行。
+- Token：本次运行精确 token 数不可获得；开工估算 12k—24k，完成原测试脚本、契约测试、两类真实浏览器验收与记录，未扩大业务功能范围。

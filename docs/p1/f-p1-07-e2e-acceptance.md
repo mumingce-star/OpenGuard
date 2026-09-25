@@ -176,3 +176,17 @@ F-P1-07 当前结论为 **PARTIAL**。页面与真实接口的已有数据链路
 | 跨机发布复现 | 本轮只证明当前 Windows + Docker Desktop 机器 | 提供锁定镜像/配置、安全的验收数据包及 Linux/第二台机器运行回执 |
 
 结论：前端目前能完成的 Profile/NOTICE/Report 接线和错误表达已完成；F-P1-07 仍为 **PARTIAL**，剩余项均需后端生产接线、真实事实或最终发布环境，不应由前端推断或伪造。
+
+## 12. 2026-09-25 P0 smoke 场景窄修
+
+本次仅修订验收脚本，不修改业务页面、后端、公共 Schema、依赖或数据。原 `13/14` 失败截图与回执继续保留；修订没有看到 409 后自动降低预期。
+
+- 通用 P1 smoke 必须显式提供 `OPENGUARD_P0_REPORT_SCENARIO`、完整 `OPENGUARD_P0_SCAN_ID`；合成空间还必须预先列明本次导航会读取的 `OPENGUARD_P0_NOT_GENERATED_SCAN_IDS`。
+- `not_generated` 只接受这些完整 ID 的四个精确 P0 metadata GET：HTTP 409、`error.code=report_not_ready`、`error.details.reason=not_generated`。下载请求、其他 scan、其他接口、其他 reason/code、500 或缺失响应体均不放行。
+- 合成接收空间 `15174 → 18011` 回执为 `P0_NOT_GENERATED_CONTRACT_PASS`：通用 smoke 14/14、205 History 数据保持、全部 API 请求为 GET；页面明确显示“当前任务没有已发布报告”，没有虚假下载入口。
+- 独立真实固定样本 `15175 → 18117` 回执为 `P0_AVAILABLE_PASS`：scan `scn_6c0f972a-18c1-4566-a7fa-df623053bea5` 的 P0 JSON/HTML 下载均为 200；实算 SHA-256 分别为 `d62331caabeef5dcaf55085eb0bc9f8963c19bc9e4838db033bd4f84875d4782`、`269dbc4ee65ab441a4d3c382c132093439e78606ab6a1a068b3f672618077d94`，与交付包 `SHA256SUMS.txt` 的固定 artifact 一致；浏览器正文与打印正文均保留。
+- 新增契约测试覆盖：精确负向通过；错 scan_id、额外 download 参数、错 reason/code、其他接口 409、500、缺失 body、正向遇 409、未声明场景均失败。
+
+实际验证：`npm test` 110/110；`npm run build`（TypeScript + Vite 55 modules）通过；`git diff --check` 通过。忽略目录中的回执分别位于 `output/receiver-runtime/p0-smoke-negative-20260925/` 与 `output/receiver-runtime/p0-smoke-positive-20260925/`。
+
+该窄修只关闭 P0 smoke 场景不匹配，不把 F-P1-07 或 P1 整体标记完成；生产 NOTICE 仍独立待关闭。
