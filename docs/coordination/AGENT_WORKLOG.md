@@ -7128,3 +7128,46 @@
 - CLI --result 在 apply 前验证私有目录并 O_EXCL 预留 pending；本次私有预留才能原子转为 success/failure，已存在或不安全路径均在 apply 前拒绝；结果写出失败明确标记可能已完成/不可自动重试。错绑测试逐条使用错误记录自身 canonical SHA、断言精确 code 及无新 scan/confirmation/attempt，另留 expected hash 错误控制用例；非法时间/字段类型稳定拒绝。初始 fail-first 为 8 failed/4 deselected（开发过程控制台观察），修复后 Linux R1 定向 14 passed；ZIP/Assessment/Remediation/Report 消费者 301 passed/1 warning。
 - 同一现有 linux/amd64 镜像、Linux 原生测试依赖、只读源码和禁网络的一次性容器最终 full：2645 passed/11 failed/4 skipped/2 warnings，非零退出如实保留。相对上轮 full JUnit：失败节点集合完全相同，新增 9 节点全部通过，旧节点零减少；一个旧 opt-in Git egress skip 本次通过，无新增 skip。首次临时 full 因缺 Git 对象库出现第 12 个环境失败；只读挂载对象库并用进程级 safe.directory 后该项定向通过，最终 full 收敛为原 11 节点，过程 JUnit 保留。macOS 消费者曾因沙箱回环 bind 权限 2 failed，Linux 同组 301 全过；Mac 依赖/初始 tmpfs 不足导致的中间采集/初始化问题不是产品结论。
 - 仅本分支 A 侧工具、CLI、单测、说明和两份日志；未改 cz/规则/公共 Schema/前端/NOTICE/旧工作区/真实扫描 DB。Docker Desktop 经 Owner 明确授权启动，既有容器自动恢复者保持现状、未操作；本轮 docker run --rm 临时测试容器已退出删除。新 ignored 证据 p1-reviewed-obligation-r1-20260923T155119Z，旧证据保留。未暂存、提交、推送、合并或部署；真实人工确认仍待 Owner，真实非空链尚未执行。STOP。
+
+### [20260926-GPT-6-Astra-notice-source-a1] START — A-owned trusted source binding only
+
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION：本轮近期 NOTICE/Store/binding/Assessment/Report 相关记录完整阅读，早期历史按 notice、notice_source、notice_facts、NoticeDraft、report_v2_notice、binding、immutable、SQLite、registry_revision、facts_hash、AssessmentStore 定向检索；README、PROJECT_PROGRESS、AGENTS 与当前模型可用 handoff 完整审阅。仅调整上下文加载，不降低安全、测试或交付门槛。
+- 远端 integration/p1 实核 6352b84bce1f3dbee192c9065049f4dda3fdb45f；全新隔离 worktree OpenGuard-notice-source-binding / feat/p1-notice-source-binding 从该 SHA 创建并保持 clean 起点。其他既有 worktree 的 HEAD、status 与未提交文件 Hash 已记录，收尾复核；不迁移、不覆盖。
+- 只实现 A 内部 STAGED/BOUND SQLite source Store、显式正式 Assessment 版本终态绑定、只读 BOUND reader；coverage partial 两列表均必有且合计非空，不合成 gap；CZ DTO/collector 尚未交付，测试输入标 TEST_ONLY_NOTICE_SOURCE_INPUT。先 fail-first，再定向及必要消费者/Store安全回归，证据写单一 ignored 目录。无公共 API、工厂、CZ、规则、扫描、NoticeDraft/Report 产品修改；无真实 apply、commit、push、deploy。
+
+### [20260926-GPT-6-Astra-notice-source-a1] COMPLETE — local A1, pending Owner Review
+
+- 新增 `notice_source_store.py` 内部 A-owned Admission、私有 `notice_source.db`、显式 STAGED→BOUND 服务与只读 BOUND reader；不猜 CZ 正式 DTO。stage 对传入 bytes 先做 8 MiB 长度门禁再复算 package SHA；coverage completed 双空列表、partial 双字段必存且合计非空，原样保留不合成。数据库使用私有 owner/mode/no-symlink/nlink 检查、精确 schema、DELETE journal、只读 `mode=ro/query_only`、原子事务及容量门禁；异常 fail closed，不迁移或自动修复。
+- bind 每次从真实 ScanRegistry/AssessmentStore 独立读取终态 ScanRun、revision、input/inventory digest、重算 facts_hash 及调用方显式给出的 Formal Assessment ID/version。不同 Assessment 版本形成独立不可覆盖的绑定；同一固定输入 replay 幂等，不自动选 latest。reader 仅按 scan/facts/assessment/version 读取 BOUND，复核包与绑定 Hash，STAGED 不可见；不调用扫描、网络、Assessment 创建或其他产品服务。
+- fail-first 首轮在原本无实现时按预期以 `ModuleNotFoundError: app.p1.notice_source_store` 收集失败。宿主 Python 无 pytest/fastapi，曾试本地 API 镜像但无 pytest；随后复用现有 `openguard-regression:20260912-111125` 镜像，以一次性 `--rm --network none --read-only` 容器和只读源码挂载定向验证。最终 27 项新增 A1 节点及 130 项既有 NoticeDraft/Report 消费者/Store 安全节点，共 `157 passed, 1 existing warning`；0 failed/skip/deselect。无 full suite、真实 CZ collector/NOTICE/扫描/生产 API 测试，不把离线 TEST_ONLY 输入宣称生产通过。
+- 仅新内部模块、新单测与两份 append-only 日志改变；公共 API/Schema、main.py、CZ、规则、Assessment、NoticeDraft、Report V2、前端与生产均未改。新 ignored Review Package `output/manual-fixes/p1-notice-source-binding-a1-20260926T004452/` 固化回执、定向结果、Hash、绑定说明及累计 patch；旧现场、真实 Reviewed Obligation 数据和既有 Docker 容器保留。NO COMMIT / NO PUSH / NO DEPLOY；等待 Owner Review。精确 token 遥测不可获得。
+
+### [20260926-1441-GPT-6-Astra-notice-source-a1-r1] START — B1/B2 blocking repair only
+
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_R1：Owner 本轮新批准近期 A1/Owner Review/B1/B2/Store/binding 记录完整阅读与更早历史定向检索。该例外只调整共享历史日志的阅读方式，不降低任何修复、Fail-first、回归、独立探针或安全验收门槛；不延续到复审/发布/A2/A3。已复读 AGENTS、README、现有 Sol 审计角色 handoff、当前进度相关章节、原 A1 Package/Owner Review 及 R1 任务书。
+- GPT-6 Astra / Backend A；feat/p1-notice-source-binding@6352b84bce1f3dbee192c9065049f4dda3fdb45f，开工四项未暂存成果 Hash 与 Review 完全一致，index 空、diff check PASS。六个有效其他 worktree 的 HEAD/status/未提交文件 Hash 及旧 A1/Review evidence 已记录；历史 missing/prunable worktree 只读保留，不清理。
+- 仅修改 notice_source_store.py、test_p1_notice_source_binding.py 与两份 append-only 日志。先永久 B1/B2 Fail-first，再收缩 Store 直接发布入口、同事务写前闭包核验；保留身份/Schema/显式 Assessment/CAS/Hash/coverage/replay/Reader 语义。Python 支持 API 边界不宣称抵御同进程恶意私有对象或 SQL 篡改。
+- 复用现有 Linux 镜像及一次性 --rm/network none/rootfs 和源码只读测试容器：新增节点→全部 A1→原七文件157同范围回归→两个独立 SQLite 探针。N2 DEFERRED、N3 DEFERRED_SECURITY_HARDENING，不扩大重构。单一新 ignored R1 evidence；无真实 scan/apply/API、CZ adapter、factory、公共 API/Schema、commit/push/deploy。串行无子代理；估算 15k–30k token，精确遥测不可获得。
+
+### [20260926-1453-GPT-6-Astra-notice-source-a1-r1] COMPLETE — R1 local repair, pending Owner Re-review
+
+- R1_RESULT=A1_R1_READY_FOR_OWNER_REVIEW，不是 A1_ACCEPT。B1：移除绕过可信服务的 Store._save_binding(dict) 与不必要 STAGED raw 出口 _load_for_binding；Store 支持写入口仅 initialize/stage，caller-built BOUND/state/binding_hash/verified 不能发布。唯一 BOUND INSERT 位于实际 Registry/Assessment 核验后的 service.bind。注释和永久测试明确不宣称同进程恶意 Python/私有 SQL 安全隔离。
+- B2：原完整闭包校验在 commit 后；现在 BEGIN IMMEDIATE 内完成终态/CAS/input/inventory/facts 重算/显式 Formal Assessment、package/coverage/canonical 验证及返回对象构建，然后同连接检查 immutable replay/conflict，普通 INSERT，退出 context 才 commit。纯 _validated_bound 供写前和 Reader 共用；失败 ROLLBACK，无事后 DELETE，无提交后语义校验。Schema/身份/原 bound_at/Hash、独立新 Assessment 版本和只读 Reader 均保留；仅 notice_source.db 单库事务，不宣称跨库分布式原子性。
+- 必需永久 B1/B2 在原产品 Hash4556380a…上真实2 failed（伪BOUND可读、异常后BOUND残留），原始日志/JUnit保留；修复后2 passed。另补2个 INSERT 后异常回滚参数节点和1个 immutable conflict 节点，合计5新增；A1全部32 passed；原七文件157同范围最终162 passed（原157节点零减少；原消费者/Store security130），0 failed/errors/skip/deselect，1既有Starlette warning，4.77s。SQLITE_FULL/内部异常是 TEST_ONLY 故障注入，不是实际写满磁盘/掉电；未运行 full suite。
+- 独立 PROBE_B1：实际尝试原发布入口及stage附加state/hash/verified均无法发布，Reader不可读，三表业务行不变、BOUND零行，合法service控制通过。PROBE_B2：独立候选接缝注入同类错误package Hash并重新canonical Hash，storage_unavailable；SQL trace BEGIN→SELECT→ROLLBACK，无 INSERT/DELETE，业务三表不变，随后合法bind成功一行；exact replay/time/hash、重开Store、Reader不读上游/不写业务、binding Hash篡改拒绝均通过。不是用unit测试代替探针，不是HTTP/真实CZ输入验收。
+- N1：永久直接覆盖B1/B2；其他既有CAS/facts/超限间接覆盖仍明确保留局限，不称全部N1子项已转永久。N2 DEFERRED；N3 DEFERRED_SECURITY_HARDENING（损坏库大BLOB读取前限额未补），不扩大修补。
+- 新单一 ignored evidence：output/manual-fixes/p1-notice-source-binding-a1-r1-20260926T064139Z，含receipt/test-results、blocking-fix-probes、source-hashes、累计四文件完整patch及A1_R1_FIX_NOTES。旧A1/Review逐文件Hash和六个有效其他worktree HEAD/status/未提交Hash核验不变，历史prunable条目不清理；仅模块/测试/两份append-only日志未暂存，HEAD不变、index空、diff check PASS。自有--rm测试/探针容器已完成退出，未操作既有容器或真实数据。
+- 下一步仅 Owner R1 Re-review；A2 collector/adapter、A3 factory/生产NOTICE端到端、既有全仓非绿门禁及异机/竞赛材料由原责任人后续关闭。本轮局部通过不是P1完成，无完成百分比或GitHub发布。NO CZ ADAPTER / FACTORY WIRING / PUBLIC API CHANGE / COMMIT / PUSH / DEPLOY。串行无子代理；精确token数不可获得，15k–30k仅开工估算，无法核定实际区间，范围不扩大。STOP。
+
+### [20260926-1536-GPT-6-Astra-notice-source-a1-publish] START — accepted A1 feature publication only
+
+- Owner已确认 A1_ACCEPT_WITH_NONBLOCKING_NOTES；B1/B2 CLOSED，N2 DEFERRED_NONBLOCKING，N3 DEFERRED_SECURITY_HARDENING。feat/p1-notice-source-binding@6352b84bce1f3dbee192c9065049f4dda3fdb45f，四项现有成果与最终复审Hash一致，index空；未提前声明提交或推送成功。
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_PUBLISH：仅本次发布采用近期A1/R1/Owner复审完整阅读＋历史定向检索，不延续到A2、集成或工厂；README/AGENTS/handoff及已读未变材料复用，所有门禁不降低。六个有效其他worktree和原证据已固定保护快照。
+- 只追加本日志、AI日志及Owner批准的PROJECT_PROGRESS协调登记；源码/测试保持已审Hash，最终提交范围严格五文件。复跑全部A1及原七文件162范围，检查diff/staged blob/敏感信息，单一新提交与唯一feature普通push，真实SHA/结果仅执行后保存ignored发布回执。NO A2 / FACTORY / MERGE / PR / DEPLOY，串行无子代理；预计5k–10k token，精确遥测不可获得。
+
+### [20260926-1540-GPT-6-Astra-notice-source-a1-publish-gates] PARTIAL — pre-publication gates complete; Git execution pending
+
+- Owner最终接受 A1_ACCEPT_WITH_NONBLOCKING_NOTES；B1/B2 CLOSED，N2 DEFERRED_NONBLOCKING、N3 DEFERRED_SECURITY_HARDENING明确保留，不顺手修补。复审记录为output/manual-fixes/p1-notice-source-a1-r1-owner-rereview-20260926T071928Z/OWNER_REREVIEW_A1_R1.md，接受只限内部来源Store/显式终态绑定/BOUND Reader，不代表生产NOTICE就绪。
+- 本轮实际重新执行：A1全部32 passed/1既有warning；与复审相同七文件范围162 passed/0failed/errors/skipped/deselected/1既有warning，JUnit节点集合完全一致。源码与测试SHA保持Owner已审版本，无业务、Schema、安全边界或语义修改；未跑full suite，既有全仓门禁不宣称关闭。
+- 协调文件只追加本日志、AI日志及Owner明确批准的PROJECT_PROGRESS；发布候选精确五文件。目标origin/feat/p1-notice-source-binding，BASE=6352b84bce1f3dbee192c9065049f4dda3fdb45f。此时commit/push尚未执行；真实COMMIT_SHA、push结果及local/remote/integration核验只在执行后写入output/manual-fixes/p1-notice-source-a1-publish-20260926T073616Z/发布回执，不提前宣称成功。
+- 当前可用能力仍为A1内部STAGED/BOUND、精确Assessment版本绑定和只读Reader；A2 CZ adapter、factory/NoticeDraft/Report生产注入尚未开始。下一步由Owner另行安排，不自动进入集成/A2/A3。其他worktree与原证据保留，单次隔离测试容器已结束；无真实业务库/扫描/apply/外部采集。NO MERGE / PR / DEPLOY，未修改main.py、CZ、rules或frontend。精确token遥测不可获得，5k–10k为估算、无法核定实际区间。

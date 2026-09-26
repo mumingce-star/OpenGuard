@@ -1456,3 +1456,10 @@ Python 环境不可用期间，新增 Java 离线 fixture 契约门禁并已通�
 B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误分类入口，在 Gold 冻结前不展示 Precision、Recall 或 F1。B06 仅提供双人盲审、分歧、taxonomy 与 amendment 校验工具，仍等待独立真人审阅，绝不冻结 Gold。B07 receipt 汇总器已存在且只汇总受控样本；它不启动生产扫描、不会把单次耗时解释为性能结论。P2B 门禁现校验 B 工件 Hash、已声明来源、敏感信息、稳定排序和基线 fixture 漂移；不改动 A 的快照、报告、任务或前端。
 
 本轮验收：Python 3.12 环境已修复；B01/B02 Python unit/security 为 70 passed，`compileall backend/app` 通过；B01 Java fixture 合同测试通过；B02、B03/B04、B05、B06、B07、P2B Node 统一回归为 15 passed。发布状态：待 Root 完成最终独立验收、提交与推送。
+
+## 2026-09-26 P1 NOTICE Source A1 — Owner accepted; feature publication target
+
+- A1已获Owner最终接受：A1_ACCEPT_WITH_NONBLOCKING_NOTES。STAGED/BOUND可信来源Store、显式Formal Assessment ID/version终态绑定及BOUND-only Reader在本地实现；B1/B2 CLOSED。
+- N2=DEFERRED_NONBLOCKING；N3=DEFERRED_SECURITY_HARDENING。正常输入容量/绑定拒绝门禁保留，损坏私有DB读取前大BLOB限额风险未修；不将接受写成完全无风险。
+- 本轮发布前门禁实际复跑：A1 32 passed、七文件同范围162 passed，0 failed/skipped/deselected、各1既有warning；源码/测试Hash不变。目标发布分支feat/p1-notice-source-binding，BASE 6352b84bce1f3dbee192c9065049f4dda3fdb45f；此记录未宣称commit/push已成功，真实SHA/结果仅执行后写入ignored发布回执。
+- A2 CZ adapter NOT_STARTED；factory wiring NOT_STARTED，NoticeDraft/Report生产启用仍未完成。本轮不合入integration/p1、不创建PR、不部署，不改历史记录或组员源码。
