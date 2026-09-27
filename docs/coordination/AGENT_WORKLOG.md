@@ -7473,3 +7473,11 @@
 - 发布阻塞：定向 `git fetch`、`git ls-remote` 与普通 `git push origin HEAD:refs/heads/p1/xzb-frontend-f01-f07` 均实际尝试，连续返回 `Failed to connect to github.com:443 after 210xx ms`。DNS 与 ping 可达，但 `Test-NetConnection github.com -Port 443` 为 `TcpTestSucceeded=False`，属于当前接收机 TCP 443 网络阻断，不是 Git 冲突或权限拒绝。
 - 当前结论：代码、测试与本地提交完整；远端仍停留在 `8946f6c5`，不能声称已推送。解除条件为本机恢复 GitHub 443 后重新定向 fetch，确认远端 feature 仍为当前 HEAD 祖先，再执行普通非 force 推送。生产 NOTICE 与 P1 整体完成仍独立待跟踪。
 - Token：本次继续运行精确 token 数不可获得；没有扩大产品范围，仅执行远端安全核对与发布尝试。
+
+### [20260927-1300-GPT6Astra-P0SmokeScenarioPublishRetry] START — 同步最新 integration 并发布前端 feature
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-27 13:00 +08:00。用户明确要求将已验收的 P0 smoke 测试窄修推送到团队仓库。
+- Preflight：当前分支 `p1/xzb-frontend-f01-f07`、HEAD `5cc43095b9fcf8a80fb588f928105873c56faa47`，工作区干净。定向 fetch 发现 `origin/integration/p1` 已由 `6352b84b` 前进到 `120f08d22f80162dbff1c12288f2e342d18074af`，而远程 feature 仍为 `8946f6c5a679f5b6026f814fa187f9aa861a4b01`。
+- 范围：只在 feature 工作线以普通 `--no-ff` merge 同步新增的 trusted NOTICE source binding 提交，保留双方只追加协作记录；不修改业务代码，不 rebase/reset/force，不推送 integration/main/其他成员分支。
+- 验收：确认最新 integration 为最终 HEAD 祖先、已有前端与测试提交全部保留、工作区干净；执行敏感信息/待推送清单复核后仅普通推送 `p1/xzb-frontend-f01-f07`，再通过远程 SHA 核对。
+- 预计修改：仅 merge 结果与两份协作文档追加回执；不新增产品功能。预计 4k–8k token；系统不提供精确 token 遥测。
