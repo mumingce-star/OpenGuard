@@ -7465,3 +7465,11 @@
 - 产物/恢复：新回执与截图位于 ignored `output/receiver-runtime/p0-smoke-negative-20260925/` 和 `p0-smoke-positive-20260925/`。本轮临时 Vite 15174/15175 已停止，两个隔离容器已恢复为任务前 exited 状态；8081/8082 容器未启动、覆盖或修改。
 - 范围结论：只关闭 Owner 指出的 P0 smoke 场景不匹配；不能标记 P1 整体完成，生产 NOTICE 仍独立待完成。功能提交仅位于 `p1/xzb-frontend-f01-f07`，未更新 integration/main/其他成员分支，未 force、未部署；文档回执提交与普通 feature push 随后执行。
 - Token：本次运行精确 token 数不可获得；开工估算 12k—24k，完成原测试脚本、契约测试、两类真实浏览器验收与记录，未扩大业务功能范围。
+
+### [20260927-1251-GPT6Astra-P0SmokeScenarioPublish] PARTIAL — 本地验收提交完成，GitHub 443 阻断发布
+
+- 作者/角色：GPT-6 Astra / Root Coordinator；时间：2026-09-27 12:51 +08:00。继续处理 P0 smoke 窄修发布收尾；实现提交 `ca53668`、验收文档提交 `40b98ec` 均已在本地 `p1/xzb-frontend-f01-f07`，工作区干净。
+- 安全关系：本地远端跟踪值 `origin/p1/xzb-frontend-f01-f07=8946f6c5`、`origin/integration/p1=6352b84b`，二者均为本地 HEAD `40b98ec` 的祖先；没有 rebase/reset/force，也未触碰 integration/main/其他成员分支。
+- 发布阻塞：定向 `git fetch`、`git ls-remote` 与普通 `git push origin HEAD:refs/heads/p1/xzb-frontend-f01-f07` 均实际尝试，连续返回 `Failed to connect to github.com:443 after 210xx ms`。DNS 与 ping 可达，但 `Test-NetConnection github.com -Port 443` 为 `TcpTestSucceeded=False`，属于当前接收机 TCP 443 网络阻断，不是 Git 冲突或权限拒绝。
+- 当前结论：代码、测试与本地提交完整；远端仍停留在 `8946f6c5`，不能声称已推送。解除条件为本机恢复 GitHub 443 后重新定向 fetch，确认远端 feature 仍为当前 HEAD 祖先，再执行普通非 force 推送。生产 NOTICE 与 P1 整体完成仍独立待跟踪。
+- Token：本次继续运行精确 token 数不可获得；没有扩大产品范围，仅执行远端安全核对与发布尝试。

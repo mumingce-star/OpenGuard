@@ -1681,3 +1681,5 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 修改边界 | 仅测试、测试入口与验收文档；backend 与 `frontend/src` 无变化 | 通过 |
 
 该项关闭此前通用 smoke 的场景不匹配，不代表 P1 整体完成。Owner review/集成发布与生产 NOTICE 仍为独立门禁。
+
+2026-09-27 发布补记：本地 feature 已形成 `ca53668`（TEST-ONLY 实现）与 `40b98ec`（验收文档）；因当前接收机到 `github.com:443` TCP 不通，定向 fetch/ls-remote/普通 push 均失败，远端仍为 `8946f6c5`。恢复网络后须先重取远端并复核祖先关系，再普通推送 feature；不得将本地完成误记为 GitHub 已发布。
