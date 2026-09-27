@@ -7405,3 +7405,13 @@
 - 开始前确认：已阅读 README、协作日志、进度台账、SOL_HANDOFF，核对当前分支/状态/最近提交；当前候选涵盖 Detector 0.3、B03/B04 v3 adapter、B05--B07、CZ NOTICE source 与 A 消费交接。A 生产接线、真人 Gold、正式评测和跨平台门禁是已知未完成项，用户本轮指令授权 Root 发布已完成的独立离线/候选工作，但不得把这些待办表述为关闭。
 - 验收方法：逐文件审阅、敏感信息/忽略产物与 `git diff --check`；Python/Node/Java可用定向回归及 NOTICE source 动态测试；fetch 后核对远端祖先/冲突，创建保留历史的合并或非强制快进，读回两个远端 SHA。
 - token 用量估算：12,000--20,000；系统未提供精确 token 遥测。
+
+## 20260927-1450-GPT5-全量发布与P1集成
+
+- 状态：COMPLETE
+- 作者与角色：GPT-5 / Root Coordinator；时间：2026-09-27 14:50 Asia/Shanghai；任务目标：审阅并发布当前工作区内可发布的竞赛代码、测试、fixture、规范及协作记录，合并至 `integration/p1`。
+- 实际结果：已审阅 Detector 0.3、B03/B04 只读 v3 consumption adapter、CZ NOTICE source 两阶段 collector/DTO、B06 reference-only 候选与 B07 controlled receipt；保守语义、哈希/容量/UTF-8/状态边界及负例拒绝路径均保留，未将候选或 TEST_ONLY 输入表述为正式 Gold、生产扫描结论或 A 链路已闭环。
+- 发布与验证：产品提交 `abea88631767af30ad63102b05d385b719925d7c`（22 个文件）。Python 定向 `13 passed`，Node 定向 `17 passed`，Java Maven 测试通过，`git diff --check` 通过，常见 AWS/GitHub/OpenAI/私钥特征扫描无匹配。Node 输出的 blind-review/receipt 错误为刻意的拒绝路径。
+- GitHub：发布前 `origin/integration/p1...HEAD` 为 `0 2`，远端为祖先；已非强制快进推送，`codex/scan-reliability-integration` 与 `integration/p1` 均读回 `abea88631767af30ad63102b05d385b719925d7c`。未改动 `main`、未创建 PR、未部署或启停服务。
+- 范围与风险：未纳入未跟踪的 `reports/VERIFY_REPORT.md`，该文件是本机诊断报告且非稳定竞赛工程入口，未删除。A 侧 CZ→admission 适配、factory/NoticeDraft/Report 接线、真人 Gold/正式评测/真实性能、Windows `fcntl` 全量 pytest 与前端 pnpm 回归均未关闭。
+- 建议下一步与责任：Terra/A Owner 完成 CZ→BOUND admission/factory/消费者接线；Luna 完成真人 Gold、B05/B06/B07 正式回执和异机复现；Root 在门禁证据齐备后再评审 `main` PR。token：精确遥测不可获得；开工估算 12,000--20,000，本轮在该范围内完成。
