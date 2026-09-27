@@ -8,6 +8,11 @@ from app.persistence import ScanRegistryError
 from .models import P1NoticeDraft
 from .notice_facts import NoticeFactsReader, validate_input, digest
 from .notice_draft_store import NoticeDraftStoreError, content_hash
+from .notice_draft_bound_source import (
+    BoundNoticeDraftSourceError, read_bound_draft_source, project_bound_entries,
+    VERSION as BOUND_VERSION,
+)
+from .notice_source_store import BoundNoticeSourceReader
 
 VERSION = 'notice/1.0'
 
@@ -49,14 +54,18 @@ def evidence_refs(source, run):
 
 
 class NoticeDraftService:
-    def __init__(self, registry, assessment_store, store, *, facts_reader: NoticeFactsReader | None = None):
+    def __init__(self, registry, assessment_store, store, *, facts_reader: NoticeFactsReader | None = None,
+                 bound_source_reader: BoundNoticeSourceReader | None = None):
+        if facts_reader is not None and bound_source_reader is not None:
+            raise ValueError('ambiguous_notice_source_configuration')
         self.registry, self.assessment_store, self.store = registry, assessment_store, store
         self.facts_reader = facts_reader
+        self.bound_source_reader = bound_source_reader
 
     def create(self, scan_id, assessment_id, *, idempotency_key):
         if not isinstance(idempotency_key, str) or not 1 <= len(idempotency_key) <= 200 or not idempotency_key.strip():
             raise NoticeDraftServiceError('invalid_argument', 'idempotency_key_invalid')
-        if self.facts_reader is None:
+        if self.facts_reader is None and self.bound_source_reader is None:
             raise NoticeDraftServiceError('feature_disabled', 'notice_facts_reader_not_available')
         try:
             stored = self.registry.get(scan_id)
@@ -84,12 +93,6 @@ class NoticeDraftService:
         if (assessment.input_hash != run.provenance.input_digest.value or assessment.revision != run.project.revision
                 or assessment.scan_status != run.status):
             raise NoticeDraftServiceError('conflict', 'notice_fixed_binding_mismatch')
-        try:
-            source = self.facts_reader.read(scan_id, assessment.facts_hash)
-            package = validate_input(source, scan_id, assessment.facts_hash)
-        except Exception as error:
-            # Reader failures are context-free; paths/URLs/SQL never enter HTTP errors.
-            raise NoticeDraftServiceError('upstream_unavailable', 'notice_facts_invalid') from error
         scan_ref = dict(scan_id=run.id, revision=run.project.revision, facts_hash=assessment.facts_hash,
                         input_hash=run.provenance.input_digest.value,
                         inventory_hash=run.provenance.inventory_digest.value if run.provenance.inventory_digest else None,
@@ -97,42 +100,57 @@ class NoticeDraftService:
         assessment_ref = dict(assessment_id=assessment.id, version=assessment.version, scan_id=scan_id,
                               facts_hash=assessment.facts_hash, usage_hash=assessment.usage_hash,
                               rule_version=assessment.rule_version, formal=True)
-        entries = []
-        gaps = {'draft_only_not_obligation_fulfillment', 'authorization_pending', 'license_expression_not_inferred'}
-        evidence = {e.evidence_id: e for e in package.evidence}
-        for fact in sorted(package.facts, key=lambda f: f.fact_id):
-            resources, resource_gap = resource_ids(fact, run)
-            missing = set(fact.gaps)
-            if resource_gap:
-                missing.add(resource_gap)
-            refs = []
-            source_ids = set(fact.relationships.license.evidence_ids + fact.relationships.notice.evidence_ids + fact.relationships.copyright.evidence_ids)
-            for eid in sorted(source_ids):
-                mapped = evidence_refs(evidence[eid], run)
-                if not mapped:
-                    missing.add('source_evidence_not_mapped_to_scan_namespace')
-                refs.extend(mapped)
-            notice = fact.relationships.notice
-            excerpts = []
-            if notice.state in {'observed', 'text_observed'}:
-                for eid in sorted(notice.evidence_ids):
-                    e = evidence[eid]
-                    if e.kind in {'repository_file', 'archive_entry'}:
-                        excerpts.append(e.excerpt)
-            if not excerpts:
-                missing.add('notice_text_not_observed')
-            gaps.update(missing)
-            # These are stable source IDs, never ScanRun evidence IDs.
-            entries.append(dict(entry_id=fact.fact_id, resource_ids=resources, license_expression_ids=[],
-                                obligation_refs=[], evidence_refs=sorted({digest(r): r for r in refs}.values(), key=lambda r: r['evidence_id']),
-                                text='\n'.join(excerpts) if excerpts else None, missing=sorted(missing)))
+        if self.bound_source_reader is not None:
+            try:
+                source = read_bound_draft_source(self.bound_source_reader, stored, assessment)
+            except BoundNoticeDraftSourceError as error:
+                raise NoticeDraftServiceError(error.code, error.reason) from error
+            entries, gaps = project_bound_entries(source)
+            version, package_hash = BOUND_VERSION, source.package_hash
+        else:
+            try:
+                source = self.facts_reader.read(scan_id, assessment.facts_hash)
+                package = validate_input(source, scan_id, assessment.facts_hash)
+            except Exception as error:
+                # Reader failures are context-free; paths/URLs/SQL never enter HTTP errors.
+                raise NoticeDraftServiceError('upstream_unavailable', 'notice_facts_invalid') from error
+            entries = []
+            gaps = {'draft_only_not_obligation_fulfillment', 'authorization_pending', 'license_expression_not_inferred'}
+            evidence = {e.evidence_id: e for e in package.evidence}
+            for fact in sorted(package.facts, key=lambda f: f.fact_id):
+                resources, resource_gap = resource_ids(fact, run)
+                missing = set(fact.gaps)
+                if resource_gap:
+                    missing.add(resource_gap)
+                refs = []
+                source_ids = set(fact.relationships.license.evidence_ids + fact.relationships.notice.evidence_ids + fact.relationships.copyright.evidence_ids)
+                for eid in sorted(source_ids):
+                    mapped = evidence_refs(evidence[eid], run)
+                    if not mapped:
+                        missing.add('source_evidence_not_mapped_to_scan_namespace')
+                    refs.extend(mapped)
+                notice = fact.relationships.notice
+                excerpts = []
+                if notice.state in {'observed', 'text_observed'}:
+                    for eid in sorted(notice.evidence_ids):
+                        e = evidence[eid]
+                        if e.kind in {'repository_file', 'archive_entry'}:
+                            excerpts.append(e.excerpt)
+                if not excerpts:
+                    missing.add('notice_text_not_observed')
+                gaps.update(missing)
+                # These are stable source IDs, never ScanRun evidence IDs.
+                entries.append(dict(entry_id=fact.fact_id, resource_ids=resources, license_expression_ids=[],
+                                    obligation_refs=[], evidence_refs=sorted({digest(r): r for r in refs}.values(), key=lambda r: r['evidence_id']),
+                                    text='\n'.join(excerpts) if excerpts else None, missing=sorted(missing)))
+            version, package_hash = VERSION, source.expected_package_hash
         now = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         value = dict(schema_version='1.0', draft_id='ntc_' + str(uuid4()), created_at=now,
-                     generator_version=VERSION, binding=dict(scan_ref=scan_ref, assessment_ref=assessment_ref,
+                     generator_version=version, binding=dict(scan_ref=scan_ref, assessment_ref=assessment_ref,
                      task_refs=[], notice_refs=[], algorithm_refs=[]), entries=entries, coverage_gaps=sorted(gaps),
                      provenance=dict(producer=dict(name='openguard-notice-draft', version='1.0'),
                      source_refs=[scan_ref], assessment_refs=[assessment_ref], generated_at=now,
-                     algorithm_version=VERSION, parameters_hash=source.expected_package_hash))
+                     algorithm_version=version, parameters_hash=package_hash))
         value['content_hash'] = content_hash(value)
         try:
             saved = self.store.create(scan_id, assessment_id, idempotency_key, value)

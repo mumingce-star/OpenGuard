@@ -1511,3 +1511,9 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - Owner结论：A2_ACCEPT_WITH_NONBLOCKING_NOTES；Recovery blocker=CLOSED；BOUND freeze/package CAS已通过复审；N2/N3及既有非阻塞债务保留deferred。
 - A3_ENTRY_STATUS=READY，仅表示A2前置门禁满足；A3以及NoticeDraft/Report/Factory production wiring尚未开始，未启用生产NOTICE。
 - 本轮feature发布目标：feat/p1-notice-source-adapter。仅记录已成立的接受事实和发布范围；提交、推送和实际远端结果在执行后写入ignored发布回执，本记录不宣称Git操作成功或integration已合入。
+
+## 2026-09-27 P1 NOTICE A3 Owner 接受与发布目标
+
+- Owner结论：A3_ACCEPT_WITH_NONBLOCKING_NOTES；NOTICE_PRODUCTION_CONSUMPTION_WIRED。已验收exact BOUND → A2/CZ decode → conservative NoticeDraft → NoticeDraftStore → ReportNoticeReader → Report V2与default factory消费接线；Owner Review完整414节点及34项独立探针通过。
+- Source lifecycle仍未完成：ReadOnlyScanSession → CZ collector → detached Collection → terminal A2 admission → stage/bind尚未自动接入生产扫描主链；不代表每次真实扫描都有NOTICE或完整生产链已完成。N2/N3、serialization memory amplification及部分永久测试覆盖债继续deferred。
+- 本轮feature发布目标：feat/p1-notice-production-wiring。实际commit SHA、push与远端核验结果仅在执行后写入ignored发布回执；本记录不宣称提交、推送、integration合入或部署成功。

@@ -7479,3 +7479,23 @@
 - 本轮实跑：现有Linux镜像、禁网只读源码容器完整261 unique passed（A1 45/A2 77/CZ 9/consumers130），0 failed/error/skipped/xfail/deselected，1个既有Starlette/AnyIO警告；节点集合与Owner复审完全一致，compileall及git diff --check PASS。未跑全仓、未重跑真实业务apply、未修改已审四文件。
 - 文件与协调：只追加本日志、AI日志、PROJECT_PROGRESS；最终七文件范围，不触CZ/Detector/Bench/NoticeDraft/Report/Profile/Assessment/Frontend/main.py或公开Schema。发布目标feat/p1-notice-source-adapter；待完成暂存、敏感检查、普通提交和单分支推送门禁。
 - 收尾约束：实际commit/push/远端一致性及最终现场保护结果仅写本轮ignored发布回执，不在此提前宣称成功；不再为记录Git结果另造文档提交。N2/N3、serialization memory amplification和普通覆盖债继续deferred；A3、NoticeDraft/Report/Factory production wiring尚未开始，NO_MERGE/NO_PR/NO_DEPLOY。精确token遥测不可获得，未缩减验收范围。
+
+## 20260927-1722-GPT5-NOTICE-A3-implementation
+
+- 状态：START；作者/角色：GPT-5 / Backend A；开工核对时间2026-09-27T09:22:24Z。独立feat/p1-notice-production-wiring，精确BASE=04435e56cec38ab47aaf82125a56ab34359a5555，初始clean；原integration及其他现场不切换、不清理。
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_A3：本轮批准近期A1/A2/A3-0/NoticeDraft/ReportV2/Factory/BOUND消费完整相关阅读与更早定向检索；复用经Hash确认未变的已读接口及文档。不降低fail-first、回归、安全与证据门槛，不延续到Owner Review或发布。
+- Owner已冻结七文件：notice_draft.py、新notice_draft_bound_source.py、api/main.py、新A3测试、既有default workflow测试，以及本日志/AI日志；PROJECT_PROGRESS明确不改。新任务书的binding_mismatch及内容/关系gap名称优先于A3-0草案建议。
+- 顺序：先永久A3-01～20及配置/安全控制fail-first，再最小实现真实BOUND→A2 decode/CZ validator→保守Draft→Report消费；ASSESSMENTS开关不新增NOTICE开关，两reader互斥，legacy保持；无SOURCE/Registry/Assessment写入。
+- 验收：原A1 45/A2 77/CZ 9和消费者130节点全部保留，另含新增A3、API与factory/Profile相关回归，记录实际unique节点；compileall、diff、冻结文件Hash、append-only及旧现场保护核对。复用现有Linux镜像、自有禁网测试容器，不安装/pull/build，不接真实业务库。
+- Source lifecycle仍out-of-scope；不实现collector自动采集/终态stage-bind，不做Reviewed Obligation apply。成功只到A3_READY_FOR_OWNER_REVIEW，不声称Owner accepted/发布/合并/生产来源完成；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。证据output/manual-fixes/p1-notice-a3-20260927T092224Z/。token估算18k–32k，精确遥测不可获得；主控串行。
+
+## 20260927-1738-GPT5-NOTICE-A3-implementation-result
+
+- 状态：COMPLETE（仅本轮实现与定向验证）；作者/角色：GPT-5 / Backend A；核对时间2026-09-27T09:38:15Z。结果仅A3_READY_FOR_OWNER_REVIEW，Owner尚未验收本轮，未发布或合并。
+- 精确七文件：backend/app/p1/notice_draft.py、backend/app/p1/notice_draft_bound_source.py、backend/app/api/main.py、tests/unit/test_p1_notice_draft_production_wiring.py、tests/unit/test_p1_default_app_workflow_wiring.py及两份追加日志。PROJECT_PROGRESS、公用Schema、A1/A2/CZ/Report/Profile/Assessment/Scanner/Detector/Bench/Frontend不改。
+- 实现：精确BOUND八字段与当前固定事实重核对，复用A2 decode/CZ validator；legacy XOR production构造约束；稳定observation entry、四类正式引用为空、原正文/摘录/缺口保留；notice-bound/1.0与legacy notice/1.0隔离。ASSESSMENTS=1初始化两Notice sidecar并注入现有ReportNoticeReader，关闭时不碰Notice DB；无collector/扫描/网络/自动stage-bind。Report缺失Draft改为404，未配置reader的人工注入旧409仍保留。
+- Fail-first：产品未改时有效轮47 failed/16 passed，其中5个resolved场景暴露新增测试误取空components的问题；修正为collector-local subject后，精确BASE后端隔离复核仍47 failed/16 passed且无setup error。最初512MiB临时盘不足、后续BASE归档缺rules的环境错误输出均保留，不计产品失败。实现初轮58 passed/5测试构造失败同样保留。
+- 最终实跑414 unique passed，0 failed/error/skipped/xfail/deselected；原261节点全部保留（A1 45/A2 77/CZ 9/consumers130），新增A3 48、default workflow15、Profile29、Notice API19、Schema42；1个既有Starlette/AnyIO弃用警告。现有Linux/amd64离线镜像，源码只读挂载；compileall与git diff --check PASS。
+- 证明：真实测试用受控ZIP/CZ collection→A2→A1 stage/trusted bind→BOUND→默认工厂Draft→Report闭环；HTTP TestClient验证，不冒充live HTTP/生产扫描。GET及重启禁用上游读取/网络/collector并比较逐库业务行；错误路径无业务写入，startup拒绝损坏/symlink/容量故障且不改已有其他sidecar字节。
+- 现场：精确BASE未变、index空，七文件未暂存等待Owner；其他8个存在worktree及1个原有缺失登记HEAD/status/未提交Hash不变；本轮测试容器均退出，不动真实业务数据。证据和命令均在output/manual-fixes/p1-notice-a3-20260927T092224Z/。
+- 限制/下一步：Source lifecycle仍out-of-scope，需Owner Review后另行决定发布/真实扫描自动采集绑定；N2/N3及既有内存/覆盖债不在此修复。不能据此宣称P1完整发布门禁、生产来源或竞赛交付全部完成。NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY；精确token遥测不可获得，开工估算18k–32k，未减少验证范围，无法核实实际是否落在估算内。
