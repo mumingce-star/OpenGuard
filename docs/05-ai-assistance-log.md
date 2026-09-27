@@ -376,3 +376,25 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - 产出：基于既有固定 Git 对象复核记录创建 reference-only B06 candidate registry；加固 B07 controlled receipt hash/唯一性校验；撰写 A 的 NOTICE source 输入、绑定、reader 和测试回执契约。
 - 约束：没有联网刷新来源、复制第三方正文、生成 Gold/真人签收、运行正式评测或形成性能结论。候选的权利状态仍待真人审核。
 - 验证：Node B06/B07 合同及候选测试 7 passed，diff 检查通过。NOTICE A1 动态 suite 仍因本机依赖不足未复跑。
+
+## 2026-09-27 — Backend A NOTICE Source A2
+
+- 工具/模型：Codex（GPT-5），Owner 指定 A2 消费适配范围；基线 `9b71c6f60d30b6162a31c055fe62cd6dd66f58f9`，不自动接受其中非 A2 的 CZ Detector/Bench/B06/B07。
+- 辅助内容：新增 `notice_source_adapter.py` 与永久集成/负向测试；真实 CZ DTO/validator → A1 STAGED/trusted BOUND → reader → CZ validator。独立核对 Hash preimage、规范 revision、producer 一致性、inventory 必填与显式 Assessment。
+- 人工约束：不修改 CZ/A1 Store/业务状态/公共 Schema；不生成真实批准事实或生产对象，不做 factory/NoticeDraft/Report 接线；Owner 已批准本任务定向日志阅读和启动既有 Docker Desktop。
+- 验证：最终 Linux 离线指定集合 231 unique passed（新增 A2 60、CZ 9、A1 32、消费者 130），无失败/跳过/xfail/deselect；1 个依赖弃用警告。compileall/diff/hash 检查通过，完整失败轨迹与回执保存在 ignored A2 目录；无全仓回归。
+- 纳入作品：仅本地未暂存候选，待 Owner Review；无提交、推送、合并或部署，原数据与其他 worktree 保持不变。
+
+## 2026-09-27 — Backend A NOTICE Source A2 R1 STAGED recovery
+
+- 工具/模型：Codex（GPT-5），按Owner冻结的窄修任务执行；实际收尾核对时间2026-09-27T07:09:43Z，基线9b71c6f60d30b6162a31c055fe62cd6dd66f58f9。Owner批准本轮定向日志阅读例外，仅改变上下文加载。
+- 辅助内容：UNBOUND STAGED显式CAS replacement；trusted bind必填expected_package_hash；任意BOUND冻结STAGED；事务内条件UPDATE、rowcount检查、回滚和旧Hash拒绝。无Schema变更、CZ改动或生产NoticeDraft/Report/Factory接线。
+- 验证：30新增永久节点先fail-first、后全部通过；最终261 unique passed，原231节点保留，0 failed/error/skip/xfail/deselect，1既有警告；A1 45/A2 77/CZ 9/consumer130。独立恢复、旧Hash有序竞态、同时bind/replacement三探针PASS，compileall和diff check PASS。fail-first的92 deselected仅为定向选择，非最终跳过；没有全仓回归或真实业务apply。
+- 人工边界：不自行宣布A2接受；N2/N3和内存放大等仍deferred，等待Owner审查。原Owner证据不覆盖，其他现场不变；自有临时测试容器已结束。成果仅累计6文件未暂存；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。
+- 证据：output/manual-fixes/p1-notice-source-a2-r1-20260927T065517Z/；A2_R1_READY_FOR_OWNER_REVIEW。
+
+## 2026-09-27 — Backend A NOTICE Source A2 发布门禁
+
+- 工具/模型：Codex（GPT-5）；Owner已接受A2_ACCEPT_WITH_NONBLOCKING_NOTES，批准精确七文件发布范围与本轮定向日志阅读例外。四份源码/测试保持Owner已审Hash，三个协调文档仅追加。
+- 本轮实际验证：261 unique passed（A1 45/A2 77/CZ 9/consumers130），0 failed/error/skipped/xfail/deselected，1既有弃用警告；完整节点集合与复审一致，compileall及diff check PASS。复用现有禁网Linux测试环境，无依赖安装/镜像构建/业务数据操作。
+- 发布边界：目标feat/p1-notice-source-adapter；本记录不宣称提交或推送成功，实际结果仅在执行后写ignored发布回执。Recovery blocker CLOSED，A3入口READY但未开始；N2/N3与覆盖/内存债保留，不做NoticeDraft/Report/Factory接线、PR、合并或部署。

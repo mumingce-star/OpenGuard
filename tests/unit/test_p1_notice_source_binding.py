@@ -56,7 +56,8 @@ def admission(env, **changes):
 def bind(env, **changes):
     value = dict(scan_id=env.run.id, expected_registry_revision=3,
                  assessment_id=env.assessment.id,
-                 expected_assessment_version=env.assessment.version)
+                 expected_assessment_version=env.assessment.version,
+                 expected_package_hash=admission(env).package_hash)
     value.update(changes)
     return env.service.bind(**value)
 
@@ -314,7 +315,8 @@ def test_bound_record_cannot_be_published_without_trusted_binding_service(env):
                 pass
     assert env.reader.read(env.run.id, '0' * 64, forged['assessment_id'], 1) is None
     assert source_rows(env) == before
-    assert {n for n in dir(env.source) if not n.startswith('_') and callable(getattr(env.source, n))} == {'initialize', 'stage'}
+    assert {n for n in dir(env.source) if not n.startswith('_') and callable(getattr(env.source, n))} == {
+        'initialize', 'stage', 'replace_unbound_stage'}
     assert not hasattr(env.source, '_save_binding')
     assert not hasattr(env.source, '_load_for_binding')
     assert read(env) is None
@@ -333,9 +335,10 @@ def test_failed_binding_leaves_no_bound_or_conflicting_record(env, monkeypatch):
         result = original(db, scan_id)
         loads += 1
         if loads == 1 and result is not None:
-            # Same invalid package candidate as Owner B2, without modifying stored bytes.
+            # Package CAS is checked first now. Keep B2 exercising the deeper
+            # write-before-INSERT byte/hash closure, without changing stored bytes.
             meta, raw = result
-            return {**meta, 'package_hash': '0' * 64}, raw
+            return meta, raw + b'tampered'
         return result
 
     with monkeypatch.context() as patch:
@@ -408,3 +411,107 @@ def test_binding_conflict_keeps_existing_identity(env, monkeypatch):
         bind(env, expected_registry_revision=4)
     assert caught.value.code == 'conflict'
     assert source_rows(env) == before and read(env) == fixed
+
+
+# A2 R1 extends only the supported internal write APIs; these inputs remain TEST_ONLY.
+def r1_value(env, marker="second"):
+    raw = package_bytes(marker)
+    return admission(env, canonical_package_bytes=raw, package_hash=hashlib.sha256(raw).hexdigest())
+
+
+def r1_replace(env, value, **changes):
+    return env.source.replace_unbound_stage(
+        value, **{"scan_id": env.run.id, "expected_current_package_hash": admission(env).package_hash, **changes})
+
+
+def r1_rejected(env, fn, expected_code):
+    before = source_rows(env)
+    with pytest.raises(NoticeSourceStoreError) as caught:
+        fn()
+    assert caught.value.code == expected_code
+    assert source_rows(env) == before and read(env) is None
+
+
+def test_r1_07_invalid_new_package_preserves_old_stage(env):
+    env.source.stage(admission(env))
+    invalid = r1_value(env).__dict__.copy()
+    invalid["package_hash"] = "0"*64
+    r1_rejected(env, lambda: r1_replace(env, invalid), "invalid_argument")
+
+
+def test_r1_08_oversize_replacement_preserves_old_stage(env):
+    env.source.stage(admission(env))
+    raw = b"x" * (8*1024*1024+1)
+    value = admission(env, canonical_package_bytes=raw, package_hash=hashlib.sha256(raw).hexdigest())
+    r1_rejected(env, lambda: r1_replace(env, value), "storage_capacity_exceeded")
+
+
+@pytest.mark.parametrize("failure", ["sqlite_full", "internal_error", "rowcount_zero"])
+def test_r1_09_update_failure_rolls_back_without_delete(env, monkeypatch, failure):
+    first, second = admission(env), r1_value(env)
+    env.source.stage(first)
+    before = source_rows(env)
+    connect = env.source._connect
+    trace, updated = [], []
+    class FailureConnection:
+        def __init__(self, db):
+            self.db = db
+            self.db.set_trace_callback(trace.append)
+        def execute(self, sql, *args):
+            cursor = self.db.execute(sql, *args)
+            if sql.startswith("UPDATE notice_source_staged"):
+                assert self.db.in_transaction
+                updated.append(self.db.execute(
+                    "SELECT package_hash FROM notice_source_staged WHERE scan_id=?", (env.run.id,)).fetchone()[0])
+                if failure == "rowcount_zero":
+                    return SimpleNamespace(rowcount=0)
+                if failure == "sqlite_full":
+                    error = sqlite3.OperationalError("TEST_ONLY injected full after actual UPDATE")
+                    error.sqlite_errorcode = sqlite3.SQLITE_FULL
+                    raise error
+                raise NoticeSourceStoreError("storage_unavailable")
+            return cursor
+        def __enter__(self):
+            self.db.__enter__()
+            return self
+        def __exit__(self, *args):
+            return self.db.__exit__(*args)
+        def close(self):
+            self.db.close()
+    with monkeypatch.context() as patch:
+        patch.setattr(env.source, "_connect", lambda **kw: FailureConnection(connect(**kw)))
+        with pytest.raises(NoticeSourceStoreError) as caught:
+            r1_replace(env, second)
+    assert caught.value.code == {"sqlite_full":"storage_capacity_exceeded",
+                                 "internal_error":"storage_unavailable", "rowcount_zero":"conflict"}[failure]
+    assert updated == [second.package_hash]
+    assert "BEGIN IMMEDIATE" in trace and "ROLLBACK" in trace and "COMMIT" not in trace
+    assert not any(sql.startswith(("DELETE", "INSERT")) for sql in trace)
+    assert source_rows(env) == before and read(env) is None
+    assert r1_replace(env, second).package_hash == second.package_hash
+
+
+@pytest.mark.parametrize("bad_hash", [None, True, "", "A"*64, "f"*63, "f"*64+" "])
+def test_r1_replacement_requires_canonical_current_hash(env, bad_hash):
+    env.source.stage(admission(env))
+    r1_rejected(env, lambda: r1_replace(env, r1_value(env),
+                expected_current_package_hash=bad_hash), "invalid_argument")
+
+
+def test_r1_replacement_scan_identity_and_missing_stage(env):
+    first, second = admission(env), r1_value(env)
+    r1_rejected(env, lambda: r1_replace(env, second), "not_ready")
+    env.source.stage(first)
+    wrong = r1_value(env).__dict__.copy()
+    wrong["scan_id"] = "scn_other"
+    r1_rejected(env, lambda: r1_replace(env, wrong), "binding_mismatch")
+    r1_rejected(env, lambda: r1_replace(env, second, scan_id="scn_other"), "binding_mismatch")
+
+
+def test_r1_replacement_capacity_failure_is_atomic(env):
+    env.source.stage(admission(env))
+    constrained = NoticeSourceStore(env.source.path, min_free_bytes=10**30)
+    r1_rejected(env, lambda: constrained.replace_unbound_stage(
+        r1_value(env), scan_id=env.run.id, expected_current_package_hash=admission(env).package_hash),
+        "storage_capacity_exceeded")
+    assert env.source.stage(admission(env)).package_hash == admission(env).package_hash
