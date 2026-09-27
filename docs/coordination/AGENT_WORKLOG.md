@@ -7415,3 +7415,67 @@
 - GitHub：发布前 `origin/integration/p1...HEAD` 为 `0 2`，远端为祖先；已非强制快进推送，`codex/scan-reliability-integration` 与 `integration/p1` 均读回 `abea88631767af30ad63102b05d385b719925d7c`。未改动 `main`、未创建 PR、未部署或启停服务。
 - 范围与风险：未纳入未跟踪的 `reports/VERIFY_REPORT.md`，该文件是本机诊断报告且非稳定竞赛工程入口，未删除。A 侧 CZ→admission 适配、factory/NoticeDraft/Report 接线、真人 Gold/正式评测/真实性能、Windows `fcntl` 全量 pytest 与前端 pnpm 回归均未关闭。
 - 建议下一步与责任：Terra/A Owner 完成 CZ→BOUND admission/factory/消费者接线；Luna 完成真人 Gold、B05/B06/B07 正式回执和异机复现；Root 在门禁证据齐备后再评审 `main` PR。token：精确遥测不可获得；开工估算 12,000--20,000，本轮在该范围内完成。
+
+## 20260927-1338-GPT5-NOTICE-A2-adapter
+
+- 状态：START
+- 作者与角色：GPT-5 / Backend A（Owner 指定的 A2 适配实施）；时间：2026-09-27 13:38 Asia/Shanghai。
+- 范围：独立 `feat/p1-notice-source-adapter`，精确基线 `9b71c6f60d30b6162a31c055fe62cd6dd66f58f9`；A1 祖先 `120f08d22f80162dbff1c12288f2e342d18074af`。已确认 A1 Store 内容未变化；BASELINE_PRESENT 不等于 OWNER_ACCEPTED，Detector/Bench/B06/B07 不在本轮验收范围。
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_A2：Owner 批准近期 A1/CZ NOTICE Source 相关记录完整阅读与更早历史定向检索，替代全文历史日志；不降低源码、fail-first、定向回归及现场保护门槛。README/AGENTS/SOL_HANDOFF 与已读版本无差异，当前进度增量和 CZ 交接接口已读取。
+- 预计文件：仅新增 `backend/app/p1/notice_source_adapter.py`、`tests/unit/test_p1_notice_source_adapter.py`，追加本日志与 AI 协助记录；证据写 ignored A2 目录。
+- 验收：A2-01 至 A2-22、真实 CZ collector/validator → A1 stage/trusted bind → BOUND reader → CZ validator 往返；CZ 9 项、A1 32 项、NoticeDraft/Report/Store 同范围消费者，compileall、diff/hash/现场保护核验。Docker daemon 当前不可达，先完成环境核验，不安装依赖或擅自替换测试框架。
+- 禁止：CZ/A1 Store/扫描主链/公共 API/工厂修改，commit/push/merge/deploy。token 开工估算 18,000–30,000；精确遥测不可获得。
+
+## 20260927-1345-GPT5-NOTICE-A2-adapter-review-ready
+
+- 状态：COMPLETE（仅 A2 本地实现与指定验证完成，待 Owner Review；不代表 A2_ACCEPT 或生产启用）
+- 作者与角色：GPT-5 / Backend A；时间：2026-09-27 13:45 Asia/Shanghai。
+- 目标与结果：新增极薄 terminal admission 与 BOUND decode 边界，直接复用 CZ collection/binder/validator/canonical_json 和 A1 公开 stage/trusted bind/reader。canonical bytes 排除 package_hash；revision 仅来自实际 int 的规范十进制；所有 collector 的 type/name/version/config_digest 相同；inventory=None 拒绝；显式 Assessment ID/version 核对，不取 latest。
+- 文件：仅新增 `backend/app/p1/notice_source_adapter.py`、`tests/unit/test_p1_notice_source_adapter.py`，追加两份日志；未改 A1 Store、CZ、Detector、Bench、scanner、公共 Schema/API、前端或工厂。
+- 验证：真实受控 ZIP 会话及 CZ collector 产生 detached collection，测试绑定实际临时 Registry/AssessmentStore，并完成 STAGED→BOUND→Reader→CZ validator 往返。初始夹具误用 inventory 字段导致 53 个 setup errors，已纠正且保留回执，不计为产品 fail-first；随后适配模块缺失的 53 个 setup errors 为缺实现 fail-first。实现首轮 53 PASS；扩展回归暴露 Registry not_found 错误映射 1 fail/228 pass，A2 内修正并新增独立控制测试。最终同 Linux 镜像指定范围 231 unique PASS（CZ 9、A1 32、A2 60、直接消费者 130），0 failed/error/skip/xfail/deselect，1 个既有 Starlette/AnyIO 弃用警告；原 162 节点全部保留。相关 compileall 与 diff check PASS，未跑全仓。
+- 环境：Owner 单独授权启动现有 Docker Desktop；现有镜像 `sha256:6510aeaf29bdcfb1b3bdb3655fef73d39f9bc6164ae876011a57c356c5cef23c`，只读源码、自有临时容器、network none；不安装、不 pull/build、不操作其他容器。初始 daemon 缺失及本机依赖不足不计作产品失败。
+- 接口与安全：A2 不写库或产生 BOUND；更严格的 A1 约束由其公开 stage fail closed，不归一化或伪造 coverage。Hash 是内容一致性，不取代受控采集来源的可信调用方；无生产 collector 生命周期保存、NoticeDraft/Report reader 或 factory 接线。
+- 风险与下一步：A1 N2/N3 仍按已接受的非阻塞项保留；未来 A3 需实现可信 collection 生命周期/默认工厂。当前 CZ schema 无 pending/review_required/license_expression_id 字段，未自行添加。Owner 审查 A2；其他基线 Detector/Bench/B06/B07 不因已存在而被本轮接受。
+- 证据：`output/manual-fixes/p1-notice-source-a2-20260927T053800Z/`；分支 `feat/p1-notice-source-adapter@9b71c6f60d30b6162a31c055fe62cd6dd66f58f9`，保持未暂存、无 commit/push/merge/deploy。其他既有现场 HEAD/status/未提交 Hash 一致。
+- token：本次运行精确 token 数不可获得；开工估算 18,000–30,000，未缩小验收或扩大产品范围。
+
+### AMENDMENT 20260927-1343-GPT5-A2-clock
+
+- 上述收尾记录 ID 中 1345 及正文 13:45 为拟定记录时间，非实测结束时钟；工具实际核对时间为 2026-09-27T05:43:38Z（13:43:38 Asia/Shanghai）。测试与命令时间以 ignored XML/回执为准；仅追加澄清，不改写已有记录。
+
+## 20260927-1455-GPT5-NOTICE-A2-R1-recovery
+
+- 状态：START；作者/角色：GPT-5 / Backend A，Owner 授权的 A2 R1 窄修；实际开工时钟 2026-09-27T06:55:17Z。
+- 基线：feat/p1-notice-source-adapter@9b71c6f60d30b6162a31c055fe62cd6dd66f58f9；保留原四文件未暂存成果及 A2/Owner Review 证据，其他 worktree HEAD/status/未提交 Hash 已记录，不切换或清理旧现场。
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_A2_R1：本轮采用近期 A1/A2/Owner Review/STAGED recovery/transaction/CAS/package identity/BOUND freeze 完整相关阅读与更早历史定向检索；复用已完整读取且核对未变的 README/进度/handoff。仅改变上下文加载，不降低修复、fail-first、231节点回归或独立恢复/竞态探针门槛；不延续到下一任务。
+- 范围：notice_source_store.py、notice_source_adapter.py、两份对应单测及本日志/AI日志；无 Schema/CZ/工厂/消费者产品改动。仅增加显式 UNBOUND CAS replacement 与必填 expected_package_hash 的 trusted bind；任意 BOUND 后冻结该 scan 的 STAGED。禁止 last-write-wins、DELETE 补救、None 绕过和直接发布 BOUND。
+- 验收：先永久 R1-01～13 fail-first，再最小实现；保留原 A1 32/A2 60/CZ 9/消费者130共231节点，新增R1测试、Owner恢复和旧Hash竞态独立探针、compileall、diff及现场Hash复核。证据写 output/manual-fixes/p1-notice-source-a2-r1-20260927T065517Z/。复用现有离线Linux镜像，不安装/pull/build、不触真实业务库。
+- Nonblocking 内存放大、N2/N3及其他Owner探针覆盖债务继续deferred。仅交付 READY_FOR_OWNER_REVIEW，不自行接受、提交、推送、合并或部署。串行无子代理；token估算12k–24k，精确遥测不可获得。
+
+## 20260927-1509-GPT5-NOTICE-A2-R1-complete
+
+- 状态：COMPLETE（仅 R1 本地实现与指定验证完成）；A2_R1_READY_FOR_OWNER_REVIEW，未作 Owner 接受结论。实际收尾核对时钟：2026-09-27T07:09:43Z。
+- 修复：新增公开 replace_unbound_stage(value, scan_id, expected_current_package_hash)，只有 UNBOUND STAGED 可显式 CAS 替换；BEGIN IMMEDIATE 内检查任意 Assessment 的 BOUND，再 UPDATE WHERE scan_id/package_hash 且要求 rowcount=1。任意 BOUND 后永久冻结，不做 last-write-wins、DELETE 补救或自动重试。trusted bind 新增必填 expected_package_hash，在同一事务内核对当前包后执行原 Registry/Assessment 校验与发布。
+- 调用方：A2 仍仅做 admission/decode；模块说明和测试调用传入调用方已验证的包 Hash，不从稍后的 Store 内容猜 Hash，不新增生产编排/工厂。原 stage、BOUND Reader、DDL 和既有安全/容量帮助函数保持不变。内部 bind 在无 STAGED 时现在优先返回 not_ready；未宣称所有错误优先级不变。
+- 永久验证：新增 30 个参数化节点覆盖 R1-01～13及必填/非法Hash控制。旧实现 fail-first 30 failed、92 deselected、0 errors；主要为缺 replacement/必填参数 API，另有漏传 Hash 未拒绝控制，不夸称30种独立漏洞。修复后新增集合30 passed；最终完整指定范围261 unique passed（A1 45、A2 77、CZ 9、消费者130），原231节点无缺失，0 failed/error/skip/xfail/deselect，1个既有Starlette/AnyIO警告。92 deselected仅为前两次定向选择；最终未缩减。未跑全仓测试。
+- A1兼容：保留原32节点；B2写前验证测试改为损坏raw且保持metadata Hash，以继续触达原深入验证，不让新增package CAS提前替代其断言。失败仍须零写入且可恢复；没有删除/放宽B2保护。
+- 独立探针：复用原Owner探针的独立真实CZ/ZIP夹具，仅写本轮TEST_ONLY目录；容量失败→显式替换→合法BOUND恢复PASS，A持旧Hash/B替换/A绑定拒绝PASS；两个线程同时bind(A)/replace(B)，本次A先BOUND、B被conflict拒绝，结果合法串行化。重开Reader和CZ round-trip一致，无私有SQL修复。故障注入实际UPDATE后模拟SQLITE_FULL/内部错误/rowcount0，均ROLLBACK且无DELETE/INSERT补救。
+- 收尾：compileall、git diff --check、空暂存区检查PASS；源码修改仅本任务4份源码/测试，另追加两日志，累计6文件未暂存。8个其他worktree记录（含既有缺失/prunable条目）HEAD/status/未提交Hash一致；本轮临时容器均结束且自动移除，未操作他人容器/业务库。旧证据保留，新证据 output/manual-fixes/p1-notice-source-a2-r1-20260927T065517Z/，含完整累计补丁与Hash。
+- 非阻塞与下一步：serialization memory amplification、N2 Registry错误分类、N3 damaged-DB large-BLOB hardening及其他Owner探针覆盖债务仍deferred；等待Owner R1审查。NO_CZ_SOURCE_CHANGE、NO_DB_SCHEMA_CHANGE、NO_NOTICE_DRAFT_WIRING、NO_REPORT_WIRING、NO_FACTORY_WIRING、NO_COMMIT、NO_PUSH、NO_MERGE、NO_DEPLOY。实际token遥测不可获得，未以额度为由缩小范围。
+
+## 20260927-1600-GPT5-NOTICE-A2-publish
+
+- 状态：START；作者/角色：GPT-5 / Backend A 发布执行；实际开工核对时间：2026-09-27T08:00:53Z。仅发布已由 Owner 接受的 A2/R1，不开发或进入 A3。
+- OWNER_APPROVED_PUBLICATION_TASK_LEVEL_WORKLOG_READING_EXCEPTION：本轮允许近期 A1/A2/R1/Owner Review/Publish 完整相关阅读与更早历史定向检索，替代共享日志全文阅读；只改变上下文加载，不降低261节点、Hash、敏感信息、暂存及远端门禁，不延续到A3。
+- 已核对：feat/p1-notice-source-adapter，HEAD/远端integration/p1均为9b71c6f60d30b6162a31c055fe62cd6dd66f58f9；暂存区为空，六文件成果与Owner复审Hash一致。Owner结论A2_ACCEPT_WITH_NONBLOCKING_NOTES，Recovery CLOSED，A3_ENTRY_STATUS=READY；非生产接线完成。
+- 范围：四份已审源码/测试内容保持不变，仅追加本日志、AI记录及PROJECT_PROGRESS；最终精确七文件。计划复跑A1 45/A2 77/CZ 9/consumers130、compileall、diff与敏感检查，再显式暂存、普通提交和仅feature推送。禁止A3、CZ/消费者/工厂修改、合并、PR或部署。
+- 记录：本条不宣称提交或推送成功；实际SHA、push结果和远端核验仅在执行后写入ignored output/manual-fixes/p1-notice-source-a2-publish-20260927T080053Z/。N2/N3、serialization memory amplification和普通覆盖债保留deferred。其他worktree已记录保护快照；不操作真实业务数据。
+- token估算8k–16k；精确遥测不可获得，串行执行、不减少门禁。
+
+## 20260927-1602-GPT5-NOTICE-A2-publish-gates
+
+- 状态：PARTIAL（发布前验证完成，提交/推送尚未执行）；作者/角色：GPT-5 / Backend A 发布执行；门禁核对时间：2026-09-27T08:02:47Z。
+- 已成立事实：Owner结论A2_ACCEPT_WITH_NONBLOCKING_NOTES；Recovery blocker CLOSED，BOUND freeze/package CAS/race/rollback/Reader/A1 security复审PASS，DB Schema未变，A3_ENTRY_STATUS=READY；不代表A3或生产启用。
+- 本轮实跑：现有Linux镜像、禁网只读源码容器完整261 unique passed（A1 45/A2 77/CZ 9/consumers130），0 failed/error/skipped/xfail/deselected，1个既有Starlette/AnyIO警告；节点集合与Owner复审完全一致，compileall及git diff --check PASS。未跑全仓、未重跑真实业务apply、未修改已审四文件。
+- 文件与协调：只追加本日志、AI日志、PROJECT_PROGRESS；最终七文件范围，不触CZ/Detector/Bench/NoticeDraft/Report/Profile/Assessment/Frontend/main.py或公开Schema。发布目标feat/p1-notice-source-adapter；待完成暂存、敏感检查、普通提交和单分支推送门禁。
+- 收尾约束：实际commit/push/远端一致性及最终现场保护结果仅写本轮ignored发布回执，不在此提前宣称成功；不再为记录Git结果另造文档提交。N2/N3、serialization memory amplification和普通覆盖债继续deferred；A3、NoticeDraft/Report/Factory production wiring尚未开始，NO_MERGE/NO_PR/NO_DEPLOY。精确token遥测不可获得，未缩减验收范围。

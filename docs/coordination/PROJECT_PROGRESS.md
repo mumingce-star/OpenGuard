@@ -1505,3 +1505,9 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 已发布：`abea88631767af30ad63102b05d385b719925d7c`，已非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`；`main` 未改动。范围为 Detector 0.3、v3 只读消费 adapter、CZ NOTICE source DTO/collector、B06 reference-only 候选、B07 controlled receipt、定向测试、fixtures 与规范。
 - 本次验证：Python 定向 `13 passed`；Node 定向 `17 passed`；Java Maven 测试通过；`git diff --check` 与常见密钥特征扫描通过。B06/B07 负例的预期错误仅用于证明拒绝路径，并非失败。
 - 仍未关闭：G3 A 侧 CZ admission/factory/NoticeDraft/Report 生产接线；G4 前端浏览器回执；G5 真人 Gold/裁决；G6 正式评测；G7 真实性能；G8 Windows `fcntl` 兼容与跨栈全量回归。`reports/VERIFY_REPORT.md` 为本机诊断文件，未纳入发布。
+
+## 2026-09-27 P1 NOTICE Source A2 Owner 接受与发布目标
+
+- Owner结论：A2_ACCEPT_WITH_NONBLOCKING_NOTES；Recovery blocker=CLOSED；BOUND freeze/package CAS已通过复审；N2/N3及既有非阻塞债务保留deferred。
+- A3_ENTRY_STATUS=READY，仅表示A2前置门禁满足；A3以及NoticeDraft/Report/Factory production wiring尚未开始，未启用生产NOTICE。
+- 本轮feature发布目标：feat/p1-notice-source-adapter。仅记录已成立的接受事实和发布范围；提交、推送和实际远端结果在执行后写入ignored发布回执，本记录不宣称Git操作成功或integration已合入。

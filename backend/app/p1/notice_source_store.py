@@ -4,7 +4,9 @@ This is an internal boundary, not the CZ collector DTO or a public API. The
 caller may stage only bytes already validated by a trusted collector adapter.
 No production adapter is installed in Phase A1.
 
-Supported writes are Store.initialize/Store.stage and BindingService.bind.
+Supported writes are Store.initialize/Store.stage/Store.replace_unbound_stage
+and BindingService.bind. Replacement is explicit, package-CAS and UNBOUND-only;
+bind always requires the caller's expected package hash.
 Only bind constructs and publishes BOUND after authoritative upstream checks;
 there is no Store writer accepting a caller-built BOUND. Underscored SQLite
 helpers are implementation details, not an isolation boundary against malicious
@@ -322,6 +324,44 @@ class NoticeSourceStore:
         except (OSError, sqlite3.Error) as error:
             raise self._error(error) from error
 
+    def replace_unbound_stage(self, value: ValidatedNoticeSourceInput | dict, *,
+                              scan_id: str, expected_current_package_hash: str) -> StagedNoticeSource:
+        """Explicit recovery, never last-write-wins or a BOUND publication path."""
+        data, raw = _admission(value)
+        if (not _text(scan_id) or type(expected_current_package_hash) is not str
+                or not _SHA.fullmatch(expected_current_package_hash)):
+            raise NoticeSourceStoreError('invalid_argument')
+        if data['scan_id'] != scan_id:
+            raise NoticeSourceStoreError('binding_mismatch')
+        encoded = canonical_bytes(data)
+        candidate = _staged(data)
+        try:
+            with closing(self._connect(readonly=False)) as db, db:
+                db.execute('BEGIN IMMEDIATE')
+                old = self._load_stage(db, scan_id)
+                if old is None:
+                    raise NoticeSourceStoreError('not_ready')
+                if old[0]['package_hash'] != expected_current_package_hash:
+                    raise NoticeSourceStoreError('conflict')
+                # Any assessment's BOUND freezes the shared stage permanently.
+                if db.execute('SELECT 1 FROM notice_source_bindings WHERE scan_id=? LIMIT 1',
+                              (scan_id,)).fetchone() is not None:
+                    raise NoticeSourceStoreError('conflict')
+                if old == (data, raw):
+                    return candidate  # Exact no-op; not a package replacement.
+                if data['package_hash'] == expected_current_package_hash:
+                    raise NoticeSourceStoreError('conflict')
+                self._capacity(db, len(raw) + len(encoded))
+                cursor = db.execute(
+                    'UPDATE notice_source_staged SET input_json=?,input_hash=?,package_bytes=?,package_hash=? '
+                    'WHERE scan_id=? AND package_hash=?',
+                    (encoded, _sha(encoded), raw, data['package_hash'], scan_id, expected_current_package_hash))
+                if cursor.rowcount != 1:
+                    raise NoticeSourceStoreError('conflict')
+                return candidate
+        except (OSError, sqlite3.Error) as error:
+            raise self._error(error) from error
+
     @staticmethod
     def _validated_bound(data: dict, sha: str, staged: tuple[dict, bytes]) -> BoundNoticeSource:
         """Pure closure validation shared by write-before-INSERT and read paths."""
@@ -375,25 +415,29 @@ class NoticeSourceBindingService:
         self.assessment_store = assessment_store
 
     def bind(self, *, scan_id: str, expected_registry_revision: int,
-             assessment_id: str, expected_assessment_version: int) -> BoundNoticeSource:
+             assessment_id: str, expected_assessment_version: int,
+             expected_package_hash: str) -> BoundNoticeSource:
         if (not _text(scan_id) or not _text(assessment_id) or type(expected_registry_revision) is not int
                 or expected_registry_revision < 1 or type(expected_assessment_version) is not int
-                or expected_assessment_version < 1):
+                or expected_assessment_version < 1 or type(expected_package_hash) is not str
+                or not _SHA.fullmatch(expected_package_hash)):
             raise NoticeSourceStoreError('invalid_argument')
         try:
             store = self.source_store
             with closing(store._connect(readonly=False)) as db, db:
                 db.execute('BEGIN IMMEDIATE')
+                staged = store._load_stage(db, scan_id)
+                if staged is None:
+                    raise NoticeSourceStoreError('not_ready')
+                meta, _ = staged
+                if meta['package_hash'] != expected_package_hash:
+                    raise NoticeSourceStoreError('binding_mismatch')
                 stored = self.scan_registry.get(scan_id)
                 if stored is None:
                     raise NoticeSourceStoreError('not_found')
                 run = stored.run
                 if run.status.value not in ('completed', 'partial'):
                     raise NoticeSourceStoreError('not_ready')
-                staged = store._load_stage(db, scan_id)
-                if staged is None:
-                    raise NoticeSourceStoreError('not_ready')
-                meta, _ = staged
                 input_digest = run.provenance.input_digest.value
                 inventory = run.provenance.inventory_digest.value if run.provenance.inventory_digest else None
                 if (stored.revision != expected_registry_revision or run.id != scan_id or meta['scan_id'] != scan_id
