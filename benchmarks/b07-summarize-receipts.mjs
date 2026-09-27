@@ -1,4 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { validateControlledReceipt } from "./b07-controlled-receipt.mjs";
 
 const args = process.argv.slice(2); const value = (name) => args[args.indexOf(name) + 1];
 const input = value("--input"), output = value("--output");
@@ -7,10 +8,12 @@ const receipts = JSON.parse(await readFile(input, "utf8"));
 if (!Array.isArray(receipts) || receipts.length < 2) throw new Error("at least two controlled receipts are required; a single run is not a performance conclusion");
 const percentile = (values, p) => { const sorted = [...values].sort((a,b) => a-b); return sorted[Math.ceil(sorted.length * p) - 1]; };
 const durations = []; const stages = new Map(); let failures = 0; let environment = null;
+const receiptIds = new Set();
 for (const receipt of receipts) {
-  if (receipt.schema !== "openguard.controlled-pipeline-receipt/1" || receipt.execution_mode !== "controlled" || receipt.production_scan_started === true) throw new Error("only controlled non-production receipts are accepted");
-  if (!receipt.environment || typeof receipt.environment !== "object" || Array.isArray(receipt.environment)) throw new Error("environment summary is required for every receipt");
-  if (!Number.isFinite(receipt.total_duration_ms) || receipt.total_duration_ms < 0) throw new Error("total duration is required for every receipt");
+  const errors = validateControlledReceipt(receipt);
+  if (errors.length) throw new Error(`invalid controlled receipt: ${errors.join(",")}`);
+  if (receiptIds.has(receipt.receipt_id)) throw new Error("receipt_id must be unique");
+  receiptIds.add(receipt.receipt_id);
   if (!environment) environment = receipt.environment; else if (JSON.stringify(environment) !== JSON.stringify(receipt.environment)) throw new Error("receipt environments must match");
   if (receipt.status !== "success") failures++;
   durations.push(receipt.total_duration_ms);

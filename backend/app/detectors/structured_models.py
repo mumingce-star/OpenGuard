@@ -115,6 +115,24 @@ def structured_model_references(locator, text):
                 continue
             parameter, provider = rule
             values = [kw.value for kw in node.keywords if kw.arg == parameter]
+            # A literal keyword mapping is a structured configuration, not a
+            # runtime value.  Accept it only when it contributes exactly one
+            # literal target key; any duplicate, dynamic unpacking or mixed
+            # direct/unpacked spelling remains intentionally unresolved.
+            unpacked = [kw.value for kw in node.keywords if kw.arg is None]
+            if unpacked:
+                if values or len(unpacked) != 1 or not isinstance(unpacked[0], ast.Dict):
+                    continue
+                literal_items = [
+                    value for key, value in zip(unpacked[0].keys, unpacked[0].values)
+                    if isinstance(key, ast.Constant) and key.value == parameter
+                ]
+                if (len(literal_items) != 1
+                        or len(unpacked[0].keys) != 1
+                        or any(key is None or not isinstance(key, ast.Constant) or key.value != parameter
+                               for key in unpacked[0].keys)):
+                    continue
+                values = literal_items
             if len(values) != 1:
                 continue
             literal = values[0]

@@ -1463,3 +1463,39 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - N2=DEFERRED_NONBLOCKING；N3=DEFERRED_SECURITY_HARDENING。正常输入容量/绑定拒绝门禁保留，损坏私有DB读取前大BLOB限额风险未修；不将接受写成完全无风险。
 - 本轮发布前门禁实际复跑：A1 32 passed、七文件同范围162 passed，0 failed/skipped/deselected、各1既有warning；源码/测试Hash不变。目标发布分支feat/p1-notice-source-binding，BASE 6352b84bce1f3dbee192c9065049f4dda3fdb45f；此记录未宣称commit/push已成功，真实SHA/结果仅执行后写入ignored发布回执。
 - A2 CZ adapter NOT_STARTED；factory wiring NOT_STARTED，NoticeDraft/Report生产启用仍未完成。本轮不合入integration/p1、不创建PR、不部署，不改历史记录或组员源码。
+
+## 2026-09-24：CZ NOTICE 来源契约 v1（本地实现，待发布）
+
+- 已完成：新增隔离的 `openguard.notice-source/1` 生产 DTO、严格 validator 和仅经 `ReadOnlyScanSession` 的采集 adapter。包绑定真实 `scan_id`、registry revision、input/inventory/facts SHA-256 并以 canonical `package_hash` 封口；五态内容、全文/摘录容量、严格 UTF-8 字符边界、保留/全文 hash、collector、coverage/omission/gap 以及保守 `resolved/unresolved` relation 已实现。
+- 边界：未创建 `source.archive_bytes_sha256`，未把 Git URL digest 表述为 archive bytes hash，未把既有 Evidence `excerpt/content_hash` 表述为保留正文/哈希，未把 v3 离线 facts 当作生产 reader；未修改 A 侧数据库、公共 API、Report、扫描主链、持久化或工厂接线。
+- 验证：受限外 Python 3.12 已运行专属 pytest `3 passed`，并通过 `compileall backend/app/notice_source`；提交/推送和 PR 门禁仍未完成。
+- 全项目重新检验：Python 全量 pytest 在 Windows collection 阶段有 42 个 `fcntl` 相关错误；CZ pytest 3/3、Node 固定门禁 21/21、Java Maven 全量测试均通过；前端 test/build 未运行，因本机没有 `pnpm`。详见 `reports/VERIFY_REPORT.md`。
+## 2026-09-27 Detector 0.3 与 B03--B07 离线准备（未发布）
+
+- 已完成：冻结 AI资源 Detector 0.3 与 License/NOTICE facts detector 的独立输入/输出边界；新增非 Gold 的 train/dev/holdout fixture，涵盖 AST、字面量结构化配置、URL revision 与 FN/FP taxonomy 六类负例。动态/歧义配置和不支持 URL 路由保持不检测。
+- 已完成：新增 v3 facts 只读、hash 固定的消费 adapter；它只输出既有观察，保持 `pending`、`license_expression_id=null`，不将 LICENSE、provider label 或 gap 升级为 NOTICE、授权、SPDX、obligation 或违规。
+- 已完成：文档固化 A 的 NOTICE source STAGED/BOUND/reader 消费前提与篡改、边界、容量、重启验收清单；同时固化 B05 artifact 固定、B06 候选冻结/盲审、review/amendment 与 B07 controlled receipt 格式。B06 尚无经人工审核的候选 commit/source hash，因此任何条目仍为 `reference_only`，未进入正式 split 或 Gold。
+- 验证：离线 Python 定向 `82 passed`；v3 Node 回归 `5 passed`；B05 Node 回归 `3 passed`；`compileall backend/app/detectors` 与 `git diff --check` 通过。NOTICE source 绑定 suite 在本 Windows 校验环境收集时因缺少 `fastapi` 被阻断，未将历史通过回执冒充为本轮通过。
+- 发布状态：未提交、未推送、未创建 PR；按用户约束，须先取得后端 A 的消费确认并在依赖完整环境重跑 NOTICE 独立测试后再提交/发布。生产 API、正式 Gold、A 侧 factory/Report/扫描主链均未改动。
+
+## 2026-09-27 八项交付门禁冻结（进行中）
+
+- 已完成：Root/Sol 已将 Detector 0.3、License/NOTICE detector、后端 B/A、前端、真人 Gold/裁决、B05、B07 与 Windows 兼容性明确为 G0--G8；顺序、责任、禁止绕过和证据要求见 `docs/spec/detector-to-b07-release-gates.md`。
+- 进行中：G0/G1 的离线契约和 fixtures、B03/B04 v3 adapter 已有定向回归；G2 有候选 store/collector 与历史定向证据，但本机依赖不完整，不能替代独立动态回执。
+- 未开始或待外部责任：G3 A 接线、G4 前端和浏览器回执、G5 真人 Gold/裁决、G6 正式评测、G7 真实性能、G8 Windows `fcntl` 修复与跨栈全量回归。没有将待办表述为完成或推送状态。
+- 发布状态：所有 G0--G8 仍未形成可发布的完整任务分支；`main` 未改变。
+
+## 2026-09-27 B06/B07 与 NOTICE source 交付工件补强（未发布）
+
+- 已完成：B06 新增三组已存在公开来源观察的 `reference_only` 候选登记，逐项绑定 repository URL、固定 commit、路径、Git object SHA-256 与 family；不存第三方正文、不分配 split、不标注 Gold，等待真人权利审核。
+- 已完成：复用现有盲审/第二真人/amendment 工具，B07 receipt 增加 receipt/run 唯一 ID、固定来源 commit/source hash、input/config/result hash、非生产模式和 stage 时长的强制校验；重复 receipt 和缺失环境均拒绝。
+- 已完成：形成 A 的 NOTICE source 消费交接：A 自行复核 ScanRun/Assessment/hash/revision，唯一可信 BOUND 路径，reader 不回读上游；单列 tamper/boundary/capacity/restart/rollback 回执。当前 A1 suite fixture 仍是 TEST_ONLY 输入，CZ validator 到 A admission 的适配测试尚待 A 实现。
+- 验证：B06/B07 Node 合同与新增候选测试 `7 passed`，`git diff --check` 通过。测试中输出的 invalid blind/receipt 错误来自断言的拒绝路径；无测试失败。未联网、未启停服务、未执行正式评测/Gold/性能运行。
+- 发布状态：未提交、推送或 PR；等待 A 确认及完整动态回归后才能发布。
+
+## 2026-09-27 CZ NOTICE source 两阶段采集候选（未发布）
+
+- 已完成：collector 现仅在 `ReadOnlyScanSession` 内返回未绑定 `NoticeSourceCollection`，不再要求或猜测终态 `registry_revision`、`facts_hash` 等字段；A 只能在终态 ScanRun/facts 真实存在后以 `Binding` 调用终态封装器，计算并校验 `package_hash`。
+- 验证：已核验 Python 3.12.10、pytest 8.4.2、pydantic 2.13.4；模块导入、`compileall` 和 NOTICE source unit/security 定向测试 `9 passed`。覆盖读取预算、全文/摘录保留限额、五态、严格 UTF-8、路径/I/O 失败、partial 缺口、关系歧义及字段/Hash 错配拒绝；`git diff --check` 通过。
+- 边界：ZIP `input_digest` 继续是原 ZIP 摘要；Git 是来源 URL 摘要，均不证明仓库内容；未新增或伪造 `archive_bytes`。未修改 A 的数据库、公共 API、Report、扫描主链或 factory，未提交、合并、推送、部署或启用生产能力。
+- 未完成：A 的 CZ validator→admission 适配、终态 binding/store/BOUND reader 动态回执及发布门禁仍待 A；本候选源码未提交。

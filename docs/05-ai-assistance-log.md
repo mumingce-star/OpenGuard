@@ -344,3 +344,35 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 2026-09-26 NOTICE Source A1 Blocking Fix R1 COMPLETE（待Owner Re-review）：本轮新批准 OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_R1，仅调整历史阅读。GPT-6 Astra / Backend A只修模块/单测及追加日志：移除Store直接dict发布BOUND和STAGED原bytes出口，唯一service.bind重读真实Registry/显式Assessment后构造；闭包/Hash/返回对象在INSERT前验证，replay/conflict/INSERT同BEGIN IMMEDIATE，失败rollback无DELETE。两项永久fail-first原产品真实2失败→修后2通过，另3事务/冲突节点；全部A1 32 passed，原157同范围162 passed/0failed/errors/skip/deselect/1既有warning，原157节点完整保留、原消费者130。独立Owner B1/B2探针均PASS，Reader只读/重开/篡改保护保留；Python支持API边界不宣称同进程恶意代码隔离。N1仅B1/B2永久覆盖补强；N2 DEFERRED，N3 DEFERRED_SECURITY_HARDENING。新ignored R1 evidence固化receipt/test-results/probes/Hash/累计patch/notes，旧包及其他worktree不变，无真实扫描/apply/API/CZ/工厂/公共Schema/full-suite/子代理或发布部署。结论仅A1_R1_READY_FOR_OWNER_REVIEW，不签发A1_ACCEPT。精确token不可获得。
 
 2026-09-26 NOTICE Source A1 publication gates（Git执行尚待进行）：Owner已接受A1_ACCEPT_WITH_NONBLOCKING_NOTES，B1/B2 CLOSED，N2/N3延期风险保留。GPT-6 Astra / Backend A只准备已审源码发布，不改产品或测试；复跑A1 32通过及原七文件162通过，0失败/skip/deselect、各1既有warning，源码/测试Hash与复审相同。Owner批准本发布轮定向日志阅读及五文件范围，其中PROJECT_PROGRESS仅追加接受状态/目标feature/A2与工厂未开始。协调记录不预填commit/push成功；真实执行SHA/远端核验只存新ignored发布回执。无full suite、CZ adapter、factory、扫描/apply、合并、PR或部署；旧worktree及运行材料保留，精确token不可获得。
+
+## 2026-09-24 — NOTICE 来源契约 CZ 采集包
+
+- 工具/模型：Codex（GPT-5）。
+- 输入范围：Owner 确认的 R1 容量、UTF-8、partial 与保留决策；现有只读 ingestion 会话、inventory/provenance 契约。
+- 产出：独立 `openguard.notice-source/1` DTO、canonical package hash validator、受控会话采集器、专属 unit/security 测试和规范说明。
+- 人工约束/验证：未将离线 v3 facts 或既有 Evidence excerpt/hash 伪作生产来源；未接入数据库、公共 API、Report 或扫描主链；静态 diff/敏感模式检查通过。受限外 Python 3.12 专属 pytest 为 `3 passed`，并通过 `compileall backend/app/notice_source`。
+- 纳入作品：是，待 Root 最终验收、提交与任务分支发布。
+
+### 2026-09-24 全项目重新检验
+
+使用项目 `.venv`、`PYTHONUTF8=1` 进行不联网回归检查。CZ pytest 3/3、Node 固定门禁 21/21、Java Maven 全量测试通过；Python 全量测试在 Windows collection 阶段被 POSIX `fcntl` 无条件导入阻断，前端 test/build 因本机无 `pnpm` 阻断。未生成产品结果、未启动服务；详细可复验记录见 `reports/VERIFY_REPORT.md`。
+## 2026-09-27 — Detector 0.3 与 B03--B07 离线准备
+
+- 工具/模型：Codex（GPT-5）。
+- 操作范围：离线 AST 字面量结构化配置规则、非 Gold fixtures、v3 facts 只读消费 adapter、冻结/盲审/receipt 规范与定向测试；未调用外部 AI、网络、项目服务或目标代码。
+- 语义约束：所有 AI资源和 facts 结果仍保持 `pending`，`license_expression_id=null`；LICENSE/声明/gap 均不等同 NOTICE、授权、义务或违规。B06 候选只作为 `reference_only`，未伪造 commit、source hash、人工 review 或 Gold。
+- 验证：Python 82 passed，Node 5+3 passed，detectors compileall 与 diff 检查通过。NOTICE binding 目标 suite 因本机 Python 环境缺少 FastAPI 无法收集，A 侧尚未确认消费；因此未提交、推送、发布或启动服务。
+
+## 2026-09-27 — G0--G8 交付门禁编排
+
+- 工具/模型：Codex（GPT-5）。
+- 产出：将用户指定的跨角色任务冻结为 G0--G8，记录输入/输出边界、依赖、责任方、回执和禁止绕过规则。
+- 人工边界：没有生成 Gold、reviewer 签收、裁决、正式指标、性能结果或浏览器回执；没有代替后端 A、后端 B 或前端实施其责任包。
+- 验证：与现有进度台账、Detector 0.3/facts 文档和 Windows 失败记录交叉核对；未联网、未启停服务、未变更生产 API 或正式 Gold。
+
+## 2026-09-27 — B06/B07 与 NOTICE source 交付准备补强
+
+- 工具/模型：Codex（GPT-5）。
+- 产出：基于既有固定 Git 对象复核记录创建 reference-only B06 candidate registry；加固 B07 controlled receipt hash/唯一性校验；撰写 A 的 NOTICE source 输入、绑定、reader 和测试回执契约。
+- 约束：没有联网刷新来源、复制第三方正文、生成 Gold/真人签收、运行正式评测或形成性能结论。候选的权利状态仍待真人审核。
+- 验证：Node B06/B07 合同及候选测试 7 passed，diff 检查通过。NOTICE A1 动态 suite 仍因本机依赖不足未复跑。
