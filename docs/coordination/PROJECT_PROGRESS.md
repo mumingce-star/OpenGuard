@@ -1683,3 +1683,9 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 该项关闭此前通用 smoke 的场景不匹配，不代表 P1 整体完成。Owner review/集成发布与生产 NOTICE 仍为独立门禁。
 
 2026-09-27 发布补记：本地 feature 已形成 `ca53668`（TEST-ONLY 实现）与 `40b98ec`（验收文档）；因当前接收机到 `github.com:443` TCP 不通，定向 fetch/ls-remote/普通 push 均失败，远端仍为 `8946f6c5`。恢复网络后须先重取远端并复核祖先关系，再普通推送 feature；不得将本地完成误记为 GitHub 已发布。
+## 2026-09-26 P1 NOTICE Source A1 — Owner accepted; feature publication target
+
+- A1已获Owner最终接受：A1_ACCEPT_WITH_NONBLOCKING_NOTES。STAGED/BOUND可信来源Store、显式Formal Assessment ID/version终态绑定及BOUND-only Reader在本地实现；B1/B2 CLOSED。
+- N2=DEFERRED_NONBLOCKING；N3=DEFERRED_SECURITY_HARDENING。正常输入容量/绑定拒绝门禁保留，损坏私有DB读取前大BLOB限额风险未修；不将接受写成完全无风险。
+- 本轮发布前门禁实际复跑：A1 32 passed、七文件同范围162 passed，0 failed/skipped/deselected、各1既有warning；源码/测试Hash不变。目标发布分支feat/p1-notice-source-binding，BASE 6352b84bce1f3dbee192c9065049f4dda3fdb45f；此记录未宣称commit/push已成功，真实SHA/结果仅执行后写入ignored发布回执。
+- A2 CZ adapter NOT_STARTED；factory wiring NOT_STARTED，NoticeDraft/Report生产启用仍未完成。本轮不合入integration/p1、不创建PR、不部署，不改历史记录或组员源码。
