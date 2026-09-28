@@ -344,3 +344,70 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 2026-09-26 NOTICE Source A1 Blocking Fix R1 COMPLETE（待Owner Re-review）：本轮新批准 OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_R1，仅调整历史阅读。GPT-6 Astra / Backend A只修模块/单测及追加日志：移除Store直接dict发布BOUND和STAGED原bytes出口，唯一service.bind重读真实Registry/显式Assessment后构造；闭包/Hash/返回对象在INSERT前验证，replay/conflict/INSERT同BEGIN IMMEDIATE，失败rollback无DELETE。两项永久fail-first原产品真实2失败→修后2通过，另3事务/冲突节点；全部A1 32 passed，原157同范围162 passed/0failed/errors/skip/deselect/1既有warning，原157节点完整保留、原消费者130。独立Owner B1/B2探针均PASS，Reader只读/重开/篡改保护保留；Python支持API边界不宣称同进程恶意代码隔离。N1仅B1/B2永久覆盖补强；N2 DEFERRED，N3 DEFERRED_SECURITY_HARDENING。新ignored R1 evidence固化receipt/test-results/probes/Hash/累计patch/notes，旧包及其他worktree不变，无真实扫描/apply/API/CZ/工厂/公共Schema/full-suite/子代理或发布部署。结论仅A1_R1_READY_FOR_OWNER_REVIEW，不签发A1_ACCEPT。精确token不可获得。
 
 2026-09-26 NOTICE Source A1 publication gates（Git执行尚待进行）：Owner已接受A1_ACCEPT_WITH_NONBLOCKING_NOTES，B1/B2 CLOSED，N2/N3延期风险保留。GPT-6 Astra / Backend A只准备已审源码发布，不改产品或测试；复跑A1 32通过及原七文件162通过，0失败/skip/deselect、各1既有warning，源码/测试Hash与复审相同。Owner批准本发布轮定向日志阅读及五文件范围，其中PROJECT_PROGRESS仅追加接受状态/目标feature/A2与工厂未开始。协调记录不预填commit/push成功；真实执行SHA/远端核验只存新ignored发布回执。无full suite、CZ adapter、factory、扫描/apply、合并、PR或部署；旧worktree及运行材料保留，精确token不可获得。
+
+## 2026-09-24 — NOTICE 来源契约 CZ 采集包
+
+- 工具/模型：Codex（GPT-5）。
+- 输入范围：Owner 确认的 R1 容量、UTF-8、partial 与保留决策；现有只读 ingestion 会话、inventory/provenance 契约。
+- 产出：独立 `openguard.notice-source/1` DTO、canonical package hash validator、受控会话采集器、专属 unit/security 测试和规范说明。
+- 人工约束/验证：未将离线 v3 facts 或既有 Evidence excerpt/hash 伪作生产来源；未接入数据库、公共 API、Report 或扫描主链；静态 diff/敏感模式检查通过。受限外 Python 3.12 专属 pytest 为 `3 passed`，并通过 `compileall backend/app/notice_source`。
+- 纳入作品：是，待 Root 最终验收、提交与任务分支发布。
+
+### 2026-09-24 全项目重新检验
+
+使用项目 `.venv`、`PYTHONUTF8=1` 进行不联网回归检查。CZ pytest 3/3、Node 固定门禁 21/21、Java Maven 全量测试通过；Python 全量测试在 Windows collection 阶段被 POSIX `fcntl` 无条件导入阻断，前端 test/build 因本机无 `pnpm` 阻断。未生成产品结果、未启动服务；详细可复验记录见 `reports/VERIFY_REPORT.md`。
+## 2026-09-27 — Detector 0.3 与 B03--B07 离线准备
+
+- 工具/模型：Codex（GPT-5）。
+- 操作范围：离线 AST 字面量结构化配置规则、非 Gold fixtures、v3 facts 只读消费 adapter、冻结/盲审/receipt 规范与定向测试；未调用外部 AI、网络、项目服务或目标代码。
+- 语义约束：所有 AI资源和 facts 结果仍保持 `pending`，`license_expression_id=null`；LICENSE/声明/gap 均不等同 NOTICE、授权、义务或违规。B06 候选只作为 `reference_only`，未伪造 commit、source hash、人工 review 或 Gold。
+- 验证：Python 82 passed，Node 5+3 passed，detectors compileall 与 diff 检查通过。NOTICE binding 目标 suite 因本机 Python 环境缺少 FastAPI 无法收集，A 侧尚未确认消费；因此未提交、推送、发布或启动服务。
+
+## 2026-09-27 — G0--G8 交付门禁编排
+
+- 工具/模型：Codex（GPT-5）。
+- 产出：将用户指定的跨角色任务冻结为 G0--G8，记录输入/输出边界、依赖、责任方、回执和禁止绕过规则。
+- 人工边界：没有生成 Gold、reviewer 签收、裁决、正式指标、性能结果或浏览器回执；没有代替后端 A、后端 B 或前端实施其责任包。
+- 验证：与现有进度台账、Detector 0.3/facts 文档和 Windows 失败记录交叉核对；未联网、未启停服务、未变更生产 API 或正式 Gold。
+
+## 2026-09-27 — B06/B07 与 NOTICE source 交付准备补强
+
+- 工具/模型：Codex（GPT-5）。
+- 产出：基于既有固定 Git 对象复核记录创建 reference-only B06 candidate registry；加固 B07 controlled receipt hash/唯一性校验；撰写 A 的 NOTICE source 输入、绑定、reader 和测试回执契约。
+- 约束：没有联网刷新来源、复制第三方正文、生成 Gold/真人签收、运行正式评测或形成性能结论。候选的权利状态仍待真人审核。
+- 验证：Node B06/B07 合同及候选测试 7 passed，diff 检查通过。NOTICE A1 动态 suite 仍因本机依赖不足未复跑。
+
+## 2026-09-27 — Backend A NOTICE Source A2
+
+- 工具/模型：Codex（GPT-5），Owner 指定 A2 消费适配范围；基线 `9b71c6f60d30b6162a31c055fe62cd6dd66f58f9`，不自动接受其中非 A2 的 CZ Detector/Bench/B06/B07。
+- 辅助内容：新增 `notice_source_adapter.py` 与永久集成/负向测试；真实 CZ DTO/validator → A1 STAGED/trusted BOUND → reader → CZ validator。独立核对 Hash preimage、规范 revision、producer 一致性、inventory 必填与显式 Assessment。
+- 人工约束：不修改 CZ/A1 Store/业务状态/公共 Schema；不生成真实批准事实或生产对象，不做 factory/NoticeDraft/Report 接线；Owner 已批准本任务定向日志阅读和启动既有 Docker Desktop。
+- 验证：最终 Linux 离线指定集合 231 unique passed（新增 A2 60、CZ 9、A1 32、消费者 130），无失败/跳过/xfail/deselect；1 个依赖弃用警告。compileall/diff/hash 检查通过，完整失败轨迹与回执保存在 ignored A2 目录；无全仓回归。
+- 纳入作品：仅本地未暂存候选，待 Owner Review；无提交、推送、合并或部署，原数据与其他 worktree 保持不变。
+
+## 2026-09-27 — Backend A NOTICE Source A2 R1 STAGED recovery
+
+- 工具/模型：Codex（GPT-5），按Owner冻结的窄修任务执行；实际收尾核对时间2026-09-27T07:09:43Z，基线9b71c6f60d30b6162a31c055fe62cd6dd66f58f9。Owner批准本轮定向日志阅读例外，仅改变上下文加载。
+- 辅助内容：UNBOUND STAGED显式CAS replacement；trusted bind必填expected_package_hash；任意BOUND冻结STAGED；事务内条件UPDATE、rowcount检查、回滚和旧Hash拒绝。无Schema变更、CZ改动或生产NoticeDraft/Report/Factory接线。
+- 验证：30新增永久节点先fail-first、后全部通过；最终261 unique passed，原231节点保留，0 failed/error/skip/xfail/deselect，1既有警告；A1 45/A2 77/CZ 9/consumer130。独立恢复、旧Hash有序竞态、同时bind/replacement三探针PASS，compileall和diff check PASS。fail-first的92 deselected仅为定向选择，非最终跳过；没有全仓回归或真实业务apply。
+- 人工边界：不自行宣布A2接受；N2/N3和内存放大等仍deferred，等待Owner审查。原Owner证据不覆盖，其他现场不变；自有临时测试容器已结束。成果仅累计6文件未暂存；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。
+- 证据：output/manual-fixes/p1-notice-source-a2-r1-20260927T065517Z/；A2_R1_READY_FOR_OWNER_REVIEW。
+
+## 2026-09-27 — Backend A NOTICE Source A2 发布门禁
+
+- 工具/模型：Codex（GPT-5）；Owner已接受A2_ACCEPT_WITH_NONBLOCKING_NOTES，批准精确七文件发布范围与本轮定向日志阅读例外。四份源码/测试保持Owner已审Hash，三个协调文档仅追加。
+- 本轮实际验证：261 unique passed（A1 45/A2 77/CZ 9/consumers130），0 failed/error/skipped/xfail/deselected，1既有弃用警告；完整节点集合与复审一致，compileall及diff check PASS。复用现有禁网Linux测试环境，无依赖安装/镜像构建/业务数据操作。
+- 发布边界：目标feat/p1-notice-source-adapter；本记录不宣称提交或推送成功，实际结果仅在执行后写ignored发布回执。Recovery blocker CLOSED，A3入口READY但未开始；N2/N3与覆盖/内存债保留，不做NoticeDraft/Report/Factory接线、PR、合并或部署。
+
+## 2026-09-27 — Backend A NOTICE A3 implementation启动
+
+- 工具/模型：Codex（GPT-5）；Owner授权独立A3消费接线，基线04435e56cec38ab47aaf82125a56ab34359a5555。只修改三份产品、两份测试、两份append-only日志；PROJECT_PROGRESS留待Owner接受后的发布任务。
+- 计划：永久测试fail-first→真实BOUND读取/解码与保守草稿投影→默认工厂/现有Report reader注入→指定回归与证据；保留legacy，禁止fallback、推导正式许可证/义务和修改冻结核心。
+- 尚未执行产品测试或实现；本记录不是通过、接受或发布事实。真实扫描自动采集/终态stage-bind仍out-of-scope，不操作真实apply数据；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。
+
+## 2026-09-27 — Backend A NOTICE A3实现与定向验证结果
+
+- 工具/模型：Codex（GPT-5）；Owner冻结七文件范围内完成BOUND消费投影、NoticeDraft双reader互斥和默认工厂/现有Report reader注入；共享日志仅追加，PROJECT_PROGRESS及冻结核心未变。只到A3_READY_FOR_OWNER_REVIEW，不代表Owner接受或发布。
+- 实际验证：永久测试先红后绿；有效初次47 failed/16 passed包含5项新测试构造错误，修正后用精确BASE再核验47 failed/16 passed无setup error；保留临时盘/rules路径环境失败及58 pass/5 test-fixture失败输出。最终414 unique passed、0 failed/error/skipped/xfail/deselected，原261节点完整保留，1既有弃用警告；compileall、diff及旧现场保护核对PASS。
+- 已验证：TEST_ONLY受控输入经过真实CZ/A2/A1和默认工厂Draft/Report，来源Hash固定，正式引用不提升；HTTP TestClient GET/重启只读和业务行Hash/内容核对，初始化fail-closed，缺失Draft404与无BOUND409明确区分。不是live网络或生产扫描验收。
+- 未完成：真实扫描source lifecycle、Owner Review、发布与集成；不改A1/A2/CZ、Report核心、Scanner/Detector/Bench/Frontend/Schema，不访问真实apply数据。证据output/manual-fixes/p1-notice-a3-20260927T092224Z/；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。

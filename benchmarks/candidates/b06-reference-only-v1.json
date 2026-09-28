@@ -1,0 +1,16 @@
+{
+  "schema": "openguard.b06.reference-only-candidates/1",
+  "status": "not_gold_not_admitted",
+  "purpose": "candidate provenance registry for human authorization and blind-review admission",
+  "source_reverification": "../annotations/real-resource-20260911-ai-assisted/source-reverification.json",
+  "redistribution_policy": "reference_only_no_third_party_source_content",
+  "candidates": [
+    {"candidate_id":"b06_openai_python_pyproject","repository_url":"https://github.com/openai/openai-python","commit":"be928151372e4b62adb4a1571cda52ad759b38be","path":"pyproject.toml","source_sha256":"a3190a42805422ecebc40fd522d2638a8c17c7149e79051451e8e24bb4a03258","family_id":"openai-openai-python","citation_status":"public_reference_only_pending_human_rights_review"},
+    {"candidate_id":"b06_openai_python_uv_lock","repository_url":"https://github.com/openai/openai-python","commit":"be928151372e4b62adb4a1571cda52ad759b38be","path":"uv.lock","source_sha256":"e70d75cd22a5411a38517060cce262d3ed7e07c353865d0c363c2235dec80a15","family_id":"openai-openai-python","citation_status":"public_reference_only_pending_human_rights_review"},
+    {"candidate_id":"b06_smolagents_multiagents","repository_url":"https://github.com/huggingface/smolagents","commit":"30bb1161095dbae2271e6bc3cc4c219cc3897a57","path":"docs/source/en/examples/multiagents.md","source_sha256":"fe70642c6a64e55e32344edb12955abc09c5fab55857fb4986b3369a040ef8f7","family_id":"huggingface-smolagents","citation_status":"public_reference_only_pending_human_rights_review"},
+    {"candidate_id":"b06_smolagents_tools","repository_url":"https://github.com/huggingface/smolagents","commit":"30bb1161095dbae2271e6bc3cc4c219cc3897a57","path":"docs/source/en/tutorials/tools.md","source_sha256":"57b9f1deeb7448f456f74cbbd6401241313729f7741cbe24c6dc298cfb47de02","family_id":"huggingface-smolagents","citation_status":"public_reference_only_pending_human_rights_review"},
+    {"candidate_id":"b06_litellm_together","repository_url":"https://github.com/BerriAI/litellm","commit":"168a0055a244acdcf97c330c52e085ab40b1424c","path":"scripts/sync_together_ai_models.py","source_sha256":"1ac3017acb5819e088d3645f711d9b87752dd40ef6f5e0753cc3bc11dc738c7f","family_id":"berriai-litellm","citation_status":"public_reference_only_pending_human_rights_review"},
+    {"candidate_id":"b06_litellm_anthropic","repository_url":"https://github.com/BerriAI/litellm","commit":"168a0055a244acdcf97c330c52e085ab40b1424c","path":"litellm/anthropic_interface/readme.md","source_sha256":"649aa8e07ccf2154fa5f6a41884f37cfd7bb1f1c569962b7d6dc056db8440cf7","family_id":"berriai-litellm","citation_status":"public_reference_only_pending_human_rights_review"}
+  ],
+  "admission_requirements": ["human_rights_review", "split_assignment_after_family_deduplication", "blind_packet_hash", "two_human_reviews", "third_human_adjudication", "gold_freeze_sha256"]
+}

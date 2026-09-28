@@ -225,11 +225,11 @@ def test_default_optional_sources(workflow, variant):
         body['notice_refs'] = [{'draft_id': 'ntc_unavailable', 'content_hash': 'a' * 64}]
     response = env.client.post(env.base + '/report-v2', json=body)
     if variant != 'valid':
-        assert response.status_code == 409, response.text
+        assert response.status_code == (404 if variant == 'notice' else 409), response.text
         error = response.json()['error']
-        assert error['code'] == ('conflict' if variant == 'hash' else 'not_ready')
+        assert error['code'] == {'hash': 'conflict', 'version': 'not_ready', 'notice': 'not_found'}[variant]
         assert error['details']['reason'] == {'hash': 'graph_content_hash_mismatch', 'version': 'graph_algorithm_version_unavailable',
-                                             'notice': 'notice_snapshot_reader_not_available'}[variant]
+                                             'notice': 'notice_draft_not_found'}[variant]
     else:
         assert response.status_code == 200, response.text
         snapshot = response.json()
