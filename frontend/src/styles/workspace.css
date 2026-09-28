@@ -84,6 +84,71 @@
   outline-offset: 4px;
 }
 
+/* Owner-authorized neural-landing background; foreground remains OpenGuard. */
+.landing-shell { background: #02060f; }
+.landing-intro {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.landing-intro .hero-section { flex: 1; z-index: 1; }
+.landing-shell .hero-section::after { content: none; }
+.hero-background {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #03060c;
+}
+.hero-background-video,
+.hero-background-veil { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-background-video {
+  object-fit: cover;
+  object-position: 50% 50%;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  background: #03060c;
+}
+.hero-background-veil {
+  background:
+    radial-gradient(140% 60% at 50% 40%, rgba(6,10,18,.16) 0%, rgba(6,10,18,.057) 50%, rgba(6,10,18,0) 100%),
+    linear-gradient(180deg, rgba(6,10,18,0) 45%, rgba(6,10,18,.10) 100%);
+}
+.landing-shell .hero-badge { color: #bccbd6; text-shadow: 0 2px 14px #02060d; }
+.landing-shell .hero-copy { color: #becbd7; text-shadow: 0 2px 12px #02060d, 0 0 30px #02060d; }
+.landing-shell .hero-meta { color: #b4c6d4; text-shadow: 0 2px 8px #02060d; border-color: #a7cde02b; }
+.landing-shell .hero-actions .primary-button {
+  border-color: #e6d4af99;
+  background: linear-gradient(115deg, #dfb77329, #101d2ded 45%, #73c5f52e);
+  box-shadow: inset 0 1px 0 #ffedcb52, 0 0 22px #7bc6ed14;
+  backdrop-filter: blur(12px);
+  color: #f6f5ef;
+}
+.landing-shell .hero-actions .primary-button:hover {
+  border-color: #f1d6a8;
+  box-shadow: inset 0 1px 0 #ffedcb70, 0 0 24px #8dc8e527;
+}
+.landing-shell .hero-actions .secondary-button {
+  background: #07101bcc;
+  border-color: #a1bdd34f;
+  color: #d2dce4;
+}
+@media (max-width: 599px), (max-height: 429px) {
+  .hero-background-veil {
+    background:
+      radial-gradient(130% 44% at 50% 45%, rgba(6,10,18,.50) 0%, rgba(6,10,18,.26) 55%, rgba(6,10,18,0) 100%),
+      linear-gradient(180deg, rgba(6,10,18,.34) 0%, rgba(6,10,18,0) 20%, rgba(6,10,18,0) 60%, rgba(6,10,18,.36) 100%);
+  }
+}
+
 .brand {
   border: 0;
   background: transparent;

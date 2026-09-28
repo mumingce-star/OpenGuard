@@ -1,5 +1,6 @@
 import { GlowCursor } from "../components/GlowCursor";
 import { ParticleText } from "../components/ParticleText";
+import { HeroBackground } from "../components/HeroBackground";
 export function Brand({
   onClick,
   compact = false,
@@ -30,43 +31,45 @@ export function Landing({
   return (
     <main className="landing-shell">
       <GlowCursor />
-      <header className="landing-nav">
-        <Brand
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        />
-        <nav aria-label="首页导航">
-          <a href="#capability">核心能力</a>
-          <a href="#workflow">工作流</a>
-          <button className="nav-cta" type="button" onClick={onEnter}>
-            进入工作台
-          </button>
-        </nav>
-      </header>
+      <div className="landing-intro">
+        <HeroBackground />
+        <header className="landing-nav">
+          <Brand
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          />
+          <nav aria-label="首页导航">
+            <a href="#capability">核心能力</a>
+            <a href="#workflow">工作流</a>
+            <button className="nav-cta" type="button" onClick={onEnter}>
+              进入工作台
+            </button>
+          </nav>
+        </header>
 
-      <section className="hero-section">
-        <div className="ambient-grid" aria-hidden="true" />
-        <div className="hero-badge">
-          <span /> AI 开源合规与溯源助手
-        </div>
-        <ParticleText text="OpenGuard" />
-        <p className="hero-copy">
-          让每一个风险，都有证据可循；让每一次发布，都更有底气。
-        </p>
-        <div className="hero-actions">
-          <button className="primary-button" type="button" onClick={onEnter}>
-            开始安全扫描 <span>↗</span>
-          </button>
-          <button className="secondary-button" type="button" onClick={onDemo}>
-            加载演示项目
-          </button>
-        </div>
-        <div className="hero-meta" aria-label="产品特性">
-          <span>01 / 资源发现</span>
-          <span>02 / 许可证判断</span>
-          <span>03 / AI 风险解释</span>
-          <span>04 / 合规报告</span>
-        </div>
-      </section>
+        <section className="hero-section">
+          <div className="hero-badge">
+            <span /> AI 开源合规与溯源助手
+          </div>
+          <ParticleText text="OpenGuard" />
+          <p className="hero-copy">
+            让每一个风险，都有证据可循；让每一次发布，都更有底气。
+          </p>
+          <div className="hero-actions">
+            <button className="primary-button" type="button" onClick={onEnter}>
+              开始安全扫描 <span>↗</span>
+            </button>
+            <button className="secondary-button" type="button" onClick={onDemo}>
+              加载演示项目
+            </button>
+          </div>
+          <div className="hero-meta" aria-label="产品特性">
+            <span>01 / 资源发现</span>
+            <span>02 / 许可证判断</span>
+            <span>03 / AI 风险解释</span>
+            <span>04 / 合规报告</span>
+          </div>
+        </section>
+      </div>
 
       <section id="capability" className="recognition-slice">
         <div>
