@@ -112,15 +112,21 @@ export async function createReportV2(
       new Set(noticeRefs.map(ref => ref.draft_id)).size !== noticeRefs.length ||
       noticeRefs.some(ref => !ref.draft_id || !/^[a-f0-9]{64}$/.test(ref.content_hash)))
     throw new Error('Report V2 创建参数无效。');
-  const raw = await request(
-    `/scans/${encodeURIComponent(scanId)}/assessments/${encodeURIComponent(assessmentId)}/report-v2`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idempotency_key: idempotencyKey, task_refs: taskRefs, notice_refs: noticeRefs, algorithm_refs: [] }),
-    },
-  );
-  return validateReportSnapshot(raw, scanId, assessmentId);
+  try {
+    const raw = await request(
+      `/scans/${encodeURIComponent(scanId)}/assessments/${encodeURIComponent(assessmentId)}/report-v2`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idempotency_key: idempotencyKey, task_refs: taskRefs, notice_refs: noticeRefs, algorithm_refs: [] }),
+      },
+    );
+    return validateReportSnapshot(raw, scanId, assessmentId);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404 && error.reason === 'notice_draft_not_found')
+      throw new ApiError(error.status, '引用的 NOTICE 草稿不存在；请核对固定的 draft_id 与当前扫描、评估，不会自动生成替代草稿。', error.code, error.reason);
+    throw error;
+  }
 }
 
 export function reportV2Url(scanId: string, assessmentId: string, snapshotId: string, format: 'json' | 'html') {

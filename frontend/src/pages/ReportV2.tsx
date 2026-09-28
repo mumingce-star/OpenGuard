@@ -133,7 +133,22 @@ export function ReportV2({ scan, query, open }: {
         <div className="og-v2-notice-create">
           <p>NOTICE 只有后端返回不可变草稿和 content hash 后才会加入；前端不生成正文、许可证、授权或 Obligation。</p>
           <button type="button" onClick={createNotice} disabled={!createAssessmentId || createLoading || creating || noticeCreating}>{noticeCreating ? '正在由后端创建草稿…' : '创建并固定 NOTICE 草稿'}</button>
-          {noticeDraft && <div role="status"><strong>已固定 {noticeDraft.draft_id}</strong><span>hash {noticeDraft.content_hash} · {noticeDraft.entries.length} 项 · {noticeDraft.coverage_gaps.length} 个缺口</span></div>}
+          {noticeDraft && <div role="status">
+            <strong>已固定 {noticeDraft.draft_id}</strong>
+            <p>hash {noticeDraft.content_hash} · {noticeDraft.generator_version} · {noticeDraft.entries.length} 项</p>
+            <p>草稿不是授权证明，不代表义务已履行。缺少正式引用仍为未知；保留文本可能为摘录，以后端缺口为准。</p>
+            <details><summary>查看后端保留文本与缺口（{noticeDraft.coverage_gaps.length}）</summary>
+              <ul>{noticeDraft.coverage_gaps.map(gap => <li key={gap}>{gap}</li>)}</ul>
+              {noticeDraft.entries.map(entry => <section key={entry.entry_id}>
+                <h3>{entry.entry_id}</h3>
+                <p>资源引用：{entry.resource_ids.join('、') || '未映射 / 未知'}</p>
+                <p>正式许可证引用：{entry.license_expression_ids.join('、') || '未提供 / 未知'}</p>
+                <p>正式义务引用：{entry.obligation_refs.map(ref => `${ref.namespace}:${ref.source_id}:${ref.obligation_id}`).join('、') || '未提供 / 未知（不等于无义务）'}</p>
+                <p>missing：{entry.missing.join('、') || '后端未列出；不代表完整覆盖或合规'}</p>
+                {entry.text === null ? <p>未保留正文；不代表 NOTICE 不存在。</p> : <pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{entry.text}</pre>}
+              </section>)}
+            </details>
+          </div>}
           {noticeError && <p role="alert" className="og-error">{noticeError}</p>}
         </div>
         <button type="button" onClick={create} disabled={createControl.disabled}>{createControl.label}</button>
@@ -175,7 +190,7 @@ export function ReportV2({ scan, query, open }: {
           <section id="v2-ai" className="og-v2-boundary ai"><h2>AI 建议 · 辅助解释</h2><p>{has('ai_explanation') ? '后端报告保留历史 AI 状态与正文；AI 不进入 Formal Conclusion。' : '此快照没有 AI 说明。'}</p></section>
           <section id="v2-graph" className="og-v2-boundary"><h2>图谱摘要</h2><p>{observations.graph.length ? '后端快照包含已绑定的图谱观察；不代表未知关系或授权已确认。' : '此快照没有已绑定的图谱观察章节；NOTICE 观察不会被当作图谱，也不补造节点或关系。'}</p></section>
           <section id="v2-actions" className="og-v2-boundary"><h2>Action Plan</h2><p>{has('workflow') ? '后端报告中保存了任务版本与处理状态；done 不等于项目合规，dismissed 不等于不适用。' : '此快照没有任务章节。'}</p></section>
-          <section id="v2-notice" className="og-v2-boundary draft"><h2>NOTICE 草稿 · 非正式结论</h2>{document.binding.notice_refs.length ? <><p>以下引用来自后端固定快照；完整草稿、缺失字段与来源保留在原始报告中。</p><ul>{document.binding.notice_refs.map(ref => <li key={ref.draft_id}><code>{ref.draft_id}</code> · hash {ref.content_hash}</li>)}</ul></> : <p>当前快照未包含 NOTICE 草稿；后端 reader 尚未提供时不会由前端生成。</p>}</section>
+          <section id="v2-notice" className="og-v2-boundary draft"><h2>NOTICE 草稿 · 非正式结论</h2>{document.binding.notice_refs.length ? <><p>以下引用来自后端固定快照；保留文本、缺失字段与来源保留在原始报告中。空许可证或义务引用仍为未知，不表示授权或义务已履行。</p><ul>{document.binding.notice_refs.map(ref => <li key={ref.draft_id}><code>{ref.draft_id}</code> · hash {ref.content_hash}</li>)}</ul></> : <p>当前快照未包含 NOTICE 草稿；不能据此判断 NOTICE 不存在或无需履行义务，前端不会补造正文。</p>}</section>
           <section id="v2-provenance" className="og-v2-boundary"><h2>Provenance · 来源</h2><p>以下章节元数据来自报告快照；详情及完整依据保留在后端 HTML 的附录中。</p><ul>{sections.map((section, index) => <li key={index}><strong>{sectionName(section, graphSections, noticeSections)}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul><details><summary>查看后端保存的 Provenance 原始字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details></section>
           <section className="og-v2-boundary formal" aria-label="后端固定 HTML 报告"><h2>后端固定报告正文</h2><iframe ref={frame} title="Report V2 后端原始 HTML 正文" srcDoc={state.html} sandbox="allow-same-origin" /></section>
           <section id="v2-download" className="og-v2-boundary"><h2>下载固定附件</h2><div className="og-actions"><button disabled={!!downloading} onClick={() => save('html')}>下载 P1 HTML</button><button disabled={!!downloading} onClick={() => save('json')}>下载 P1 JSON</button><button onClick={() => frame.current?.contentWindow?.print()}>打印后端报告</button></div><p>附件由后端 GET 返回；下载失败会提示，不用旧版报告静默代替。</p></section>

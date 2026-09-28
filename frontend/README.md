@@ -56,7 +56,26 @@ pnpm test:browser:p1
 
 Profile Metadata 只在用户点击“刷新真实元数据”后发起 `POST /resource-profiles/refresh`；普通页面读取不会抓取远程元数据。页面逐字段展示后端 observation 的 `pending` / `verified` 状态，声明中的 license 不会被前端提升为已核验许可。
 
-Report V2 中的 NOTICE 同样是显式写操作：前端先请求后端不可变 NoticeDraft，再将返回的 `draft_id` 和 `content_hash` 原样固定到报告请求。未配置 NoticeDraft 生产服务时显示真实 503 缺失态，浏览器不自行生成 NOTICE 或 Obligation。
+Report V2 中的 NOTICE 同样是显式写操作：前端先请求后端不可变 NoticeDraft，再将返回的 `draft_id` 和 `content_hash` 原样固定到报告请求。浏览器不自行生成 NOTICE 或 Obligation。
+
+## A3 消费兼容（待 Owner Review）
+
+本地同步后端 `064a3d03c4f087bdbfc96e7564ac4a77fae4a11c`。默认工厂在 `OPENGUARD_ENABLE_ASSESSMENTS=1` 时已配置 BOUND 消费与 Report Notice reader；这不表示每个扫描都存在 BOUND，也不表示 source lifecycle 已完成。
+
+前端按 HTTP 状态及后端 reason 区分：409 `notice_source_not_bound`（无精确 BOUND）、409 `notice_source_binding_mismatch`（固定绑定不一致）、503 `notice_source_unavailable`（暂不可读）、503 `notice_source_invalid`（完整性失败）、503 `notice_not_configured`（服务未配置）。其他错误保留实际诊断，不统称“尚未接线”。Report 引用不存在的草稿显示 404 `notice_draft_not_found`；旧 409 reader-unavailable 仅保留兼容，不作为当前默认预期。
+
+`notice-bound/1.0` 与历史 `notice/1.0` 使用相同公开 1.0 草稿结构。正文、摘录及缺口均来自后端；空许可证/义务引用保持未知，不是“无义务”。创建和重试只由明确按钮触发；刷新、分享、下载只 GET 已保存快照。Profile 仍按原 ScanRun/facts/resource 读取，不承担 NOTICE 或正式评估职责。
+
+已存在依赖时，在仓库根使用以下命令；本任务不安装依赖：
+
+```bash
+cd frontend
+pnpm test
+VITE_API_BASE_URL=/api/v1 pnpm run build
+OPENGUARD_API_PROXY_TARGET=http://127.0.0.1:18011 pnpm exec vite preview --host 127.0.0.1 --port 15174 --strictPort
+```
+
+P1 smoke 还需显式选择 P0 场景。按本机实际 manifest 设置 `OPENGUARD_P0_REPORT_SCENARIO=available` 或 `not_generated`、完整 `OPENGUARD_P0_SCAN_ID`；后一种需通过 `OPENGUARD_P0_NOT_GENERATED_SCAN_IDS` 列出本次页面实际读取的无报告扫描，不能泛化允许所有 409。然后用已有 Playwright 跑 `pnpm run test:browser:p1`。只在独立数据副本验收写操作；无 exact BOUND 时记录 `A3_BACKEND_AVAILABLE_BUT_SAMPLE_BOUND_MISSING`，不伪造成功态。
 
 本轮unit20通过、TypeScript及生产构建通过；开发服务和生产preview各通过同一套10项真实浏览器检查。覆盖上传/进度/资源风险证据/四格式报告SHA/刷新不重复POST/手机导航/partial/无效ZIP异步failed/404无mock降级/无不支持接口和浏览器运行错误。运行产物留临时目录，不提交仓库。
 

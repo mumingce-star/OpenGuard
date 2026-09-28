@@ -29,6 +29,19 @@ export type NoticeDraft = {
 
 const strings = (value: unknown): value is string[] => Array.isArray(value) && value.every(text);
 
+function noticeDraftError(error: unknown): unknown {
+  if (!(error instanceof ApiError)) return error;
+  const messages: Record<string, string> = {
+    '409:notice_source_not_bound': '当前正式评估尚无精确绑定的 NOTICE source',
+    '409:notice_source_binding_mismatch': 'NOTICE source 与当前 ScanRun / Assessment 固定绑定不一致',
+    '503:notice_source_unavailable': 'NOTICE source 暂不可读取',
+    '503:notice_source_invalid': 'NOTICE source 完整性校验失败',
+    '503:notice_not_configured': 'NOTICE 草稿服务未配置',
+  };
+  const message = messages[`${error.status}:${error.reason}`];
+  return message ? new ApiError(error.status, message, error.code, error.reason) : error;
+}
+
 export function parseNoticeDraft(value: unknown, scanId: string, assessmentId: string): NoticeDraft {
   const invalid = () => { throw new Error("NOTICE 草稿不符合冻结契约，未作为正式快照引用。"); };
   if (!row(value) || value.schema_version !== "1.0" || !text(value.draft_id) || !row(value.binding) ||
@@ -61,15 +74,15 @@ export async function createNoticeDraft(scanId: string, assessmentId: string, id
     });
     return parseNoticeDraft(raw, scanId, assessmentId);
   } catch (error) {
-    if (error instanceof ApiError && error.status === 503)
-      throw new Error("NOTICE 草稿生产服务尚未接线；后端需要注入 NoticeDraftService 与真实 NoticeFactsReader。");
-    if (error instanceof ApiError && error.status === 409)
-      throw new Error("NOTICE 草稿来源尚未就绪或固定绑定发生冲突，请后端检查 facts、Assessment 与存储接线。");
-    throw error;
+    throw noticeDraftError(error);
   }
 }
 
 export async function getNoticeDraft(scanId: string, assessmentId: string, draftId: string, signal?: AbortSignal): Promise<NoticeDraft> {
-  const raw = await request(`/scans/${encodeURIComponent(scanId)}/assessments/${encodeURIComponent(assessmentId)}/notice-drafts/${encodeURIComponent(draftId)}`, {}, signal);
-  return parseNoticeDraft(raw, scanId, assessmentId);
+  try {
+    const raw = await request(`/scans/${encodeURIComponent(scanId)}/assessments/${encodeURIComponent(assessmentId)}/notice-drafts/${encodeURIComponent(draftId)}`, {}, signal);
+    return parseNoticeDraft(raw, scanId, assessmentId);
+  } catch (error) {
+    throw noticeDraftError(error);
+  }
 }

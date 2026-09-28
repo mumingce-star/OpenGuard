@@ -3,6 +3,34 @@ import assert from 'node:assert/strict';
 import { runtime } from './runtime.mjs';
 
 const hash = 'a'.repeat(64);
+
+test('A3 missing NoticeDraft is 404/not_found and never retried as reader-unavailable', async () => {
+  const r = runtime(), service = r.load('services/reportV2.ts');
+  let calls = 0;
+  r.setFetch(async () => {
+    calls++;
+    return Response.json({ error: { code: 'not_found', message: 'not found',
+      details: { reason: 'notice_draft_not_found' } } }, { status: 404 });
+  });
+  await assert.rejects(service.createReportV2('scn_1', 'asm_1', 'key', [],
+    [{ draft_id: 'ntc_missing', content_hash: hash }]), error =>
+    error.status === 404 && error.code === 'not_found' && error.reason === 'notice_draft_not_found' &&
+    error.message === '引用的 NOTICE 草稿不存在；请核对固定的 draft_id 与当前扫描、评估，不会自动生成替代草稿。');
+  assert.equal(calls, 1);
+  assert.equal(r.storage.size, 0);
+});
+
+test('legacy Report reader-unavailable and other errors retain their actual reason', async () => {
+  const r = runtime(), service = r.load('services/reportV2.ts');
+  for (const [status, reason] of [[409, 'notice_snapshot_reader_not_available'], [503, 'notice_source_unavailable']]) {
+    r.setFetch(async () => Response.json({ error: {
+      code: 'not_ready', message: 'original backend error', details: { reason },
+    } }, { status }));
+    await assert.rejects(service.createReportV2('scn_1', 'asm_1', 'key', []), error =>
+      error.status === status && error.reason === reason &&
+      error.message === `接口请求失败（HTTP ${status}）：original backend error (not_ready)`);
+  }
+});
 function fixture(status = 'completed', extra = []) {
   const section = (authority, content) => ({ authority, schema_version: '1.0', source_ids: ['source'], content_hash: hash, content });
   return {
@@ -37,6 +65,42 @@ function snapshot() {
     ],
   };
 }
+
+test('TEST_ONLY BOUND draft POST/GET feeds exact Report refs and reload uses JSON/HTML GET only', async () => {
+  const r = runtime(), notices = r.load('services/noticeDrafts.ts'), reports = r.load('services/reportV2.ts');
+  const draft = {
+    schema_version: '1.0', draft_id: 'ntc_1', generator_version: 'notice-bound/1.0',
+    created_at: '2026-09-28T00:00:00Z', content_hash: hash,
+    binding: { scan_ref: { scan_id: 'scn_1' }, assessment_ref: { assessment_id: 'asm_1', version: 2 } },
+    entries: [{ entry_id: 'entry_1', text: 'bounded text', resource_ids: [], license_expression_ids: [],
+      obligation_refs: [], evidence_refs: [], missing: ['notice_source_excerpt_truncated', 'resource_relation_unresolved'] }],
+    coverage_gaps: ['notice_source_partial'], provenance: {},
+  };
+  const ref = { draft_id: draft.draft_id, content_hash: draft.content_hash };
+  const doc = fixture('partial', [{ ...noticeObservation(), content: draft }]);
+  doc.binding.notice_refs = [ref];
+  const html = '<!doctype html><html><head><meta name="openguard-html-renderer" content="1.1"></head><body>bounded text</body></html>';
+  const calls = [];
+  r.setFetch(async (url, init) => {
+    calls.push({ method: init.method ?? 'GET', url, body: init.body && JSON.parse(init.body) });
+    if (url.includes('/notice-drafts')) return Response.json(draft);
+    if (init.method === 'POST') {
+      assert.deepEqual(JSON.parse(init.body).notice_refs, [ref]);
+      return Response.json({ ...snapshot(), binding: { ...snapshot().binding, notice_refs: [ref] } });
+    }
+    return url.endsWith('format=json') ? Response.json(doc) : new Response(html, { headers: { 'Content-Type': 'text/html' } });
+  });
+  const created = await notices.createNoticeDraft('scn_1', 'asm_1', 'draft-key');
+  const stored = await notices.getNoticeDraft('scn_1', 'asm_1', created.draft_id);
+  assert.equal(JSON.stringify(stored), JSON.stringify(created));
+  const report = await reports.createReportV2('scn_1', 'asm_1', 'report-key', [], [{ draft_id: stored.draft_id, content_hash: stored.content_hash }]);
+  const reloaded = await reports.loadReportV2('scn_1', 'asm_1', report.snapshot_id);
+  assert.equal(reloaded.html, html);
+  assert.equal(reports.classifyReportObservations(reloaded.document).notice.length, 1);
+  assert.equal(reports.classifyReportObservations(reloaded.document).graph.length, 0);
+  assert.deepEqual(calls.map(c => c.method), ['POST', 'GET', 'POST', 'GET', 'GET']);
+  assert.equal(r.storage.size, 0);
+});
 
 test('Report V2 URL binds scan, assessment, snapshot and format', () => {
   const service = runtime().load('services/reportV2.ts');
