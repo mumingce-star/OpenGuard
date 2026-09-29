@@ -176,12 +176,14 @@ export function Assessment({
   scan,
   query,
   selectVersion,
+  openResources,
   compact = false,
   initialChatOpen = false,
 }: {
   scan: Scan;
   query: URLSearchParams;
   selectVersion: (id: string) => void;
+  openResources?: () => void;
   compact?: boolean;
   initialChatOpen?: boolean;
 }) {
@@ -484,6 +486,11 @@ export function Assessment({
                 第 {selected.version} 版 · {presets[selected.usage.preset]} · {new Date(selected.generated_at).toLocaleString()}
               </p>
               <ProjectSummaryBlock summary={selected.summary} />
+              {!compact && openResources && (
+                <div className="og-actions">
+                  <button type="button" onClick={openResources}>查看本次扫描的模型与数据集资源卡片</button>
+                </div>
+              )}
               <details className="og-assessment-technical">
                 <summary>版本与技术信息</summary>
                 <p>规则版本：{selected.rule_version}</p>

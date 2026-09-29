@@ -398,3 +398,16 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - 工具/模型：Codex（GPT-5）；Owner已接受A2_ACCEPT_WITH_NONBLOCKING_NOTES，批准精确七文件发布范围与本轮定向日志阅读例外。四份源码/测试保持Owner已审Hash，三个协调文档仅追加。
 - 本轮实际验证：261 unique passed（A1 45/A2 77/CZ 9/consumers130），0 failed/error/skipped/xfail/deselected，1既有弃用警告；完整节点集合与复审一致，compileall及diff check PASS。复用现有禁网Linux测试环境，无依赖安装/镜像构建/业务数据操作。
 - 发布边界：目标feat/p1-notice-source-adapter；本记录不宣称提交或推送成功，实际结果仅在执行后写ignored发布回执。Recovery blocker CLOSED，A3入口READY但未开始；N2/N3与覆盖/内存债保留，不做NoticeDraft/Report/Factory接线、PR、合并或部署。
+
+## 2026-09-27 — Backend A NOTICE A3 implementation启动
+
+- 工具/模型：Codex（GPT-5）；Owner授权独立A3消费接线，基线04435e56cec38ab47aaf82125a56ab34359a5555。只修改三份产品、两份测试、两份append-only日志；PROJECT_PROGRESS留待Owner接受后的发布任务。
+- 计划：永久测试fail-first→真实BOUND读取/解码与保守草稿投影→默认工厂/现有Report reader注入→指定回归与证据；保留legacy，禁止fallback、推导正式许可证/义务和修改冻结核心。
+- 尚未执行产品测试或实现；本记录不是通过、接受或发布事实。真实扫描自动采集/终态stage-bind仍out-of-scope，不操作真实apply数据；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。
+
+## 2026-09-27 — Backend A NOTICE A3实现与定向验证结果
+
+- 工具/模型：Codex（GPT-5）；Owner冻结七文件范围内完成BOUND消费投影、NoticeDraft双reader互斥和默认工厂/现有Report reader注入；共享日志仅追加，PROJECT_PROGRESS及冻结核心未变。只到A3_READY_FOR_OWNER_REVIEW，不代表Owner接受或发布。
+- 实际验证：永久测试先红后绿；有效初次47 failed/16 passed包含5项新测试构造错误，修正后用精确BASE再核验47 failed/16 passed无setup error；保留临时盘/rules路径环境失败及58 pass/5 test-fixture失败输出。最终414 unique passed、0 failed/error/skipped/xfail/deselected，原261节点完整保留，1既有弃用警告；compileall、diff及旧现场保护核对PASS。
+- 已验证：TEST_ONLY受控输入经过真实CZ/A2/A1和默认工厂Draft/Report，来源Hash固定，正式引用不提升；HTTP TestClient GET/重启只读和业务行Hash/内容核对，初始化fail-closed，缺失Draft404与无BOUND409明确区分。不是live网络或生产扫描验收。
+- 未完成：真实扫描source lifecycle、Owner Review、发布与集成；不改A1/A2/CZ、Report核心、Scanner/Detector/Bench/Frontend/Schema，不访问真实apply数据。证据output/manual-fixes/p1-notice-a3-20260927T092224Z/；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。

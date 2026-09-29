@@ -1456,7 +1456,233 @@ Python 环境不可用期间，新增 Java 离线 fixture 契约门禁并已通�
 B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误分类入口，在 Gold 冻结前不展示 Precision、Recall 或 F1。B06 仅提供双人盲审、分歧、taxonomy 与 amendment 校验工具，仍等待独立真人审阅，绝不冻结 Gold。B07 receipt 汇总器已存在且只汇总受控样本；它不启动生产扫描、不会把单次耗时解释为性能结论。P2B 门禁现校验 B 工件 Hash、已声明来源、敏感信息、稳定排序和基线 fixture 漂移；不改动 A 的快照、报告、任务或前端。
 
 本轮验收：Python 3.12 环境已修复；B01/B02 Python unit/security 为 70 passed，`compileall backend/app` 通过；B01 Java fixture 合同测试通过；B02、B03/B04、B05、B06、B07、P2B Node 统一回归为 15 passed。发布状态：待 Root 完成最终独立验收、提交与推送。
+## 2026-09-20 F-P1-01→06 有序整合与 F-P1-07 验收
 
+| 工作包 | 当前结果 | 责任/验证/发布状态 |
+|---|---|---|
+| F01 History | 真实只读History、筛选、游标分页、URL恢复、正式Assessment入口 | GPT-6 Astra；定向6/6；真实8081为10条，205条仅自动/合成覆盖 |
+| F02 Resource Cards | 模型/数据集卡片、Profile/Evidence/缺失态、三种verification语义 | GPT-6 Astra；定向8/8；真实Profile成功态待后端数据 |
+| F03 Graph | 后端节点/边、搜索筛选缩放、侧栏/Evidence、URL、键盘/reduced-motion | GPT-6 Astra；定向10/10含100/300/500；真实123节点/136边；无新图谱依赖 |
+| F04 Remediation | 状态分组、关联链路、乐观更新/回滚、CAS重读、语义保护 | GPT-6 Astra；定向5/5；真实任务0条，非空状态流待后端数据 |
+| F05 Diff | base/target/revision、API差异、partial/无Assessment保护、跳转与URL | GPT-6 Astra；定向6/6含500行；真实Diff浏览器通过 |
+| F06 Report V2 | 只读固定快照、权威层级、目录/打印/下载/P0独立回退 | GPT-6 Astra；定向5/5；真实探针404处理通过，完整P1快照待后端 |
+| 集成回归 | 95前端测试通过；TypeScript/Vite构建通过；git diff check通过 | 本地分支未提交/推送/合并；预览4179保留待用户验收 |
+| F07全链路 | Landing→Report真实已有链路浏览器smoke通过 | 总状态PARTIAL；缺205 History、非空Task/CAS、Profile成功态、完整Report快照及最终窄屏/打印人工签收 |
+
+当前可独立运行/演示的是 F01—F06 在现有8081真实数据可提供的链路，不包含后端尚未提供的成功态。距离“可报名/可参赛”仍需关闭真实数据验收和材料/合规门禁；距离“可提交完整作品”还需跨平台、恢复、下载/打印及发布审计；距离“具备获奖竞争力”还需Bench、对比/消融和用户效果证据。没有统一权重和分母，不报告完成百分比。GitHub状态：本轮没有提交、推送、PR或合并。
+
+## 2026-09-21 Docker Desktop socket 恢复
+
+| 项目 | 结果 | 发布/下一步 |
+|---|---|---|
+| Docker运行时 | AF_UNIX/ReparsePoint旧socket父目录已改名备份；Engine 29.7.2恢复 | 未恢复出厂、未删镜像/卷；备份暂留 |
+| OpenGuard容器 | 仅启动原API/Web容器；两者healthy | 未重建或迁移数据 |
+| 真实预览 | 8081 History 10条；4179浏览器刷新后显示真实记录 | 可继续F07验收；仍受后端验收数据门禁限制 |
+| GitHub | 无代码/接口/依赖变化 | 未提交、推送、PR或合并 |
+
+## 2026-09-21 F-P1-07 前端可独立验收项收口
+
+| 工作包 | 当前结果 | 责任/验证/发布状态 |
+|---|---|---|
+| P1 只读浏览器 smoke | 新增覆盖 Landing→New Scan→Progress→History→Assessment→Cards→Graph→Diff→Remediation→Report V2 的独立脚本 | GPT-6 Astra；真实 4179→8081，14/14 通过；无 Mock、无写请求 |
+| URL 与无副作用 | History 筛选、Graph 选中/缩放、Diff base/target 刷新恢复；全部 `/api/` 请求为 GET；运行前后 History 身份/状态签名不变 | 回执 `output/manual-fixes/p1-frontend-browser-20260921-0225/receipt.json` |
+| 可访问性与视觉 | History/Graph 键盘路径、reduced-motion、390px 窄屏、打印媒体通过；自动生成 14 张截图 | 本机 Chromium 自动验收完成；异机复现仍待最终发布阶段 |
+| 回归与构建 | 前端 95/95；TypeScript/Vite 构建通过（54 modules）；`node --check`、`git diff --check`通过 | 未新增依赖、未改后端/DB/Public API |
+| F07 总状态 | 前端当前可独立完成项已关闭；整体仍为 PARTIAL | 后端仍需真实 205 History、100/300/500 Graph 环境、非空 Task/CAS、Profile 成功态和完整 Report V2/NOTICE/下载 |
+
+当前可独立演示：真实 11 条 History、partial 恢复、Formal Assessment、资源卡缺失态、后端 Graph、Diff、空 Remediation、Report V2 缺失/P0 回退，以及对应的键盘/窄屏/打印路径。尚未具备：上述后端成功态和异机发布复现。报名/完整作品还需关闭真实验收数据、材料、跨机与发布门禁；获奖竞争力仍需 Bench、对比/消融和用户效果证据。没有统一分母，不报告完成百分比。GitHub 状态：未提交、推送、创建 PR 或合并。
+
+## 2026-09-22 最新后端成功态前端联调
+
+| 工作包 | 本轮结果 | 责任/验证/发布状态 |
+|---|---|---|
+| 团队基线 | 当前分支快进至 `origin/integration/p1@2bd9ff2`，原前端成果通过具名 stash 恢复；冲突仅为追加日志并完整保留 | GPT-6 Astra；未提交/推送/PR/合并；stash 保留作回退 |
+| F02 Profile | 正式 Profile GET 200；模型/数据集显示 `profile_id`、provider、pending license/authorization、Evidence 与 `metadata_observation_unavailable` | 基础成功态浏览器通过；真实 Metadata Parser/verified 样本尚未在远端发布 |
+| F04 Remediation | 从真实 Formal Assessment 显式派生 88 项任务；todo→in_progress→done、备注、version 与刷新恢复通过 | 写入仅发生在复制数据卷；乐观回滚/CAS 由自动测试覆盖 |
+| F06 Report V2 | 新增显式创建入口；固定 Assessment 与当前 88 个 Task 版本；URL 恢复、长正文、P1 JSON/HTML 下载通过 | JSON 313,209 bytes；HTML 605,940 bytes；无 NOTICE 时保持缺失，不补造 |
+| GET 无副作用 | History、Assessment、Profile、Graph、Diff、Task、Report 连续 GET 后四个 SQLite SHA-256 全部不变 | 隔离环境关闭 AI/公网 Git；未触发扫描、Assessment、Task/Report 创建或 Qwen |
+| 回归/构建 | 96/96 前端测试；TypeScript 与 Vite 54 modules；JS 383.52 kB/gzip119.01，CSS55.84 kB/gzip13.21；`git diff --check`通过 | 无新增依赖；`.dockerignore` 排除本机 `frontend/node_modules/` 以支持 Windows Docker build |
+| F07 总状态 | Profile 基础、Task 与 Report V2 成功态已关闭；总体仍 PARTIAL | 仍缺正式205 History、三档真实Graph浏览器证据、非空Obligation、真实Metadata/NOTICE、CAS浏览器双会话与异机复现 |
+
+当前可独立演示：原 F01—F05 链路，加上 Profile 基础成功态、88 项 Remediation 状态流和完整 Report V2 创建/查看/下载；隔离预览为 `http://127.0.0.1:8082/`，原 Docker `8081` 保持健康，旧 `4179` Vite 进程本轮收尾时未运行且未被替换。尚未具备：真实生产 Metadata Observation、NOTICE Draft、非空 Obligation 和正式规模数据浏览器签收。距离“可报名/可参赛”仍需关闭真实规模、Obligation/NOTICE、异机复现与材料门禁；距离“可提交完整作品”还需发布审计、受控失败/CAS浏览器证据及最终下载/打印签收；距离“具备获奖竞争力”仍需 Bench Gold、对比/消融和用户效果证据。没有统一分母，不报告完成百分比。GitHub 状态：远端基线 `2bd9ff2`，本轮未提交、推送、创建 PR 或合并。
+
+## 2026-09-22 后端远端提交位置审计
+
+| 检查项 | 结果 | 影响/下一步 |
+|---|---|---|
+| 正式协作基线 | `origin/integration/p1@2bd9ff2` | 未包含成员截图中的 `a34c29f`；前端按既定基线同步无误 |
+| 成员远端分支 | `origin/codex/scan-reliability-integration@a34c29f` | 已推送且包含 `e2d8c01`、`2f4923e`；尚未合入 `integration/p1` |
+| NOTICE 提交内容 | fixtures、Schema、Java 定向测试与文档 | 不等于 Python 生产 NOTICE/Metadata API，不能据此把前端缺失态改为成功态 |
+| 集成风险 | 成员分支相对基线为大范围跨层差异，合并记录含34处冲突解决 | 需团队评审并由负责人合入正式基线；当前不直接合并或覆盖未提交前端 |
+| GitHub 状态 | 远端仓库已更新，但正式基线未更新 | 本轮只读核验；无提交、推送、PR或合并 |
+
+本轮不改变功能完成状态：当前独立演示能力仍为 Profile 基础、88项 Remediation、Report V2 及既有 F01—F05；真实 Metadata Observation、NOTICE Draft、非空 Obligation、正式规模数据和跨机发布仍是待关闭门禁。完整作品与获奖竞争力所需的发布审计、Bench Gold、对比/消融和用户效果证据亦未改变。
+
+## 2026-09-23 最新 P1 后端基线与剩余门禁复核
+
+| 工作包/门禁 | 新基线事实 | 当前结论/责任 |
+|---|---|---|
+| 团队基线 | `origin/integration/p1@b76e532`，包含 NoticeDraft、Report V2 Notice绑定和 opt-in Profile Metadata | 后端已正式合入；前端本地尚未同步，等待用户确认后安全快进 |
+| Profile Metadata | 默认工厂支持 `OPENGUARD_ENABLE_PROFILE_METADATA=1`，接入 transport/parser/store/Profile | 可由 xzb 在隔离环境继续联调并关闭真实观察门禁 |
+| NoticeDraft 核心 | Store/Service/API与不可变快照已实现 | 默认生产工厂仍未注入 service；POST仍为503，需后端生产接线 |
+| Report V2 NOTICE | 产品代码可固定包含 NoticeDraft | 生产 notice reader 未配置；非空引用仍409，前端只能完成缺失态和契约展示 |
+| Obligation | NoticeDraft 当前明确保留空 `obligation_refs` | 不能由前端补造；仍需后端正式事实与绑定 |
+| 规模场景 | 205 History、100/300/500 Graph fixture 已合入 | 可做测试/性能回归，但不是正式真实历史/图数据验收 |
+| 最终验收 | CAS双会话、异机复现、发布审计仍待 | 前端/Root/Luna联合验收；本轮未关闭 |
+
+当前能继续完善但不能一次关闭全部剩余门禁：可优先关闭 Profile Metadata 与 Notice/Report 前端契约；生产 NOTICE、真实 Obligation、正式规模数据、CAS和跨机证据仍需后端或最终环境。当前可独立演示能力暂不变；本轮未同步工作树、未提交、推送、PR或合并。
+
+## 2026-09-23 新基线前端剩余项补齐
+
+| 工作包 | 本轮结果 | 负责/验证/发布状态 |
+|---|---|---|
+| 团队基线 | 当前分支已安全快进到 `origin/integration/p1@b76e532`，未提交前端成果经具名 stash 保护后恢复 | GPT-6 Astra；唯一冲突为追加式进度文档，双方记录均保留；无提交/推送/PR/合并 |
+| F02 Profile Metadata | 增加显式真实刷新、job 结果和 observation 逐字段展示；普通 GET 不抓取 | 隔离8082真实 HF 刷新成功；resolved revision/visibility/gate/disabled 已展示，license声明仍待核验 |
+| F06 Notice/Report | 增加 NoticeDraft 显式创建与不可变 `draft_id`/`content_hash` 引用；历史 Report URL 继续可恢复 | 真实 POST 为503 `notice_not_configured`，页面明确提示后端生产接线；无 Mock/前端NOTICE生成 |
+| GET 无副作用 | History/Assessment/Profile/Graph/Diff/Task/Report JSON+HTML 矩阵均返回200 | 五个 SQLite 文件 SHA-256 读取前后不变；未触发扫描、Assessment、Task/Report创建或Qwen |
+| 回归/构建/浏览器 | 102/102 前端测试；TypeScript+Vite通过（55 modules）；P1真实API浏览器14/14 | JS391.15kB/gzip120.54，CSS57.27kB/gzip13.44；`git diff --check`通过；14张截图与回执在本机 ignored output |
+| F07 总状态 | 前端当前能补齐的 Profile/NOTICE/Report 接线已关闭；总体仍为 PARTIAL | 后端仍需生产 Notice service/reader、非空Obligation、真实205 History、真实100/300/500 Graph、可重现CAS数据与跨机回执 |
+
+当前可独立运行/演示：F01—F05 真实已有链路、Formal Assessment、真实 HF Profile Metadata 刷新与观测、88项已有 Remediation 快照、历史 Report V2/P0 下载与 URL 恢复，以及 NOTICE 未接线的真实失败表达。尚未具备：真实 NoticeDraft 成功态、NOTICE 固定报告、非空 Obligation 链路、正式规模数据与跨机复现。距离“可报名/可参赛”仍需关闭上述真实数据、异机与材料门禁；“可提交完整作品”还需发布审计、CAS/受控失败浏览器证据和最终下载/打印签收；“具备获奖竞争力”还需 Bench Gold、FN治理、对比/消融和用户效果证据。没有统一分母与权重，不给出完成百分比。
+
+## 2026-09-23 最新远程 `f63a581` 复核
+
+- `origin/integration/p1` 已从 `b76e532` 前进到 `f63a581`，后端团队确实已提交并合入最新内容。
+- 新增三个提交为 `3ce2143` B01—B07 离线质量门禁、`1e47c74` 协作记录、`f63a581` NOTICE facts v3 source revision 修正。
+- 相对 `b76e532` 共43个变更文件，主要是 Bench、fixtures、tests 和 docs；没有修改 `backend/app`、`deploy`或前端业务代码。
+- 产品工厂仍未向 `create_default_app()` 注入 `notice_draft_service`，`ReportV2Service` 仍未提供 `notice_reader`；因此真实 NOTICE POST 仍为503，非空 notice refs 仍会409。
+- 205 History 与100/300/500 Graph 仍由 `frontend_acceptance.py` 生成，源文档明确标记 `synthetic only; no repository scan, legal conclusion or frontend performance claim`；仓库中没有正式 Registry SQLite 数据文件。
+- 因此，最新提交关闭的是后端 B 线离线算法/质量门禁，不是默认生产服务接线或真实运行数据导入。前端未完成门禁结论不变。
+
+## 2026-09-23 F01—F07 前端功能分支发布
+
+| 项目 | 当前结果 | 验证/发布状态 |
+|---|---|---|
+| 基线与分支 | 基于 `integration/p1@f63a581` 创建 `p1/xzb-frontend-f01-f07` | 功能提交 `ea374cb30051`；不合并 integration/main |
+| F01—F06 | History、Resource Cards、Graph、Remediation、Diff、Report V2 已集成现有 P1 React 工作台 | 102/102 测试、TypeScript、生产构建通过 |
+| F07 | 真实 API 只读全链路、URL 恢复、键盘、reduced-motion、窄屏、打印和 GET 无副作用 | 隔离 `8082` 浏览器 smoke 14/14；14 张截图留在 ignored output |
+| 安全与合规 | 无新依赖、无 Mock 进入真实模式、无前端推断许可证/授权/Obligation/正式结论 | diff check、冲突标记和新增内容敏感信息检查通过 |
+| 最新后端判断 | `f63a581` 新增内容属于离线 Bench/fixtures/tests/docs | 未解除生产 Notice/Report reader、真实规模数据和非空 Obligation 门禁 |
+| GitHub | 独立前端功能分支准备推送 | 不创建 PR、不合并，等待用户与团队验收 |
+
+当前可独立运行/演示：F01—F06、F07 只读链路、真实 Profile Metadata 刷新、已有 Remediation/Report 快照，以及后端缺失/partial/error 的不误导表达。尚未具备：生产 NoticeDraft 与 Report Notice reader、非空 Obligation、真实 205+ History、真实 100/300/500 Graph、可重复 CAS 双会话数据和异机发布回执。可报名、完整作品与获奖竞争力仍分别受真实生产数据/材料、发布审计/最终签收、人工 Gold/FN/对比和用户效果证据门禁约束；无统一分母，不换算百分比。
+
+发布回执：`origin/p1/xzb-frontend-f01-f07` 已成功接收功能提交 `ea374cb30051` 与验收记录提交 `a43f98f34839`；`origin/integration/p1@f63a5818b3ef` 未被修改，未创建 PR、未合并。
+
+## 2026-09-23 P1 接收机运行验收（等待交付文件）
+
+| 检查项 | 本机结果 | 下一步/责任 |
+|---|---|---|
+| 锁定源码 | 后端 `f63a581...`、前端 `aa38f165...` 完全匹配 | 接收机已满足 |
+| 锁定镜像 | 本机不存在 `sha256:8ffe27...b7b9` | 需接收离线 tar 并核验 `e262713c...6b26` |
+| 交付 ZIP | 仓库、GitHub Releases/Artifacts、常用本机目录均未找到 | 用户/发送方提供文件或本机绝对路径；随后核验 `7cfb28c...a61469` |
+| receiver runtime | 尚未启动；未复用发送机 root/回执 | ZIP 到机后按 `receiver-runtime.md` 创建全新 root |
+| 既有环境 | 8081/8082 未覆盖、未停止；安全门禁未降低 | 保持不变 |
+
+当前接收机验收不能计为通过或失败：源码版本正确，但运行交付包尚未到机，205 History、三档 Graph、真实 CAS 与重启持久化均尚未执行。
+
+## 2026-09-23 最新远端与前端完成度复核
+
+| 维度 | 结论 | 证据/后续 |
+|---|---|---|
+| 前端开发 | F01—F07 开发范围全部完成 | `aa38f165...`；102/102 测试、TypeScript、Vite 构建通过 |
+| 远端更新 | integration 仍为 `f63a581...`，前端仍为 `aa38f165...` | 无新增生产提交需适配；本地/远端前端代码一致 |
+| 团队集成 | 尚未完成 | 前端分支尚未合入 `integration/p1`，本轮未创建 PR/合并 |
+| 接收机验收 | 尚未完成 | 等待交付 ZIP/镜像；205 History、三档 Graph、CAS、重启 Hash 未签收 |
+
+结论：可以把 xzb 的前端“开发工作”标记为完成；不能把 P1 团队集成和最终接收机验收标记为完成。剩余动作是交付文件到机后的运行验收，以及验收通过后由团队授权 PR/合并。
+
+接收机补充回执（2026-09-24）：交付 ZIP SHA-256 已匹配且条目路径安全，但 ZIP 不含离线镜像；目标 tar `openguard-api-8ffe27fb-linux-amd64.tar`（522,509,312 字节，SHA-256 `e262713c...6b26`）仍未到机，目标镜像也不存在。因此接收机 launcher 与全新 root 验收尚不能开始。
+
+### 2026-09-24 接收机镜像与 Windows launcher 回执
+
+| 项目 | 实际结果 | 状态 |
+|---|---|---|
+| 离线 tar | 大小与 `e262713c...6b26` SHA-256 完全匹配 | 通过 |
+| Docker 镜像 | ID `8ffe27...b7b9`，平台 `linux/amd64` | 通过 |
+| 全新 receiver root | 独立空目录，未复制发送机数据 | 已创建但初始化失败 |
+| 原生 Windows launcher | `_private_directory` 返回 `root_unsafe`，退出码 1 | 保留错误，未绕过 |
+| 既有服务 | 8081/8082 API/Web 均保持 healthy | 未影响 |
+| 页面/CAS/重启验收 | 无 manifest/业务 ID，未开始 | 等待独立、已批准 POSIX 环境 |
+
+当前结论仍为 PARTIAL：镜像接收和平台验证已经完成；运行交付包在本机原生 Windows 文件系统触发预期安全拒绝。下一步不是修改权限或后端，而是在独立 Ubuntu WSL2/Linux 接收环境中使用相同锁定源码、镜像与全新 Linux root 重跑 launcher。
+
+### 2026-09-24 D 盘 Ubuntu WSL2 接收环境进展
+
+| 项目 | 实际结果 | 状态 |
+|---|---|---|
+| 独立 POSIX 环境 | `OpenGuard-Receiver-Ubuntu`，WSL2，虚拟磁盘位于项目 D 盘 ignored output | 通过 |
+| 接收工具 | Python 3.12.3、Git 2.43.0、CA/curl | 通过 |
+| 锁定源码 | WSL 内 detached HEAD `aa38f165...`，来自完整且已验证的 Git bundle | 通过 |
+| 锁定镜像 | `8ffe27...b7b9`、`linux/amd64`，可经临时代理只读 inspect | 通过 |
+| launcher bind | Docker daemon 看不到 `/opt/openguard-aa38/backend` | 等待显式开启该发行版的 Docker Desktop WSL integration |
+| 安全边界 | 未持久链接 Docker socket，未 chmod/绕过门禁，8081/8082 未重启 | 保持 |
+
+接收机验收仍为 PARTIAL。环境和锁定输入已齐，剩余阻塞是一次明确的安全授权：允许 `OpenGuard-Receiver-Ubuntu` 控制 Docker Desktop daemon。授权并启用后，继续生成本机 manifest、页面/CAS/重启证据。
+
+### 2026-09-24 锁定交付包接收机签收结果
+
+| 验收项 | 本机实际结果 | 状态 |
+|---|---|---|
+| 版本/镜像 | 后端 `f63a581...`，前端 `aa38f165...`，镜像 `8ffe27...b7b9` / linux/amd64 | 通过 |
+| 新 root/本机身份 | `dev_eb4091acf9164af18be1467d2a075814`，实际容器 `3438465e6a89...` | 通过 |
+| 205 History | 100 + 100 + 5，首/中/末批页面与 API 一致 | 通过 |
+| Graph 三档 | 100/283、300/883、500/1483 节点/边 | 通过 |
+| 双上下文 CAS | A PATCH 200 升到 v2；B 旧 v1 PATCH 真实 409，提示并重读 v2 | 通过 |
+| 重启持久化 | Task/TaskVersion/ReportSnapshot/Artifact 行数和 hash 重启前后不变 | 通过 |
+| GET 无副作用 | launcher verify 40 requests PASS，全部持久化表 hash 读取前后相同 | 通过 |
+| 前端单测/构建 | 102/102；TypeScript + Vite 55 modules | 通过 |
+| 通用 P1 浏览器 smoke | 前 13 项通过；P0 报告回退实际返回 HTTP 409，最终 API failure 断言失败 | 已记录失败，未伪装全绿 |
+| 环境恢复 | 8081/8082 既有四容器 running/healthy；15174 预览保留 | 通过 |
+
+本次数据属性为 `real_backend_api + acceptance_synthetic`，仅证明真实后端 API 下的分页、规模、关联、CAS 和持久化能力；不是生产历史、真实仓库规模或真实义务证明。本次接收机执行范围已完成，但 P0 报告兼容回退的 409 仍是 F07 全绿门禁，需由后端/验收数据所有者确认该历史扫描的报告可用性或明确 409 为预期契约。
+
+当前可独立运行/演示：接收包的 205 History、三档 Graph、Remediation CAS/持久化、Report V2 固定快照和前端 F01—F07 主链路。尚未具备：生产真实数据签收和 P0 历史报告回退全绿。距离“可报名/可参赛”仍需生产数据和材料门禁；“可提交完整作品”还需最终 PR/发布审计与下载/打印签收；“具备获奖竞争力”还需 Gold/FN、对比/消融和用户效果证据。没有统一分母和权重，不换算百分比。
+
+### 2026-09-24 `acceptance_real_reviewed` 非空 Obligation 接收验收
+
+| 验收项 | 接收机实际结果 | 状态 |
+|---|---|---|
+| 交付包 | ZIP SHA-256 `7201d27...62d7`；包内 SHA256SUMS 全部通过 | 通过 |
+| 锁定运行身份 | 后端 `f63a581...`；镜像 `8ffe27...b7b9` / linux/amd64；独立容器 `4b17bade...c8ba` | 通过 |
+| 正式关联链 | Scan → Assessment → pending Obligation → v1 todo Task → Report 引用完整 | 通过 |
+| Resource / Evidence | `pydantic 2.13.4`、MIT 已核验，两个 Evidence 可追溯 | 通过 |
+| Report 下载 | JSON `bb5e0084...3dcc`；HTML `9bd61fbc...20fa`，与清单一致 | 通过 |
+| 重启持久化 | 同一恢复根重启后关联、报告 hash 和四库 hash 均不变 | 通过 |
+| 浏览器语义 | 6 个页面/状态通过；68 个 API 请求均为 GET；Task 未被表达为义务已履行 | 通过 |
+| 安全边界 | 仅收紧恢复副本权限；未 init/apply、未 chmod 777、未关闭门禁、未覆盖既有空间 | 通过 |
+
+本次已关闭“真实非空 Obligation 样本交付与前端表达”门禁：现有 F02/F04/F06 页面无需新增业务代码即可展示真实义务、资源、Evidence、任务和固定报告关系。该结果仅适用于经人工确认的 `acceptance_real_reviewed` 固定样本；义务履行仍为 `pending`，不能推出项目合规。生产 NOTICE 生成链、生产仓库数据签收、P0 历史报告回退 409、最终 PR/合并与发布审计仍需单独关闭。
+
+### 2026-09-24 最新 integration 同步与 Report V2 最终窄修
+
+| 工作包 | 本轮结果 | 验证/发布状态 |
+|---|---|---|
+| Integration 同步 | 普通 `--no-ff` merge `6352b84`，无冲突；原 3 个 xzb 提交保留 | merge `52a0263` |
+| Observation 分类 | binding + source_ids + content 结构区分 Graph/NOTICE/其他 | 四种组合单测 + 浏览器 NOTICE-only 通过 |
+| 创建失败重试 | 显式手动重试，同 key/Assessment/Task/NOTICE refs；无自动 POST | 单测 + 浏览器 503 两次同 body 通过 |
+| 前端回归 | 104/104；独立 TypeScript；Vite 55 modules；diff check | 全部通过 |
+| 真实 Obligation | 六页链、68 个 GET、pending/todo 语义、刷新 URL、重启读取 | 通过；无第二次 init/apply |
+| 报告 Hash | JSON `bb5e0084...3dcc`；HTML `9bd61fbc...20fa` | 与清单一致 |
+| CAS | 独立可重置验收数据已完成成功 PATCH、真实 409、重读 v2 | 不在真实 Obligation 样本重跑 |
+| GitHub | 窄修 `3caad4a` 已推送 feature；integration 为其祖先 | `behind=0`、`ahead=5`，待 Owner final review |
+
+当前可独立运行/演示：F01—F07 工作台、205 History、三档 Graph、Remediation CAS/持久化、真实非空 Obligation 关联、Report V2 固定快照、下载与两项最终窄修。尚未具备或仍需关闭：Owner 最终 review/PR/快进集成、P0 历史报告回退 409 的契约/数据处理、生产 NOTICE 链和生产数据/材料签收。可报名/可参赛仍需生产材料门禁；完整作品还需最终集成与发布审计；获奖竞争力仍需 Gold/FN、对比/消融和用户效果证据。没有统一分母和权重，不换算百分比。
+
+### 2026-09-25 P0 smoke 场景窄修验收
+
+| 验收项 | 实际结果 | 状态 |
+|---|---|---|
+| 合成空间缺失态 | 预声明完整 scan IDs；精确 409/code/reason/四格式；通用 smoke 14/14 | `P0_NOT_GENERATED_CONTRACT_PASS` |
+| P0 正向固定样本 | JSON/HTML 200；Hash `d62331ca...4782` / `269dbc4e...7d94` 与交付清单一致；正文和打印通过 | `P0_AVAILABLE_PASS` |
+| 错误不降级 | 错 ID/reason/code/接口、额外下载参数、500、无 body、正向 409 均由单测拒绝 | 通过 |
+| GET-only/状态保持 | 两个场景均无非 GET；合成 History 与真实样本 scan 状态读取前后不变 | 通过 |
+| 前端回归 | 110/110；TypeScript + Vite 55 modules；diff check | 通过 |
+| 修改边界 | 仅测试、测试入口与验收文档；backend 与 `frontend/src` 无变化 | 通过 |
+
+该项关闭此前通用 smoke 的场景不匹配，不代表 P1 整体完成。Owner review/集成发布与生产 NOTICE 仍为独立门禁。
+
+2026-09-27 发布补记：本地 feature 已形成 `ca53668`（TEST-ONLY 实现）与 `40b98ec`（验收文档）；因当前接收机到 `github.com:443` TCP 不通，定向 fetch/ls-remote/普通 push 均失败，远端仍为 `8946f6c5`。恢复网络后须先重取远端并复核祖先关系，再普通推送 feature；不得将本地完成误记为 GitHub 已发布。
 ## 2026-09-26 P1 NOTICE Source A1 — Owner accepted; feature publication target
 
 - A1已获Owner最终接受：A1_ACCEPT_WITH_NONBLOCKING_NOTES。STAGED/BOUND可信来源Store、显式Formal Assessment ID/version终态绑定及BOUND-only Reader在本地实现；B1/B2 CLOSED。
@@ -1511,3 +1737,9 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - Owner结论：A2_ACCEPT_WITH_NONBLOCKING_NOTES；Recovery blocker=CLOSED；BOUND freeze/package CAS已通过复审；N2/N3及既有非阻塞债务保留deferred。
 - A3_ENTRY_STATUS=READY，仅表示A2前置门禁满足；A3以及NoticeDraft/Report/Factory production wiring尚未开始，未启用生产NOTICE。
 - 本轮feature发布目标：feat/p1-notice-source-adapter。仅记录已成立的接受事实和发布范围；提交、推送和实际远端结果在执行后写入ignored发布回执，本记录不宣称Git操作成功或integration已合入。
+
+## 2026-09-27 P1 NOTICE A3 Owner 接受与发布目标
+
+- Owner结论：A3_ACCEPT_WITH_NONBLOCKING_NOTES；NOTICE_PRODUCTION_CONSUMPTION_WIRED。已验收exact BOUND → A2/CZ decode → conservative NoticeDraft → NoticeDraftStore → ReportNoticeReader → Report V2与default factory消费接线；Owner Review完整414节点及34项独立探针通过。
+- Source lifecycle仍未完成：ReadOnlyScanSession → CZ collector → detached Collection → terminal A2 admission → stage/bind尚未自动接入生产扫描主链；不代表每次真实扫描都有NOTICE或完整生产链已完成。N2/N3、serialization memory amplification及部分永久测试覆盖债继续deferred。
+- 本轮feature发布目标：feat/p1-notice-production-wiring。实际commit SHA、push与远端核验结果仅在执行后写入ignored发布回执；本记录不宣称提交、推送、integration合入或部署成功。

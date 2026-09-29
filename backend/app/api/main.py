@@ -835,6 +835,7 @@ def create_default_app() -> FastAPI:
     assessment_service = None
     remediation_service = None
     report_v2_service = None
+    notice_draft_service = None
     if v4_enabled == "1":
         from app.assessment.service import AssessmentService
         from app.assessment.store import AssessmentStore
@@ -843,6 +844,10 @@ def create_default_app() -> FastAPI:
         from app.p1.report_v2 import ReportV2Service
         from app.p1.report_v2_store import ReportV2Store
         from app.p1.report_v2_graph import ReportGraphReader
+        from app.p1.notice_source_store import NoticeSourceStore, BoundNoticeSourceReader
+        from app.p1.notice_draft_store import NoticeDraftStore
+        from app.p1.notice_draft import NoticeDraftService
+        from app.p1.report_v2_notice import ReportNoticeReader
 
         assessment_store = AssessmentStore(data_dir / "assessment.db")
         assessment_service = AssessmentService(registry, assessment_store, ai_provider)
@@ -854,9 +859,20 @@ def create_default_app() -> FastAPI:
         remediation_store.initialize()
         report_v2_store = ReportV2Store(data_dir / "report_v2.db")
         report_v2_store.initialize()
+        notice_source_store = NoticeSourceStore(data_dir / "notice_source.db")
+        notice_source_store.initialize()
+        notice_draft_store = NoticeDraftStore(data_dir / "notice_draft.db")
+        notice_draft_store.initialize()
+        # Consumption only: neither initialization nor reads run source collection
+        # or stage/bind. A missing exact BOUND remains an explicit not-ready error.
+        notice_draft_service = NoticeDraftService(
+            registry, assessment_store, notice_draft_store,
+            bound_source_reader=BoundNoticeSourceReader(notice_source_store),
+        )
         remediation_service = RemediationService(registry, assessment_store, remediation_store)
         report_v2_service = ReportV2Service(
             registry, assessment_store, remediation_store, report_v2_store,
+            notice_reader=ReportNoticeReader(notice_draft_store),
             graph_reader=ReportGraphReader(
                 max_nodes=_P1_GRAPH_MAX_NODES, max_edges=_P1_GRAPH_MAX_EDGES,
             ),
@@ -890,6 +906,7 @@ def create_default_app() -> FastAPI:
         assessment_service=assessment_service,
         remediation_service=remediation_service,
         report_v2_service=report_v2_service,
+        notice_draft_service=notice_draft_service,
         profile_service=profile_service,
     )
 

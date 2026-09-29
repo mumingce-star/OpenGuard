@@ -1,4 +1,4 @@
-import type { Scan, Mode, Handling, ScanInput, ReportFormat, ResourceType, RiskGrouping } from "../types/domain";
+import type { Scan, Mode, Handling, ScanInput, ReportFormat, ResourceType, RiskGrouping, FactVerification } from "../types/domain";
 import { createSnapshot, type Scenario } from "../mocks/data";
 import { validateGithub, validateZip } from "./model";
 export const defaultMode: Mode =
@@ -23,6 +23,18 @@ function strings(x: unknown): x is string[] {
 }
 function one(x: unknown, options: string[]) {
   return text(x) && options.includes(x);
+}
+const factStatuses: FactVerification[] = [
+  "verified",
+  "pending",
+  "unknown",
+  "not_applicable",
+  "rejected",
+];
+function factStatus(x: unknown, fallback: FactVerification = "unknown"): FactVerification {
+  if (x === undefined || x === null) return fallback;
+  if (!one(x, factStatuses)) throw new Error("后端核验状态不符合冻结 API 契约。");
+  return x as FactVerification;
 }
 function unique(items: Record<string, unknown>[]) {
   return (
@@ -89,7 +101,14 @@ export function validateSnapshot(raw: unknown, mode: Mode, id?: string): Scan {
       !nullable(r.origin) ||
       !nullable(r.license) ||
       !one(r.licenseStatus, ["confirmed", "review_required", "unknown"]) ||
-      !strings(r.evidenceIds)
+      !strings(r.evidenceIds) ||
+      (r.provider !== undefined && !nullable(r.provider)) ||
+      (r.ecosystem !== undefined && !nullable(r.ecosystem)) ||
+      (r.authorizationStatus !== undefined && !one(r.authorizationStatus, factStatuses)) ||
+      (r.licenseVerification !== undefined && !one(r.licenseVerification, factStatuses)) ||
+      (r.detectedBy !== undefined && !strings(r.detectedBy)) ||
+      (r.confidence !== undefined && r.confidence !== null &&
+        (typeof r.confidence !== "number" || !Number.isFinite(r.confidence) || r.confidence < 0 || r.confidence > 1))
     )
       return fail();
   for (const r of risks)
@@ -115,6 +134,7 @@ export function validateSnapshot(raw: unknown, mode: Mode, id?: string): Scan {
       !text(e.label) ||
       !text(e.source) ||
       !nullable(e.text) ||
+      (e.verificationStatus !== undefined && !one(e.verificationStatus, factStatuses)) ||
       (e.path !== undefined && !text(e.path)) ||
       (e.url !== undefined && !text(e.url)) ||
       (e.startLine !== undefined &&
@@ -302,8 +322,16 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
     const types: Record<string, ResourceType> = { model: "Model", dataset: "Dataset", api: "API", service: "Service", asset: "Asset" };
     const type = w.kind === "component" ? "Package" : types[r.asset_type];
     if (!type) throw new Error("未知资源类型。");
+    if (r.detected_by !== undefined && !strings(r.detected_by)) throw new Error("后端资源发现来源不符合冻结 API 契约。");
+    if (r.confidence !== undefined && (typeof r.confidence !== "number" || !Number.isFinite(r.confidence) || r.confidence < 0 || r.confidence > 1)) throw new Error("后端资源置信度不符合冻结 API 契约。");
+    const licenseVerification = factStatus(lic?.verification_status);
+    const authorizationStatus = w.kind === "ai_asset" ? factStatus(r.authorization_status) : "unknown";
     return { id: r.id, name: r.name, type, version: r.version ?? null, origin: r.source_url ?? r.purl ?? null,
-      license: lic?.expression ?? null, licenseStatus: lic?.verification_status === "verified" ? "confirmed" : lic ? "review_required" : "unknown", evidenceIds: r.evidence_ids };
+      provider: w.kind === "ai_asset" && typeof r.provider === "string" ? r.provider : null,
+      ecosystem: w.kind === "component" && typeof r.ecosystem === "string" ? r.ecosystem : null,
+      authorizationStatus, licenseVerification,
+      detectedBy: r.detected_by ?? [], confidence: typeof r.confidence === "number" ? r.confidence : null,
+      license: lic?.expression ?? null, licenseStatus: licenseVerification === "verified" ? "confirmed" : lic ? "review_required" : "unknown", evidenceIds: r.evidence_ids };
   });
   const risks: Scan["risks"] = collection(riskRaw).map(r => {
     if (!text(r.id) || !text(r.title) || !resources.some(x => x.id === r.resource_id) || !one(r.severity, ["info", "low", "medium", "high"]) || !one(r.outcome, ["pass", "warning", "review_required", "unknown"]) || !strings(r.evidence_ids)) throw new Error("后端风险不符合冻结 API 契约。");
@@ -321,7 +349,8 @@ export function adaptApiScan(id: string, statusRaw: unknown, resourceRaw: unknow
     if (!text(e.id) || !text(e.locator) || !text(e.detected_by)) throw new Error("后端证据不符合冻结 API 契约。");
     return { id: e.id, kind: e.kind === "license_text" ? "license" : "code", label: e.locator, source: e.detected_by,
       ...(e.kind === "url" ? { url: e.locator } : { path: e.locator }),
-      ...(e.start_line ? { startLine: e.start_line } : {}), text: e.excerpt ?? null };
+      ...(e.start_line ? { startLine: e.start_line } : {}), text: e.excerpt ?? null,
+      verificationStatus: factStatus(e.verification_status) };
   });
   const errors = list(state.errors);
   if (errors.some(e => !text(e.code) || !text(e.message))) throw new Error("后端诊断不符合冻结 API 契约。");

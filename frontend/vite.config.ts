@@ -5,7 +5,10 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 const require = createRequire(import.meta.url);
-const proxy = { '/api': { target: 'http://127.0.0.1:8000', changeOrigin: false } };
+const apiPort = Number(process.env.OPENGUARD_P1_API_PORT || '8000');
+if (!Number.isInteger(apiPort) || apiPort < 1 || apiPort > 65535) throw new Error('Invalid OPENGUARD_P1_API_PORT');
+const apiProxyTarget = process.env.OPENGUARD_API_PROXY_TARGET ?? `http://127.0.0.1:${apiPort}`;
+const proxy = { '/api': { target: apiProxyTarget, changeOrigin: false } };
 // Preserve complete licenses from the installed, locked browser dependencies.
 function browserLicenses() {
   const reactDomRequire = createRequire(require.resolve('react-dom/package.json'));
