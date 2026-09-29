@@ -8094,3 +8094,10 @@
 - 作者与角色：GPT-5 / Root Coordinator；范围：按用户授权发布当前已完成的 blocker 复核、CZ-S1 基线更新及进度记录到 GitHub/`integration/p1`。不含业务代码改动，不纳入 `reports/` 本机诊断文件，不操作 `main`，不启动或停止服务。
 - 验收：复核未提交 diff 的范围和事实表述，运行 `git diff --check`、敏感信息扫描、暂存清单复核；确认远端祖先关系后仅非强制快进。
 - token 估算：4,000--8,000；系统未提供精确 token 遥测。
+
+## 20260929-1450-GPT5-文档发布与P1集成
+
+- 状态：COMPLETE
+- 作者与角色：GPT-5 / Root Coordinator；结果：已审阅并发布 blocker 复核、CZ-S1 基线规格及项目进度记录。提交 `77feeee3885c465eec29ce860e10e6228a6618d4` 已非强制快进推送至工作分支和 `integration/p1`，远端 SHA 已读回一致。
+- 验证与范围：`git diff --check` 和文档敏感信息扫描通过；未改业务代码，未改 `main`，未部署或启停服务。`reports/VERIFY_REPORT.md` 为本机诊断产物，保持未跟踪且未上传。
+- 风险与下一步：G3 生命周期自动接线、G8 Windows `fcntl`、前端证据、真人 Gold、正式评测与真实性能仍未关闭；本轮文档发布不改变这些状态。token 精确遥测不可获得；开工估算4,000--8,000，范围内完成。

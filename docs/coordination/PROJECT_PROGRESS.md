@@ -1772,3 +1772,9 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - CZ-S1 核心语义保持不变；开发基线由历史 `064a3d03...` 更新为 `integration/p1@92e22beb8bf5b83494d1e0f7a1ca741dfdc43742`。
 - 已创建本地隔离分支 `codex/cz-s1-selector-92e22be`，其 HEAD 与上述基线完全一致；后续 CZ-S1 工作必须从该分支开始，避免从旧基线继续开发。
 - 当前 Root 协调分支未切换，以保留已有未提交协作记录；未修改生产代码、选择规则或其他门禁状态。
+
+## 2026-09-29 P1 文档发布回执
+
+- 已发布：`77feeee3885c465eec29ce860e10e6228a6618d4` 已非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 已读回一致；`main` 未改动。
+- 范围：CZ selector blocker 复核、CZ-S1 基线更新及协作进度记录；无业务代码改动。格式、敏感信息和范围复核通过；本机 `reports/` 诊断文件未上传。
+- 门禁不变：G3 自动 source lifecycle、G8 Windows `fcntl`、前端回执、真人 Gold/裁决、正式评测及真实性能仍待关闭。
