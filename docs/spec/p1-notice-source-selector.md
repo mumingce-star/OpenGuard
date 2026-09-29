@@ -2,6 +2,10 @@
 
 状态：`CZ_SELECTOR_READY_FOR_OWNER_REVIEW`（仅选择器；不是 A4 lifecycle 状态）。
 
+开发基线：`integration/p1@92e22beb8bf5b83494d1e0f7a1ca741dfdc43742`。CZ-S1 后续工作必须从
+`codex/cz-s1-selector-92e22be`（该精确基线的直接分支）开始；历史 `064a3d03...` 不再作为开发起点。
+本次仅更新基线，不改变下文任何选择、关系、容量或授权语义。
+
 ## 输入与输出
 
 公开 API 是 `select_notice_source_candidates(inventory: Inventory) -> SelectorResult`。输入必须是可信

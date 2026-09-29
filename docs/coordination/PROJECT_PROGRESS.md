@@ -1760,3 +1760,15 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 已发布：`6285cd6a8e61b5cb1885e1009b2cf00d40564b9e` 已非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 已读回一致；`main` 未改动。
 - 范围与验证：发布 Detector 0.3 静态/结构化资产识别、CZ NOTICE 候选选择器、离线 ModelScope metadata parser、B06 误差分析治理台账、B07 error classification、fixtures/规格/测试。Python `160 passed`、Node `8 passed`、Java Maven 通过，格式与敏感信息检查通过。
 - 未关闭：生产 source lifecycle/admission/factory、前端独立回执、真人 Gold/裁决、正式评测及真实性能、Windows `fcntl` 全量可移植性仍为门禁；本次离线验证不得解释为上述门禁已关闭。`reports/` 本机诊断产物未上传。
+
+## 2026-09-29 CZ NOTICE 候选选择器 blocker 复核
+
+- `CZ_NOTICE_CANDIDATE_SELECTOR_REQUIRED` 已关闭且不再是主线 blocker：当前 `backend/app/notice_source/selector.py` 提供并由包入口导出 `select_notice_source_candidates(Inventory)`；仓库未检索到该错误码或未实现调用点。
+- 本机复核：NOTICE selector/collector 定向测试 `7 passed`，模块编译与 `git diff --check` 通过。尝试加载 A-side adapter 测试时，Windows 上既有 `fcntl` 无条件导入导致 collection 失败，归属独立 G8，不影响 selector 的已验证状态。
+- 边界不变：自动 source lifecycle（ReadOnlyScanSession → collector → admission → stage/bind）仍是 G3，尚未闭环；不得以本项复核声称 NOTICE 生产链、前端回执、Gold、正式评测或性能门禁已完成。
+
+## 2026-09-29 CZ-S1 开发基线更新
+
+- CZ-S1 核心语义保持不变；开发基线由历史 `064a3d03...` 更新为 `integration/p1@92e22beb8bf5b83494d1e0f7a1ca741dfdc43742`。
+- 已创建本地隔离分支 `codex/cz-s1-selector-92e22be`，其 HEAD 与上述基线完全一致；后续 CZ-S1 工作必须从该分支开始，避免从旧基线继续开发。
+- 当前 Root 协调分支未切换，以保留已有未提交协作记录；未修改生产代码、选择规则或其他门禁状态。

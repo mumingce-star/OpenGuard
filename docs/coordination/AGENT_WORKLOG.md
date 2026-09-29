@@ -8056,3 +8056,41 @@
 - 验证：Python 定向 6 文件 `160 passed`；Node 定向 3 文件 `8 passed`；Java Maven 测试通过；`git diff --check` 通过；常见 AWS/GitHub/OpenAI/私钥特征扫描无匹配。Node 控制台中的 blind-review/receipt errors 是负例拒绝路径，套件无失败。
 - GitHub：发布前 `origin/integration/p1...HEAD` 为 `0 3`，确认远端为祖先；非强制快进推送工作分支和 `integration/p1` 后，`git ls-remote` 读回两者均为 `6285cd6a8e61b5cb1885e1009b2cf00d40564b9e`。未改 `main`、未建 PR、未部署、未启停服务。
 - 风险与下一步：离线/候选门禁不等于生产完备。仍待 A 侧自动 source lifecycle/admission/factory 完整闭环、前端独立回执、真人 Gold/裁决、正式 B05--B07 评测和真实性能、Windows `fcntl` 跨栈全量回归。建议 Terra/A Owner、Luna 与 Root 分别按这些门禁继续；token 精确遥测不可获得，开工估算 12,000--20,000，本轮在该范围内完成。
+
+## 20260929-1320-GPT5-CZ-selector-mainline-blocker
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / Backend A integration）；**日期时间**：2026-09-29 13:20（Asia/Shanghai）。
+- **目标**：关闭主线唯一 blocker `CZ_NOTICE_CANDIDATE_SELECTOR_REQUIRED`，将已发布的纯离线 Inventory→NOTICE 候选选择器接入受控的 NOTICE source lifecycle；不扩大为网络采集、自动授权结论、扫描服务启停或 Report/前端功能变更。
+- **预计修改范围**：NOTICE lifecycle/admission 接线及其定向测试，必要时补充规格和 `PROJECT_PROGRESS.md`；不会覆盖现有 selector、Store、factory、Report 或其他未提交工作。
+- **验收方法**：新增 blocker 回归测试，运行 NOTICE selector/collector/lifecycle 定向测试、`compileall`、`git diff --check`；复核 Git 状态和敏感信息。系统未提供精确 token 遥测，估算 10,000--18,000。
+
+## 20260929-1320-GPT5-CZ-selector-mainline-blocker-result
+
+- **状态**：COMPLETE；**作者与角色**：GPT-5（Root Coordinator / Backend A integration）；**日期时间**：2026-09-29（Asia/Shanghai）。
+- **目标与实际结果**：经源码、发布提交和定向测试复核，`CZ_NOTICE_CANDIDATE_SELECTOR_REQUIRED` 在当前主线已关闭：`select_notice_source_candidates(Inventory)` 已实现并由 `app.notice_source` 导出，`6285cd6a8e61b5cb1885e1009b2cf00d40564b9e` 已记录为发布至 `integration/p1`。仓库中不存在该错误码或其调用点，因此本轮未伪造额外接线或重复实现。
+- **修改文件**：仅追加本工作日志和 `PROJECT_PROGRESS.md` 验收状态；未修改生产代码、Schema、API、factory、Report、扫描服务或未提交用户文件。
+- **命令与测试**：`PYTHONPATH=backend .venv\\Scripts\\python.exe -m pytest -q tests/unit/test_notice_source_selector.py tests/unit/test_notice_source_collector.py` 为 `7 passed`；`compileall -q backend/app/notice_source` 和 `git diff --check` 通过。尝试纳入 `test_p1_notice_source_adapter.py` 时，Windows 收集阶段因既有 `backend/app/pipeline/zip_dispatcher.py` 无条件导入 POSIX `fcntl` 失败；这属于已记录的 G8 门禁，不是 selector blocker。
+- **接口与风险**：选择器仍仅产生离线候选，保持 pending/unresolved 语义；自动 `ReadOnlyScanSession -> collector -> admission -> stage/bind` 生命周期仍是独立 G3 工作包，未因本轮验证而关闭。远端只读核验因 SSH banner 超时未完成，本地提交为 `9567a9364088f9b1e01b6386adcd095861cbae47`，先前发布 SHA 以 `PROJECT_PROGRESS.md` 记录为准。
+- **下一步与责任**：Terra/Backend A 应以单独设计关闭 G3 生命周期；Root 处理 G8 Windows `fcntl` 兼容后复跑 adapter/跨栈门禁。无 commit、push、PR、部署或服务启停。本次运行精确 token 数不可获得；开工估算10,000--18,000，验证范围内完成，未扩展到 G3/G8 实现。
+
+## 20260929-1410-GPT5-CZ-S1-baseline-refresh
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / CZ-S1 coordination）；**日期时间**：2026-09-29 14:10（Asia/Shanghai）。
+- **目标**：保持 CZ-S1 核心语义不变，将任务书开发基线从历史 `064a3d03...` 更新为用户指定的 `integration/p1@92e22beb8bf5b83494d1e0f7a1ca741dfdc43742`，并创建从该精确提交起点派生的隔离工作分支。
+- **预计修改范围**：仅 CZ-S1 任务/规格基线记录、协作日志、项目进度和新的 Git 分支引用；不修改 selector、collector、A4 lifecycle、factory、Report、API 或其他用户在途文件。
+- **验收方法**：复核基线 SHA、分支祖先关系、任务书文本和 `git diff --check`。系统未提供精确 token 遥测；估算4,000--8,000。
+
+## 20260929-1410-GPT5-CZ-S1-baseline-refresh-result
+
+- **状态**：COMPLETE；**作者与角色**：GPT-5（Root Coordinator / CZ-S1 coordination）；**日期时间**：2026-09-29（Asia/Shanghai）。
+- **目标与实际结果**：已保持 CZ-S1 选择器核心语义不变，并将开发基线更新为 `integration/p1@92e22beb8bf5b83494d1e0f7a1ca741dfdc43742`；历史 `064a3d03...` 不再是开发起点。
+- **修改文件**：`docs/spec/p1-notice-source-selector.md`、`docs/coordination/PROJECT_PROGRESS.md`、本共享日志。未修改 selector、collector、A4 lifecycle、factory、Report、API、Schema 或用户业务文件。
+- **命令与验证**：`git rev-parse`/`git show` 确认指定 SHA 对应 `fix(frontend): align P1 notice flow with A3 backend`；已创建 `codex/cz-s1-selector-92e22be`，`show-ref` 与祖先关系检查均表明其 HEAD 精确等于该 SHA；随后运行 `git diff --check`。
+- **Git/风险/下一步**：为避免将当前 Root 分支未提交协作记录带入 CZ-S1，Root 未切换工作树；CZ-S1 后续实现者须显式 `git switch codex/cz-s1-selector-92e22be` 后开工。无 commit、push、PR、部署或服务启停；远端发布仍须按发布门禁处理。本次运行精确 token 数不可获得；开工估算4,000--8,000，范围内完成。
+
+## 20260929-1435-GPT5-文档发布与P1集成
+
+- 状态：START
+- 作者与角色：GPT-5 / Root Coordinator；范围：按用户授权发布当前已完成的 blocker 复核、CZ-S1 基线更新及进度记录到 GitHub/`integration/p1`。不含业务代码改动，不纳入 `reports/` 本机诊断文件，不操作 `main`，不启动或停止服务。
+- 验收：复核未提交 diff 的范围和事实表述，运行 `git diff --check`、敏感信息扫描、暂存清单复核；确认远端祖先关系后仅非强制快进。
+- token 估算：4,000--8,000；系统未提供精确 token 遥测。
