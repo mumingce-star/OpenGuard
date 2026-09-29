@@ -8047,3 +8047,12 @@
 - 预期范围：静态/结构化 AI 资产 detector、NOTICE selector、ModelScope metadata parser、B06 taxonomy/ledger、B07 receipt 工件及对应 Python/Node 测试、fixtures、规格和台账。审阅中若发现与在途工作冲突、敏感内容或质量门禁未通过，将缩小发布范围并记录原因。
 - 验收：检查提交图、逐项 diff/接口边界、定向 Python/Node/Java 回归、`git diff --check` 和敏感信息扫描；推送前后核对远端祖先关系与 SHA。
 - token 估算：12,000--20,000；系统未提供精确 token 遥测。
+
+## 20260929-1100-GPT5-全量发布与P1集成
+
+- 状态：COMPLETE
+- 作者与角色：GPT-5 / Root Coordinator；实际结果：完成最新 17 个本地提交的审阅，并发布当前工作区内已验证的 Detector 0.3、NOTICE selector、ModelScope metadata、B06 taxonomy/ledger、B07 receipt、fixtures、测试、规格与台账。
+- 发布文件与提交：产品提交 `6285cd6a8e61b5cb1885e1009b2cf00d40564b9e`，32 个文件；包含 B06 测试字段名的最小修复（`formal_metrics_claimed`），不改变规则或 Gold 语义。`reports/` 保持未跟踪未发布，因为它是本机诊断产物。
+- 验证：Python 定向 6 文件 `160 passed`；Node 定向 3 文件 `8 passed`；Java Maven 测试通过；`git diff --check` 通过；常见 AWS/GitHub/OpenAI/私钥特征扫描无匹配。Node 控制台中的 blind-review/receipt errors 是负例拒绝路径，套件无失败。
+- GitHub：发布前 `origin/integration/p1...HEAD` 为 `0 3`，确认远端为祖先；非强制快进推送工作分支和 `integration/p1` 后，`git ls-remote` 读回两者均为 `6285cd6a8e61b5cb1885e1009b2cf00d40564b9e`。未改 `main`、未建 PR、未部署、未启停服务。
+- 风险与下一步：离线/候选门禁不等于生产完备。仍待 A 侧自动 source lifecycle/admission/factory 完整闭环、前端独立回执、真人 Gold/裁决、正式 B05--B07 评测和真实性能、Windows `fcntl` 跨栈全量回归。建议 Terra/A Owner、Luna 与 Root 分别按这些门禁继续；token 精确遥测不可获得，开工估算 12,000--20,000，本轮在该范围内完成。

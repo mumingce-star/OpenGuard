@@ -1754,3 +1754,9 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - Owner结论：A3_ACCEPT_WITH_NONBLOCKING_NOTES；NOTICE_PRODUCTION_CONSUMPTION_WIRED。已验收exact BOUND → A2/CZ decode → conservative NoticeDraft → NoticeDraftStore → ReportNoticeReader → Report V2与default factory消费接线；Owner Review完整414节点及34项独立探针通过。
 - Source lifecycle仍未完成：ReadOnlyScanSession → CZ collector → detached Collection → terminal A2 admission → stage/bind尚未自动接入生产扫描主链；不代表每次真实扫描都有NOTICE或完整生产链已完成。N2/N3、serialization memory amplification及部分永久测试覆盖债继续deferred。
 - 本轮feature发布目标：feat/p1-notice-production-wiring。实际commit SHA、push与远端核验结果仅在执行后写入ignored发布回执；本记录不宣称提交、推送、integration合入或部署成功。
+
+## 2026-09-29 P1 全量发布回执：Detector / Selector / ModelScope / B06-B07
+
+- 已发布：`6285cd6a8e61b5cb1885e1009b2cf00d40564b9e` 已非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 已读回一致；`main` 未改动。
+- 范围与验证：发布 Detector 0.3 静态/结构化资产识别、CZ NOTICE 候选选择器、离线 ModelScope metadata parser、B06 误差分析治理台账、B07 error classification、fixtures/规格/测试。Python `160 passed`、Node `8 passed`、Java Maven 通过，格式与敏感信息检查通过。
+- 未关闭：生产 source lifecycle/admission/factory、前端独立回执、真人 Gold/裁决、正式评测及真实性能、Windows `fcntl` 全量可移植性仍为门禁；本次离线验证不得解释为上述门禁已关闭。`reports/` 本机诊断产物未上传。
