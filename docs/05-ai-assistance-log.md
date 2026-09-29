@@ -5,6 +5,7 @@
 | 日期 | 模型/工具 | 用途与输入范围 | 产生内容 | 团队修改 | 验证方式 | 是否纳入作品 |
 |---|---|---|---|---|---|---|
 | 2026-08-31 | GPT-5.6 Sol | 竞赛规则、架构和评分拆解 | 项目总体框架初稿 | 团队后续确认范围 | 对照正式附件逐项核对 | 是 |
+| 2026-09-29 | Codex（GPT-5） | 已冻结的 Inventory 元数据边界、CZ NOTICE DTO/collector 契约与用户指定的 CZ-S1 规则 | 纯离线 NOTICE 候选选择器、规格与单元测试 | 采用保守 unresolved relation，明确容量截断且未接入 A4 生命周期 | fail-first、selector/collector 定向 pytest、compileall、diff 检查 | 是，待 Owner Review |
 | 2026-09-01 | GPT-5.6 Sol / Codex Root | 解析技术执行书并与正式材料、既有架构交叉核对 | P0 领域与 API 契约 v0.1.0 | 项目负责人需审核公共字段；Terra/Luna分别做实现与独立验证 | Markdown/敏感信息检查，后续以 Pydantic、JSON Schema 和负面 fixture 交叉验证 | 是 |
 | 2026-09-01 | GPT-5.6 Terra | 仅使用冻结的 P0 契约 v0.1.0 实现领域模型、Schema、样例和单测 | Pydantic v2 领域模型、导出 JSON Schema、合成扫描样例与 11 项聚焦测试 | 未改变公共字段、枚举、风险语义或契约；AI 建议/候选保持待核验 | Pydantic、独立 JSON Schema、pytest、差异与敏感信息检查 | 是 |
 | 2026-09-01 | GPT-5.6 Terra / Codex Root | 按冻结契约实现 A1 Pydantic 模型、Schema、样例和负面测试 | `backend/app/domain`、导出 Schema、sample 与 11 个单元测试 | Root 在隔离环境复核依赖与测试；Luna 后续独立审计边界 fixture | pytest 11/11、Pydantic/JSON Schema 双验证、Schema 导出一致性、敏感信息与 diff 检查 | 是 |

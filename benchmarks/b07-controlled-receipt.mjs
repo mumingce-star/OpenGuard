@@ -1,5 +1,6 @@
 const SHA256 = /^[a-f0-9]{64}$/;
 const ID = /^[a-z][a-z0-9_.:-]{2,127}$/;
+const ERROR_CODES = new Set(['input_validation_failed', 'artifact_hash_mismatch', 'detector_unavailable', 'detector_execution_failed', 'result_validation_failed', 'environment_mismatch', 'internal_error']);
 
 export function validateControlledReceipt(receipt) {
   const errors = [];
@@ -15,5 +16,11 @@ export function validateControlledReceipt(receipt) {
   if (!Number.isFinite(receipt.total_duration_ms) || receipt.total_duration_ms < 0) errors.push('total_duration_ms');
   if (!Array.isArray(receipt.stages) || !receipt.stages.length || receipt.stages.some((stage) => !ID.test(stage?.name ?? '') || !Number.isFinite(stage.duration_ms) || stage.duration_ms < 0)) errors.push('stages');
   if (!['success', 'failure'].includes(receipt.status)) errors.push('status');
+  const classification = receipt.error_classification;
+  if (!classification || typeof classification !== 'object' || Array.isArray(classification)
+      || !['not_observed', 'observed'].includes(classification.status) || !Array.isArray(classification.errors)
+      || classification.errors.some((code) => !ERROR_CODES.has(code))
+      || (receipt.status === 'success' && (classification.status !== 'not_observed' || classification.errors.length))
+      || (receipt.status === 'failure' && (classification.status !== 'observed' || !classification.errors.length))) errors.push('error_classification');
   return errors;
 }

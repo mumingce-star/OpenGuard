@@ -8,7 +8,7 @@ import uuid
 from collections.abc import Mapping
 from datetime import datetime, timezone
 
-from .structured_models import structured_model_references
+from .structured_models import structured_asset_references
 
 from app.domain.models import (
     AIAsset, AIAssetType, DetectionMethod, Evidence, EvidenceKind, ProducerRef,
@@ -16,7 +16,7 @@ from app.domain.models import (
 )
 
 _NAMESPACE = uuid.UUID("e6047e12-66d2-5ebb-b78a-756e0ee05601")
-_PRODUCER = ProducerRef(type=ProducerType.PARSER, name="openguard-static-ai-detector", version="0.2.0")
+_PRODUCER = ProducerRef(type=ProducerType.PARSER, name="openguard-static-ai-detector", version="0.3.0")
 _PATTERNS = (
     (AIAssetType.MODEL, "huggingface", re.compile(r"https://huggingface\.co/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
     (AIAssetType.MODEL, "modelscope", re.compile(r"https://modelscope\.cn/models/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)")),
@@ -110,23 +110,31 @@ def detect_ai_assets(files: Mapping[str, str], *, observed_at: datetime | None =
                     source_url=source_url or (existing.source_url if existing else None), authorization_status=VerificationStatus.PENDING,
                     evidence_ids=ids, detected_by=sorted(set((existing.detected_by if existing else []) + [DetectionMethod.STATIC_PATTERN]), key=lambda method: method.value), confidence=0.6,
                 )
-        for provider, name, start_line, end_line in structured_model_references(locator, text):
-            key = (AIAssetType.MODEL.value, provider, name)
-            evidence_id = _identifier("evd", "ast", locator, digest, str(start_line), str(end_line), *key, name)
+        for asset_kind, provider, name, start_line, end_line, origin in structured_asset_references(locator, text):
+            asset_type = AIAssetType(asset_kind)
+            method = {
+                "actual_call": DetectionMethod.AST,
+                "example_reference": DetectionMethod.STATIC_PATTERN,
+                "explicit_config_candidate": DetectionMethod.MANIFEST_PARSER,
+            }[origin]
+            key = (asset_type.value, provider, name)
+            evidence_id = _identifier("evd", origin, locator, digest, str(start_line), str(end_line), *key, name)
             evidence[evidence_id] = Evidence(
-                id=evidence_id, kind=EvidenceKind.FILE, locator=locator, excerpt=name,
+                id=evidence_id,
+                kind=EvidenceKind.MANIFEST_FIELD if origin == "explicit_config_candidate" else EvidenceKind.FILE,
+                locator=locator, excerpt=name,
                 start_line=start_line, end_line=end_line,
                 content_hash={"algorithm": "sha256", "value": digest},
-                detected_by=DetectionMethod.AST, producer=_PRODUCER,
+                detected_by=method, producer=_PRODUCER,
                 observed_at=timestamp, verification_status=VerificationStatus.PENDING,
             )
             existing = assets.get(key)
             assets[key] = AIAsset(
-                id=_identifier("ast", *key), asset_type=AIAssetType.MODEL, name=name, provider=provider,
+                id=_identifier("ast", *key), asset_type=asset_type, name=name, provider=provider,
                 source_url=existing.source_url if existing else None,
                 authorization_status=VerificationStatus.PENDING,
                 evidence_ids=sorted(set((existing.evidence_ids if existing else []) + [evidence_id])),
-                detected_by=sorted(set((existing.detected_by if existing else []) + [DetectionMethod.AST]), key=lambda method: method.value),
+                detected_by=sorted(set((existing.detected_by if existing else []) + [method]), key=lambda method: method.value),
                 confidence=0.6,
             )
     return list(sorted(assets.values(), key=lambda item: item.id)), list(sorted(evidence.values(), key=lambda item: item.id))

@@ -1,0 +1,22 @@
+{
+  "schema_version": "openguard-b06-rule-improvement-ledger/1",
+  "status": "draft_not_gold",
+  "purpose": "Records generic rule-change hypotheses without calculating metrics or admitting repository-specific exceptions.",
+  "holdout_policy": "blocked_until_human_gold_freeze",
+  "rule_changes": [
+    {
+      "change_id": "chg-hf-non-resource-routes",
+      "generic_rule_id": "huggingface_non_resource_route_exclusion",
+      "improves": ["FP_SOURCE_MISMATCH"],
+      "collateral_risk": ["FN_MISSING_LICENSE"],
+      "holdout_validation": {"split": "holdout", "family_policy": "unseen_family", "status": "blocked_until_human_gold_freeze"}
+    },
+    {
+      "change_id": "chg-import-bound-literals",
+      "generic_rule_id": "import_bound_literal_call_only",
+      "improves": ["FN_MISSING_LICENSE"],
+      "collateral_risk": ["FP_SOURCE_MISMATCH"],
+      "holdout_validation": {"split": "holdout", "family_policy": "unseen_family", "status": "blocked_until_human_gold_freeze"}
+    }
+  ]
+}

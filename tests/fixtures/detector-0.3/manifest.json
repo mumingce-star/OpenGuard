@@ -1,0 +1,13 @@
+{
+  "schema": "openguard.detector-artifact-manifest/1",
+  "manifest_version": "1.0.0",
+  "scope": "offline_non_gold",
+  "detector": {"name": "static_ai_assets", "version": "0.3.0"},
+  "artifacts": [
+    {"artifact_id": "cases", "path": "cases.json", "size_bytes": 2748, "sha256": "b1bd4292cbb7549c7fbbdf313d41ac8736cdb77789c5f0e46e02c4a9a8720c97"},
+    {"artifact_id": "detector", "path": "detector.json", "size_bytes": 348, "sha256": "946e40ffcc7b6b06ac05e862507ffbf68b341dfea04a722957d08f1cdbf502a4", "depends_on": ["cases"]},
+    {"artifact_id": "input", "path": "input.json", "size_bytes": 377, "sha256": "a5113124c19b85da7736fede65f0e1ea50f4b84e803ef06b2348d2b4668941c5", "depends_on": ["cases", "detector"]},
+    {"artifact_id": "prediction", "path": "prediction.json", "size_bytes": 442, "sha256": "714176f68723bc9c2baa2c8a632680db3777facb35b7f8907ab5d02aca0f1266", "depends_on": ["detector", "input"]},
+    {"artifact_id": "result", "path": "result.json", "size_bytes": 559, "sha256": "6945ff5dd5927cd596bb47c4b85d6752b6e937b09b394dc5f3689c81ff51a337", "depends_on": ["detector", "input", "prediction"]}
+  ]
+}

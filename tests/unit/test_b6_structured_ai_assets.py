@@ -30,7 +30,7 @@ def test_frozen_targets(source, provider, name, line):
     assert len(refs) == 1
     e = refs[0]
     assert e.detected_by.value == 'ast' and e.verification_status.value == 'pending'
-    assert (e.producer.name, e.producer.version) == ('openguard-static-ai-detector', '0.2.0')
+    assert (e.producer.name, e.producer.version) == ('openguard-static-ai-detector', '0.3.0')
     assert e.locator == 'example.py' and e.start_line == e.end_line == line
     assert e.excerpt == name
     assert e.content_hash.value == hashlib.sha256(source.encode()).hexdigest()

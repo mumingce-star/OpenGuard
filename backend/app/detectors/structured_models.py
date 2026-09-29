@@ -2,18 +2,28 @@
 from __future__ import annotations
 
 import ast
+import json
 import re
+import tomllib
 
 # These are SDK call contracts, not model, file or benchmark allowlists.
 _CALLS = {
-    'smolagents.InferenceClientModel': ('model_id', 'huggingface'),
-    'smolagents.TransformersModel': ('model_id', 'huggingface'),
-    'litellm.anthropic.messages.acreate': ('model', 'anthropic'),
-    **{f'litellm.google_genai.{name}': ('model', 'google') for name in (
+    'smolagents.InferenceClientModel': ('model', 'model_id', 'huggingface'),
+    'smolagents.TransformersModel': ('model', 'model_id', 'huggingface'),
+    'litellm.anthropic.messages.acreate': ('model', 'model', 'anthropic'),
+    **{f'litellm.google_genai.{name}': ('model', 'model', 'google') for name in (
         'generate_content', 'agenerate_content',
         'generate_content_stream', 'agenerate_content_stream',
     )},
 }
+_CONFIG_KEYS = {
+    'model': ('model', 'huggingface'), 'model_id': ('model', 'huggingface'),
+    'model_name': ('model', 'huggingface'), 'model_name_or_path': ('model', 'huggingface'),
+    'pretrained_model_name_or_path': ('model', 'huggingface'),
+    'dataset': ('dataset', 'huggingface'), 'dataset_id': ('dataset', 'huggingface'),
+    'dataset_name': ('dataset', 'huggingface'), 'dataset_path': ('dataset', 'huggingface'),
+}
+_SIMPLE_YAML = re.compile(r"^[ ]*(?P<key>[A-Za-z_][A-Za-z0-9_-]*)\s*:\s*(?P<quote>['\"])(?P<value>[^'\"\\\r\n]+)(?P=quote)\s*$")
 _FENCE = re.compile(r'^ {0,3}(`{3,}|~{3,})(.*)$')
 _HF_NAME = re.compile(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+')
 
@@ -94,7 +104,32 @@ def _bindings(tree):
     return {name: value for name, value in bindings.items() if name not in invalid}
 
 
-def structured_model_references(locator, text):
+def _call_contract(imported, attrs):
+    qualified = '.'.join([imported, *attrs])
+    if qualified in _CALLS:
+        return _CALLS[qualified]
+    if attrs and attrs[-1] == 'from_pretrained' and (imported == 'transformers' or imported.startswith('transformers.')):
+        return 'model', 'pretrained_model_name_or_path', 'huggingface'
+    if qualified == 'datasets.load_dataset':
+        return 'dataset', 'path', 'huggingface'
+    return None
+
+
+def _literal_call_argument(node, parameter):
+    values = [kw.value for kw in node.keywords if kw.arg == parameter]
+    if len(values) == 1 and not any(kw.arg is None for kw in node.keywords):
+        return values[0]
+    if not values and not any(kw.arg is None for kw in node.keywords) and node.args:
+        return node.args[0]
+    return None
+
+
+def _valid_name(provider, name):
+    return (bool(name) and len(name) <= 200 and not any(c.isspace() or ord(c) < 32 for c in name)
+            and (provider != 'huggingface' or (_HF_NAME.fullmatch(name) is not None and all(p not in {'.', '..'} for p in name.split('/')))))
+
+
+def _python_asset_references(locator, text):
     for source, offset in _units(locator, text):
         try:
             tree = ast.parse(source)
@@ -110,10 +145,10 @@ def structured_model_references(locator, text):
             imported, import_line = bindings[path[0]]
             if node.lineno <= import_line:
                 continue
-            rule = _CALLS.get('.'.join([imported, *path[1]]))
+            rule = _call_contract(imported, path[1])
             if rule is None:
                 continue
-            parameter, provider = rule
+            asset_type, parameter, provider = rule
             values = [kw.value for kw in node.keywords if kw.arg == parameter]
             # A literal keyword mapping is a structured configuration, not a
             # runtime value.  Accept it only when it contributes exactly one
@@ -133,14 +168,75 @@ def structured_model_references(locator, text):
                                for key in unpacked[0].keys)):
                     continue
                 values = literal_items
+            if len(values) != 1 and not values:
+                literal = _literal_call_argument(node, parameter)
+                values = [literal] if literal is not None else []
             if len(values) != 1:
                 continue
             literal = values[0]
             if not isinstance(literal, ast.Constant) or not isinstance(literal.value, str):
                 continue
             name = literal.value
-            if not name or len(name) > 200 or any(c.isspace() or ord(c) < 32 for c in name):
+            if not _valid_name(provider, name):
                 continue
-            if provider == 'huggingface' and (_HF_NAME.fullmatch(name) is None or any(p in {'.', '..'} for p in name.split('/'))):
-                continue
-            yield provider, name, literal.lineno + offset, (literal.end_lineno or literal.lineno) + offset
+            yield asset_type, provider, name, literal.lineno + offset, (literal.end_lineno or literal.lineno) + offset, ('example_reference' if locator.endswith('.md') else 'actual_call')
+
+
+def _reject_duplicate_pairs(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('duplicate JSON key')
+        result[key] = value
+    return result
+
+
+def _config_asset_references(locator, text):
+    if locator.endswith('.json'):
+        try:
+            value = json.loads(text, object_pairs_hook=_reject_duplicate_pairs)
+        except (json.JSONDecodeError, UnicodeError, ValueError, RecursionError, MemoryError):
+            return
+    elif locator.endswith('.toml'):
+        try:
+            value = tomllib.loads(text)
+        except (tomllib.TOMLDecodeError, UnicodeError, ValueError, RecursionError, MemoryError):
+            return
+    elif locator.endswith(('.yaml', '.yml')):
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            match = _SIMPLE_YAML.fullmatch(line)
+            if match and match.group('key') in _CONFIG_KEYS:
+                asset_type, provider = _CONFIG_KEYS[match.group('key')]
+                name = match.group('value')
+                if _valid_name(provider, name):
+                    yield asset_type, provider, name, line_number, line_number, 'explicit_config_candidate'
+        return
+    else:
+        return
+    def visit(item):
+        if isinstance(item, dict):
+            for key, child in item.items():
+                if key in _CONFIG_KEYS and isinstance(child, str):
+                    asset_type, provider = _CONFIG_KEYS[key]
+                    if _valid_name(provider, child):
+                        yield asset_type, provider, child
+                yield from visit(child)
+        elif isinstance(item, list):
+            for child in item:
+                yield from visit(child)
+    for asset_type, provider, name in visit(value):
+        expression = re.compile(r"(?:['\\\"]?" + re.escape(name) + r"['\\\"]?)")
+        line = next((index for index, source in enumerate(text.splitlines(), start=1) if expression.search(source)), 1)
+        yield asset_type, provider, name, line, line, 'explicit_config_candidate'
+
+
+def structured_asset_references(locator, text):
+    yield from _python_asset_references(locator, text)
+    yield from _config_asset_references(locator, text)
+
+
+def structured_model_references(locator, text):
+    """Backward-compatible model-only iterator for existing callers."""
+    for asset_type, provider, name, start_line, end_line, _origin in structured_asset_references(locator, text):
+        if asset_type == 'model':
+            yield provider, name, start_line, end_line

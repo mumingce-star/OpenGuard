@@ -11,7 +11,11 @@
 
 Detector 0.3 的离线 fixture 是 `tests/fixtures/detector-0.3/cases.json`：包含 AST、字面量结构化配置、URL revision 正例，以及 `FN-ABSENT`、`FN-EVIDENCE`、`FP-ATTRIBUTION`、`FP-HALLUCINATED`、`FP-OVERPRECISION`、`FP-LEAKAGE` 各一例。每个 `family_id` 只允许出现于 train、dev、holdout 中的一个 split；该文件自声明 `offline_non_gold`，不能转换为正式 Gold 或指标分母。
 
-当前支持的结构化配置仅是经 AST 证实的单个字面量 `**{'model_id': 'org/model'}`。动态 unpack、混合 key、重复/不明确 key、变量、计算表达式一律不检测。URL 仅接受明确的 Hugging Face 资源根或 `resolve/blob` 文件路径；文档、tree、space、登录等路由一律是负例。
+当前支持的 Python 规则是经 AST 与明确顶层导入绑定证实的调用：既有 `smolagents`/`litellm`，以及 `transformers` 的 `.from_pretrained(...)` 和 `datasets.load_dataset(...)`。仅导入 SDK 不创建资源候选；`.py` 中满足规则的调用记为 `ast` 实际调用候选，Markdown Python fenced block 记为 `static_pattern` 示例引用。动态 unpack、混合 key、重复/不明确 key、变量、计算表达式一律不检测。
+
+TOML、JSON 和受限的单行 YAML 仅接受明确的模型/数据集字段（如 `model_name_or_path`、`pretrained_model_name_or_path`、`dataset_name`）；它们以 `manifest_parser` 和 `manifest_field` 作为配置候选证据，不表述实际运行。JSON 重复键、无效 TOML、YAML 动态/复杂结构均失败关闭。URL 仅接受明确的 Hugging Face 资源根或 `resolve/blob` 文件路径；docs、blog、papers、tree、space、登录等路由一律是负例。
+
+`tests/fixtures/detector-0.3/manifest.json` 是 `openguard.detector-artifact-manifest/1`：固定 `cases.json`、`detector.json`、`input.json`、`prediction.json`、`result.json` 的路径、长度、SHA-256 与依赖边；每个下游工件还回写直接上游的路径/摘要。`test_detector_03_offline_tdd.py` 必须同时复算这两层约束并用内存篡改样本验证拒绝。预测/结果均为 `not_executed`、指标为 `null`，不能报告正式指标。FN/FP taxonomy 的每个类别均由该测试逐项消费并断言其 fixture 回归，仍不构成 Gold。
 
 ## 2. B03/B04 v3 consumption adapter
 
@@ -49,6 +53,6 @@ Detector 0.3 的离线 fixture 是 `tests/fixtures/detector-0.3/cases.json`：�
 
 ### B07
 
-受控 receipt 统一使用 `openguard.controlled-pipeline-receipt/1`，必须含：`execution_mode="controlled"`、`production_scan_started=false`、稳定 environment、非负总耗时及各 stage 时长、状态、输入/配置/结果 artifact hashes。任何 receipt 缺字段、环境不一致、重复 `receipt_id`、来源 hash 未固定或有生产扫描迹象，均不能进入汇总。`b07-summarize-receipts.mjs` 的输出只是受控描述统计，不是生产性能基准。
+受控 receipt 统一使用 `openguard.controlled-pipeline-receipt/1`，必须含：`execution_mode="controlled"`、`production_scan_started=false`、稳定 environment、非负总耗时及各 stage 时长、状态、输入/配置/结果 artifact hashes，以及 `error_classification`。成功必须为 `not_observed` 且错误数组为空；失败必须为 `observed` 且只使用受控错误码（输入、hash、detector、结果、环境或内部失败）。任何 receipt 缺字段、环境不一致、重复 `receipt_id`、来源 hash 未固定或有生产扫描迹象，均不能进入汇总。`b07-summarize-receipts.mjs` 输出错误码计数的受控描述统计，不是生产性能基准。
 
 amendment 只能追加，必须含 parent revision、受影响 artifact、旧/新 SHA-256、原因、提出者、人工批准者和时间；影响 source、label、split、review 或 freeze 时，相关 evaluation 自动失效且必须重跑。

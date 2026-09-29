@@ -3,12 +3,12 @@
   "status": "draft_not_gold",
   "purpose": "Human-review classification only; this artifact neither freezes Gold nor calculates detector metrics.",
   "categories": [
-    {"code": "FP_LICENSE_EXPRESSION", "kind": "false_positive"},
-    {"code": "FP_NOTICE_SUBSTITUTION", "kind": "false_positive"},
-    {"code": "FP_SOURCE_MISMATCH", "kind": "false_positive"},
-    {"code": "FN_MISSING_LICENSE", "kind": "false_negative"},
-    {"code": "FN_MISSING_NOTICE", "kind": "false_negative"},
-    {"code": "FN_MISSING_COPYRIGHT", "kind": "false_negative"},
-    {"code": "FN_SOURCE_RELATION", "kind": "false_negative"}
+    {"code": "FP_LICENSE_EXPRESSION", "kind": "false_positive", "classification": "unsupported_license_inference"},
+    {"code": "FP_NOTICE_SUBSTITUTION", "kind": "false_positive", "classification": "license_text_misrepresented_as_notice"},
+    {"code": "FP_SOURCE_MISMATCH", "kind": "false_positive", "classification": "evidence_or_subject_mismatch"},
+    {"code": "FN_MISSING_LICENSE", "kind": "false_negative", "tier": "A", "tier_meaning": "supported_static_pattern_or_explicit_field"},
+    {"code": "FN_MISSING_NOTICE", "kind": "false_negative", "tier": "B", "tier_meaning": "generic_parser_or_evidence_link_extension"},
+    {"code": "FN_MISSING_COPYRIGHT", "kind": "false_negative", "tier": "C", "tier_meaning": "requires_human_or_rights_context"},
+    {"code": "FN_SOURCE_RELATION", "kind": "false_negative", "tier": "C", "tier_meaning": "requires_human_or_rights_context"}
   ]
 }

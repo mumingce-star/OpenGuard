@@ -2,6 +2,17 @@
 
 更新时间：2026-09-05 21:35（Asia/Shanghai）
 
+## 2026-09-27 B01 ModelScope 离线 Profile 解析补强
+
+| 范围 | 本轮结果 | 验证 / 发布状态 / 下一步 |
+|---|---|---|
+| ModelScope adapter | 新增 `ModelScopeMetadataParser`，仅消费 transport-owned 内存 JSON envelope，严格绑定 provider/kind/identity/descriptor/body hash 和固定 source URL；未接入网络、默认 factory 或 Profile refresh。 | 离线定向 Python 测试通过；未提交、未推送、未创建 PR。 |
+| 保守语义 | 所有输出字段及总 observation 均为 `pending`；`License` 只记录为 `declared_license_raw`；不生成授权、权利、SPDX、合规、Assessment 或 Report 结论。 | 跨 Hugging Face/ModelScope 一致性测试断言不出现 `authorization_status`、`license_expression_id`。 |
+| 异常元数据 | 错误 envelope、身份不匹配、非法标识、重复 JSON key、hash/transport version 篡改均失败关闭；可选字段类型异常转为 coverage gap。 | `62 passed`（ModelScope + HF unit/security 定向集）；`compileall` 与 `git diff --check` 通过。 |
+| 未完成 | 尚无 ModelScope 生产 transport、factory/profile refresh 接线、真实上游回执或独立异机验收。 | 后续由后端 A/Root 先定义并审计网络 transport，再另行启用；不能把本轮表述为生产接入。 |
+
+当前可独立演示：无需网络或服务即可解析受控 ModelScope 元数据并输出可追溯的 pending observation。尚不具备：ModelScope 在线抓取、授权或合规判断、正式 Profile 生产链路。距离可报名/参赛仍需关闭真实资源验收与异机运行门禁；距离完整作品提交还需完成生产接线、端到端演示与发布回执；距离获奖竞争力仍需双人 Gold、固定 Bench/holdout 和可复现对比证据。无统一分母和权重，不给出完成百分比。
+
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
 优先级口径：以《OpenGuard AI 详细项目规划与 Codex 交接执行书 V1.0》第3节和第15节为P0边界与最终DoD。产品P1包括Resource Graph、Model/Dataset Card增强、LICENSE/NOTICE草稿、整改任务、批量Bench、历史扫描和更丰富报告；P2为更多生态、完整兼容矩阵、自动PR、私有仓库和高级协作。本轮及后续默认不实施P1/P2。下方历史全景包含完整竞赛目标，不能全部反推为P0硬门禁。共享日志中的缺陷严重度P1/P2与产品路线优先级不同。
@@ -1728,7 +1739,7 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 
 ## 2026-09-27 P1 发布回执：Detector / NOTICE source / B06-B07 离线门禁
 
-- 已发布：`abea88631767af30ad63102b05d385b719925d7c`，已非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`；`main` 未改动。范围为 Detector 0.3、v3 只读消费 adapter、CZ NOTICE source DTO/collector、B06 reference-only 候选、B07 controlled receipt、定向测试、fixtures 与规范。
+- 历史发布（不等于生产接入）：`abea88631767af30ad63102b05d385b719925d7c` 曾非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`；`main` 未改动。范围为 Detector 0.3、v3 只读消费 adapter、CZ NOTICE source DTO/collector、B06 reference-only 候选、B07 controlled receipt、定向测试、fixtures 与规范。它只证明该提交的离线工件已发布到功能/集成分支，不表示当前工作区改动已提交，也不表示 A 侧 factory/Report/NOTICE、正式 Gold、正式指标或生产扫描已接入。
 - 本次验证：Python 定向 `13 passed`；Node 定向 `17 passed`；Java Maven 测试通过；`git diff --check` 与常见密钥特征扫描通过。B06/B07 负例的预期错误仅用于证明拒绝路径，并非失败。
 - 仍未关闭：G3 A 侧 CZ admission/factory/NoticeDraft/Report 生产接线；G4 前端浏览器回执；G5 真人 Gold/裁决；G6 正式评测；G7 真实性能；G8 Windows `fcntl` 兼容与跨栈全量回归。`reports/VERIFY_REPORT.md` 为本机诊断文件，未纳入发布。
 
