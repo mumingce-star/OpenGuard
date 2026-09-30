@@ -63,6 +63,24 @@ def test_modelscope_adapter_exposes_only_pending_observations() -> None:
     assert "metadata_revision_unavailable" in result.coverage_gaps
 
 
+def test_modelscope_accepts_current_path_identity_alias_but_rejects_disagreement() -> None:
+    parsed = _parse_modelscope({"Code": 200, "Success": True, "Data": {
+        "Path": "acme", "Name": "demo-model", "Visibility": "public", "Gated": False,
+    }})
+    assert parsed.fields[0].locator == "/Data/Path+/Data/Name"
+    with pytest.raises(ValueError, match="metadata_invalid"):
+        _parse_modelscope({"Code": 200, "Success": True, "Data": {
+            "Namespace": "acme", "Path": "other", "Name": "demo-model",
+        }})
+
+
+def test_modelscope_accepts_dataset_style_success_message() -> None:
+    result = _parse_modelscope({"Code": 200, "Message": "success", "Data": {
+        "Namespace": "acme", "Name": "demo-model",
+    }})
+    assert _fields(result)["canonical_id"] == "acme/demo-model"
+
+
 @pytest.mark.parametrize("payload,gap", [
     ({"Code": 200, "Success": True, "Data": {"Namespace": "acme", "Name": "demo-model", "License": []}}, "unsupported_declared_license_value"),
     ({"Code": 200, "Success": True, "Data": {"Namespace": "acme", "Name": "demo-model", "Visibility": 5}}, "unsupported_visibility_value"),
@@ -80,10 +98,19 @@ def test_modelscope_exceptional_optional_metadata_stays_pending(payload: dict, g
     {"Code": 500, "Success": False, "Data": {"Namespace": "acme", "Name": "demo-model"}},
     {"Code": 200, "Success": True, "Data": {"Namespace": "acme", "Name": "other"}},
     {"Code": 200, "Success": True, "Data": {"Namespace": "../acme", "Name": "demo-model"}},
+    {"Code": 200, "Success": False, "Message": "success", "Data": {"Namespace": "acme", "Name": "demo-model"}},
+    {"Code": 200, "Success": True, "Message": "failure", "Data": {"Namespace": "acme", "Name": "demo-model"}},
 ])
 def test_modelscope_exceptional_envelope_or_identity_fails_closed(payload: dict) -> None:
     with pytest.raises(ValueError, match="metadata_invalid"):
         _parse_modelscope(payload)
+
+
+def test_modelscope_consistent_success_markers_stay_pending() -> None:
+    result = _parse_modelscope({"Code": 200, "Success": True, "Message": "success", "Data": {
+        "Namespace": "acme", "Name": "demo-model",
+    }})
+    assert result.verification_status == "pending"
 
 
 def test_modelscope_duplicate_json_key_and_descriptor_tampering_fail_closed() -> None:

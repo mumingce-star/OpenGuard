@@ -13,7 +13,8 @@ import re
 import time
 
 from .metadata_types import (ErrorCode, Limits, MetadataError, MetadataRequest,
-                             SourceDescriptor, TemporaryMetadata, build_target)
+                             SourceDescriptor, TemporaryMetadata, build_target,
+                             modelscope_envelope_succeeded)
 from .metadata_wire import Deadline, Wire, public_answers
 
 
@@ -101,13 +102,29 @@ class MetadataTransport:
     def _fetch(self, request, target, wire, clock):
         """Trusted test seam; callers use fetch, never supply network targets."""
         budget = Deadline(self.limits, clock)
-        answers = wire.resolve('huggingface.co', budget, self.limits)
-        endpoints = public_answers('huggingface.co', answers, self.limits)
-        body = wire.exchange('huggingface.co', endpoints, target.removeprefix('https://huggingface.co'), budget, self.limits)
+        host = {'huggingface': 'huggingface.co', 'modelscope': 'modelscope.cn'}.get(request.provider)
+        if host is None:
+            raise MetadataError(ErrorCode.INPUT)
+        answers = wire.resolve(host, budget, self.limits)
+        endpoints = public_answers(host, answers, self.limits)
+        body = wire.exchange(host, endpoints, target.removeprefix('https://' + host), budget, self.limits)
         data = _json(body, self.limits, budget)
-        if data.get('id') != request.repository_id:
+        if request.provider == 'huggingface':
+            identity, revision = data.get('id'), data.get('sha')
+        else:
+            envelope = data.get('Data')
+            success = modelscope_envelope_succeeded(data)
+            if data.get('Code') != 200 or not success or type(envelope) is not dict:
+                raise MetadataError(ErrorCode.IDENTITY)
+            # The public endpoint currently calls the namespace ``Path``;
+            # older captures used ``Namespace``. Reject disagreement instead
+            # of silently picking one provider identity.
+            namespace, name = envelope.get('Namespace', envelope.get('Path')), envelope.get('Name')
+            if 'Namespace' in envelope and 'Path' in envelope and envelope['Namespace'] != envelope['Path']:
+                raise MetadataError(ErrorCode.IDENTITY)
+            identity, revision = (f'{namespace}/{name}' if type(namespace) is str and type(name) is str else None), None
+        if identity != request.repository_id:
             raise MetadataError(ErrorCode.IDENTITY)
-        revision = data.get('sha')
         if revision is not None and (type(revision) is not str or not re.fullmatch(r'[0-9a-f]{40}', revision)):
             raise MetadataError(ErrorCode.REVISION)
         if request.revision_mode == 'fixed' and revision is not None and revision != request.requested_revision:
@@ -119,6 +136,8 @@ class MetadataTransport:
             version_status='revision_observed' if revision else 'bounded_content_revision_unconfirmed',
             source_url=target, fetched_at=datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             content_type='application/json', body_size=len(body), body_sha256=hashlib.sha256(body).hexdigest())
+        if request.provider == 'modelscope':
+            source = SourceDescriptor(**{**source.__dict__, 'transport_version': 'modelscope-metadata-transport/1'})
         budget.remaining()
         return TemporaryMetadata(source, body)
 

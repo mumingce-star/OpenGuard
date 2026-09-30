@@ -36,6 +36,14 @@ class MetadataError(Exception):
         super().__init__(self.code.value)
 
 
+def modelscope_envelope_succeeded(payload: dict) -> bool:
+    """Accept present success markers only when none contradicts success."""
+    if type(payload) is not dict or not ('Success' in payload or 'Message' in payload):
+        return False
+    return (('Success' not in payload or payload['Success'] is True)
+            and ('Message' not in payload or payload['Message'] == 'success'))
+
+
 @dataclass(frozen=True, repr=False)
 class MetadataRequest:
     provider: str
@@ -51,7 +59,7 @@ class MetadataRequest:
 def build_target(request: MetadataRequest) -> str:
     if type(request) is not MetadataRequest:
         raise MetadataError(ErrorCode.INPUT)
-    if request.provider != 'huggingface' or request.resource_kind not in ('model', 'dataset'):
+    if request.provider not in ('huggingface', 'modelscope') or request.resource_kind not in ('model', 'dataset'):
         raise MetadataError(ErrorCode.INPUT)
     repo = request.repository_id
     if type(repo) is not str or not 1 <= len(repo) <= 193:
@@ -63,7 +71,9 @@ def build_target(request: MetadataRequest) -> str:
     ):
         raise MetadataError(ErrorCode.INPUT)
     revision = request.requested_revision
-    if request.revision_mode == 'fixed':
+    if request.provider == 'modelscope':
+        valid = (len(parts) == 2 and request.revision_mode == 'default_observation' and revision is None)
+    elif request.revision_mode == 'fixed':
         valid = type(revision) is str and re.fullmatch(r'[0-9a-f]{40}', revision)
     elif request.revision_mode == 'symbolic':
         valid = (type(revision) is str and re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', revision)
@@ -74,6 +84,8 @@ def build_target(request: MetadataRequest) -> str:
         valid = False
     if not valid:
         raise MetadataError(ErrorCode.INPUT)
+    if request.provider == 'modelscope':
+        return f'https://modelscope.cn/api/v1/{request.resource_kind}s/{repo}'
     path = f'https://huggingface.co/api/{request.resource_kind}s/{repo}'
     return path if revision is None else path + '/revision/' + revision
 

@@ -128,6 +128,22 @@ def test_framing(monkeypatch, framing):
     assert h.client.fetch(REQUEST).bounded_bytes() == BODY and h.raw.closed
 
 
+def test_repeated_set_cookie_is_ignored_but_other_duplicate_headers_fail_closed(monkeypatch):
+    accepted = response(BODY, [b'Content-Type: application/json', b'Set-Cookie: a=1', b'Set-Cookie: b=2',
+                               b'Content-Length: ' + str(len(BODY)).encode()])
+    assert harness(monkeypatch, accepted).client.fetch(REQUEST).bounded_bytes() == BODY
+    rejected = response(BODY, [b'Content-Type: application/json', b'Content-Type: application/json',
+                               b'Content-Length: ' + str(len(BODY)).encode()])
+    with pytest.raises(MetadataError, match='response_invalid'):
+        harness(monkeypatch, rejected).client.fetch(REQUEST)
+
+
+def test_repeated_vary_is_ignored_like_set_cookie(monkeypatch):
+    payload = response(BODY, [b'Content-Type: application/json', b'Vary: Origin', b'Vary: Accept-Encoding',
+                              b'Content-Length: ' + str(len(BODY)).encode()])
+    assert harness(monkeypatch, payload).client.fetch(REQUEST).bounded_bytes() == BODY
+
+
 @pytest.mark.parametrize('body,code', [
     (b'[]', 'json_invalid'), (b'{"id":"other"}', 'identity_mismatch'),
     (b'{"id":"synthetic/Model","id":"synthetic/Model"}', 'json_invalid'),
@@ -173,6 +189,58 @@ def test_default_observation_is_explicit():
     req = MetadataRequest('huggingface', 'dataset', 'synthetic/Data', 'default_observation', None)
     assert build_target(req) == 'https://huggingface.co/api/datasets/synthetic/Data'
     with pytest.raises(MetadataError): build_target(MetadataRequest('huggingface', 'model', 'x', 'symbolic', None))
+
+
+def test_modelscope_target_is_fixed_and_unversioned():
+    request = MetadataRequest('modelscope', 'model', 'acme/demo-model', 'default_observation', None)
+    assert build_target(request) == 'https://modelscope.cn/api/v1/models/acme/demo-model'
+    for mode, revision in [('fixed', 'a' * 40), ('symbolic', 'main'), ('default_observation', 'main')]:
+        with pytest.raises(MetadataError):
+            build_target(MetadataRequest('modelscope', 'model', 'acme/demo-model', mode, revision))
+
+
+@pytest.mark.parametrize('kind,envelope', [
+    ('model', {'Code': 200, 'Success': True, 'Data': {'Path': 'acme', 'Name': 'demo-model'}}),
+    ('dataset', {'Code': 200, 'Message': 'success', 'Data': {'Namespace': 'acme', 'Name': 'demo-model'}}),
+])
+def test_modelscope_transport_binds_real_envelope_shapes(monkeypatch, kind, envelope):
+    from app.scanners.modelscope_metadata import ModelScopeMetadataParser
+    body = json.dumps(envelope).encode()
+    h = harness(monkeypatch, response(body))
+    request = MetadataRequest('modelscope', kind, 'acme/demo-model', 'default_observation', None)
+    temporary = h.client.fetch(request)
+    source = temporary.source
+    parsed = ModelScopeMetadataParser().parse(provider='modelscope', resource_kind=kind,
+        resource_identity=request.repository_id, temporary_metadata=temporary, source_descriptor=source)
+    assert h.resolutions == ['modelscope.cn']
+    assert h.context.names == ['modelscope.cn']
+    assert b'Host: modelscope.cn' in h.raw.sent
+    assert source.source_url == build_target(request)
+    assert source.body_sha256 == hashlib.sha256(body).hexdigest()
+    assert source.transport_version == 'modelscope-metadata-transport/1'
+    assert source.resolved_revision is None and source.version_status == 'bounded_content_revision_unconfirmed'
+    assert parsed.verification_status == 'pending'
+
+
+@pytest.mark.parametrize('envelope', [
+    {'Code': 200, 'Success': True, 'Data': {'Path': 'other', 'Name': 'demo-model'}},
+    {'Code': 200, 'Success': True, 'Data': {'Path': 'acme', 'Namespace': 'other', 'Name': 'demo-model'}},
+    {'Code': 200, 'Message': 'failure', 'Data': {'Namespace': 'acme', 'Name': 'demo-model'}},
+    {'Code': 200, 'Success': False, 'Message': 'success', 'Data': {'Path': 'acme', 'Name': 'demo-model'}},
+    {'Code': 200, 'Success': True, 'Message': 'failure', 'Data': {'Path': 'acme', 'Name': 'demo-model'}},
+])
+def test_modelscope_transport_rejects_identity_or_envelope_mismatch(monkeypatch, envelope):
+    h = harness(monkeypatch, response(json.dumps(envelope).encode()))
+    with pytest.raises(MetadataError, match='identity_mismatch'):
+        h.client.fetch(MetadataRequest('modelscope', 'model', 'acme/demo-model', 'default_observation', None))
+
+
+def test_modelscope_transport_accepts_consistent_success_markers(monkeypatch):
+    envelope = {'Code': 200, 'Success': True, 'Message': 'success',
+                'Data': {'Path': 'acme', 'Name': 'demo-model'}}
+    h = harness(monkeypatch, response(json.dumps(envelope).encode()))
+    result = h.client.fetch(MetadataRequest('modelscope', 'model', 'acme/demo-model', 'default_observation', None))
+    assert result.source.provider == 'modelscope'
 
 
 @pytest.mark.parametrize('revision', ['refs/pr/1', '..', '%2f', 'a?b', 'a#b', 'a\\b', 'x\r\n', 'a'*129])

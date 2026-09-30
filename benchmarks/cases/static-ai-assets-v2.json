@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "observed_at": "2026-09-30T00:00:00Z",
+  "cases": [
+    {"id": "model-hf-url", "files": {"README.md": "https://huggingface.co/acme/encoder\n"}, "expected": ["model:huggingface:acme/encoder"]},
+    {"id": "model-modelscope-url", "files": {"README.md": "https://modelscope.cn/models/acme/chat-model\n"}, "expected": ["model:modelscope:acme/chat-model"]},
+    {"id": "dataset-hf-url", "files": {"README.md": "https://huggingface.co/datasets/acme/corpus\n"}, "expected": ["dataset:huggingface:acme/corpus"]},
+    {"id": "model-transformers", "files": {"runtime.py": "from transformers import AutoModel\nAutoModel.from_pretrained('acme/encoder')\n"}, "expected": ["model:huggingface:acme/encoder"]},
+    {"id": "dataset-datasets", "files": {"runtime.py": "from datasets import load_dataset\nload_dataset('acme/corpus')\n"}, "expected": ["dataset:huggingface:acme/corpus"]},
+    {"id": "api-sdk-clients", "files": {"runtime.py": "from openai import OpenAI\nfrom anthropic import Anthropic\nOpenAI()\nAnthropic()\n"}, "expected": ["api:anthropic:anthropic", "api:openai:openai"]},
+    {"id": "api-google-client", "files": {"runtime.py": "from google import genai\ngenai.Client()\n"}, "expected": ["api:google:google"]},
+    {"id": "config-json", "files": {"resources.json": "{\"model_id\":\"acme/json-model\",\"dataset_name\":\"acme/json-data\",\"base_url\":\"https://api.openai.com/v1\"}"}, "expected": ["api:openai:openai", "dataset:huggingface:acme/json-data", "model:huggingface:acme/json-model"]},
+    {"id": "config-toml", "files": {"resources.toml": "model_name = 'acme/toml-model'\ndataset_path = 'acme/toml-data'\nanthropic_base_url = 'https://api.anthropic.com'\n"}, "expected": ["api:anthropic:anthropic", "dataset:huggingface:acme/toml-data", "model:huggingface:acme/toml-model"]},
+    {"id": "config-yaml", "files": {"resources.yaml": "model: 'acme/yaml-model'\ndataset: 'acme/yaml-data'\ngoogle_api_base: 'https://generativelanguage.googleapis.com'\n"}, "expected": ["api:google:google", "dataset:huggingface:acme/yaml-data", "model:huggingface:acme/yaml-model"]},
+    {"id": "negative-ordinary-url", "files": {"README.md": "https://example.org/docs\n"}, "expected": []},
+    {"id": "negative-hf-docs", "files": {"README.md": "https://huggingface.co/docs/transformers\n"}, "expected": []},
+    {"id": "negative-dynamic-target", "files": {"runtime.py": "from transformers import AutoModel\nAutoModel.from_pretrained(model_id)\n"}, "expected": []},
+    {"id": "negative-unknown-endpoint", "files": {"settings.yaml": "base_url: 'https://example.org/v1'\napi_key: 'must-not-be-evidence'\n"}, "expected": []}
+  ]
+}

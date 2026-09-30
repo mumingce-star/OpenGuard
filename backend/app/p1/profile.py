@@ -41,11 +41,15 @@ class ProfileService:
     @staticmethod
     def metadata_request(row):
         item=row['item']
-        if row['ref']['resource_kind']!='ai_asset' or item.provider!='huggingface' or item.asset_type not in {'model','dataset'}:
+        if row['ref']['resource_kind']!='ai_asset' or item.provider not in {'huggingface','modelscope'} or item.asset_type not in {'model','dataset'}:
             raise ProfileError('unsupported_input')
         revision=item.version
-        mode='default_observation' if revision is None else 'fixed' if re.fullmatch('[0-9a-f]{40}',revision) else 'symbolic'
-        request=MetadataRequest('huggingface',item.asset_type.value,item.name,mode,revision)
+        if item.provider == 'modelscope':
+            if revision is not None: raise ProfileError('unsupported_input')
+            mode = 'default_observation'
+        else:
+            mode='default_observation' if revision is None else 'fixed' if re.fullmatch('[0-9a-f]{40}',revision) else 'symbolic'
+        request=MetadataRequest(item.provider,item.asset_type.value,item.name,mode,revision)
         build_target(request)  # pure validation, never URL input from client
         return request
 
@@ -114,7 +118,9 @@ class ProfileService:
             or source.body_sha256!=hashlib.sha256(raw).hexdigest() or source.source_url!=build_target(request)
             or any(getattr(source,k)!=getattr(request,k) for k in ('provider','resource_kind','repository_id','requested_revision','revision_mode'))
             or source.full_response_replay_available is not False or source.content_type!='application/json'
-            or source.descriptor_version!='metadata-source/1' or source.transport_version!='hf-metadata-transport/1'):
+            or source.descriptor_version!='metadata-source/1' or source.transport_version != {
+                'huggingface': 'hf-metadata-transport/1', 'modelscope': 'modelscope-metadata-transport/1'
+            }.get(request.provider)):
             raise ProfileError('metadata_invalid')
         unconfirmed=source.version_status=='bounded_content_revision_unconfirmed'
         if unconfirmed:

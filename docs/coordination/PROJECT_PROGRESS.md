@@ -1,17 +1,28 @@
 # OpenGuard 项目进度台账
 
+## 2026-09-30 B01 复现与发布门禁
+
+| 项目 | 当前证据 | 状态 / 责任 |
+|---|---|---|
+| HF 固定样本与 B01 回归 | v1/v2 各 5 model + 5 dataset，20/20 文件哈希与两份 manifest SHA-256 已在 Windows/Python 3.12.10 复核；矛盾 ModelScope 成功包络已拒绝，B01 定向与安全回归 `177 passed`。 | 本机通过；Luna 异机复现待签收。 |
+| ModelScope 真实探针 | 2026-09-30 首次重试仍 `timeout`，随后两次完整成功；同次成功回执模型 `11:25:40Z`、数据集 `11:25:45Z` 的响应 SHA-256、transport/parser 版本已脱敏登记。 | 后端 B 本机真实回执已取得；Luna 异机独立签收未完成。 |
+| Profile 工厂 | Windows collection 仍因 `zip_dispatcher.py` 无条件导入 `fcntl` 失败。 | G8 由 A/Root 修复后复跑；不得标记通过。 |
+| GitHub 发布 | 当前 B01 改动未提交，暂存区为空；工作区同时有独立 B02-A 改动。 | 工厂/异机门禁未通过，未提交或推送；Root 后续仅选择 B01 文件发布。 |
+
+复现命令、脱敏字段和失败回执见 [B01 复现说明](../p1/b01-reproduction.md)。本轮未改变授权、许可证或合规结论。
+
 更新时间：2026-09-05 21:35（Asia/Shanghai）
 
 ## 2026-09-27 B01 ModelScope 离线 Profile 解析补强
 
 | 范围 | 本轮结果 | 验证 / 发布状态 / 下一步 |
 |---|---|---|
-| ModelScope adapter | 新增 `ModelScopeMetadataParser`，仅消费 transport-owned 内存 JSON envelope，严格绑定 provider/kind/identity/descriptor/body hash 和固定 source URL；未接入网络、默认 factory 或 Profile refresh。 | 离线定向 Python 测试通过；未提交、未推送、未创建 PR。 |
+| ModelScope adapter | `ModelScopeMetadataParser` 已接入可选 Profile factory 的 provider 固定路由；transport 仅允许 `modelscope.cn`、固定 model/dataset API 路径和无 revision 的身份，严格绑定 descriptor、body hash、source URL、transport/parser version 与 facts/resource identity。真实 API 的 model `Path`/dataset `Namespace` 身份字段与 `Success=true`/`Message="success"` 成功 envelope 均已受限支持；仅忽略 HTTP 合法且不被消费的重复 `Set-Cookie`/`Vary`。 | 离线 transport/parser 回归 `103 passed`；2026-09-29 通过受控只读 transport 对公开 model、dataset 各一条完成身份/哈希/pending 探针。生产工厂跨栈测试仍受 Windows `fcntl` 既有收集错误阻断；本轮未提交、未推送。 |
 | 保守语义 | 所有输出字段及总 observation 均为 `pending`；`License` 只记录为 `declared_license_raw`；不生成授权、权利、SPDX、合规、Assessment 或 Report 结论。 | 跨 Hugging Face/ModelScope 一致性测试断言不出现 `authorization_status`、`license_expression_id`。 |
-| 异常元数据 | 错误 envelope、身份不匹配、非法标识、重复 JSON key、hash/transport version 篡改均失败关闭；可选字段类型异常转为 coverage gap。 | `62 passed`（ModelScope + HF unit/security 定向集）；`compileall` 与 `git diff --check` 通过。 |
-| 未完成 | 尚无 ModelScope 生产 transport、factory/profile refresh 接线、真实上游回执或独立异机验收。 | 后续由后端 A/Root 先定义并审计网络 transport，再另行启用；不能把本轮表述为生产接入。 |
+| 异常元数据 | 错误 envelope、身份不匹配、非法标识、重复 JSON key、除 `Set-Cookie`/`Vary` 外的重复 header、hash/transport version 篡改均失败关闭；可选字段类型异常转为 coverage gap。 | `103 passed`（ModelScope + HF unit/security/transport 定向集）；`compileall` 与 `git diff --check` 待本轮最终复核。 |
+| 未完成 | 无真实 ModelScope 上游回执、异机独立验收或扫描主链自动消费；ModelScope provider 声明未升级为授权、SPDX、Assessment 或 Report。 | 后续先关闭 Windows `fcntl` 跨栈门禁，再在受控网络环境完成真实回执和独立验收；不能把本轮表述为授权或合规结论。 |
 
-当前可独立演示：无需网络或服务即可解析受控 ModelScope 元数据并输出可追溯的 pending observation。尚不具备：ModelScope 在线抓取、授权或合规判断、正式 Profile 生产链路。距离可报名/参赛仍需关闭真实资源验收与异机运行门禁；距离完整作品提交还需完成生产接线、端到端演示与发布回执；距离获奖竞争力仍需双人 Gold、固定 Bench/holdout 和可复现对比证据。无统一分母和权重，不给出完成百分比。
+当前可独立演示：无需网络或服务即可解析受控 Hugging Face/ModelScope 元数据并输出可追溯的 pending observation；在显式开关下具备固定 provider 的 Profile refresh 代码路径。尚不具备：真实 ModelScope 在线回执、授权或合规判断、扫描主链自动消费和跨栈工厂验收。距离可报名/参赛仍需关闭真实资源验收与异机运行门禁；距离完整作品提交还需完成端到端演示与发布回执；距离获奖竞争力仍需双人 Gold、固定 Bench/holdout 和可复现对比证据。无统一分母和权重，不给出完成百分比。
 
 维护规则：每个任务点通过模型收工、Root 验收、测试、目录检查、提交和 GitHub 推送后更新。状态只使用 `已完成`、`进行中`、`未开始`、`阻塞`。完成度以可复现证据为准，不以代码行数估算。
 
@@ -1778,3 +1789,17 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 已发布：`77feeee3885c465eec29ce860e10e6228a6618d4` 已非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 已读回一致；`main` 未改动。
 - 范围：CZ selector blocker 复核、CZ-S1 基线更新及协作进度记录；无业务代码改动。格式、敏感信息和范围复核通过；本机 `reports/` 诊断文件未上传。
 - 门禁不变：G3 自动 source lifecycle、G8 Windows `fcntl`、前端回执、真人 Gold/裁决、正式评测及真实性能仍待关闭。
+
+## 2026-09-30 B02-A 静态 AI Detector 0.3 覆盖增强（未发布）
+
+- 已完成：在既有离线 Detector 0.3 上补充明确 SDK 构造器（OpenAI、Anthropic、Google、Cohere、Mistral）和 JSON/TOML/YAML 的受支持官方 API endpoint 识别；模型、数据集的既有 URL、AST 字面量调用与配置识别保持兼容。
+- 事实与安全边界：所有新结果仍为 `pending`，SDK 构造器仅证明静态服务引用，不能证明请求成功、实际使用、账户关系、许可证或授权。动态值、未知 endpoint、普通链接和 API key 均不产生资源事实或证据摘录。
+- 实测与错误分析：新增版本化固定语料 `static-ai-assets-v2.json`，由可执行测试实际计算 `TP=17`、`FP=0`、`FN=0`、micro Precision/Recall/F1 均为 `1.0`。该指标仅适用于该固定语料，不能外推到真实项目总体；复杂 YAML、动态/反射调用、别名逃逸和未支持 SDK 仍保守漏报，详见 `benchmarks/static-ai-assets-v2-evidence.md`。
+- 验证与发布：B02-A 加既有静态识别回归共 `151 passed in 0.76s`，`compileall backend/app/detectors` 与 `git diff --check` 通过。未提交、未推送、未改 `main`，且没有触碰 B01 metadata/Profile 在途文件或 `reports/` 本机诊断产物。
+
+## 2026-09-30 B02-B NOTICE/Licence 候选正式对象接纳（未发布）
+
+- 已完成：新增 A-owned license_notice_candidate_admission，只接受 B02-B 已验证的 facts v2 和调用方固定的 package SHA-256；将每条候选显式绑定到终态 ScanRun、相同 facts_hash 的 formal Assessment、既存 Component/AIAsset（根项目保留无资源 ID）及 A Evidence 对象。输出保持 review_required、pending、空 license expression、无义务/违规。
+- 明确隔离：facts v3 仍只是只读观察，不能降级或替代 v2 detector；B02-A AI Detector 不进入本接纳器，不能用 AI 资源事实代替 NOTICE/Licence source package 或 Evidence binding。两条链路须保留独立来源、指标和消费边界。
+- 验证：B02-B 既有 unit/security 加新增 A 接纳测试共 23 passed；compileall backend/app/p1 backend/app/detectors、git diff --check 与新增文件常见敏感信息检索通过。未启动服务、未改 factory/API/Report/扫描 pipeline。
+- 未完成：自动 collector→A admission→stage/bind→持久化/Report 生产生命周期、前端回执、Gold/正式 Bench/性能和 Windows 全量回归仍未关闭；本轮未提交、未推送、未改 main。

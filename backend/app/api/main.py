@@ -884,7 +884,7 @@ def create_default_app() -> FastAPI:
         from app.p1.profile import ProfileService
         from app.p1.profile_store import MetadataStore
         from app.ingestion.metadata_egress import MetadataTransport
-        from app.scanners.huggingface_metadata import HuggingFaceMetadataParser
+        from app.scanners.metadata_parser_router import ProviderMetadataParser
 
         # Independent opt-in observation sidecar, not Formal Assessment.
         # Fail closed on initialization; construction must not fetch metadata.
@@ -893,7 +893,7 @@ def create_default_app() -> FastAPI:
         profile_service = ProfileService(
             registry, metadata_store,
             transport=MetadataTransport(enabled=True),
-            parser=HuggingFaceMetadataParser(),
+            parser=ProviderMetadataParser(),
         )
     return create_app(
         registry,

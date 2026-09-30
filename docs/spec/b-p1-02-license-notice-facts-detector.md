@@ -35,6 +35,25 @@ P1 v1 仍固定引用 B03/B04 v1 facts，保证旧 commit/hash 可复现；本 d
 - Node：固定预期的 source package canonical Hash、Finding代码分布、0 Obligation和保守语义；
 - B05 Bench、B06 真人 Gold/FN 与 B07 性能仍需各自独立的 artifact、治理和实测，不由本模块伪造。
 
+## 5. A 正式事实／对象链路接纳
+
+`app.p1.license_notice_candidate_admission` 是 A 所有的显式接纳边界。它先以本
+模块重新验证 v2 package hash 与候选闭包，再要求调用方提供既有终态
+`ScanRun`、同一 `facts_hash` 的 formal `Assessment`，以及每个候选 subject 与
+source Evidence 到 P0 对象的精确绑定。输出是不可变、`review_required/pending`
+的接纳记录；它不改写 ScanRun，故不会让候选自身造成 facts hash 循环。
+
+- `root_project` 没有可伪造的 P0 component/AIAsset，保留 `resource_id=null`；
+  `dependency` 和 `ai_resource` 必须分别绑定现存 Component 与 AIAsset。
+- 接纳记录不创建 LicenseExpression、Obligation、Remediation、RiskFinding、Report
+  或新的 Assessment；后续持久化/展示必须消费该记录，不能反推法律或授权结论。
+- facts v3 adapter 仅提供版本标记的只读观察，不能作为 v2 detector 输入。B02-A
+  AI Detector 的静态 AI 资源事实也不接受为此模块的 source package、Evidence
+  binding 或替代实现；两条链路必须独立保留来源和评测口径。
+- 该接线尚未把 collector/admission 自动插入生产扫描 pipeline 或 factory；它仅
+  关闭“离线候选没有 A 正式对象锚点”的接口缺口，生产 lifecycle、持久化、报告
+  消费和独立验收仍须分别完成。
+
 `tests/fixtures/p1-integration-b-v1/candidate-matrix.json` 补充固定 facts 的完整候选矩阵：
 它覆盖现有 gap/provider declaration 正例、零候选 dependency 反例、NOTICE gap 不得变为违规的
 误报保护，以及所有 facts/gap/declaration 必须映射的漏报保护。它只是 detector 回归 oracle，

@@ -79,7 +79,10 @@ def _header_gate(raw, limits):
         if b':' not in line or line[:1] in (b' ', b'\t'):
             raise MetadataError(ErrorCode.PROTOCOL)
         key = line.split(b':', 1)[0].lower()
-        if key in seen:
+        # HTTP permits repeated Set-Cookie. It is deliberately ignored by the
+        # metadata client (no cookie jar, no redirect/retry), while duplicate
+        # framing, media or authentication headers remain fail-closed.
+        if key in seen and key not in {b'set-cookie', b'vary'}:
             raise MetadataError(ErrorCode.PROTOCOL)
         seen.add(key)
 

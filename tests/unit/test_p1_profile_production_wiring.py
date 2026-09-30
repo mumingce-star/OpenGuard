@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 from app.api import main
 from app.ingestion.metadata_egress import MetadataTransport
 from app.scanners.huggingface_metadata import HuggingFaceMetadataParser
+from app.scanners.metadata_parser_router import ProviderMetadataParser
 from app.assessment.engine import facts_digest
 from app.frontend_acceptance import _facts, _persist
 from test_p1_profile_owner_review import logical, stable
@@ -39,7 +40,7 @@ def test_enabled_factory_uses_real_metadata_chain(tmp_path, monkeypatch):
         assert service.store is not None
         assert service.store.path == tmp_path / 'data' / 'metadata.db'
         assert type(service.transport) is MetadataTransport
-        assert type(service.parser) is HuggingFaceMetadataParser
+        assert type(service.parser) is ProviderMetadataParser
 
 
 def seed_profile(registry):
@@ -47,6 +48,14 @@ def seed_profile(registry):
     value['ai_assets'][0].update(name='google-bert/bert-base-uncased', version=None,
         provider='huggingface', asset_type='model', authorization_status='pending',
         license_expression_id=None, source_url='https://huggingface.co/google-bert/bert-base-uncased')
+    return _persist(registry, value, 'completed')
+
+
+def seed_modelscope_profile(registry):
+    value = _facts(7502)
+    value['ai_assets'][0].update(name='acme/demo-model', version=None,
+        provider='modelscope', asset_type='model', authorization_status='pending',
+        license_expression_id=None, source_url='https://modelscope.cn/models/acme/demo-model')
     return _persist(registry, value, 'completed')
 
 
@@ -63,6 +72,58 @@ def offline_fetch(self, request):
         source_url=build_target(request), fetched_at='2026-09-22T00:00:00Z',
         content_type='application/json', body_size=len(body),
         body_sha256=hashlib.sha256(body).hexdigest()), body)
+
+
+def offline_modelscope_fetch(self, request):
+    from app.ingestion.metadata_types import SourceDescriptor, TemporaryMetadata, build_target
+    body = json.dumps({'Code': 200, 'Success': True, 'Data': {
+        'Namespace': 'acme', 'Name': 'demo-model', 'Visibility': 'public',
+        'Gated': False, 'License': 'Apache-2.0', 'Revision': 'provider-tag',
+    }}).encode()
+    return TemporaryMetadata(SourceDescriptor(
+        provider=request.provider, resource_kind=request.resource_kind,
+        repository_id=request.repository_id, requested_revision=None,
+        revision_mode='default_observation', resolved_revision=None,
+        revision_locator=None, version_status='bounded_content_revision_unconfirmed',
+        source_url=build_target(request), fetched_at='2026-09-29T00:00:00Z',
+        content_type='application/json', body_size=len(body),
+        body_sha256=hashlib.sha256(body).hexdigest(),
+        transport_version='modelscope-metadata-transport/1'), body)
+
+
+def test_enabled_factory_routes_modelscope_through_controlled_chain(tmp_path, monkeypatch):
+    configure(monkeypatch, tmp_path / 'data')
+    monkeypatch.setattr(MetadataTransport, 'fetch', offline_modelscope_fetch)
+    with TestClient(main.create_default_app()) as client:
+        run = seed_modelscope_profile(client.app.state.profile_service.registry)
+        body = dict(resource_ids=[run.ai_assets[0].id], expected_facts_hash=facts_digest(run), idempotency_key='modelscope')
+        response = client.post('/api/v1/scans/' + run.id + '/resource-profiles/refresh', json=body)
+        assert response.status_code == 200 and response.json()['status'] == 'succeeded'
+        profile = client.get('/api/v1/scans/' + run.id + '/resources/' + run.ai_assets[0].id + '/profile').json()
+        observation, = profile['metadata_observations']
+        assert observation['provider'] == 'modelscope'
+        assert observation['source_url'] == 'https://modelscope.cn/api/v1/models/acme/demo-model'
+        assert observation['resolved_revision'] is None
+        expected_body = json.dumps({'Code': 200, 'Success': True, 'Data': {
+            'Namespace': 'acme', 'Name': 'demo-model', 'Visibility': 'public',
+            'Gated': False, 'License': 'Apache-2.0', 'Revision': 'provider-tag',
+        }}).encode()
+        assert observation['content_hash'] == hashlib.sha256(expected_body).hexdigest()
+        assert observation['parser_version'] == 'openguard-modelscope-metadata/1'
+        assert observation['verification_status'] == 'pending'
+        assert profile['authorization_fact']['status'] == 'pending' and profile['license_observations'] == []
+
+
+def test_modelscope_rejects_versioned_resource_before_transport(tmp_path, monkeypatch):
+    configure(monkeypatch, tmp_path / 'data')
+    monkeypatch.setattr(MetadataTransport, 'fetch', forbidden)
+    with TestClient(main.create_default_app()) as client:
+        value = _facts(7503)
+        value['ai_assets'][0].update(name='acme/versioned', version='main', provider='modelscope', asset_type='model')
+        run = _persist(client.app.state.profile_service.registry, value, 'completed')
+        body = dict(resource_ids=[run.ai_assets[0].id], expected_facts_hash=facts_digest(run), idempotency_key='reject-version')
+        response = client.post('/api/v1/scans/' + run.id + '/resource-profiles/refresh', json=body)
+        assert response.status_code == 400 and response.json()['error']['code'] == 'invalid_argument'
 
 
 @pytest.mark.parametrize('profile', [None, '0', '1'])

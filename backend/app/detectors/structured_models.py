@@ -15,6 +15,17 @@ _CALLS = {
         'generate_content', 'agenerate_content',
         'generate_content_stream', 'agenerate_content_stream',
     )},
+    # Constructors are explicit SDK-client declarations.  They establish a
+    # service reference, not a successful remote request or authorization.
+    'openai.OpenAI': ('api', 'api', 'openai'),
+    'openai.AsyncOpenAI': ('api', 'api', 'openai'),
+    'anthropic.Anthropic': ('api', 'api', 'anthropic'),
+    'anthropic.AsyncAnthropic': ('api', 'api', 'anthropic'),
+    'google.genai.Client': ('api', 'api', 'google'),
+    'google.generativeai.GenerativeModel': ('api', 'api', 'google'),
+    'cohere.Client': ('api', 'api', 'cohere'),
+    'mistralai.Mistral': ('api', 'api', 'mistral'),
+    'mistralai.client.Mistral': ('api', 'api', 'mistral'),
 }
 _CONFIG_KEYS = {
     'model': ('model', 'huggingface'), 'model_id': ('model', 'huggingface'),
@@ -23,6 +34,17 @@ _CONFIG_KEYS = {
     'dataset': ('dataset', 'huggingface'), 'dataset_id': ('dataset', 'huggingface'),
     'dataset_name': ('dataset', 'huggingface'), 'dataset_path': ('dataset', 'huggingface'),
 }
+_API_ENDPOINTS = {
+    'https://api.openai.com/v1': ('api', 'openai'),
+    'https://api.anthropic.com': ('api', 'anthropic'),
+    'https://generativelanguage.googleapis.com': ('api', 'google'),
+    'https://api.cohere.com': ('api', 'cohere'),
+    'https://api.mistral.ai': ('api', 'mistral'),
+}
+_API_CONFIG_KEYS = frozenset({
+    'api_base', 'api_url', 'base_url', 'endpoint', 'openai_base_url',
+    'anthropic_base_url', 'google_api_base', 'cohere_base_url', 'mistral_base_url',
+})
 _SIMPLE_YAML = re.compile(r"^[ ]*(?P<key>[A-Za-z_][A-Za-z0-9_-]*)\s*:\s*(?P<quote>['\"])(?P<value>[^'\"\\\r\n]+)(?P=quote)\s*$")
 _FENCE = re.compile(r'^ {0,3}(`{3,}|~{3,})(.*)$')
 _HF_NAME = re.compile(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+')
@@ -149,6 +171,12 @@ def _python_asset_references(locator, text):
             if rule is None:
                 continue
             asset_type, parameter, provider = rule
+            if asset_type == 'api':
+                # An SDK constructor has no resource-name argument.  Keep the
+                # provider as its stable identity and never expose constructor
+                # arguments (which may contain credentials) as evidence.
+                yield asset_type, provider, provider, node.lineno + offset, (node.end_lineno or node.lineno) + offset, ('example_reference' if locator.endswith('.md') else 'actual_call')
+                continue
             values = [kw.value for kw in node.keywords if kw.arg == parameter]
             # A literal keyword mapping is a structured configuration, not a
             # runtime value.  Accept it only when it contributes exactly one
@@ -210,6 +238,11 @@ def _config_asset_references(locator, text):
                 name = match.group('value')
                 if _valid_name(provider, name):
                     yield asset_type, provider, name, line_number, line_number, 'explicit_config_candidate'
+            elif match and match.group('key') in _API_CONFIG_KEYS:
+                api = _API_ENDPOINTS.get(match.group('value').rstrip('/'))
+                if api:
+                    asset_type, provider = api
+                    yield asset_type, provider, provider, line_number, line_number, 'explicit_config_candidate'
         return
     else:
         return
@@ -220,6 +253,11 @@ def _config_asset_references(locator, text):
                     asset_type, provider = _CONFIG_KEYS[key]
                     if _valid_name(provider, child):
                         yield asset_type, provider, child
+                elif key in _API_CONFIG_KEYS and isinstance(child, str):
+                    api = _API_ENDPOINTS.get(child.rstrip('/'))
+                    if api:
+                        asset_type, provider = api
+                        yield asset_type, provider, provider
                 yield from visit(child)
         elif isinstance(item, list):
             for child in item:

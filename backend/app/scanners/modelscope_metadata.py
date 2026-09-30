@@ -13,7 +13,8 @@ import json
 import re
 from typing import Any
 
-from app.ingestion.metadata_types import SourceDescriptor, TemporaryMetadata
+from app.ingestion.metadata_types import (SourceDescriptor, TemporaryMetadata,
+                                          modelscope_envelope_succeeded)
 from app.p1.profile_models import ParsedMetadataObservation
 
 
@@ -87,8 +88,9 @@ def _target(kind: str, identity: str) -> str:
 class ModelScopeMetadataParser:
     """Parse a strict ModelScope API envelope without side effects.
 
-    Accepted provider fields are deliberately narrow: ``Data.Namespace`` and
-    ``Data.Name`` identify the repository; ``License``, ``Visibility``,
+    Accepted provider fields are deliberately narrow: ``Data.Namespace`` or
+    the currently observed public API alias ``Data.Path``, plus ``Data.Name``,
+    identify the repository; ``License``, ``Visibility``,
     ``Gated``, ``Revision`` and ``LastUpdatedTime`` remain provider-declared
     observations. Unknown or malformed optional values become coverage gaps.
     """
@@ -156,17 +158,21 @@ class ModelScopeMetadataParser:
         ):
             raise _invalid()
         payload = _load(body)
-        if payload.get("Code") != 200 or payload.get("Success") is not True or type(payload.get("Data")) is not dict:
+        success = modelscope_envelope_succeeded(payload)
+        if payload.get("Code") != 200 or not success or type(payload.get("Data")) is not dict:
             raise _invalid()
         data = payload["Data"]
-        namespace, name = _text(data.get("Namespace"), maximum=96), _text(data.get("Name"), maximum=96)
+        if "Namespace" in data and "Path" in data and data["Namespace"] != data["Path"]:
+            raise _invalid()
+        namespace_source = "Namespace" if "Namespace" in data else "Path"
+        namespace, name = _text(data.get(namespace_source), maximum=96), _text(data.get("Name"), maximum=96)
         if namespace is None or name is None or not _PART.fullmatch(namespace) or not _PART.fullmatch(name):
             raise _invalid()
         if f"{namespace}/{name}" != resource_identity:
             raise _invalid()
 
         # Even the identity is only a provider-declared, bounded observation.
-        fields = [_field("canonical_id", resource_identity, "/Data/Namespace+/Data/Name", "pending")]
+        fields = [_field("canonical_id", resource_identity, f"/Data/{namespace_source}+/Data/Name", "pending")]
         gaps: set[str] = {"metadata_revision_unavailable"}
         self._observed_text(data, "Revision", "revision_hint", fields, gaps)
         self._observed_text(data, "LastUpdatedTime", "last_modified", fields, gaps)

@@ -190,3 +190,28 @@ Luna 实现 fixture 时应至少覆盖下列 ID；预期是 Draft 语义，不�
 4. B4/B5 或人工复核在独立证据链上处理 `license_text`，不得把本 Draft 映射作为许可/授权结论来源。
 
 本设计的完成只表示字段和映射边界已明确；不表示 HF 集成、网络获取、许可证核验、用户授权或合规结论已完成。
+
+## 9. 可选生产 Profile transport（2026-09-29）
+
+默认工厂只有在 `OPENGUARD_ENABLE_PROFILE_METADATA=1` 时才创建独立的
+`metadata.db` sidecar。它的请求不接受客户端 URL、Host、header、token 或 revision
+覆盖；只从终态 `ScanRun` 中已存在的 `AIAsset` 身份派生固定目标。
+
+| provider | 支持资源 | 固定目标 | 版本语义 |
+| --- | --- | --- | --- |
+| `huggingface` | model、dataset | `https://huggingface.co/api/{kind}s/{namespace/name}[/revision/{revision}]` | 仅 40 位 SHA 可作为 fixed revision；否则记录有界观察。 |
+| `modelscope` | model、dataset | `https://modelscope.cn/api/v1/{kind}s/{namespace/name}` | 只允许无 revision 的默认观察；provider 的 `Revision` 是未核验字段，绝不绑定为解析后的资源版本。 |
+
+传输层固定 provider→host 映射，并沿用受限 DNS、公开地址过滤、TLS、无重定向、
+总超时、响应大小、严格 JSON、内存临时 body 与不回放原文的约束。ModelScope 响应必须
+是 `Code=200`、`Success=true`（model）或 `Message="success"`（dataset）且 `Data.Namespace`（或当前公开 API 的 `Data.Path`）与
+`Data.Name` 和请求身份完全相同的 envelope；若两个 namespace 字段同时存在却不一致则拒绝；
+任何不匹配均失败关闭。响应中仅允许 HTTP 语义允许重复且客户端忽略的 `Set-Cookie`、`Vary`；其余重复 header 仍拒绝。解析器也由 transport-owned `SourceDescriptor.provider` 固定路由，
+不能由请求体选择。
+
+每一条 observation 同时绑定 `provider/resource_kind/repository_id/requested_revision`、固定
+source URL、body SHA-256、获取时间、transport/parser version、ScanRun 的 facts hash 与资源
+identity key。ModelScope 未取得不可变 revision 时显式标记
+`bounded_content_revision_unconfirmed` 和 coverage gap；声明的 license、visibility、gate
+均保持 `pending` observation，绝不写入 `license_expression_id`、授权、Assessment 或 Report。
+该段只定义受控链路和离线回归边界；真实外网回执、异机验收和扫描主链消费仍是未关闭门禁。
