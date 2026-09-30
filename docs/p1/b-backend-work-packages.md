@@ -15,26 +15,27 @@ xzb、Luna 和 Sol 的既定职责处理。
 
 | 工作包 | 当前本地状态 | 已有交付 | 关闭条件 |
 |---|---|---|---|
-| B01 Resource Profile parser | 已实现、待独立/生产验收 | Hugging Face model/dataset 离线 parser、5+5 固定快照、3反例 | A 显式接线；Luna 在授权环境复验真实观察；Sol 审核语义 |
-| B02 Detector | 已实现并完成本地 Python 验收 | 从 B03/B04 v2 facts 导出 17 个 review 候选、0 obligation | Luna 独立篡改复验；新 P1 revision 消费候选；不能直接变 Formal Finding |
-| B03 License relation facts | 已实现演示集 | v2 许可证观察强度、关系状态、来源/选中值 hash | 扩展为经批准的真实库存；人工核验适用性 |
-| B04 NOTICE facts | 已实现演示集 | NOTICE/版权/gap 事实及 evidence 闭包 | A 将冻结 facts 转为 NoticeDraft；Luna 重启/异机验收 |
-| B05 Bench | development 输入集已实现，尚无真实执行 | Bench 2.0 Java Schema、库、离线 CLI 与 detector 输入/prediction/result 固定 artifact | 生成带真实预测/结果 artifact 的评测 revision，并经 B06 Gold 治理后才可请求高等级 |
-| B06 Gold / FN 治理 | 规范已具备，未执行 | 公开语料、双人复核、holdout、amendment 与 FN/FP taxonomy | 人工 Gold、争议关闭、冻结 hash、独立复核回执 |
-| B07 性能 | 未开始实测 | 只有目标与测量边界 | 固定语料、运行配置、分位数/失败率原始回执 |
+| B01 Resource Profile parser | 离线实现完成，待独立/生产验收 | Hugging Face 与 ModelScope model/dataset 解析、字段归一化、缺失/非法/超大/版本冲突反例 | A 显式接线；Luna 在授权环境复验真实观察；Sol 审核语义 |
+| B02 License/NOTICE facts detector | 已实现并完成本地 Python 验收 | 从 B03/B04 v2 facts 导出 review 候选；Obligation 恒为空 | Luna 独立篡改复验；新 P1 revision 消费候选；不能直接变 Formal Finding |
+| B03 License relation facts | 离线事实链已扩展，待真实库存 | 根许可证、直接依赖、包管理器与 AI Profile 的 relation state、来源/选中值 hash | 经批准的真实库存；人工核验适用性 |
+| B04 NOTICE source facts | 离线事实包已扩展，待 A 接线 | 截断/编码/空/超大/重复、遗漏/gap、关系与 retained/whole/excerpt hash | A 绑定后再消费；Luna 重启/异机验收 |
+| B05 Bench | 25 槽位准备台账已实现，尚无真实执行 | 固定样本/holdout、Gold/预测/指标分离及运行 hash 绑定；所有槽位仍 `planned/not_collected` | 收集真实仓库/快照与失败回执，生成真实预测/结果，并经 B06 Gold 治理 |
+| B06 FN/FP 治理 | 离线 taxonomy/消融门禁已具备，未执行真人评测 | Tier A/B/C FN、FP 分类、规则变更/holdout 记录格式 | 人工 Gold、争议关闭、冻结 hash、独立复核回执 |
+| B07 性能 | receipt v2 与汇总器已实现，未开始实测 | 受控 Linux 冷/热、五阶段、资源/工具版本、p50/p95/覆盖率/失败率 schema | A 提供固定语料与受控 Linux 原始回执；不得以本地样例形成结论 |
 
 ## 已验证链路
 
 ```text
 固定 Hugging Face 快照 ──> B01 受限解析
                                  │
-B03/B04 固定 facts ───────────> B02 review 候选 ──> A 的冻结绑定（后续）
+B03/B04 固定 facts ───────────> B02 License/NOTICE review 候选 ──> A 的冻结绑定（后续）
                                  │
 Bench artifact / Gold / 性能回执 ─> B05 / B06 / B07（独立后续）
 ```
 
 - B01 只输出 `ParsedMetadataObservation`，许可证声明与授权保持 `pending`；详见
   [B01 parser](b01-huggingface-metadata-parser.md)。
+- P0 `Detector 0.3` 是独立的 AI 资源静态识别器，输出 pending/review-required 的资源候选、文件位置、规则版本与证据 hash；它不是 B02，也不消费 B03/B04 facts。
 - B02 只输出内部 `LicenseNoticeCandidateSet`。gap 和 provider 声明均为
   `review_required`，不构成违规或合规结论；详见
   [B02 detector](../spec/b-p1-02-license-notice-facts-detector.md)。
@@ -64,8 +65,7 @@ Bench artifact / Gold / 性能回执 ─> B05 / B06 / B07（独立后续）
    P1 integration revision 的事实范围。
 4. A/Root 完成 opt-in factory、metadata sidecar 与候选到 NoticeDraft/Profile/Report 的
    不可变绑定；失败时必须保持 feature disabled。
-5. B 线建立带固定 artifact 的 B05 评测 revision，完成 B06 真人 Gold/FN 治理，再以
-   固定配置执行 B07 性能测量。
+5. B 线先收集真实固定仓库/快照与失败回执，再建立 B05 评测 revision、完成 B06 真人 Gold/FN 治理，并在 A 提供的受控 Linux 环境以固定配置执行 B07 性能测量。
 6. xzb 在 A 的公共接口和快照语义冻结后实现 Profile/NOTICE 页面与浏览器验收。
 
 ## 不可跨越的门禁
@@ -78,4 +78,4 @@ Bench artifact / Gold / 性能回执 ─> B05 / B06 / B07（独立后续）
 
 ## 2026-09-23 状态更正（AMENDMENT）
 
-本节优先于本文件中较早的状态快照：B01 `resource-profile-v2` 已是 5 model + 5 dataset，具有 4 类反例；B02 已有固定 candidate matrix；B03/B04 已扩展为 v3 离线库存及已许可 archive 观察（仍非 NOTICE 原文或许可证适用性结论）；B05 是 Gold 未冻结时的 smoke 运行准备；B06 有双人盲审/分歧/amendment 工具但没有实际双人 Gold；B07 已有受控 receipt 汇总器但没有真实性能结论。所有结论仍以当前 revision、Hash、独立验收和人工治理为准。
+本节优先于本文件中较早的状态快照：P0 `Detector 0.3` 与 P1 B02 是不同任务，前者不属于 B02；B01 已包含 Hugging Face/ModelScope 离线解析与反例；B02 已有固定 candidate matrix；B03/B04 已扩展为 v3 离线库存与独立 NOTICE source 事实包（仍非 NOTICE 原文或许可证适用性结论）；B05 仅有 25 槽位准备台账，未收集真实样本；B06 有 taxonomy/消融与盲审工具但没有实际双人 Gold；B07 已有受控 Linux receipt v2 汇总器但没有真实性能结论。所有结论仍以当前 revision、Hash、独立验收和人工治理为准。

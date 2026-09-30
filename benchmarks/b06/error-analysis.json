@@ -1,0 +1,7 @@
+{
+  "schema": "openguard.b06-error-analysis/1",
+  "status": "preparation_not_evaluated",
+  "gold_frozen": false,
+  "errors": [],
+  "rule_changes": []
+}

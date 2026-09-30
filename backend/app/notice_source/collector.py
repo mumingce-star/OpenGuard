@@ -91,6 +91,8 @@ def collect_notice_source_package(
                         content=Content(state=content_state, text=retained.decode("utf-8", "strict"), encoding="utf-8",
                         byte_range=[0, len(retained)], truncated=content_state == "excerpt",
                         retained_bytes_sha256=hashlib.sha256(retained).hexdigest(), whole_bytes_sha256=whole,
+                        excerpt_bytes_sha256=(hashlib.sha256(retained).hexdigest()
+                                              if content_state == "excerpt" else None),
                         gap_codes=[]), collector=collector, relation=relation))
                     continue
             except (IngestionSecurityError, ValueError):

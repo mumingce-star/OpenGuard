@@ -11,7 +11,7 @@
 
 Detector 0.3 的离线 fixture 是 `tests/fixtures/detector-0.3/cases.json`：包含 AST、字面量结构化配置、URL revision 正例，以及 `FN-ABSENT`、`FN-EVIDENCE`、`FP-ATTRIBUTION`、`FP-HALLUCINATED`、`FP-OVERPRECISION`、`FP-LEAKAGE` 各一例。每个 `family_id` 只允许出现于 train、dev、holdout 中的一个 split；该文件自声明 `offline_non_gold`，不能转换为正式 Gold 或指标分母。
 
-当前支持的 Python 规则是经 AST 与明确顶层导入绑定证实的调用：既有 `smolagents`/`litellm`，以及 `transformers` 的 `.from_pretrained(...)` 和 `datasets.load_dataset(...)`。仅导入 SDK 不创建资源候选；`.py` 中满足规则的调用记为 `ast` 实际调用候选，Markdown Python fenced block 记为 `static_pattern` 示例引用。动态 unpack、混合 key、重复/不明确 key、变量、计算表达式一律不检测。
+当前静态识别覆盖 Hugging Face/ModelScope 模型与数据集 URL、Python 调用、Python 与 JavaScript/TypeScript 中具明确导入和构造调用的 OpenAI/Anthropic/Google SDK，以及 YAML/JSON/TOML 与 `.env` 的受限字面量配置入口。输出统一为 pending/review-required 资源候选，带资源类型、来源、文件/行定位、规则版本和证据 SHA-256；环境变量值不进入证据。仅导入 SDK、普通 URL、动态字符串、别名/动态 import、注释/文档与无关配置均不形成候选。
 
 TOML、JSON 和受限的单行 YAML 仅接受明确的模型/数据集字段（如 `model_name_or_path`、`pretrained_model_name_or_path`、`dataset_name`）；它们以 `manifest_parser` 和 `manifest_field` 作为配置候选证据，不表述实际运行。JSON 重复键、无效 TOML、YAML 动态/复杂结构均失败关闭。URL 仅接受明确的 Hugging Face 资源根或 `resolve/blob` 文件路径；docs、blog、papers、tree、space、登录等路由一律是负例。
 
@@ -53,6 +53,6 @@ TOML、JSON 和受限的单行 YAML 仅接受明确的模型/数据集字段（�
 
 ### B07
 
-受控 receipt 统一使用 `openguard.controlled-pipeline-receipt/1`，必须含：`execution_mode="controlled"`、`production_scan_started=false`、稳定 environment、非负总耗时及各 stage 时长、状态、输入/配置/结果 artifact hashes，以及 `error_classification`。成功必须为 `not_observed` 且错误数组为空；失败必须为 `observed` 且只使用受控错误码（输入、hash、detector、结果、环境或内部失败）。任何 receipt 缺字段、环境不一致、重复 `receipt_id`、来源 hash 未固定或有生产扫描迹象，均不能进入汇总。`b07-summarize-receipts.mjs` 输出错误码计数的受控描述统计，不是生产性能基准。
+受控 receipt 统一使用 `openguard.controlled-pipeline-receipt/2`，必须含：`execution_mode="controlled_linux"`、`production_scan_started=false`、`startup_mode=cold|warm`、固定 Linux kernel/image digest、CPU、内存限制/峰值、ScanCode/Syft/Detector/规则版本、输入/配置/结果 artifact hashes。阶段以固定顺序记录 `unpack`、`scancode`、`syft`、`static_detector`、`rule_consolidation` 的耗时和 completed/failed/not_run 状态；失败必须保留受控错误码与原因。任何 receipt 缺字段、环境不一致、重复 `receipt_id`、来源 hash 未固定或有生产扫描迹象，均不能进入汇总。`b07-summarize-receipts.mjs` 输出 p50/p95、冷/热、阶段覆盖率、失败率和错误分类的描述统计，并固定 `formal_performance_claimed=false`，不是生产性能基准。
 
 amendment 只能追加，必须含 parent revision、受影响 artifact、旧/新 SHA-256、原因、提出者、人工批准者和时间；影响 source、label、split、review 或 freeze 时，相关 evaluation 自动失效且必须重跑。

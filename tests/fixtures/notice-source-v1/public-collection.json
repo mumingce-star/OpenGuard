@@ -1,0 +1,86 @@
+{
+  "schema_version": "openguard.notice-source/1",
+  "observed_at": "2026-09-30T00:00:00Z",
+  "coverage": {
+    "state": "partial",
+    "omissions": ["MISSING-NOTICE"],
+    "gap_codes": ["path_not_in_inventory"]
+  },
+  "observations": [
+    {
+      "observation_key": "root-notice",
+      "locator": "NOTICE",
+      "content": {
+        "state": "full",
+        "text": "Open source notice\n",
+        "encoding": "utf-8",
+        "byte_range": [0, 19],
+        "truncated": false,
+        "retained_bytes_sha256": "15c217a933f430b07cbd824e7de25fac22314dcc5c41cfa5e9d6e1a09fe2fe56",
+        "whole_bytes_sha256": "15c217a933f430b07cbd824e7de25fac22314dcc5c41cfa5e9d6e1a09fe2fe56",
+        "excerpt_bytes_sha256": null,
+        "gap_codes": []
+      },
+      "collector": {"type": "collector", "name": "openguard.notice-source", "version": "1.0", "config_digest": null},
+      "relation": {"state": "unresolved", "subject": null, "basis": "no_unique_resource_binding"}
+    },
+    {
+      "observation_key": "dependency-notice",
+      "locator": "third_party/NOTICE",
+      "content": {
+        "state": "excerpt",
+        "text": "Excerpt: model attribution\n",
+        "encoding": "utf-8",
+        "byte_range": [0, 27],
+        "truncated": true,
+        "retained_bytes_sha256": "aab524ae0a7d586a63709825c63b3df221daf1001f5092c241f9f25917841489",
+        "whole_bytes_sha256": "8c6e0ab07a153a2c5ee93f0b64e7b2e28a9acbc0a5901130030a56008d3d90bb",
+        "excerpt_bytes_sha256": "aab524ae0a7d586a63709825c63b3df221daf1001f5092c241f9f25917841489",
+        "gap_codes": []
+      },
+      "collector": {"type": "collector", "name": "openguard.notice-source", "version": "1.0", "config_digest": null},
+      "relation": {"state": "resolved", "subject": "dependency:demo", "basis": "unique_manifest_evidence"}
+    },
+    {
+      "observation_key": "empty-notice",
+      "locator": "EMPTY-NOTICE",
+      "content": {
+        "state": "full",
+        "text": "",
+        "encoding": "utf-8",
+        "byte_range": [0, 0],
+        "truncated": false,
+        "retained_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "whole_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "excerpt_bytes_sha256": null,
+        "gap_codes": []
+      },
+      "collector": {"type": "collector", "name": "openguard.notice-source", "version": "1.0", "config_digest": null},
+      "relation": {"state": "unresolved", "subject": null, "basis": "empty_content_observed"}
+    },
+    {
+      "observation_key": "duplicate-notice",
+      "locator": "COPYING",
+      "content": {
+        "state": "full",
+        "text": "Duplicate notice\n",
+        "encoding": "utf-8",
+        "byte_range": [0, 17],
+        "truncated": false,
+        "retained_bytes_sha256": "09052a8920cbe381e12cfc74e4546bb1d3c865064b69a050ebbec0b91b91086d",
+        "whole_bytes_sha256": "09052a8920cbe381e12cfc74e4546bb1d3c865064b69a050ebbec0b91b91086d",
+        "excerpt_bytes_sha256": null,
+        "gap_codes": []
+      },
+      "collector": {"type": "collector", "name": "openguard.notice-source", "version": "1.0", "config_digest": null},
+      "relation": {"state": "unresolved", "subject": null, "basis": "duplicate_bytes_not_a_unique_binding"}
+    },
+    {
+      "observation_key": "missing-notice",
+      "locator": "MISSING-NOTICE",
+      "content": {"state": "not_scanned", "text": null, "encoding": null, "byte_range": null, "truncated": null, "retained_bytes_sha256": null, "whole_bytes_sha256": null, "excerpt_bytes_sha256": null, "gap_codes": ["path_not_in_inventory"]},
+      "collector": {"type": "collector", "name": "openguard.notice-source", "version": "1.0", "config_digest": null},
+      "relation": {"state": "unresolved", "subject": null, "basis": "source_path_missing"}
+    }
+  ]
+}

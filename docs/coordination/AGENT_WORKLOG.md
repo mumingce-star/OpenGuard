@@ -8406,6 +8406,13 @@
 - **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration`；无提交、推送、PR、Issue 或 evidence_id。
 - **token 使用说明**：本次运行精确 token 数不可获得；开工估算 20,000～40,000，实际完成范围收缩为可安全修复和门禁验证，未完成跨平台存储适配及真人/真实环境评测。
 
+## 20260930-2030-GPT5-detector-03-static-assets
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / Detector 0.3 静态资源识别与固定 Bench 验收）；**日期时间**：2026-09-30 20:30（Asia/Shanghai）。
+- **任务目标**：按用户最新优先级完善 `backend/app/detectors/static_assets.py`，覆盖 Hugging Face/ModelScope 模型与数据集链接、OpenAI/Anthropic/Google SDK/环境/结构化配置、Python/JavaScript/TypeScript/YAML/JSON/TOML 静态入口；统一候选结构并用固定 Bench 的 Precision、Recall、F1 和 FN/FP 分类验收，补齐普通 URL、动态字符串、无关配置、假阳性 SDK 名称反例。
+- **开始前确认**：前序已按协作契约读取 README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF、分支/状态/最近提交；工作区存在 B01、B02-A/B02-B 并行未提交改动。开始实现前将再次核对 `static_assets.py` 及其测试的改动归属，避免覆盖。
+- **预计修改与验收**：仅 Detector 0.3 代码、其专属 fixed Bench/fixture/test、FN/FP 分类输出及所需文档/进度/日志；不启动服务、不将候选提升为授权或合规结论。运行定向单元/安全/Bench、`compileall`、`git diff --check` 和敏感信息检查。精确 token 遥测不可获得，估算 18,000～35,000。
+
 ## 20260930-2035-GPT5-全量发布与P1集成
 
 - 状态：START
@@ -8422,3 +8429,116 @@
 - GitHub：发布前 `origin/integration/p1...HEAD` 为 `0 1`；已非强制快进推送，工作分支与 `integration/p1` 均读回 `0d21f0382b84737a115367ee182ab216967b1163`。未改 `main`，未创建 PR，未部署或启停服务。
 - 范围与风险：`reports/` 本机诊断产物未上传。B02-A 的 17/0/0、1.0 指标仅对应固定离线语料；B02-B 输出仍为 pending/review_required。G3 自动 lifecycle、G8 平台兼容、前端回执、真人 Gold、正式评测与真实性能仍待关闭。
 - 下一步：A/Root 负责 G8 与自动 lifecycle；Luna 负责独立真人/真实环境验收；Sol 复核跨契约和指标口径。token 精确遥测不可获得；开工估算15,000--25,000，本轮在该范围内完成。
+
+## 20260930-2145-GPT5-detector-03-static-assets-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-5（Root Coordinator / Detector 0.3 静态资源识别与固定 Bench 验收）；**日期时间**：2026-09-30 21:45（Asia/Shanghai）。
+- **任务目标与实际结果**：补齐 ModelScope 数据集 URL、JavaScript/TypeScript 已导入且构造的 OpenAI/Anthropic/Google SDK、`.env`/`.env.*` 精确 provider key；新增只读 `StaticAssetCandidate` 统一候选视图（资源类型、来源、定位、规则版本、Evidence SHA-256、`review_required`/`pending`），并保持 Python、HF/ModelScope 模型、HF 数据集、JSON/TOML/YAML 支持。静态候选不提升授权、许可证、义务或违规结论。
+- **固定 Bench 与误差结果**：新增冻结语料，含 7 个正向标签与普通 URL、动态字符串、无关配置、仅出现 SDK 名称反例；结果 `TP=7, FP=0, FN=0, Precision=1.0, Recall=1.0, F1=1.0`。运行器为差异输出 `FN_UNDETECTED_STATIC_REFERENCE` 或 `FP_UNEXPECTED_STATIC_REFERENCE`，本次差异为空；该结论仅适用于固定语料。
+- **修改文件与测试**：修改 `backend/app/detectors/static_assets.py`、`backend/app/detectors/__init__.py`、`benchmarks/run_static_assets.py`、`tests/unit/test_benchmark_actual_static_assets.py`；新增 Detector 0.3 Bench、证据说明和测试。定向回归 `15 passed`，`compileall`、`git diff --check` 通过，PCRE2 敏感信息检索无命中。开发中发现 ModelScope dataset 误入 API pattern slice（1 FP/1 FN）并已修复。
+- **风险、发布与下一步**：JS 仅接受明确默认导入与同名构造器，拒绝别名/动态 import；环境值不进 evidence；复杂 YAML、反射与拼接失败关闭。前一并行发布提交 `0d21f03` 未包含本轮随后新增的候选视图/新 Bench，当前这些文件仍未暂存或推送；`reports/` 未触碰。Luna 负责真人 Gold/holdout 与 FN/FP 复核，Sol 审核指标口径，Root 在暂存清单独立复核后发布本轮文件。
+- **关联与 token**：分支 `codex/scan-reliability-integration`；本轮无新提交/PR/evidence_id。本次运行精确 token 数不可获得；开工估算 18,000～35,000，代码与固定 Bench 已完成，真实 Gold/holdout、发布和性能未扩展。
+
+## 20260930-2200-GPT5-p1-bench-preparation
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / P1 固定仓库 Bench 准备与质量门禁）；**日期时间**：2026-09-30 22:00（Asia/Shanghai）。
+- **任务目标**：落实用户规定的 B 独立准备：20–30 个固定仓库/快照台账、URL/commit SHA/输入哈希/抓取日期/许可证声明、至少 5 holdout、Gold/预测/指标隔离、运行版本/配置/输入绑定、失败保留，并将旧 9 样例、0.1.0 与 AI 单独标注降级为探索资料。
+- **范围与边界**：只新增 P1 Bench manifest、验证器、模板/文档和测试；不抓取网络仓库、不编造 SHA/Gold/许可证/指标、不改扫描器或服务。开始前将复核现有 Bench 与并行工作区，避免覆盖。精确 token 遥测不可获得，估算 14,000～28,000。
+
+## 20260930-2220-GPT5-p1-bench-preparation-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-5（Root Coordinator / P1 固定仓库 Bench 准备与质量门禁）；**日期时间**：2026-09-30 22:20（Asia/Shanghai）。
+- **任务目标与实际结果**：新增 fail-closed P1 固定仓库准备台账与校验器。台账有 25 个保留样本槽位，其中 7 个 holdout；每个槽位目前明确为 `planned/not_collected`，未填入任何猜造的 URL、commit、哈希、抓取日期、许可证、Gold、预测或指标。固定/失败记录强制 URL、40 位 commit、输入 SHA-256、抓取日期、许可证声明；失败记录还强制保留原因，不能删除。Gold、预测、指标和运行目录被固定分离；运行收据强制 detector/rule/version、配置 SHA-256 与输入 SHA-256，且允许 `failed` 收据保留。
+- **修改文件**：新增 `benchmarks/p1_repository_bench.py`、`benchmarks/p1-fixed-repositories/preparation.json`、`benchmarks/p1-fixed-repositories/README.md`、`tests/unit/test_p1_repository_bench_preparation.py`；更新本日志。未修改扫描器、服务、旧 9 例、0.1.0 数据、AI 单独标注或并行文件。
+- **命令与测试结果**：P1 preparation 与既有 Detector 0.3 non-Gold 契约回归 `13 passed`；`compileall`、`git diff --check`、PCRE2 敏感信息检查通过。未联网、未抓取仓库、未启动/停止服务。
+- **质量边界与未完成内容**：旧 9 个样例、0.1.0 检测器数据和 AI 单独标注已在新台账说明中明确排除为探索资料，不能作为 P1 Gold、预测、指标或正式质量结论。真实收集 20–30 固定公开仓库、至少 5 个被冻结 holdout、真人 Gold、预测/指标产物与正式质量结论仍未开始；缺少这些事实时 `formal_quality_ready=false`。
+- **建议下一步及发布**：Luna/真人标注流程按台账逐条收集与双人 Gold；Root 仅在每条来源事实和失败收据齐备后生成 Bench 2.0 revision 与运行产物；Sol 复核 split/holdout/质量表述。当前新文件未暂存、提交或推送，避免与现有并行工作树混入。
+- **关联与 token**：分支 `codex/scan-reliability-integration`；无新提交、PR、推送或 evidence_id。本次运行精确 token 数不可获得；开工估算 14,000～28,000，本轮准备门禁已完成，但真实语料/Gold/质量评测未扩展。
+
+## 20260930-2230-GPT5-b06-error-analysis-ablation
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / B06 结构化错误分析与规则消融门禁）；**日期时间**：2026-09-30 22:30（Asia/Shanghai）。
+- **任务目标**：实现按用户定义的 FN Tier A/B/C、FP SDK 名称碰撞/示例代码/注释文档/无效 URL/无关配置分类；为每项规则修改绑定解决的 FN、引入的 FP 和 holdout 变化，并在没有真实 Gold/holdout 时失败关闭。
+- **范围与验收**：复用现有 B06 taxonomy/ledger，不修改扫描器或伪造真实评测；新增离线分析器、规则消融记录模板/验证器与定向测试，验证不合法分类、缺失关联、未经 Gold 的 holdout 声明及删除失败记录均被拒绝。精确 token 遥测不可获得，估算 12,000～24,000。
+
+## 20260930-2245-GPT5-b06-error-analysis-ablation-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-5（Root Coordinator / B06 结构化错误分析与规则消融门禁）；**日期时间**：2026-09-30 22:45（Asia/Shanghai）。
+- **任务目标与实际结果**：新增可执行 B06 error-analysis gate：FN 必须用 Tier A/static_direct、Tier B/rule_extension 或 Tier C/dynamic_or_unsafe；FP 必须归入 SDK 名称碰撞、示例代码、注释/文档、无效 URL 或无关配置。每项规则变更绑定已解决 FN、引入 FP、规则版本和 holdout before/after；未冻结真人 Gold 时 holdout 强制 blocked 且 before/after 为 null。
+- **修改文件**：新增 `benchmarks/b06_error_analysis.py`、`benchmarks/b06/error-analysis.json`、`benchmarks/b06/README.md`、`tests/unit/test_b06_error_analysis.py`；更新本日志。未修改静态检测器、旧 B06 taxonomy/ledger、Gold、预测或指标。
+- **命令与测试结果**：新门禁 `3 passed`，既有 B06 Node 门禁 `1 passed`，`compileall` 和 `git diff --check` 通过。测试覆盖合法 Tier/FP/规则关联、未经 Gold 的 holdout after 拒绝、用 FP 冒充已解决 FN 拒绝；未启动服务、未伪造真实误差或消融结果。
+- **未完成、风险与下一步**：实际 error list 仍为空并明确 `preparation_not_evaluated`，因此没有 FN/FP/holdout 改善的质量结论。待 Luna/真人完成固定 P1 Gold 和 holdout 后，按此台账记录每个真实误差及规则消融；Sol 复核 Tier C 不被自动规则越权处理。新增文件未暂存、提交或推送，避免混入并行工作树。
+- **关联与 token**：`codex/scan-reliability-integration`；无新提交、PR、推送、Issue 或 evidence_id。本次运行精确 token 数不可获得；开工估算 12,000～24,000，门禁代码完成，真实评测未扩展。
+
+## 20260930-2250-GPT5-b01-b03-offline-quality
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / B01 ModelScope 与 B03 离线证据质量）；**日期时间**：2026-09-30 22:50（Asia/Shanghai）。
+- **任务目标**：增强 ModelScope metadata parser/fixtures、与 Hugging Face 同类字段归一化、缺失/非法/过大/版本冲突反例、License/Profile/依赖关系证据链；明确 `observed`、`pending`、`unknown`，不推断授权、权利或合规。
+- **范围与验收**：先审阅 B01/B03 现有 adapter、fixture 与安全测试，再只改未被并行工作占用的离线代码/fixture/test/规范；运行定向 unit/security、compileall、格式和敏感信息检查，不联网、不启停服务。精确 token 遥测不可获得，估算 16,000～30,000。
+
+## 20260930-2310-GPT5-b01-b03-offline-quality-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-5（Root Coordinator / B01 ModelScope 与 B03 离线证据质量）；**日期时间**：2026-09-30 23:10（Asia/Shanghai）。
+- **任务目标与实际结果**：增强 ModelScope 离线 parser：文本字段拒绝控制字符，`LastUpdatedTime` 仅接受 UTC 时间；非法、超长、控制字符或不可解析可选字段只生成 coverage gap，观察整体保持 pending。新增固定哈希 ModelScope dataset snapshot/manifest，覆盖 dataset 归一化为 canonical_id、声明许可证原文、access gate、last_modified；新增 resolved/fixed version claim 拒绝，ModelScope 不把 provider revision hint 提升为内容版本。
+- **修改文件**：`backend/app/scanners/modelscope_metadata.py`、`tests/unit/test_p1_modelscope_metadata_parser.py`；新增 `tests/fixtures/modelscope/resource-profile-v1/manifest.json` 和 dataset snapshot；更新本日志。未修改网络 transport、A Profile 持久化、授权/规则/报告或并行文件。
+- **命令与测试结果**：ModelScope/Hugging Face parser、B03/B04 v3 consumption 与 B03 安全证据链定向回归 `64 passed`；`compileall`、`git diff --check`、PCRE2 敏感信息检查通过。未联网、未启动/停止服务。
+- **语义与已知边界**：`canonical_id`、声明许可证原文、访问门/时间为 provider `observed` 内容并各自 `pending`；缺失/非法/超长/冲突信息通过 coverage gap 表达 `unknown`；所有输出不包含 authorization_status、rights、license_expression_id、义务或合规结论。Hugging Face 与 ModelScope 仅在同构字段意义上归一化，不伪称 revision 语义相同。
+- **未完成与下一步**：真实多条 ModelScope 固定公开回执、跨机独立签收、从 Profile 到 B03 immutable facts 的生产消费和真人 Gold 仍未完成；Windows G8 仍阻断完整 A factory 回归。Luna 继续扩展离线 fixture/跨机复核，Sol 复核字段语义，Root 后续分离暂存并发布。本轮文件未暂存、提交或推送。
+- **关联与 token**：`codex/scan-reliability-integration`；无新提交、PR、推送或 evidence_id。本次运行精确 token 数不可获得；开工估算 16,000～30,000，离线代码/fixture/反例范围完成，未扩展到联网或生产生命周期。
+
+## 20260930-2320-GPT5-b04-notice-source-facts
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / B04 NOTICE 来源事实包离线质量）；**日期时间**：2026-09-30 23:20（Asia/Shanghai）。
+- **任务目标**：完善 B04 的边界/编码/截断/空/超大/重复内容、retained/full/excerpt hash 一致性、覆盖率/遗漏/不可解析原因/关系状态、独立复核说明和公开 fixture；产物仅为事实来源包。
+- **范围与验收**：审阅既有 notice_source 模型、collector 与测试后，只扩展其离线 fixture/测试/说明或安全不变量；不连接 A 持久化、Report、法律结论、Obligation 或最终 NOTICE。运行定向 unit/security、compileall、格式与敏感信息检查；不联网、不启停服务。精确 token 遥测不可获得，估算 14,000～28,000。
+
+## 20260930-2350-GPT5-b04-notice-source-facts-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-5 / Root Coordinator（B04 NOTICE 来源事实包离线质量）；**日期时间**：2026-09-30 23:50（Asia/Shanghai）。
+- **实际结果**：补齐 `Content` 三重哈希不变量：`whole_bytes_sha256` 为全文原始字节哈希、`retained_bytes_sha256` 为保留 UTF-8 字节哈希，截断 `excerpt` 必须额外携带且等于 retained 的 `excerpt_bytes_sha256`；`full` 禁止 excerpt hash。空文件现被正确保留为 `full`、`byte_range=[0,0]` 和空字节哈希。新增只读独立复核投影，输出覆盖、遗漏/gap、已解析/未解析关系、无法解析来源及哈希，绝不输出法律、授权、Obligation 或最终 NOTICE。
+- **修改/新增文件**：修改 `backend/app/notice_source/models.py`、`collector.py`、`__init__.py`、`tests/unit/test_notice_source_collector.py`；新增 `backend/app/notice_source/review.py`、`tests/unit/test_notice_source_review.py`、`tests/fixtures/notice-source-v1/public-collection.json`、`docs/spec/b04-notice-source-facts-review.md`。公开合成 fixture 覆盖完整/截断/空/重复内容、遗漏路径、resolved/unresolved relation；不含第三方 NOTICE 正文。
+- **命令与验证**：`PYTHONPATH=backend pytest -q tests/unit/test_notice_source_collector.py tests/unit/test_notice_source_review.py tests/unit/test_notice_source_selector.py tests/security/test_notice_source_contract_independent.py` 为 `18 passed`；`compileall backend/app/notice_source` 与 `git diff --check` 通过。尝试加入 A 持久化适配器回归时，测试收集被既有 Windows G8 问题 `ModuleNotFoundError: fcntl` 阻断（`zip_dispatcher.py`），未修改该平台门禁。
+- **接口/决策/风险**：`excerpt_bytes_sha256` 是 v1 内容 DTO 的可选但 excerpt 必填字段；旧 full/non-retained payload 仍兼容。`review_notice_source_package` 仅接受哈希自洽终态包，篡改 package hash 先拒绝。当前改动尚未暂存、提交、推送或创建 PR；未修改 main，`reports/` 未纳入范围。Windows API/持久化端到端回归、真实来源采集与正式 NOTICE/legal 流程仍未完成。
+- **下一步与责任**：Root 在隔离暂存清单复核后发布本轮文件；A/Root 关闭 G8 后运行 adapter/binding 回归；Luna 复核公开 fixture 与跨环境可复现性；Sol 复核 B04 的事实边界。分支 `codex/scan-reliability-integration`，无本轮 commit/PR/evidence_id。本次运行精确 token 数不可获得；开工估算 14,000～28,000，已在该范围内完成离线范围。
+
+## 20261001-0010-GPT5-b07-performance-receipts
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / B07 受控性能收据采集契约）；**日期时间**：2026-10-01 00:10（Asia/Shanghai）。
+- **任务目标**：完善固定 receipt schema、解包/ScanCode/Syft/静态 Detector/规则归并分段耗时、冷/热标记、CPU/内存/工具版本/失败原因及 p50/p95/覆盖率/失败率汇总；正式数据只允许后续 A 提供的受控 Linux 环境采集。
+- **范围与验收**：复核既有 B07 controlled receipt 后，仅增强离线 schema、验证器、汇总器、公开合成 fixture/测试和操作说明；不启动服务、不执行生产扫描、不写入或声称正式性能数据。计划运行 Node 合同测试、格式检查和敏感信息检查。精确 token 遥测不可获得，估算 12,000～20,000。
+
+## 20261001-0030-GPT5-b07-performance-receipts-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-5 / Root Coordinator（B07 受控性能收据采集契约）；**日期时间**：2026-10-01 00:30（Asia/Shanghai）。
+- **实际结果**：将 B07 receipt 升级到固定 `openguard.controlled-pipeline-receipt/2`：只接受 `controlled_linux`、非生产启动、cold/warm 标记、固定 source/artifact hashes，以及 Linux kernel/image digest、CPU、内存限制/峰值、ScanCode/Syft/静态 Detector/规则版本。五个阶段按固定顺序记录 `unpack`、`scancode`、`syft`、`static_detector`、`rule_consolidation`，支持 completed/failed/not_run 及明确失败原因。汇总器输出总/冷热/分阶段 p50/p95、阶段计时覆盖率、失败率与错误分类，并固定 `formal_performance_claimed=false`。
+- **修改/新增文件**：修改 `benchmarks/b07-controlled-receipt.mjs`、`benchmarks/b07-summarize-receipts.mjs`、`tests/b06_b07_p2b_contract.test.mjs`；新增 `tests/b07_performance_receipt_v2.test.mjs`、`benchmarks/b07-controlled-linux-receipts.md`。未启动服务、未运行 ScanCode/Syft、未产生或保存任何性能样本。
+- **命令与验证**：`node --test tests/b06_b07_p2b_contract.test.mjs tests/b07_performance_receipt_v2.test.mjs` 为 `6 passed`；其中子进程打印的 invalid receipt/B06 报错来自 `assert.throws` 拒绝路径。`git diff --check` 通过；B07 相关 PCRE2 常见密钥模式未命中。
+- **接口/决策/风险**：v1 receipt 不再被 v2 汇总器接受，避免旧字段被误视为受控 Linux 收据。失败样本计入分母且不会删除，not_run 阶段降低 coverage。当前只是采集与汇总契约，不能据此推导硬件对比、SLA、性能回归或正式结果；正式数据必须由 A 在受控 Linux 环境以原始收据留存。
+- **下一步与责任**：A/Root 提供受控 Linux 的实际采集入口与隔离环境后执行冷/热样本采集；Luna 复核收据、输入/配置/结果 hash 和失败保留；Sol 审核正式报告能否引用。分支 `codex/scan-reliability-integration`，本轮未暂存、提交、推送、创建 PR 或 evidence_id。本次运行精确 token 数不可获得；开工估算 12,000～20,000，离线契约范围已完成。
+
+## 20261001-0040-GPT5-p2-b02-document-alignment
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / P2 B02 名称与历史状态对齐）；**日期时间**：2026-10-01 00:40（Asia/Shanghai）。
+- **任务目标**：依用户最新 P0/P1/P2 基线，消除 P0 `Detector 0.3` 与 P1 B02 License/NOTICE facts detector 的名称错位，校正文档中已被后续离线工件替代的状态，并保持未完成的真实 Bench、真人 Gold、Linux 性能与 A 接线门禁明确可见。
+- **范围与验收**：仅修改 B 工作包索引和 Detector-to-B07 冻结说明，不变更代码、公共契约、历史事实、Gold 或性能数据；运行 Markdown 引用/关键词一致性检查与 `git diff --check`。精确 token 遥测不可获得，估算 8,000～14,000。
+
+## 20261001-0050-GPT5-p2-b02-document-alignment-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-5 / Root Coordinator（P2 B02 名称与历史状态对齐）；**日期时间**：2026-10-01 00:50（Asia/Shanghai）。
+- **实际结果**：在 `docs/p1/b-backend-work-packages.md` 明确 P0 `Detector 0.3` 是独立 AI 资源静态识别器，P1 B02 仅指 License/NOTICE facts detector，二者输入/输出/评测口径不可混用。同步更新 B01 ModelScope、B03 relation、B04 source facts、B05 25 个 `planned/not_collected` 槽位、B06 离线治理门禁与 B07 controlled-Linux receipt v2 的当前状态和关闭条件。
+- **修改文件**：`docs/p1/b-backend-work-packages.md`、`docs/spec/b-detector-03-and-b05-b07-preparation.md`、本日志。后者更新 Detector 0.3 覆盖范围、反例边界和 B07 v2 的固定阶段/冷热/环境/汇总字段；不改写历史回执、代码、公共接口、Gold 或性能数据。
+- **验证**：关键词残留检查确认已对齐的文档范围内不再有 B07 receipt v1、旧 execution mode、`B02 Detector` 或“B07 仅未开始”表述；唯一命中为新 v2 说明。`git diff --check` 通过。未联网、未启动/停止服务、未运行正式 Bench 或性能采集。
+- **风险与下一步**：工作区其他 B01-B07 代码/测试仍未暂存或发布；真实 20–30 仓库、真人 Gold、B06 实际误差闭环、受控 Linux 性能数据、A 接线和 G8 仍未完成。Luna 负责真实来源/Gold/receipt 复核，A/Root 负责环境与接线，Sol 复核最终术语与验收口径。分支 `codex/scan-reliability-integration`，无本轮 commit/PR/evidence_id。本次运行精确 token 数不可获得；开工估算 8,000～14,000，文档对齐范围已完成。
+
+## 20261001-0100-GPT5-real-p1-bench-sources
+
+- **状态**：START；**作者与角色**：GPT-5（Root Coordinator / 真实 P1 Bench 来源冻结）；**日期时间**：2026-10-01 01:00（Asia/Shanghai）。
+- **任务目标**：将 20 个公开仓库/快照固定为真实 Bench 来源，记录 URL、commit、Git tree inventory SHA-256、抓取日期和保守许可证声明，指定至少 5 个 holdout，保持 Gold/预测/指标分离且不伪造人工 Gold。
+- **范围与验收**：只读访问公开 Git；临时获取 shallow/filter blobless 仓库以计算不可再分发的 Git tree inventory hash，随后删除临时目录。GitHub API 已在本环境被 403 阻断，改用 Git protocol；失败样本保留。运行 P1 preparation 校验和定向测试，不启动服务、不运行扫描或正式指标。精确 token 遥测不可获得，估算 16,000～28,000。
+
+## 20261001-0115-GPT5-已完成工件发布与P1集成
+
+- 状态：START
+- 作者与角色：GPT-5 / Root Coordinator；范围：按用户授权审阅并发布当前已经有 COMPLETE/PARTIAL 验证记录的 NOTICE source review、B06 error-analysis、B07 v2 controlled-Linux receipt、Detector 0.3 fixed corpus、ModelScope 保守解析和文档对齐工件。`real-p1-bench-sources` 仍只有 START、无完成记录，连同 `benchmarks/p1-fixed-repositories/`、`p1_repository_bench.py` 和其测试明确排除，避免将未冻结来源误发布。
+- 验收：定向 Python/Node 回归、compileall、`git diff --check`、敏感信息扫描及暂存清单；远端祖先确认后非强制快进，绝不改动 `main`、启停服务或上传 `reports/`。
+- token 估算：12,000--20,000；系统未提供精确 token 遥测。

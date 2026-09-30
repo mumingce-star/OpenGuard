@@ -106,9 +106,10 @@ class Content(StrictModel):
     truncated: bool | None = None
     retained_bytes_sha256: str | None = None
     whole_bytes_sha256: str | None = None
+    excerpt_bytes_sha256: str | None = None
     gap_codes: list[str] = Field(default_factory=list, max_length=16)
 
-    @field_validator("retained_bytes_sha256", "whole_bytes_sha256")
+    @field_validator("retained_bytes_sha256", "whole_bytes_sha256", "excerpt_bytes_sha256")
     @classmethod
     def hashes(cls, value: str | None) -> str | None:
         if value is not None and not _SHA256.fullmatch(value):
@@ -131,16 +132,18 @@ class Content(StrictModel):
             if len(self.byte_range) != 2:  # type: ignore[arg-type]
                 raise ValueError("byte_range_invalid")
             start, end = self.byte_range  # type: ignore[misc]
-            if start < 0 or end <= start:
+            if start < 0 or end < start:
                 raise ValueError("byte_range_invalid")
             encoded = self.text.encode("utf-8")  # type: ignore[union-attr]
             if end - start != len(encoded) or hashlib.sha256(encoded).hexdigest() != self.retained_bytes_sha256:
                 raise ValueError("retained_bytes_mismatch")
-            if self.state == "full" and (self.truncated or start != 0 or self.whole_bytes_sha256 != self.retained_bytes_sha256):
+            if self.state == "full" and (self.truncated or start != 0 or self.whole_bytes_sha256 != self.retained_bytes_sha256
+                                           or self.excerpt_bytes_sha256 is not None):
                 raise ValueError("full_content_invalid")
-            if self.state == "excerpt" and (not self.truncated or len(encoded) > MAX_EXCERPT_BYTES):
+            if self.state == "excerpt" and (not self.truncated or len(encoded) > MAX_EXCERPT_BYTES
+                                              or self.excerpt_bytes_sha256 != self.retained_bytes_sha256):
                 raise ValueError("excerpt_content_invalid")
-        elif any(value is not None for value in (*retained, self.whole_bytes_sha256)):
+        elif any(value is not None for value in (*retained, self.whole_bytes_sha256, self.excerpt_bytes_sha256)):
             raise ValueError("unobserved_content_present")
         if self.state == "not_observed" and self.gap_codes:
             raise ValueError("not_observed_has_gap")

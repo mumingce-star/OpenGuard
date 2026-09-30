@@ -58,7 +58,8 @@ def _load(body: bytes) -> dict[str, Any]:
 
 
 def _text(value: object, *, maximum: int = 200) -> str | None:
-    if type(value) is not str or not value or len(value) > maximum:
+    if (type(value) is not str or not value or len(value) > maximum
+            or any(ord(char) < 32 for char in value)):
         return None
     try:
         value.encode("utf-8", errors="strict")
@@ -195,6 +196,9 @@ class ModelScopeMetadataParser:
         value = _text(data[source])
         if value is None:
             gaps.add(f"unsupported_{name}_value")
+            return
+        if source == "LastUpdatedTime" and not _valid_utc_timestamp(value):
+            gaps.add("unsupported_last_modified_value")
             return
         fields.append(_field(name, value, f"/Data/{source}", "pending"))
 

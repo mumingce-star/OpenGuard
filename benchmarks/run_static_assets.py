@@ -43,9 +43,22 @@ def run_case_file(path: str | Path) -> dict[str, Any]:
             raise ValueError("invalid benchmark source files")
         assets, evidence = detect_ai_assets(case["files"], observed_at=observed_at)
         asset_json = [asset.model_dump(mode="json") for asset in assets]
+        predicted = sorted(_label(asset) for asset in asset_json)
+        expected = sorted(case["expected"])
         results.append({
-            "id": case["id"], "expected": case["expected"],
-            "predicted": sorted(_label(asset) for asset in asset_json),
+            "id": case["id"], "expected": expected, "predicted": predicted,
+            # These codes classify the fixed-corpus differences only.  They
+            # are not legal, authorization, or aggregate real-world claims.
+            "error_analysis": {
+                "false_negatives": [
+                    {"label": label, "code": "FN_UNDETECTED_STATIC_REFERENCE"}
+                    for label in sorted(set(expected) - set(predicted))
+                ],
+                "false_positives": [
+                    {"label": label, "code": "FP_UNEXPECTED_STATIC_REFERENCE"}
+                    for label in sorted(set(predicted) - set(expected))
+                ],
+            },
             "assets": asset_json,
             "evidence": [item.model_dump(mode="json") for item in evidence],
         })

@@ -1,0 +1,13 @@
+{
+  "version": "detector-0.3-fixed/1",
+  "observed_at": "2026-09-30T00:00:00Z",
+  "cases": [
+    {"id": "modelscope-dataset-url", "files": {"README.md": "dataset: https://modelscope.cn/datasets/acme/corpus\n"}, "expected": ["dataset:modelscope:acme/corpus"]},
+    {"id": "javascript-sdk-calls", "files": {"clients.ts": "import OpenAI from 'openai';\nimport Anthropic from '@anthropic-ai/sdk';\nimport { GoogleGenerativeAI } from '@google/generative-ai';\nnew OpenAI();\nnew Anthropic();\nnew GoogleGenerativeAI('not-evidence');\n"}, "expected": ["api:anthropic:anthropic", "api:google:google", "api:openai:openai"]},
+    {"id": "environment-provider-configuration", "files": {".env.example": "OPENAI_API_KEY=placeholder\nANTHROPIC_API_KEY=placeholder\nGEMINI_API_KEY=placeholder\n"}, "expected": ["api:anthropic:anthropic", "api:google:google", "api:openai:openai"]},
+    {"id": "negative-ordinary-url", "files": {"README.md": "https://example.org/api-guide\n"}, "expected": []},
+    {"id": "negative-dynamic-string", "files": {"runtime.ts": "const sdk = '@anthropic-ai/sdk';\nconst client = dynamicImport(sdk);\nconst model = owner + '/' + name;\n"}, "expected": []},
+    {"id": "negative-unrelated-config", "files": {".env": "DATABASE_URL=postgres://example\nOPENAI_API_KEYISH=not-a-provider-key\n"}, "expected": []},
+    {"id": "negative-sdk-name-only", "files": {"notes.ts": "// OpenAI Anthropic GoogleGenerativeAI are comparison terms only\n"}, "expected": []}
+  ]
+}
