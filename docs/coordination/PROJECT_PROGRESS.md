@@ -1803,3 +1803,9 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 明确隔离：facts v3 仍只是只读观察，不能降级或替代 v2 detector；B02-A AI Detector 不进入本接纳器，不能用 AI 资源事实代替 NOTICE/Licence source package 或 Evidence binding。两条链路须保留独立来源、指标和消费边界。
 - 验证：B02-B 既有 unit/security 加新增 A 接纳测试共 23 passed；compileall backend/app/p1 backend/app/detectors、git diff --check 与新增文件常见敏感信息检索通过。未启动服务、未改 factory/API/Report/扫描 pipeline。
 - 未完成：自动 collector→A admission→stage/bind→持久化/Report 生产生命周期、前端回执、Gold/正式 Bench/性能和 Windows 全量回归仍未关闭；本轮未提交、未推送、未改 main。
+
+## 2026-09-30 P1 B01/B02 发布回执
+
+- 已发布：`0d21f0382b84737a115367ee182ab216967b1163` 已非强制快进推送至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 已读回一致；`main` 未改动。
+- 范围与验证：B01 ModelScope transport/router/Profile 受控链路、B02-A 静态检测固定语料、B02-B v2 候选对象准入、v3 facts hash 刷新及测试/规格已发布。Python 定向 `86 passed`、Node `13 passed`、Java Maven 通过、编译/格式/敏感信息检查通过。
+- 限制：Profile API 端到端测试仍被 Windows 既有 `fcntl` 缺失阻断；B02-A 指标只适用固定语料，B02-B 仍为 pending/review_required。G3/G8、前端、真人 Gold、正式评测与真实性能门禁未关闭；`reports/` 未上传。

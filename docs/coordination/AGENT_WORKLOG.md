@@ -8413,3 +8413,12 @@
 - 协调：日志显示 B01/B02-A/B02-B 工件处于未发布状态，B03--B07 跨契约及 G8 平台门禁仍未关闭；本轮只发布已完成独立工件，不将其表述为正式 Gold、生产闭环、正式性能或跨平台验收。
 - 验收：逐项代码/接口审阅，Python/Node/Java 相关定向回归、`git diff --check`、敏感信息扫描和暂存清单核验；远端可访问时核对祖先关系后非强制快进并读回 SHA。
 - token 估算：15,000--25,000；系统未提供精确 token 遥测。
+
+## 20260930-2110-GPT5-全量发布与P1集成
+
+- 状态：COMPLETE
+- 作者与角色：GPT-5 / Root Coordinator；实际结果：完成 B01 metadata/Profile、B02-A 静态资产检测/固定语料、B02-B 候选准入、v3 facts fixture 与配套测试、文档、台账的审阅和发布。
+- 修改与验证：产品提交 `0d21f0382b84737a115367ee182ab216967b1163`（25 个文件）。Python 非 API 定向 `86 passed`，Node B03--B07 门禁 `13 passed`，Java Maven 通过，模块 `compileall`、`git diff --check` 和常见密钥扫描通过。Profile API 定向测试在 Windows 收集阶段受既有 `fcntl` 缺失阻断，未进入断言；这是 G8 已知门禁。
+- GitHub：发布前 `origin/integration/p1...HEAD` 为 `0 1`；已非强制快进推送，工作分支与 `integration/p1` 均读回 `0d21f0382b84737a115367ee182ab216967b1163`。未改 `main`，未创建 PR，未部署或启停服务。
+- 范围与风险：`reports/` 本机诊断产物未上传。B02-A 的 17/0/0、1.0 指标仅对应固定离线语料；B02-B 输出仍为 pending/review_required。G3 自动 lifecycle、G8 平台兼容、前端回执、真人 Gold、正式评测与真实性能仍待关闭。
+- 下一步：A/Root 负责 G8 与自动 lifecycle；Luna 负责独立真人/真实环境验收；Sol 复核跨契约和指标口径。token 精确遥测不可获得；开工估算15,000--25,000，本轮在该范围内完成。
