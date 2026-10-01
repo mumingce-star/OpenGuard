@@ -8422,3 +8422,22 @@
 - GitHub：发布前 `origin/integration/p1...HEAD` 为 `0 1`；已非强制快进推送，工作分支与 `integration/p1` 均读回 `0d21f0382b84737a115367ee182ab216967b1163`。未改 `main`，未创建 PR，未部署或启停服务。
 - 范围与风险：`reports/` 本机诊断产物未上传。B02-A 的 17/0/0、1.0 指标仅对应固定离线语料；B02-B 输出仍为 pending/review_required。G3 自动 lifecycle、G8 平台兼容、前端回执、真人 Gold、正式评测与真实性能仍待关闭。
 - 下一步：A/Root 负责 G8 与自动 lifecycle；Luna 负责独立真人/真实环境验收；Sol 复核跨契约和指标口径。token 精确遥测不可获得；开工估算15,000--25,000，本轮在该范围内完成。
+
+## 20261001-1540-GPT5-A4-1-core-start
+
+- 状态：START；作者/角色：Codex GPT-5 / Owner 指定 Backend A；时间：2026-10-01T07:40:07Z。固定 feat/p1-notice-lifecycle-a4-1@40e5c3bcb74f078c3a1b38172955d668df700bca，空暂存区；不推进旧 integration 或采用 CZ bc2b7afe。
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_A4_1：本任务近期 A1/A2/A3/A4-0、selector、CAS 与漂移记录完整阅读＋历史定向检索；续跑沿用 Owner 本任务授权。Gate 0 只写 ignored；Gate 1 仅追加本日志和 AI 日志，不改 PROJECT_PROGRESS，不降低测试/安全门槛。
+- 已成立 Gate 0：现有 Linux/amd64 镜像、禁网只读源码容器，原 selector/collector/contract 13 节点及独立13探针共26 passed；真实 ZipIngestionService/session 的正文/Hash、预算预拒绝、错误锁存、过期与零候选 no-op 已动态核验。仅准入本轮内部开发，不表示全 CZ/Windows/生产 lifecycle 接受。
+- 预计精确6文件：两份 notice_source adapter/store、两份新 terminal admission/staged reader 单测、两份追加日志。先 Fail-first 再实现；保留原 admit/显式 Assessment、package CAS/BOUND freeze/rollback/DDL 与 CZ DTO；核对历史414直接消费者集合，失败用原40e5同环境对照，compileall/diff/Hash/完整新文件补丁。
+- 不安装 hooks、不读真实Pydantic数据、不执行 apply，不改 CZ/Worker/Git/ZIP/Assessment/Factory/NoticeDraft/Report/Frontend；只到 READY_FOR_OWNER_REVIEW。Docker daemon正常启动已获持续授权；仅操作本任务离线临时容器，其他既有容器不操作。token估算12k–24k，精确遥测不可获得；不提交/推送/合并/部署。
+
+## 20261001-1615-GPT5-A4-1-core-review-ready
+
+- 状态：COMPLETE（本轮内部核心实现/定向验证；不是Owner接受或生产生命周期完成）。作者/角色：Codex GPT-5 / Backend A；固定分支 feat/p1-notice-lifecycle-a4-1，HEAD仍40e5c3bcb74f078c3a1b38172955d668df700bca，暂存区空。结果仅 A4_1_READY_FOR_OWNER_REVIEW。
+- 精确6文件：notice_source_adapter.py新增admit_terminal；notice_source_store.py新增STAGED元数据只读reader；新增test_p1_notice_terminal_admission.py、test_p1_notice_staged_reader.py；本日志与AI日志仅追加。PROJECT_PROGRESS、CZ/Worker/Git/ZIP/Assessment/factory/NoticeDraft/Report/Frontend/Schema不变。
+- 安全语义：独立核对实际terminal Registry/revision，原不可变输入和成功受控ingestion结果/inventory绑定，facts_hash重算；typed Collection重验，复用CZ binder/validator与A2 canonical helpers；不查询Assessment/写库。原admit、decode、所有既有Store/bind/CAS/rollback方法逐字节未改，DDL AST未变。Reader缺失None、不建库，损坏/不安全sidecar fail closed，包字节不外泄；旧Hash仅CAS期望，不自动换最新。
+- 真实验证：Gate 0原13＋独立13共26 PASS；Gate 1初始Fail-first 54失败/4通过，缺入口红灯保留。修正一个非法scan ID测试夹具（保留失败，合法缺失ID与非法ID分开）后59 PASS；截断补充先1失败/1通过/59 deselected（定向选择），随后入口对截断inventory拒绝not_ready，不伪造gaps。最终完整481 unique PASS、0 failure/error/skip/xfail，原414逐ID完整保留（另有selector4、基线Profile2、新永久61），compileall/diff/完整补丁逆向check/敏感模式检查PASS；不是全仓/Windows/Bench/浏览器验收。
+- 同环境对照：初次PYTHONPATH缺tests/unit的收集错误在未修改40e5基线复现；512MiB临时盘触发Store保留空间门槛，候选/基线既有420节点中80个失败/错误完全一致。恢复历史2GiB临时盘后，基线既有420全部通过；新节点因缺接口57失败/4通过；候选481全部通过。未修改旧测试/安全检查、未关闭其他历史失败。
+- 收尾：另12个worktree的HEAD/status/未提交文件Hash不变；42个既有Docker容器的ID/state/image与daemon启动后快照一致，未操作它们。仅清理本轮13个已退出且无保留业务数据/卷的测试容器，完整输出/回执保留；daemon不关闭，5173未监听且未启动。
+- 证据：output/manual-fixes/p1-notice-lifecycle-a4-1-resume-20261001T0730Z-pDEVH8/，旧ENVIRONMENT_BLOCKED及漂移审查原样保留。受控测试链使用TEST_ONLY ZIP/Assessment，不是Pydantic真实apply或自动生产hook；bc2b7afe未采用。截断正式partial消费契约、生产hooks与Windows仍待后续Owner/CZ决策；N2/N3等既有债务未扩修。
+- 下一步：Owner复审两接口、证据与完整patch；通过后另行批准生产hook/截断契约，不提前发布。本次运行精确token数不可获得；初估12k–24k，门禁完整执行，不能据估算断言实际消耗。NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。
