@@ -63,6 +63,73 @@ class NoticeSourceAdapter:
         self.scan_registry = scan_registry
         self.assessment_store = assessment_store
 
+    def admit_terminal_ingestion(self, completed, *, scan_id: str,
+                                 expected_registry_revision: int) -> ValidatedNoticeSourceInput:
+        """Internal streaming entry; the original bytes entry remains unchanged.
+
+        No caller digest/success flag is accepted. The wrapper must have issued a
+        completion AFTER actual ingestion and all closing boundaries succeeded.
+        Replays still use the same A1 package identity, not a new lifecycle key.
+        """
+        from app.ingestion.notice_ingestion import validate_completed_ingestion, NoticeIngestionError
+        if type(scan_id) is not str or not scan_id or not _positive_int(expected_registry_revision):
+            raise NoticeSourceStoreError("invalid_argument")
+        try:
+            result = validate_completed_ingestion(completed)
+            stored = self.scan_registry.get(scan_id)
+            if stored is None:
+                raise NoticeSourceStoreError("not_found")
+            run = stored.run
+            if run.status.value not in {"completed", "partial"}:
+                raise NoticeSourceStoreError("not_ready")
+            inventory = result.inventory
+            if (completed.scan_id != scan_id or run.id != scan_id or stored.revision != expected_registry_revision
+                    or not _positive_int(stored.revision) or run.provenance.inventory_digest is None
+                    or completed.source != run.project.source or completed.source_type != run.project.source_type.value
+                    or completed.input_digest != run.provenance.input_digest.value
+                    or root_digest_v1(inventory.entries) != inventory.root_digest
+                    or inventory.root_digest != run.provenance.inventory_digest.value):
+                raise NoticeSourceStoreError("binding_mismatch")
+            selection = select_notice_source_candidates(inventory)
+            if selection.truncated:
+                raise NoticeSourceStoreError("not_ready")
+            notice = result.consumer_result.notice
+            if notice is None or notice.collection is None:
+                raise NoticeSourceStoreError("not_ready")
+            if notice.selection != selection:
+                raise NoticeSourceStoreError("binding_mismatch")
+            if isinstance(result, GitScanSessionResult) and result.revision != run.project.revision:
+                raise NoticeSourceStoreError("binding_mismatch")
+            collection = NoticeSourceCollection.model_validate(notice.collection.model_dump(mode="json"))
+            by_path = {entry.relative_path: entry for entry in inventory.entries}
+            for observation in collection.observations:
+                entry = by_path.get(observation.locator)
+                content = observation.content
+                if entry is None or observation.collector != notice.producer:
+                    raise NoticeSourceStoreError("binding_mismatch")
+                if content.state in {"full", "excerpt"} and (
+                        content.whole_bytes_sha256 != entry.sha256 or content.byte_range[1] > entry.size_bytes
+                        or (content.state == "full" and content.byte_range[1] != entry.size_bytes)):
+                    raise NoticeSourceStoreError("binding_mismatch")
+            actual = Binding(scan_id=run.id, registry_revision=str(stored.revision), input_digest=completed.input_digest,
+                inventory_digest=inventory.root_digest, facts_hash=facts_digest(run))
+            package = bind_notice_source_collection(collection, binding=actual)
+            package = validate_notice_source_package(package.model_dump(mode="json"))
+            _check_binding(package, actual)
+            raw, producer, version = _metadata(package)
+            return ValidatedNoticeSourceInput(scan_id, raw, package.package_hash, package.schema_version,
+                producer, version, actual.input_digest, actual.inventory_digest,
+                package.coverage.state, list(package.coverage.omissions), list(package.coverage.gap_codes))
+        except NoticeIngestionError as error:
+            raise NoticeSourceStoreError("binding_mismatch") from error
+        except ScanRegistryError as error:
+            code = {"registry_invalid_argument": "invalid_argument", "registry_not_found": "not_found"}.get(error.code, "storage_unavailable")
+            raise NoticeSourceStoreError(code) from error
+        except OSError as error:
+            raise NoticeSourceStoreError("storage_unavailable") from error
+        except (ValueError, TypeError, AttributeError, RecursionError) as error:
+            raise NoticeSourceStoreError("invalid_argument") from error
+
     def admit_terminal(self, collection: NoticeSourceCollection, *, scan_id: str,
                        expected_registry_revision: int,
                        ingestion_result: ScanSessionResult[NoticeSourceCollection],

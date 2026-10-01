@@ -19,8 +19,11 @@ ERRORS={
 }
 
 class AssessmentService:
-    def __init__(self,registry,store:AssessmentStore,provider=None):
+    def __init__(self,registry,store:AssessmentStore,provider=None,*,assessment_saved_observer=None):
+        if assessment_saved_observer is not None and not callable(assessment_saved_observer):
+            raise ValueError('invalid assessment saved observer')
         self.registry,self.store,self.provider=registry,store,provider
+        self.assessment_saved_observer=assessment_saved_observer
         self.chat=ChatStore(store)
         self._lock=threading.RLock()
         self._slots=threading.BoundedSemaphore(2)
@@ -71,6 +74,7 @@ class AssessmentService:
 
     def generate_assessment(self,run,candidate,rid):
         started=time.monotonic();calls=0;cached=False
+        successful_saved=None
         try:
             matches=self.store._read('SELECT a.id FROM assessments a JOIN assessment_jobs j ON a.id=j.assessment_id WHERE a.scan_id=? AND j.fingerprint=? ORDER BY a.version DESC',(run.id,candidate.cache_key))
             prior=[self.store.get(run.id,row[0]) for row in matches]
@@ -92,12 +96,19 @@ class AssessmentService:
                     candidate=candidate.model_copy(update={'ai_status':'fallback','ai_summary':None})
             saved=self.store.create(candidate,idempotency_key=rid,run=run)
             with closing(self.store._connect()) as db,db:
-                db.execute("UPDATE assessment_jobs SET status='succeeded',assessment_id=?,elapsed_seconds=?,model_calls=?,cache_hit=? WHERE scan_id=? AND request_id=?",(saved.id,time.monotonic()-started,calls,int(cached),run.id,rid))
+                saved_job=db.execute("UPDATE assessment_jobs SET status='succeeded',assessment_id=?,elapsed_seconds=?,model_calls=?,cache_hit=? WHERE scan_id=? AND request_id=?",(saved.id,time.monotonic()-started,calls,int(cached),run.id,rid))
+            if saved_job.rowcount==1:successful_saved=saved
         except Exception as e:
             code=getattr(e,'code','project_failed')
             with closing(self.store._connect()) as db,db:
                 db.execute("UPDATE assessment_jobs SET status='failed',error=?,elapsed_seconds=?,model_calls=? WHERE scan_id=? AND request_id=?",(ERRORS.get(code,'评估未保存成功；旧扫描与报告保留。'),time.monotonic()-started,calls,run.id,rid))
         finally:self._slots.release()
+        # Both Store.create and the succeeded-job transaction have committed,
+        # including connection close; release the original slot before notifying.
+        # Failure here must never enter the job-failed exception handler above.
+        if successful_saved is not None and self.assessment_saved_observer is not None:
+            try:self.assessment_saved_observer(successful_saved)
+            except Exception:pass
 
     def on_terminal(self,run):
         # Called after the existing terminal commit, not by a GET or on old-run startup.

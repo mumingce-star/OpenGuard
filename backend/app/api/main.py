@@ -789,6 +789,52 @@ def create_default_app() -> FastAPI:
     v4_enabled = os.environ.get("OPENGUARD_ENABLE_ASSESSMENTS", "0")
     if v4_enabled not in {"0", "1"}:
         raise RuntimeError("invalid OPENGUARD_ENABLE_ASSESSMENTS")
+    assessment_service = None
+    remediation_service = None
+    report_v2_service = None
+    notice_draft_service = None
+    notice_lifecycle = None
+    if v4_enabled == "1":
+        from app.assessment.service import AssessmentService
+        from app.assessment.store import AssessmentStore
+        from app.p1.remediation import RemediationService
+        from app.p1.remediation_store import RemediationTaskStore
+        from app.p1.report_v2 import ReportV2Service
+        from app.p1.report_v2_store import ReportV2Store
+        from app.p1.report_v2_graph import ReportGraphReader
+        from app.p1.notice_source_store import NoticeSourceStore, BoundNoticeSourceReader
+        from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
+        from app.p1.notice_draft_store import NoticeDraftStore
+        from app.p1.notice_draft import NoticeDraftService
+        from app.p1.report_v2_notice import ReportNoticeReader
+
+        assessment_store = AssessmentStore(data_dir / "assessment.db")
+        assessment_service = AssessmentService(registry, assessment_store, ai_provider)
+        assessment_service.initialize()
+        # Initialize all opted-in sidecars before making runtime capabilities.
+        # Any failure still rejects startup, without repairing/deleting sidecars.
+        remediation_store = RemediationTaskStore(data_dir / "remediation.db")
+        remediation_store.initialize()
+        report_v2_store = ReportV2Store(data_dir / "report_v2.db")
+        report_v2_store.initialize()
+        notice_source_store = NoticeSourceStore(data_dir / "notice_source.db")
+        notice_source_store.initialize()
+        notice_draft_store = NoticeDraftStore(data_dir / "notice_draft.db")
+        notice_draft_store.initialize()
+        notice_lifecycle = NoticeSourceLifecycle(registry, assessment_store, notice_source_store)
+        assessment_service.assessment_saved_observer = notice_lifecycle.on_assessment_saved
+        notice_draft_service = NoticeDraftService(
+            registry, assessment_store, notice_draft_store,
+            bound_source_reader=BoundNoticeSourceReader(notice_source_store),
+        )
+        remediation_service = RemediationService(registry, assessment_store, remediation_store)
+        report_v2_service = ReportV2Service(
+            registry, assessment_store, remediation_store, report_v2_store,
+            notice_reader=ReportNoticeReader(notice_draft_store),
+            graph_reader=ReportGraphReader(max_nodes=_P1_GRAPH_MAX_NODES, max_edges=_P1_GRAPH_MAX_EDGES),
+        )
+        # Startup/GET do not collect, stage or bind. Only future actual work does.
+        registry.assessment_observer = assessment_service.on_terminal
     scan_ai_enabled = ai_enabled == "1" and v4_enabled != "1"
     runtime = ZipScanRuntime(
         registry,
@@ -800,6 +846,7 @@ def create_default_app() -> FastAPI:
         ai_timeout_seconds=30.0,
         dispatch_store=dispatch_store,
         external_scanners=external_scanners == "1",
+        notice_lifecycle=notice_lifecycle,
     )
     git_enabled = os.environ.get("OPENGUARD_ENABLE_PUBLIC_GIT", "0")
     if git_enabled not in {"0", "1"}:
@@ -813,6 +860,7 @@ def create_default_app() -> FastAPI:
             ai_enabled=scan_ai_enabled,
             ai_timeout_seconds=30.0,
             external_scanners=external_scanners == "1",
+            notice_lifecycle=notice_lifecycle,
         )
         if git_enabled == "1"
         else None
@@ -828,57 +876,11 @@ def create_default_app() -> FastAPI:
             ai_enabled=scan_ai_enabled,
             ai_timeout_seconds=30.0,
             external_scanners=external_scanners == "1",
+            notice_lifecycle=notice_lifecycle,
         )
         if dispatch_store is not None
         else None
     )
-    assessment_service = None
-    remediation_service = None
-    report_v2_service = None
-    notice_draft_service = None
-    if v4_enabled == "1":
-        from app.assessment.service import AssessmentService
-        from app.assessment.store import AssessmentStore
-        from app.p1.remediation import RemediationService
-        from app.p1.remediation_store import RemediationTaskStore
-        from app.p1.report_v2 import ReportV2Service
-        from app.p1.report_v2_store import ReportV2Store
-        from app.p1.report_v2_graph import ReportGraphReader
-        from app.p1.notice_source_store import NoticeSourceStore, BoundNoticeSourceReader
-        from app.p1.notice_draft_store import NoticeDraftStore
-        from app.p1.notice_draft import NoticeDraftService
-        from app.p1.report_v2_notice import ReportNoticeReader
-
-        assessment_store = AssessmentStore(data_dir / "assessment.db")
-        assessment_service = AssessmentService(registry, assessment_store, ai_provider)
-        assessment_service.initialize()
-        # Initialize the entire opt-in workflow before publishing an app. Store
-        # failures propagate: never serve a partially configured workflow, and
-        # never delete existing sidecars as a startup rollback.
-        remediation_store = RemediationTaskStore(data_dir / "remediation.db")
-        remediation_store.initialize()
-        report_v2_store = ReportV2Store(data_dir / "report_v2.db")
-        report_v2_store.initialize()
-        notice_source_store = NoticeSourceStore(data_dir / "notice_source.db")
-        notice_source_store.initialize()
-        notice_draft_store = NoticeDraftStore(data_dir / "notice_draft.db")
-        notice_draft_store.initialize()
-        # Consumption only: neither initialization nor reads run source collection
-        # or stage/bind. A missing exact BOUND remains an explicit not-ready error.
-        notice_draft_service = NoticeDraftService(
-            registry, assessment_store, notice_draft_store,
-            bound_source_reader=BoundNoticeSourceReader(notice_source_store),
-        )
-        remediation_service = RemediationService(registry, assessment_store, remediation_store)
-        report_v2_service = ReportV2Service(
-            registry, assessment_store, remediation_store, report_v2_store,
-            notice_reader=ReportNoticeReader(notice_draft_store),
-            graph_reader=ReportGraphReader(
-                max_nodes=_P1_GRAPH_MAX_NODES, max_edges=_P1_GRAPH_MAX_EDGES,
-            ),
-        )
-        # Optional terminal observation is separate from report publication and ScanRun CAS.
-        registry.assessment_observer = assessment_service.on_terminal
     profile_service = None
     if profile_metadata_enabled == "1":
         from app.p1.profile import ProfileService

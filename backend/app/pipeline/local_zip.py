@@ -89,11 +89,17 @@ def build_local_zip_dependency_plan(
     ai_enabled: bool = False,
     ai_timeout_seconds: float = 10.0,
     external_scanners: bool = False,
+    notice_lifecycle=None,
+    upload_root: Path | None = None,
 ) -> PipelinePlan:
     """Build one explicit plan for one queued ZIP ScanRun."""
 
     if type(external_scanners) is not bool or not isinstance(archive_path, Path) or not isinstance(workspace_root, Path) or not callable(clock):
         raise PipelineError("pipeline_invalid_argument") from None
+    if notice_lifecycle is not None:
+        from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
+        if type(notice_lifecycle) is not NoticeSourceLifecycle or not isinstance(upload_root, Path):
+            raise PipelineError("pipeline_invalid_argument") from None
     state = DependencyPlanState()
     used = False
 
@@ -104,44 +110,57 @@ def build_local_zip_dependency_plan(
         used = True
         if run.project.source_type is not SourceType.ZIP or run.project.source != archive_path.name or not is_pristine(run):
             fail("local_zip_plan_incompatible", "Queued scan is incompatible with this local ZIP plan.")
-        try:
-            raw = archive_path.open("rb")
-        except OSError:
-            fail("local_zip_unavailable", "Local ZIP is unavailable.")
+        raw = None
+        if notice_lifecycle is None:
+            try:
+                raw = archive_path.open("rb")
+            except OSError:
+                fail("local_zip_unavailable", "Local ZIP is unavailable.")
 
         service: ZipIngestionService | None = None
         result = None
         reader: _DigestingReader | None = None
         failed = False
+        completed = None
+        wrapper_owns_close = False
         try:
-            with raw:
-                reader = _DigestingReader(raw)
+            options = {}
+            if external_scanners:
+                def scan_tree(tree, inventory):
+                    state.external = collect_external_scans(tree, inventory, clock)
+                options["tree_consumer"] = scan_tree
+            if notice_lifecycle is not None:
+                from app.ingestion.notice_ingestion import complete_zip_ingestion
                 service = ZipIngestionService(workspace_root)
-                options = {}
-                if external_scanners:
-                    def scan_tree(tree, inventory):
-                        state.external = collect_external_scans(tree, inventory, clock)
-                    options["tree_consumer"] = scan_tree
-                result = service.ingest_with_consumer(
-                    reader,
-                    lambda session: _consume_dependencies(session, clock),
-                    read_limits=READ_LIMITS,
-                    **options,
-                )
+                wrapper_owns_close = True
+                completed = complete_zip_ingestion(service, archive_path=archive_path, upload_root=upload_root,
+                    scan_id=run.id, expected_input_digest=run.provenance.input_digest.value,
+                    dependency_consumer=lambda session: _consume_dependencies(session, clock),
+                    notice_consumer=notice_lifecycle.collect, read_limits=READ_LIMITS, **options)
+                result = completed.result
+            else:
+                with raw:
+                    service = ZipIngestionService(workspace_root)
+                    reader = _DigestingReader(raw)
+                    result = service.ingest_with_consumer(reader, lambda session: _consume_dependencies(session, clock),
+                        read_limits=READ_LIMITS, **options)
         except Exception:
             failed = True
         finally:
-            if service is not None:
+            if service is not None and not wrapper_owns_close:
                 try:
                     service.close()
                 except Exception:
                     failed = True
-        if failed or result is None or reader is None or type(result.consumer_result) is not DependencyConsumerResult:
+        dependencies = (result.consumer_result.dependencies if completed is not None
+                        else result.consumer_result if result is not None else None)
+        if failed or result is None or type(dependencies) is not DependencyConsumerResult:
             fail("zip_ingestion_failed", "Local ZIP ingestion failed.")
-        if reader.digest.hexdigest() != run.provenance.input_digest.value:
+        if completed is None and (reader is None or reader.digest.hexdigest() != run.provenance.input_digest.value):
             fail("input_digest_mismatch", "Local ZIP input digest did not match.")
 
-        state.consumer_result = result.consumer_result
+        state.consumer_result = dependencies
+        state.completed_notice = completed
         observe_work_progress(70, "输入处理与扫描已完成")
         state.root_digest = result.inventory.root_digest
         digest = HashValue(algorithm="sha256", value=state.root_digest)
@@ -159,4 +178,6 @@ def build_local_zip_dependency_plan(
         ai_provider=ai_provider,
         ai_enabled=ai_enabled,
         ai_timeout_seconds=ai_timeout_seconds,
+        notice_terminal_observer=(lambda stored: notice_lifecycle.on_terminal(state.completed_notice, stored))
+            if notice_lifecycle is not None else None,
     )

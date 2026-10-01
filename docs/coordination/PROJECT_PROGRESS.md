@@ -1815,3 +1815,12 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - Owner结论：A4_1_ACCEPT_WITH_NONBLOCKING_NOTES；terminal-only admission与STAGED元数据只读reader已通过独立复审。旧admit的显式Assessment门禁保留；package CAS、rollback、BOUND freeze与旧包兼容性通过；数据库Schema未变。
 - 既有Owner Review证据：481 unique PASS，0失败/跳过；同环境固定基线420 PASS；原414节点逐ID保留，实际新增61节点。N2/N3、serialization memory amplification与普通覆盖债继续deferred；不将Gate 0或独立探针未经去重混入该节点数。
 - 本轮feature发布目标：feat/p1-notice-lifecycle-a4-1。生产Worker/Assessment/Git/ZIP/factory hooks未安装，NOTICE source lifecycle仍未完成；实际提交、推送与远端结果仅在执行后写入ignored发布回执，本记录不宣称Git操作或部署成功。
+
+## 2026-10-01 P1 NOTICE A4-2 Owner 接受与 feature 发布目标
+
+- Owner结论：A4_2_ACCEPT_WITH_NONBLOCKING_NOTES，仅接受已审的受控接线范围。完成证明与完整内容封口、同流有界ZIP及旧入口兼容已独立复核；terminal CAS成功后stage、实际保存Assessment后bind与恢复矩阵已受控验证。
+- direct ZIP、durable ZIP、受控离线Git三入口可到达原A3消费；接线代码已实现并受控验收，不等于公网Git、正式生产启用或完整生产生命周期验收。
+- 引用Owner Review：候选43模块1264 passed / 4 failed / 2 skipped；同环境固定BASE的40模块1179 passed / 4 failed / 2 skipped。新增85节点全部通过，历史481/414逐ID保留；独立106项探针通过，单独列示、不与永久节点重复相加。这些是既有复审证据，不冒充本发布轮新运行结果。
+- 四个共同失败仍未关闭：原恰好六路由断言、工具状态分类、sandbox PID路径、固定缓存路径。两个完整回归跳过保留：原loopback节点已在Owner复审中独立通过；公网Git节点未执行，不以离线Git替代公网验收。
+- N2/N3、序列化内存放大与普通覆盖债继续deferred；selector截断正式partial契约、完整生产生命周期验收未关闭，CZ新契约未采用。NOTICE存在不等于义务已履行或项目合规。
+- 本轮目标仅发布feat/p1-notice-lifecycle-a4-2；实际commit、push和远端结果只在执行后写ignored发布回执。本记录不宣称GitHub发布、integration合入、PR或部署成功。
