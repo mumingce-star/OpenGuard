@@ -52,6 +52,7 @@ class PipelineStep:
 @dataclass(frozen=True)
 class PipelinePlan:
     steps: tuple[PipelineStep, ...]
+    notice_terminal_observer: Callable[[StoredScanRun], None] | None = None
 
 
 def _fail(code: str) -> None:
@@ -81,6 +82,8 @@ class ScanPipelineWorker:
     @staticmethod
     def _validate_plan(plan: object) -> PipelinePlan:
         if type(plan) is not PipelinePlan or type(plan.steps) is not tuple or len(plan.steps) != len(_STAGES):
+            _fail("pipeline_invalid_argument")
+        if plan.notice_terminal_observer is not None and not callable(plan.notice_terminal_observer):
             _fail("pipeline_invalid_argument")
         for step, (stage, _) in zip(plan.steps, _STAGES, strict=True):
             if type(step) is not PipelineStep or step.stage is not stage or not callable(step.handler):
@@ -258,6 +261,11 @@ class ScanPipelineWorker:
         progress_token = activate_work_progress(scan_id)
         try:
             result = self._run_claimed(current, plan, started_at)
+            if plan.notice_terminal_observer is not None and result.run.status in {ScanStatus.COMPLETED, ScanStatus.PARTIAL}:
+                try:
+                    plan.notice_terminal_observer(result)
+                except Exception:
+                    pass  # Optional sidecar cannot rewrite terminal/P0 publication.
             observer = getattr(self._registry, "assessment_observer", None)
             if observer is not None:
                 try:

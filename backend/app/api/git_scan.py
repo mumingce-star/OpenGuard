@@ -53,6 +53,7 @@ class GitScanRuntime:
         ai_enabled: bool = False,
         ai_timeout_seconds: float = 10.0,
         external_scanners: bool = False,
+        notice_lifecycle=None,
     ) -> None:
         if (
             not isinstance(registry, SQLiteScanRunRegistry)
@@ -68,6 +69,10 @@ class GitScanRuntime:
             or (ai_enabled and ai_provider is None)
         ):
             raise ValueError("invalid Git runtime")
+        if notice_lifecycle is not None:
+            from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
+            if type(notice_lifecycle) is not NoticeSourceLifecycle:
+                raise ValueError("invalid Git notice lifecycle")
         self._registry = registry
         self._workspace_root = _validate_private_root(workspace_root)
         self._clock = clock or (lambda: datetime.now(timezone.utc))
@@ -77,6 +82,7 @@ class GitScanRuntime:
         self._ai_enabled = ai_enabled
         self._external_scanners = external_scanners
         self._ai_timeout_seconds = float(ai_timeout_seconds)
+        self._notice_lifecycle = notice_lifecycle
 
     def submit(
         self,
@@ -91,6 +97,7 @@ class GitScanRuntime:
         return accepted
 
     def _execute(self, scan_id: str, source: str) -> None:
+        notice_options = ({"notice_lifecycle": self._notice_lifecycle} if self._notice_lifecycle is not None else {})
         plan = build_public_git_dependency_plan(
             source,
             self._workspace_root,
@@ -100,6 +107,7 @@ class GitScanRuntime:
             ai_enabled=self._ai_enabled,
             ai_timeout_seconds=self._ai_timeout_seconds,
             external_scanners=self._external_scanners,
+            **notice_options,
         )
         publisher = self._report_publisher
         ScanPipelineWorker(

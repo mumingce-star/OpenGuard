@@ -99,6 +99,7 @@ class ZipScanRuntime:
         external_scanners: bool = False,
         ai_timeout_seconds: float = 10.0,
         dispatch_store: ZipDispatchStore | None = None,
+        notice_lifecycle=None,
     ) -> None:
         if (
             not isinstance(registry, SQLiteScanRunRegistry)
@@ -114,6 +115,10 @@ class ZipScanRuntime:
             or (dispatch_store is not None and type(dispatch_store) is not ZipDispatchStore)
         ):
             raise ValueError("invalid zip runtime")
+        if notice_lifecycle is not None:
+            from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
+            if type(notice_lifecycle) is not NoticeSourceLifecycle:
+                raise ValueError("invalid zip notice lifecycle")
         self._registry = registry
         self._upload_root = _validate_private_root(upload_root)
         self._workspace_root = _validate_private_root(workspace_root)
@@ -125,6 +130,7 @@ class ZipScanRuntime:
         self._external_scanners = external_scanners
         self._ai_timeout_seconds = float(ai_timeout_seconds)
         self._dispatch_store = dispatch_store
+        self._notice_lifecycle = notice_lifecycle
         if dispatch_store is not None and dispatch_store.upload_root != self._upload_root:
             raise ValueError("dispatch store upload root must match ZIP runtime")
 
@@ -365,6 +371,8 @@ class ZipScanRuntime:
 
     def _execute(self, scan_id: str, archive_path: Path) -> None:
         try:
+            notice_options = ({"notice_lifecycle": self._notice_lifecycle, "upload_root": self._upload_root}
+                              if self._notice_lifecycle is not None else {})
             plan = build_local_zip_dependency_plan(
                 archive_path,
                 self._workspace_root,
@@ -373,6 +381,7 @@ class ZipScanRuntime:
                 ai_enabled=self._ai_enabled,
                 ai_timeout_seconds=self._ai_timeout_seconds,
                 external_scanners=self._external_scanners,
+                **notice_options,
             )
             publisher = self._report_publisher
             ScanPipelineWorker(

@@ -390,6 +390,18 @@ class NoticeSourceStore:
         except (KeyError, TypeError, ValueError, RecursionError, NoticeSourceStoreError) as error:
             raise NoticeSourceStoreError('storage_unavailable') from error
 
+    def _read_staged(self, scan_id: str) -> StagedNoticeSource | None:
+        """Validate the private stage bytes but expose only immutable metadata."""
+        try:
+            db = self._connect()
+            if db is None:
+                return None
+            with closing(db):
+                saved = self._load_stage(db, scan_id)
+                return _staged(saved[0]) if saved is not None else None
+        except (OSError, sqlite3.Error) as error:
+            raise self._error(error) from error
+
     def _read_bound(self, scan_id: str, assessment_id: str, assessment_version: int) -> BoundNoticeSource | None:
         try:
             db = self._connect()
@@ -482,6 +494,22 @@ class NoticeSourceBindingService:
             raise NoticeSourceStoreError('storage_unavailable') from error
         except (OSError, sqlite3.Error) as error:
             raise self.source_store._error(error) from error
+
+
+class StagedNoticeSourceReader:
+    """Point-in-time metadata only, never initialization or BOUND publication.
+
+    A missing store/stage returns None; unsafe or corrupt storage fails closed.
+    Replacement can invalidate the returned hash. Bind must still receive that
+    explicit expected_package_hash and must never silently refresh it here.
+    """
+    def __init__(self, source_store: NoticeSourceStore):
+        self.source_store = source_store
+
+    def read(self, scan_id: str) -> StagedNoticeSource | None:
+        if not _text(scan_id):
+            raise NoticeSourceStoreError('invalid_argument')
+        return self.source_store._read_staged(scan_id)
 
 
 class BoundNoticeSourceReader:

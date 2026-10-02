@@ -8542,3 +8542,40 @@
 - 作者与角色：GPT-5 / Root Coordinator；范围：按用户授权审阅并发布当前已经有 COMPLETE/PARTIAL 验证记录的 NOTICE source review、B06 error-analysis、B07 v2 controlled-Linux receipt、Detector 0.3 fixed corpus、ModelScope 保守解析和文档对齐工件。`real-p1-bench-sources` 仍只有 START、无完成记录，连同 `benchmarks/p1-fixed-repositories/`、`p1_repository_bench.py` 和其测试明确排除，避免将未冻结来源误发布。
 - 验收：定向 Python/Node 回归、compileall、`git diff --check`、敏感信息扫描及暂存清单；远端祖先确认后非强制快进，绝不改动 `main`、启停服务或上传 `reports/`。
 - token 估算：12,000--20,000；系统未提供精确 token 遥测。
+## 20261001-1540-GPT5-A4-1-core-start
+
+- 状态：START；作者/角色：Codex GPT-5 / Owner 指定 Backend A；时间：2026-10-01T07:40:07Z。固定 feat/p1-notice-lifecycle-a4-1@40e5c3bcb74f078c3a1b38172955d668df700bca，空暂存区；不推进旧 integration 或采用 CZ bc2b7afe。
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_A4_1：本任务近期 A1/A2/A3/A4-0、selector、CAS 与漂移记录完整阅读＋历史定向检索；续跑沿用 Owner 本任务授权。Gate 0 只写 ignored；Gate 1 仅追加本日志和 AI 日志，不改 PROJECT_PROGRESS，不降低测试/安全门槛。
+- 已成立 Gate 0：现有 Linux/amd64 镜像、禁网只读源码容器，原 selector/collector/contract 13 节点及独立13探针共26 passed；真实 ZipIngestionService/session 的正文/Hash、预算预拒绝、错误锁存、过期与零候选 no-op 已动态核验。仅准入本轮内部开发，不表示全 CZ/Windows/生产 lifecycle 接受。
+- 预计精确6文件：两份 notice_source adapter/store、两份新 terminal admission/staged reader 单测、两份追加日志。先 Fail-first 再实现；保留原 admit/显式 Assessment、package CAS/BOUND freeze/rollback/DDL 与 CZ DTO；核对历史414直接消费者集合，失败用原40e5同环境对照，compileall/diff/Hash/完整新文件补丁。
+- 不安装 hooks、不读真实Pydantic数据、不执行 apply，不改 CZ/Worker/Git/ZIP/Assessment/Factory/NoticeDraft/Report/Frontend；只到 READY_FOR_OWNER_REVIEW。Docker daemon正常启动已获持续授权；仅操作本任务离线临时容器，其他既有容器不操作。token估算12k–24k，精确遥测不可获得；不提交/推送/合并/部署。
+
+## 20261001-1615-GPT5-A4-1-core-review-ready
+
+- 状态：COMPLETE（本轮内部核心实现/定向验证；不是Owner接受或生产生命周期完成）。作者/角色：Codex GPT-5 / Backend A；固定分支 feat/p1-notice-lifecycle-a4-1，HEAD仍40e5c3bcb74f078c3a1b38172955d668df700bca，暂存区空。结果仅 A4_1_READY_FOR_OWNER_REVIEW。
+- 精确6文件：notice_source_adapter.py新增admit_terminal；notice_source_store.py新增STAGED元数据只读reader；新增test_p1_notice_terminal_admission.py、test_p1_notice_staged_reader.py；本日志与AI日志仅追加。PROJECT_PROGRESS、CZ/Worker/Git/ZIP/Assessment/factory/NoticeDraft/Report/Frontend/Schema不变。
+- 安全语义：独立核对实际terminal Registry/revision，原不可变输入和成功受控ingestion结果/inventory绑定，facts_hash重算；typed Collection重验，复用CZ binder/validator与A2 canonical helpers；不查询Assessment/写库。原admit、decode、所有既有Store/bind/CAS/rollback方法逐字节未改，DDL AST未变。Reader缺失None、不建库，损坏/不安全sidecar fail closed，包字节不外泄；旧Hash仅CAS期望，不自动换最新。
+- 真实验证：Gate 0原13＋独立13共26 PASS；Gate 1初始Fail-first 54失败/4通过，缺入口红灯保留。修正一个非法scan ID测试夹具（保留失败，合法缺失ID与非法ID分开）后59 PASS；截断补充先1失败/1通过/59 deselected（定向选择），随后入口对截断inventory拒绝not_ready，不伪造gaps。最终完整481 unique PASS、0 failure/error/skip/xfail，原414逐ID完整保留（另有selector4、基线Profile2、新永久61），compileall/diff/完整补丁逆向check/敏感模式检查PASS；不是全仓/Windows/Bench/浏览器验收。
+- 同环境对照：初次PYTHONPATH缺tests/unit的收集错误在未修改40e5基线复现；512MiB临时盘触发Store保留空间门槛，候选/基线既有420节点中80个失败/错误完全一致。恢复历史2GiB临时盘后，基线既有420全部通过；新节点因缺接口57失败/4通过；候选481全部通过。未修改旧测试/安全检查、未关闭其他历史失败。
+- 收尾：另12个worktree的HEAD/status/未提交文件Hash不变；42个既有Docker容器的ID/state/image与daemon启动后快照一致，未操作它们。仅清理本轮13个已退出且无保留业务数据/卷的测试容器，完整输出/回执保留；daemon不关闭，5173未监听且未启动。
+- 证据：output/manual-fixes/p1-notice-lifecycle-a4-1-resume-20261001T0730Z-pDEVH8/，旧ENVIRONMENT_BLOCKED及漂移审查原样保留。受控测试链使用TEST_ONLY ZIP/Assessment，不是Pydantic真实apply或自动生产hook；bc2b7afe未采用。截断正式partial消费契约、生产hooks与Windows仍待后续Owner/CZ决策；N2/N3等既有债务未扩修。
+- 下一步：Owner复审两接口、证据与完整patch；通过后另行批准生产hook/截断契约，不提前发布。本次运行精确token数不可获得；初估12k–24k，门禁完整执行，不能据估算断言实际消耗。NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。
+
+## 20261001-1929-GPT5-A4-2-wiring-start
+
+- 状态：START；作者/角色：Codex GPT-5 / Owner 指定 Backend A；实际时钟2026-10-01T11:29:29Z。独立 feat/p1-notice-lifecycle-a4-2 从固定41cf85405e76da5acc65698a7d2119a50d45c82c建立，HEAD匹配、clean、index空；不推进原integration/UI/CZ/xzb或其他现场。
+- OWNER_APPROVED_TASK_LEVEL_WORKLOG_READING_EXCEPTION_A4_2：近期A4/输入证明/Worker/Assessment/dispatcher/Producer/CAS及失败隔离完整相关阅读＋历史定向检索，仅调整上下文阅读，不降低永久Fail-first、同环境基线、回归与安全门槛。原方案和receipt的两份批准Hash匹配；补充任务约束优先。
+- 范围：仅批准12产品路径＋3新增永久测试路径，另最小追加本日志与AI日志（最多17路径）；PROJECT_PROGRESS、CZ、A1 Store、原session/stream、dispatch持久化、Assessment engine/Store、NoticeDraft/Report核心、公共Schema、Frontend/Detector/Bench/Gold与依赖不改。
+- 顺序：真实组合callback/完成证明及全Collection内容封口 → 内部terminal admission → 终态CAS后plan hook → actual-saved/job成功后独立observer → ASSESSMENTS门控/可信Producer → 原40模块和3新模块collect去重、同Linux固定基线比较、W01–W24与补充故障/边界探针、compileall/diff/Hash/完整patch。合法短块允许，EOF/限额/关闭失败不签proof；零候选与截断不collect；无自动Draft/Report/retry/replacement。
+- 证据仅新ignored A4-2目录；保护原13条worktree登记（含1条既有prunable）。复用已存在镜像及Owner持续Docker授权，只运行本轮离线临时容器，不安装/pull/build、不触原业务根/真实apply、不启停5173。最多READY_FOR_OWNER_REVIEW，不能提前称Owner接受/发布/生产验收；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。token估算30k–60k，精确遥测不可获得。
+
+## 20261001-2059-GPT5-A4-2-wiring-review-ready
+
+- 状态：COMPLETE（仅本轮限定实现与受控验证；不是Owner接受或发布）。作者/角色：Codex GPT-5 / Backend A；实际时钟2026-10-01T12:59:11Z。固定41cf85405e76da5acc65698a7d2119a50d45c82c、feat/p1-notice-lifecycle-a4-2，HEAD未移、index空；结果仅A4_2_READY_FOR_OWNER_REVIEW / LIFECYCLE_WIRING_IMPLEMENTED_AND_CONTROLLED_TESTED_ONLY。
+- 精确15技术路径（12产品＋3新增永久测试）及2最小追加日志；PROJECT_PROGRESS不改。原40测试字节、204冻结核心Hash、A1 Store/DDL、CZ/Frontend等不变；原adapter除新增内部admission方法外逐字节相同，旧bytes/显式Assessment入口及CAS/BOUND freeze/rollback保留。没有公共Schema或新持久身份。
+- 实际接线：真实session依赖→NOTICE组合callback；EOF/count/同fd Hash/安全终检/清理与关闭全成功后签发内部proof，封口完整Collection/Inventory/selection/Producer，拒绝格式合法的事后变更。terminal publisher及CAS后stage、原Assessment observer后actual Store保存＋成功job提交/关闭＋slot释放后bind；旧Hash/revision只尝试一次，不重读换值、不latest、不replacement/DELETE；不自动Draft/Report V2。direct ZIP、durable queued、受控本地Git都实测，0开关/零候选/截断不伪造覆盖；保留共享4/16MiB安全锁存。
+- Producer默认collector / openguard-notice-source-collector / 1.0.0；config_digest为73f5ea931044aaca3e0e3049d3e48f76c18db1a540b73222e91b8816142cdfc8，来自CZ canonical与实际有效配置，独立工厂探针一致。零候选enabled/disabled完整facts相同；idle GET/restart、STAGED显式恢复、QUEUED原dispatch、RUNNING中断、pending job恢复分别验证，不把所有重启都称零写入。
+- 永久Fail-first：首批不可变BASE 68失败/1通过；后续强化至最终85节点，固定BASE补充84失败/1通过。中途混入实现的diagnostic run不冒称纯Fail-first；初次夹具错误和更正输出保留。最终85永久节点PASS、0失败/跳过；独立9探针PASS。探针最初误把Registry replace(same_run) no-op当revision推进，原8通过/1失败保留，更正为显式冲突读故障注入；真实package CAS竞态仍原入口，未改产品凑绿。
+- 完整批准40模块固定BASE：1179 passed / 4 failed / 2 skipped（1185 unique）；候选40＋3模块：1264 passed / 4 failed / 2 skipped（1270 unique）。失败和跳过逐ID相同，无新增消费者/安全失败；历史481/414节点全部保留。既有six-path断言与3个external-tool环境/预期失败未修；跳过为controlled loopback与明确公网/网络许可门禁，不描述为全绿。compileall、diff、含5新文件累计patch逆向dry check、精确范围、append-only、敏感模式扫描PASS。
+- 收尾：其他13条worktree登记（12存在＋1既有prunable）HEAD/status/未提交Hash不变；原方案/receipt Hash不变。原始输出/XML已保存后，仅停止并移除本轮两个无业务卷离线容器，daemon及其他容器保留；未启停UI/生产，不访问真实Pydantic/原业务根，不执行apply。证据：output/manual-fixes/p1-notice-a4-2-20261001T1145Z-4wemOZ/。一次ignored审计脚本输出buffer错误保留并仅修脚本，不改产品。
+- 未完成/下一步：Owner复审完整实现/patch/回执；截断正式partial契约、窄于4MiB collector政策支持、生产外网/live browser验收、发布/部署尚未完成；bc2b7afe未采用，N2/N3与其他覆盖/序列化债未顺手修。精确token数不可获得，START估算30k–60k；未减少范围，无法据估算断言实际用量。NO_CZ_SOURCE_CHANGE / NO_DB_SCHEMA_CHANGE / NO_FRONTEND_CHANGE / NO_REAL_APPLY / NO_COMMIT / NO_PUSH / NO_MERGE / NO_PRODUCTION_DEPLOY；停止，不开始下一阶段。

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import uuid
+from dataclasses import replace
 from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
@@ -46,6 +47,7 @@ def build_public_git_dependency_plan(
     ai_enabled: bool = False,
     ai_timeout_seconds: float = 10.0,
     external_scanners: bool = False,
+    notice_lifecycle=None,
 ) -> PipelinePlan:
     """Build a real HTTPS Git plan using the existing ZIP fact and report chain."""
 
@@ -54,6 +56,10 @@ def build_public_git_dependency_plan(
     factory = ingestion_factory or (lambda root: GitIngestionService(root, bounded=True))
     if not callable(factory):
         raise PipelineError("pipeline_invalid_argument") from None
+    if notice_lifecycle is not None:
+        from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
+        if type(notice_lifecycle) is not NoticeSourceLifecycle:
+            raise PipelineError("pipeline_invalid_argument") from None
     state = DependencyPlanState()
     used = False
     coverage_evidence: list[Evidence] = []
@@ -69,6 +75,8 @@ def build_public_git_dependency_plan(
 
         service: GitIngestionService | None = None
         result = None
+        completed = None
+        wrapper_owns_close = False
         try:
             service = factory(workspace_root)
             options = {}
@@ -76,12 +84,17 @@ def build_public_git_dependency_plan(
                 def scan_tree(tree, inventory):
                     state.external = collect_external_scans(tree, inventory, clock)
                 options["tree_consumer"] = scan_tree
-            result = service.ingest_with_consumer(
-                source,
-                lambda session: _consume_dependencies(session, clock),
-                read_limits=READ_LIMITS,
-                **options,
-            )
+            if notice_lifecycle is not None:
+                from app.ingestion.notice_ingestion import complete_git_ingestion
+                wrapper_owns_close = True
+                completed = complete_git_ingestion(service, source=source, scan_id=run.id,
+                    expected_input_digest=run.provenance.input_digest.value,
+                    dependency_consumer=lambda session: _consume_dependencies(session, clock),
+                    notice_consumer=notice_lifecycle.collect, read_limits=READ_LIMITS, **options)
+                result = completed.result
+            else:
+                result = service.ingest_with_consumer(source, lambda session: _consume_dependencies(session, clock),
+                    read_limits=READ_LIMITS, **options)
         except IngestionSecurityError as error:
             if error.code == "scanner_timeout":
                 fail("scanner_timeout", "Public Git ingestion timed out.")
@@ -99,12 +112,14 @@ def build_public_git_dependency_plan(
         except Exception:
             fail("scanner_failed", "Public Git ingestion failed.")
         finally:
-            if service is not None:
+            if service is not None and not wrapper_owns_close:
                 try:
                     service.close()
                 except Exception:
                     fail("scanner_failed", "Public Git ingestion failed.")
-        if result is None or type(result.consumer_result) is not DependencyConsumerResult:
+        dependencies = (result.consumer_result.dependencies if completed is not None
+                        else result.consumer_result if result is not None else None)
+        if result is None or type(dependencies) is not DependencyConsumerResult:
             fail("scanner_failed", "Public Git ingestion failed.")
         observe_work_progress(70, "输入处理与扫描已完成")
         if hashlib.sha256(source.encode("utf-8")).hexdigest() != run.provenance.input_digest.value:
@@ -122,7 +137,8 @@ def build_public_git_dependency_plan(
             coverage_errors.append(ScanError(code="git_scan_coverage_partial", stage="ingestion",
                 message=f"有界扫描：仓库共 {getattr(result, 'discovered_entries', 0)} 个条目，本次读取 {len(result.inventory.entries)} 个文件；{len(omissions)} 个条目未扫描。完整路径和原因见报告的扫描覆盖范围。",
                 recoverable=True, evidence_ids=[item.id for item in coverage_evidence]))
-        state.consumer_result = result.consumer_result
+        state.consumer_result = dependencies
+        state.completed_notice = completed
         state.root_digest = result.inventory.root_digest
         digest = HashValue(algorithm="sha256", value=state.root_digest)
         state.ingestion_producers = [
@@ -159,6 +175,8 @@ def build_public_git_dependency_plan(
         ai_provider=ai_provider,
         ai_enabled=ai_enabled,
         ai_timeout_seconds=ai_timeout_seconds,
+        notice_terminal_observer=(lambda stored: notice_lifecycle.on_terminal(state.completed_notice, stored))
+            if notice_lifecycle is not None else None,
     )
     # The shared dependency scan builds its own evidence list; add coverage after
     # it completes so neither that merge nor AI can erase omitted-path records.
@@ -185,7 +203,7 @@ def build_public_git_dependency_plan(
                            summary=summary, provenance=provenance)
 
     steps[2] = PipelineStep(steps[2].stage, scan_with_coverage)
-    return PipelinePlan(tuple(steps))
+    return replace(plan, steps=tuple(steps))
 
 
 __all__ = ["GitIngestionFactory", "build_public_git_dependency_plan"]

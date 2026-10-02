@@ -144,6 +144,7 @@ class ZipDispatcher:
         ai_enabled: bool = False,
         external_scanners: bool = False,
         ai_timeout_seconds: float = 10.0,
+        notice_lifecycle=None,
     ) -> None:
         if (
             not isinstance(registry, SQLiteScanRunRegistry)
@@ -160,6 +161,10 @@ class ZipDispatcher:
             or ai_timeout_seconds <= 0
         ):
             raise ZipDispatcherError("dispatch_invalid_argument")
+        if notice_lifecycle is not None:
+            from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
+            if type(notice_lifecycle) is not NoticeSourceLifecycle:
+                raise ZipDispatcherError("dispatch_invalid_argument")
         self._registry = registry
         self._store = store
         self._data_dir = data_dir
@@ -170,6 +175,7 @@ class ZipDispatcher:
         self._ai_enabled = ai_enabled
         self._external_scanners = external_scanners
         self._ai_timeout_seconds = float(ai_timeout_seconds)
+        self._notice_lifecycle = notice_lifecycle
         self._state_lock = threading.Lock()
         self._stop = threading.Event()
         self._wake = threading.Event()
@@ -625,6 +631,8 @@ class ZipDispatcher:
         if self._stop.is_set():
             return
         try:
+            notice_options = ({"notice_lifecycle": self._notice_lifecycle, "upload_root": self._store.upload_root}
+                              if self._notice_lifecycle is not None else {})
             plan = build_local_zip_dependency_plan(
                 archive,
                 self._workspace_root,
@@ -633,6 +641,7 @@ class ZipDispatcher:
                 ai_enabled=descriptor.execution_profile.ai_requested,
                 ai_timeout_seconds=descriptor.execution_profile.ai_timeout_seconds,
                 external_scanners=descriptor.execution_profile.external_scanners,
+                **notice_options,
             )
         except Exception:
             self._stop_fatal("dispatch_plan_build_failed")

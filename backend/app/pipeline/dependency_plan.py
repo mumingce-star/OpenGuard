@@ -62,6 +62,7 @@ class DependencyPlanState:
     root_digest: str | None = None
     external: ExternalScanFacts | None = None
     ingestion_producers: list[ProducerRef] = field(default_factory=list)
+    completed_notice: object | None = None
 
 
 def fail(code: str, message: str, *, recoverable: bool = False) -> None:
@@ -173,6 +174,7 @@ def build_dependency_plan(
     ai_provider: Provider | None = None,
     ai_enabled: bool = False,
     ai_timeout_seconds: float = 10.0,
+    notice_terminal_observer: Callable | None = None,
 ) -> PipelinePlan:
     """Attach the existing B1/A4 tail to one source-specific ingestion stage."""
 
@@ -305,7 +307,8 @@ def build_dependency_plan(
             PipelineStep(ScanStage.RULES, rules),
             PipelineStep(ScanStage.AI_ASSIST, ai_assist),
             PipelineStep(ScanStage.REPORT, report),
-        )
+        ),
+        notice_terminal_observer=notice_terminal_observer,
     )
 
 

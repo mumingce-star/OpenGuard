@@ -412,3 +412,29 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - 实际验证：永久测试先红后绿；有效初次47 failed/16 passed包含5项新测试构造错误，修正后用精确BASE再核验47 failed/16 passed无setup error；保留临时盘/rules路径环境失败及58 pass/5 test-fixture失败输出。最终414 unique passed、0 failed/error/skipped/xfail/deselected，原261节点完整保留，1既有弃用警告；compileall、diff及旧现场保护核对PASS。
 - 已验证：TEST_ONLY受控输入经过真实CZ/A2/A1和默认工厂Draft/Report，来源Hash固定，正式引用不提升；HTTP TestClient GET/重启只读和业务行Hash/内容核对，初始化fail-closed，缺失Draft404与无BOUND409明确区分。不是live网络或生产扫描验收。
 - 未完成：真实扫描source lifecycle、Owner Review、发布与集成；不改A1/A2/CZ、Report核心、Scanner/Detector/Bench/Frontend/Schema，不访问真实apply数据。证据output/manual-fixes/p1-notice-a3-20260927T092224Z/；NO_COMMIT/NO_PUSH/NO_MERGE/NO_DEPLOY。
+
+## 2026-10-01 — Backend A NOTICE A4-1核心启动
+
+- 工具/模型：Codex GPT-5；Owner批准固定40e5基线及Gate 0→Gate 1条件式执行，只实现terminal-only admission和STAGED元数据只读reader。日志按本任务批准例外阅读；Gate 1只最小追加本文件与工作日志。
+- Gate 0实跑26 passed（原13＋独立13），使用真实受控ZIP/session核验正文/Hash、安全锁存、预算、过期与零候选；不把模拟Session或历史测试当当前准入。旧ENVIRONMENT_BLOCKED记录保留。
+- 后续先永久Fail-first再最小实现/直接消费者回归；不修改正式语义、CZ、数据库Schema或生产hooks，不执行真实apply。尚未完成Gate 1，不提前声称Owner接受/发布/生命周期完备。
+
+## 2026-10-01 — Backend A NOTICE A4-1核心实现与定向验证
+
+- 工具/模型：Codex GPT-5；固定40e5基线，仅两内部接口＋两TEST_ONLY永久测试＋两份追加日志。新terminal入口核对成功受控ingestion/原输入/真实Registry并重算facts，旧Assessment admission不变；新增Reader仅返回验证后的冻结STAGED元数据，不提供字节/初始化/修库/自动bind。未修改数据库DDL或公共Schema。
+- 实际结果：Gate 0实跑26 PASS；初始缺入口Fail-first 54失败/4通过；非法ID夹具更正和独立格式测试、截断红灯与容量边界证据均保留。最终481 unique PASS、0失败/错误/跳过/xfail，原414逐ID未删减；新增61永久节点全部通过；compileall、diff、累计完整新文件patch逆向检查及敏感模式扫描PASS。
+- 同环境基线：错误导入路径在未修改40e5复现；512MiB盘的80个既有失败/错误与基线一致。历史2GiB盘配置下既有420节点基线全通过，新接口节点57失败/4通过；候选481全通过。只修测试调用环境与本轮一个夹具，不改既有失败测试或放宽权限/容量安全门槛。
+- 边界/收尾：12个其他worktree状态/Hash不变；只清理本轮13个无保留业务数据的临时容器，保留daemon/42个旧容器与证据，未启动UI。仅A4_1_READY_FOR_OWNER_REVIEW；截断正式partial契约/production hooks尚未完成，bc2b7afe、真实apply、Windows/全仓/Bench/浏览器均未执行。N2/N3等未修，PROJECT_PROGRESS未改；不提交/推送/合并/部署。
+
+## 2026-10-01 — Backend A NOTICE A4-2实现启动
+
+- 工具/模型：Codex GPT-5；Owner全文审阅后限定授权，固定41cf854独立worktree。复用原方案，新增完整Collection内容封口、合法短读/真实EOF区分、生产Producer与配置摘要、按任务状态区分恢复；本轮最多12产品＋3新测试＋2追加日志。
+- 先永久Fail-first再实现受控ingestion → terminal stage → actual saved Assessment bind，旧入口和CAS/BOUND freeze不放宽；只在隔离离线TEST_ONLY数据运行，不采集公网、不运行真实apply、不改CZ/Schema/Frontend/核心Store，不自动创建Draft/Report。
+- 原方案、回执、失败轨迹保留；本轮执行证据写新的ignored目录。Owner尚未接受实现，尚未测试完成、提交、推送、集成或部署；PROJECT_PROGRESS保持不动。
+
+## 2026-10-01 — Backend A NOTICE A4-2限定接线与受控验证
+
+- 工具/模型：Codex GPT-5；只在固定41cf854独立分支实现Owner批准的12产品＋3新增测试，并最小追加两日志。原依赖返回身份保留，真实ingestion完成/关闭后内部proof绑定完整Collection内容；新terminal admission只读原Registry，terminal CAS后stage，actual Assessment＋job成功提交/slot释放后隔离bind。没有第二套Store、Schema、package算法、latest、自动换Hash或失败DELETE。
+- 实际验证：最终85新增永久节点PASS、独立9探针PASS；40既有模块BASE 1179通过/4失败/2跳过，40＋3候选1264通过/相同4失败/相同2跳过。历史481/414逐ID保留、无新增失败；不是全绿，既有失败未修。首批BASE Fail-first 68失败/1通过，最终强化85节点的补充BASE 84失败/1通过；早期混合运行、夹具错误与探针no-op误判失败轨迹保留，不伪造先后关系。
+- compileall、diff、完整含新文件patch、敏感模式/范围/append-only检查PASS；204冻结核心、Store/DDL、40既有测试与原adapter方法不变。实际ZIP/durable/Git受控路径、同session预算与锁存、Producer/config、故障回滚、exact绑定、恢复、显式A3 Draft/Report和GET/重启业务行不变已测；公网、真实Pydantic、浏览器和生产验收未执行。
+- 收尾保护其他worktree，保存输出后仅清理本轮两个离线无业务卷测试容器；daemon/其他服务保留。证据output/manual-fixes/p1-notice-a4-2-20261001T1145Z-4wemOZ/；仅A4_2_READY_FOR_OWNER_REVIEW，不声称Owner接受/已发布/每次扫描NOTICE完备。PROJECT_PROGRESS不变，截断partial契约及既有债保留；NO_REAL_APPLY / NO_COMMIT / NO_PUSH / NO_MERGE / NO_PRODUCTION_DEPLOY。
