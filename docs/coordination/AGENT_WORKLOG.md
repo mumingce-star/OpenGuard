@@ -8842,3 +8842,14 @@
 - 边界：不上传 `reports/`、原始第三方 ZIP、缓存、虚拟环境、密钥、个人信息或其他忽略运行产物；不改 `main`，不启动/停止服务。不把 automated_static_subset、开发级 holdout、离线 partial 或 Windows import 成功表述为真人 Gold、正式 Bench、受控 Linux 性能、完整生产生命周期或法律结论。
 - 验收：审阅未提交代码与来源清单，运行 NOTICE/Bench 定向 Python、B07 Node、Java Maven、compileall、`git diff --check` 和敏感信息扫描；远端 SHA/祖先核验后普通非强制推送并读回 SHA。
 - token 估算：15,000--25,000；系统未提供精确 token 遥测。
+
+## 20261006-1540-GPT5-全量发布与P1集成-result
+
+- 状态：COMPLETE；作者与角色：GPT-5 / Root Coordinator；日期时间：2026-10-06（Asia/Shanghai）。
+- 任务目标与实际结果：已审阅并发布当前已实现的 NOTICE selector/lifecycle partial 覆盖、Windows ZIP dispatcher fail-closed 兼容、自动静态 Bench/oracle/audit/review、P1 repository benchmark preparation、测试、规格和协调文档；未上传 `reports/`、pytest 临时目录、第三方原始 ZIP、缓存、虚拟环境、密钥或个人信息。
+- 修改/新增文件：产品提交 `2d822af0ae67fc3bde7f1e45fea8e3ec781f52e5` 共 23 个文件，范围为 `backend/app/p1/notice_source_adapter.py`、`backend/app/p1/notice_source_lifecycle.py`、`backend/app/pipeline/zip_dispatcher.py`、`benchmarks/` 下自动静态 Bench 与 P1 preparation、相关测试、规格、AI 辅助记录和协调文档。`main` 未修改，未启停服务。
+- 评审、命令与测试：审阅截断 coverage 绑定、ZIP 平台失败关闭、来源/哈希/复核边界及 P1 preparation；定向 Python `38 passed in 7.46s`；Node B07 定向 6 项通过；Java Maven 通过；`git diff --check` 通过。完整 lifecycle 聚合运行得 `45 passed, 42 errors`，错误均在既有 Windows POSIX 依赖（`os.geteuid`、`/usr/bin/git`）的 fixture/setup，未把它表述为业务链通过。
+- 接口、Schema、规则与重要决策：selector 超限允许收集有界前缀，但只能携带 `coverage=partial` 与 `notice_selector_truncated`；terminal admission 复核候选集合及 gap 一致性。自动静态评测保留来源冻结、哈希、失败账本和人工复核边界，仍非真人 Gold/正式 Bench；P1 preparation 不把尚未采集的槽位表述为正式质量结果。
+- GitHub 发布：已以普通非强制快进推送至 `git@github.com:mumingce-star/OpenGuard.git`；`codex/scan-reliability-integration` 与 `integration/p1` 均读回为 `2d822af0ae67fc3bde7f1e45fea8e3ec781f52e5`。无需 PR 即按用户明确目标更新集成分支；`main` 未变。
+- 已知风险与下一步：A/Sol 仍需在受控 POSIX 上运行完整 NOTICE lifecycle/持久化/重启读回；B 仍需来源与许可证事实复核；前端仍需真实 API 浏览器回执；G5 真人 Gold、G6 正式 Bench、G7/G8 受控环境仍未关闭。责任：A/Sol、B、前端与 Root 协调。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 15,000--25,000；本轮发布与集成工作完整完成，未因 token 预算缩小范围。

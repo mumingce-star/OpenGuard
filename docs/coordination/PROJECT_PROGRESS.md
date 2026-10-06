@@ -1852,3 +1852,11 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 受控 NOTICE selector 超过 1024 候选时，保留有界前缀并标记 `partial` / `notice_selector_truncated`；终态准入重算 Inventory，核对观察键、路径、顺序及截断 gap。Windows 可导入 ZIP dispatcher，缺 POSIX 锁能力时失败关闭。 | A/Sol 复核新 partial 终态契约；A 提供受控 POSIX 六文件回归、固定 ZIP/Git 终态 STAGED/BOUND/Draft/Report 哈希及重启读回；B 核对 Profile、许可证关系、NOTICE 来源/证据；前端提供同版本真实 API 浏览器回执。既有 N2/N3、序列化内存放大、4 失败/2 跳过债仍未自动关闭。 | Windows 离线 NOTICE/安全/平台定向 `20 passed`；生产六文件已可收集，但运行时在 POSIX-only Registry `os.geteuid` 处失败，非 NOTICE 业务断言通过。`git diff --check` 通过。当前 `codex/scan-reliability-integration@8253d78` 本地未提交/推送/PR，`main` 未变。 |
 
 本轮仅关闭局部实现缺口，不宣称 NOTICE 端到端生产验收完成、法律义务已履行或可发布。没有统一分母和权重，不估算完成百分比。
+
+## 2026-10-06 P1 生命周期与自动静态 Bench 发布回执
+
+| 本轮完成 | 累计已实现能力 | 未关闭门禁 / 责任 | 验证与 GitHub |
+|---|---|---|---|
+| 发布 NOTICE selector 截断 partial 传播与终态集合/gap 复核、Windows ZIP dispatcher fail-closed 兼容、自动静态 Bench/oracle/audit/review 与 P1 repository preparation。 | 可离线收集有界 NOTICE 观察并明确 coverage 缺口；可对受控静态来源做冻结、哈希核验、自动 oracle 评分和人工复核队列；已有 P1 来源准备台账。 | A/Sol：受控 POSIX 全链、持久化/重启读回；B：来源/许可证事实复核；前端：真实 API 浏览器回执；Root：跨栈验收。G5 真人 Gold、G6 正式 Bench、G7/G8 受控环境、完整生产 NOTICE 生命周期尚未关闭。 | 定向 Python `38 passed in 7.46s`；Node B07 6 项通过；Java Maven、`git diff --check`、敏感信息检查通过。完整生命周期聚合在 Windows 被既有 `os.geteuid` / `/usr/bin/git` 依赖阻断（`45 passed, 42 errors`），不作为成功证据。提交 `2d822af` 已普通非强制快进至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 一致；`main` 未变。 |
+
+本项目可独立演示离线扫描、静态候选识别、受控 NOTICE 采集、报告/收据及受限 Bench 工具链；尚不具备完整生产 NOTICE 生命周期、真人 Gold/正式盲评测、跨平台持久化回归和前端真实签收。距离可报名/可参赛、可提交完整作品、具备获奖竞争力，仍分别需要关闭竞赛材料/规则一致性、端到端可复现验收与正式评测证据这些可验证门禁；缺乏统一分母和权重，未编造完成百分比。
