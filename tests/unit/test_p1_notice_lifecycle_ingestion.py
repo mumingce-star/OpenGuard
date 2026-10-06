@@ -136,7 +136,7 @@ def test_w03_two_plan_local_proofs_do_not_mix(env):
     assert not list(env.workspace.iterdir())
 
 
-@pytest.mark.parametrize("case", ["zero", "truncated", "ordinary_error"])
+@pytest.mark.parametrize("case", ["zero", "ordinary_error"])
 def test_w04_w05_w06_normal_notice_failure_keeps_original_dependencies(env, monkeypatch, case):
     lc = lifecycle(env); m = importlib.import_module("app.p1.notice_source_lifecycle"); calls = []
     real = m.collect_notice_source_package
@@ -146,7 +146,6 @@ def test_w04_w05_w06_normal_notice_failure_keeps_original_dependencies(env, monk
         return real(*args, **kw)
     monkeypatch.setattr(m, "collect_notice_source_package", collector)
     files = {"requirements.txt": FILES["requirements.txt"]} if case == "zero" else FILES
-    if case == "truncated": files = {**files, **{f"p{i:04}/NOTICE": "n" for i in range(1025)}}
     proof, _, _, _ = completed(env, files=files, notice=lc.collect)
     assert proof.result.consumer_result.dependencies.lanes
     assert proof.result.consumer_result.collection is None
@@ -356,4 +355,8 @@ def test_w05_real_inventory_capacity_exact_count_with_shared_budget(env,count):
     if count==1024:
         assert notice.selection.truncated is False and len(notice.collection.observations)==1024
         assert notice.collection.coverage.gap_codes==["read_budget_exhausted"]
-    else:assert notice.selection.truncated is True and notice.collection is None
+    else:
+        assert notice.selection.truncated is True
+        assert len(notice.collection.observations) == 1024
+        assert notice.collection.coverage.state == "partial"
+        assert "notice_selector_truncated" in notice.collection.coverage.gap_codes

@@ -8579,3 +8579,266 @@
 - 完整批准40模块固定BASE：1179 passed / 4 failed / 2 skipped（1185 unique）；候选40＋3模块：1264 passed / 4 failed / 2 skipped（1270 unique）。失败和跳过逐ID相同，无新增消费者/安全失败；历史481/414节点全部保留。既有six-path断言与3个external-tool环境/预期失败未修；跳过为controlled loopback与明确公网/网络许可门禁，不描述为全绿。compileall、diff、含5新文件累计patch逆向dry check、精确范围、append-only、敏感模式扫描PASS。
 - 收尾：其他13条worktree登记（12存在＋1既有prunable）HEAD/status/未提交Hash不变；原方案/receipt Hash不变。原始输出/XML已保存后，仅停止并移除本轮两个无业务卷离线容器，daemon及其他容器保留；未启停UI/生产，不访问真实Pydantic/原业务根，不执行apply。证据：output/manual-fixes/p1-notice-a4-2-20261001T1145Z-4wemOZ/。一次ignored审计脚本输出buffer错误保留并仅修脚本，不改产品。
 - 未完成/下一步：Owner复审完整实现/patch/回执；截断正式partial契约、窄于4MiB collector政策支持、生产外网/live browser验收、发布/部署尚未完成；bc2b7afe未采用，N2/N3与其他覆盖/序列化债未顺手修。精确token数不可获得，START估算30k–60k；未减少范围，无法据估算断言实际用量。NO_CZ_SOURCE_CHANGE / NO_DB_SCHEMA_CHANGE / NO_FRONTEND_CHANGE / NO_REAL_APPLY / NO_COMMIT / NO_PUSH / NO_MERGE / NO_PRODUCTION_DEPLOY；停止，不开始下一阶段。
+
+## 20261002-1955-CodexRoot-local-preview
+
+- **状态**：START；**作者与角色**：Codex Root Coordinator / 本地预览启动。
+- **日期时间**：2026-10-02 19:55（Asia/Shanghai）；**分支**：`codex/scan-reliability-integration`。
+- **任务目标**：按用户明确请求启动 OpenGuard 的本地可预览入口，不修改产品代码、接口、Schema、测试或现有未跟踪 Bench/报告文件。
+- **开始前确认**：已阅读 README、完整共享工作日志、PROJECT_PROGRESS、SOL_HANDOFF，并检查分支、工作区和最近提交；工作区已有 `benchmarks/p1-fixed-repositories/`、`benchmarks/p1_repository_bench.py`、`reports/`、`tests/unit/test_p1_repository_bench_preparation.py` 未跟踪文件，均不触碰。Docker Compose 当前无法连接 Docker Desktop Linux Engine，尚未启动任何服务。
+- **预计操作与验收**：根据 `deploy/compose.yaml` 启动默认 Compose Web/API 预览（AI、公开 Git 和评估开关保持默认关闭），等待健康检查后确认 `http://127.0.0.1:8080/app/new-scan` 可访问。仅追加本日志及收工记录。
+- **接口、Schema、规则或决策**：无变更；本次运行精确 token 数不可获得，估算 1,500～3,000。
+
+## 20261002-2001-CodexRoot-local-preview-result
+
+- **状态**：PARTIAL；**作者与角色**：Codex Root Coordinator / 本地预览启动；**日期时间**：2026-10-02 20:01（Asia/Shanghai）。
+- **任务目标与实际结果**：前端 Vite 开发预览已启动并验证可访问：`http://127.0.0.1:5173/` 返回 HTTP 200，监听进程 PID 为 10820。已尝试启动 Docker Desktop、切换 Linux engine 并执行默认 Compose 预览，但 Docker API 管道 `//./pipe/dockerDesktopLinuxEngine` 仍不存在，因此完整 Web/API Compose 入口 `http://127.0.0.1:8080/app/new-scan` 尚未启动。
+- **修改文件**：仅追加 `docs/coordination/AGENT_WORKLOG.md` 的 START 与本收工记录；未修改产品代码、接口、Schema、规则、测试或既有未跟踪文件。
+- **命令与验证**：执行 Docker Desktop 启动、Linux engine 切换与 `docker compose -f deploy/compose.yaml up -d --build --wait`；后者因 Docker API 不可连接失败。`pnpm dev` 成功；对 `http://127.0.0.1:5173/` 的 HTTP 验证为 `200 text/html`。
+- **接口、Schema、规则或决策**：无变更。Vite 的 `/api` 默认代理目标为 `http://127.0.0.1:8000`，在 Docker/API 未就绪期间，涉及真实扫描或后端数据的功能不可用。
+- **已知风险与未完成项**：需等待或修复 Docker Desktop Linux 引擎后，才能运行完整容器化 Web/API 预览；本轮不重试、不改 Docker 配置，也不触碰用户未跟踪文件。
+- **下一步与责任模型**：用户在 Docker Desktop 显示“Engine running”后，可请求 Root 重试 `docker compose -f deploy/compose.yaml up -d --build --wait`；Root 负责确认 8080 健康入口。
+- **关联提交/PR/Issue/evidence_id**：无；未提交、推送或创建 PR。**token 使用说明**：本次运行精确 token 数不可获得；开工估算 1,500～3,000，实际在该范围内完成前端预览并确认 Docker 阻塞。
+
+## 20261002-GPT5-集成分支拉取合并
+- **状态**：START
+- **作者与角色**：GPT-5（Root Coordinator / Git 集成协调）
+- **日期时间**：2026-10-02 09:10（Asia/Shanghai）
+- **任务目标**：按用户指定 GitHub SSH 远端，拉取并合并 `origin/integration/p1@a4a7866`。
+- **开始前确认**：已完整阅读 README、共享日志、PROJECT_PROGRESS、SOL_HANDOFF；当前分支相对 integration/p1 为 ahead 1/behind 2。工作区包含 P1 固定仓库基准、报告及共享日志在途内容，必须保护。
+- **预计修改文件**：合并远端可信 NOTICE source lifecycle、terminal admission/staged reader；本地在途内容先保存至可恢复 stash，合并后恢复。
+- **验收方法**：记录 stash、执行无快进合并、检查冲突/格式、恢复 stash 并核对本地文件保留。
+- **token 用量估算**：4,000～8,000；精确 token 遥测不可获得。
+## 20261002-GPT5-集成分支拉取合并
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / Git 集成协调）
+- **日期时间**：2026-10-02 09:18（Asia/Shanghai）
+- **任务目标与实际结果**：已将 `origin/integration/p1@a4a7866` 的两项最新提交无冲突合并至当前分支，合并提交 `8253d78`。带入可信 NOTICE source lifecycle、terminal admission/staged reader、NOTICE ingestion 与 API/pipeline 接线及对应单元测试。
+- **修改文件**：远端合并涉及21个已提交文件（2043行新增、82行调整）；本地 P1 固定仓库基准、报告与协作日志通过 stash 自动恢复，未覆盖、暂存或提交。
+- **命令与测试结果**：`git fetch origin`、`git merge --no-ff origin/integration/p1`、`git diff --check` 和 stash apply 均成功；未启动服务、未安装依赖或运行全量回归。
+- **接口、Schema、规则或重要决策**：采用 integration/p1 的现行 NOTICE lifecycle/terminal admission 实现；本地基准保持独立在途状态。
+- **已知风险与未完成项**：当前分支比自身 origin 领先3个提交，尚未推送；`stash@{0}` 至 `stash@{3}` 保留为恢复审计点；本地基准尚未提交；完整回归、Windows fcntl 与前端 pnpm 门禁仍待关闭；main 未改变。
+- **下一步与责任模型**：Root 在用户授权发布后运行发布门禁并推送；基准作者完成自检、暂存后独立发布；Luna 进行独立验收。
+- **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration@8253d78`；上游 `origin/integration/p1@a4a7866`；无 PR/Issue。
+- **token 使用说明**：本次运行精确 token 数不可获得；估算4,000～8,000，已在范围内完成保护、合并与恢复，未扩展到发布或环境修复。
+## 20261005-GPT5-GitHub拉取合并核验
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / Git 同步协调）
+- **日期时间**：2026-10-05 09:05（Asia/Shanghai）
+- **任务目标与实际结果**：按用户指定 GitHub SSH 远端获取并合并最新 `integration/p1`。`git fetch origin` 后确认当前分支相对 `origin/integration/p1` 为 ahead 2/behind 0，远端没有新提交可拉取或合并。
+- **修改文件**：仅追加本共享日志；未修改、暂存、提交、推送、stash、恢复或覆盖产品文件。
+- **命令与测试结果**：`git fetch origin` 成功；`git rev-list --left-right --count HEAD...origin/integration/p1` 为 `2 0`。
+- **接口、Schema、规则或重要决策**：无变更；本地 P1 固定仓库基准、报告和共享日志在途内容保持原样。
+- **已知风险与未完成项**：当前分支相对自身 origin 仍 ahead 3，尚未推送；本地基准尚未提交；main 未改变。
+- **下一步与责任模型**：未来 integration/p1 有新提交时再按保护流程合并；基准作者完成自检/暂存后由 Root 发布。
+- **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration@8253d78`；无新提交、PR、Issue或evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；估算2,000～4,000，已在范围内完成核验。
+
+## 20261006-1323-GPT6-log-order-amendment
+
+- **状态**：AMENDMENT；**作者与角色**：GPT-6.1 Sol（Root Coordinator）；**日期时间**：2026-10-06 13:23（Asia/Shanghai）。
+- **更正说明**：本轮 `20261005-2113-GPT6-automated-static-bench` START 使用了非唯一末尾锚点，实际插入在此前既有 `20261005-GPT5-GitHub最新内容拉取合并核验` 记录之前，而非当时文件的物理末尾。历史内容没有删除或改写；此处只追加说明，不重排记录。START 的目标、范围和估算仍有效。
+
+## 20261006-1323-GPT6-automated-static-bench
+
+- **状态**：PARTIAL；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 后端 B 自动静态 Bench）；**日期时间**：2026-10-06 13:23（Asia/Shanghai）。
+- **任务目标与实际结果**：实现自动冻结、独立确定性 Gold、自检、Detector 预测/计分、FN/FP 报告及规则前后对比。30 项真实来源中固定 25 个 commit/ZIP SHA-256，9 个固定 holdout；5 个采集失败保留。最终源码绑定运行 `baseline_v5_final`：TP=2654、FP=292、FN=48，Precision=0.9009、Recall=0.9822、F1=0.9398；holdout F1=0.9698；失败率 5/30。只达到限定静态子集自动评测，不达到现行 Bench 2.0 真人 Gold/正式可报告门禁。
+- **修改或新增文件**：`benchmarks/auto_static_oracle.py`、`benchmarks/auto_static_bench.py`、`benchmarks/auto-static-sources.json`、`benchmarks/auto-static-bench.md`、`benchmarks/README.md`、`tests/unit/test_auto_static_bench.py`、`docs/coordination/PROJECT_PROGRESS.md` 与本日志。未修改既有未跟踪 `benchmarks/p1-fixed-repositories/`、`benchmarks/p1_repository_bench.py`、`reports/`、`tests/unit/test_p1_repository_bench_preparation.py`。
+- **命令与测试结果**：Python 3.12 定向 Detector/Bench 回归 `32 passed`；`compileall`、`git diff --check`、新增工件常见密钥/本机路径检查通过；最终收据中的运行器、oracle、指标 SHA-256 与当前文件独立核对均匹配。未启停服务。
+- **接口、Schema、规则和决策**：新增自动目录/冻结/Gold/预测/指标/运行收据契约，运行收据 v2 含运行器源码哈希；输入、配置、Detector 与 oracle 版本绑定。自检失败拒绝计分，冻结目录/Gold/预测/指标只写一次，失败保留；动态或歧义输入列为未计分，无法证明的 FP 原因保留 `unclassified`。自动静态子集 `automated_scope_ready=true`，但 `bench_2_reportable=false`。
+- **风险与未完成**：30 项中 5 项抓取失败；oracle 只覆盖事先限定的静态结构，不能证明对真实仓库全部 AI 资源的召回，292 个机器 FP 不能当成人工确认误报；需 Luna 独立复核样本与 Gold/错误分类，Sol 确认 G5/G6 等级契约，再决定正式指标。原始第三方 ZIP/生成数据在被忽略本机目录，不可直接分发。现有 G3/G4/G7/G8 门禁不因本项改变。未提交、推送或开 PR。
+- **下一步及责任模型**：Luna 对冻结来源、机器 Gold 和错误分类作独立抽查；Sol 决定是否变更 Bench 2.0 对真人盲审的要求；Root 在任务文件明确验收及发布门禁后处理功能分支发布。
+- **关联分支、提交、PR、Issue/evidence**：`codex/scan-reliability-integration@8253d78`；本机 `benchmarks/results/local/auto-static-20261006-r7/` 的 `freeze.json`、`metrics/baseline_v5_final.json` 和 `runs/baseline_v5_final.json`；无本轮提交、PR、Issue。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 18,000～35,000，因缺少精确遥测无法判定是否落在区间内；自动子集已完成，正式 Bench 范围未完整完成，未将本机产物算作已发布。
+
+## 20261005-2113-GPT6-automated-static-bench
+
+- **状态**：START；**作者与角色**：GPT-6（Root Coordinator / 后端 B 自动化静态范围 Bench）。
+- **日期时间**：2026-10-05 21:13（Asia/Shanghai）；**分支**：`codex/scan-reliability-integration@8253d78`。
+- **目标与范围**：按用户给出的五步流程，为 20–30 个固定真实来源建立可复算的自动采集、独立确定性 Gold、oracle 自检、Detector 预测/指标及 FN/FP 差异产物；保留失败与不可评分项。只新增独立 Bench 工具、测试、文档及必要的评测契约说明；保护现有未跟踪 `p1-fixed-repositories/`、`p1_repository_bench.py`、`reports/` 和其他模型工件。
+- **验收方法**：定向测试包含正常与篡改/失败路径、`git diff --check`、敏感信息与待提交范围复核；明确自动静态子集和既有 Bench 2.0 真人评审等级的差异，不伪造真实样本、Gold 或指标。终端默认沙箱初始化失败，已通过受控提升执行只读检查；不启停服务。
+- **预计文件与 token**：`benchmarks/` 下新增自动流水线及说明、`tests/unit/` 下新增定向测试，必要时更新 `docs/spec/`；本次运行精确 token 数不可获得，估算 18,000～35,000。
+## 20261005-GPT5-GitHub最新内容拉取合并核验
+- **状态**：COMPLETE
+- **作者与角色**：GPT-5（Root Coordinator / Git 同步协调）
+- **日期时间**：2026-10-05 09:15（Asia/Shanghai）
+- **任务目标与实际结果**：按用户指定 GitHub SSH 远端获取最新内容并合并。`git fetch origin` 后确认当前 `codex/scan-reliability-integration` 相对 `origin/integration/p1` 仍为 ahead 2/behind 0，无新提交可拉取或合并。
+- **修改文件**：仅追加本共享日志；未修改、暂存、提交、推送、stash、恢复或覆盖产品文件。
+- **命令与测试结果**：`git fetch origin` 成功；比较命令显示本地两个已提交的独有集成/基准提交，远端无独有提交。
+- **接口、Schema、规则或重要决策**：无变更；本地固定仓库基准、报告和协作日志在途内容保持原样。
+- **已知风险与未完成项**：当前分支相对自身 origin ahead 3，未推送；基准未提交；main 未改变。
+- **下一步与责任模型**：未来远端新增 integration/p1 提交时再按 stash 保护流程合并；基准作者完成自检/暂存后由 Root 发布。
+- **关联分支、提交、PR、Issue 或 evidence_id**：`codex/scan-reliability-integration@8253d78`；无新提交、PR、Issue或evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；估算2,000～4,000，已在范围内完成核验。
+
+## 20261006-1324-GPT6-log-tail-amendment
+
+- **状态**：AMENDMENT；**作者与角色**：GPT-6.1 Sol（Root Coordinator）；**日期时间**：2026-10-06 13:24（Asia/Shanghai）。
+- **更正说明**：`20261006-1323-GPT6-log-order-amendment` 与 `20261006-1323-GPT6-automated-static-bench` 因相同 token 说明行再次匹配到前一条记录，未落在物理末尾。两条记录内容有效且未被改写；本条仅追加顺序说明，下一条在物理末尾复述收工状态。
+
+## 20261006-1324-GPT6-automated-static-bench-tail
+
+- **状态**：PARTIAL；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 后端 B）；**日期时间**：2026-10-06 13:24（Asia/Shanghai）。
+- **任务目标和实际结果**：自动静态 Bench 流水线完成；30 项来源中 25 项固定、9 项 holdout 计分、5 项失败保留。`baseline_v5_final` 得 TP=2654、FP=292、FN=48，Precision=0.9009、Recall=0.9822、F1=0.9398、holdout F1=0.9698；只适用于限定静态范围，非 Bench 2.0 正式可报告结果。具体文件、命令、Schema、风险、后续责任及 token 说明见上方同 ID 主记录。
+- **修改与验证**：本轮新增/修改的 Bench、测试和协调文档见主记录；32 项定向测试、编译、格式、敏感信息检查及最终收据 SHA-256 独立核对均通过；无服务启停、提交、推送或 PR。
+- **未完成和下一步**：Luna 独立核验机器 Gold/误差，Sol 确认 G5/G6 门禁；现有 G3/G4/G7/G8 未关闭。分支 `codex/scan-reliability-integration@8253d78`，本机 evidence `benchmarks/results/local/auto-static-20261006-r7/`；发布状态未发布。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 18,000～35,000，缺少遥测无法验证是否落入区间；正式 Bench 目标未完整完成。
+
+## 20261006-1326-GPT6-b-status-table-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 工作包状态核对）；**日期时间**：2026-10-06 13:26（Asia/Shanghai）。
+- **范围与验收**：只读核对用户的 B 工作包表与当前进度、Git 状态；仅在日志追加收工记录，不改业务代码、Schema 或接口。以 README、完整工作日志、PROJECT_PROGRESS、SOL_HANDOFF 和当前分支状态为依据；预计 token 1,000～3,000。
+
+## 20261006-1327-GPT6-b-status-table
+
+- **状态**：COMPLETE；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 工作包状态核对）；**日期时间**：2026-10-06 13:27（Asia/Shanghai）。
+- **目标与结果**：用户表总体准确，需将 P0 Bench 的“真实样本尚未建立”改为“30 项来源、25 项固定快照、9 项可计分 holdout 已在本机形成，但机器 Gold 仅覆盖限定静态结构；G5 真人 Gold 与 G6 正式评测仍未关闭”。其余各项缺口保留，B07 正式受控 Linux 数据仍待采集。
+- **修改文件**：仅追加本共享日志；未修改项目业务文件，未覆盖已有未跟踪文件。
+- **命令与验证**：只读读取 README、全量日志、项目进度、Sol 交接、Git 分支/状态/最近提交并检索相关进度；未运行新测试、未启停服务。
+- **接口/Schema/规则决策**：无变更；不将本机自动静态范围指标升级为 Bench 2.0 正式结论。
+- **风险与未完成**：G3/G4/G5/G6/G7/G8 仍需各责任方验收；本轮未独立复测 B01/B03/B04 异常样本或 NOTICE 版本。
+- **下一步与责任模型**：Luna 核验机器 Gold/误差与真实样本；Sol 复核正式 Bench 契约；Terra/A 负责生产生命周期与前端回执；受控 Linux 环境负责人负责 G7。
+- **分支/发布**：`codex/scan-reliability-integration@8253d78`；本轮无提交、推送、PR 或 GitHub 状态变化。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 1,000～3,000，无法通过遥测确认是否在范围内；只读核对已完成。
+
+## 20261006-1329-GPT6-b-bench-integrity-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / B 评测契约与实现）；**日期时间**：2026-10-06 13:29（Asia/Shanghai）。
+- **范围**：继续完善后端 B 的 P0 Bench/B06，新增只读完整性审计：核对冻结来源、快照 SHA、Gold/预测/指标/收据、样本失败保留与聚合一致性；补篡改/缺件回归及说明。随后只读复核 B01/B03/B04/B07 缺口，不修改 A 生产生命周期、不更改 G5/G6 正式等级。
+- **预计修改文件**：`benchmarks/auto_static_bench.py`、`tests/unit/test_auto_static_bench.py`、`benchmarks/auto-static-bench.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志；现有未跟踪基准与 `reports/` 保持原样。
+- **验收方法与 token 估算**：先定义正向/篡改/缺失/伪造聚合测试；运行定向 Detector/Bench 回归、真实本机冻结集只读 audit、编译、`git diff --check` 与敏感信息检查。估算 8,000～16,000 token，精确遥测不可获得。
+
+## 20261006-1344-GPT6-b-bench-integrity-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-6.1 Sol（Root Coordinator / B 评测契约与实现）；**日期时间**：2026-10-06 13:44（Asia/Shanghai）。
+- **任务目标与实际结果**：新增 `auto_static_bench audit` 只读完整性审计，并要求 `compare` 前审计两次运行。审计逐项核对来源/失败账本、固定 ZIP、Gold、预测、指标、运行收据、误差 ID 与聚合；篡改、缺件和额外未登记快照拒绝。当前源码绑定复跑 `baseline_v5_audit` 对 30 项来源（25 固定、9 holdout、5 失败保留）审计通过，TP=2654、FP=292、FN=48，F1=0.9398、holdout F1=0.9698；18 个重复匹配键仅为诊断，可能属于不同 evidence ID，未删除候选或改分。正式 Bench 2.0 等级仍未关闭。
+- **修改/新增文件**：`benchmarks/auto_static_bench.py`、`tests/unit/test_auto_static_bench.py`、`benchmarks/auto-static-bench.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本日志。未修改既有未跟踪 `benchmarks/p1-fixed-repositories/`、`benchmarks/p1_repository_bench.py`、`reports/` 等工件。
+- **命令与测试结果**：先新增测试并观察 2 项因缺少 audit 接口失败，实施后 Bench/Detector 定向 `34 passed`；B01/B03/B04 Python 离线定向 `47 passed`；B07 Node 收据 `1 passed`；真实冻结集 `baseline_v5_audit` 审计通过，当前运行器和指标 SHA-256 与收据独立核对匹配；`compileall`、`git diff --check` 和新增工件常见密钥/本机路径检查通过。未启停服务。
+- **接口、Schema、规则与重要决策**：新增 CLI `audit FROZEN RUN_ID`，只读、不联网、不调用 Detector/oracle；`compare` 现在验证两端工件。未更改 Detector 规则、Gold 规范、`openguard.notice-source/1`、B02-A/B02-B 契约或 G5/G6 等级。审计只证明本机产物自洽，收据未独立签名，不能证明机器 Gold 的语义正确。
+- **风险和未完成**：5 项来源采集失败仍在分母；18 个重复匹配键待独立解释；292 个机器 FP 不能直接认定为实际误报。B01 异机签收、B03/B04 生产关系/来源边界复核、B07 受控 Linux 性能、G5 真人 Gold 与 G6 正式评测均未因本轮关闭；G3/G4/G8 不变。
+- **下一步与责任模型**：Luna 独立复核 Gold、误差和重复匹配键；Sol 冻结正式 Bench 等级/消融验收口径；Terra/A 完成生产接线与受控 Linux 性能环境；Root 在独立验收和发布门禁满足后再整理功能分支。
+- **分支、提交、PR、evidence**：`codex/scan-reliability-integration@8253d78`；本机 `benchmarks/results/local/auto-static-20261006-r7/` 中 `metrics/baseline_v5_audit.json` 与 `runs/baseline_v5_audit.json`；本轮未提交、推送、开 PR 或改 `main`。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 8,000～16,000，因无精确遥测无法判断实际是否落在区间；本轮审计与离线复核完成，整个 B 工作包及正式 Bench 未完整完成。
+
+## 20261006-1400-GPT6-b-remaining-status-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 后端 B 状态核对）；**日期时间**：2026-10-06 14:00（Asia/Shanghai）。
+- **范围与验收**：只读确认表中还有哪些后端 B 自身任务，以及哪些归 A/前端/独立验收；仅追加共享日志，不改业务文件。核对 README、完整日志、进度、Sol 交接与 Git 状态；估算 1,000～2,000 token。
+
+## 20261006-1401-GPT6-b-remaining-status-result
+
+- **状态**：COMPLETE；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 后端 B 状态核对）；**日期时间**：2026-10-06 14:01（Asia/Shanghai）。
+- **目标与结果**：仍有 B 责任：Detector 真实错误驱动的规则改进与反例、B05/B06 冻结失败与机器 Gold 独立裁决及消融、B01 异常/异机复核、B03/B04 事实证据链独立复核、B07 收据工具与受控 Linux 采集配合、P2 B 文档对齐。A 的生产 lifecycle、STAGED/BOUND/Report 接线，前端浏览器回执及 G5 真人裁决不由 B 单独完成；正式 Bench 结论须共同门禁。
+- **修改文件与命令**：仅追加本日志；只读复核 README、工作日志、PROJECT_PROGRESS、SOL_HANDOFF、分支/工作区/最近提交；未运行新测试或启停服务。
+- **接口、Schema、规则及风险**：无变更。当前 25 个固定快照与 9 个可计分 holdout 的自动静态结果不可升格为真人 Gold 或正式 Bench 2.0；5 个采集失败和 18 个重复匹配键仍待处理。
+- **下一步及责任**：B/Luna 优先做 Gold 和误差独立复核，B/Terra 按已证实 FN/FP 修改 Detector；A/Root 完成生产消费和受控环境，Sol 冻结正式等级。分支 `codex/scan-reliability-integration@8253d78`；未提交、推送或 PR，GitHub 状态不变。
+- **token 使用说明**：本次运行精确 token 数不可获得；估算 1,000～2,000，无法用遥测确认是否在区间内；只读核对已完成。
+
+## 20261006-1405-GPT6-b-review-queue-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / B05-B06 评测治理）；**日期时间**：2026-10-06 14:05（Asia/Shanghai）。
+- **任务范围**：根据用户列出的 B/Terra、B/Luna 后续工作，先对真实 FN/FP 做可验证证据检查，建立不伪造裁决的独立复核队列，保留 5 个失败来源和重复匹配键诊断；不因机器 Gold 直接修改 Detector 规则，不泄露第三方正文到仓库，不将旧 holdout 伪称盲审。只读复核 B01/B03/B04/B07/P2 现有契约与缺口。
+- **预计修改文件**：`benchmarks/auto_static_review.py`、`tests/unit/test_auto_static_review.py`、`benchmarks/auto-static-bench.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本日志；不覆盖已有 B 生产代码或用户未跟踪 P1 固定仓库工件。
+- **验收与 token 估算**：先写 review 队列正反例；真实冻结集生成仅含来源/哈希/定位、不含第三方正文的本机队列；审计、定向回归、格式和敏感信息检查。估算 7,000～14,000 token，精确遥测不可获得。
+
+## 20261006-1413-GPT6-b-review-queue-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-6.1 Sol（Root Coordinator / B05-B06 评测治理）；**日期时间**：2026-10-06 14:13（Asia/Shanghai）。
+- **任务目标与实际结果**：新增审计门控、默认排除 holdout 的待复核队列工具；本机 `review-train-dev-v1.json` 绑定冻结/指标/收据 SHA-256，含 44 个机器 FN（A=39、B=5）、270 个机器 FP 和 14 组重复匹配键；总账 5 个采集失败（4 个超归档上限、1 个 ref 未解析；dev 2、holdout 3）均保留。抽查固定来源中的 f-string 常量 URL 候选，但未作人工 Gold 裁决、未改 Detector、未宣称规则消融改善。
+- **修改/新增文件**：`benchmarks/auto_static_review.py`、`tests/unit/test_auto_static_review.py`、`benchmarks/auto-static-bench.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本日志。既有未跟踪 P1 固定仓库资料、报告和原始 ZIP 均未覆盖；复核队列只在 Git 忽略的本机目录。
+- **命令与测试**：先写 3 项新测试，初次因缺少模块收集失败；实施并校正测试夹具后，复核队列/Bench/Detector 定向 `37 passed`，B01/B03/B04 离线定向 `47 passed`，B07 Node 收据 `1 passed`；编译、`git diff --check`、新增工件常见密钥/本机路径检查通过。复核队列的 freeze/metrics/receipt SHA-256 独立核验均匹配，`formal_gold=false` 且默认 holdout 不展开。未启停服务。
+- **接口、Schema、规则与决策**：新增 `openguard.auto-static-review-queue/1` 本地交接格式；只保存来源、固定身份、文件定位和机器分歧，无第三方正文与裁决。现有自动 `metrics/` 已暴露 holdout 错误明细，因此其 9 个 split 样本不能声称为未泄露的正式盲 holdout；G5/G6 需要重新封存和访问控制。Detector、Profile、许可证关系、NOTICE、B07 schema 与正式 Bench 等级未改。
+- **风险/未完成**：314 个机器分歧仍待独立人工核验，不能直接作为确认的 FN/FP；14/18 组重复匹配键可能来自不同 evidence ID，不能按重复事实自动删减。5 个采集失败未解决；正式 Gold、规则消融、B01 异机签收、B03/B04 生产边界独立复核、B07 受控 Linux 数据仍待责任方。未提交、推送或 PR。
+- **下一步及责任**：B/Luna 依据队列复核 train/dev，人工封存新的正式 holdout 后再裁决；B/Terra 仅对已确认且有反例的规则缺口实施 Detector 变更并跑消融；Sol 审定 G5/G6；A/Root 提供生产与受控 Linux 环境。
+- **分支/证据**：`codex/scan-reliability-integration@8253d78`；本机 `benchmarks/results/local/auto-static-20261006-r7/review-train-dev-v1.json`；未发布，不改变 main。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 7,000～14,000，缺少精确遥测无法确认是否在范围内；只完成队列与离线复核准备，全部 B 任务未完成。
+
+## 20261006-1420-GPT61-BP1现状分析-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / P1 后端 B 现状分析）；**日期时间**：2026-10-06 14:20（Asia/Shanghai）。
+- **目标与范围**：只读核对 P1 门禁、后端 B 已交付与待办、A/前端依赖、当前 Git 状态，向用户提供可执行的责任清单；不修改产品代码或接口。预计仅追加本日志，验收为引用当前进度和仓库证据、明确历史与实时状态。
+- **开工确认**：已阅读 README、工作日志、PROJECT_PROGRESS、SOL_HANDOFF；检查分支、工作区与最近提交，保护现有未提交和未跟踪 Bench/报告工件。预计 token 4,000～8,000；精确遥测不可获得。
+
+## 20261006-1424-GPT61-BP1现状分析-result
+
+- **状态**：COMPLETE；**作者与角色**：GPT-6.1 Sol（Root Coordinator / P1 后端 B 现状分析）；**日期时间**：2026-10-06 14:24（Asia/Shanghai）。
+- **目标与结果**：核对当前 B01-B07、G0-G8、A4-2 NOTICE 集成、F01-F07 前端及 Bench 新流水线；形成后端 B 可立即推进、依赖 A/前端/真人复核的责任清单。纠正旧结论：Detector 0.3 和 ModelScope 已有发布版本，30 项真实来源中 25 项固定并运行了限定静态评测；正式 Gold/Bench、受控性能和完整生产签收仍未关闭。
+- **修改文件**：仅本共享日志追加 START/COMPLETE；未修改业务代码、Schema、接口、Bench 工件或其他项目文件。
+- **命令与验证**：只读检查 README、工作日志、PROJECT_PROGRESS、SOL_HANDOFF、冻结 P1 契约、G0-G8 门禁、Bench 文档、前端文件清单、分支/工作区/最近提交及相关检索；未运行产品测试，未启停服务。
+- **接口/Schema/规则与重要决策**：无修改。保持 B02-A AI Detector 与 B02-B License/NOTICE detector 独立；自动静态指标仅限定子集，不升级为真人 Gold 或正式 Bench 2.0。图片中的功能状态须以集成代码和 Owner 门禁解释。
+- **风险与未完成**：B05/B06 本机未跟踪流水线工件尚未发布，5 项采集失败、机器分歧与 holdout 暴露待复核；G3/G4/G5/G6/G7/G8 尚需逐项签收。此前工作区未提交文件均保留。
+- **下一步与责任**：B 先做已确认误差修复、B01 异机签收、B03/B04 事实核对和 B05/B06 复核包；A 负责生产接线/Windows 兼容/受控性能环境；前端负责真实 API 状态和浏览器回执；Luna/真人 reviewer 与 Sol 负责 Gold/等级复核。
+- **分支与发布**：`codex/scan-reliability-integration@8253d78`，相对 `origin/integration/p1` ahead 2/behind 0；本轮无提交、推送、PR、Issue 或新 evidence_id，`main` 未改变。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 4,000～8,000，因无精确遥测无法核定实际值是否在区间内；本轮只读分析已完成。
+
+## 20261006-1426-GPT61-B生产验收核对-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 后端 B 生产验收核对）；**日期时间**：2026-10-06 14:26（Asia/Shanghai）。
+- **目标与范围**：核对 B 事实进入 Git/ZIP、NOTICE Draft、Report V2 的现有接线和可运行定向回归；形成 B/A/前端交付与验收清单。预计只追加本日志，不改业务代码、接口、Schema、Bench 或用户未提交工件。
+- **验收与估算**：静态检查 production factory、lifecycle、测试入口；在现有环境运行必要的定向测试并记录通过/阻断；不启停服务或联网抓取。预计 token 3,000～6,000，精确遥测不可获得。
+- **开工确认**：已复核 README、工作日志、PROJECT_PROGRESS、SOL_HANDOFF、分支和工作区；当前工作区有其他在途 Bench/报告文件，全部保留。
+
+## 20261006-1428-GPT61-B生产验收核对-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-6.1 Sol（Root Coordinator / 后端 B 生产验收核对）；**日期时间**：2026-10-06 14:28（Asia/Shanghai）。
+- **任务目标与实际结果**：确认默认工厂在 Assessment 选项开启时装配 NoticeSourceStore/Lifecycle、NoticeDraftService、ReportNoticeReader，ZIP/Git/持久 ZIP 运行时接收 lifecycle；代码还保留 Profile Metadata 独立显式开关。B 离线 Profile/NOTICE/候选检测定向测试 92 passed。真实生产链的六个 Python 测试文件在 Windows 收集阶段均因 zip_dispatcher.py 导入 fcntl 失败，未执行任何业务断言；因此本轮无法完成真实 Git/ZIP→Draft→Report 生产验收。
+- **修改文件**：仅本共享日志追加 START/PARTIAL；未修改业务代码、接口、Schema、测试、Bench、报告或既有未提交文件。
+- **命令与测试**：首次 py -3.12 无可用 launcher runtime；改用既有 .venv Python。六个生产链定向文件 6 collection errors（同一 fcntl 原因，2 warnings）；七个 B 离线事实/解析器文件 92 passed。只读检查 factory、lifecycle、测试入口和 Git 状态；未启停服务、未联网抓取。
+- **接口/Schema/规则与重要决策**：无变更。离线通过只能证明 B 候选事实局部正确；不得外推为终态 binding、浏览器或 Report 的生产签收。
+- **已知风险与未完成**：G8 Windows 兼容、受控 POSIX 完整运行回执、固定 Git/ZIP 端到端身份与哈希对账、前端真实 API 浏览器回执均待完成。当前工作区 Bench/报告未提交文件全部保留。
+- **下一步及责任**：A/Root 修复或提供受控 POSIX 环境并重跑六文件；A 提供成功/partial/篡改固定输入及终态 ScanRun/Assessment/STAGED/BOUND/Draft/Report 哈希回执；B 逐项对账 Profile、许可证关系、NOTICE 来源和 Evidence；前端在同一版本上完成浏览器下载、重启读回和状态回执。
+- **关联分支/提交/PR/evidence**：`codex/scan-reliability-integration@8253d78`；无新提交、推送、PR 或 evidence_id，main 不变。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 3,000～6,000，缺少遥测无法判断实际是否落入区间；只完成代码与离线核对，完整生产验收未完成。
+
+## 20261006-1452-GPT61-NOTICE收尾-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / NOTICE 生产链收尾）；**日期时间**：2026-10-06 14:52（Asia/Shanghai）。
+- **目标与范围**：按用户要求推进 NOTICE 可结束门禁，核对并修复真实 ZIP/Git→source→STAGED/BOUND→Draft→Report 的剩余代码和回归问题。优先处理 Windows 收集阻断及可验证边界；不启停项目服务，不覆盖 Bench/报告在途工件。
+- **预计文件与验收**：可能修改 `backend/app/pipeline/zip_dispatcher.py`、NOTICE selector/lifecycle 相关代码和对应测试，必要时更新跨模型变更请求、进度、AI 辅助记录与本日志；运行定向及可用的全量回归、格式/敏感信息/待提交范围检查。预计 token 12,000～25,000；精确遥测不可获得。
+- **开工确认**：已复核 README、工作日志、PROJECT_PROGRESS、SOL_HANDOFF、当前分支与工作区；当前已有未提交 Bench/报告与协调文档改动，均予以保留。跨 A/B 模块变更需独立复核。
+
+## 20261006-1506-GPT61-NOTICE收尾-result
+
+- **状态**：PARTIAL；**作者与角色**：GPT-6.1 Sol（Root Coordinator / NOTICE 生产链收尾）；**日期时间**：2026-10-06 15:06（Asia/Shanghai）。
+- **任务目标与实际结果**：完成 NOTICE selector 超限时的保守部分覆盖传播：保留前 1024 个受控观察，`coverage=partial` 且包含 `notice_selector_truncated`；终态准入重算可信 Inventory，核对 key/locator/顺序及 gap 一致性。ZIP dispatcher 在 Windows 可导入，缺 POSIX 锁时于取锁入口失败关闭。未取得完整生产链或浏览器签收，故不是 NOTICE 全面完成。
+- **修改/新增文件**：`backend/app/p1/notice_source_lifecycle.py`、`backend/app/p1/notice_source_adapter.py`、`backend/app/pipeline/zip_dispatcher.py`、`tests/unit/test_notice_source_selector.py`、`tests/unit/test_p1_notice_lifecycle_ingestion.py`、新增 `tests/unit/test_zip_dispatcher_platform.py`、`docs/spec/p1-notice-source-selector.md`、`docs/coordination/change-requests.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md` 与本日志。既有 Bench/报告在途文件未改动。
+- **命令与测试**：设置 `PYTHONPATH=backend`、`PYTHONUTF8=1` 后，NOTICE selector/collector/review/独立安全契约/平台定向 `20 passed`；`compileall` 与 `git diff --check` 通过。六个生产测试文件现在可收集；Windows 运行时在 `SQLiteScanRunRegistry._private_stat` 的 `os.geteuid` POSIX-only 检查处失败，业务链断言未运行。首次 pytest 默认临时目录不可写，改用工作区 `--basetemp` 后确认上述运行时阻断。未启停服务。
+- **接口、Schema、规则与决策**：未改变公共 Schema/API、Assessment、Report 或法律语义；Producer 配置摘要随新截断策略变化；旧独立 `admit_terminal` 对截断输入仍失败关闭。CR-20261006-NOTICE-selector-partial-and-G8 已登记，需 A/Sol 独立复核；Windows 导入成功不代表 durable ZIP 可在 Windows 运行。
+- **已知风险/未完成**：受控 POSIX 上六文件及完整回归、固定 Git/ZIP→STAGED/BOUND→Draft→Report 哈希与重启读回、同版本前端真实 API 浏览器回执未完成；既有 N2/N3、序列化内存放大、4 失败/2 跳过债未关闭。无提交、推送、PR 或 evidence_id，不能标记 NOTICE 或 G8 全部完成。
+- **下一步及责任**：A/Sol 复核 partial 终态契约并提供受控 POSIX 生产回执；B 对账 Profile/许可证关系/NOTICE 来源及证据哈希；前端提供下载和状态浏览器回执；Root 再做跨栈门禁和发布验收。
+- **分支/发布**：`codex/scan-reliability-integration@8253d78`；本轮本地未提交/推送，`main` 未变。未覆盖其他在途工作。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 12,000～25,000，缺少遥测无法判断是否落入范围；局部实现已完成，全面 NOTICE 收尾未完成。
+
+## 20261006-1514-GPT61-NOTICE剩余事项盘点-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / NOTICE 剩余事项只读盘点）；**日期时间**：2026-10-06 15:14（Asia/Shanghai）。
+- **目标与范围**：按用户要求详细列出 NOTICE 尚需完善的代码、测试、生产验收、跨 A/B/前端依赖及发布门禁；只读检查现有状态，不改业务代码或服务。
+- **预计修改文件与验收**：仅追加共享工作日志；以最新代码、进度、规格、测试结果与 Git 状态给出可执行清单，区分已实现、未验证和未实现。预计 token 4,000～8,000，精确遥测不可获得。
+- **开工确认**：复核 README、工作日志近期相关记录、PROJECT_PROGRESS、SOL_HANDOFF、分支/工作区/最近提交；保留当前用户/其他任务的未提交文件。
+
+## 20261006-1517-GPT61-NOTICE剩余事项盘点-result
+
+- **状态**：COMPLETE；**作者与角色**：GPT-6.1 Sol（Root Coordinator / NOTICE 剩余事项只读盘点）；**日期时间**：2026-10-06 15:17（Asia/Shanghai）。
+- **目标与实际结果**：复核当前 NOTICE selector/collector/终态准入、默认工厂、G2-G4/G8、前端 F-P1-07 与发布状态，向用户提供分层待办和 B/A/前端责任。确认截断 partial 仅为未提交本地改动；当前生产代码已有 opt-in lifecycle、Draft 与 Report 注入，旧交接/前端文档部分历史描述不能代替当前状态。
+- **修改/新增文件**：仅本日志追加 START/COMPLETE；未修改业务代码、Schema、接口、测试或其他项目文件。此前在途 NOTICE 与 Bench 改动全部保留。
+- **命令与测试结果**：只读检查 README、工作日志近期 NOTICE 记录、进度台账、SOL_HANDOFF、G2/G3/G4/G8、前端验收、代码入口、分支状态和最近提交；未重新运行测试、未启停服务。前一轮本地 NOTICE 定向 `20 passed` 仅作为已记录历史结果，不冒充本轮回归。
+- **接口/Schema/规则/重要决策**：无新变更。建议以固定输入全链哈希、独立复核与可运行回执为完结门禁；N2/N3/内存放大是 Owner 已接受的 deferred 债务，不自动列为 P1 阻断；不得把 NOTICE 草稿当授权/义务已履行。
+- **风险与未完成**：未提交/发布的局部补丁、受控 POSIX 六文件/全量回归、真实 Git/ZIP→BOUND→Draft→Report、前端同版本浏览器/下载/重启读回和 G8 全平台回执仍待；Windows Registry `os.geteuid` 阻断未由本轮解决。历史文档有状态滞后。
+- **下一步/责任**：B 完成候选事实/来源及哈希核对和负例；A/Sol 复核 partial 契约、提供生产环境与终态回执；前端完成真实成功/partial/失败状态与下载；Root 验证并发布。`codex/scan-reliability-integration@8253d78` 本地 ahead 3，当前改动未提交/推送，`main` 未变；无新 PR/Issue/evidence_id。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 4,000～8,000，缺少遥测不能核定实际是否落入区间；本轮分析目标已完成，NOTICE 产品闭环尚未完成。
+
+## 20261006-1525-GPT5-已完成工件发布与P1集成
+
+- 状态：PARTIAL
+- 作者与角色：GPT-5 / Root Coordinator；结果：已完成 NOTICE review、Detector、B06/B07 工件的审阅与定向验证，并创建提交 `bc2b7afe1c7528d891a2945c31cc633069f76b47`。Python 定向 `48 passed`、Node `7 passed`、Java Maven 通过、编译/格式/敏感信息检查通过；真实 Bench 准备包因仅有 START 记录而未暂存。
+- GitHub 状态：工作分支已成功推送至 `bc2b7af`；首次 `integration/p1` 推送期间 SSH 连接关闭，读回仍为 `40e5c3b`。后续非强制重试被 Codex 审批服务以账号使用额度限制拒绝执行，命令未运行，故不得宣称 `integration/p1` 已合入。
+- 保留范围：`benchmarks/p1-fixed-repositories/`、`benchmarks/p1_repository_bench.py`、其测试与 `reports/` 保持未跟踪未发布；未改 `main`、未部署或启停服务。
+- 下一步：恢复 Git 推送审批后，先只读核验 `origin/integration/p1` 仍是祖先，再执行一次 `git push origin HEAD:refs/heads/integration/p1` 并读回 SHA；若远端变化则先重新审阅，绝不强制覆盖。token 精确遥测不可获得；开工估算12,000--20,000，已完成验证与工作分支发布，集成发布受外部审批阻断。
+
+## 20261006-1540-GPT5-全量发布与P1集成
+
+- 状态：START
+- 作者与角色：GPT-5 / Root Coordinator；范围：按用户明确授权，将当前已实现的 NOTICE selector/lifecycle partial 覆盖、Windows ZIP dispatcher fail-closed 兼容、自动静态 Bench/oracle/audit/review、P1 repository benchmark preparation、对应测试、规格和协调记录上传至 `git@github.com:mumingce-star/OpenGuard.git`，并非强制合并到 `integration/p1`。
+- 边界：不上传 `reports/`、原始第三方 ZIP、缓存、虚拟环境、密钥、个人信息或其他忽略运行产物；不改 `main`，不启动/停止服务。不把 automated_static_subset、开发级 holdout、离线 partial 或 Windows import 成功表述为真人 Gold、正式 Bench、受控 Linux 性能、完整生产生命周期或法律结论。
+- 验收：审阅未提交代码与来源清单，运行 NOTICE/Bench 定向 Python、B07 Node、Java Maven、compileall、`git diff --check` 和敏感信息扫描；远端 SHA/祖先核验后普通非强制推送并读回 SHA。
+- token 估算：15,000--25,000；系统未提供精确 token 遥测。

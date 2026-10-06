@@ -1824,3 +1824,31 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 四个共同失败仍未关闭：原恰好六路由断言、工具状态分类、sandbox PID路径、固定缓存路径。两个完整回归跳过保留：原loopback节点已在Owner复审中独立通过；公网Git节点未执行，不以离线Git替代公网验收。
 - N2/N3、序列化内存放大与普通覆盖债继续deferred；selector截断正式partial契约、完整生产生命周期验收未关闭，CZ新契约未采用。NOTICE存在不等于义务已履行或项目合规。
 - 本轮目标仅发布feat/p1-notice-lifecycle-a4-2；实际commit、push和远端结果只在执行后写ignored发布回执。本记录不宣称GitHub发布、integration合入、PR或部署成功。
+
+## 2026-10-06 自动静态 Bench 限定范围候选（未发布）
+
+- 新增独立确定性 oracle 与无人值守冻结/评测/对比入口。来源目录列出 30 个公开仓库（12 个预指定 holdout）；本机冻结实际获得 25 个固定 commit/原始 ZIP 哈希，其中 9 个 holdout，另 5 项抓取失败保留在冻结账本和失败率中。
+- Gold、预测、指标、运行收据分开且只追加；固定身份、输入/目录/源码哈希、Detector/规则/oracle/运行器版本与配置哈希均可核验。已知答案、反例和变形自检失败时拒绝计分。FN/FP 按可验证范围分类，无法确定原因的保留 `unclassified`；前后误差与 holdout 比较拒绝不同输入或配置。
+- 当前仅为 `automated_static_subset`：动态/歧义文件和不支持的预测单列为未计分；第三方原始 ZIP 及输出留在本机忽略目录。它不能代替 G5 真人 Gold/盲审，也不能作为 G6 Bench 2.0 正式可报告指标；G3/G4/G7/G8 等门禁状态不变。
+- 本轮无 commit、push、PR 或 `main` 合并。最后的源码绑定运行和定向测试结果以共享工作日志收工记录为准。
+
+## 2026-10-06 B 自动 Bench 完整性审计补强（未发布）
+
+- 新增 `auto_static_bench audit` 只读入口；逐项核对 catalog/freeze、固定 ZIP、Gold、预测、指标、运行收据、误差 ID 和失败样本保留。规则前后 `compare` 现在先审计两次运行；缺件、篡改、账本不齐或聚合不一致会拒绝结果。
+- 真实冻结集 `auto-static-20261006-r7` 的当前源码绑定复跑 `baseline_v5_audit` 审计通过：30 项账本、25 项固定、9 项计分 holdout、5 项失败均保留；整体 F1=0.9398，holdout F1=0.9698。运行器/指标 SHA-256 与收据独立核对一致。发现 18 个重复评测匹配键；因可能对应不同 evidence ID，只作为诊断，不删除候选或额外计分。
+- 定向 Bench/Detector 回归 34 passed；B01/B03/B04 离线定向 47 passed；B07 收据 Node 测试 1 passed。它们不替代 B01 异机签收、B03/B04 生产消费复核或 B07 受控 Linux 性能数据。G5 真人 Gold 和 G6 正式指标仍未关闭；本轮未提交、推送或开 PR。
+
+## 2026-10-06 B05/B06 人工复核交接队列（未发布）
+
+- 新增 `auto_static_review.py`：先调用只读完整性审计，再生成仅含来源、固定 SHA、定位、机器分歧及工件哈希的待复核队列；不复制第三方正文，不自动确认 Gold/FN/FP。默认排除 holdout 个案，显式 `--include-holdout` 才展开。
+- 本机 train/dev 队列实际有 44 个机器 FN（A=39、B=5）、270 个机器 FP、14 组重复匹配键；总冻结账本 5 个采集失败仍按 split 汇总。抽查一个 Tier A 候选为 f-string 常量段内的 Hugging Face 数据集 URL，尚未完成独立裁决或规则/反例消融，因此未改 Detector。
+- 当前自动评测 `metrics/` 已包含 holdout 错误明细，故 9 个既有 holdout 只是开发级 split，不能冒充从未泄露的正式盲 holdout；G5/G6 若要求盲审，须重新封存并限制访问。B01/B03/B04 独立签收、B07 受控 Linux 正式数据及 A 生产消费边界均未改变；本轮无提交、推送或 PR。
+- 5 项采集失败中 4 项超过归档字节上限、1 项来源 ref 未解析为单一 commit；分布为 dev 2、holdout 3，未从总数删去。当前复核队列与 Detector/Bench 定向 37 passed，B01/B03/B04 离线 47 passed、B07 收据 1 passed；这些通过数不代表人工裁决或正式性能数据。
+
+## 2026-10-06 NOTICE 截断覆盖与 Windows 收集阻断（本地未发布）
+
+| 本轮完成 | 尚未关闭 / 责任 | 验证与 GitHub |
+|---|---|---|
+| 受控 NOTICE selector 超过 1024 候选时，保留有界前缀并标记 `partial` / `notice_selector_truncated`；终态准入重算 Inventory，核对观察键、路径、顺序及截断 gap。Windows 可导入 ZIP dispatcher，缺 POSIX 锁能力时失败关闭。 | A/Sol 复核新 partial 终态契约；A 提供受控 POSIX 六文件回归、固定 ZIP/Git 终态 STAGED/BOUND/Draft/Report 哈希及重启读回；B 核对 Profile、许可证关系、NOTICE 来源/证据；前端提供同版本真实 API 浏览器回执。既有 N2/N3、序列化内存放大、4 失败/2 跳过债仍未自动关闭。 | Windows 离线 NOTICE/安全/平台定向 `20 passed`；生产六文件已可收集，但运行时在 POSIX-only Registry `os.geteuid` 处失败，非 NOTICE 业务断言通过。`git diff --check` 通过。当前 `codex/scan-reliability-integration@8253d78` 本地未提交/推送/PR，`main` 未变。 |
+
+本轮仅关闭局部实现缺口，不宣称 NOTICE 端到端生产验收完成、法律义务已履行或可发布。没有统一分母和权重，不估算完成百分比。

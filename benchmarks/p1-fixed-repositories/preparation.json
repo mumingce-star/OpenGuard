@@ -1,0 +1,32 @@
+{
+  "schema": "openguard.p1-repository-bench-preparation/1",
+  "scope": "preparation_not_formal_quality",
+  "artifact_layout": {"gold": "gold/", "prediction": "predictions/", "metric": "metrics/", "run": "runs/"},
+  "samples": [
+    {"sample_id": "p1repo01", "family_id": "pending01", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo02", "family_id": "pending02", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo03", "family_id": "pending03", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo04", "family_id": "pending04", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo05", "family_id": "pending05", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo06", "family_id": "pending06", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo07", "family_id": "pending07", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo08", "family_id": "pending08", "split": "train", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo09", "family_id": "pending09", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo10", "family_id": "pending10", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo11", "family_id": "pending11", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo12", "family_id": "pending12", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo13", "family_id": "pending13", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo14", "family_id": "pending14", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo15", "family_id": "pending15", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo16", "family_id": "pending16", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo17", "family_id": "pending17", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo18", "family_id": "pending18", "split": "dev", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo19", "family_id": "pending19", "split": "holdout", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo20", "family_id": "pending20", "split": "holdout", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo21", "family_id": "pending21", "split": "holdout", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo22", "family_id": "pending22", "split": "holdout", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo23", "family_id": "pending23", "split": "holdout", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo24", "family_id": "pending24", "split": "holdout", "state": "planned", "source": {"status": "not_collected"}},
+    {"sample_id": "p1repo25", "family_id": "pending25", "split": "holdout", "state": "planned", "source": {"status": "not_collected"}}
+  ]
+}

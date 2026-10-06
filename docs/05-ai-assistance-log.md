@@ -438,3 +438,9 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - 实际验证：最终85新增永久节点PASS、独立9探针PASS；40既有模块BASE 1179通过/4失败/2跳过，40＋3候选1264通过/相同4失败/相同2跳过。历史481/414逐ID保留、无新增失败；不是全绿，既有失败未修。首批BASE Fail-first 68失败/1通过，最终强化85节点的补充BASE 84失败/1通过；早期混合运行、夹具错误与探针no-op误判失败轨迹保留，不伪造先后关系。
 - compileall、diff、完整含新文件patch、敏感模式/范围/append-only检查PASS；204冻结核心、Store/DDL、40既有测试与原adapter方法不变。实际ZIP/durable/Git受控路径、同session预算与锁存、Producer/config、故障回滚、exact绑定、恢复、显式A3 Draft/Report和GET/重启业务行不变已测；公网、真实Pydantic、浏览器和生产验收未执行。
 - 收尾保护其他worktree，保存输出后仅清理本轮两个离线无业务卷测试容器；daemon/其他服务保留。证据output/manual-fixes/p1-notice-a4-2-20261001T1145Z-4wemOZ/；仅A4_2_READY_FOR_OWNER_REVIEW，不声称Owner接受/已发布/每次扫描NOTICE完备。PROJECT_PROGRESS不变，截断partial契约及既有债保留；NO_REAL_APPLY / NO_COMMIT / NO_PUSH / NO_MERGE / NO_PRODUCTION_DEPLOY。
+
+## 2026-10-06 — NOTICE 截断覆盖与平台收集修复
+
+- 工具/模型：Codex GPT-6.1 Sol；用户要求推进 NOTICE 收尾。AI 协助审查受控 selector→collection→terminal admission 的截断传播，并实现部分覆盖 gap 与前缀重算核对；不生成许可证、授权或合规结论。
+- ZIP dispatcher 改为 Windows 可导入、缺 POSIX 锁能力时在取锁入口失败关闭；未模拟 `flock`、未放宽 Registry 权限检查。Windows 离线定向 20 passed，生产六文件可收集，但运行时 POSIX-only Registry 因 `os.geteuid` 不可用而未完成业务测试。
+- 未启动/停止项目服务、未执行公网 Git 或真实生产扫描；未提交/推送/合并。A 终态独立复核、受控 POSIX 完整回归和前端真实 API 浏览器回执仍必需。

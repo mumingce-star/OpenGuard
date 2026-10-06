@@ -9,7 +9,6 @@ pipeline execution.
 from __future__ import annotations
 
 import errno
-import fcntl
 import os
 import stat
 import threading
@@ -17,6 +16,11 @@ import time
 from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
+
+try:
+    import fcntl
+except ImportError:  # Windows can import the API, but cannot acquire a POSIX lock.
+    fcntl = None
 
 from app.ai import Provider
 from app.domain.models import ScanError, ScanRun, ScanStage, ScanStatus, SourceType
@@ -307,6 +311,8 @@ class ZipDispatcher:
         )
 
     def _acquire_lifecycle_lock(self) -> None:
+        if fcntl is None or not hasattr(os, "geteuid"):
+            raise ZipDispatcherError("dispatch_unsupported_platform")
         try:
             parent = self._data_dir.lstat()
         except OSError as error:

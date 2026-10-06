@@ -91,3 +91,10 @@
 - 提出者：用户，2026-09-23；状态：执行中。
 - 范围：B06 双人独立真人盲审/分歧/FN-FP taxonomy/amendment 校验，B07 仅消费受控 Pipeline receipt 的性能汇总，以及 P2B B 工件交付质量门禁。
 - 边界：不生成或伪造真人 Gold，不允许 AI 或单人复核替代双人独立真人 Gold；不启动生产扫描，不把单次耗时作为性能结论；不修改 A 的 snapshot、Report、Task 或前端。
+
+## CR-20261006-NOTICE-selector-partial-and-G8
+
+- 提出者：用户；日期：2026-10-06；状态：本地实现，待 A/Sol 独立复核与生产签收。
+- 目标：NOTICE 候选数超过 1024 时保留受控扫描的有界前缀，按 `partial` + `notice_selector_truncated` 显式标记覆盖缺口；终态准入重算可信 Inventory 并核对前缀、顺序和 gap。Windows 可导入 durable dispatcher，但实际 POSIX 锁不可用时失败关闭。
+- 所有权与影响：触及 A4 生产 lifecycle、A1 终态准入和 durable ZIP 派发器，由用户当前明确授权 Root 推进；A 需复核终态安全边界，B 需复核 NOTICE 来源语义。旧独立 `admit_terminal` 保持截断拒绝，不改公共 API、Schema、Assessment、Report 或法律判断。
+- 验收：selector/coverage/平台能力定向单测通过；受控 POSIX 上补跑 ZIP/Git→STAGED/BOUND→Draft→Report 六文件、完整回归与重启读回；A 提供终态哈希回执，前端提供同版本真实 API 浏览器回执。未取得这些回执前不宣称 NOTICE 全面完成。

@@ -34,3 +34,13 @@
 selector 不基于 `size_bytes` 过滤。超大文件、读取配额和 UTF-8 可读性由既有 collector 用显式 coverage/gap 状态表达。
 候选 basename 仅表示“可能值得尝试观察的 NOTICE/许可来源”，不产生 LicenseExpression、Obligation、Finding、Authorization、
 Formal Resource ID 或 Evidence ID。A4 后续必须消费 `truncated/omitted_count`，不得静默丢弃第 1025 个及之后的候选。
+
+## A4 终态消费（2026-10-06）
+
+受控 ingestion 的 NOTICE sidecar 对截断选择只收集排序后的前 1024 个候选；所得 collection 的
+`coverage.state` 必须为 `partial`，`coverage.gap_codes` 必须包含 `notice_selector_truncated`。
+其余读取失败/预算不足的 gap 仍照常保留，不能因截断丢失。终态准入须重算可信 Inventory 的选择结果，
+核对 collection 中每个 observation 与选中前缀的 key、locator 和顺序，并要求截断标志与 gap 一致；
+不满足则拒绝绑定。该 gap 只表示覆盖不完整，不代表第 1025 个以后文件的内容或义务。
+`omitted_count` 保留于 selector/ingestion 运行时结果，当前 NOTICE Source Package v1 不暴露该计数。
+旧的独立 `admit_terminal` 入口没有受控 selector 证明，仍对截断输入失败关闭。

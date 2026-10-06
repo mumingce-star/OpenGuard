@@ -17,3 +17,8 @@ First reproducible P0 batch and generated scanner evidence:
 基准数据须保留来源、提交哈希、标注人、复核人和许可状态；不得打包无权再分发的第三方内容。
 
 首批已复用扫描组员的5个合成模型/数据集/API样例，在当前检测器和现有ZIP产品路径上验收。范围、标签来源、原始结果及复现命令见[实测记录](static-ai-assets-evidence.md)。不把这5例的指标称为真实项目总体准确率。
+
+无人值守的真实仓库静态子集评测入口、30 项候选来源、冻结/独立 oracle/失败保留与运行命令见
+[自动静态范围 Bench](auto-static-bench.md)。该入口输出可复算的限定范围指标，
+始终标明 `bench_2_reportable=false`；Bench 2.0 真人盲审等级与正式总体质量结论
+仍按现有契约单独验收。

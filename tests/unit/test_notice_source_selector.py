@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 import pytest
 
 from app.ingestion.inventory import Inventory, InventoryEntry
+from app.ingestion import ScanReadLimits
 from app.notice_source import (
     MAX_ITEMS,
     SelectorResult,
@@ -13,6 +14,10 @@ from app.notice_source import (
 )
 from app.notice_source.collector import collect_notice_source_package
 from app.notice_source.models import Producer
+from app.p1.notice_source_adapter import _check_selection_coverage
+from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
+from app.p1.notice_source_store import NoticeSourceStoreError
+from app.notice_source.models import NoticeSourceCollection
 
 
 def inventory(*paths: str) -> Inventory:
@@ -73,3 +78,38 @@ def test_capacity_is_explicit_and_not_silent():
     assert result.truncated is True
     assert result.omitted_count == 1
     assert [item.locator for item in result.candidates] == sorted(paths, key=lambda item: item.encode("utf-8"))[:MAX_ITEMS]
+
+
+def test_lifecycle_retains_bounded_prefix_as_partial_when_selector_truncates():
+    paths = tuple(f"third_party/{index:04d}/NOTICE" for index in range(MAX_ITEMS + 1))
+
+    class Session:
+        inventory = inventory(*paths)
+        remaining_read_bytes = 16 * 1024 * 1024
+
+        def read_bytes(self, path: str, *, max_bytes: int) -> bytes:
+            return path.encode("utf-8")
+
+    lifecycle = object.__new__(NoticeSourceLifecycle)
+    diagnostics = []
+    lifecycle.diagnostic = diagnostics.append
+    result = lifecycle.collect(Session(), ScanReadLimits(4 * 1024 * 1024, 16 * 1024 * 1024))
+    assert result.selection.truncated and result.selection.omitted_count == 1
+    assert result.collection is not None
+    assert len(result.collection.observations) == MAX_ITEMS
+    assert result.collection.coverage.state == "partial"
+    assert "notice_selector_truncated" in result.collection.coverage.gap_codes
+    assert "NOTICE_SELECTOR_TRUNCATED" in diagnostics
+    _check_selection_coverage(result.collection, result.selection)
+
+    missing_gap = result.collection.model_dump(mode="json")
+    missing_gap["coverage"]["gap_codes"].remove("notice_selector_truncated")
+    missing_gap["coverage"]["state"] = "completed"
+    with pytest.raises(NoticeSourceStoreError, match="binding_mismatch"):
+        _check_selection_coverage(NoticeSourceCollection.model_validate(missing_gap), result.selection)
+
+    wrong_order = result.collection.model_dump(mode="json")
+    wrong_order["observations"][0], wrong_order["observations"][1] = (
+        wrong_order["observations"][1], wrong_order["observations"][0])
+    with pytest.raises(NoticeSourceStoreError, match="binding_mismatch"):
+        _check_selection_coverage(NoticeSourceCollection.model_validate(wrong_order), result.selection)

@@ -29,7 +29,7 @@ def producer_configuration(limits: ScanReadLimits) -> dict:
             "max_item_json_bytes": MAX_ITEM_JSON_BYTES, "max_package_bytes": MAX_PACKAGE_BYTES},
         "content": {"encoding": "utf-8-strict", "normalization": "none"},
         "coverage": {"source": "trusted_inventory_selected_candidates", "zero_candidates": "no_collection",
-            "truncated": "reject_before_collection"},
+            "truncated": "partial_with_notice_selector_truncated_gap"},
     }
 
 
@@ -63,9 +63,6 @@ class NoticeSourceLifecycle:
         if not selection.candidates:
             self._diagnose("NO_NOTICE_CANDIDATES_SELECTED")
             return CollectedNotice(None, producer, selection)
-        if selection.truncated:
-            self._diagnose("NOTICE_SELECTOR_TRUNCATED")
-            return CollectedNotice(None, producer, selection)
         # CZ v1's read call is fixed at 4 MiB. Do not widen a narrower session or
         # create a sticky safety failure merely to collect optional observations.
         if limits.single_file_max_bytes < 4 * 1024 * 1024:
@@ -75,7 +72,15 @@ class NoticeSourceLifecycle:
             from datetime import datetime, timezone
             collection = collect_notice_source_package(session, observed_at=datetime.now(timezone.utc),
                 candidates=selection.candidates, collector=producer)
-            collection = NoticeSourceCollection.model_validate(collection.model_dump(mode="json"))
+            payload = collection.model_dump(mode="json")
+            if selection.truncated:
+                # The unselected tail is not observed. A package may contain only
+                # the bounded prefix, and must never advertise completed coverage.
+                payload["coverage"]["state"] = "partial"
+                payload["coverage"]["gap_codes"] = sorted(set(
+                    payload["coverage"]["gap_codes"] + ["notice_selector_truncated"]))
+                self._diagnose("NOTICE_SELECTOR_TRUNCATED")
+            collection = NoticeSourceCollection.model_validate(payload)
             if any(item.collector != producer for item in collection.observations):
                 raise ValueError("notice_producer_mismatch")
             return CollectedNotice(collection, producer, selection)

@@ -24,7 +24,7 @@ from app.ingestion import GitScanSessionResult, ScanSessionResult
 from app.ingestion.inventory import Inventory, InventoryEntry, root_digest_v1
 from app.notice_source import (
     NoticeSourceCollection, NoticeSourcePackage, bind_notice_source_collection,
-    validate_notice_source_package, select_notice_source_candidates,
+    SelectorResult, validate_notice_source_package, select_notice_source_candidates,
 )
 from app.notice_source.models import Binding, MAX_PACKAGE_BYTES, canonical_json
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError
@@ -54,6 +54,16 @@ def _metadata(package: NoticeSourcePackage) -> tuple[bytes, str, str]:
         raise NoticeSourceStoreError("invalid_argument")
     collector = package.observations[0].collector
     return raw, collector.name, collector.version
+
+
+def _check_selection_coverage(collection: NoticeSourceCollection, selection: SelectorResult) -> None:
+    if tuple((item.observation_key, item.locator) for item in collection.observations) != tuple(
+            (item.observation_key, item.locator) for item in selection.candidates):
+        raise NoticeSourceStoreError("binding_mismatch")
+    has_truncation_gap = "notice_selector_truncated" in collection.coverage.gap_codes
+    if selection.truncated != has_truncation_gap or (selection.truncated
+            and collection.coverage.state != "partial"):
+        raise NoticeSourceStoreError("binding_mismatch")
 
 
 class NoticeSourceAdapter:
@@ -91,8 +101,6 @@ class NoticeSourceAdapter:
                     or inventory.root_digest != run.provenance.inventory_digest.value):
                 raise NoticeSourceStoreError("binding_mismatch")
             selection = select_notice_source_candidates(inventory)
-            if selection.truncated:
-                raise NoticeSourceStoreError("not_ready")
             notice = result.consumer_result.notice
             if notice is None or notice.collection is None:
                 raise NoticeSourceStoreError("not_ready")
@@ -101,6 +109,7 @@ class NoticeSourceAdapter:
             if isinstance(result, GitScanSessionResult) and result.revision != run.project.revision:
                 raise NoticeSourceStoreError("binding_mismatch")
             collection = NoticeSourceCollection.model_validate(notice.collection.model_dump(mode="json"))
+            _check_selection_coverage(collection, selection)
             by_path = {entry.relative_path: entry for entry in inventory.entries}
             for observation in collection.observations:
                 entry = by_path.get(observation.locator)
