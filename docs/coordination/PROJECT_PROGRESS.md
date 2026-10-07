@@ -1860,3 +1860,14 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 发布 NOTICE selector 截断 partial 传播与终态集合/gap 复核、Windows ZIP dispatcher fail-closed 兼容、自动静态 Bench/oracle/audit/review 与 P1 repository preparation。 | 可离线收集有界 NOTICE 观察并明确 coverage 缺口；可对受控静态来源做冻结、哈希核验、自动 oracle 评分和人工复核队列；已有 P1 来源准备台账。 | A/Sol：受控 POSIX 全链、持久化/重启读回；B：来源/许可证事实复核；前端：真实 API 浏览器回执；Root：跨栈验收。G5 真人 Gold、G6 正式 Bench、G7/G8 受控环境、完整生产 NOTICE 生命周期尚未关闭。 | 定向 Python `38 passed in 7.46s`；Node B07 6 项通过；Java Maven、`git diff --check`、敏感信息检查通过。完整生命周期聚合在 Windows 被既有 `os.geteuid` / `/usr/bin/git` 依赖阻断（`45 passed, 42 errors`），不作为成功证据。提交 `2d822af` 已普通非强制快进至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 一致；`main` 未变。 |
 
 本项目可独立演示离线扫描、静态候选识别、受控 NOTICE 采集、报告/收据及受限 Bench 工具链；尚不具备完整生产 NOTICE 生命周期、真人 Gold/正式盲评测、跨平台持久化回归和前端真实签收。距离可报名/可参赛、可提交完整作品、具备获奖竞争力，仍分别需要关闭竞赛材料/规则一致性、端到端可复现验收与正式评测证据这些可验证门禁；缺乏统一分母和权重，未编造完成百分比。
+
+## 2026-10-07 P2 开工前准备基线
+
+| 准备项 | 实际结果 | 状态/下一步 |
+|---|---|---|
+| 团队仓库 | `origin/integration/p1=aabd7940f65ec8a78b33c863b4db81b400509b7d` | 已获取最新 P1 发布基线 |
+| P2 隔离工作线 | 本地 `codex/p2-readiness` 从上述 SHA 创建 | 不复用旧 P1 feature；未推送 |
+| 前端健康门禁 | 122/122 测试；TypeScript + Vite build 通过；55 modules | 可作为 P2 前端回归起点 |
+| P2 需求/契约/页面 | 未定义、未实现 | 等待用户提供 P2 计划书后再分解 |
+
+本轮只完成开工准备，不代表 P2 已启动或任何 P2 功能已完成。未修改产品代码、公共 API/Schema、依赖或数据，未提交/推送/PR/合并；待 P2 计划书到位后先冻结边界和验收口径再开发。

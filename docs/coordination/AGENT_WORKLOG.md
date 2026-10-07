@@ -8853,3 +8853,21 @@
 - GitHub 发布：已以普通非强制快进推送至 `git@github.com:mumingce-star/OpenGuard.git`；`codex/scan-reliability-integration` 与 `integration/p1` 均读回为 `2d822af0ae67fc3bde7f1e45fea8e3ec781f52e5`。无需 PR 即按用户明确目标更新集成分支；`main` 未变。
 - 已知风险与下一步：A/Sol 仍需在受控 POSIX 上运行完整 NOTICE lifecycle/持久化/重启读回；B 仍需来源与许可证事实复核；前端仍需真实 API 浏览器回执；G5 真人 Gold、G6 正式 Bench、G7/G8 受控环境仍未关闭。责任：A/Sol、B、前端与 Root 协调。
 - token 使用说明：本次运行精确 token 数不可获得；开工估算 15,000--25,000；本轮发布与集成工作完整完成，未因 token 预算缩小范围。
+
+## 20261007-OpenGuard-P2开工准备-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / P2 开工基线准备）；**日期时间**：2026-10-07（Asia/Shanghai）。
+- **目标与范围**：按用户要求获取团队仓库最新状态，确认 P1 正式集成基线，建立与旧 P1 feature 隔离的 P2 本地准备分支，输出 P2 启动前门禁/范围/验证清单并执行前端基线回归。本轮不新增 P2 业务功能、不修改后端或公共 Schema。
+- **Preflight**：已读取全局控制台、反思日志、README、协作日志/进度台账和 SOL_HANDOFF；原分支 `p1/xzb-frontend-f01-f07@360614a` 工作区干净并保留不动。定向 fetch 后 `origin/integration/p1=aabd7940f65ec8a78b33c863b4db81b400509b7d`，已吸收 P1 前端、NOTICE 生产消费、Metadata/Detector/Bench 与生命周期更新；远程无正式 P2 分支。
+- **分支决策**：从 `origin/integration/p1@aabd794` 创建本地 `codex/p2-readiness`，不复用旧 P1 feature，不修改 `integration/p1`、`main` 或其他成员分支。未获得用户后续发布授权前不推送。
+- **预计文件与验收**：新增 `docs/spec/p2-readiness.md`，只追加本日志与 `PROJECT_PROGRESS.md`；运行前端单测、TypeScript/Vite build、`git diff --check` 与待提交范围复核。预计 token 8,000–16,000，精确遥测不可获得。
+
+## 20261007-OpenGuard-P2开工准备-result
+
+- **状态**：COMPLETE；**作者与角色**：GPT-6.1 Sol（Root Coordinator / P2 开工基线准备）；**日期时间**：2026-10-07（Asia/Shanghai）。
+- **用户缩窄后的实际范围**：用户明确要求等待 P2 计划书后再做具体行动，因此本轮只完成仓库同步、基线隔离和前端健康检查；原预计的 `docs/spec/p2-readiness.md` 没有创建，未定义 P2 需求、架构、API、页面或验收口径。
+- **基线结果**：团队最新正式基线为 `origin/integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`；已从该 SHA 创建本地 `codex/p2-readiness`，跟踪 `origin/integration/p1`。原 `p1/xzb-frontend-f01-f07@360614a` 保留不动，远程未发现正式 P2 分支。
+- **验证**：在最新基线的 `frontend/` 实际运行 `npm test`，122/122 通过；`npm run build` 通过 TypeScript 与 Vite 8.2.2 生产构建，55 modules，JS 394.45 kB / gzip 121.56 kB，CSS 57.33 kB / gzip 13.46 kB。`git diff --check` 通过；未运行无关后端全仓套件。
+- **修改/发布边界**：未修改前端、后端、Schema、依赖、Bench 或运行数据；仅追加本日志与进度回执。未提交、未推送、未创建 PR、未修改 `integration/p1`/`main`/其他成员分支，未启停服务。
+- **当前决策/下一步**：P2 开工前唯一待输入是用户的 P2 计划书。收到后先将其映射为前端责任、后端依赖、契约冻结点与分阶段验收，再决定正式 P2 分支命名和实现顺序；本轮不自行推断。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 8,000–16,000，用户缩窄范围后已在准备范围内完整收口。
