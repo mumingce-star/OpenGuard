@@ -444,3 +444,20 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - 工具/模型：Codex GPT-6.1 Sol；用户要求推进 NOTICE 收尾。AI 协助审查受控 selector→collection→terminal admission 的截断传播，并实现部分覆盖 gap 与前缀重算核对；不生成许可证、授权或合规结论。
 - ZIP dispatcher 改为 Windows 可导入、缺 POSIX 锁能力时在取锁入口失败关闭；未模拟 `flock`、未放宽 Registry 权限检查。Windows 离线定向 20 passed，生产六文件可收集，但运行时 POSIX-only Registry 因 `os.geteuid` 不可用而未完成业务测试。
 - 未启动/停止项目服务、未执行公网 Git 或真实生产扫描；未提交/推送/合并。A 终态独立复核、受控 POSIX 完整回归和前端真实 API 浏览器回执仍必需。
+
+## 2026-10-06 — B06 v1 质量声明门禁修正
+
+- 工具/模型：Codex GPT-6.1 Sol；AI 辅助识别 B06 v1 自声明状态可冒充正式质量的边界缺陷，先添加已知反例测试，再使 v1 仅接受准备态。
+- 影响：`benchmarks/b06_error_analysis.py`、B06 说明和定向测试；不生成、修改或裁决人工 Gold，不更改 Detector 规则，不宣称正式 Bench、法律义务或合规结论。
+- 本地定向 Python 52 passed、Node 2 passed；B/Luna 须独立复核 Gold/来源，B/Terra 仅在误差裁决后调整规则。未启动服务，未提交或推送。
+
+## 2026-10-06 — B05 来源账本只读复核
+
+- 工具/模型：Codex GPT-6.1 Sol；AI 辅助调用现有只读审计器、重建复核队列并对照失败账本和重复键 evidence ID，形成 `benchmarks/b05-source-integrity-review.md`。
+- 未把机器分歧裁决为真人 Gold/FN/FP，未访问或分发第三方 ZIP 正文，未改变 Detector、采集器或评测指标；保留失败样本和已有 holdout 泄露边界。后续真人复核由 B/Luna 负责。
+
+## 2026-10-08 — P2 后端 B 候选事实与接线准备
+
+- 工具/模型：Codex GPT-6.1 Sol；用户要求继续实现 P2-02/03/04。AI 辅助审阅既有 B 离线模块，补充 A 只读快照闭包核验、用途版本/来源摘要绑定、本地材料重复和不同内容冲突拒绝、npm 有界离线失败回执与 D4 同扫描前后对账器；相应合成测试和 A 变更请求同步补充。
+- 六个固定上游 tag 文件经 GitHub 文件接口重新读取原始字节，并在内存复算 Git blob SHA-1 与 SHA-256，逐项匹配既有机器台账；未将第三方许可证原文、包或临时产物写入仓库。这些来源不是 npm 发布包、ScanRun、人工适用性或授权证据。
+- 不使用 AI 输出代替法律结论、真人 Gold、正式 Assessment 或报告。A 的冻结 DTO、可信 npm 出口、真实扫描和补证前后回执仍缺；未发 npm GET、未启停服务或自行推送。当前本对话命令执行器初始化失败，新增 Python 测试/编译/Git 检查尚无运行回执，不能据代码生成宣称完整 P2 B 完成。

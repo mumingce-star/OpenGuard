@@ -1,6 +1,10 @@
 # B06 错误分析与规则消融
 
 `error-analysis.json` 是正式 P1 评测前的空白、失败关闭台账，不含虚构的 FN、FP、Gold、holdout 或规则改善结论。
+`openguard.b06-error-analysis/1` 没有不可变人工 Gold、独立复核和指标收据的绑定字段，
+因此此版本只允许 `preparation_not_evaluated` 且 `gold_frozen=false`；单纯改两个布尔/状态字段
+不得升级为正式质量结论。将来要发表经裁决的误差与消融，须采用能绑定人工 Gold 和正式
+Bench 运行收据的新版本契约，不得复用 v1 自声明标记。
 
 真实评测后的每项误差必须记录为：
 

@@ -98,3 +98,28 @@
 - 目标：NOTICE 候选数超过 1024 时保留受控扫描的有界前缀，按 `partial` + `notice_selector_truncated` 显式标记覆盖缺口；终态准入重算可信 Inventory 并核对前缀、顺序和 gap。Windows 可导入 durable dispatcher，但实际 POSIX 锁不可用时失败关闭。
 - 所有权与影响：触及 A4 生产 lifecycle、A1 终态准入和 durable ZIP 派发器，由用户当前明确授权 Root 推进；A 需复核终态安全边界，B 需复核 NOTICE 来源语义。旧独立 `admit_terminal` 保持截断拒绝，不改公共 API、Schema、Assessment、Report 或法律判断。
 - 验收：selector/coverage/平台能力定向单测通过；受控 POSIX 上补跑 ZIP/Git→STAGED/BOUND→Draft→Report 六文件、完整回归与重启读回；A 提供终态哈希回执，前端提供同版本真实 API 浏览器回执。未取得这些回执前不宣称 NOTICE 全面完成。
+
+## CR-20261008-P2B-A-frozen-contract
+
+- 提出者：GPT-6.1 Sol（本对话后端 B）；日期：2026-10-08；状态：待 A/Root 冻结。用户确认 P2-01 基线和 DTO 尚未冻结。
+- 目标：A 给 B 一个只读、稳定的扫描事实快照契约，至少有 `scan_id`、终态/覆盖状态、对象 ID/类型/精确版本、Evidence ID 闭包与不可变摘要、三态用途及其版本；并定义 B 候选事实 DTO 的接纳/拒绝状态、来源与哈希字段。B 仅返回候选事实和验证状态，A 独占正式 Assessment、持久化、报告及 API。
+- 本地材料：A 定义上传/文件读取的安全边界、对象版本核对、SHA-256 与 source receipt 的权威性等级、人工适用性核验和重算入口；B 的离线解析只输出 `text_observed`，不能以用户声明升级为官方声明或授权。
+- npm：A 冻结唯一官方 `GET https://registry.npmjs.org/is-number/7.0.0` 的可信出口、DNS/重定向/代理策略、超时/字节上限、响应来源与 UTC 时间回执，以及失败在正式评估中的传播方式。当前 B 只提供离线固定身份/有界响应 parser；未发起网络请求。不可下载/安装包或扩 provider。
+- D4：A 提供同一 `scan_id` 的补证前后只读快照、事实哈希、候选接纳及正式重算回执，供 B 对三个固定真实来源逐项对账；`express@4.18.2` 保留为未调参样例。验收需展示新增事实、变化建议、剩余缺口及不可重现失败，不把它称为 Bench/Gold。
+- 影响文件：A 的 API/存储/Assessment 所有权文件由 A 自行实现；B 不修改这些文件。本请求不预设最终 DTO 字段名或公开 Schema 版本。
+
+### 2026-10-08 后端 B 接线补充（待 A/Root 冻结）
+
+以下是 B 内部 `evaluate_bound_candidate` 的输入样例，不是公共 DTO 的批准版本。A 必须从同一次只读 ScanRun 生成并认证整个快照，固定 canonical 序列化和 `snapshot_sha256`；B 目前只能检查摘要形状，不能凭调用方自报摘要证明快照可信。
+
+```json
+{"scan_id":"scan-real-id","status":"completed","coverage_gaps":[],"snapshot_sha256":"<A核验的64位小写SHA-256>","objects":[{"id":"component-real-id","scan_id":"scan-real-id","kind":"component","name":"is-number","version":"7.0.0","scope":"runtime_dependency","evidence_ids":["evidence-license-id","evidence-scope-id"],"usage":{"version":"purpose-revision-id","values":{"commercial":true,"modified":false,"distributed":true,"network_service":false,"training":false,"redistributed_assets":false,"source_disclosure":false}}}],"evidence":{"evidence-license-id":{"id":"evidence-license-id","scan_id":"scan-real-id","object_id":"component-real-id","version":"7.0.0","role":"license_text","source_sha256":"<64位SHA-256>","content_sha256":"<64位SHA-256>","source_status":"upstream_verified","verification_status":"verified","license_expression":"MIT","applicability":"human_verified"},"evidence-scope-id":{"id":"evidence-scope-id","scan_id":"scan-real-id","object_id":"component-real-id","version":"7.0.0","role":"scope_attestation","source_sha256":"<64位SHA-256>","producer":"human","verification_status":"verified","scope":"runtime_dependency"}}}
+```
+
+样例中的 ID 和摘要占位符不得用作真实回执。A 还须定义 `scan_id`/对象 ID/版本/用途版本的空值与历史版本语义、Evidence 对象闭包的权威来源、`partial` 的缺失范围、同一 Evidence 多对象关系的表达和人工核验回执的签发责任。B 对缺对象、重复对象、用途版本缺失、用途字段不全、悬空/重复/遗漏 Evidence、证据重标、错扫描/对象/版本及来源 Hash 缺失直接拒绝；扫描 partial、AI 资产或范围未核验只给缺口。成功回执含 `candidate_only`、`usage_version`、`snapshot_sha256`、`basis_evidence_ids`、逐依据 `basis_source_sha256`、`rule_version=V4-MIT`、条件文本及剩余缺口。即使 B 返回候选，A 仍须重新核对快照、来源、规则版本和用途版本后才能接纳，不得转为授权或义务已履行。
+
+本地材料由 A 负责安全上传/读取，并提供权威 `(scan_id, object_id) -> exact_version` 与已接纳 `(scan_id, object_id, version, canonical_filename) -> content_sha256` 历史映射。B 的成功样例为 `text_observed`、`content_sha256`、`byte_count`、`source_claim`、`official_statement=false`、`applicability_human_verified=false`、`authorization_status=pending`。相同身份同内容返回 `duplicate_material`，同身份不同内容返回 `material_identity_conflict`；错扫描/对象/版本、空文本、非 UTF-8、超限和摘要不符拒绝。A 应原子化检查并写入去重历史，防止并发上传绕过 B 的只读预检；A 决定用户来源声明如何保存和脱敏。
+
+npm 仅请求 `GET https://registry.npmjs.org/is-number/7.0.0`。A 的可信出口回执需含固定请求/最终 URL、HTTP 状态、UTC 时间、响应原文字节 SHA-256/字节数、是否超时、DNS/代理/重定向策略验证结果、出口版本及失败原因；响应不得超出 32 KiB。B `parse_official_response` 的离线成功样例是 `state=parsed_untrusted_transport`、`parser_version=p2b-npm-metadata/1`、`official_metadata_observed=false`、`license_declaration_state=provider_declared_unverified`、`authorization_status=pending`，即使传入正确 URL 也不升级。超时或非 200 返回 `state=failed` 和原因/状态/可得响应 Hash；错包、错版本、重复 JSON 键、超限、摘要错误拒绝。B 已提供 `parse_attested_response(body, receipt, verify_attestation)` 窄接线点：先核固定 GET/最终 URL、零重定向、字节数、摘要及策略 ID，再要求由 A 实现的可信回执验证器明确返回 `True`；只有 200 且离线解析成功时输出 `official_metadata_observed=true`。A 必须冻结回执 DTO、验证器来源及 DNS/代理/超时/重定向策略，防止调用方注入自造验证器；该标志只证明本次官方元数据，不证明许可正文或适用性。
+
+D4 所需 A 回执：三个真实 ScanRun 的同一 `scan_id` 补证前后只读快照、各快照/新增事实/Evidence SHA-256、用途版本、B 候选接纳及正式 Assessment 重算 ID、旧 Assessment 与旧报告的只读校验回执。B 逐例比较新增/保持不变/剩余未知；`express@4.18.2` 仅作未调参保留样例。A/Root 负责实现和冻结这些公共边界，B 不改 A 文件。

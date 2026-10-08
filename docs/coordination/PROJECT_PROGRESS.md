@@ -1860,3 +1860,53 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 发布 NOTICE selector 截断 partial 传播与终态集合/gap 复核、Windows ZIP dispatcher fail-closed 兼容、自动静态 Bench/oracle/audit/review 与 P1 repository preparation。 | 可离线收集有界 NOTICE 观察并明确 coverage 缺口；可对受控静态来源做冻结、哈希核验、自动 oracle 评分和人工复核队列；已有 P1 来源准备台账。 | A/Sol：受控 POSIX 全链、持久化/重启读回；B：来源/许可证事实复核；前端：真实 API 浏览器回执；Root：跨栈验收。G5 真人 Gold、G6 正式 Bench、G7/G8 受控环境、完整生产 NOTICE 生命周期尚未关闭。 | 定向 Python `38 passed in 7.46s`；Node B07 6 项通过；Java Maven、`git diff --check`、敏感信息检查通过。完整生命周期聚合在 Windows 被既有 `os.geteuid` / `/usr/bin/git` 依赖阻断（`45 passed, 42 errors`），不作为成功证据。提交 `2d822af` 已普通非强制快进至 `codex/scan-reliability-integration` 与 `integration/p1`，远端 SHA 一致；`main` 未变。 |
 
 本项目可独立演示离线扫描、静态候选识别、受控 NOTICE 采集、报告/收据及受限 Bench 工具链；尚不具备完整生产 NOTICE 生命周期、真人 Gold/正式盲评测、跨平台持久化回归和前端真实签收。距离可报名/可参赛、可提交完整作品、具备获奖竞争力，仍分别需要关闭竞赛材料/规则一致性、端到端可复现验收与正式评测证据这些可验证门禁；缺乏统一分母和权重，未编造完成百分比。
+
+## 2026-10-06 B06 v1 正式质量声明失败关闭（本地未发布）
+
+- B06 v1 缺少不可变人工 Gold、独立复核和正式运行收据的绑定字段，现只能表示 `preparation_not_evaluated` / `gold_frozen=false`；篡改自声明状态不能产生正式 FN/FP、holdout 或规则消融结论。正式结果需设计并复核绑定这些证据的新契约。
+- 回归：B06、B01/B03/B04 相关 Python 定向 52 passed；B06/B07 Node 定向 2 passed。未修改 Detector 规则；没有经裁决的误差、真人 Gold、新盲 holdout 或受控 Linux 性能数据，G5/G6/G7 均未关闭。
+- 当前仅本地改动，未提交、推送或开 PR；上一已发布提交仍为 `2d822af`（feature 与 `integration/p1`），`main` 未变。B/Luna 先复核来源/Gold，B/Terra 待裁决后改规则并做消融；A/Sol 与 Root 继续生产消费及跨栈签收。
+
+## 2026-10-06 B05 来源账本只读复核（本地未发布）
+
+- 本机 `baseline_v5_audit` 完整性审计通过：30 项来源、25 项固定并完成、5 项失败保留、9 项已计分 holdout、18 组重复匹配键。失败为归档字节超限 4 项、ref 未解析为单一 commit 1 项；均仍计入分母。
+- 重新生成 train/dev 复核队列并与保存工件逐字段一致：314 项机器分歧、2 项非 holdout 采集失败、14 组非 holdout 重复键；各组两次观察对应不同 evidence ID。具体边界和后续责任见 `benchmarks/b05-source-integrity-review.md`。这不是人工 Gold、语义 FN/FP 裁决或新盲 holdout。
+- B/Luna 后续须看原始证据并完成独立裁决；B/Terra 仅据裁决结果修规则/消融。G5/G6/G7、B01/B03/B04 生产证据链及 A/前端跨栈门禁未因此关闭。本轮本地未提交/推送；上一发布 `2d822af`，`main` 未变。
+
+## 2026-10-08 P2 后端 B 独立准备（本地未发布）
+
+- 状态：**PARTIAL**。Root P2-01 基线/DTO 尚未冻结；B 新增独立离线 L1 条件候选、本地 LICENSE/NOTICE 文本观察、固定 `is-number@7.0.0` 的 npm 响应校验器及 16 项单元测试。没有修改 A 正式 Assessment/API/存储、报告或前端，未进行 npm GET、包下载/安装、服务启停。
+- 三个真实来源为 `is-number@7.0.0` 条件正例、`lodash@4.17.21` 范围限制反例、`express@4.18.2` D4 保留样例；固定 tag 文件链接和 Git blob SHA-1 见 `docs/spec/p2b-independent-preparation.md`。真实 ScanRun/Evidence ID、材料内容 SHA-256、人工适用性尚未取得，不声明授权或 D4 正式对账完成。
+- A 接口和可信 npm 出口需求见 `CR-20261008-P2B-A-frozen-contract`；A/Root 冻结后，B 才能接入 DTO、运行官方 GET 与三例补证前后对账。现有 B05/B06 未提交工作独立保留。`codex/scan-reliability-integration@aabd794`，本轮未提交/推送/PR，GitHub 发布待 Root 验收。
+
+## 2026-10-08 P2 后端 B 续轮完整性复核（本地未发布）
+
+- B 的 L1 Evidence 输入改为 ID 列表加权威快照映射，悬空、重复或映射内重标 ID 均拒绝；本地材料绑定 `(scan_id, object_id)` 和精确版本。npm 离线 parser 保持 `official_metadata_observed=false`，URL 字符串不构成可信出口回执，并增加响应 SHA-256 不匹配拒绝。模型失败时确定性候选仍保留。
+- 三个真实样例的六个上游 tag 文件经第二次独立读取，name/version/license 与 Git blob SHA-1 均匹配台账。B 定向测试现为 `18 passed`，JSON/编译和 `git diff --check` 通过；没有真实扫描补证、官方 npm GET 或 D4 Assessment 前后对账。P2-01、A 接纳和发布状态仍待 Root/A，B05/B06 在途文件未触碰。
+
+## 2026-10-08 P2 B 固定来源 SHA-256 补证（本地未发布）
+
+- 三个真实样例六个上游固定 tag 文件现同时记录 Git blob SHA-1 与原文字节 SHA-256；独立计算的 Git blob SHA-1 与文件接口返回值逐项一致，SHA-256 见 `tests/fixtures/p2b/real-source-index.json`。仅保存链接、身份与哈希，不保存第三方原文。
+- 这一步只关闭来源文件哈希缺口，不产生 P0 `scan_id`/对象/Evidence、人工适用性或官方 npm 获取回执；P2-01 DTO/出口、L2 接纳及 D4 前后正式对账仍待 A/Root。`18 passed`、JSON 解析与 `git diff --check` 通过；B05/B06 未提交改动未触碰，GitHub 未发布。
+
+## 2026-10-08 P2 B 本轮执行环境阻断（未发布）
+
+- 状态：**PARTIAL**。本轮只读复核了现有 P2B 三个模块、18 项测试源码、真实来源台账及 A 变更请求；`docs/spec/` 仍未见已冻结的 P2-01 DTO。先前的 `18 passed` 和六文件哈希是历史回执，本轮未能复跑，不作为新验收。
+- 当前命令执行器对所有 `exec_command` 返回 `helper_unknown_error: setup refresh had errors`，因此无法取得实时 `git status`、运行 pytest/编译/`git diff --check`，也无法安全辨认并保护 B05/B06/P2B 的未提交修改。本轮不改 B 产品代码、测试或来源台账；不发 npm GET、不启停服务。
+- 只读审阅发现仍需解决的 B 侧门禁：L1 缺 A 权威对象身份与用途版本绑定；L2 尚无重复材料提交拒绝；npm parser 尚无可信出口回执接线或 parser 版本；三例仍无真实 `scan_id`/对象/Evidence 和同扫描补证前后快照。待命令环境恢复后由后端 B 实现并复测，A/Root 冻结 DTO、出口及扫描回执，Root 验收并发布。当前 GitHub 无本轮提交、推送或 PR 回执。
+
+## 2026-10-08 P2 后端 B 接线实现续轮（本地未发布）
+
+| 本轮完成项 | 尚未完成与责任 | 验证及发布 |
+|---|---|---|
+| B 内部 `evaluate_bound_candidate` 核查同扫描对象、用途版本、Evidence 闭包和来源 Hash；本地材料加入重复/冲突及空文本拒绝回执；npm 离线 parser 加版本、失败回执与未验证声明状态；新增 `reconcile_object` 只读前后对账器、合成反例及 A 字段/拒绝矩阵。六个上游固定 tag 文件的原始字节 SHA-1/SHA-256 本轮重新逐项核对，6/6 与台账一致。 | A/Root：冻结 P2-01 权威快照、接纳 DTO、原子材料去重、可信 npm 出口，提供三个真实 ScanRun、同 scan 补证前后 Assessment/报告读回；B：按冻结 DTO 接线、唯一官方 GET、三例实际对账；Root：独立验收和发布。用户六页 PDF 本轮可读路径尚未取得。 | 当前命令执行器持续返回 `helper_unknown_error: setup refresh had errors`，新增 pytest、编译、`git diff --check`、实时 Git status 和敏感信息检查均**未运行**；不沿用前轮 18 passed 冒充本轮回归。未发 npm GET、未启停服务；无本轮提交、推送或 PR，`main` 未修改。状态 **PARTIAL**。 |
+
+当前可独立运行/演示的既有项目扫描、静态候选与报告能力以已发布回执为限；本轮新增 B 代码尚无可执行测试回执，不能作为已验收演示。尚未具备 P2 的正式接纳、可信官方来源、同一扫描补证重算和三例 D4 对账。距离可报名/可参赛仍有材料、规则和基本复现门禁；距离可提交完整作品还需 P2 生产链及发布回执；获奖竞争力仍需正式 Bench/Gold、独立误差与性能证据。没有统一权重分母，不报告完成百分比。
+
+- 续轮补充：B 内部 `parse_attested_response` 已提供由 A 注入可信回执验证器的窄接线点；合成验证器测试仅验证状态隔离，A 的出口策略与真实 GET 回执仍缺，不得将其计作官方元数据已观察。材料回执显式标注 `user_supplied_unverified`，npm 离线回执标注 `untrusted_transport`。
+
+## 2026-10-08 19:24 P2 后端 B 只读复核续轮（本地未发布）
+
+- 状态 **PARTIAL**。本轮逐项复核 B 的 L1、材料、npm、D4 代码与既有 41 项测试源码，确认 CR 已列 A 权威快照、Evidence 闭包、材料原子去重、可信 npm 出口和接纳/拒绝字段。三个固定来源机器台账 JSON 可解析，真实 `scan_id`/对象 ID 仍为空、Evidence ID 仍为空列表；六文件 SHA-1/SHA-256 与上轮原字节复算记录一致。本轮未重新取得六个上游字节，不把历史哈希复算冒充本轮。
+- Root 于 19:12 实跑 `41 passed in 0.54s`、编译和 `git diff --check`，属于上一轮回执。当前命令执行器在启动前返回 `helper_unknown_error: setup refresh had errors`，本轮 pytest、编译、Git 状态及 `git diff --check` 未运行。仅用只读浏览器完成 JSON 解析与 B 代码/测试有限静态扫描（未见尾随空格、常见长串凭据赋值或第三方 MIT 原文片段）；不能代替正式门禁。本轮未修改 B 业务代码、测试、台账、B05/B06 或 reports。
+- A/Root 仍需冻结 P2-01 DTO、快照认证和可信出口，提供三个真实 ScanRun、同 scan 补证前后 Assessment/报告读回；B 再接线、做一次受控 npm GET 与三个样例实际对账；前端消费 A API，Root 验收发布。当前无本轮真实 GET、正式接纳/重算、D4 真实对账或新提交/推送/PR。六页 PDF 的本轮可读路径和共享日志逐字完整阅读门禁也未满足。

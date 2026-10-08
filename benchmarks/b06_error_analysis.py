@@ -20,8 +20,10 @@ def validate_error_analysis(path: str | Path) -> dict[str, Any]:
         raise ValueError("invalid B06 error analysis")
     if value["schema"] != "openguard.b06-error-analysis/1" or value["status"] not in {"preparation_not_evaluated", "evaluated"} or type(value["gold_frozen"]) is not bool:
         raise ValueError("invalid B06 error analysis")
-    if value["status"] == "evaluated" and not value["gold_frozen"]:
-        raise ValueError("evaluated B06 analysis requires frozen human Gold")
+    if value["status"] == "evaluated":
+        raise ValueError("v1 cannot establish formal quality without bound human Gold evidence")
+    if value["gold_frozen"]:
+        raise ValueError("preparation cannot claim frozen human Gold")
     errors = value["errors"]
     changes = value["rule_changes"]
     if not isinstance(errors, list) or not isinstance(changes, list):
@@ -52,9 +54,6 @@ def validate_error_analysis(path: str | Path) -> dict[str, Any]:
         holdout = change["holdout"]
         if not isinstance(holdout, Mapping):
             raise ValueError("invalid B06 holdout record")
-        if not value["gold_frozen"]:
-            if holdout != {"status": "blocked_until_human_gold_freeze", "before": None, "after": None}:
-                raise ValueError("unfrozen holdout cannot claim a change")
-        elif set(holdout) != {"status", "before", "after"} or holdout["status"] != "evaluated" or not all(isinstance(holdout[key], Mapping) for key in ("before", "after")):
-            raise ValueError("frozen holdout requires before/after results")
-    return {"formal_quality_claimed": value["status"] == "evaluated", "gold_frozen": value["gold_frozen"], "error_count": len(errors), "rule_change_count": len(changes)}
+        if holdout != {"status": "blocked_until_human_gold_freeze", "before": None, "after": None}:
+            raise ValueError("unfrozen holdout cannot claim a change")
+    return {"formal_quality_claimed": False, "gold_frozen": False, "error_count": len(errors), "rule_change_count": len(changes)}

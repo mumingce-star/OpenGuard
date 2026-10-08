@@ -1,0 +1,64 @@
+{
+  "kind": "openguard.p2b.real-source-index/0",
+  "frozen_at": "2026-10-08",
+  "claim_level": "upstream_file_observation_only",
+  "cases": [
+    {
+      "case_id": "P2B-POS-ISNUMBER-7",
+      "role": "supported_range_positive_candidate",
+      "scan_id": null,
+      "scan_object_id": null,
+      "source_object_key": "npm:is-number@7.0.0",
+      "name": "is-number",
+      "exact_version": "7.0.0",
+      "usage": {"commercial": true, "modified": false, "distributed": true, "network_service": false, "redistributed_assets": false},
+      "materials": [
+        {"role": "package_metadata", "url": "https://github.com/jonschlinkert/is-number/blob/7.0.0/package.json", "git_blob_sha1": "3715072609d61a010bff7116331b71f04206af96", "content_sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620"},
+        {"role": "license_text", "url": "https://github.com/jonschlinkert/is-number/blob/7.0.0/LICENSE", "git_blob_sha1": "9af4a67d206f24ecdbb5fdff2839041ca0bbd346", "content_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"}
+      ],
+      "evidence_ids": [],
+      "license_relation": "Same upstream tag identifies package.json as is-number 7.0.0 and a repository LICENSE; npm release inclusion and applicability to the scanned object remain unverified.",
+      "applicable_rule": "V4-MIT / https://opensource.org/license/mit",
+      "candidate_conditions": ["exact scanned object and version match", "license text and scope independently verified", "retain copyright and license notice"],
+      "unknowns": ["actual scan_id and object_id", "P0 Evidence binding", "npm archive contents", "human verification of applicability", "actual obligation fulfillment"]
+    },
+    {
+      "case_id": "P2B-LIMIT-LODASH-41721",
+      "role": "limitation_counterexample",
+      "scan_id": null,
+      "scan_object_id": null,
+      "source_object_key": "npm:lodash@4.17.21",
+      "name": "lodash",
+      "exact_version": "4.17.21",
+      "usage": {"commercial": true, "modified": null, "distributed": true, "network_service": null, "redistributed_assets": null},
+      "materials": [
+        {"role": "package_metadata", "url": "https://github.com/lodash/lodash/blob/4.17.21/package.json", "git_blob_sha1": "83080d4381ebe92e1a6ac5d254dd3fb5bc6fd452", "content_sha256": "0d486d8dd5d67f09a44aa72a6acecba39a5a66c07ec4f988e9c2ee3075563a5e"},
+        {"role": "license_text", "url": "https://github.com/lodash/lodash/blob/4.17.21/LICENSE", "git_blob_sha1": "77c42f1408a38a0609cac12c887616cb21bfb736", "content_sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"}
+      ],
+      "evidence_ids": [],
+      "license_relation": "The tagged root LICENSE expressly carves out documentation sample code and external node_modules/vendor files; a blanket MIT inheritance claim is unsupported.",
+      "applicable_rule": "V4-MIT only after asset/file scope and text applicability are independently verified",
+      "candidate_conditions": ["identify exact file and resource scope", "review separate terms for sample code and external files"],
+      "unknowns": ["actual scan_id and object_id", "P0 Evidence binding", "which subassets were used", "human verification of scope and applicability", "unknown usage dimensions"]
+    },
+    {
+      "case_id": "P2B-HOLDOUT-EXPRESS-4182",
+      "role": "independent_d4_holdout_not_used_for_rules",
+      "scan_id": null,
+      "scan_object_id": null,
+      "source_object_key": "npm:express@4.18.2",
+      "name": "express",
+      "exact_version": "4.18.2",
+      "usage": {"commercial": null, "modified": null, "distributed": null, "network_service": true, "redistributed_assets": null},
+      "materials": [
+        {"role": "package_metadata", "url": "https://github.com/expressjs/express/blob/4.18.2/package.json", "git_blob_sha1": "0996637deaa0c79b2a7503f1ce06f22608eba8cc", "content_sha256": "2cd424f19ed994070c827b5448a3bc5fbee955bbbe81aff28204d8c5a5a89ebb"},
+        {"role": "license_text", "url": "https://github.com/expressjs/express/blob/4.18.2/LICENSE", "git_blob_sha1": "aa927e44e31d486f807634887662efa39256bf84", "content_sha256": "95a5762890e5c1c9808921cef095661fc482c5e1f0bba31446ac85595df6237c"}
+      ],
+      "evidence_ids": [],
+      "license_relation": "The same tag has package metadata and a repository LICENSE; npm publication and applicability to a future scanned object remain unverified.",
+      "applicable_rule": "V4-MIT only if exact object, text and human scope are verified",
+      "candidate_conditions": ["independent D4 comparison without tuning L1 rules"],
+      "unknowns": ["actual scan_id and object_id", "P0 Evidence binding", "npm archive contents", "human applicability verification", "unknown usage dimensions"]
+    }
+  ]
+}

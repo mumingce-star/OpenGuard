@@ -13,6 +13,25 @@ def test_empty_pre_gold_analysis_cannot_claim_quality() -> None:
     assert validate_error_analysis(PATH) == {"formal_quality_claimed": False, "gold_frozen": False, "error_count": 0, "rule_change_count": 0}
 
 
+def test_v1_cannot_claim_evaluated_by_flipping_unbound_gold_flags(tmp_path: Path) -> None:
+    value = json.loads(PATH.read_text(encoding="utf-8"))
+    value["status"] = "evaluated"
+    value["gold_frozen"] = True
+    path = tmp_path / "unbound-evaluated.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    with pytest.raises(ValueError, match="v1 cannot establish formal quality"):
+        validate_error_analysis(path)
+
+
+def test_v1_preparation_cannot_claim_gold_is_frozen(tmp_path: Path) -> None:
+    value = json.loads(PATH.read_text(encoding="utf-8"))
+    value["gold_frozen"] = True
+    path = tmp_path / "contradictory-preparation.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    with pytest.raises(ValueError, match="preparation cannot claim frozen human Gold"):
+        validate_error_analysis(path)
+
+
 def test_error_tiers_fp_reasons_and_unfrozen_holdout_gate(tmp_path: Path) -> None:
     value = json.loads(PATH.read_text(encoding="utf-8"))
     value["errors"] = [
