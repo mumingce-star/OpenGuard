@@ -8860,6 +8860,16 @@
 - 范围：按用户明确授权，审阅并上传当前 B06 error-analysis 改进、P2B 独立准备工件、关联测试/fixtures/规范/进度文档至 `git@github.com:mumingce-star/OpenGuard.git`。不提交 `reports/`、pytest 临时目录、缓存、虚拟环境、原始第三方工件、密钥、个人信息或未审阅的文件。
 - 预计修改文件与验收：仅追加协调日志；复核未提交差异和新增文件、运行相关测试、`git diff --check`、敏感信息检查、暂存文件清单复核，提交并将工作分支非强制推送后读回 SHA。token 估算 8,000--16,000；系统未提供精确 token 遥测。
 
+## 20261008-Root-全量代码发布-result
+
+- 状态：COMPLETE；作者与角色：GPT-5 / Root Coordinator；日期时间：2026-10-08（Asia/Shanghai）。
+- 任务目标与实际结果：已审阅、提交并上传当前可发布的 B06 error-analysis 门禁、B05 来源只读复核、P2B 候选事实/本地材料/npm 回执/D4 对账准备及关联测试、夹具、规范和进度文档。未上传 `reports/`、pytest 临时目录、`__pycache__`、缓存、原始第三方工件、虚拟环境、密钥或个人信息。
+- 修改/新增文件：发布提交 `e24c0eaee7c84ff81896f0db19b4ed3b7a8c3581`，共 16 文件；包括 `backend/app/p2b/` 五个源码模块、B05/B06 工件、P2B 规范、来源夹具与单元测试。未启停服务、未修改 `main`。
+- 审阅与验证：审阅新增 P2B 模块及 B06 差异；`PYTHONPATH=backend` 定向 pytest 为 `46 passed in 0.70s`；`git diff --check` 与提交前敏感模式扫描通过。P2B 的 npm 代码只解析调用方提供的受限响应，不发起网络请求；测试中任何失败回执均是预期拒绝路径。
+- 接口、Schema、规则与决定：B06 v1 禁止以 `evaluated` 或 `gold_frozen=true` 自声明正式质量；P2B 仅产生 `candidate_only` / 受限观察 / 失败回执，未接入正式 Assessment、持久化、报告或前端，且不构成授权、许可证适用或人工 Gold 结论。
+- GitHub 发布：已普通非强制推送至 `git@github.com:mumingce-star/OpenGuard.git` 的 `codex/scan-reliability-integration`，远端读回 SHA 为 `e24c0eaee7c84ff81896f0db19b4ed3b7a8c3581`。本轮用户只授权上传，未更新 `integration/p1` 或 `main`。
+- 已知风险与下一步：需 A 冻结 P2 DTO/可信网络出口/持久化接线，B/Luna 复核来源与人工 Gold，前端实现真实状态回执；P2B 不替代 P1 的完整 NOTICE 生命周期、G5/G6/G7/G8 门禁。token：精确 token 数不可获得；开工估算 8,000--16,000；发布范围完成。
+
 ## 20261006-1545-GPT6-b-postrelease-status-start
 
 - 状态：START；作者与角色：GPT-6.1 Sol / Root Coordinator；日期时间：2026-10-06 15:45（Asia/Shanghai）。范围：只读核对新发布后仍属后端 B 的任务及跨 A/前端/人工门禁；仅追加日志，不改业务文件。验收：核对 README、完整日志、进度、Sol 交接、分支和 Git 状态；估算 1,000--2,000 token。
