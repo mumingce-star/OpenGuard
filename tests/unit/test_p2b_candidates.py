@@ -27,8 +27,12 @@ def test_three_fixed_sources_have_hashes_but_no_synthetic_scan_identity():
     assert cases[2]["role"] == "independent_d4_holdout_not_used_for_rules"
     for case in cases:
         assert case["scan_id"] is None and case["scan_object_id"] is None
+        assert case["usage_version"] is None
         assert case["evidence_ids"] == []
         assert case["source_object_key"] != case["scan_object_id"]
+        assert set(case["usage"]) == {"commercial", "modified", "distributed", "network_service",
+                                      "training", "redistributed_assets", "source_disclosure"}
+        assert case["usage"]["training"] is None and case["usage"]["source_disclosure"] is None
         assert {material["role"] for material in case["materials"]} == {"package_metadata", "license_text"}
         for material in case["materials"]:
             assert material["url"].startswith("https://github.com/")
@@ -127,6 +131,18 @@ def test_verified_conflicting_license_or_scope_blocks_candidate():
     assert not result["suggestions"] and "object_scope_conflict" in result["gaps"]
 
 
+def test_verified_license_applicability_conflict_blocks_same_text_candidate():
+    snapshot = bound_snapshot()
+    other = {**snapshot["evidence"]["ev-license"], "id": "ev-applicability",
+             "applicability": "pending"}
+    snapshot["evidence"][other["id"]] = other
+    snapshot["objects"][0]["evidence_ids"].append(other["id"])
+    result = evaluate_bound_candidate(snapshot=snapshot, object_id="cmp-1")
+    assert not result["suggestions"]
+    assert "license_evidence_conflict" in result["gaps"]
+    assert result["basis_evidence_ids"] == []
+
+
 def test_training_evidence_never_supplies_distribution_basis():
     snapshot = bound_snapshot()
     snapshot["evidence"]["ev-scope"]["scope"] = "training"
@@ -199,7 +215,9 @@ def test_bound_candidate_rejects_a_pinned_scan_or_purpose_revision_mismatch():
     (lambda s: s["objects"][0]["evidence_ids"].pop(), "evidence_closure_invalid"),
     (lambda s: s["evidence"]["ev-license"].update(scan_id="other"), "evidence_binding_invalid"),
     (lambda s: s["evidence"]["ev-license"].update(source_sha256="bad"), "evidence_source_hash_invalid"),
+    (lambda s: s["evidence"]["ev-scope"].pop("source_sha256"), "evidence_source_hash_invalid"),
     (lambda s: s["objects"][0].update(version="6.0.0"), "evidence_binding_invalid"),
+    (lambda s: s["evidence"]["ev-scope"].update(id="relabelled"), "evidence_binding_invalid"),
 ])
 def test_bound_snapshot_rejects_identity_and_closure_changes(change, error):
     snapshot = bound_snapshot()
@@ -227,6 +245,21 @@ def test_bound_snapshot_scope_partial_ai_and_model_failure():
     snapshot["objects"][0]["scope"] = "ai_asset"
     result = evaluate_bound_candidate(snapshot=snapshot, object_id="cmp-1")
     assert not result["suggestions"] and "ai_asset_independent_license_required" in result["gaps"]
+
+
+def test_partial_without_named_coverage_gap_and_model_fallback():
+    snapshot = bound_snapshot()
+    snapshot["status"] = "partial"
+    result = evaluate_bound_candidate(snapshot=snapshot, object_id="cmp-1")
+    assert not result["suggestions"]
+    assert "scan_coverage_incomplete" in result["gaps"]
+    assert result["scan_coverage_gaps"] == []
+
+    snapshot["status"] = "completed"
+    result = evaluate_bound_candidate(snapshot=snapshot, object_id="cmp-1", model_status="fallback")
+    assert {row["usage"] for row in result["suggestions"]} == {"commercial", "distributed"}
+    assert "model_explanation_unavailable" in result["gaps"]
+    assert result["verification_state"] == "candidate_only"
 
 
 def test_bound_snapshot_unknown_use_only_blocks_that_use():

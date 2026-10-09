@@ -21,7 +21,7 @@
       "source_object_key": "npm:is-number@7.0.0",
       "name": "is-number",
       "exact_version": "7.0.0",
-      "usage": {"commercial": true, "modified": false, "distributed": true, "network_service": false, "redistributed_assets": false},
+      "usage": {"commercial": true, "modified": false, "distributed": true, "network_service": false, "training": null, "redistributed_assets": false, "source_disclosure": null},
       "materials": [
         {"role": "package_metadata", "url": "https://github.com/jonschlinkert/is-number/blob/7.0.0/package.json", "git_blob_sha1": "3715072609d61a010bff7116331b71f04206af96", "content_sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620"},
         {"role": "license_text", "url": "https://github.com/jonschlinkert/is-number/blob/7.0.0/LICENSE", "git_blob_sha1": "9af4a67d206f24ecdbb5fdff2839041ca0bbd346", "content_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"}
@@ -42,7 +42,7 @@
       "source_object_key": "npm:lodash@4.17.21",
       "name": "lodash",
       "exact_version": "4.17.21",
-      "usage": {"commercial": true, "modified": null, "distributed": true, "network_service": null, "redistributed_assets": null},
+      "usage": {"commercial": true, "modified": null, "distributed": true, "network_service": null, "training": null, "redistributed_assets": null, "source_disclosure": null},
       "materials": [
         {"role": "package_metadata", "url": "https://github.com/lodash/lodash/blob/4.17.21/package.json", "git_blob_sha1": "83080d4381ebe92e1a6ac5d254dd3fb5bc6fd452", "content_sha256": "0d486d8dd5d67f09a44aa72a6acecba39a5a66c07ec4f988e9c2ee3075563a5e"},
         {"role": "license_text", "url": "https://github.com/lodash/lodash/blob/4.17.21/LICENSE", "git_blob_sha1": "77c42f1408a38a0609cac12c887616cb21bfb736", "content_sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc"}
@@ -63,7 +63,7 @@
       "source_object_key": "npm:express@4.18.2",
       "name": "express",
       "exact_version": "4.18.2",
-      "usage": {"commercial": null, "modified": null, "distributed": null, "network_service": true, "redistributed_assets": null},
+      "usage": {"commercial": null, "modified": null, "distributed": null, "network_service": true, "training": null, "redistributed_assets": null, "source_disclosure": null},
       "materials": [
         {"role": "package_metadata", "url": "https://github.com/expressjs/express/blob/4.18.2/package.json", "git_blob_sha1": "0996637deaa0c79b2a7503f1ce06f22608eba8cc", "content_sha256": "2cd424f19ed994070c827b5448a3bc5fbee955bbbe81aff28204d8c5a5a89ebb"},
         {"role": "license_text", "url": "https://github.com/expressjs/express/blob/4.18.2/LICENSE", "git_blob_sha1": "aa927e44e31d486f807634887662efa39256bf84", "content_sha256": "95a5762890e5c1c9808921cef095661fc482c5e1f0bba31446ac85595df6237c"}

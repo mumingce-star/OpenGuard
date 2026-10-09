@@ -472,3 +472,14 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 
 - 工具/模型：Codex GPT-6.1 Sol；AI 协助复核现有 D4 对账拒绝路径，将新增 Evidence 内容摘要格式错误固定为 `invalid_added_content_hash`，与旧 Assessment/报告摘要格式错误 `invalid_readback_hash` 分开。同步更新合成测试、机器交接草案与 CR/规格；不生成正式扫描、授权或法律结论。
 - 本轮 P2B 定向 `53 passed in 0.55s`；JSON、编译、diff 与有限敏感信息/第三方原文检查通过。未取得 A 正式 DTO/可信出口/真实前后回执；未发 npm GET、未启停服务或自行发布。
+
+## 2026-10-10 — P2B 三例固定来源与事实链整理
+
+- 工具/模型：Codex GPT-6.1 Sol；AI 辅助把既有三例固定 tag 的两文件原字节摘要、用途/对象/材料/Evidence/V4-MIT/建议缺口串成可审阅字段链，并为未声明的两个用途维度显式记录 `null`。
+- 六个 SHA-256 与 Git blob SHA-1 均取自既有 2026-10-08 上游原字节内存核验台账，本轮只做本地台账/规格交叉核对，未重新获取上游字节、未发 npm GET。未把 Git tag 文件、用户材料或合成 ID 当作 ScanRun、npm 发布包、人工适用性或授权证明；未复制第三方许可证原文。
+- 本轮 P2B 定向 `53 passed in 0.48s`；三例/六文件 URL、tag、SHA-1、SHA-256 和空扫描绑定交叉核对通过。A 的正式 DTO、可信出口、真实扫描与补证读回仍缺；未启停服务或自行发布。
+
+## 2026-10-10 — P2B L1 候选边界回归
+
+- 工具/模型：Codex GPT-6.1 Sol；AI 辅助审查 `evaluate_bound_candidate` 的同扫描 Evidence 闭包、许可/范围冲突、partial 和模型失败路径，补同摘要适用性冲突、依据来源 Hash 缺失、Evidence 重标、无命名缺口的 partial 和模型 fallback 回归。既有扫描/用途版本 pin 未重写，未改变候选逻辑或正式授权语义。
+- 本轮合成 P2B 定向 `57 passed in 0.56s`；编译、两份 JSON 解析、B 文件差异检查与有限敏感信息/第三方原文特征检查通过。全仓 `git diff --check` 因共享日志其他追加记录行尾空格未过；按日志只追加规则未改写其历史。

@@ -12,6 +12,24 @@
 | 缺口/限制反例 | `lodash@4.17.21` | [package.json](https://github.com/lodash/lodash/blob/4.17.21/package.json) `83080d4381ebe92e1a6ac5d254dd3fb5bc6fd452`；[LICENSE](https://github.com/lodash/lodash/blob/4.17.21/LICENSE) `77c42f1408a38a0609cac12c887616cb21bfb736` | 上游原文明确将文档示例代码列为 CC0，并提示 `node_modules`/`vendor` 文件另有许可；根 MIT 不自动覆盖这些对象。具体使用文件、范围和用途仍未知。 |
 | D4 保留样例 | `express@4.18.2` | [package.json](https://github.com/expressjs/express/blob/4.18.2/package.json) `0996637deaa0c79b2a7503f1ce06f22608eba8cc`；[LICENSE](https://github.com/expressjs/express/blob/4.18.2/LICENSE) `aa927e44e31d486f807634887662efa39256bf84` | 固定 tag 有 MIT 声明与原文；此样例未用于 L1 规则调整。实际扫描对象、包内容、用途细节、人工适用性均待 D4。 |
 
+下表的 SHA-256 是**上游 Git tag 文件原始字节**的历史内存复算值，URL 与 Git blob SHA-1 对应上表及机器台账；不是 npm 发布包、用户上传文件或 ScanRun Evidence 的哈希。每文件 UTC 获取时间和原字节编码未记录，不能补造。
+
+| 固定 tag | `package.json` 原字节 SHA-256 | `LICENSE` 原字节 SHA-256 |
+|---|---|---|
+| `is-number@7.0.0` | `51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620` | `35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2` |
+| `lodash@4.17.21` | `0d486d8dd5d67f09a44aa72a6acecba39a5a66c07ec4f988e9c2ee3075563a5e` | `f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc` |
+| `express@4.18.2` | `2cd424f19ed994070c827b5448a3bc5fbee955bbbe81aff28204d8c5a5a89ebb` | `95a5762890e5c1c9808921cef095661fc482c5e1f0bba31446ac85595df6237c` |
+
+### 逐字段事实链复核
+
+| 用途声明 → 精确对象 | 材料 → 扫描 Evidence | `V4-MIT` → 当前建议/缺口 | 未知项 |
+|---|---|---|---|
+| `is-number`：`commercial=true`、`distributed=true`；目标版本 `7.0.0`，真实扫描对象 ID 与用途版本均为 `null`。 | 固定 tag 的 `package.json` 和 `LICENSE` URL、blob SHA-1 与原字节 SHA-256 如上；材料尚未作为真实本地补证接纳，`material_ids=[]`，`evidence_ids=[]`。 | 只有 A 的同 scan 精确对象、已核验 MIT 原文、人工适用性与对象范围 Evidence 闭包成立后，才可给保留版权/许可声明的 `conditional_candidate`；当前为 `real_scan_binding_missing`，**无正式建议**。 | npm 发布包是否包含相同正文、NOTICE 字节、人工适用性、义务履行、真实扫描覆盖与获取 UTC 时间。 |
+| `lodash`：`commercial=true`、`distributed=true`，其余部分用途未知；目标版本 `4.17.21`，真实扫描对象 ID/用途版本为 `null`。 | 固定 tag 两文件有历史哈希；根 LICENSE 对文档示例及 `node_modules`/`vendor` 范围有限制，实际使用对象未确定；`material_ids=[]`、`evidence_ids=[]`。 | `V4-MIT` 不可泛化到例子/vendor/其他对象；当前 `real_scan_binding_missing`、`file_scope_unverified`、`separate_terms_for_examples_and_vendor_files`，**无正式建议**。 | 用了哪些文件、各文件独立条款、未知用途维度、人工范围/适用性、获取 UTC 时间。 |
+| `express`：`network_service=true`，其余部分用途未知；目标版本 `4.18.2`，真实扫描对象 ID/用途版本为 `null`。 | 固定 tag 两文件有历史哈希；未获得 NOTICE 字节，也无本地材料接纳和 P0 Evidence，`material_ids=[]`、`evidence_ids=[]`。 | 仅保留为规则冻结后的独立 D4 样例；当前 `real_scan_binding_missing`、`independent_reconciliation_pending`，**无正式建议**，不据此调整 L1。 | npm 发布包正文、人工适用性、扫描覆盖、义务履行及同 scan 补证前后 Assessment/报告。 |
+
+三例的 `training` 与 `source_disclosure` 现均明确记为 `null`，表示来源台账没有用途声明；它们不是用户确认的 `false`。`source_object_key` 只连接上述上游台账行，不能代替 A 签发的对象 ID。正式链必须逐 Evidence 记录 ID、scan/object/version、来源摘要、原文内容摘要和核验者/范围，再由 A 认证快照及用途版本；任何一环缺失时只给缺口。
+
 ## L1 最小支持矩阵
 
 输入仅为调用方给出的扫描对象、完整 Evidence ID 集合、对象/版本绑定观察和三态用途。B 输出 `candidate_only`、条件、`basis_evidence_ids`、规则来源和逐项缺口。它不写正式 Assessment，也不调用模型。现有 `assessment-1.0-facts2` 只对 **精确版本、已核验许可原文、人工核验范围** 的 MIT 软件提供有限提升；根 LICENSE 不继承依赖，AI 资产独立判断。B 的候选门禁进一步要求 Evidence 的 scan/object/version 一致，悬空 ID 直接拒绝。

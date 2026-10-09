@@ -1954,3 +1954,22 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | P2B 快照扫描/用途版本 pin、D4 依据更新与摘要错误码、机器交接草案已发布。 | 已有 Git/ZIP 扫描、静态候选与报告；B 具备离线 L1/L2/npm 解析、拒绝矩阵及 D4 合成对账。 | A/Root：冻结 P2-01 DTO、可信出口、材料接纳、三例真实扫描与旧工件读回；B：真实材料/唯一 GET/D4；前端：正式 API 浏览器签收；Root：baseline 与受控环境门禁。 | Python `53 passed`、Node `5 passed`、格式与敏感信息检查通过。既有 Windows 跨模块 35 失败和 B 工件 `FIXTURE_DRIFT` 未关闭。代码 `585210c` 已推送 `codex/scan-reliability-integration`；`integration/p1`、`main` 本轮未改。 |
 
 可报名/可参赛仍需竞赛材料、规则与复现签收；可提交完整作品需 P2 正式补证链与跨栈回执；具备获奖竞争力还需真人 Gold、正式 Bench、误差与受控性能证据。没有统一分母或权重，不报告完成百分比。
+
+## 2026-10-09 23:45 P2B 已发布代码独立复核
+
+- 本轮只读复核已发布 P2B `585210c`：三例固定上游来源和六个文件摘要仍在台账，`scan_id`/扫描对象 ID/用途版本为空且 Evidence ID 数均为零；A 的 P2-01 DTO、可信 npm 出口、材料接纳及三例补证前后正式读回仍未取得。现有逐例字段链、L1/L2/npm/D4 离线拒绝矩阵和前端草案保持原状，未见需重做的 B 缺陷。
+- 本轮 P2B 定向 `53 passed in 0.44s`；P2B 编译、两份 JSON 解析、`git diff --check`、B 范围常见敏感信息与第三方 MIT 原文特征检查通过。未运行正式 A 接纳、唯一 npm GET、三例真实 D4 或前端浏览器签收；状态仍 PARTIAL。仅共享日志和本进度追加，未修改业务文件、暂存、提交或推送。
+
+## 2026-10-10 P2B 固定来源与逐字段事实链（本地未发布）
+
+| 本轮完成 | 累计可演示 | 未完成与责任 | 验证和 GitHub |
+|---|---|---|---|
+| 三例固定 tag、两文件 Git blob SHA-1/原字节 SHA-256、用途→对象→材料→Evidence→V4-MIT→建议/缺口链已写入 B 规格；机器台账显式补齐未声明用途维度 `null`，测试锁定空扫描身份。 | B 离线 L1/L2/npm 候选和 D4 合成对账；已有 Git/ZIP 扫描、静态候选及报告历史演示能力。 | A/Root：冻结 P2-01 DTO、可信 npm 出口、真实 ScanRun/Evidence/用途版本与同 scan 前后 Assessment/报告读回；B：正式接线、受控 GET 和三例 D4；前端：正式 API 浏览器签收。 | 本轮 P2B `53 passed in 0.48s`，3 例/6 文件本地台账交叉核对、JSON/编译/diff/有限敏感信息与第三方原文检查通过。六文件原字节取得是 2026-10-08 历史回执，本轮未重新抓取；`codex/scan-reliability-integration@b7cc94b`，本轮无 commit/push/PR，最新已发布 B `585210c`。状态 PARTIAL。 |
+
+当前三例 `scan_id`、扫描对象 ID、用途版本均空，Evidence ID 为零；正式条件建议、A 接纳、npm 官方观察和 P2-04 真实前后对账均未发生。完整作品仍需正式 P2 补证链，可参赛门禁仍需竞赛材料/规则及复现签收，获奖竞争力仍需真人 Gold、正式 Bench、误差与受控性能证据。没有统一分母或权重，不报告完成百分比。
+
+## 2026-10-10 P2B L1 候选拒绝矩阵复核（本地未发布）
+
+| 本轮完成 | 累计已具备 | 未完成与责任 | 验证和发布 |
+|---|---|---|---|
+| 审查已发布 `candidates.py`，保留扫描/用途版本 pin；新增适用性冲突、来源摘要缺失、Evidence 重标、无命名缺口 partial 与模型 fallback 的合成回归，未发现需要改候选逻辑的缺陷。 | 错扫描/版本、悬空/重复/遗漏 Evidence、已核验许可和范围冲突、partial、未知用途、AI 资产与模型失败的 B 内部拒绝/缺口矩阵。 | A/Root：权威 DTO/快照认证、真实 Evidence、接纳及读回；B：真实接线与 D4；Root：共享日志行尾空格的全仓 diff 门禁处置并统一发布。 | 本轮 P2B `57 passed in 0.56s`，编译/JSON/B 文件 `git diff --check`/有限敏感信息检查通过。全仓 `git diff --check` 因共享日志既有追加行的行尾空格未过，未改写历史。`codex/scan-reliability-integration@b7cc94b`，本轮无 commit/push/PR。状态 PARTIAL。 |
