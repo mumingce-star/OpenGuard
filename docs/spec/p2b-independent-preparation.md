@@ -108,3 +108,36 @@
   }
 }
 ```
+
+## 2026-10-09 真实样本交付审计与前端开工包
+
+本节的机器可读交接草案为 `tests/fixtures/p2b/frontend-handoff-draft.json`。它的 `scan_id`、对象 ID、Evidence/Material ID、用途版本、补证后回执均为空；`source_object_key` 只索引固定上游 tag。**不得将此草案交给前端作为可验收的正式 API 输入**。A/Root 的 `CR-20261008-P2B-A-frozen-contract` 仍待冻结，当前工作区没有这三例的真实 ScanRun、P0 对象/Evidence 闭包或 A 的正式材料接纳记录。故“真实正例”目前只是**真实上游来源的条件正例**，尚不是正式扫描中的已验证正例。
+
+### 三例身份、材料与引用链
+
+三例精确名称、版本、用途声明、固定 tag URL、`package.json`/`LICENSE` 的原始字节 SHA-256 见 `real-source-index.json`；SHA-256 是 2026-10-08 历史回执，本轮未重新取得上游字节。六个材料的文件名分别为 `package.json` 和 `LICENSE`，固定版本分别是 `7.0.0`、`4.17.21`、`4.18.2`。历史获取方式是 GitHub 固定 tag 文件接口及内存中原字节哈希复算；**每文件 UTC 获取时间与原字节编码没有记录**，因而台账显式标空。尚未取得 NOTICE 原文字节；不能据此判定 NOTICE 不存在或无需保留。数据等级为 `fixed_upstream_tag_observation_not_scanned_evidence`，人工核验 `pending`。所列 MIT 是 package 声明和上游文件观察，不是 npm 发布包适用性结论。
+
+| 用途 → 对象/版本 → 材料 → Evidence → Rule → 建议/缺口 |
+|---|
+| `distributed=true` → `is-number@7.0.0` → 固定 tag 的 `package.json` 与 `LICENSE`（哈希见台账）→ **真实 Evidence ID 缺失** → `V4-MIT` 仅待核 → `real_scan_binding_missing`、原文适用性/范围/履行待核；不得展示正式条件建议。 |
+| `distributed=true`、部分用途未知 → `lodash@4.17.21` → 固定 tag 两文件 → **真实 Evidence ID 缺失** → `V4-MIT` 不可泛化 → 文档示例代码与 `node_modules`/`vendor` 需分别识别条款，保留 `file_scope_unverified`。 |
+| `network_service=true`、其他用途未知 → `express@4.18.2` → 固定 tag 两文件 → **真实 Evidence ID 缺失** → 规则冻结后的独立 D4 对账，不参与 L1 调整 → `independent_reconciliation_pending`。 |
+
+### L1 字段来源和条件
+
+| 字段 | 来源/阶段 | 空值、冲突和版本语义 |
+|---|---|---|
+| `scan_id`、`status`、`coverage_gaps`、对象 ID/`kind`/`name`/精确 `version`/`scope`、完整 `evidence_ids`、Evidence 绑定及 `source_sha256` | A 权威只读 ScanRun/扫描自动发现，B 只读核对 | 身份缺失、错扫描/对象/版本、悬空/重复/遗漏 Evidence 或来源 Hash 无效：B 拒绝；`partial`/覆盖缺口：无候选。A 尚需冻结快照认证与内容摘要算法。 |
+| `usage.version`、七项三态用途 `commercial`、`modified`、`distributed`、`network_service`、`training`、`redistributed_assets`、`source_disclosure` | A 版本化用户用途输入；不是扫描自动发现 | 版本或字段缺失：拒绝；单项 `null`：该项 `unknown` 且无该项建议；`training=true` 或 `source_disclosure=true`：超出 L1 矩阵。 |
+| 许可证表达式、原文 `content_sha256`、`source_status`、`verification_status`、人工 `applicability`；人工 `scope_attestation` | 扫描/材料观察 + 解析器标准化 + 人工补充；A 负责正式采用 | 只有同对象/版本的 `MIT`、上游已核来源、原文 Hash、`verified`、`human_verified` 与人工同范围证明同时成立，B 才产生条件候选；已核验文本或范围互相冲突则 `license_evidence_conflict`/`object_scope_conflict`，无候选。`pending` 只保留观察，`unknown` 保留缺口。 |
+| `basis_evidence_ids`、`basis_source_sha256`、`rule_version=V4-MIT`、条件/剩余缺口 | B 确定性候选解析器；规则来源为 OSI MIT URL | 内部 `candidate_only`，不是 A 接纳、授权或义务已履行；模型建议只能作为解释层，模型失败保留确定性结果并增加 `model_explanation_unavailable`。 |
+
+`parse_local_material` 版本为 B 内部 `openguard.p2b.local-material/0`：只处理同一真实扫描对象和精确版本绑定的 64 KiB 内 UTF-8 `LICENSE`/`LICENCE`/`NOTICE`（可带受支持文本扩展名）。`license_mention` 仅是文本观察。当前仓库**没有可绑定真实 ID 的本地 LICENSE/NOTICE 样本**，故不得用合成测试 ID 伪称已提供。生命周期必须分别记录：字节已提供、B 已解析、A 正式接纳、人工核实义务已履行；前一步不会自动推出后一步。同名同 Hash 和同名不同 Hash 的拒绝只是 B 预检，A 需原子去重并持久化。
+
+### 负向实际回执与 A 依赖
+
+B 单测逐项验证：错 resource ID/版本、悬空/重复 Evidence、已核验许可文本冲突、范围冲突、材料重复/同身份冲突、超时、提示词注入文字、metadata 自称 `verified`、训练范围 Evidence 用于分发用途、孤立材料拒绝或仅保持 `pending`。错绑在 B 内部拒绝；**A 服务端拒绝、旧 Assessment/报告原样读回以及人工/TEST_ONLY 样本不进入正式发现，仍需 A 的真实回执**。`reconcile_object` 只能用 A 签发的补证前后快照及旧工件读回 Hash 验证同一扫描、受影响对象与历史不可变性；当前仅有合成单测。
+
+可信 npm 仍为 `blocked_awaiting_trusted_egress`：固定目标 `GET https://registry.npmjs.org/is-number/7.0.0`，本轮没有实际请求、最终 URL、UTC 时间、HTTP 状态、响应 SHA-256/大小或出口策略 ID。A/Root 先冻结 DNS/代理/重定向/超时/字节上限和可信回执验证器，再由 A 执行唯一在线 GET；B 只解析 A 可信回执。离线 parser 版本 `p2b-npm-metadata/1`；metadata 的 license 永远是 `provider_declared_unverified`，不提供 LICENSE 原文、授权或义务履行证明。
+
+前端只消费 A 正式 ID、版本、状态、引用和允许展示的条件建议。联调草案里的 `before` 是**预期缺口形状**，`after=null` 表示无正式补证回执，`display_advice=null` 表示当前没有可展示的正式建议。A 需给 B/前端逐例正式 `scan_id`、对象/Evidence/Material/Rule ID、用途版本、核验状态、接纳或拒绝、Assessment/报告前后 ID 与 Hash 和旧版本读回结果，才可替换草案并签收。

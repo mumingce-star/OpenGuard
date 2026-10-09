@@ -65,6 +65,19 @@ def evaluate_candidate(
              and isinstance(e.get("content_sha256"), str) and SHA256.fullmatch(e["content_sha256"])]
     scopes = [e for e in bound if e.get("role") == "scope_attestation" and e.get("producer") == "human"
               and e.get("verification_status") == "verified" and e.get("scope") in {"project_code", "runtime_dependency"}]
+    # A contradictory verified record cannot be outweighed by one matching record.
+    verified_texts = [e for e in bound if e.get("role") == "license_text"
+                      and e.get("verification_status") == "verified"]
+    verified_scopes = [e for e in bound if e.get("role") == "scope_attestation"
+                       and e.get("verification_status") == "verified"]
+    conflicting_text = (len({(e.get("license_expression"), e.get("content_sha256"))
+                             for e in verified_texts}) > 1
+                        or any(e not in texts for e in verified_texts))
+    conflicting_scope = len({e.get("scope") for e in verified_scopes}) > 1
+    if conflicting_text:
+        gaps.append("license_evidence_conflict")
+    if conflicting_scope:
+        gaps.append("object_scope_conflict")
     if not texts:
         gaps.append("license_text_and_applicability_unverified")
     if not scopes:
@@ -79,6 +92,7 @@ def evaluate_candidate(
     eligible = bool(object_kind == "component" and EXACT_VERSION.fullmatch(version)
                     and scan_status == "completed" and texts and scopes
                     and "evidence_wrong_object" not in gaps and "evidence_wrong_version" not in gaps
+                    and not conflicting_text and not conflicting_scope
                     and not any(gap.endswith("_outside_l1_matrix") for gap in gaps))
     basis = sorted({e["id"] for e in [*texts, *scopes]}) if eligible else []
     suggestions = []

@@ -1916,3 +1916,11 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 状态 **PARTIAL**。本轮逐项复核 B 的 L1、材料、npm、D4 代码与既有 41 项测试源码，确认 CR 已列 A 权威快照、Evidence 闭包、材料原子去重、可信 npm 出口和接纳/拒绝字段。三个固定来源机器台账 JSON 可解析，真实 `scan_id`/对象 ID 仍为空、Evidence ID 仍为空列表；六文件 SHA-1/SHA-256 与上轮原字节复算记录一致。本轮未重新取得六个上游字节，不把历史哈希复算冒充本轮。
 - Root 于 19:12 实跑 `41 passed in 0.54s`、编译和 `git diff --check`，属于上一轮回执。当前命令执行器在启动前返回 `helper_unknown_error: setup refresh had errors`，本轮 pytest、编译、Git 状态及 `git diff --check` 未运行。仅用只读浏览器完成 JSON 解析与 B 代码/测试有限静态扫描（未见尾随空格、常见长串凭据赋值或第三方 MIT 原文片段）；不能代替正式门禁。本轮未修改 B 业务代码、测试、台账、B05/B06 或 reports。
 - A/Root 仍需冻结 P2-01 DTO、快照认证和可信出口，提供三个真实 ScanRun、同 scan 补证前后 Assessment/报告读回；B 再接线、做一次受控 npm GET 与三个样例实际对账；前端消费 A API，Root 验收发布。当前无本轮真实 GET、正式接纳/重算、D4 真实对账或新提交/推送/PR。六页 PDF 的本轮可读路径和共享日志逐字完整阅读门禁也未满足。
+
+## 2026-10-09 P2B 真实样本与解析语义续轮（本地未发布）
+
+| 本轮完成项 | 仍需关闭的门禁与责任 | 验证、GitHub 状态 |
+|---|---|---|
+| B 内部 L1 已核验文本/范围冲突拒绝；三例固定来源台账补充采集时刻/编码未知、NOTICE 未取得、人工与材料生命周期状态；新增前端机器可读联调草案和负向状态矩阵；逐字段说明扫描/解析/人工/模型边界。 | A/Root：冻结 P2-01 权威快照和可信 npm 出口，提供三例真实 ScanRun/对象/Evidence、材料接纳与正式 Assessment/报告前后读回；B：据正式回执绑定小型材料、执行唯一受控 npm GET 和真实 D4 对账；前端：仅消费 A 正式 API。 | P2B 定向 46 passed，compileall 与 git diff --check 通过；B 工件全局 baseline 门禁因新 fixture/既有台账漂移返回 FIXTURE_DRIFT，待 Root 审阅后更新基线。当前仅本地工作区，未提交/推送/PR；既有离线准备 e24c0ea 已发布，P2 全链未完成。 |
+
+当前可独立演示既有 Git/ZIP 真实扫描、静态候选与报告，以及本轮 B 的离线拒绝矩阵；不能演示三例 P2 正式补证链。尚缺正式 DTO/可信出口/真实 ID/接纳重算/历史读回/前端签收六组门禁。可报名/可参赛仍需既有材料、规则和复现签收；完整作品还需上述 P2 生产链与 GitHub 发布；获奖竞争力仍需正式 Bench/Gold、误差及性能证据。无统一权重分母，不报完成百分比。本次运行精确 token 数不可获得，开工估算 8,000～16,000，缺遥测无法核定实际用量。

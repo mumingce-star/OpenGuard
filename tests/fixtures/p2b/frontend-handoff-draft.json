@@ -1,0 +1,52 @@
+{
+  "kind": "openguard.p2b.frontend-handoff-draft/0",
+  "status": "integration_draft_not_formal_api",
+  "source_index": "tests/fixtures/p2b/real-source-index.json",
+  "formal_fields_pending_a": ["scan_id", "object_id", "evidence_ids", "material_ids", "assessment_id", "report_id", "usage_version", "snapshot_sha256", "admission_state"],
+  "cases": [
+    {
+      "case_id": "P2B-POS-ISNUMBER-7",
+      "object": {"name": "is-number", "version": "7.0.0", "source_object_key": "npm:is-number@7.0.0", "scan_id": null, "object_id": null},
+      "usage": {"distributed": true, "training": false, "version": null},
+      "evidence_ids": [], "material_ids": [], "rule_id": "V4-MIT",
+      "before": {"license_text_state": "unknown", "candidate_state": "pending", "gaps": ["real_scan_binding_missing", "license_text_and_applicability_unverified", "object_scope_unverified"]},
+      "after": null,
+      "display_advice": null,
+      "review_status": "pending"
+    },
+    {
+      "case_id": "P2B-LIMIT-LODASH-41721",
+      "object": {"name": "lodash", "version": "4.17.21", "source_object_key": "npm:lodash@4.17.21", "scan_id": null, "object_id": null},
+      "usage": {"distributed": true, "training": null, "version": null},
+      "evidence_ids": [], "material_ids": [], "rule_id": "V4-MIT",
+      "before": {"license_text_state": "unknown", "candidate_state": "pending", "gaps": ["real_scan_binding_missing", "file_scope_unverified", "separate_terms_for_examples_and_vendor_files"]},
+      "after": null,
+      "display_advice": null,
+      "review_status": "pending"
+    },
+    {
+      "case_id": "P2B-HOLDOUT-EXPRESS-4182",
+      "object": {"name": "express", "version": "4.18.2", "source_object_key": "npm:express@4.18.2", "scan_id": null, "object_id": null},
+      "usage": {"network_service": true, "version": null},
+      "evidence_ids": [], "material_ids": [], "rule_id": "V4-MIT",
+      "before": {"license_text_state": "unknown", "candidate_state": "pending", "gaps": ["real_scan_binding_missing", "independent_reconciliation_pending"]},
+      "after": null,
+      "display_advice": null,
+      "review_status": "pending"
+    }
+  ],
+  "npm": {"request_method": "GET", "request_url": "https://registry.npmjs.org/is-number/7.0.0", "state": "blocked_awaiting_trusted_egress", "actual_request_at_utc": null, "final_url": null, "http_status": null, "response_sha256": null, "response_bytes": null, "transport_policy_id": null, "parser_version": "p2b-npm-metadata/1", "official_metadata_observed": false, "authorization_status": "pending"},
+  "negative_results": [
+    {"case": "wrong_resource_id", "b_result": "missing_or_duplicate_object_or_unknown_object", "a_server_result": null},
+    {"case": "wrong_version", "b_result": "evidence_binding_invalid_or_wrong_object_version", "a_server_result": null},
+    {"case": "dangling_evidence", "b_result": "evidence_closure_invalid", "a_server_result": null},
+    {"case": "duplicate_material", "b_result": "duplicate_material", "a_server_result": null},
+    {"case": "conflicting_material", "b_result": "material_identity_conflict", "a_server_result": null},
+    {"case": "timeout", "b_result": "failed_timeout_offline_parser", "a_server_result": null},
+    {"case": "prompt_injection_in_material", "b_result": "text_observed_pending", "a_server_result": null},
+    {"case": "metadata_claims_verified", "b_result": "provider_declared_unverified_pending", "a_server_result": null},
+    {"case": "training_scope_used_for_distribution", "b_result": "object_scope_unverified_no_candidate", "a_server_result": null},
+    {"case": "unbound_material", "b_result": "unknown_object", "a_server_result": null},
+    {"case": "conflicting_verified_license", "b_result": "license_evidence_conflict_no_candidate", "a_server_result": null}
+  ]
+}
