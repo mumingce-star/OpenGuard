@@ -1973,3 +1973,11 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 本轮完成 | 累计已具备 | 未完成与责任 | 验证和发布 |
 |---|---|---|---|
 | 审查已发布 `candidates.py`，保留扫描/用途版本 pin；新增适用性冲突、来源摘要缺失、Evidence 重标、无命名缺口 partial 与模型 fallback 的合成回归，未发现需要改候选逻辑的缺陷。 | 错扫描/版本、悬空/重复/遗漏 Evidence、已核验许可和范围冲突、partial、未知用途、AI 资产与模型失败的 B 内部拒绝/缺口矩阵。 | A/Root：权威 DTO/快照认证、真实 Evidence、接纳及读回；B：真实接线与 D4；Root：共享日志行尾空格的全仓 diff 门禁处置并统一发布。 | 本轮 P2B `57 passed in 0.56s`，编译/JSON/B 文件 `git diff --check`/有限敏感信息检查通过。全仓 `git diff --check` 因共享日志既有追加行的行尾空格未过，未改写历史。`codex/scan-reliability-integration@b7cc94b`，本轮无 commit/push/PR。状态 PARTIAL。 |
+
+## 2026-10-10 P2B 来源台账与候选边界回归发布回执
+
+| 本轮完成 | 累计可独立演示 | 未完成与责任 | 验证和 GitHub |
+|---|---|---|---|
+| 三例上游固定 tag 文件身份/历史摘要的字段链、七维三态用途台账及 P2B 候选负向回归已上传。 | 既有 Git/ZIP 扫描、静态候选、报告与 B 内部离线 L1/L2/npm/D4 准备、拒绝矩阵。 | A/Root：冻结 DTO、可信出口、三例真实扫描/Evidence/用途版本和正式读回；B：真实材料、唯一 GET 与 D4；前端：正式 API 签收；Root：工件 baseline 和 Windows 跨模块门禁。 | Python `57 passed`，JSON、业务差异格式和敏感信息检查通过；共享日志先前一条追加记录有尾随空格，已用 AMENDMENT 登记。`0ce4921` 已推送 `codex/scan-reliability-integration`；`integration/p1` 保持 `aabd794`，`main` 未变。 |
+
+可报名/可参赛尚需竞赛材料、规则和基本复现签收；完整作品尚需正式 P2 补证链及跨栈回执；获奖竞争力尚需人工 Gold、正式 Bench、误差和受控性能证据。无统一分母或权重，不报告完成百分比。

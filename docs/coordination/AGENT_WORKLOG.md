@@ -9473,3 +9473,13 @@
 
 - 状态：AMENDMENT；作者与角色：GPT-6 Sol / Root Coordinator；时间：2026-10-10 00:15（Asia/Shanghai）。
 - 更正对象：此前追加的 `20261010-GPT5-全项目P2拉取合并-COMPLETE` 记录有一行末尾空格，导致当前完整 `git diff --check` 报告 `docs/coordination/AGENT_WORKLOG.md:8651: trailing whitespace`。依据共享日志只追加规则，原记录保持原样；本条说明该格式差异，不改变其任务事实、代码或发布结论。后续若需清除该格式门禁，应由日志维护者明确批准整理历史记录。
+
+## 20261010-0017-GPT6Sol-当日代码上传-COMPLETE
+
+- 状态：COMPLETE；作者与角色：GPT-6 Sol / Root Coordinator；时间：2026-10-10 00:17（Asia/Shanghai）。
+- 目标与结果：今天的三例固定来源/用途台账补充、P2B 候选拒绝回归、规格、AI 辅助与协调记录已审阅、提交并上传。普通非强制推送成功，工作分支远端 SHA 已读回。用户所问今日任务依据共享日志与本次验证汇总。
+- 修改/新增文件：产品/测试提交 `0ce4921a238d86712aca340e3991288fe0ef332d` 共 6 文件：`tests/fixtures/p2b/real-source-index.json`、`tests/unit/test_p2b_candidates.py`、`docs/spec/p2b-independent-preparation.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本共享日志；本结束报告及进度发布回执另以文档提交。保留本机 `reports/` 和 pytest 临时目录，未启停服务。
+- 验证：P2B 定向 Python `57 passed in 0.46s`，两份 P2B JSON 可解析；业务/规格/进度差异格式及常见密钥模式检查通过。完整待提交差异的 `git diff --check` 唯一失败为此前独立同步记录一行尾随空格；按只追加规则未改原记录，已追加 AMENDMENT。该格式问题不影响 Python 回归，但仍是历史日志质量债。
+- 接口/Schema/规则与决策：公共 A DTO 与 V4-MIT 候选逻辑未变；测试增加同摘要适用性冲突、范围依据来源 Hash 缺失、Evidence 重标、partial 和模型 fallback 的负向回归。固定 tag 的历史文件摘要不等于真实 ScanRun、npm 发布包或人工适用性；七维用途缺失项保持 `null`。
+- 风险与下一步：A/Root 需冻结 P2-01 权威 DTO/可信出口，交三例真实 ScanRun/Evidence/用途版本及正式读回；B 再接真实材料与 D4；前端以正式 API 签收。Root 还需处理全局 B 工件 baseline 漂移和 Windows 跨模块失败。P1 NOTICE、真人 Gold、正式 Bench 与受控性能门禁仍待。
+- GitHub：`git@github.com:mumingce-star/OpenGuard.git` 的 `codex/scan-reliability-integration@0ce4921a238d86712aca340e3991288fe0ef332d` 已读回；`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`，`main` 本轮未更改。token：本次运行精确 token 数不可获得；开工估算 5,000～10,000，上传目标完成，缺精确遥测无法核定实际用量。
