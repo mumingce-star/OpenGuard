@@ -1924,3 +1924,11 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | B 内部 L1 已核验文本/范围冲突拒绝；三例固定来源台账补充采集时刻/编码未知、NOTICE 未取得、人工与材料生命周期状态；新增前端机器可读联调草案和负向状态矩阵；逐字段说明扫描/解析/人工/模型边界。 | A/Root：冻结 P2-01 权威快照和可信 npm 出口，提供三例真实 ScanRun/对象/Evidence、材料接纳与正式 Assessment/报告前后读回；B：据正式回执绑定小型材料、执行唯一受控 npm GET 和真实 D4 对账；前端：仅消费 A 正式 API。 | P2B 定向 46 passed，compileall 与 git diff --check 通过；B 工件全局 baseline 门禁因新 fixture/既有台账漂移返回 FIXTURE_DRIFT，待 Root 审阅后更新基线。当前仅本地工作区，未提交/推送/PR；既有离线准备 e24c0ea 已发布，P2 全链未完成。 |
 
 当前可独立演示既有 Git/ZIP 真实扫描、静态候选与报告，以及本轮 B 的离线拒绝矩阵；不能演示三例 P2 正式补证链。尚缺正式 DTO/可信出口/真实 ID/接纳重算/历史读回/前端签收六组门禁。可报名/可参赛仍需既有材料、规则和复现签收；完整作品还需上述 P2 生产链与 GitHub 发布；获奖竞争力仍需正式 Bench/Gold、误差及性能证据。无统一权重分母，不报完成百分比。本次运行精确 token 数不可获得，开工估算 8,000～16,000，缺遥测无法核定实际用量。
+
+## 2026-10-09 P2B 候选冲突门禁与交接草案发布回执
+
+| 本轮完成 | 累计可演示 | 未完成与责任 | 验证和 GitHub |
+|---|---|---|---|
+| B 内部已核验证据冲突拒绝、三例来源台账补充、前端交接草案及负向测试已上传。 | 既有离线扫描/静态候选/报告、受限 Bench 与 P2B 离线候选和拒绝矩阵。 | A/Root：P2-01 权威 DTO、可信 npm 出口、真实 ScanRun/Evidence、接纳与读回；B：真实材料与 D4 对账；前端：正式 API 签收；Root：修订只纳入可发布工件的 baseline。真人 Gold、正式 Bench、NOTICE 生产闭环和受控环境门禁仍待。 | Python `46 passed`，Node `5 passed`；格式和敏感信息检查通过。全局 B 工件 baseline 因 313 处历史/本机产物漂移未通过。`84608a5` 已推送 `codex/scan-reliability-integration`；`integration/p1` 保持 `aabd794`，`main` 未变。 |
+
+可报名/可参赛仍需竞赛材料、规则和复现签收；可提交完整作品需 P2 正式补证链和跨栈回执；获奖竞争力需人工 Gold、正式 Bench、误差与受控性能证据。无统一分母或权重，不给出完成百分比。

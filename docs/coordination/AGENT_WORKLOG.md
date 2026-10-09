@@ -9261,3 +9261,13 @@
 - 状态：START；作者与角色：GPT-6 Sol / Root Coordinator；日期时间：2026-10-09（Asia/Shanghai）。
 - 目标与范围：按用户要求将当前已完成的 P2B 候选冲突门禁、真实来源台账补充、前端交接草案、测试与协调记录上传至 `git@github.com:mumingce-star/OpenGuard.git` 的工作分支。预计修改仅共享工作日志和必要的发布进度记录；不触碰本机 pytest 与 `reports/` 产物。
 - 验收：审阅差异和新文件、运行 P2B 定向测试及现有工件基线门禁、`git diff --check`、敏感信息与暂存清单复核；仅提交已暂存内容，非强制推送并读回远端 SHA。估算 token 6,000～12,000；系统未提供精确 token 遥测。
+
+## 20261009-Root-P2B代码发布-COMPLETE
+
+- 状态：COMPLETE；作者与角色：GPT-6 Sol / Root Coordinator；日期时间：2026-10-09（Asia/Shanghai）。
+- 目标与结果：已审阅、提交并上传当前 P2B 已核验证据冲突拒绝、固定来源台账补充、前端交接草案、测试与协调记录。工作分支普通非强制推送成功，远端读回一致；本轮用户仅要求上传，未更新 `integration/p1` 或 `main`。
+- 修改/新增文件：产品提交 `84608a5078ad4fa246f826c865f333b5c9630bcb` 共 7 文件，涉及 `backend/app/p2b/candidates.py`、`tests/unit/test_p2b_candidates.py`、两份 P2B 来源/前端 fixture、`docs/spec/p2b-independent-preparation.md`、进度表及本日志。本记录和进度发布回执另以文档提交发布。本机 pytest 临时目录、`reports/` 与 Bench 本地结果未上传。
+- 命令与测试：P2B 定向 Python `46 passed in 0.48s`；Node B06/B07/P2B 契约 `5 passed`；`git diff --check`、暂存清单和敏感内容扫描通过。现有全局 B 工件 baseline 门禁报告 `FIXTURE_DRIFT`：基线 204 项，当前扫描 509 项，313 处差异包含大量本机 `benchmarks/results/local/` 结果；未用本机生成物重写基线。
+- 接口/Schema/规则与决策：公共 API/Schema 未变。B 内部 `V4-MIT` 候选遇已核验许可文本或范围冲突时不给建议，附具体缺口。前端 JSON 是无正式扫描 ID 的联调草案，不是正式 API、Assessment、授权或人工 Gold 结果。
+- 风险与下一步：A/Root 需冻结 P2-01 DTO、可信出口和正式接纳，提供真实 ScanRun/Evidence 与旧工件读回；B 需完成真实材料绑定、唯一可信 npm GET 和 D4 对账；前端待正式 API 签收；Root 需设计排除本机产物的工件基线后重新验收。P1 NOTICE 全链、G5/G6/G7/G8 等既有门禁仍未关闭。
+- GitHub：`git@github.com:mumingce-star/OpenGuard.git` 的 `codex/scan-reliability-integration@84608a5078ad4fa246f826c865f333b5c9630bcb` 已读回；`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`。token：本次运行精确 token 数不可获得；开工估算 6,000～12,000，上传目标已完成；无精确遥测判断实际是否落入区间。
