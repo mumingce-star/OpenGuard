@@ -1946,3 +1946,11 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 - 状态 PARTIAL。B 将新增 Evidence 内容 Hash 格式错误改为 `invalid_added_content_hash`，旧 Assessment/报告读回 Hash 格式错误继续为 `invalid_readback_hash`；同步测试、机器草案及 A 交接文档。上一轮 B 九个在途文件保留，本轮没有触碰 A/前端或本机未跟踪产物。
 - 本轮 P2B `53 passed in 0.55s`；JSON、编译、`git diff --check`、变更 B 文件常见凭据和第三方 MIT 原文片段检查通过。上一轮 Node 5 passed 与跨模块 V4 Assessment 66 passed/35 failed 是历史回执，不冒充本轮；Windows 跨模块失败门禁仍开。
 - A/Root 仍未交冻结 P2-01 DTO、材料原子接纳、可信 npm 出口及三例真实 ScanRun/Evidence/用途版本、同 scan 前后 Assessment/报告读回。B 真实 GET/材料接线/D4 对账及前端正式浏览器签收待这些输入。当前 `codex/scan-reliability-integration@1cb87d5`，本轮未提交、推送或 PR；已发布 P2B `84608a5`，`main` 未改。
+
+## 2026-10-09 P2B D4 增量发布回执
+
+| 本轮完成 | 累计可独立演示 | 未完成与责任 | 验证和 GitHub |
+|---|---|---|---|
+| P2B 快照扫描/用途版本 pin、D4 依据更新与摘要错误码、机器交接草案已发布。 | 已有 Git/ZIP 扫描、静态候选与报告；B 具备离线 L1/L2/npm 解析、拒绝矩阵及 D4 合成对账。 | A/Root：冻结 P2-01 DTO、可信出口、材料接纳、三例真实扫描与旧工件读回；B：真实材料/唯一 GET/D4；前端：正式 API 浏览器签收；Root：baseline 与受控环境门禁。 | Python `53 passed`、Node `5 passed`、格式与敏感信息检查通过。既有 Windows 跨模块 35 失败和 B 工件 `FIXTURE_DRIFT` 未关闭。代码 `585210c` 已推送 `codex/scan-reliability-integration`；`integration/p1`、`main` 本轮未改。 |
+
+可报名/可参赛仍需竞赛材料、规则与复现签收；可提交完整作品需 P2 正式补证链与跨栈回执；具备获奖竞争力还需真人 Gold、正式 Bench、误差与受控性能证据。没有统一分母或权重，不报告完成百分比。
