@@ -112,7 +112,9 @@ def evaluate_candidate(
 
 
 def evaluate_bound_candidate(*, snapshot: dict[str, Any], object_id: str,
-                             model_status: str = "not_requested") -> dict[str, Any]:
+                             model_status: str = "not_requested",
+                             expected_scan_id: str | None = None,
+                             expected_usage_version: str | None = None) -> dict[str, Any]:
     """Evaluate an A-supplied read-only object snapshot without guessing bindings.
 
     The caller must authenticate the snapshot and its digest. This B-only function
@@ -130,6 +132,9 @@ def evaluate_bound_candidate(*, snapshot: dict[str, Any], object_id: str,
             or not SHA256.fullmatch(snapshot_sha256) or not isinstance(objects, list)
             or not isinstance(known_evidence, dict)):
         raise ValueError("invalid_snapshot")
+    if expected_scan_id is not None and (not isinstance(expected_scan_id, str)
+                                         or not expected_scan_id or scan_id != expected_scan_id):
+        raise ValueError("snapshot_scan_mismatch")
     coverage_gaps = snapshot.get("coverage_gaps", [])
     if (not isinstance(coverage_gaps, list)
             or any(not isinstance(gap, str) or not gap or len(gap) > 128 for gap in coverage_gaps)
@@ -155,6 +160,10 @@ def evaluate_bound_candidate(*, snapshot: dict[str, Any], object_id: str,
     if (not isinstance(usage, dict) or not isinstance(usage.get("version"), str)
             or not usage["version"].strip() or len(usage["version"]) > 128):
         raise ValueError("usage_version_missing")
+    if expected_usage_version is not None and (
+            not isinstance(expected_usage_version, str) or not expected_usage_version
+            or usage["version"] != expected_usage_version):
+        raise ValueError("usage_version_mismatch")
     values = usage.get("values")
     if not isinstance(values, dict) or set(values) != set(USAGE_FIELDS):
         raise ValueError("usage_fields_incomplete")

@@ -85,8 +85,15 @@ def reconcile_object(*, before: dict[str, Any], after: dict[str, Any], object_id
         if before["evidence"][evidence_id] != after["evidence"].get(evidence_id):
             raise ValueError("prior_evidence_changed")
     added = sorted(after_ids - before_ids)
-    before_uses = {item["usage"] for item in before_candidate["suggestions"]}
-    after_uses = {item["usage"] for item in after_candidate["suggestions"]}
+    for evidence_id in added:
+        content_sha256 = after["evidence"][evidence_id].get("content_sha256")
+        if content_sha256 is not None:
+            if not isinstance(content_sha256, str) or not _SHA256.fullmatch(content_sha256):
+                raise ValueError("invalid_added_content_hash")
+    before_suggestions = {item["usage"]: item for item in before_candidate["suggestions"]}
+    after_suggestions = {item["usage"]: item for item in after_candidate["suggestions"]}
+    before_uses = set(before_suggestions)
+    after_uses = set(after_suggestions)
     before_gaps = set(before_candidate["gaps"])
     after_gaps = set(after_candidate["gaps"])
     return {
@@ -105,6 +112,12 @@ def reconcile_object(*, before: dict[str, Any], after: dict[str, Any], object_id
         "unchanged_evidence_ids": sorted(before_ids),
         "suggestions_added": sorted(after_uses - before_uses),
         "suggestions_removed": sorted(before_uses - after_uses),
+        "suggestions_updated": sorted(usage for usage in before_uses & after_uses
+                                      if before_suggestions[usage] != after_suggestions[usage]),
+        "before_basis_evidence_ids": before_candidate["basis_evidence_ids"],
+        "after_basis_evidence_ids": after_candidate["basis_evidence_ids"],
+        "before_basis_source_sha256": before_candidate["basis_source_sha256"],
+        "after_basis_source_sha256": after_candidate["basis_source_sha256"],
         "gaps_resolved": sorted(before_gaps - after_gaps),
         "gaps_added": sorted(after_gaps - before_gaps),
         "remaining_gaps": sorted(after_gaps),

@@ -2,6 +2,41 @@
   "kind": "openguard.p2b.frontend-handoff-draft/0",
   "status": "integration_draft_not_formal_api",
   "source_index": "tests/fixtures/p2b/real-source-index.json",
+  "field_provenance": {
+    "scan_id": "A_authenticated_scan_snapshot",
+    "object_id": "A_authenticated_scan_snapshot",
+    "object_kind": "A_authenticated_scan_snapshot",
+    "exact_version": "A_authenticated_scan_snapshot",
+    "evidence_ids": "A_authenticated_scan_snapshot",
+    "coverage_gaps": "A_authenticated_scan_snapshot",
+    "snapshot_sha256": "A_authenticated_scan_snapshot",
+    "source_urls": "B_fixed_upstream_source_index_only",
+    "git_blob_sha1": "B_fixed_upstream_source_index_only",
+    "upstream_raw_byte_sha256": "B_fixed_upstream_source_index_only",
+    "usage_values": "A_versioned_user_purpose_snapshot",
+    "usage_version": "A_versioned_user_purpose_snapshot",
+    "material_id": "A_secure_material_admission_receipt",
+    "material_content_sha256": "A_secure_material_admission_receipt",
+    "material_admission_state": "A_secure_material_admission_receipt",
+    "text_observed": "B_parser_or_candidate_only",
+    "license_mention": "B_parser_or_candidate_only",
+    "parser_version": "B_parser_or_candidate_only",
+    "candidate_conditions": "B_parser_or_candidate_only",
+    "basis_evidence_ids": "B_parser_or_candidate_only",
+    "gaps": "B_parser_or_candidate_only",
+    "applicability_human_verified": "A_bound_human_review_evidence",
+    "scope_attestation": "A_bound_human_review_evidence",
+    "assessment_id": "A_formal_version_and_readback_receipt",
+    "report_id": "A_formal_version_and_readback_receipt",
+    "old_artifact_readback_sha256": "A_formal_version_and_readback_receipt"
+  },
+  "required_a_receipts": {
+    "p2_01_snapshot_dto": null,
+    "material_admission_dto": null,
+    "npm_trusted_egress_policy_and_verifier": null,
+    "three_scan_runs_with_before_after_assessments": null,
+    "old_report_and_assessment_readbacks": null
+  },
   "formal_fields_pending_a": ["scan_id", "object_id", "evidence_ids", "material_ids", "assessment_id", "report_id", "usage_version", "snapshot_sha256", "admission_state"],
   "cases": [
     {
@@ -47,6 +82,10 @@
     {"case": "metadata_claims_verified", "b_result": "provider_declared_unverified_pending", "a_server_result": null},
     {"case": "training_scope_used_for_distribution", "b_result": "object_scope_unverified_no_candidate", "a_server_result": null},
     {"case": "unbound_material", "b_result": "unknown_object", "a_server_result": null},
-    {"case": "conflicting_verified_license", "b_result": "license_evidence_conflict_no_candidate", "a_server_result": null}
+    {"case": "conflicting_verified_license", "b_result": "license_evidence_conflict_no_candidate", "a_server_result": null},
+    {"case": "conflicting_verified_scope", "b_result": "object_scope_conflict_no_candidate", "a_server_result": null},
+    {"case": "d4_prior_evidence_removed", "b_result": "prior_evidence_removed_or_evidence_closure_invalid", "a_server_result": null},
+    {"case": "d4_added_content_digest_invalid", "b_result": "invalid_added_content_hash", "a_server_result": null},
+    {"case": "d4_old_report_changed", "b_result": "old_artifact_changed", "a_server_result": null}
   ]
 }

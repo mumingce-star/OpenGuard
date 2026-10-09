@@ -41,6 +41,8 @@ def test_frontend_draft_cannot_masquerade_as_formal_scan_receipt():
     source = json.loads(SOURCE_INDEX.read_text(encoding="utf-8"))
     draft = json.loads(HANDOFF_DRAFT.read_text(encoding="utf-8"))
     assert draft["status"] == "integration_draft_not_formal_api"
+    assert all(value is None for value in draft["required_a_receipts"].values())
+    assert draft["field_provenance"]["assessment_id"] == "A_formal_version_and_readback_receipt"
     assert [row["case_id"] for row in draft["cases"]] == [row["case_id"] for row in source["cases"]]
     for row in draft["cases"]:
         assert row["object"]["scan_id"] is None and row["object"]["object_id"] is None
@@ -178,6 +180,18 @@ def test_bound_candidate_carries_snapshot_usage_and_source_hash():
     assert result == evaluate_bound_candidate(snapshot=bound_snapshot(), object_id="cmp-1")
 
 
+def test_bound_candidate_rejects_a_pinned_scan_or_purpose_revision_mismatch():
+    snapshot = bound_snapshot()
+    with pytest.raises(ValueError, match="snapshot_scan_mismatch"):
+        evaluate_bound_candidate(snapshot=snapshot, object_id="cmp-1", expected_scan_id="other-scan")
+    with pytest.raises(ValueError, match="usage_version_mismatch"):
+        evaluate_bound_candidate(snapshot=snapshot, object_id="cmp-1", expected_usage_version="purpose-older")
+    assert evaluate_bound_candidate(
+        snapshot=snapshot, object_id="cmp-1", expected_scan_id="scan-1",
+        expected_usage_version="purpose-1",
+    )["suggestions"]
+
+
 @pytest.mark.parametrize("change,error", [
     (lambda s: s["objects"][0]["usage"].pop("version"), "usage_version_missing"),
     (lambda s: s["objects"][0]["evidence_ids"].append("ev-license"), "evidence_closure_invalid"),
@@ -285,6 +299,77 @@ def test_d4_accounting_rejects_unrelated_object_rewrite():
     after = deepcopy(before)
     after["objects"][1]["version"] = "2.0.0"
     with pytest.raises(ValueError, match="unaffected_object_changed"):
+        reconcile_object(
+            before=before, after=after, object_id="cmp-1",
+            old_assessment_id="assessment-old", old_report_id="report-old",
+            old_assessment_sha256="1" * 64, old_assessment_readback_sha256="1" * 64,
+            old_report_sha256="2" * 64, old_report_readback_sha256="2" * 64,
+        )
+
+
+def test_d4_accounting_reports_changed_basis_without_new_usage():
+    before = bound_snapshot()
+    after = deepcopy(before)
+    after["snapshot_sha256"] = "d" * 64
+    duplicate_text = {**after["evidence"]["ev-license"], "id": "ev-license-additional"}
+    after["evidence"][duplicate_text["id"]] = duplicate_text
+    after["objects"][0]["evidence_ids"].append(duplicate_text["id"])
+    receipt = reconcile_object(
+        before=before, after=after, object_id="cmp-1",
+        old_assessment_id="assessment-old", old_report_id="report-old",
+        old_assessment_sha256="1" * 64, old_assessment_readback_sha256="1" * 64,
+        old_report_sha256="2" * 64, old_report_readback_sha256="2" * 64,
+    )
+    assert receipt["suggestions_added"] == []
+    assert receipt["suggestions_updated"] == ["commercial", "distributed"]
+    assert receipt["after_basis_evidence_ids"] == ["ev-license", "ev-license-additional", "ev-scope"]
+    assert receipt["after_basis_source_sha256"]["ev-license-additional"] == "b" * 64
+
+
+@pytest.mark.parametrize("change,error", [
+    (lambda before, after: after["objects"][0]["evidence_ids"].remove("ev-scope"),
+     "evidence_closure_invalid"),
+    (lambda before, after: after["evidence"]["ev-scope"].update(object_id="other"),
+     "evidence_closure_invalid"),
+    (lambda before, after: after["objects"][0].update(version="8.0.0"),
+     "evidence_binding_invalid"),
+])
+def test_d4_accounting_refuses_inconsistent_after_snapshot(change, error):
+    before = bound_snapshot()
+    after = deepcopy(before)
+    change(before, after)
+    with pytest.raises(ValueError, match=error):
+        reconcile_object(
+            before=before, after=after, object_id="cmp-1",
+            old_assessment_id="assessment-old", old_report_id="report-old",
+            old_assessment_sha256="1" * 64, old_assessment_readback_sha256="1" * 64,
+            old_report_sha256="2" * 64, old_report_readback_sha256="2" * 64,
+        )
+
+
+def test_d4_accounting_refuses_invalid_new_content_digest():
+    before = bound_snapshot()
+    after = deepcopy(before)
+    added = {"id": "ev-extra", "scan_id": "scan-1", "object_id": "cmp-1",
+             "version": "7.0.0", "role": "other", "source_sha256": "b" * 64,
+             "content_sha256": "not-a-sha256"}
+    after["evidence"][added["id"]] = added
+    after["objects"][0]["evidence_ids"].append(added["id"])
+    with pytest.raises(ValueError, match="invalid_added_content_hash"):
+        reconcile_object(
+            before=before, after=after, object_id="cmp-1",
+            old_assessment_id="assessment-old", old_report_id="report-old",
+            old_assessment_sha256="1" * 64, old_assessment_readback_sha256="1" * 64,
+            old_report_sha256="2" * 64, old_report_readback_sha256="2" * 64,
+        )
+
+
+def test_d4_accounting_refuses_prior_evidence_removal():
+    before = bound_snapshot()
+    after = deepcopy(before)
+    after["objects"][0]["evidence_ids"].remove("ev-license")
+    after["evidence"].pop("ev-license")
+    with pytest.raises(ValueError, match="prior_evidence_removed"):
         reconcile_object(
             before=before, after=after, object_id="cmp-1",
             old_assessment_id="assessment-old", old_report_id="report-old",

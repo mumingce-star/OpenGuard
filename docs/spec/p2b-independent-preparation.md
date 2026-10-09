@@ -141,3 +141,20 @@ B 单测逐项验证：错 resource ID/版本、悬空/重复 Evidence、已核�
 可信 npm 仍为 `blocked_awaiting_trusted_egress`：固定目标 `GET https://registry.npmjs.org/is-number/7.0.0`，本轮没有实际请求、最终 URL、UTC 时间、HTTP 状态、响应 SHA-256/大小或出口策略 ID。A/Root 先冻结 DNS/代理/重定向/超时/字节上限和可信回执验证器，再由 A 执行唯一在线 GET；B 只解析 A 可信回执。离线 parser 版本 `p2b-npm-metadata/1`；metadata 的 license 永远是 `provider_declared_unverified`，不提供 LICENSE 原文、授权或义务履行证明。
 
 前端只消费 A 正式 ID、版本、状态、引用和允许展示的条件建议。联调草案里的 `before` 是**预期缺口形状**，`after=null` 表示无正式补证回执，`display_advice=null` 表示当前没有可展示的正式建议。A 需给 B/前端逐例正式 `scan_id`、对象/Evidence/Material/Rule ID、用途版本、核验状态、接纳或拒绝、Assessment/报告前后 ID 与 Hash 和旧版本读回结果，才可替换草案并签收。
+
+## 2026-10-09 B 侧闭包与 A 输入核对
+
+| 输入或回执 | 状态 | 当前证据位置与含义 |
+|---|---|---|
+| 三例固定上游 tag 的 package/LICENSE URL、Git blob SHA-1、原字节 SHA-256 | 已取得 | `real-source-index.json`；2026-10-08 历史原字节复算，采集 UTC 时间未记录。仅为上游来源观察。 |
+| B 离线 L1/L2/npm/D4 解析与拒绝 | 已取得 | `backend/app/p2b/` 和 `tests/unit/test_p2b_candidates.py`；测试 ID、哈希是合成 fixture。 |
+| P2-01 冻结快照 DTO、快照认证、用途版本、A 候选接纳 DTO | 未取得 | `CR-20261008-P2B-A-frozen-contract` 仍标待 A/Root 冻结；草案字段不得替代。 |
+| A 材料原子接纳、服务端拒绝与旧工件读回 | 未取得 | 无三例真实 Material ID、服务端接纳/拒绝和 Assessment/报告读回回执。 |
+| 可信 npm 出口策略、验证器和唯一 GET 回执 | 未取得 | `frontend-handoff-draft.json` 的请求时间、HTTP、响应 Hash、策略 ID 仍为空；`official_metadata_observed=false`。 |
+| 三例真实 ScanRun、P0 对象/Evidence 闭包及同 scan 补证前后回执 | 未取得 | `real-source-index.json` 与交接草案的真实 ID 为空；不能做正式 D4 对账。 |
+
+本轮只读对账器除用途候选新增/删除外，还列出同一用途的依据变化 `suggestions_updated`，以及前后 `basis_evidence_ids`/`basis_source_sha256`。新增 Evidence 的 `content_sha256` 若给出，必须是规范小写 SHA-256；既有 Evidence 删除或改写、非目标对象/证据变化、旧工件读回哈希变化均失败关闭。它仍不签发正式 Assessment，也不证明自报快照或旧报告摘要的真实性；A 必须提供可信只读回执。机器交接草案新增字段来源和待 A 回执占位，所有正式 ID 继续为空。
+
+新增 Evidence 内容摘要格式错误使用 `invalid_added_content_hash`；旧 Assessment/报告读回摘要格式错误使用 `invalid_readback_hash`。两者都不给部分成功的对账结果。
+
+`evaluate_bound_candidate` 另接受可选的 `expected_scan_id`、`expected_usage_version` pin；与内部快照不符时分别拒绝 `snapshot_scan_mismatch`、`usage_version_mismatch`。生产调用时只有 A 能从已认证 ScanRun 与已版本化用户用途签发这两个值，B 的比较不验证签发者。现有合成测试仅检验错绑拒绝，不构成真实 P2-01 DTO 或接纳回执。

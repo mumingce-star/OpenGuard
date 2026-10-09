@@ -1932,3 +1932,17 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | B 内部已核验证据冲突拒绝、三例来源台账补充、前端交接草案及负向测试已上传。 | 既有离线扫描/静态候选/报告、受限 Bench 与 P2B 离线候选和拒绝矩阵。 | A/Root：P2-01 权威 DTO、可信 npm 出口、真实 ScanRun/Evidence、接纳与读回；B：真实材料与 D4 对账；前端：正式 API 签收；Root：修订只纳入可发布工件的 baseline。真人 Gold、正式 Bench、NOTICE 生产闭环和受控环境门禁仍待。 | Python `46 passed`，Node `5 passed`；格式和敏感信息检查通过。全局 B 工件 baseline 因 313 处历史/本机产物漂移未通过。`84608a5` 已推送 `codex/scan-reliability-integration`；`integration/p1` 保持 `aabd794`，`main` 未变。 |
 
 可报名/可参赛仍需竞赛材料、规则和复现签收；可提交完整作品需 P2 正式补证链和跨栈回执；获奖竞争力需人工 Gold、正式 Bench、误差与受控性能证据。无统一分母或权重，不给出完成百分比。
+
+## 2026-10-09 P2B D4 依据变化与 A 接线补强（本地未发布）
+
+| 本轮完成 | 累计已具备 | 待关闭与责任 | 验证、失败与 GitHub |
+|---|---|---|---|
+| B 内部增加 A 固定 scan_id/用途版本 pin 的错绑拒绝；D4 同用途依据变化、前后依据 Hash、无效新增内容 Hash、既有 Evidence 删除的回执及测试；前端字段草案逐字段标来源与待 A 回执，CR/规格补足接纳、读回和失败条件。 | 三例固定上游来源和历史六文件 Hash、L1 条件候选、受限本地文本观察、唯一 npm 离线解析及 D4 合成对账；均非正式授权/Assessment。 | A/Root：冻结 P2-01 DTO、快照认证、材料原子接纳、可信 npm 出口，提供三例真实 ScanRun/Evidence/用途版本与同 scan 前后 Assessment/报告读回；B：按 A 契约接线、唯一受控 GET、真实材料和 D4 对账；前端：仅在 A 正式 API/真实 ID 到位后浏览器签收；Root：验收并发布。 | P2B 定向 `53 passed`；Node 相关契约 `5 passed`；JSON、编译、`git diff --check` 与变更文件常见敏感信息/第三方原文检查通过。V4 Assessment 跨模块 66 passed/35 failed：Windows 临时目录、目录安全权限与 symlink 权限阻断，未称通过。B 全局 baseline 既有 FIXTURE_DRIFT 未重写。本轮未提交/推送/PR；工作分支 `codex/scan-reliability-integration@1cb87d5`，最近已发布 P2B `84608a5`，`main` 未改。状态 PARTIAL。 |
+
+已有 Git/ZIP 扫描、静态候选和报告的历史演示能力，以及 B 的离线候选/拒绝矩阵；三例 P2 正式补证链、可信 npm 元数据获取、正式重算与前端同版导出尚不能演示。可报名/可参赛仍需材料/规则与基本复现签收；完整作品需生产补证链与发布回执；获奖竞争力还需真人 Gold、正式 Bench、误差和受控性能证据。无统一权重分母，不报告完成百分比。
+
+## 2026-10-09 23:26 P2B D4 失败码精确化（本地未发布）
+
+- 状态 PARTIAL。B 将新增 Evidence 内容 Hash 格式错误改为 `invalid_added_content_hash`，旧 Assessment/报告读回 Hash 格式错误继续为 `invalid_readback_hash`；同步测试、机器草案及 A 交接文档。上一轮 B 九个在途文件保留，本轮没有触碰 A/前端或本机未跟踪产物。
+- 本轮 P2B `53 passed in 0.55s`；JSON、编译、`git diff --check`、变更 B 文件常见凭据和第三方 MIT 原文片段检查通过。上一轮 Node 5 passed 与跨模块 V4 Assessment 66 passed/35 failed 是历史回执，不冒充本轮；Windows 跨模块失败门禁仍开。
+- A/Root 仍未交冻结 P2-01 DTO、材料原子接纳、可信 npm 出口及三例真实 ScanRun/Evidence/用途版本、同 scan 前后 Assessment/报告读回。B 真实 GET/材料接线/D4 对账及前端正式浏览器签收待这些输入。当前 `codex/scan-reliability-integration@1cb87d5`，本轮未提交、推送或 PR；已发布 P2B `84608a5`，`main` 未改。

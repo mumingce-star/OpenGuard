@@ -123,3 +123,11 @@
 npm 仅请求 `GET https://registry.npmjs.org/is-number/7.0.0`。A 的可信出口回执需含固定请求/最终 URL、HTTP 状态、UTC 时间、响应原文字节 SHA-256/字节数、是否超时、DNS/代理/重定向策略验证结果、出口版本及失败原因；响应不得超出 32 KiB。B `parse_official_response` 的离线成功样例是 `state=parsed_untrusted_transport`、`parser_version=p2b-npm-metadata/1`、`official_metadata_observed=false`、`license_declaration_state=provider_declared_unverified`、`authorization_status=pending`，即使传入正确 URL 也不升级。超时或非 200 返回 `state=failed` 和原因/状态/可得响应 Hash；错包、错版本、重复 JSON 键、超限、摘要错误拒绝。B 已提供 `parse_attested_response(body, receipt, verify_attestation)` 窄接线点：先核固定 GET/最终 URL、零重定向、字节数、摘要及策略 ID，再要求由 A 实现的可信回执验证器明确返回 `True`；只有 200 且离线解析成功时输出 `official_metadata_observed=true`。A 必须冻结回执 DTO、验证器来源及 DNS/代理/超时/重定向策略，防止调用方注入自造验证器；该标志只证明本次官方元数据，不证明许可正文或适用性。
 
 D4 所需 A 回执：三个真实 ScanRun 的同一 `scan_id` 补证前后只读快照、各快照/新增事实/Evidence SHA-256、用途版本、B 候选接纳及正式 Assessment 重算 ID、旧 Assessment 与旧报告的只读校验回执。B 逐例比较新增/保持不变/剩余未知；`express@4.18.2` 仅作未调参保留样例。A/Root 负责实现和冻结这些公共边界，B 不改 A 文件。
+
+### 2026-10-09 B 对账与前端接线增量（仍待 A/Root）
+
+- A 必须逐例签发 `scan_id`、对象 ID/类型/精确版本、`usage.version`、完整 Evidence ID 集合及来源/内容 SHA-256，补证前后各一份同次扫描快照；并分别给出新旧 Assessment/报告 ID、摘要和旧版只读读回摘要。空 ID、`source_object_key` 和 B 合成测试 Hash 均拒绝作为正式输入。
+- B 的只读入口可接收 A 同请求固定的 `expected_scan_id`、`expected_usage_version`，与快照不同时分别拒绝为 `snapshot_scan_mismatch`、`usage_version_mismatch`。两项 pin 必须来自 A 已认证的扫描/用途版本，不得由上传者自报；A 尚未冻结其正式 DTO 字段名和验签方式。
+- B `reconcile_object` 的候选对账结果新增 `suggestions_updated`、前后 `basis_evidence_ids` 与 `basis_source_sha256`；同一用途的依据变化需可见，不可仅看建议数量。新增 Evidence 的非空 `content_sha256` 格式无效、既有 Evidence 删除/改写、非目标对象或证据变化、旧工件摘要不一致均拒绝，A 应保留失败原因和原 Assessment/报告。B 的摘要格式检查不能代替 A 的来源认证与读回证明。
+- B 区分 `invalid_added_content_hash`（新增 Evidence 内容摘要格式错误）与 `invalid_readback_hash`（旧 Assessment/报告读回摘要格式错误）；A 接纳回执应原样保留具体原因码，不能合并成成功状态或笼统的许可结论。
+- A 正式接纳/拒绝矩阵需返回材料预检与服务端最终状态的区别、Material ID、对象/版本、是否有人工适用性签收、拒绝后旧 Assessment/报告仍可读的回执。A 出口失败需记录固定 GET 目标、最终 URL、UTC 时间、HTTP 状态或超时、响应大小/Hash、策略 ID 和失败码。未给这些回执时，机器草案 `frontend-handoff-draft.json` 的相关字段保持 `null`/`false`，前端不得将其当真实验收数据。

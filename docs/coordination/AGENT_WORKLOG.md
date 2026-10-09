@@ -9271,3 +9271,81 @@
 - 接口/Schema/规则与决策：公共 API/Schema 未变。B 内部 `V4-MIT` 候选遇已核验许可文本或范围冲突时不给建议，附具体缺口。前端 JSON 是无正式扫描 ID 的联调草案，不是正式 API、Assessment、授权或人工 Gold 结果。
 - 风险与下一步：A/Root 需冻结 P2-01 DTO、可信出口和正式接纳，提供真实 ScanRun/Evidence 与旧工件读回；B 需完成真实材料绑定、唯一可信 npm GET 和 D4 对账；前端待正式 API 签收；Root 需设计排除本机产物的工件基线后重新验收。P1 NOTICE 全链、G5/G6/G7/G8 等既有门禁仍未关闭。
 - GitHub：`git@github.com:mumingce-star/OpenGuard.git` 的 `codex/scan-reliability-integration@84608a5078ad4fa246f826c865f333b5c9630bcb` 已读回；`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`。token：本次运行精确 token 数不可获得；开工估算 6,000～12,000，上传目标已完成；无精确遥测判断实际是否落入区间。
+
+## 20261009-2026-GPT61-P2B阶段全景分析-START
+
+- 状态：START；作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-09 20:26（Asia/Shanghai）。
+- 任务目标：完整分析项目 P2 阶段，归纳后端 B 任务、当前可做项及对后端 A/前端的资料与实现依赖，形成可直接交给后端 B Codex 的中文详细指令。
+- 开工核对：已依次阅读 README、共享日志全体记录目录与最近完整记录、PROJECT_PROGRESS、SOL_HANDOFF；当前分支 `codex/scan-reliability-integration@1cb87d5`，仅有既存未跟踪的本机测试和 reports 目录；最近 P2B 发布已 COMPLETE，未见同文件在途修改。
+- 预计修改与验收：只向本共享日志末尾追加 START/COMPLETE，不修改业务代码或启停服务；核对 P2 路线、规格、变更请求、B 实现/fixtures 与发布状态，执行只读和 `git diff --check`。预计 token 6,000～12,000；精确遥测不可获得。
+
+## 20261009-2027-GPT61-P2B阶段全景分析-COMPLETE
+
+- 状态：COMPLETE；作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-09 20:27（Asia/Shanghai）。
+- 任务目标与实际结果：完成 P2-01～P2-04 全景与后端 B 的 L1 条件候选、L2 本地材料/官方 npm 精确版本、三例真实来源及 D4 前后对账的现状核对；按 B 可立即做、需 A 冻结和回执、需前端输入与联调拆分任务，并形成详细中文 Codex 指令。
+- 修改文件：仅向 `docs/coordination/AGENT_WORKLOG.md` 末尾追加 START/COMPLETE；未修改业务代码、公共接口、Schema、规则、测试、进度表或未跟踪的本机测试/报告目录。
+- 命令与测试：读取 README、共享日志记录目录与近期 P2 记录、PROJECT_PROGRESS、SOL_HANDOFF、P2B 规格、CR、四个 B 模块与两份 fixture；核对 Git 分支、工作区和最近五个提交。`git diff --check -- docs/coordination/AGENT_WORKLOG.md` 通过，仅有 CRLF 正规化提示；只读分析未运行产品测试、未启停服务、未请求 npm 网络。
+- 接口、Schema、规则与决策：本轮无变更。B 的 `candidate_only`、`text_observed`、`provider_declared_unverified` 与合成 D4 对账不能升级为正式授权、义务履行、Assessment 或前端验收。`CR-20261008-P2B-A-frozen-contract` 仍待 A/Root 冻结。
+- 风险、失败项与未完成：三例来源虽有固定 tag/hash，仍缺真实 scan/object/Evidence/material ID、用途版本、人工范围核验；唯一官方 npm GET、同 scan 补证前后 Assessment/报告及旧工件读回、前端浏览器签收均缺。B 工件全局 baseline 的 FIXTURE_DRIFT 仍待 Root 处理；真人 Gold、正式 Bench、P1 NOTICE 与受控环境门禁未关闭。
+- 下一步与责任：B 完成独立样本/语义/拒绝回执并提交 A 所需字段清单；A/Root 冻结权威 DTO、材料原子接纳、可信 npm 出口与正式重算读回并给三例真实回执；B 做实际接线和 D4 对账；前端依正式 API 做展示与浏览器签收；Root 最终验收、进度回填及发布。
+- 关联分支与发布：`codex/scan-reliability-integration@1cb87d5`，P2B 已发布实现 `e24c0ea`、`84608a5`；本轮无提交、推送、PR、Issue 或 evidence_id，`integration/p1` 和 `main` 未更改。
+- token 使用：本次运行精确 token 数不可获得；开工估算 6,000～12,000，缺遥测无法核定是否在范围内；分析与指令范围完整完成，产品 P2 实施范围未扩张。
+
+## 20261009-2156-GPT61-P2B-closure-START
+
+- 状态：START；作者与角色：GPT-6.1 Sol / 后端 B；时间：2026-10-09 21:56（Asia/Shanghai）。
+- 目标：从已发布 P2B 离线成果继续，完善三例逐字段清单、L1/L2/npm/D4 负向门禁和机器可读交接；核实 A 正式输入，有回执才做生产接线与真实对账。
+- 开工核对：依次读取 README、完整日志文件（进程读取，模型重点审阅近期条目）、PROJECT_PROGRESS、SOL_HANDOFF；分支 codex/scan-reliability-integration@1cb87d5。工作区仅共享日志既有修改及 .pytest-release-oct08/、.pytest-release-selected/、.pytest-release-tmp/、reports/ 未跟踪产物，均保留不碰。最近 P2B 已发布 84608a5；最新日志未见 A 冻结 DTO/出口或三例真实回执。
+- 预计修改与验收：仅 B 模块/定向测试、P2B fixtures/规格、既有 CR、进度及共享日志；先跑现有 P2B 测试，再最小补缺并跑定向/相关回归、JSON/编译、diff/敏感信息/发布清单检查。预计 token 10,000～18,000，精确遥测不可获得；不启停服务，不碰 A/前端实现、B05/B06、本机产物，不发绕过 A 的 npm GET。
+
+## 20261009-2204-GPT61-P2B-closure-PARTIAL
+
+- 状态：PARTIAL；作者与角色：GPT-6.1 Sol / 后端 B；时间：2026-10-09 22:04（Asia/Shanghai）。
+- 目标与实际结果：在已发布 P2B 离线实现上，完成 B 可独立控制的增量：`evaluate_bound_candidate` 接受 A 固定的 scan_id/用途版本 pin 并拒绝错绑；`reconcile_object` 显示同用途建议的依据更新、前后依据 ID/来源 Hash，拒绝新增内容 Hash 无效；新增既有 Evidence 删除/错绑等 D4 负向测试。机器交接草案逐字段标注扫描、上游来源、用途、材料、B 解析、人工核验、A 正式接纳的来源与待 A 回执；三例真实扫描身份仍空。已更新 CR、规格、进度和 AI 辅助记录。
+- 修改文件：`backend/app/p2b/candidates.py`、`reconcile.py`、`tests/unit/test_p2b_candidates.py`、`tests/fixtures/p2b/frontend-handoff-draft.json`、`docs/spec/p2b-independent-preparation.md`、`docs/coordination/change-requests.md`、`PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`，仅追加本日志 START/PARTIAL。未改 A/前端实现、B05/B06、真实来源台账、reports 或其他本机测试产物。
+- 命令与测试：开工 P2B `46 passed in 0.50s`，最终 P2B `53 passed in 0.51s`；Node `tests/b06_b07_p2b_contract.test.mjs` 5 passed。Python compileall、两份 P2B JSON 解析、`git diff --check` 通过，仅文档 CRLF 正规化提示。变更文件常见 AKIA/ghp_/sk- 凭据模式和 MIT 全文开头检索未命中；`git diff --name-only`/未跟踪清单复核，未暂存本机产物。跨模块 `test_v4_assessment_core.py`+P2B 首次 66 passed/35 errors（Windows 默认 pytest 临时目录无法创建）；改用可写 basetemp 后为 66 passed/35 failed（Assessment 目录安全权限与 symlink 权限）。该门禁失败保留，未改 A 代码，不宣称跨模块通过。未发 npm GET、未启停服务。
+- 接口、Schema、规则与重要决策：仅 B 内部函数新增可选 A 签发 pin；公共 DTO/Schema 未冻结。D4 增量回执仅作候选对账，不签发 Assessment。已发布三例固定上游 Git tag 文件 SHA-1/SHA-256 是历史原字节复算，未在本轮重新取得，获取 UTC 时间未知；不证明 npm 发布包或实际扫描。测试 ID/Hash 全为合成值，前端草案所有正式 ID 继续为空。
+- 未完成与风险：A/Root 未交 P2-01 权威 DTO/快照认证、材料原子接纳/服务端拒绝、可信 npm 出口与验证器、三个真实 ScanRun/Evidence/用途版本及同 scan 补证前后 Assessment/报告读回；故本轮无真实材料 ID、官方 HTTP/响应 Hash、正式接纳、三个样例 D4 前后对账或前端浏览器签收。已发布 P2B 全局 baseline 的 FIXTURE_DRIFT 仍待 Root 处理，不用本机工件重写。共享日志全文件虽按顺序由进程读取，模型重点审阅了近期记录，未逐字审阅全部历史。
+- 下一步与责任及发布：A/Root 冻结 CR 所列契约与可信出口并给真实只读回执；B 按冻结 DTO 最小接线、通过 A 安全入口做一次固定 npm GET 和三个样例对账；前端只用 A 正式 API/真实 ID 做浏览器签收；Root 独立验收、整理、提交并推送。本轮分支 `codex/scan-reliability-integration@1cb87d5`，工作树仅本任务文件改动与既存未跟踪产物；无本轮 commit/push/PR/Issue/真实 evidence_id，已发布的 P2B 实现为 `84608a5`，`main` 未改。
+- token 使用：本次运行精确 token 数不可获得；开工估算 10,000～18,000。B 独立增量已完成，完整 P2 因 A 输入及跨模块 Windows 门禁尚未完成；无遥测可判断实际 token 是否处于估算区间。
+
+## 20261009-2324-GPT61-P2B-followup-START
+
+- 状态：START；作者与角色：GPT-6.1 Sol / 后端 B；时间：2026-10-09 23:24（Asia/Shanghai）。
+- 目标：继续核实 P2B 最新 A 输入与上一轮本地增量，完成剩余可独立验证的 B 门禁；若 A 仍未交正式回执，按事实记 PARTIAL。
+- 开工核对：依次读取 README、完整日志文件（模型重点审阅记录目录和近期条目）、PROJECT_PROGRESS、SOL_HANDOFF；当前分支 codex/scan-reliability-integration@1cb87d5，上一轮 B 的九个文件仍未提交，本机 .pytest-release-* 和 reports/ 未跟踪产物保留。未见同文件其他模型在途修改，最近提交为 1cb87d5、84608a5 等。
+- 预计修改与验收：优先复核上一轮 B 文件和 A 冻结状态；仅在有具体 B 缺口时修改 B 所有模块/测试/交接；本轮运行 P2B 定向、JSON/编译/diff/敏感信息检查，必要时更新进度、日志。预计 token 4,000～8,000，精确遥测不可获得。不启停服务，不触碰 A/前端实现或本机产物，不绕过 A 出口发 npm GET。
+
+## 20261009-2327-GPT61-P2B-followup-PARTIAL
+
+- 状态：PARTIAL；作者与角色：GPT-6.1 Sol / 后端 B；时间：2026-10-09 23:27（Asia/Shanghai）。
+- 目标与实际结果：继续复核上一轮 B 独立实现与 A 输入，确认当前记录仍无冻结 P2-01 DTO、可信 npm 出口及三例真实前后回执。本轮修正 D4 对账的新增内容 Hash 错误码为 `invalid_added_content_hash`，与旧 Assessment/报告读回 Hash 错误码 `invalid_readback_hash` 区分；合成单测、机器交接草案、CR 和规格同步。没有新增真实 scan/object/Evidence/material ID、官方 HTTP 回执或前端签收。
+- 修改文件：在上一轮未提交 B 改动上，仅增量修改 `backend/app/p2b/reconcile.py`、`tests/unit/test_p2b_candidates.py`、`tests/fixtures/p2b/frontend-handoff-draft.json`、`docs/spec/p2b-independent-preparation.md`、`docs/coordination/change-requests.md`；仅追加 `docs/05-ai-assistance-log.md`、`PROJECT_PROGRESS.md` 和本日志 START/PARTIAL。未改 A/前端/B05/B06、真实来源台账或本机产物。
+- 命令与测试：按序读取 README、日志文件、进度、Sol 交接并检查 Git；`rg` 检索 A 冻结记录/文件。P2B 定向 `53 passed in 0.55s`；Python compileall、两份 fixture JSON 解析、`git diff --check` 通过（仅 CRLF 正规化提示）；变更 B 文件常见密钥模式与 MIT 原文开头检索未命中。上一轮 Node 5 passed、V4 Assessment 66 passed/35 failed 是历史回执；Windows 跨模块失败仍未关闭。未启停服务或发 npm GET。
+- 接口/Schema/规则与决策：只精确化 B 内部 D4 拒绝原因，不改变 A 公共 DTO/Schema、正式 Assessment 或许可语义。来源台账的六文件 SHA-1/SHA-256 为历史原字节复算，采集 UTC 时间未知；测试 ID/Hash 均为合成值。
+- 风险、未完成与责任：A/Root 需冻结权威快照、材料原子接纳和可信出口，提供三个真实 ScanRun/Evidence/用途版本与同 scan 前后 Assessment/报告读回。B 收到后完成正式接线、唯一受控 npm GET、材料接纳复核和三例 D4；前端依据 A API 真实 ID 签收；Root 验收提交推送。共享日志由进程整文件读取，模型仅重点审阅目录和近期记录，未逐字审阅全部历史。
+- 分支/发布：`codex/scan-reliability-integration@1cb87d5`，本轮无 commit/push/PR/evidence_id，最近已发布 P2B 为 `84608a5`，`main` 未改。本机 .pytest-release-* 与 reports/ 保留。
+- token 使用：本次运行精确 token 数不可获得；开工估算 4,000～8,000。B 的增量修正完成，完整 P2 因 A 输入仍缺而 PARTIAL；缺遥测无法核定实际是否在估算区间。
+
+## 20261009-2329-GPT61-P2B-L1L2-analysis-START
+
+- 状态：START；作者与角色：GPT-6.1 Sol / 后端 B；时间：2026-10-09 23:29（Asia/Shanghai）。
+- 目标：按用户最新要求，只读分析 L1 事实/建议依据与本地 LICENSE/NOTICE 解析两项的完善程度、证据等级、缺口和验收条件；不把历史测试或真实上游来源误写为真实 ScanRun 成功。
+- 开工核对：依次读取 README、共享日志文件并复核近期记录、PROJECT_PROGRESS、SOL_HANDOFF；分支 codex/scan-reliability-integration@1cb87d5，上轮九个 B 文件仍未提交，.pytest-release-* 和 reports/ 未跟踪产物保留；未见新的 A DTO/可信出口交接。预计仅追加本日志 START/PARTIAL；只读检查代码与测试，必要时复跑 P2B 定向。token 估算 3,000～6,000，精确遥测不可获得；不启停服务、不改业务文件或他人在途文件。
+
+## 20261009-2330-GPT61-P2B-L1L2-analysis-COMPLETE
+
+- 状态：COMPLETE；作者与角色：GPT-6.1 Sol / 后端 B；时间：2026-10-09 23:30（Asia/Shanghai）。
+- 任务目标与实际结果：完成用户指定的 L1 事实/建议依据和本地 LICENSE/NOTICE 文本观察完善程度的只读分析。结论：B 内部逻辑与合成拒绝回归可交 A 接线；“至少一个真实受支持情形输出条件建议”和“真实材料成为正式候选事实”尚无真实 ScanRun/权威 Evidence/人工适用性及 A 接纳回执，产品验收仍 PARTIAL。三个来源台账只有固定 tag 六文件哈希，scan/object/usage version 为空、Evidence ID 数为零，不把 is-number 真实上游文件误称为真实扫描建议。
+- 修改文件：只向 `docs/coordination/AGENT_WORKLOG.md` 追加 START/COMPLETE；未改 B 代码、测试、fixtures、进度、A/前端或本机产物。
+- 命令与测试：按序读取 README、日志文件、进度和 Sol 交接；核对 Git、L1/L2 代码与测试、三例来源台账和 A CR；本轮 P2B 定向 `53 passed in 0.44s`，`git diff --check` 通过（仅文档 CRLF 提示）。未启停服务、发网络请求或正式接纳。
+- 接口/Schema/规则与决策：无变更。L1 只有同 scan/对象/版本、用途版本、完整 Evidence 闭包、已核验原文及人工适用性/范围同时成立才给 MIT 条件候选；L2 仅为 `text_observed`/`user_supplied_unverified`/`pending`。`known_objects`、`known_materials` 需由 A 权威生成并原子接纳；B 对快照摘要只验格式，不认证签发者。
+- 已知风险与下一步：A/Root 尚需冻结 P2-01 DTO、签发真实扫描和人工复核 Evidence、材料安全入口与原子去重及正式 Assessment 读回；B 随后对 is-number 正例、lodash 范围限制、express 保留样例实际接线验证；前端只消费 A 正式 API。既有跨模块 Windows 35 项失败、全局工件 baseline 漂移及正式 P2 D4 仍未关闭。
+- 分支与发布：`codex/scan-reliability-integration@1cb87d5`；本轮无 commit、push、PR 或真实 evidence_id，已发布 P2B 为 `84608a5`，main 未改。
+- token 使用：本次运行精确 token 数不可获得；开工估算 3,000～6,000，分析范围完成，缺遥测无法核定实际是否落入范围。共享日志由进程整文件读取，模型重点审阅近期记录，未逐字审阅全部历史。
+
+## 20261009-2333-GPT6Sol-当日代码上传-START
+
+- 状态：START；作者与角色：GPT-6 Sol / Root Coordinator；时间：2026-10-09 23:33（Asia/Shanghai）。
+- 目标与范围：按用户要求审阅并上传当前后端 B 的 P2B pin、D4 依据变化/错误码、机器交接草案、测试及协作文档；同时向用户汇报今日继续的任务。仅提交已暂存且经过检查的文件，保留本机 `reports/` 和 pytest 临时目录。
+- 验收：复核未提交差异与远端、运行 P2B 定向和相关 Node 契约、`git diff --check`、敏感信息及待提交清单检查；非强制推送工作分支并读回 SHA。预计 token 7,000～13,000，精确遥测不可获得。
