@@ -489,3 +489,8 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - 使用模型：GPT-6.1 Sol；用途：读取已发布 A 候选合同和 TEST_ONLY 真实 HTTP 回执，整理 B→A 字段映射、机器草案中的不可变 ID/Hash/错误码以及交接门禁；未生成新的许可证事实、人工核验或官方 npm 回执。
 - 团队复核点：慕明策/A 需核对源分支 `afca4c26c2fa45fa285fc9cabf48f52c54a59229` 的合同与回执，签发三个 npm 样例的真实绑定；xzb 仅在兼容 SHA 与获准数据根一致后消费。当前样例继续为 TEST_ONLY 独立回执，三例 `scan_id`/Evidence 留空。
 - 验证：B 定向 pytest 58 passed、JSON 解析与差异检查；未执行 npm GET、项目服务启停或真人适用性裁决。不得从 `text_observed`、P0 人审旧标记或 HTTP 201 推出授权 verified。
+## 2026-10-10 — P2B 三例真实扫描及固定 tag 材料观察
+
+- 工具/模型：Codex GPT-6.1 Sol；AI 辅助编写可重放的受控 manifest 扫描脚本、三例 HTTP/持久化读回闭包测试、A 候选材料与错误回执对账。使用进程内 TestClient，无项目服务启停；未安装或执行 is-number、lodash、express。
+- 固定 tag 六个文件通过真实 HTTPS GET 取得原始字节并核验 SHA-256/Git blob SHA-1；许可证原文只送入隔离 TEST_ONLY 的 A 材料入口，未提交原文到仓库。扫描 Evidence 仅是受控 manifest 观察；Material 仍为未核验用户提供观察，未发生可信 npm GET、官方发布包适用性认证、人工范围核验或义务履行。
+- 三例各有真实 ScanRun/Resource/Assessment/Evidence 及 P2 Result v1→v2/Material/companion Summary；express 独立 D4，不调整 L1 规则。受控负例和 GET 无副作用经服务端 HTTP/数据库摘要核验；正式 Owner 接纳及前端 handoff 仍待完成。

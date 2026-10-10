@@ -1,0 +1,2283 @@
+{
+  "kind": "openguard.p2b.three-scan-readback/1",
+  "data_grade": "TEST_ONLY_REAL_ZIP_SCAN_AND_ASSESSMENT",
+  "get_side_effect_free": true,
+  "database_sha256_after_get": {
+    "scans.sqlite": "9ef0116200ffc3c6dc34ebd57ab1cecf17e05d5912aca324a1f9e0ed8ef058d8",
+    "assessment.db": "164be2901d838285695708743445d1cb8f5d0a6514bf8dbb4083ee146b96cda9",
+    "p2.db": "99289acf82c4d9c2119bb58d8b03eac10f9d6a42a81bbdf0cbd3f742dc7194a6"
+  },
+  "cases": [
+    {
+      "case_id": "P2B-POS-ISNUMBER-7",
+      "input_grade": "CONTROLLED_FIRST_PARTY_MANIFEST_ONLY",
+      "archive_sha256": "6415959e3d72e04005920bce9e6a89183d70d471a4481057485ac6defbb3936f",
+      "scan_id": "scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+      "scan_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+      "scan_status": "partial",
+      "scan_stage": "rules",
+      "scan_errors": [
+        {
+          "code": "rules_stage_not_connected",
+          "stage": "rules",
+          "message": "License rules are not connected for this scan.",
+          "recoverable": true,
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+      "resource": {
+        "id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+        "name": "is-number",
+        "version": "7.0.0",
+        "ecosystem": "npm",
+        "component_type": "library",
+        "purl": "pkg:npm/is-number@7.0.0",
+        "source_url": null,
+        "license_expression_id": null,
+        "evidence_ids": [
+          "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+          "evd_64abc673-5b47-546b-b7b2-4578a931c8de"
+        ],
+        "detected_by": [
+          "manifest_parser"
+        ],
+        "confidence": 1.0
+      },
+      "resource_list_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/resources",
+      "evidence": [
+        {
+          "get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/evidence/evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+          "body": {
+            "id": "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+            "kind": "manifest_field",
+            "locator": "package-lock.json:/packages/node_modules~1is-number/version",
+            "excerpt": "\"7.0.0\"",
+            "start_line": null,
+            "end_line": null,
+            "content_hash": {
+              "algorithm": "sha256",
+              "value": "75232d624c49029d4660345c4571f4de848435d48761ab49e61d0242e874be7a"
+            },
+            "detected_by": "manifest_parser",
+            "producer": {
+              "type": "parser",
+              "name": "openguard.javascript-manifest",
+              "version": "b1-javascript-manifest/v1",
+              "config_digest": {
+                "algorithm": "sha256",
+                "value": "2212376cedc8c6f7058d2336502dcc44ff126d72be9c13d961f119eb54f8bd2c"
+              },
+              "provider": null,
+              "model_id": null,
+              "prompt_schema_digest": null
+            },
+            "observed_at": "2026-10-10T08:11:48.800510Z",
+            "verification_status": "verified"
+          }
+        },
+        {
+          "get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/evidence/evd_64abc673-5b47-546b-b7b2-4578a931c8de",
+          "body": {
+            "id": "evd_64abc673-5b47-546b-b7b2-4578a931c8de",
+            "kind": "manifest_field",
+            "locator": "package.json:/dependencies/is-number",
+            "excerpt": "\"7.0.0\"",
+            "start_line": null,
+            "end_line": null,
+            "content_hash": {
+              "algorithm": "sha256",
+              "value": "cf66c6ceedc7478c2a87744714e0f6486807b08c2f38e695bc3979c70b90520d"
+            },
+            "detected_by": "manifest_parser",
+            "producer": {
+              "type": "parser",
+              "name": "openguard.javascript-manifest",
+              "version": "b1-javascript-manifest/v1",
+              "config_digest": {
+                "algorithm": "sha256",
+                "value": "2212376cedc8c6f7058d2336502dcc44ff126d72be9c13d961f119eb54f8bd2c"
+              },
+              "provider": null,
+              "model_id": null,
+              "prompt_schema_digest": null
+            },
+            "observed_at": "2026-10-10T08:11:48.800510Z",
+            "verification_status": "verified"
+          }
+        }
+      ],
+      "assessment_id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+      "assessment_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/assessments/asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+      "assessment": {
+        "id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+        "version": 1,
+        "facts_hash": "b4d4e6f7f71ecedfc79cd42a069c035e69570f1cb491f05405938789d7eea72e",
+        "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "resource_evaluations": [
+          {
+            "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+            "resource_kind": "component",
+            "name": "is-number",
+            "version": "7.0.0",
+            "scope": "unknown",
+            "scope_evidence_ids": [],
+            "license_expression": null,
+            "license_verified": false,
+            "supported_permission": false,
+            "finding_ids": [],
+            "evidence_ids": [
+              "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+              "evd_64abc673-5b47-546b-b7b2-4578a931c8de"
+            ],
+            "locators": [
+              "package-lock.json:/packages/node_modules~1is-number/version",
+              "package.json:/dependencies/is-number"
+            ],
+            "conditions": [],
+            "restrictions": {},
+            "gaps": [
+              "项目自身／依赖／开发示例的适用范围尚无已核验证据",
+              "许可原文及其与本对象版本的适用关系尚未核验"
+            ],
+            "next_steps": [
+              "核对 is-number（7.0.0） 的引入位置 package-lock.json:/packages/node_modules~1is-number/version，记录属于项目自身、运行交付还是开发／示例的范围依据",
+              "从 该对象官方发布页／安装包 查找 is-number（7.0.0） 对应版本的 LICENSE／NOTICE，保存原文及版本绑定依据供人工核验"
+            ]
+          }
+        ]
+      },
+      "fixed_tag_observations": [
+        {
+          "role": "package_metadata",
+          "request_url": "https://raw.githubusercontent.com/jonschlinkert/is-number/7.0.0/package.json",
+          "final_url": "https://raw.githubusercontent.com/jonschlinkert/is-number/7.0.0/package.json",
+          "http_status": 200,
+          "acquired_at_utc": "2026-10-10T08:18:52.678649+00:00",
+          "byte_count": 1599,
+          "raw_byte_sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620",
+          "git_blob_sha1": "3715072609d61a010bff7116331b71f04206af96",
+          "meaning": "fixed_upstream_git_tag_file_bytes_not_npm_release_or_applicability"
+        },
+        {
+          "role": "license_text",
+          "request_url": "https://raw.githubusercontent.com/jonschlinkert/is-number/7.0.0/LICENSE",
+          "final_url": "https://raw.githubusercontent.com/jonschlinkert/is-number/7.0.0/LICENSE",
+          "http_status": 200,
+          "acquired_at_utc": "2026-10-10T08:18:54.766497+00:00",
+          "byte_count": 1091,
+          "raw_byte_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+          "git_blob_sha1": "9af4a67d206f24ecdbb5fdff2839041ca0bbd346",
+          "meaning": "fixed_upstream_git_tag_file_bytes_not_npm_release_or_applicability"
+        }
+      ],
+      "p2": {
+        "binding_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/assessments/asm_2071ba47-8de3-5046-88cc-4ec03b089c97/p2/binding",
+        "binding": {
+          "scan_id": "scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+          "assessment_id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+          "assessment_version": 1,
+          "registry_revision": 9,
+          "project_revision": null,
+          "facts_hash": "b4d4e6f7f71ecedfc79cd42a069c035e69570f1cb491f05405938789d7eea72e",
+          "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+          "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+          "assessment_sha256": "1ca8da48aa515502fb922a0f14388f5875801c08837db51628f0aa197aa4d4a2"
+        },
+        "before_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/assessments/asm_2071ba47-8de3-5046-88cc-4ec03b089c97/p2/results/p2res_4c83b21c51fc4ece2de8d5f48c91afb268da0b0adc972fcdb330957d98691f10?assessment_version=1",
+        "before": {
+          "schema_version": "openguard-p2-result/1",
+          "algorithm_version": "p2-bound-candidate/1",
+          "result_id": "p2res_4c83b21c51fc4ece2de8d5f48c91afb268da0b0adc972fcdb330957d98691f10",
+          "revision": 1,
+          "previous_result_id": null,
+          "result_sha256": "a6cc23f999a32f19016cf6c332a5c744e2c98b9bdaee8f11c2d75fab6b77b668",
+          "binding": {
+            "scan_id": "scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+            "assessment_id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "b4d4e6f7f71ecedfc79cd42a069c035e69570f1cb491f05405938789d7eea72e",
+            "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "1ca8da48aa515502fb922a0f14388f5875801c08837db51628f0aa197aa4d4a2"
+          },
+          "data_scope": "TEST_ONLY",
+          "computation": "DETERMINISTIC_P2B",
+          "publication_status": "succeeded",
+          "formal_effect": "none",
+          "model_calls": 0,
+          "state": "unknown",
+          "created_at": "2026-10-10T08:11:49.159378+00:00",
+          "usage": {
+            "commercial": null,
+            "distributed": null,
+            "modified": null,
+            "network_service": null,
+            "redistributed_assets": null,
+            "source_disclosure": null,
+            "training": null
+          },
+          "resources": [
+            {
+              "subject": {
+                "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+                "version": "7.0.0"
+              },
+              "resource_kind": "component",
+              "state": "unknown",
+              "verification_state": "candidate_only",
+              "scope": "unknown",
+              "evidence_ids": [
+                "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+                "evd_64abc673-5b47-546b-b7b2-4578a931c8de"
+              ],
+              "evidence_source_hashes": {
+                "evd_41bb871f-014f-5e63-9744-cbbc4036edcd": "75232d624c49029d4660345c4571f4de848435d48761ab49e61d0242e874be7a",
+                "evd_64abc673-5b47-546b-b7b2-4578a931c8de": "cf66c6ceedc7478c2a87744714e0f6486807b08c2f38e695bc3979c70b90520d"
+              },
+              "material_ids": [],
+              "answer_ids": [],
+              "gaps": [
+                "license_text_and_applicability_unverified",
+                "object_scope_unverified",
+                "upstream_source_attestation_missing"
+              ],
+              "advice": [
+                {
+                  "usage": "commercial",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_commercial_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "modified",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_modified_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "distributed",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_distributed_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "network_service",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_network_service_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "training",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_training_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "redistributed_assets",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_redistributed_assets_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "source_disclosure",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_source_disclosure_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                }
+              ],
+              "user_assertions": {},
+              "inherited_local_support": false,
+              "inherited_support_source": "PARENT_ASSESSMENT_NOT_NEW_VALUE"
+            }
+          ],
+          "questions": [
+            {
+              "question_id": "p2q_d43d75aed6684c672ca5f9351d2298260b32975676fd7f689c794146f6bd5e4c",
+              "question_code": "DELIVERY_SCOPE_FOR_RESOURCES",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+                  "version": "7.0.0"
+                }
+              ],
+              "options": [
+                "YES_INCLUDE",
+                "NO_EXCLUDE",
+                "NOT_DECIDED"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            },
+            {
+              "question_id": "p2q_f96a53f34aaa34db3528933c0ba10ffd1c19f6ba092f87aad7bd16e668ddfbb3",
+              "question_code": "OBLIGATION_FULFILLMENT_IN_DELIVERY",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+                  "version": "7.0.0"
+                }
+              ],
+              "options": [
+                "FULFILLED",
+                "NOT_FULFILLED",
+                "NOT_DELIVERED_YET",
+                "UNKNOWN"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            }
+          ],
+          "material_ids": [],
+          "answer_ids": [],
+          "recomputed_resource_ids": [
+            "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a"
+          ],
+          "reused_resource_ids": [],
+          "companion_summary_id": "p2sum_bad2f996b6cb124b090e75bfd3a25e91f0cbdf5334c69829ed21470bfbdd4796"
+        },
+        "errors": {
+          "wrong_scan": {
+            "http_status": 404,
+            "error_code": "p2_scan_not_found",
+            "details": {
+              "reason": "p2_scan_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_assessment": {
+            "http_status": 409,
+            "error_code": "p2_parent_binding_conflict",
+            "details": {
+              "reason": "p2_parent_binding_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_resource": {
+            "http_status": 404,
+            "error_code": "p2_resource_not_found",
+            "details": {
+              "reason": "p2_resource_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_version": {
+            "http_status": 409,
+            "error_code": "p2_resource_version_conflict",
+            "details": {
+              "reason": "p2_resource_version_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_evidence": {
+            "http_status": 409,
+            "error_code": "p2_evidence_wrong_resource",
+            "details": {
+              "reason": "p2_evidence_wrong_resource",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "invalid_filename": {
+            "http_status": 422,
+            "error_code": "p2_unsupported_material_name",
+            "details": {
+              "reason": "p2_unsupported_material_name",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "after": {
+          "schema_version": "openguard-p2-result/1",
+          "algorithm_version": "p2-bound-candidate/1",
+          "result_id": "p2res_3910c073174a8aefc76f3f1ffe4a76fd7d4260d78cc7f2ecddee6c061b0f184c",
+          "revision": 2,
+          "previous_result_id": "p2res_4c83b21c51fc4ece2de8d5f48c91afb268da0b0adc972fcdb330957d98691f10",
+          "result_sha256": "57bcff5806b05fcfac01c39b4e4cce28b92ffb0bac80b59e8112e01868c84af0",
+          "binding": {
+            "scan_id": "scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+            "assessment_id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "b4d4e6f7f71ecedfc79cd42a069c035e69570f1cb491f05405938789d7eea72e",
+            "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "1ca8da48aa515502fb922a0f14388f5875801c08837db51628f0aa197aa4d4a2"
+          },
+          "data_scope": "TEST_ONLY",
+          "computation": "DETERMINISTIC_P2B",
+          "publication_status": "succeeded",
+          "formal_effect": "none",
+          "model_calls": 0,
+          "state": "pending",
+          "created_at": "2026-10-10T08:11:49.273271+00:00",
+          "usage": {
+            "commercial": null,
+            "distributed": null,
+            "modified": null,
+            "network_service": null,
+            "redistributed_assets": null,
+            "source_disclosure": null,
+            "training": null
+          },
+          "resources": [
+            {
+              "subject": {
+                "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+                "version": "7.0.0"
+              },
+              "resource_kind": "component",
+              "state": "pending",
+              "verification_state": "candidate_only",
+              "scope": "unknown",
+              "evidence_ids": [
+                "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+                "evd_64abc673-5b47-546b-b7b2-4578a931c8de"
+              ],
+              "evidence_source_hashes": {
+                "evd_41bb871f-014f-5e63-9744-cbbc4036edcd": "75232d624c49029d4660345c4571f4de848435d48761ab49e61d0242e874be7a",
+                "evd_64abc673-5b47-546b-b7b2-4578a931c8de": "cf66c6ceedc7478c2a87744714e0f6486807b08c2f38e695bc3979c70b90520d"
+              },
+              "material_ids": [
+                "p2mat_2414eae690a988d553a19cd091fd6560c3add60bbf69c4d716aeddb15a0b77b1"
+              ],
+              "answer_ids": [],
+              "gaps": [
+                "license_text_and_applicability_unverified",
+                "object_scope_unverified",
+                "uploaded_material_applicability_pending",
+                "upstream_source_attestation_missing"
+              ],
+              "advice": [
+                {
+                  "usage": "commercial",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_commercial_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "modified",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_modified_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "distributed",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_distributed_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "network_service",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_network_service_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "training",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_training_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "redistributed_assets",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_redistributed_assets_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "source_disclosure",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_source_disclosure_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                }
+              ],
+              "user_assertions": {},
+              "inherited_local_support": false,
+              "inherited_support_source": "PARENT_ASSESSMENT_NOT_NEW_VALUE"
+            }
+          ],
+          "questions": [
+            {
+              "question_id": "p2q_d43d75aed6684c672ca5f9351d2298260b32975676fd7f689c794146f6bd5e4c",
+              "question_code": "DELIVERY_SCOPE_FOR_RESOURCES",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+                  "version": "7.0.0"
+                }
+              ],
+              "options": [
+                "YES_INCLUDE",
+                "NO_EXCLUDE",
+                "NOT_DECIDED"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            },
+            {
+              "question_id": "p2q_f96a53f34aaa34db3528933c0ba10ffd1c19f6ba092f87aad7bd16e668ddfbb3",
+              "question_code": "OBLIGATION_FULFILLMENT_IN_DELIVERY",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+                  "version": "7.0.0"
+                }
+              ],
+              "options": [
+                "FULFILLED",
+                "NOT_FULFILLED",
+                "NOT_DELIVERED_YET",
+                "UNKNOWN"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            }
+          ],
+          "material_ids": [
+            "p2mat_2414eae690a988d553a19cd091fd6560c3add60bbf69c4d716aeddb15a0b77b1"
+          ],
+          "answer_ids": [],
+          "recomputed_resource_ids": [
+            "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a"
+          ],
+          "reused_resource_ids": [],
+          "companion_summary_id": "p2sum_0996fa116b79ce999a9a2cb74359849b86f2fe65417710e380c3841f51c804ea"
+        },
+        "after_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/assessments/asm_2071ba47-8de3-5046-88cc-4ec03b089c97/p2/results/p2res_3910c073174a8aefc76f3f1ffe4a76fd7d4260d78cc7f2ecddee6c061b0f184c?assessment_version=1",
+        "material": {
+          "material_id": "p2mat_2414eae690a988d553a19cd091fd6560c3add60bbf69c4d716aeddb15a0b77b1",
+          "revision": 1,
+          "binding": {
+            "scan_id": "scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+            "assessment_id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "b4d4e6f7f71ecedfc79cd42a069c035e69570f1cb491f05405938789d7eea72e",
+            "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "1ca8da48aa515502fb922a0f14388f5875801c08837db51628f0aa197aa4d4a2"
+          },
+          "subject": {
+            "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+            "version": "7.0.0"
+          },
+          "evidence_ids": [
+            "evd_41bb871f-014f-5e63-9744-cbbc4036edcd"
+          ],
+          "filename": "LICENSE",
+          "source_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+          "byte_count": 1091,
+          "completeness": "FULL_TEXT_CLAIMED",
+          "parse_status": "text_observed",
+          "adoption_status": "adopted_as_unverified_observation",
+          "verification_state": "pending",
+          "source_level": "user_supplied_unverified",
+          "formal_effect": "none",
+          "data_scope": "TEST_ONLY"
+        },
+        "material_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/assessments/asm_2071ba47-8de3-5046-88cc-4ec03b089c97/p2/materials/p2mat_2414eae690a988d553a19cd091fd6560c3add60bbf69c4d716aeddb15a0b77b1?assessment_version=1",
+        "summary": {
+          "summary_id": "p2sum_0996fa116b79ce999a9a2cb74359849b86f2fe65417710e380c3841f51c804ea",
+          "result_id": "p2res_3910c073174a8aefc76f3f1ffe4a76fd7d4260d78cc7f2ecddee6c061b0f184c",
+          "result_revision": 2,
+          "result_sha256": "57bcff5806b05fcfac01c39b4e4cce28b92ffb0bac80b59e8112e01868c84af0",
+          "binding": {
+            "scan_id": "scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+            "assessment_id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "b4d4e6f7f71ecedfc79cd42a069c035e69570f1cb491f05405938789d7eea72e",
+            "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "1ca8da48aa515502fb922a0f14388f5875801c08837db51628f0aa197aa4d4a2"
+          },
+          "material_ids": [
+            "p2mat_2414eae690a988d553a19cd091fd6560c3add60bbf69c4d716aeddb15a0b77b1"
+          ],
+          "answer_ids": [],
+          "state": "pending",
+          "resource_states": {
+            "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a": "pending"
+          },
+          "formal_effect": "none",
+          "report_kind": "P2_COMPANION_NOT_FORMAL_REPORT"
+        },
+        "summary_get_path": "/api/v1/scans/scn_761868e1-b9fa-4225-af23-d05c93d7b80f/assessments/asm_2071ba47-8de3-5046-88cc-4ec03b089c97/p2/results/p2res_3910c073174a8aefc76f3f1ffe4a76fd7d4260d78cc7f2ecddee6c061b0f184c/summary?assessment_version=1"
+      }
+    },
+    {
+      "case_id": "P2B-LIMIT-LODASH-41721",
+      "input_grade": "CONTROLLED_FIRST_PARTY_MANIFEST_ONLY",
+      "archive_sha256": "dbc2fbe98da7584190e9996fa8cfe8ed249405f72240e03a9afc2977f5cdfd7a",
+      "scan_id": "scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68",
+      "scan_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68",
+      "scan_status": "partial",
+      "scan_stage": "rules",
+      "scan_errors": [
+        {
+          "code": "rules_stage_not_connected",
+          "stage": "rules",
+          "message": "License rules are not connected for this scan.",
+          "recoverable": true,
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+      "resource": {
+        "id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+        "name": "lodash",
+        "version": "4.17.21",
+        "ecosystem": "npm",
+        "component_type": "library",
+        "purl": "pkg:npm/lodash@4.17.21",
+        "source_url": null,
+        "license_expression_id": null,
+        "evidence_ids": [
+          "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b",
+          "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41"
+        ],
+        "detected_by": [
+          "manifest_parser"
+        ],
+        "confidence": 1.0
+      },
+      "resource_list_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/resources",
+      "evidence": [
+        {
+          "get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/evidence/evd_2e0913c6-0f00-5d28-a128-419be20d7a1b",
+          "body": {
+            "id": "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b",
+            "kind": "manifest_field",
+            "locator": "package-lock.json:/packages/node_modules~1lodash/version",
+            "excerpt": "\"4.17.21\"",
+            "start_line": null,
+            "end_line": null,
+            "content_hash": {
+              "algorithm": "sha256",
+              "value": "c10ef14424919c479ec0a135e06ffb37d075da7d8e53cc8762d798988bd3a5ed"
+            },
+            "detected_by": "manifest_parser",
+            "producer": {
+              "type": "parser",
+              "name": "openguard.javascript-manifest",
+              "version": "b1-javascript-manifest/v1",
+              "config_digest": {
+                "algorithm": "sha256",
+                "value": "6d7d6124d784beb6b66141b3d343110fd40eea44e4050ad4cec944381022c3d5"
+              },
+              "provider": null,
+              "model_id": null,
+              "prompt_schema_digest": null
+            },
+            "observed_at": "2026-10-10T08:11:51.149171Z",
+            "verification_status": "verified"
+          }
+        },
+        {
+          "get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/evidence/evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41",
+          "body": {
+            "id": "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41",
+            "kind": "manifest_field",
+            "locator": "package.json:/dependencies/lodash",
+            "excerpt": "\"4.17.21\"",
+            "start_line": null,
+            "end_line": null,
+            "content_hash": {
+              "algorithm": "sha256",
+              "value": "75f2f73dfac87d82aee0cc4d23dd4beadfe66921597f62070fe1cc71d2fd153d"
+            },
+            "detected_by": "manifest_parser",
+            "producer": {
+              "type": "parser",
+              "name": "openguard.javascript-manifest",
+              "version": "b1-javascript-manifest/v1",
+              "config_digest": {
+                "algorithm": "sha256",
+                "value": "6d7d6124d784beb6b66141b3d343110fd40eea44e4050ad4cec944381022c3d5"
+              },
+              "provider": null,
+              "model_id": null,
+              "prompt_schema_digest": null
+            },
+            "observed_at": "2026-10-10T08:11:51.149171Z",
+            "verification_status": "verified"
+          }
+        }
+      ],
+      "assessment_id": "asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+      "assessment_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/assessments/asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+      "assessment": {
+        "id": "asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+        "version": 1,
+        "facts_hash": "9b57dc621a0f86368f799fc3c6a9dfbc3bc0e7f538882eff0e2aee5e7fdf9005",
+        "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "resource_evaluations": [
+          {
+            "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+            "resource_kind": "component",
+            "name": "lodash",
+            "version": "4.17.21",
+            "scope": "unknown",
+            "scope_evidence_ids": [],
+            "license_expression": null,
+            "license_verified": false,
+            "supported_permission": false,
+            "finding_ids": [],
+            "evidence_ids": [
+              "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b",
+              "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41"
+            ],
+            "locators": [
+              "package-lock.json:/packages/node_modules~1lodash/version",
+              "package.json:/dependencies/lodash"
+            ],
+            "conditions": [],
+            "restrictions": {},
+            "gaps": [
+              "项目自身／依赖／开发示例的适用范围尚无已核验证据",
+              "许可原文及其与本对象版本的适用关系尚未核验"
+            ],
+            "next_steps": [
+              "核对 lodash（4.17.21） 的引入位置 package-lock.json:/packages/node_modules~1lodash/version，记录属于项目自身、运行交付还是开发／示例的范围依据",
+              "从 该对象官方发布页／安装包 查找 lodash（4.17.21） 对应版本的 LICENSE／NOTICE，保存原文及版本绑定依据供人工核验"
+            ]
+          }
+        ]
+      },
+      "fixed_tag_observations": [
+        {
+          "role": "package_metadata",
+          "request_url": "https://raw.githubusercontent.com/lodash/lodash/4.17.21/package.json",
+          "final_url": "https://raw.githubusercontent.com/lodash/lodash/4.17.21/package.json",
+          "http_status": 200,
+          "acquired_at_utc": "2026-10-10T08:18:59.199579+00:00",
+          "byte_count": 2046,
+          "raw_byte_sha256": "0d486d8dd5d67f09a44aa72a6acecba39a5a66c07ec4f988e9c2ee3075563a5e",
+          "git_blob_sha1": "83080d4381ebe92e1a6ac5d254dd3fb5bc6fd452",
+          "meaning": "fixed_upstream_git_tag_file_bytes_not_npm_release_or_applicability"
+        },
+        {
+          "role": "license_text",
+          "request_url": "https://raw.githubusercontent.com/lodash/lodash/4.17.21/LICENSE",
+          "final_url": "https://raw.githubusercontent.com/lodash/lodash/4.17.21/LICENSE",
+          "http_status": 200,
+          "acquired_at_utc": "2026-10-10T08:19:00.770525+00:00",
+          "byte_count": 1952,
+          "raw_byte_sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+          "git_blob_sha1": "77c42f1408a38a0609cac12c887616cb21bfb736",
+          "meaning": "fixed_upstream_git_tag_file_bytes_not_npm_release_or_applicability"
+        }
+      ],
+      "p2": {
+        "binding_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/assessments/asm_0108cb18-19bf-5377-a6f2-b12476c9447b/p2/binding",
+        "binding": {
+          "scan_id": "scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68",
+          "assessment_id": "asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+          "assessment_version": 1,
+          "registry_revision": 9,
+          "project_revision": null,
+          "facts_hash": "9b57dc621a0f86368f799fc3c6a9dfbc3bc0e7f538882eff0e2aee5e7fdf9005",
+          "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+          "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+          "assessment_sha256": "773c7872f969f839dad1964adb80062499c2d168ca285b649af094e5256617db"
+        },
+        "before_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/assessments/asm_0108cb18-19bf-5377-a6f2-b12476c9447b/p2/results/p2res_05e8911184399cafcf6f41bd3e6fc19acbd35623011a8b5c327c26602d65a8e7?assessment_version=1",
+        "before": {
+          "schema_version": "openguard-p2-result/1",
+          "algorithm_version": "p2-bound-candidate/1",
+          "result_id": "p2res_05e8911184399cafcf6f41bd3e6fc19acbd35623011a8b5c327c26602d65a8e7",
+          "revision": 1,
+          "previous_result_id": null,
+          "result_sha256": "bef620480f22db38641a7aff1bb7b9e5e604762c68caa619807b9c9863bf60d0",
+          "binding": {
+            "scan_id": "scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68",
+            "assessment_id": "asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "9b57dc621a0f86368f799fc3c6a9dfbc3bc0e7f538882eff0e2aee5e7fdf9005",
+            "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "773c7872f969f839dad1964adb80062499c2d168ca285b649af094e5256617db"
+          },
+          "data_scope": "TEST_ONLY",
+          "computation": "DETERMINISTIC_P2B",
+          "publication_status": "succeeded",
+          "formal_effect": "none",
+          "model_calls": 0,
+          "state": "unknown",
+          "created_at": "2026-10-10T08:11:51.320923+00:00",
+          "usage": {
+            "commercial": null,
+            "distributed": null,
+            "modified": null,
+            "network_service": null,
+            "redistributed_assets": null,
+            "source_disclosure": null,
+            "training": null
+          },
+          "resources": [
+            {
+              "subject": {
+                "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+                "version": "4.17.21"
+              },
+              "resource_kind": "component",
+              "state": "unknown",
+              "verification_state": "candidate_only",
+              "scope": "unknown",
+              "evidence_ids": [
+                "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b",
+                "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41"
+              ],
+              "evidence_source_hashes": {
+                "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b": "c10ef14424919c479ec0a135e06ffb37d075da7d8e53cc8762d798988bd3a5ed",
+                "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41": "75f2f73dfac87d82aee0cc4d23dd4beadfe66921597f62070fe1cc71d2fd153d"
+              },
+              "material_ids": [],
+              "answer_ids": [],
+              "gaps": [
+                "license_text_and_applicability_unverified",
+                "object_scope_unverified",
+                "upstream_source_attestation_missing"
+              ],
+              "advice": [
+                {
+                  "usage": "commercial",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_commercial_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "modified",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_modified_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "distributed",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_distributed_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "network_service",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_network_service_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "training",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_training_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "redistributed_assets",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_redistributed_assets_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "source_disclosure",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_source_disclosure_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                }
+              ],
+              "user_assertions": {},
+              "inherited_local_support": false,
+              "inherited_support_source": "PARENT_ASSESSMENT_NOT_NEW_VALUE"
+            }
+          ],
+          "questions": [
+            {
+              "question_id": "p2q_40ee3f47afdbed36748f2e087a311c846fded01a1346f889e483033e4bf2ee26",
+              "question_code": "DELIVERY_SCOPE_FOR_RESOURCES",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+                  "version": "4.17.21"
+                }
+              ],
+              "options": [
+                "YES_INCLUDE",
+                "NO_EXCLUDE",
+                "NOT_DECIDED"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            },
+            {
+              "question_id": "p2q_3fac10e4a05ea92f66330a5b36fffcbfd40faa67392f6e0188922fab2daf3796",
+              "question_code": "OBLIGATION_FULFILLMENT_IN_DELIVERY",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+                  "version": "4.17.21"
+                }
+              ],
+              "options": [
+                "FULFILLED",
+                "NOT_FULFILLED",
+                "NOT_DELIVERED_YET",
+                "UNKNOWN"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            }
+          ],
+          "material_ids": [],
+          "answer_ids": [],
+          "recomputed_resource_ids": [
+            "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e"
+          ],
+          "reused_resource_ids": [],
+          "companion_summary_id": "p2sum_10b871ac2adb2b61cb5690a80c2683e15448d084d71d1aa59c8df092875a7866"
+        },
+        "errors": {
+          "wrong_scan": {
+            "http_status": 404,
+            "error_code": "p2_scan_not_found",
+            "details": {
+              "reason": "p2_scan_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_assessment": {
+            "http_status": 409,
+            "error_code": "p2_parent_binding_conflict",
+            "details": {
+              "reason": "p2_parent_binding_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_resource": {
+            "http_status": 404,
+            "error_code": "p2_resource_not_found",
+            "details": {
+              "reason": "p2_resource_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_version": {
+            "http_status": 409,
+            "error_code": "p2_resource_version_conflict",
+            "details": {
+              "reason": "p2_resource_version_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_evidence": {
+            "http_status": 409,
+            "error_code": "p2_evidence_wrong_resource",
+            "details": {
+              "reason": "p2_evidence_wrong_resource",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "invalid_filename": {
+            "http_status": 422,
+            "error_code": "p2_unsupported_material_name",
+            "details": {
+              "reason": "p2_unsupported_material_name",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "after": {
+          "schema_version": "openguard-p2-result/1",
+          "algorithm_version": "p2-bound-candidate/1",
+          "result_id": "p2res_d37dd33a54af15b40f4729e56ce103142f1612155f78b2b85c226d7e0f1f42f7",
+          "revision": 2,
+          "previous_result_id": "p2res_05e8911184399cafcf6f41bd3e6fc19acbd35623011a8b5c327c26602d65a8e7",
+          "result_sha256": "3773653a366eb7e354e2b4b80a35685981312c577b4f537f68471f929af3099b",
+          "binding": {
+            "scan_id": "scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68",
+            "assessment_id": "asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "9b57dc621a0f86368f799fc3c6a9dfbc3bc0e7f538882eff0e2aee5e7fdf9005",
+            "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "773c7872f969f839dad1964adb80062499c2d168ca285b649af094e5256617db"
+          },
+          "data_scope": "TEST_ONLY",
+          "computation": "DETERMINISTIC_P2B",
+          "publication_status": "succeeded",
+          "formal_effect": "none",
+          "model_calls": 0,
+          "state": "pending",
+          "created_at": "2026-10-10T08:11:51.416577+00:00",
+          "usage": {
+            "commercial": null,
+            "distributed": null,
+            "modified": null,
+            "network_service": null,
+            "redistributed_assets": null,
+            "source_disclosure": null,
+            "training": null
+          },
+          "resources": [
+            {
+              "subject": {
+                "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+                "version": "4.17.21"
+              },
+              "resource_kind": "component",
+              "state": "pending",
+              "verification_state": "candidate_only",
+              "scope": "unknown",
+              "evidence_ids": [
+                "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b",
+                "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41"
+              ],
+              "evidence_source_hashes": {
+                "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b": "c10ef14424919c479ec0a135e06ffb37d075da7d8e53cc8762d798988bd3a5ed",
+                "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41": "75f2f73dfac87d82aee0cc4d23dd4beadfe66921597f62070fe1cc71d2fd153d"
+              },
+              "material_ids": [
+                "p2mat_74d7a9574bce0d306febe9696f35f902cb0f6ef00cdbc9da4da3d6942a8b2a49"
+              ],
+              "answer_ids": [],
+              "gaps": [
+                "license_text_and_applicability_unverified",
+                "object_scope_unverified",
+                "uploaded_material_applicability_pending",
+                "upstream_source_attestation_missing"
+              ],
+              "advice": [
+                {
+                  "usage": "commercial",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_commercial_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "modified",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_modified_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "distributed",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_distributed_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "network_service",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_network_service_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "training",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_training_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "redistributed_assets",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_redistributed_assets_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "source_disclosure",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_source_disclosure_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                }
+              ],
+              "user_assertions": {},
+              "inherited_local_support": false,
+              "inherited_support_source": "PARENT_ASSESSMENT_NOT_NEW_VALUE"
+            }
+          ],
+          "questions": [
+            {
+              "question_id": "p2q_40ee3f47afdbed36748f2e087a311c846fded01a1346f889e483033e4bf2ee26",
+              "question_code": "DELIVERY_SCOPE_FOR_RESOURCES",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+                  "version": "4.17.21"
+                }
+              ],
+              "options": [
+                "YES_INCLUDE",
+                "NO_EXCLUDE",
+                "NOT_DECIDED"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            },
+            {
+              "question_id": "p2q_3fac10e4a05ea92f66330a5b36fffcbfd40faa67392f6e0188922fab2daf3796",
+              "question_code": "OBLIGATION_FULFILLMENT_IN_DELIVERY",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+                  "version": "4.17.21"
+                }
+              ],
+              "options": [
+                "FULFILLED",
+                "NOT_FULFILLED",
+                "NOT_DELIVERED_YET",
+                "UNKNOWN"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            }
+          ],
+          "material_ids": [
+            "p2mat_74d7a9574bce0d306febe9696f35f902cb0f6ef00cdbc9da4da3d6942a8b2a49"
+          ],
+          "answer_ids": [],
+          "recomputed_resource_ids": [
+            "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e"
+          ],
+          "reused_resource_ids": [],
+          "companion_summary_id": "p2sum_aaae5e69d5691c2f9989a760ff40e88a5d4fd7494199923cdf18d66083fc4db3"
+        },
+        "after_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/assessments/asm_0108cb18-19bf-5377-a6f2-b12476c9447b/p2/results/p2res_d37dd33a54af15b40f4729e56ce103142f1612155f78b2b85c226d7e0f1f42f7?assessment_version=1",
+        "material": {
+          "material_id": "p2mat_74d7a9574bce0d306febe9696f35f902cb0f6ef00cdbc9da4da3d6942a8b2a49",
+          "revision": 1,
+          "binding": {
+            "scan_id": "scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68",
+            "assessment_id": "asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "9b57dc621a0f86368f799fc3c6a9dfbc3bc0e7f538882eff0e2aee5e7fdf9005",
+            "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "773c7872f969f839dad1964adb80062499c2d168ca285b649af094e5256617db"
+          },
+          "subject": {
+            "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+            "version": "4.17.21"
+          },
+          "evidence_ids": [
+            "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b"
+          ],
+          "filename": "LICENSE",
+          "source_sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+          "byte_count": 1952,
+          "completeness": "FULL_TEXT_CLAIMED",
+          "parse_status": "text_observed",
+          "adoption_status": "adopted_as_unverified_observation",
+          "verification_state": "pending",
+          "source_level": "user_supplied_unverified",
+          "formal_effect": "none",
+          "data_scope": "TEST_ONLY"
+        },
+        "material_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/assessments/asm_0108cb18-19bf-5377-a6f2-b12476c9447b/p2/materials/p2mat_74d7a9574bce0d306febe9696f35f902cb0f6ef00cdbc9da4da3d6942a8b2a49?assessment_version=1",
+        "summary": {
+          "summary_id": "p2sum_aaae5e69d5691c2f9989a760ff40e88a5d4fd7494199923cdf18d66083fc4db3",
+          "result_id": "p2res_d37dd33a54af15b40f4729e56ce103142f1612155f78b2b85c226d7e0f1f42f7",
+          "result_revision": 2,
+          "result_sha256": "3773653a366eb7e354e2b4b80a35685981312c577b4f537f68471f929af3099b",
+          "binding": {
+            "scan_id": "scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68",
+            "assessment_id": "asm_0108cb18-19bf-5377-a6f2-b12476c9447b",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "9b57dc621a0f86368f799fc3c6a9dfbc3bc0e7f538882eff0e2aee5e7fdf9005",
+            "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "773c7872f969f839dad1964adb80062499c2d168ca285b649af094e5256617db"
+          },
+          "material_ids": [
+            "p2mat_74d7a9574bce0d306febe9696f35f902cb0f6ef00cdbc9da4da3d6942a8b2a49"
+          ],
+          "answer_ids": [],
+          "state": "pending",
+          "resource_states": {
+            "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e": "pending"
+          },
+          "formal_effect": "none",
+          "report_kind": "P2_COMPANION_NOT_FORMAL_REPORT"
+        },
+        "summary_get_path": "/api/v1/scans/scn_3fd9e9cb-e2ca-48b1-88a6-110d56fbbc68/assessments/asm_0108cb18-19bf-5377-a6f2-b12476c9447b/p2/results/p2res_d37dd33a54af15b40f4729e56ce103142f1612155f78b2b85c226d7e0f1f42f7/summary?assessment_version=1"
+      }
+    },
+    {
+      "case_id": "P2B-HOLDOUT-EXPRESS-4182",
+      "input_grade": "CONTROLLED_FIRST_PARTY_MANIFEST_ONLY",
+      "archive_sha256": "e0a7f4fa9b4c22170741357af23347da83eececbf2df09380064787ce3518cdc",
+      "scan_id": "scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0",
+      "scan_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0",
+      "scan_status": "partial",
+      "scan_stage": "rules",
+      "scan_errors": [
+        {
+          "code": "rules_stage_not_connected",
+          "stage": "rules",
+          "message": "License rules are not connected for this scan.",
+          "recoverable": true,
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+      "resource": {
+        "id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+        "name": "express",
+        "version": "4.18.2",
+        "ecosystem": "npm",
+        "component_type": "library",
+        "purl": "pkg:npm/express@4.18.2",
+        "source_url": null,
+        "license_expression_id": null,
+        "evidence_ids": [
+          "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a",
+          "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9"
+        ],
+        "detected_by": [
+          "manifest_parser"
+        ],
+        "confidence": 1.0
+      },
+      "resource_list_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/resources",
+      "evidence": [
+        {
+          "get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/evidence/evd_b0920381-1843-5689-87bb-54ff6f2f0d1a",
+          "body": {
+            "id": "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a",
+            "kind": "manifest_field",
+            "locator": "package-lock.json:/packages/node_modules~1express/version",
+            "excerpt": "\"4.18.2\"",
+            "start_line": null,
+            "end_line": null,
+            "content_hash": {
+              "algorithm": "sha256",
+              "value": "3c4534d87f6379f9407919e21fa5b097c842e1a14fd6f1d57d62ea004f06c899"
+            },
+            "detected_by": "manifest_parser",
+            "producer": {
+              "type": "parser",
+              "name": "openguard.javascript-manifest",
+              "version": "b1-javascript-manifest/v1",
+              "config_digest": {
+                "algorithm": "sha256",
+                "value": "1a28e65cd69f92d1546b4722ade1c85649daea3cf23f15a36b3827b22444c7a9"
+              },
+              "provider": null,
+              "model_id": null,
+              "prompt_schema_digest": null
+            },
+            "observed_at": "2026-10-10T08:11:53.409110Z",
+            "verification_status": "verified"
+          }
+        },
+        {
+          "get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/evidence/evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9",
+          "body": {
+            "id": "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9",
+            "kind": "manifest_field",
+            "locator": "package.json:/dependencies/express",
+            "excerpt": "\"4.18.2\"",
+            "start_line": null,
+            "end_line": null,
+            "content_hash": {
+              "algorithm": "sha256",
+              "value": "350587980b5c933275369811ec04705ac0dd9a6b92c5f4dc3429013ddd61fed1"
+            },
+            "detected_by": "manifest_parser",
+            "producer": {
+              "type": "parser",
+              "name": "openguard.javascript-manifest",
+              "version": "b1-javascript-manifest/v1",
+              "config_digest": {
+                "algorithm": "sha256",
+                "value": "1a28e65cd69f92d1546b4722ade1c85649daea3cf23f15a36b3827b22444c7a9"
+              },
+              "provider": null,
+              "model_id": null,
+              "prompt_schema_digest": null
+            },
+            "observed_at": "2026-10-10T08:11:53.409110Z",
+            "verification_status": "verified"
+          }
+        }
+      ],
+      "assessment_id": "asm_210b007e-2561-5da4-849f-153bd03345ec",
+      "assessment_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/assessments/asm_210b007e-2561-5da4-849f-153bd03345ec",
+      "assessment": {
+        "id": "asm_210b007e-2561-5da4-849f-153bd03345ec",
+        "version": 1,
+        "facts_hash": "d1739eef5961d9af9fcc64ba83f6835feaa19c5a19bf8836913daeb1c3c62b42",
+        "usage_hash": "3f07c4057c6cad7a4b81ec9dab42095ccf877095b78be6197586b87cec19bf30",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "resource_evaluations": [
+          {
+            "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+            "resource_kind": "component",
+            "name": "express",
+            "version": "4.18.2",
+            "scope": "unknown",
+            "scope_evidence_ids": [],
+            "license_expression": null,
+            "license_verified": false,
+            "supported_permission": false,
+            "finding_ids": [],
+            "evidence_ids": [
+              "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a",
+              "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9"
+            ],
+            "locators": [
+              "package-lock.json:/packages/node_modules~1express/version",
+              "package.json:/dependencies/express"
+            ],
+            "conditions": [],
+            "restrictions": {},
+            "gaps": [
+              "项目自身／依赖／开发示例的适用范围尚无已核验证据",
+              "许可原文及其与本对象版本的适用关系尚未核验"
+            ],
+            "next_steps": [
+              "核对 express（4.18.2） 的引入位置 package-lock.json:/packages/node_modules~1express/version，记录属于项目自身、运行交付还是开发／示例的范围依据",
+              "从 该对象官方发布页／安装包 查找 express（4.18.2） 对应版本的 LICENSE／NOTICE，保存原文及版本绑定依据供人工核验"
+            ]
+          }
+        ]
+      },
+      "fixed_tag_observations": [
+        {
+          "role": "package_metadata",
+          "request_url": "https://raw.githubusercontent.com/expressjs/express/4.18.2/package.json",
+          "final_url": "https://raw.githubusercontent.com/expressjs/express/4.18.2/package.json",
+          "http_status": 200,
+          "acquired_at_utc": "2026-10-10T08:19:03.493786+00:00",
+          "byte_count": 2624,
+          "raw_byte_sha256": "2cd424f19ed994070c827b5448a3bc5fbee955bbbe81aff28204d8c5a5a89ebb",
+          "git_blob_sha1": "0996637deaa0c79b2a7503f1ce06f22608eba8cc",
+          "meaning": "fixed_upstream_git_tag_file_bytes_not_npm_release_or_applicability"
+        },
+        {
+          "role": "license_text",
+          "request_url": "https://raw.githubusercontent.com/expressjs/express/4.18.2/LICENSE",
+          "final_url": "https://raw.githubusercontent.com/expressjs/express/4.18.2/LICENSE",
+          "http_status": 200,
+          "acquired_at_utc": "2026-10-10T08:19:05.540759+00:00",
+          "byte_count": 1249,
+          "raw_byte_sha256": "95a5762890e5c1c9808921cef095661fc482c5e1f0bba31446ac85595df6237c",
+          "git_blob_sha1": "aa927e44e31d486f807634887662efa39256bf84",
+          "meaning": "fixed_upstream_git_tag_file_bytes_not_npm_release_or_applicability"
+        }
+      ],
+      "p2": {
+        "binding_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/assessments/asm_210b007e-2561-5da4-849f-153bd03345ec/p2/binding",
+        "binding": {
+          "scan_id": "scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0",
+          "assessment_id": "asm_210b007e-2561-5da4-849f-153bd03345ec",
+          "assessment_version": 1,
+          "registry_revision": 9,
+          "project_revision": null,
+          "facts_hash": "d1739eef5961d9af9fcc64ba83f6835feaa19c5a19bf8836913daeb1c3c62b42",
+          "usage_hash": "3f07c4057c6cad7a4b81ec9dab42095ccf877095b78be6197586b87cec19bf30",
+          "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+          "assessment_sha256": "4697deedfb1958f67423a312effb38d81210acdae0b80aee2c640debc7f5eb2c"
+        },
+        "before_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/assessments/asm_210b007e-2561-5da4-849f-153bd03345ec/p2/results/p2res_c4be1df6e5599f556c914f938226358704e5ea64d4ff53b262f1b9c027f27267?assessment_version=1",
+        "before": {
+          "schema_version": "openguard-p2-result/1",
+          "algorithm_version": "p2-bound-candidate/1",
+          "result_id": "p2res_c4be1df6e5599f556c914f938226358704e5ea64d4ff53b262f1b9c027f27267",
+          "revision": 1,
+          "previous_result_id": null,
+          "result_sha256": "5bdbaa6023b982d39f9380de547d6bf408c46895870844ca90b47454de9853dc",
+          "binding": {
+            "scan_id": "scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0",
+            "assessment_id": "asm_210b007e-2561-5da4-849f-153bd03345ec",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "d1739eef5961d9af9fcc64ba83f6835feaa19c5a19bf8836913daeb1c3c62b42",
+            "usage_hash": "3f07c4057c6cad7a4b81ec9dab42095ccf877095b78be6197586b87cec19bf30",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "4697deedfb1958f67423a312effb38d81210acdae0b80aee2c640debc7f5eb2c"
+          },
+          "data_scope": "TEST_ONLY",
+          "computation": "DETERMINISTIC_P2B",
+          "publication_status": "succeeded",
+          "formal_effect": "none",
+          "model_calls": 0,
+          "state": "unknown",
+          "created_at": "2026-10-10T08:11:53.565824+00:00",
+          "usage": {
+            "commercial": null,
+            "distributed": null,
+            "modified": null,
+            "network_service": null,
+            "redistributed_assets": null,
+            "source_disclosure": null,
+            "training": null
+          },
+          "resources": [
+            {
+              "subject": {
+                "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+                "version": "4.18.2"
+              },
+              "resource_kind": "component",
+              "state": "unknown",
+              "verification_state": "candidate_only",
+              "scope": "unknown",
+              "evidence_ids": [
+                "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a",
+                "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9"
+              ],
+              "evidence_source_hashes": {
+                "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a": "3c4534d87f6379f9407919e21fa5b097c842e1a14fd6f1d57d62ea004f06c899",
+                "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9": "350587980b5c933275369811ec04705ac0dd9a6b92c5f4dc3429013ddd61fed1"
+              },
+              "material_ids": [],
+              "answer_ids": [],
+              "gaps": [
+                "license_text_and_applicability_unverified",
+                "object_scope_unverified",
+                "upstream_source_attestation_missing"
+              ],
+              "advice": [
+                {
+                  "usage": "commercial",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_commercial_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "modified",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_modified_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "distributed",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_distributed_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "network_service",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_network_service_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "training",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_training_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "redistributed_assets",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_redistributed_assets_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "source_disclosure",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "upstream_source_attestation_missing",
+                    "usage_source_disclosure_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                }
+              ],
+              "user_assertions": {},
+              "inherited_local_support": false,
+              "inherited_support_source": "PARENT_ASSESSMENT_NOT_NEW_VALUE"
+            }
+          ],
+          "questions": [
+            {
+              "question_id": "p2q_baee5bf4e93c685ded7f50b7a94638b322d01426b945013eae23c7ed8eb9cb34",
+              "question_code": "DELIVERY_SCOPE_FOR_RESOURCES",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+                  "version": "4.18.2"
+                }
+              ],
+              "options": [
+                "YES_INCLUDE",
+                "NO_EXCLUDE",
+                "NOT_DECIDED"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            },
+            {
+              "question_id": "p2q_bc59b9b5682a3cb0dd605c7c0531205449b01c53fa101ba657e057fa8ac0f7da",
+              "question_code": "OBLIGATION_FULFILLMENT_IN_DELIVERY",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+                  "version": "4.18.2"
+                }
+              ],
+              "options": [
+                "FULFILLED",
+                "NOT_FULFILLED",
+                "NOT_DELIVERED_YET",
+                "UNKNOWN"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            }
+          ],
+          "material_ids": [],
+          "answer_ids": [],
+          "recomputed_resource_ids": [
+            "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f"
+          ],
+          "reused_resource_ids": [],
+          "companion_summary_id": "p2sum_b46e1315de260210a8c205f990fef62f07d6e8f13f4d9578744caefcdc041cc3"
+        },
+        "errors": {
+          "wrong_scan": {
+            "http_status": 404,
+            "error_code": "p2_scan_not_found",
+            "details": {
+              "reason": "p2_scan_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_assessment": {
+            "http_status": 409,
+            "error_code": "p2_parent_binding_conflict",
+            "details": {
+              "reason": "p2_parent_binding_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_resource": {
+            "http_status": 404,
+            "error_code": "p2_resource_not_found",
+            "details": {
+              "reason": "p2_resource_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_version": {
+            "http_status": 409,
+            "error_code": "p2_resource_version_conflict",
+            "details": {
+              "reason": "p2_resource_version_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "wrong_evidence": {
+            "http_status": 409,
+            "error_code": "p2_evidence_wrong_resource",
+            "details": {
+              "reason": "p2_evidence_wrong_resource",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          },
+          "invalid_filename": {
+            "http_status": 422,
+            "error_code": "p2_unsupported_material_name",
+            "details": {
+              "reason": "p2_unsupported_material_name",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "after": {
+          "schema_version": "openguard-p2-result/1",
+          "algorithm_version": "p2-bound-candidate/1",
+          "result_id": "p2res_d53f82190b9d985d2a382c251bb649ac3a6224aec0a97f1ae43226af008f450a",
+          "revision": 2,
+          "previous_result_id": "p2res_c4be1df6e5599f556c914f938226358704e5ea64d4ff53b262f1b9c027f27267",
+          "result_sha256": "bad4c734ce2aa8fb65ce3ace31406a31ce2d9db4a8caf97ad29f054502e02cb1",
+          "binding": {
+            "scan_id": "scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0",
+            "assessment_id": "asm_210b007e-2561-5da4-849f-153bd03345ec",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "d1739eef5961d9af9fcc64ba83f6835feaa19c5a19bf8836913daeb1c3c62b42",
+            "usage_hash": "3f07c4057c6cad7a4b81ec9dab42095ccf877095b78be6197586b87cec19bf30",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "4697deedfb1958f67423a312effb38d81210acdae0b80aee2c640debc7f5eb2c"
+          },
+          "data_scope": "TEST_ONLY",
+          "computation": "DETERMINISTIC_P2B",
+          "publication_status": "succeeded",
+          "formal_effect": "none",
+          "model_calls": 0,
+          "state": "pending",
+          "created_at": "2026-10-10T08:11:53.647403+00:00",
+          "usage": {
+            "commercial": null,
+            "distributed": null,
+            "modified": null,
+            "network_service": null,
+            "redistributed_assets": null,
+            "source_disclosure": null,
+            "training": null
+          },
+          "resources": [
+            {
+              "subject": {
+                "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+                "version": "4.18.2"
+              },
+              "resource_kind": "component",
+              "state": "pending",
+              "verification_state": "candidate_only",
+              "scope": "unknown",
+              "evidence_ids": [
+                "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a",
+                "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9"
+              ],
+              "evidence_source_hashes": {
+                "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a": "3c4534d87f6379f9407919e21fa5b097c842e1a14fd6f1d57d62ea004f06c899",
+                "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9": "350587980b5c933275369811ec04705ac0dd9a6b92c5f4dc3429013ddd61fed1"
+              },
+              "material_ids": [
+                "p2mat_3173b0c8cde1e0c9b79c9b57fbb70af94be4c6094d5aa6d151c5e46d2e495a1c"
+              ],
+              "answer_ids": [],
+              "gaps": [
+                "license_text_and_applicability_unverified",
+                "object_scope_unverified",
+                "uploaded_material_applicability_pending",
+                "upstream_source_attestation_missing"
+              ],
+              "advice": [
+                {
+                  "usage": "commercial",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_commercial_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "modified",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_modified_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "distributed",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_distributed_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "network_service",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_network_service_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "training",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_training_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "redistributed_assets",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_redistributed_assets_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                },
+                {
+                  "usage": "source_disclosure",
+                  "saved_value": null,
+                  "selection": "UNKNOWN",
+                  "state": "unknown",
+                  "scope": "RESOURCE",
+                  "conditions": [],
+                  "gaps": [
+                    "license_text_and_applicability_unverified",
+                    "object_scope_unverified",
+                    "uploaded_material_applicability_pending",
+                    "upstream_source_attestation_missing",
+                    "usage_source_disclosure_unknown"
+                  ],
+                  "basis_evidence_ids": [],
+                  "rule_ids": []
+                }
+              ],
+              "user_assertions": {},
+              "inherited_local_support": false,
+              "inherited_support_source": "PARENT_ASSESSMENT_NOT_NEW_VALUE"
+            }
+          ],
+          "questions": [
+            {
+              "question_id": "p2q_baee5bf4e93c685ded7f50b7a94638b322d01426b945013eae23c7ed8eb9cb34",
+              "question_code": "DELIVERY_SCOPE_FOR_RESOURCES",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+                  "version": "4.18.2"
+                }
+              ],
+              "options": [
+                "YES_INCLUDE",
+                "NO_EXCLUDE",
+                "NOT_DECIDED"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            },
+            {
+              "question_id": "p2q_bc59b9b5682a3cb0dd605c7c0531205449b01c53fa101ba657e057fa8ac0f7da",
+              "question_code": "OBLIGATION_FULFILLMENT_IN_DELIVERY",
+              "origin": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+              "subjects": [
+                {
+                  "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+                  "version": "4.18.2"
+                }
+              ],
+              "options": [
+                "FULFILLED",
+                "NOT_FULFILLED",
+                "NOT_DELIVERED_YET",
+                "UNKNOWN"
+              ],
+              "scope_rule": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN"
+            }
+          ],
+          "material_ids": [
+            "p2mat_3173b0c8cde1e0c9b79c9b57fbb70af94be4c6094d5aa6d151c5e46d2e495a1c"
+          ],
+          "answer_ids": [],
+          "recomputed_resource_ids": [
+            "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f"
+          ],
+          "reused_resource_ids": [],
+          "companion_summary_id": "p2sum_01fcf06314001f64e9e388e663175af9f8a652a85772bf0683ed0d1cef4a3156"
+        },
+        "after_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/assessments/asm_210b007e-2561-5da4-849f-153bd03345ec/p2/results/p2res_d53f82190b9d985d2a382c251bb649ac3a6224aec0a97f1ae43226af008f450a?assessment_version=1",
+        "material": {
+          "material_id": "p2mat_3173b0c8cde1e0c9b79c9b57fbb70af94be4c6094d5aa6d151c5e46d2e495a1c",
+          "revision": 1,
+          "binding": {
+            "scan_id": "scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0",
+            "assessment_id": "asm_210b007e-2561-5da4-849f-153bd03345ec",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "d1739eef5961d9af9fcc64ba83f6835feaa19c5a19bf8836913daeb1c3c62b42",
+            "usage_hash": "3f07c4057c6cad7a4b81ec9dab42095ccf877095b78be6197586b87cec19bf30",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "4697deedfb1958f67423a312effb38d81210acdae0b80aee2c640debc7f5eb2c"
+          },
+          "subject": {
+            "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+            "version": "4.18.2"
+          },
+          "evidence_ids": [
+            "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a"
+          ],
+          "filename": "LICENSE",
+          "source_sha256": "95a5762890e5c1c9808921cef095661fc482c5e1f0bba31446ac85595df6237c",
+          "byte_count": 1249,
+          "completeness": "FULL_TEXT_CLAIMED",
+          "parse_status": "text_observed",
+          "adoption_status": "adopted_as_unverified_observation",
+          "verification_state": "pending",
+          "source_level": "user_supplied_unverified",
+          "formal_effect": "none",
+          "data_scope": "TEST_ONLY"
+        },
+        "material_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/assessments/asm_210b007e-2561-5da4-849f-153bd03345ec/p2/materials/p2mat_3173b0c8cde1e0c9b79c9b57fbb70af94be4c6094d5aa6d151c5e46d2e495a1c?assessment_version=1",
+        "summary": {
+          "summary_id": "p2sum_01fcf06314001f64e9e388e663175af9f8a652a85772bf0683ed0d1cef4a3156",
+          "result_id": "p2res_d53f82190b9d985d2a382c251bb649ac3a6224aec0a97f1ae43226af008f450a",
+          "result_revision": 2,
+          "result_sha256": "bad4c734ce2aa8fb65ce3ace31406a31ce2d9db4a8caf97ad29f054502e02cb1",
+          "binding": {
+            "scan_id": "scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0",
+            "assessment_id": "asm_210b007e-2561-5da4-849f-153bd03345ec",
+            "assessment_version": 1,
+            "registry_revision": 9,
+            "project_revision": null,
+            "facts_hash": "d1739eef5961d9af9fcc64ba83f6835feaa19c5a19bf8836913daeb1c3c62b42",
+            "usage_hash": "3f07c4057c6cad7a4b81ec9dab42095ccf877095b78be6197586b87cec19bf30",
+            "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+            "assessment_sha256": "4697deedfb1958f67423a312effb38d81210acdae0b80aee2c640debc7f5eb2c"
+          },
+          "material_ids": [
+            "p2mat_3173b0c8cde1e0c9b79c9b57fbb70af94be4c6094d5aa6d151c5e46d2e495a1c"
+          ],
+          "answer_ids": [],
+          "state": "pending",
+          "resource_states": {
+            "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f": "pending"
+          },
+          "formal_effect": "none",
+          "report_kind": "P2_COMPANION_NOT_FORMAL_REPORT"
+        },
+        "summary_get_path": "/api/v1/scans/scn_60b1d4ca-0087-43cf-822a-c1fcc03ff3d0/assessments/asm_210b007e-2561-5da4-849f-153bd03345ec/p2/results/p2res_d53f82190b9d985d2a382c251bb649ac3a6224aec0a97f1ae43226af008f450a/summary?assessment_version=1"
+      }
+    }
+  ]
+}

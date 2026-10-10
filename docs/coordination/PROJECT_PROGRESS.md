@@ -1993,3 +1993,10 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 ### 2026-10-10 P2B 功能分支上传回执
 
 `codex/scan-reliability-integration@824a0bb9e9214a10b60fdf4d9c7ab4dccf5b6611` 已普通推送；范围为 B 规格、前端交接草案、B 单测及 AI/进度/工作日志六文件。三例真实 Scan/Evidence/正式后端接纳仍缺，状态 PARTIAL；A 候选、`integration/p1`、main 与前端分支未改。前表中的“待发布”仅指首次交接提交前状态，本条为发布回执。
+## 2026-10-10 P2B 三例真实 ScanRun/Evidence 与 tag 材料观察（待发布）
+
+| 本轮完成 | 累计可独立运行/演示 | 未完成及责任 | 验证与 GitHub |
+|---|---|---|---|
+| 三个受控第一方 manifest 经正常 ZIP/Assessment HTTP 入口生成独立真实 ScanRun、npm 资源、每例 2 条 Evidence；六个固定 tag 文件真实 GET 的 SHA-256/Git blob SHA-1 复核通过，三份完整 LICENSE 经 A 候选材料入口成为未核验观察。三例各有 P2 Result v1→v2、Material、companion Summary、404/409/422 错误和旧版读回；express 保留为独立 D4，不调 L1。 | 既有 ZIP/Git 扫描、静态候选、正式 Assessment 与原报告；A 候选在隔离 TEST_ONLY 根提供同步 201、不可变 P2 Result、材料 pending 与只读 GET；B 三例身份/Evidence/材料回执可复跑，扫描因规则阶段未接线为 partial。 | 慕明策/A/Owner：冻结正式接纳、可信 npm 发布包/原文适用性与人工范围核验，确认 NOTICE 取得或缺口，旧 Formal Report 读回；xzb：在同一不可变对象和兼容 SHA 上签收。B 草案仍非正式 handoff；阶段 1 PARTIAL。 | B 定向 60 passed，A 候选契约 60 passed；三例重放身份稳定，GET 数据库 SHA 不变。分支 `codex/scan-reliability-integration` 待本轮提交/普通推送；A `afca4c26c2fa45fa285fc9cabf48f52c54a59229`、`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d` 未改。 |
+
+本轮没有新增“已授权”或“义务已履行”功能；完整作品仍需上述正式 P2 接纳与前端签收门禁。可报名/可参赛仍需竞赛材料、规则和基本复现签收；获奖竞争力仍需真人 Gold、正式 Bench、误差与受控性能证据。没有统一分母/权重，不报告完成百分比。

@@ -45,23 +45,27 @@ def test_observed_p2_http_receipt_stays_separate_from_three_unbound_cases():
         "unsupported_format": (422, "p2_unsupported_material_name"),
     }
     for case in draft["cases"]:
-        assert case["object"]["scan_id"] is None
-        assert case["object"]["object_id"] is None
-        assert case["evidence_ids"] == []
-        assert case["after"] is None
+        assert case["object"]["scan_id"].startswith("scn_")
+        assert case["object"]["object_id"].startswith("cmp_")
+        assert len(case["evidence_ids"]) == 2
+        assert case["after"]["state"] == "pending"
+        assert case["after"]["formal_effect"] == "none"
         assert case["display_advice"] is None
+        assert case["review_status"] == "pending"
     assert draft["npm"]["official_metadata_observed"] is False
 
 
-def test_three_fixed_sources_have_hashes_but_no_synthetic_scan_identity():
+def test_three_fixed_sources_keep_upstream_hashes_separate_from_real_scan_identity():
     cases = json.loads(SOURCE_INDEX.read_text(encoding="utf-8"))["cases"]
     assert [(case["name"], case["exact_version"]) for case in cases] == [
         ("is-number", "7.0.0"), ("lodash", "4.17.21"), ("express", "4.18.2")]
     assert cases[2]["role"] == "independent_d4_holdout_not_used_for_rules"
     for case in cases:
-        assert case["scan_id"] is None and case["scan_object_id"] is None
+        assert case["scan_id"].startswith("scn_") and case["scan_object_id"].startswith("cmp_")
+        assert case["scan_input_grade"] == "CONTROLLED_FIRST_PARTY_MANIFEST_ONLY"
+        assert case["scan_status"] == "partial"
         assert case["usage_version"] is None
-        assert case["evidence_ids"] == []
+        assert len(case["evidence_ids"]) == 2
         assert case["source_object_key"] != case["scan_object_id"]
         assert set(case["usage"]) == {"commercial", "modified", "distributed", "network_service",
                                       "training", "redistributed_assets", "source_disclosure"}
@@ -82,9 +86,10 @@ def test_frontend_draft_cannot_masquerade_as_formal_scan_receipt():
     assert draft["field_provenance"]["assessment_id"] == "A_formal_version_and_readback_receipt"
     assert [row["case_id"] for row in draft["cases"]] == [row["case_id"] for row in source["cases"]]
     for row in draft["cases"]:
-        assert row["object"]["scan_id"] is None and row["object"]["object_id"] is None
-        assert row["evidence_ids"] == row["material_ids"] == []
-        assert row["after"] is None and row["display_advice"] is None
+        assert row["object"]["scan_id"].startswith("scn_") and row["object"]["object_id"].startswith("cmp_")
+        assert len(row["evidence_ids"]) == 2
+        assert len(row["material_ids"]) == 1
+        assert row["after"]["state"] == "pending" and row["display_advice"] is None
     assert draft["npm"]["official_metadata_observed"] is False
 
 

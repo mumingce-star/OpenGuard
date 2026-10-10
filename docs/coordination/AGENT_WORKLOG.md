@@ -9508,3 +9508,39 @@
 - 状态：AMENDMENT；作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-10 15:17（Asia/Shanghai）。补充本轮 `20261010-1516-GPT61Sol-P2B真实闭包-PARTIAL` 的 GitHub 发布信息，不改变其 PARTIAL 判定。
 - 产品/测试/交接提交：`codex/scan-reliability-integration@824a0bb9e9214a10b60fdf4d9c7ab4dccf5b6611` 已普通推送；上传范围恰为 `docs/05-ai-assistance-log.md`、`docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/spec/p2b-independent-preparation.md`、`tests/fixtures/p2b/frontend-handoff-draft.json`、`tests/unit/test_p2b_candidates.py` 六文件。暂存差异 `git diff --cached --check` 通过，未包含未跟踪测试/报告目录。
 - A 候选 `afca4c26c2fa45fa285fc9cabf48f52c54a59229`、`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`、main 和 xzb 分支未推送或合并；正式三例与完整作品门禁保持未关闭。
+
+## 20261010-1533-GPT61Sol-P2B三例自动执行指令-START
+
+- 状态：START；作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-10 15:33（Asia/Shanghai）。
+- 目标与范围：基于最新 P2B/A 分支和真实缺口，形成可直接传给后端 B 的中文全自动执行指令，聚焦 is-number、lodash、express 三例正式 ScanRun 与 Evidence 绑定、可核验材料和后端接口交接；不在本轮代执行生产扫描或启停项目服务。
+- 开工核对：依次读取 AGENTS.md、README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF；fetch 后 B 分支 `codex/scan-reliability-integration@7b581668f214a40376e413e149cc50116fca427a`，A 候选 `codex/p2-stage1-backend-20261010@afca4c26c2fa45fa285fc9cabf48f52c54a59229`，`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`。工作区仅既有未跟踪 pytest/reports 目录；其他 worktree 保留，未见本轮同文件在途改动。
+- 预计修改与验收：仅追加本日志 START/收工记录；核对来源索引、B 草案、A 合同与 CR，输出含具体动作、不可伪造字段、失败分支、验证和交付格式的指令；运行 `git diff --check`。估算 token 4,000～8,000；精确遥测不可获得。
+
+## 20261010-1534-GPT61Sol-P2B三例自动执行指令-COMPLETE
+
+- 状态：COMPLETE；作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-10 15:34（Asia/Shanghai）。
+- 目标与结果：形成可直接转交后端 B 的中文执行指令，覆盖三例固定 tag 的真实 ScanRun/资源/Evidence 绑定、来源与材料身份、A 候选合同接线、失败/冲突回执、D4 读回、测试及交接字段；明确 A 未冻结可信来源与接纳时只能签发 pending/partial，不伪造 verified 或正式 handoff。指令在当前用户对话返回，未执行三例扫描。
+- 修改文件：仅向 `docs/coordination/AGENT_WORKLOG.md` 追加本轮 START/COMPLETE；未修改项目实现、Schema、规则、fixtures、前端、其他 worktree 或本机未跟踪产物。
+- 命令与验证：依序读取必读资料并执行 `git fetch origin --prune`、分支/工作区/worktree/最近提交核对；阅读三例来源索引、交接草案和 A 候选合同；`git diff --check` 通过（仅 CRLF 提示）。未运行产品测试，因为本轮仅编写指令；未启停服务、发 npm GET 或进行正式 A 接纳。
+- 接口、Schema、规则及决策：无修改；指令沿用 A 候选同步201、Result revision/GET 精确绑定及 B `candidate_only` 边界。A 分支 Owner Review pending，三例仍无真实 ID。来源 tag Hash 不构成 P0 Evidence，禁止调用方自造 verified/人工核验。
+- 风险与后续责任：后端 B 依指令在获准隔离数据根用正常扫描/评估路径取得三例真实回执；慕明策/A 须冻结可信来源/接纳边界；Root 验收后 xzb 才能正式消费。当前项目 P2 阶段1仍 PARTIAL；`codex/scan-reliability-integration@7b581668f214a40376e413e149cc50116fca427a`，A 候选 `afca4c26c2fa45fa285fc9cabf48f52c54a59229`，`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`；本轮无产品提交/PR/推送/evidence_id。
+- token：本次运行精确 token 数不可获得；开工估算 4,000～8,000，指令编写范围已完成，缺遥测无法核定实际是否在区间内。
+
+## 20261010-1541-GPT61Sol-P2B三例真实扫描-START
+
+- 状态：START；作者与角色：GPT-6.1 Sol / 后端 B；时间：2026-10-10 15:41（Asia/Shanghai）。
+- 目标：按用户明确指令，在隔离 TEST_ONLY 数据根使用正常扫描/评估链路取得 is-number@7.0.0、lodash@4.17.21、express@4.18.2 的真实 ScanRun/Resource/Evidence 身份；核对 A 候选接口、材料与 D4，提交可审阅回执，缺正式接纳则保持 PARTIAL。
+- 开工核对：依序重新读取 AGENTS.md、README、完整共享日志、PROJECT_PROGRESS、SOL_HANDOFF；fetch 后 B `codex/scan-reliability-integration@7b581668f214a40376e413e149cc50116fca427a`、A `codex/p2-stage1-backend-20261010@afca4c26c2fa45fa285fc9cabf48f52c54a59229`、`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`。工作区存在前轮仅追加的未提交共享日志 17 行及四个未跟踪本机测试/报告目录，均保留；其余 worktree 未触碰。未见其他模型在同一 B 样例文件的在途改动。
+- 预计修改：B 样例输入/验证脚本及测试置于 tests/fixtures/p2b、tests/unit；真实回执置于 docs/p2 或 B 交接目录；必要时更新 B 规格、draft、AI 记录、PROJECT_PROGRESS，日志仅追加。A API/Schema/Store/前端业务文件不覆盖。
+- 验收：正常扫描/评估路径和只读 GET 得到三例完整身份并核验 Evidence 闭包；固定来源/材料哈希与版本校验、A 接口负向和 D4 前后测试；pytest/JSON/契约、git diff --check、敏感信息和暂存清单复核，普通提交推送 B 分支。不启停项目服务，不安装/执行目标依赖。token 估算 18,000～32,000；精确遥测不可获得。
+
+## 20261010-1621-GPT61Sol-P2B三例真实扫描-PARTIAL
+
+- 状态：PARTIAL；作者与角色：GPT-6.1 Sol / 后端 B、Root Coordinator；时间：2026-10-10 16:21（Asia/Shanghai）。
+- 目标与结果：三例受控第一方 manifest 经正常 ZIP 上传、Registry、显式 Assessment 与 A 候选 P2 HTTP 路由，取得每例独立真实 ScanRun、npm 资源、2 条 manifest Evidence、Assessment v1、Binding、Result v1→v2、Material 和 companion Summary 的完整 ID/Hash/精确 GET 路径。扫描终态 partial，错误 `rules_stage_not_connected`；before unknown、after pending，均无新许可正向授权。express 仅用于独立 D4，不调 L1。
+- 材料闭包：本轮真实 HTTPS GET 三例固定 tag 的 package.json/LICENSE 六文件，逐文件原字节 SHA-256 与 Git blob SHA-1 匹配历史索引，记录 UTC 获取时间/URL/HTTP；完整 LICENSE 字节经 A 材料入口保存，返回 `FULL_TEXT_CLAIMED`、`text_observed`、`adopted_as_unverified_observation`、`pending`。材料原文未上传 Git；NOTICE 未取得，可信 npm GET 未执行；仓库 tag 与受控 manifest/npm 发布包的适用性仍无可信核验。
+- 修改文件：`tests/fixtures/p2b/run_three_scans.py`、`three-scan-readback.json`、`real-source-index.json`、`frontend-handoff-draft.json`、`tests/unit/test_p2b_three_scan_readback.py`、`tests/unit/test_p2b_candidates.py`、`docs/spec/p2b-independent-preparation.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md`，本日志仅追加。未改 A 分支、前端产品代码、其他 worktree 或用户未跟踪目录。
+- 命令与验证：`git fetch origin --prune` 后基线 B `7b581668f214a40376e413e149cc50116fca427a`、A `afca4c26c2fa45fa285fc9cabf48f52c54a59229`、integration/p1 `aabd7940f65ec8a78b33c863b4db81b400509b7d` 未变。B pytest 60 passed，A 候选 P2 契约 pytest 60 passed；三例同数据根重放扫描/Assessment/Result ID 不变；所有 GET 前后三个数据库 SHA-256 相同；脚本语法、三份 JSON、`git diff --check` 通过。敏感信息增量扫描无命中；历史日志已有本机路径，未改写历史。未启动或停止项目服务、未安装/执行目标包。
+- 接口/Schema/规则决策：B 公共接口、Schema、L1 规则不改；A 候选同步 201 与独立 Result revision 原样使用。实际负例包括错 scan 404 `p2_scan_not_found`、错 Assessment 409 `p2_parent_binding_conflict`、错资源 404 `p2_resource_not_found`、错版本 409 `p2_resource_version_conflict`、错 Evidence 409 `p2_evidence_wrong_resource`、非法材料名 422 `p2_unsupported_material_name`。冲突 verified Evidence 409 由 A 合成契约测试覆盖，三例真实扫描未伪造该冲突。companion Summary 不冒称 Formal Report。
+- 未完成与责任：A/慕明策及 Owner 须冻结正式接纳、可信 npm 发布包适用性和人工范围/许可核验、NOTICE 结论、旧 Formal Report 读回；xzb 需兼容 SHA 与同一不可变数据根签收。正式前端 handoff 保持 draft，阶段 1 不能 PASS。建议 A 在正式服务数据根对这三组 TEST_ONLY 身份读回/迁移或签发同等新身份回执；Root 验收后再解除前端阻塞。分支 `codex/scan-reliability-integration`，本轮提交/普通推送正在收尾，发布 SHA 以后续追加记录为准。
+- token：本次运行精确 token 数不可获得；开工估算 18,000～32,000，三例真实绑定、材料与候选回执已完成，但正式接纳门禁仍依赖 A/Owner，无法用精确遥测判断是否落在估算区间。
