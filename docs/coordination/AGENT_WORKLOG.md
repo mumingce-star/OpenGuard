@@ -9502,3 +9502,9 @@
 - 风险与未完成：A 合同仍待 Owner 冻结；A 真实 v6 未获完整 LICENSE/NOTICE 和旧 Formal Report，接收机无获准数据根。三例真实扫描/Evidence/用途版本、材料身份与人工适用性、唯一可信 npm GET、正式接纳/拒绝、D4 同资源正式前后读回和前端兼容 SHA 均待。B 当前只能交草案，不发布正式 handoff。既有 P1 NOTICE 两条失败、Windows 跨模块及 B baseline 门禁未因本轮关闭。
 - 下一步与责任：慕明策/A 对三例签发权威 Scan/Assessment/Evidence 和材料/来源接纳回执并冻结合同；B 将其接到同组不可变对象、验证正例/缺口/冲突/D4；xzb 在获准数据根按兼容 SHA 签收；Root 最终验收。当前功能分支 `codex/scan-reliability-integration`，本轮提交/PR/推送回执随后记录；`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`，main 未改。
 - token：本次运行精确 token 数不可获得；开工估算 12,000～22,000，限定的 A 回执对照及草案准备已完成，整体请求因权威输入缺失仍 PARTIAL；无精确遥测判断实际是否在估算区间。
+
+## 20261010-1517-GPT61Sol-P2B发布回执-AMENDMENT
+
+- 状态：AMENDMENT；作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-10 15:17（Asia/Shanghai）。补充本轮 `20261010-1516-GPT61Sol-P2B真实闭包-PARTIAL` 的 GitHub 发布信息，不改变其 PARTIAL 判定。
+- 产品/测试/交接提交：`codex/scan-reliability-integration@824a0bb9e9214a10b60fdf4d9c7ab4dccf5b6611` 已普通推送；上传范围恰为 `docs/05-ai-assistance-log.md`、`docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/spec/p2b-independent-preparation.md`、`tests/fixtures/p2b/frontend-handoff-draft.json`、`tests/unit/test_p2b_candidates.py` 六文件。暂存差异 `git diff --cached --check` 通过，未包含未跟踪测试/报告目录。
+- A 候选 `afca4c26c2fa45fa285fc9cabf48f52c54a59229`、`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`、main 和 xzb 分支未推送或合并；正式三例与完整作品门禁保持未关闭。

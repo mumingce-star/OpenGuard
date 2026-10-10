@@ -1989,3 +1989,7 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 已读取 A 候选 `afca4c26c2fa45fa285fc9cabf48f52c54a59229` 合同与真实隔离 HTTP 回执；在 B 的机器草案中单列固定 v6 Scan/Assessment/资源、Evidence、材料、Result v1→v3、companion Summary、精确 GET 与 404/409/422 错误，不将其错绑到三个 npm 上游样例。B 规格补上字段映射和状态语义。 | B 离线 L1/L2/npm/D4 拒绝矩阵；A 候选已能在 TEST_ONLY 固定数据根持久化并读回 v6 独立 Result/Material。A 回执的 201 只证明保存，许可正向结论 0。 | 慕明策/A：Owner 冻结合同、三例真实 ScanRun/Evidence/用途绑定、完整 LICENSE/NOTICE 与可信来源、唯一 npm GET、同版本旧 Formal Report 读回；B：据权威回执绑定三例与做 D4；xzb：以相同不可变对象签收前端兼容 SHA。原 `frontend-handoff-draft.json` 继续标 `integration_draft_not_formal_api`，三例身份仍空。 | B 定向 `58 passed`，两份 JSON 可解析、`git diff --check` 通过。发布回执见后续记录；`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`，`main` 未修改。状态 PARTIAL。 |
 
 现有项目历史上可运行 ZIP/Git 扫描、静态候选与报告；本轮可供离线审阅 A 的固定 v6 HTTP 回执，但没有三例真实 P2 正向样本或 xzb 运行签收。可报名/可参赛仍需竞赛材料、规则和基本复现门禁；可提交完整作品还需上述 P2 生产补证链及 GitHub/前端签收；获奖竞争力仍需真人 Gold、正式 Bench、误差与受控性能证据。无统一分母或权重，不报完成百分比。
+
+### 2026-10-10 P2B 功能分支上传回执
+
+`codex/scan-reliability-integration@824a0bb9e9214a10b60fdf4d9c7ab4dccf5b6611` 已普通推送；范围为 B 规格、前端交接草案、B 单测及 AI/进度/工作日志六文件。三例真实 Scan/Evidence/正式后端接纳仍缺，状态 PARTIAL；A 候选、`integration/p1`、main 与前端分支未改。前表中的“待发布”仅指首次交接提交前状态，本条为发布回执。
