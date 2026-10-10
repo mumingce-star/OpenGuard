@@ -1991,3 +1991,7 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 详见 `docs/p2/stage1-review.md`、`docs/spec/p2-backend-contract.md` 及相邻原始测试/脱敏HTTP回执。新材料仍pending、回答仍USER_ASSERTED，来源接纳缺口不能靠P0人审flag补齐；新正向许可判断为0，既有Pydantic支持不计新成果。阶段1整包仍PARTIAL、xzb整体阶段2仍BLOCKED，Owner Review待定。Qwen/proof、Python阶段A、Trio和Formal历史边界不变；无前端实现、无模型或原库写入、无PR/合并/部署。
 
 可报名/可参赛仍需规则/材料与基本复现签收；完整作品还缺上述真实正向链和跨栈签收；竞争力需人工Gold/Bench/误差及性能证据。本轮不编造完成百分比，也不把静态交接成功升级为接收机运行通过。
+
+### P2 A 候选分支发布回执
+
+实现及证据`83fdff54be252b9355a503c4eec4c70489babb78`已上传`codex/p2-stage1-backend-20261010`并读回远端SHA；integration、cz、main/xzb未改。公开内容是28个源码/合同/Schema/测试/脱敏证据/日志文件，不含原数据库、完整私有材料或原模型输入。Owner Review待定、整体PARTIAL、xzb整体阶段2BLOCKED；分支发布不是集成/生产接受。当前追加仅为发布状态记录，不重跑产品或改变候选源码。

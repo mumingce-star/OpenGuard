@@ -9510,3 +9510,10 @@
 
 - 更正上一条收尾记录：API进程退出码实际为`-15`（SIGTERM），三个日志均包含`Application shutdown complete`，不是0；Docker stop命令退出0，但容器State.ExitCode=`137`、OOMKilled=false。停止前容器只剩sleep，证据已持久留存在任务输出挂载。其他容器状态/端口比对不变。详见`docs/p2/runtime-receipt.json`；不把命令退出码当容器退出码。
 - 上条记录ID中的`1450`为时间段误写；实际收尾在2026-10-10 13:50后（Asia/Shanghai），原记录不改写。最终测试与HTTP结果不受该记录更正影响。
+
+## 20261010-1355-GPT6-P2Stage1BackendPublish-PARTIAL
+
+- 作者/角色：GPT-6 / 后端 A、Root；状态PARTIAL。候选实现及证据提交`83fdff54be252b9355a503c4eec4c70489babb78`已普通推送至`mumingce-star/OpenGuard`的`codex/p2-stage1-backend-20261010`，远端完整SHA已读回。integration与cz仍分别为`aabd7940f65ec8a78b33c863b4db81b400509b7d`、`6dc340776bc63c3b925d7fa3645efbbd40c4ccf9`。没有PR、merge、部署或其他分支写入。
+- 提交前：28文件白名单、JSON重复键/非有限数检查、真实响应wire Hash及定向敏感信息检查通过；`git diff --check`通过。原始Fail-first JUnit的一条断言标记含尾随空白，仅该原始证据设置`.gitattributes`空白例外以保留原字节，未豁免产品/测试源码检查。
+- 最终后端430唯一节点428PASS/2个父本可复现FAIL/0SKIP；最终31次真实HTTP及隔离root逐表核对单列。模型/原业务库/Formal写入0；本机任务API和容器已停止，收尾码见上条AMENDMENT及runtime receipt。
+- Owner Review未发生，可信正向来源接纳/新真实正例与xzb兼容/接收机签收仍缺；阶段1整包不PASS，xzb整体阶段2仍BLOCKED。此追加仅记录已发生的分支发布，不提升接受状态、不进入下一工作包。
