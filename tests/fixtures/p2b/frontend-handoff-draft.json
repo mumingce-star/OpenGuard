@@ -37,6 +37,66 @@
     "three_scan_runs_with_before_after_assessments": null,
     "old_report_and_assessment_readbacks": null
   },
+  "observed_backend_candidate": {
+    "source_branch": "codex/p2-stage1-backend-20261010",
+    "backend_commit_sha": "afca4c26c2fa45fa285fc9cabf48f52c54a59229",
+    "receipt_path_on_source_branch": "docs/p2/real-http-receipts.json",
+    "contract_path_on_source_branch": "docs/spec/p2-backend-contract.md",
+    "data_grade": "REAL_LOOPBACK_HTTP_ON_RESTORED_FIXED_V6_TEST_ONLY_ROOT",
+    "owner_review": "pending",
+    "frontend_compatible_sha": null,
+    "separate_from_three_upstream_package_cases": true,
+    "api_base": "/api/v1/scans/scn_6c0f972a-18c1-4566-a7fa-df623053bea5/assessments/asm_8412408d-1c91-51e1-99e0-c135239bf510/p2",
+    "scan_id": "scn_6c0f972a-18c1-4566-a7fa-df623053bea5",
+    "assessment_id": "asm_8412408d-1c91-51e1-99e0-c135239bf510",
+    "assessment_version": 6,
+    "subject": {"resource_id": "cmp_0c32e291-83e7-5bc9-b474-1e5921b668b2", "version": "2.13.4", "provider": null},
+    "evidence_ids": ["evd_3572442a-235f-5048-98cb-246536791eb2", "evd_82906a46-4439-50f3-bd0a-807784efa9c5", "evd_99c84e41-a588-5c8e-ac02-104ad689f7c4"],
+    "evidence_source_hashes": {
+      "evd_3572442a-235f-5048-98cb-246536791eb2": "d99c16b7f62225a69822f9358099667bcc5211607048af3f0dd91178de175789",
+      "evd_82906a46-4439-50f3-bd0a-807784efa9c5": "a9e186f3ca16b5eef84318e7a701721351a00cb7b8ae3a4394b67b49e3529ef3",
+      "evd_99c84e41-a588-5c8e-ac02-104ad689f7c4": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+    },
+    "binding": {
+      "facts_hash": "8cf655e496c7533a8e1e78b73a840d5eeeff03b6bfc159a8d420999dfa396376",
+      "usage_hash": "d3bbfc3ac14ed60232a499b6fdb84fff54621d0aa2ba4a4c83c87567d97486aa",
+      "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "assessment_sha256": "729706b4ca6f19fb99848d8ce2e76ead41ea5750332cb0dbbcd98c515888c390"
+    },
+    "before": {
+      "result_id": "p2res_9f3d4ff6e4ded6e0ca653ef388bca2aff70ab94e11f0d8d4d38d6d6a7dff8c61",
+      "revision": 1,
+      "result_sha256": "1c5e3706f19f9f075a5faa5c6e3ca838197e0b43d0edb73d8e4400b26dee7e58",
+      "state": "unknown",
+      "subject_state": "unknown",
+      "get_method": "GET",
+      "get_path": "/api/v1/scans/scn_6c0f972a-18c1-4566-a7fa-df623053bea5/assessments/asm_8412408d-1c91-51e1-99e0-c135239bf510/p2/results/p2res_9f3d4ff6e4ded6e0ca653ef388bca2aff70ab94e11f0d8d4d38d6d6a7dff8c61?assessment_version=6"
+    },
+    "after": {
+      "result_id": "p2res_5627887dcb3805d594201ea0ce7f71f9c775d16ea31fc7b568876938dc77e250",
+      "revision": 3,
+      "result_sha256": "0892d7166565ae4a70d4a3a75a6df8396ec770cff48483bbfad791a9b9a0e675",
+      "state": "partial",
+      "subject_state": "pending",
+      "recomputed_resource_ids": ["cmp_0c32e291-83e7-5bc9-b474-1e5921b668b2"],
+      "reused_resource_count": 44,
+      "get_method": "GET",
+      "get_path": "/api/v1/scans/scn_6c0f972a-18c1-4566-a7fa-df623053bea5/assessments/asm_8412408d-1c91-51e1-99e0-c135239bf510/p2/results/p2res_5627887dcb3805d594201ea0ce7f71f9c775d16ea31fc7b568876938dc77e250?assessment_version=6",
+      "summary_id": "p2sum_dba7a787e97d0266931a4bc8877b12e5ce75ff25bfd150a4e66f283873e36057",
+      "summary_kind": "P2_COMPANION_NOT_FORMAL_REPORT",
+      "summary_get_path": "/api/v1/scans/scn_6c0f972a-18c1-4566-a7fa-df623053bea5/assessments/asm_8412408d-1c91-51e1-99e0-c135239bf510/p2/results/p2res_5627887dcb3805d594201ea0ce7f71f9c775d16ea31fc7b568876938dc77e250/summary?assessment_version=6"
+    },
+    "intermediate_answer": {"answer_id": "p2ans_343c7bc43b8c30b4e09a20d311fc0668655f70f498c00a19165e1e99b941e13b", "answer_code": "NO_EXCLUDE", "provenance": "USER_ASSERTED", "result_id": "p2res_f957fbc9262c97e1e13591234c483b30e628885ca52ae82a1d864529a6c2284d", "result_revision": 2},
+    "material": {"material_id": "p2mat_12349e2c493de1caa787b629d84a4d785f56c095e4c241d45d54c53ccb18ff00", "filename": "LICENSE", "completeness": "EXCERPT", "source_sha256": "d3ad4dc63e5b8fc04d517819b4ea403c6652a23d8b704e889eaa20c768fb93ff", "hash_meaning": "uploaded_excerpts_raw_utf8_bytes_not_upstream_license", "parse_status": "text_observed", "adoption_status": "adopted_as_unverified_observation", "verification_state": "pending", "source_level": "user_supplied_unverified"},
+    "negative_http": [
+      {"case": "wrong_resource_id", "status": 404, "error_code": "p2_resource_not_found", "details_state": "rejected"},
+      {"case": "wrong_version", "status": 409, "error_code": "p2_resource_version_conflict", "details_state": "conflict"},
+      {"case": "wrong_evidence", "status": 409, "error_code": "p2_evidence_wrong_resource", "details_state": "conflict"},
+      {"case": "wrong_assessment", "status": 409, "error_code": "p2_parent_binding_conflict", "details_state": "conflict"},
+      {"case": "unsupported_format", "status": 422, "error_code": "p2_unsupported_material_name", "details_state": "rejected"}
+    ],
+    "missing_for_formal_handoff": ["three_package_scan_and_evidence_bindings", "trusted_upstream_source_attestation", "full_license_and_notice_material", "human_applicability_review", "formal_report_readback", "frontend_compatible_sha", "owner_acceptance"]
+  },
   "formal_fields_pending_a": ["scan_id", "object_id", "evidence_ids", "material_ids", "assessment_id", "report_id", "usage_version", "snapshot_sha256", "admission_state"],
   "cases": [
     {

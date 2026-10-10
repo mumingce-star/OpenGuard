@@ -176,3 +176,21 @@ B 单测逐项验证：错 resource ID/版本、悬空/重复 Evidence、已核�
 新增 Evidence 内容摘要格式错误使用 `invalid_added_content_hash`；旧 Assessment/报告读回摘要格式错误使用 `invalid_readback_hash`。两者都不给部分成功的对账结果。
 
 `evaluate_bound_candidate` 另接受可选的 `expected_scan_id`、`expected_usage_version` pin；与内部快照不符时分别拒绝 `snapshot_scan_mismatch`、`usage_version_mismatch`。生产调用时只有 A 能从已认证 ScanRun 与已版本化用户用途签发这两个值，B 的比较不验证签发者。现有合成测试仅检验错绑拒绝，不构成真实 P2-01 DTO 或接纳回执。
+
+## 2026-10-10 A 候选 HTTP 契约与 B 三例交接边界
+
+`origin/codex/p2-stage1-backend-20261010@afca4c26c2fa45fa285fc9cabf48f52c54a59229` 已提供可持久化的 P2 独立结果、回答与材料观察 API；Owner Review 仍为 pending。其合同及真实隔离 HTTP 回执位于该分支的 `docs/spec/p2-backend-contract.md`、`docs/p2/real-http-receipts.json`。B 交接草案现单独列出这组固定 v6 回执，**不把 v6 对象套到 is-number、lodash 或 express 上**。三例真实扫描身份仍缺，阶段 1 整包为 PARTIAL。
+
+| B 候选/材料字段 | A 候选服务端字段或动作 | 接纳及展示边界 |
+|---|---|---|
+| B `snapshot.scan_id`、对象 `id/version`、用途版本及 `snapshot_sha256` | A 从 Registry/Assessment 生成 `Binding.scan_id/assessment_id/assessment_version/registry_revision/facts_hash/usage_hash/rule_version/assessment_sha256`，Result 的 `resources[].subject` 精确绑定对象/版本 | A 不信任请求方自报快照摘要；B 内部 Hash 形状检查不能替代 A 签发。A 当前不提供 B 原型 `usage.version` 字段；以 A 的 Assessment version + usage_hash 为正式读取绑定，不能自行互换语义。 |
+| B `basis_evidence_ids`、逐项来源 Hash、规则 ID/版本 | A `resources[].evidence_ids/evidence_source_hashes`、`advice[].basis_evidence_ids/rule_ids` 和 `Binding.rule_version` | A 当前真实 v6 回执中 basis/rule_ids 为空，故没有新的许可正向候选。Evidence source hash 是事实来源内容摘要，不是 Evidence 记录的自身摘要，也不证明适用性。 |
+| B `candidate_only`、`unknown`/`pending`/`partial`、条件/缺口 | A `resources[].verification_state/state/gaps/advice` 与 Result `state`；`publication_status=succeeded` 仅指独立结果保存 | 旧 P0 已有人工标记不能自动成为 B `upstream_verified`。`text_observed`、用户回答 `USER_ASSERTED`、新 Result 201 均不升级授权或义务履行。Finding 仍为待核查线索。 |
+| B 小文本 `content_sha256`、对象和精确版本、原文件类型 | A `POST P/materials`，原子创建 Material + 新 Result + companion Summary；`GET P/materials/{id}?assessment_version=N` | A 示例是 v6 资源 `2.13.4` 的 1000 字节 LICENSE **片段**，`user_supplied_unverified`/`pending`，不是三例的完整 LICENSE/NOTICE，也不是官方 npm 或适用性证明。`source_sha256` 是本次上传片段原始 UTF-8 字节 Hash。 |
+| B D4 前后候选变化 | A 独立 Result `revision` 1→2→3，`previous_result_id`、`recomputed_resource_ids`、`reused_resource_ids`，同版 companion Summary | 同一 Assessment v6 未增加版本；旧 Result 精确 GET 保留，前端展示服务端差异，不计算第二套。Summary 的 `report_kind=P2_COMPANION_NOT_FORMAL_REPORT`，不能冒称原 Formal Report。 |
+
+正式路由前缀为 `P=/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2`。`POST P/results`、`POST P/answers`、`POST P/materials` 成功返回 201；`GET P/binding`、`GET P/results/{result_id}?assessment_version=N`、`GET P/results/{result_id}/summary?assessment_version=N` 和对应 answer/material GET 只读。A 的 L2 同步返回新 Result revision，**没有 Job ID 或 202 状态**；正式 handoff 中 L2 Job ID 应明确为“不适用”，不可制造。其 `details.state` 区分 rejected/conflict/unavailable；隔离 HTTP 实证包括错对象 404 `p2_resource_not_found`，错版本 409 `p2_resource_version_conflict`，错 Evidence 409 `p2_evidence_wrong_resource`，错 Assessment 409 `p2_parent_binding_conflict`，不支持文件名 422 `p2_unsupported_material_name`。前端遇 409 应精确 GET 当前 head 和 binding，按新动作重新提交；超时要用原 idempotency key 与原 body 重放，不能推断写入失败。
+
+真实 v6 样例的完整 scan/Assessment/resource/Evidence/Result/Answer/Material/Summary ID、Hash、GET 路径和后端候选 SHA 均见 `frontend-handoff-draft.json` 的 `observed_backend_candidate`。这是 `TEST_ONLY` 的真实 HTTP 回执索引，接收机目前没有相应数据根；URL 路径可直接用于**获准恢复同一固定数据根后的服务**，不能声称本机或 xzb 机器现在可访问。示例 before Result v1 与 after Result v3 的 facts_hash、usage_hash 与 Assessment version 都相同；中间唯一用户回答为 `NO_EXCLUDE`，随后仅上传一份未核验 LICENSE 片段。受影响资源 1 项，44 项复用；before/after 的新许可正向结论均为零。原旧 Formal Report 未恢复，故 D4 的“同版本 Formal Report 读回”仍缺。
+
+三例剩余门禁由 A/慕明策签发：每例真实 ScanRun、资源、用途绑定和完整 Evidence 闭包；可信上游来源与原文适用性证明；正确版本的完整 LICENSE/NOTICE 小文本及材料采用回执；同一资源的补证前后 Result/Assessment/原 Report 读回；可信 npm 唯一 GET 及出口回执。B 据该回执校对 `is-number@7.0.0` 条件候选、`lodash@4.17.21` 范围缺口和保留 `express@4.18.2` D4；xzb 最后以 A 正式接口与同一批不可变对象签收。当前不可把草案改名为正式 handoff，也不可宣布阶段 1 PASS。

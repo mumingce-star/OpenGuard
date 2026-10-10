@@ -20,6 +20,39 @@ SOURCE_INDEX = Path(__file__).resolve().parents[1] / "fixtures" / "p2b" / "real-
 HANDOFF_DRAFT = SOURCE_INDEX.with_name("frontend-handoff-draft.json")
 
 
+def test_observed_p2_http_receipt_stays_separate_from_three_unbound_cases():
+    draft = json.loads(HANDOFF_DRAFT.read_text(encoding="utf-8"))
+    observed = draft["observed_backend_candidate"]
+    assert draft["status"] == "integration_draft_not_formal_api"
+    assert observed["separate_from_three_upstream_package_cases"] is True
+    assert observed["data_grade"] == "REAL_LOOPBACK_HTTP_ON_RESTORED_FIXED_V6_TEST_ONLY_ROOT"
+    assert observed["owner_review"] == "pending"
+    assert observed["frontend_compatible_sha"] is None
+    assert observed["before"]["revision"] == 1
+    assert observed["after"]["revision"] == 3
+    assert observed["before"]["result_id"] != observed["after"]["result_id"]
+    assert observed["after"]["recomputed_resource_ids"] == [observed["subject"]["resource_id"]]
+    assert observed["after"]["reused_resource_count"] == 44
+    assert observed["after"]["summary_kind"] == "P2_COMPANION_NOT_FORMAL_REPORT"
+    assert observed["material"]["parse_status"] == "text_observed"
+    assert observed["material"]["verification_state"] == "pending"
+    assert observed["material"]["source_level"] == "user_supplied_unverified"
+    assert {row["case"]: (row["status"], row["error_code"]) for row in observed["negative_http"]} == {
+        "wrong_resource_id": (404, "p2_resource_not_found"),
+        "wrong_version": (409, "p2_resource_version_conflict"),
+        "wrong_evidence": (409, "p2_evidence_wrong_resource"),
+        "wrong_assessment": (409, "p2_parent_binding_conflict"),
+        "unsupported_format": (422, "p2_unsupported_material_name"),
+    }
+    for case in draft["cases"]:
+        assert case["object"]["scan_id"] is None
+        assert case["object"]["object_id"] is None
+        assert case["evidence_ids"] == []
+        assert case["after"] is None
+        assert case["display_advice"] is None
+    assert draft["npm"]["official_metadata_observed"] is False
+
+
 def test_three_fixed_sources_have_hashes_but_no_synthetic_scan_identity():
     cases = json.loads(SOURCE_INDEX.read_text(encoding="utf-8"))["cases"]
     assert [(case["name"], case["exact_version"]) for case in cases] == [

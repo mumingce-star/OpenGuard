@@ -483,3 +483,9 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 
 - 工具/模型：Codex GPT-6.1 Sol；AI 辅助审查 `evaluate_bound_candidate` 的同扫描 Evidence 闭包、许可/范围冲突、partial 和模型失败路径，补同摘要适用性冲突、依据来源 Hash 缺失、Evidence 重标、无命名缺口的 partial 和模型 fallback 回归。既有扫描/用途版本 pin 未重写，未改变候选逻辑或正式授权语义。
 - 本轮合成 P2B 定向 `57 passed in 0.56s`；编译、两份 JSON 解析、B 文件差异检查与有限敏感信息/第三方原文特征检查通过。全仓 `git diff --check` 因共享日志其他追加记录行尾空格未过；按日志只追加规则未改写其历史。
+
+## 2026-10-10 P2B 与 A 候选 HTTP 回执对照
+
+- 使用模型：GPT-6.1 Sol；用途：读取已发布 A 候选合同和 TEST_ONLY 真实 HTTP 回执，整理 B→A 字段映射、机器草案中的不可变 ID/Hash/错误码以及交接门禁；未生成新的许可证事实、人工核验或官方 npm 回执。
+- 团队复核点：慕明策/A 需核对源分支 `afca4c26c2fa45fa285fc9cabf48f52c54a59229` 的合同与回执，签发三个 npm 样例的真实绑定；xzb 仅在兼容 SHA 与获准数据根一致后消费。当前样例继续为 TEST_ONLY 独立回执，三例 `scan_id`/Evidence 留空。
+- 验证：B 定向 pytest 58 passed、JSON 解析与差异检查；未执行 npm GET、项目服务启停或真人适用性裁决。不得从 `text_observed`、P0 人审旧标记或 HTTP 201 推出授权 verified。
