@@ -2004,3 +2004,7 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 ### 2026-10-10 P2B 三例功能分支上传回执
 
 `codex/scan-reliability-integration@e891d26811947be1ca95eaccfca33b66f27bfc37` 已普通推送；10 个文件包括三例 TEST_ONLY 机器读回、固定 tag 来源台账、前端 draft、复现脚本、B 测试和协调文档。推送不等于 A/Owner 正式接纳、xzb 联调签收或 `integration/p1` 合并，阶段 1 保持 PARTIAL。
+
+### 2026-10-10 17:02 GitHub 发布状态核验
+
+工作分支本地与 GitHub 远端同为 `30f0cce2fb8fd89109df39433bd9ccc27f23f1f8`，今天提交的 P2B 代码、测试与三例受控扫描回执均已上传；本轮无新的产品文件待提交。`integration/p1@aabd794`、`main@476d954` 未变；正式三例 handoff、A/Owner 接纳与前端签收仍未关闭。

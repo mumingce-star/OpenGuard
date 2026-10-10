@@ -9548,3 +9548,19 @@
 ## 20261010-1622-GPT61Sol-P2B三例发布回执-AMENDMENT
 
 - 作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-10 16:22（Asia/Shanghai）。修正上一条“提交/推送正在收尾”：`codex/scan-reliability-integration@e891d26811947be1ca95eaccfca33b66f27bfc37` 已普通推送至 GitHub，上传范围为上一条列出的 10 个 B 文件。`git diff --cached --check` 与暂存文件清单复核通过；未提交四个既有未跟踪本机目录。A 分支、`integration/p1`、main、xzb 分支未推送或合并。阶段 1 仍 PARTIAL，正式 handoff 未发布。
+
+## 20261010-1701-GPT6Sol-代码发布与当日进展-START
+
+- 状态：START；作者与角色：GPT-6 Sol / Root Coordinator；时间：2026-10-10 17:01（Asia/Shanghai）。
+- 目标与范围：按用户要求核验当前全部可发布代码是否已上传到 `https://github.com/mumingce-star/OpenGuard`，若本地领先则以普通非强制推送补齐；按今日共享日志和提交汇报继续的任务。预计仅追加本共享日志与必要的进度发布回执；保留本机 pytest、`reports/` 等未跟踪产物。
+- 验收：核对远端/本地 SHA、分支祖先与待提交清单，运行 `git diff --check` 与敏感范围检查；若需提交日志仅提交暂存内容并读回 GitHub SHA。token 估算 3,000～6,000，精确遥测不可获得。
+
+## 20261010-1702-GPT6Sol-代码发布与当日进展-COMPLETE
+
+- 状态：COMPLETE；作者与角色：GPT-6 Sol / Root Coordinator；时间：2026-10-10 17:02（Asia/Shanghai）。
+- 目标与实际结果：本地 `codex/scan-reliability-integration@30f0cce2fb8fd89109df39433bd9ccc27f23f1f8` 与 GitHub 远端 SHA 完全一致，今日所有已提交的 P2B 代码、测试、固定来源回执和协调文档均已上传；无需重复产品提交。按今日共享日志和提交汇总用户所问任务。`integration/p1` 和 `main` 均未在本轮改变。
+- 修改/新增文件：本轮仅向 `docs/coordination/AGENT_WORKLOG.md` 追加 START/COMPLETE，并在 `PROJECT_PROGRESS.md` 追加发布核验；无业务代码、Schema、接口、测试或 fixture 修改。本机四个未跟踪测试/报告目录原样保留。
+- 命令与测试：读取 README、完整共享日志、进度与 Sol 交接；检查分支、工作区、今日提交、三条远端 SHA 和 `git diff --check`（通过，仅 CRLF 提示）。本轮没有代码改动，未重跑产品测试；今日先前 B 三例定向 `60 passed`、A 候选契约 `60 passed`、稳定重放与数据库 Hash 读回属于已记录的历史回执，不冒充本轮运行。未启停服务。
+- 接口、Schema、规则与决策：无新变更。今日三例是受控 TEST_ONLY、扫描终态 partial 和材料未核验观察，不能提升为正式许可授权、完整 Formal Report 或可交前端的正式 handoff。
+- 已知风险与下一步：A/Owner 冻结正式接纳、可信 npm 发布包适用性与人工范围核验、NOTICE/旧 Formal Report 读回；B 按冻结契约完成正式 D4；xzb 在相同不可变对象与兼容 SHA 上签收；Root 继续处理 P1 NOTICE、Bench/Gold、Windows 跨模块和 baseline 门禁。责任分别为 A/Owner、B、前端/xzb 和 Root。
+- GitHub：`git@github.com:mumingce-star/OpenGuard.git` 的工作分支 `30f0cce2fb8fd89109df39433bd9ccc27f23f1f8` 已读回；`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`；`main@476d954998be6ed943532791530f5d6234f4893f`。本轮日志/进度提交 SHA 另见上传回执。token：本次运行精确 token 数不可获得；开工估算 3,000～6,000，核验目标完成，缺精确遥测无法核定实际用量。
