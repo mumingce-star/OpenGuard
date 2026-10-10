@@ -9544,3 +9544,7 @@
 - 接口/Schema/规则决策：B 公共接口、Schema、L1 规则不改；A 候选同步 201 与独立 Result revision 原样使用。实际负例包括错 scan 404 `p2_scan_not_found`、错 Assessment 409 `p2_parent_binding_conflict`、错资源 404 `p2_resource_not_found`、错版本 409 `p2_resource_version_conflict`、错 Evidence 409 `p2_evidence_wrong_resource`、非法材料名 422 `p2_unsupported_material_name`。冲突 verified Evidence 409 由 A 合成契约测试覆盖，三例真实扫描未伪造该冲突。companion Summary 不冒称 Formal Report。
 - 未完成与责任：A/慕明策及 Owner 须冻结正式接纳、可信 npm 发布包适用性和人工范围/许可核验、NOTICE 结论、旧 Formal Report 读回；xzb 需兼容 SHA 与同一不可变数据根签收。正式前端 handoff 保持 draft，阶段 1 不能 PASS。建议 A 在正式服务数据根对这三组 TEST_ONLY 身份读回/迁移或签发同等新身份回执；Root 验收后再解除前端阻塞。分支 `codex/scan-reliability-integration`，本轮提交/普通推送正在收尾，发布 SHA 以后续追加记录为准。
 - token：本次运行精确 token 数不可获得；开工估算 18,000～32,000，三例真实绑定、材料与候选回执已完成，但正式接纳门禁仍依赖 A/Owner，无法用精确遥测判断是否落在估算区间。
+
+## 20261010-1622-GPT61Sol-P2B三例发布回执-AMENDMENT
+
+- 作者与角色：GPT-6.1 Sol / Root Coordinator；时间：2026-10-10 16:22（Asia/Shanghai）。修正上一条“提交/推送正在收尾”：`codex/scan-reliability-integration@e891d26811947be1ca95eaccfca33b66f27bfc37` 已普通推送至 GitHub，上传范围为上一条列出的 10 个 B 文件。`git diff --cached --check` 与暂存文件清单复核通过；未提交四个既有未跟踪本机目录。A 分支、`integration/p1`、main、xzb 分支未推送或合并。阶段 1 仍 PARTIAL，正式 handoff 未发布。
