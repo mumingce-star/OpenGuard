@@ -467,6 +467,7 @@ def create_app(
     remediation_service=None,
     report_v2_service=None,
     notice_draft_service=None,
+    p2_service=None,
     profile_service=None,
     profile_routes_enabled=True,
 ) -> FastAPI:
@@ -517,6 +518,7 @@ def create_app(
     app.state.remediation_service = remediation_service
     app.state.report_v2_service = report_v2_service
     app.state.notice_draft_service = notice_draft_service
+    app.state.p2_service = p2_service
     from app.p1.profile import ProfileService
     app.state.profile_service = profile_service or ProfileService(registry)
     app.state.history_cursor_key = secrets.token_bytes(32)
@@ -541,7 +543,9 @@ def create_app(
         notice_write = (request.method == 'POST' and len(segments) == 7
                         and segments[:3] == ['api', 'v1', 'scans']
                         and segments[4] == 'assessments' and segments[6] == 'notice-drafts')
-        if task_write or report_write or existing_write or profile_write or notice_write:
+        p2_write = (request.method == 'POST' and len(segments) == 8 and segments[:3] == ['api', 'v1', 'scans']
+                    and segments[4] == 'assessments' and segments[6] == 'p2')
+        if task_write or report_write or existing_write or profile_write or notice_write or p2_write:
             from urllib.parse import urlsplit
             configured = os.environ.get("OPENGUARD_WEB_ORIGINS", "http://127.0.0.1:8080,http://localhost:8080")
             allowed = configured.split(",")
@@ -558,10 +562,18 @@ def create_app(
                 chunks=[]; size=0
                 async for chunk in request.stream():
                     size += len(chunk)
-                    if size > 16384:
+                    limit = 98304 if p2_write and segments[7] == 'materials' else 16384
+                    if size > limit:
                         return _error_response(request, ApiError(status_code=413,code="request_too_large",message="问题内容超过请求容量。",reason="request_too_large"))
                     chunks.append(chunk)
                 request._body = b"".join(chunks)
+                if p2_write:
+                    from app.p2.contract import strict_json, P2Error
+                    from app.api.p2 import error_response
+                    try:
+                        strict_json(request._body)
+                    except (ValueError, UnicodeError):
+                        return error_response(request, P2Error('p2_json_invalid', 422))
         return await call_next(request)
 
     @app.middleware("http")
@@ -648,6 +660,10 @@ def create_app(
     @app.exception_handler(RequestValidationError)
     async def handle_validation_error(request: Request, _: RequestValidationError) -> JSONResponse:
         route = request.scope.get("route")
+        if '/p2/' in (getattr(route, 'path', '') or ''):
+            from app.api.p2 import error_response
+            from app.p2.contract import P2Error
+            return error_response(request, P2Error('p2_request_invalid', 422))
         if (request.method, getattr(route, "path", None)) == ("POST", "/api/v1/scans/{scan_id}/resource-profiles/refresh"):
             return _error_response(request, ApiError(
                 status_code=400, code="invalid_argument",
@@ -720,6 +736,8 @@ def create_app(
         )
 
     app.include_router(_router())
+    from app.api.p2 import router as p2_router
+    app.include_router(p2_router())
     from app.api.report_v2 import router as report_v2_router
     app.include_router(report_v2_router())
     from app.api.notice_draft import router as notice_draft_router
@@ -882,6 +900,21 @@ def create_default_app() -> FastAPI:
         else None
     )
     profile_service = None
+    p2_service = None
+    p2_enabled = os.environ.get('OPENGUARD_ENABLE_P2', '0')
+    p2_readonly = os.environ.get('OPENGUARD_P2_READONLY', '1')
+    p2_scope = os.environ.get('OPENGUARD_P2_DATA_SCOPE', 'OWNER')
+    if p2_enabled not in {'0', '1'} or p2_readonly not in {'0', '1'} or p2_scope not in {'OWNER', 'TEST_ONLY'}:
+        raise RuntimeError('invalid P2 configuration')
+    if p2_enabled == '1':
+        if assessment_service is None:
+            raise RuntimeError('P2 requires OPENGUARD_ENABLE_ASSESSMENTS=1')
+        from app.p2.store import P2Store
+        from app.p2.service import P2Service
+        p2_store = P2Store(data_dir / 'p2.db')
+        p2_store.initialize()
+        p2_service = P2Service(registry, assessment_service.store, p2_store,
+                               readonly=p2_readonly == '1', data_scope=p2_scope)
     if profile_metadata_enabled == "1":
         from app.p1.profile import ProfileService
         from app.p1.profile_store import MetadataStore
@@ -909,6 +942,7 @@ def create_default_app() -> FastAPI:
         remediation_service=remediation_service,
         report_v2_service=report_v2_service,
         notice_draft_service=notice_draft_service,
+        p2_service=p2_service,
         profile_service=profile_service,
     )
 

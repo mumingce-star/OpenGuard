@@ -1,0 +1,1819 @@
+{
+  "test_kind": "CONTROLLED_PYTEST_NOT_REAL_PROJECT_VALUE",
+  "final": {
+    "source": "evidence/final-backend-4.xml",
+    "sha256": "e8d4795d217823b00a92ea0be197a0d8843649b90e1794e8796ea5d0865ca8a9",
+    "counts": {
+      "PASS": 428,
+      "FAIL": 2
+    },
+    "unique_nodes": 430,
+    "nodes": [
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_default_factory_candidates_and_exact_immutable_get",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_answer_new_revision_same_assessment_and_summary",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_is_pending_observation_not_new_license",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[assessment_version-2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[facts_hash-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[usage_hash-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[rule_version-other]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[registry_revision-99]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[project_revision-other]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[assessment_sha256-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[scan_id-scn_other]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_mismatch_refuses_without_publication[assessment_id-asm_other]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change0-p2_unsupported_material_name-422]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change1-p2_unsupported_material_name-422]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change2-p2_material_hash_mismatch-422]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change3-p2_material_base64_invalid-422]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change4-p2_evidence_wrong_resource-409]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change5-p2_resource_not_found-404]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change6-p2_request_invalid-422]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change7-p2_request_invalid-422]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_errors_no_new_rows[change8-p2_request_invalid-422]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_byte_rules[over-64KiB]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_byte_rules[invalid-utf8]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_byte_rules[nul]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_byte_rules[blank]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_wrong_version_and_atomic_duplicate_policy",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_network_retry_reuses_exact_response_and_stale_cas_returns_head",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_repeated_same_answer_with_new_key_is_noop",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_answer_binding_rejections[question_id-p2q_wrong]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_answer_binding_rejections[answer_code-FULFILLED]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_answer_binding_rejections[evidence_ids-value2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_answer_binding_rejections[subjects-value3]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_cas_two_writers_publish_only_one_revision",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_get_is_pure_and_reads_missing_without_generation",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_restart_reads_identical_result_and_summary",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_disabled_and_readonly_keep_reads_and_no_writes",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_origin_duplicate_json_and_request_budget",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_fault_rolls_back_material_result_summary_and_request",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_corrupt_snapshot_is_not_repaired",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_unknown_and_pending_are_not_license_success",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_incremental_subset_reuses_unaffected_row_exactly",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_stored_conflicting_evidence_refused_before_write[wrong-resource]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_stored_conflicting_evidence_refused_before_write[wrong-version]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_stored_conflicting_evidence_refused_before_write[two-scopes]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_stored_conflicting_evidence_refused_before_write[two-license-hashes]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_root_license_or_scanner_verified_flag_is_not_human_binding",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_configuration_change_cannot_relabel_test_results_owner",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_rechecked_before_publication",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_factory_disabled_route_is_stable_503_without_new_store",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_material_exact_size_allowed_and_no_execution",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_published_summary_failure_does_not_erase_saved_result",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_human_scope_is_not_upstream_license_provenance",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_get_rejects_valid_payload_relocated_under_other_row_id",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_storage_unavailable_is_not_not_found[registry]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_parent_storage_unavailable_is_not_not_found[assessment]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_conflicting_license_facts_cannot_be_dropped_by_adapter[normalization]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_conflicting_license_facts_cannot_be_dropped_by_adapter[other-text]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_idempotency_receipt_must_match_stored_result",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_published_schema_matches_product_dtos_and_exact_routes",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2_contract.py::test_missing_source_hash_is_not_replaced_by_evidence_record_hash",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_three_fixed_sources_have_hashes_but_no_synthetic_scan_identity",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_frontend_draft_cannot_masquerade_as_formal_scan_receipt",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_limited_positive_cites_exact_basis_and_conditions",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_evidence_or_identity_gap_fails_closed[change0-license_text_and_applicability_unverified]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_evidence_or_identity_gap_fails_closed[change1-evidence_wrong_version]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_evidence_or_identity_gap_fails_closed[change2-evidence_wrong_object]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_evidence_or_identity_gap_fails_closed[change3-exact_version_missing]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_evidence_or_identity_gap_fails_closed[change4-ai_asset_independent_license_required]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_root_license_is_not_dependency_license",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_one_wrong_evidence_prevents_partial_positive_candidate",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_verified_conflicting_license_or_scope_blocks_candidate",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_verified_license_applicability_conflict_blocks_same_text_candidate",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_training_evidence_never_supplies_distribution_basis",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_missing_content_sha256_does_not_support_positive_candidate",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_unknown_usage_and_model_failure_remain_explicit",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_model_failure_does_not_erase_deterministic_candidate",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_candidate_carries_snapshot_usage_and_source_hash",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_candidate_rejects_a_pinned_scan_or_purpose_revision_mismatch",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-usage_version_missing]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_closure_invalid0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_closure_invalid1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_closure_invalid2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_binding_invalid0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_source_hash_invalid0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_source_hash_invalid1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_binding_invalid1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_rejects_identity_and_closure_changes[<lambda>-evidence_binding_invalid2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_scope_partial_ai_and_model_failure",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_partial_without_named_coverage_gap_and_model_fallback",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_bound_snapshot_unknown_use_only_blocks_that_use",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_unsupported_usage_blocks_entire_l1_candidate",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_lists_only_added_evidence_and_preserves_old_artifacts",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_rejects_cross_scan_and_old_artifact_rewrite",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_rejects_old_evidence_rewrite",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_rejects_unrelated_object_rewrite",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_reports_changed_basis_without_new_usage",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_refuses_inconsistent_after_snapshot[<lambda>-evidence_closure_invalid0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_refuses_inconsistent_after_snapshot[<lambda>-evidence_closure_invalid1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_refuses_inconsistent_after_snapshot[<lambda>-evidence_binding_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_refuses_invalid_new_content_digest",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_d4_accounting_refuses_prior_evidence_removal",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_dangling_evidence_refuses",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_id_cannot_be_relabelled_inside_authoritative_evidence",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_local_material_only_observes_text_and_checks_hash",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_local_material_duplicate_conflict_and_invalid_text",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_unbound_or_prompt_injected_material_does_not_upgrade_authorization",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_fixed_identity_receipt_and_untrusted_claim",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_metadata_claim_cannot_upgrade_license_or_authorization",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_wrong_identity_or_ambiguous_json_refuses[{\"name\":\"wrong\",\"version\":\"7.0.0\"}-npm_wrong_package]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_wrong_identity_or_ambiguous_json_refuses[{\"name\":\"is-number\",\"version\":\"6.0.0\"}-npm_wrong_version]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_wrong_identity_or_ambiguous_json_refuses[{\"name\":\"is-number\",\"name\":\"is-number\",\"version\":\"7.0.0\"}-npm_duplicate_json_key]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_wrong_identity_or_ambiguous_json_refuses[{\"name\":\"is-number\",\"version\":\"7.0.0\",\"extra\":NaN}-npm_nonstandard_json]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_limit_timeout_and_source_refuse",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_failure_receipt_does_not_claim_official_source[{\"name\":\"other\",\"version\":\"7.0.0\"}-npm_wrong_package]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_failure_receipt_does_not_claim_official_source[{\"name\":\"is-number\",\"version\":\"6.0.0\"}-npm_wrong_version]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_npm_failure_receipt_does_not_claim_official_source[{\"name\":\"is-number\",\"name\":\"is-number\",\"version\":\"7.0.0\"}-npm_duplicate_json_key]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p2b_candidates.py::test_simulated_a_attestation_is_required_for_official_observation",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_presets_never_infer_details_and_timezone_required",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_controlled_mit_positive_has_conditions_not_fulfilled_obligation",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_name_or_unknown_or_pending_does_not_promote[options0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_name_or_unknown_or_pending_does_not_promote[options1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_name_or_unknown_or_pending_does_not_promote[options2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_name_or_unknown_or_pending_does_not_promote[options3]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_known_scope_but_unselected_use_still_unknown",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_restriction_preserves_simultaneous_unknowns",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_explicit_non_distribution_is_scoped_not_applicable",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_partial_limits_total_without_deleting_local_permission",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_complete_reference_sets_and_timestamp_sensitive_fact_hash",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_scope_json_cannot_inject_or_spoof_authority",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_root_scope_does_not_cover_second_dependency",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_store_read_only_missing_and_roundtrip_full_report",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_idempotent_cache_and_versions_preserve_old_report",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_capacity_refuses_and_keeps_old_records",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_store_snapshot_mismatch_and_html_escape",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_store_rejects_symlink_and_permissive_parent",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_disk_budget_refuses_without_deleting",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_report_integrity_detects_modified_blob",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_usage_same_details_different_declaration_time_reuses_semantic_key",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[other_payload-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[other_payload-get_by_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[other_payload-list]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[other_payload-cache_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[id-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[id-get_by_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[id-list]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[id-cache_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[scan_id-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[scan_id-get_by_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[scan_id-list]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[scan_id-cache_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[version-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[version-get_by_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[version-list]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[version-cache_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[cache_key-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[cache_key-get_by_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[cache_key-list]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[cache_key-cache_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_json-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_json-get_by_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_json-list]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_json-cache_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_model-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_model-get_by_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_model-list]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_core.py::test_audit007_row_payload_binding_fails_closed[invalid_model-cache_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_explicit_assessment_get_cache_and_old_facts",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_chat_isolated_idempotent_persistent_and_clear",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_capacity_reservation_and_pending_recovery",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_clear_while_generation_is_inflight",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_origin_input_and_no_ai",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_model_adversarial_output_rejected[change0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_model_adversarial_output_rejected[change1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_model_adversarial_output_rejected[change2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_model_adversarial_output_rejected[change3]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_model_adversarial_output_rejected[change4]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_optional_usage_survives_scan_registry_without_rewriting_old",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_permission_paraphrase_rejected[\\u5546\\u4e1a\\u9500\\u552e\\u548c\\u95ed\\u6e90\\u5206\\u53d1\\u5747\\u83b7\\u8bb8\\u53ef\\uff0c\\u76f4\\u63a5\\u53d1\\u5e03\\u5373\\u53ef\\u3002]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_permission_paraphrase_rejected[\\u5f53\\u524d\\u9879\\u76ee\\u5141\\u8bb8\\u5546\\u4e1a\\u6536\\u8d39\\u5e76\\u95ed\\u6e90\\u51fa\\u552e\\uff0c\\u4e0d\\u5fc5\\u51c6\\u5907\\u4efb\\u4f55\\u8bb8\\u53ef\\u6750\\u6599\\u3002]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_permission_paraphrase_rejected[\\u8be5\\u9879\\u76ee\\u7684\\u5168\\u90e8\\u6388\\u6743\\u5747\\u5df2\\u786e\\u8ba4\\uff0c\\u4f01\\u4e1a\\u5185\\u90e8\\u6216\\u516c\\u5f00\\u90e8\\u7f72\\u6ca1\\u6709\\u9650\\u5236\\u3002]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_explicit_retry_after_fallback_preserves_old",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_license_declaration_is_not_observed_license_text",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_unknown_does_not_invent_prohibition_or_scope[\\u8bc1\\u636e\\u4e0d\\u8db3\\uff0c\\u56e0\\u6b64\\u4e0d\\u652f\\u6301\\u4efb\\u4f55\\u5546\\u4e1a\\u6216\\u516c\\u5f00\\u7528\\u9014\\u3002]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_unknown_does_not_invent_prohibition_or_scope[\\u8be5\\u7ec4\\u4ef6\\u5c5e\\u4e8e\\u5f00\\u53d1\\u793a\\u4f8b\\u8303\\u7574\\uff0c\\u8bb8\\u53ef\\u4ecd\\u5f85\\u6838\\u9a8c\\u3002]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_disabled_git_rejected_without_queued_record",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_v4_assessment_api.py::test_audit007_get_rejects_cross_bound_payload",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_openapi_preserves_p0_routes_with_additive_history_diff_and_graph_get",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_git_scan_persists_a_real_queued_run",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_is_durably_idempotent_and_detects_conflicts",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_non_public_or_non_canonical_sources[http://github.com/example/repo-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_non_public_or_non_canonical_sources[https://user:secret@github.com/example/repo-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_non_public_or_non_canonical_sources[https://github.com/example/repo?token=secret-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_non_public_or_non_canonical_sources[https://127.0.0.1/example/repo-host_not_public]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_non_public_or_non_canonical_sources[https://localhost/example/repo-host_not_public]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_non_public_or_non_canonical_sources[https://github.com/-path_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_non_public_or_non_canonical_sources[https://github.com/example/%2e%2e/repo-path_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_request_validation_uses_the_frozen_error_envelope",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_raw_and_decoded_control_characters[https://git\\nhub.com/example/repo]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_rejects_raw_and_decoded_control_characters[https://github.com/example/%0Arepo]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_create_enforces_source_limit_in_utf8_bytes",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_unknown_routes_and_methods_use_the_frozen_error_envelope[get-/api/v1/route-that-does-not-exist-404-route_not_found]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_unknown_routes_and_methods_use_the_frozen_error_envelope[post-/api/v1/scans/scn_00000000-0000-0000-0000-000000000000-405-method_not_allowed]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_unknown_routes_and_methods_use_the_frozen_error_envelope[delete-/api/v1/scans-405-method_not_allowed]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_status_reads_the_persisted_snapshot_and_missing_is_stable",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_status_exposes_only_active_event_driven_work_progress",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_result_routes_do_not_fake_results_for_a_queued_scan",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_resources_are_tagged_stably_and_apply_frozen_filters",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_risks_evidence_and_report_are_read_from_the_same_snapshot",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_unexpected_failures_do_not_expose_internal_context",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_default_factory_creates_a_private_runnable_registry",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_persistent_capacity_rejects_git_zip_before_read_and_preserves_get",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_capacity_queued_reservation_survives_new_guard_and_failure_releases_lock",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_capacity_inventory_counts_same_disk_workspace_unknown_files_and_fails_closed",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_capacity_concurrent_request_busy_does_not_create_record",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_live_ai_group_counts_drive_work_progress_without_mutating_run[0-85]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_live_ai_group_counts_drive_work_progress_without_mutating_run[1-86]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_live_ai_group_counts_drive_work_progress_without_mutating_run[3-89]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_a3_fastapi_api.py::test_live_ai_group_counts_drive_work_progress_without_mutating_run[6-94]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_01_12_15_20_real_default_cz_a2_draft_report",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_02_03_05_no_exact_bound_does_not_write[absent]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_02_03_05_no_exact_bound_does_not_write[staged]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_02_03_05_no_exact_bound_does_not_write[other_assessment]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[scan_id-scn_other]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[registry_revision-99]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[input_digest-1111111111111111111111111111111111111111111111111111111111111111]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[inventory_digest-2222222222222222222222222222222222222222222222222222222222222222]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[facts_hash-3333333333333333333333333333333333333333333333333333333333333333]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[assessment_id-asm_other]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[assessment_version-99]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_04_05_all_current_binding_fields_independently_rejected[assessment_facts_hash-4444444444444444444444444444444444444444444444444444444444444444]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-full-None]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-excerpt-notice_source_excerpt_truncated]",
+        "state": "FAIL"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-not_observed-notice_text_not_observed]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-not_scanned-notice_text_not_scanned]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-read_failed-notice_text_read_failed]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-full-None]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-excerpt-notice_source_excerpt_truncated]",
+        "state": "FAIL"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-not_observed-notice_text_not_observed]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-not_scanned-notice_text_not_scanned]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-read_failed-notice_text_read_failed]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_coverage_exact_source_and_stable_draft[coverage0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_coverage_exact_source_and_stable_draft[coverage1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_coverage_exact_source_and_stable_draft[coverage2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_coverage_exact_source_and_stable_draft[coverage3]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_17_source_failure_is_sanitized_and_atomic[database]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_17_source_failure_is_sanitized_and_atomic[reader]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_17_source_failure_is_sanitized_and_atomic[decode]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_13_14_16_18_get_and_restart_store_only[False]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_13_14_16_18_get_and_restart_store_only[True]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_both_none_store_only_and_create_disabled",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_ambiguous_reader_configuration_fails_at_construction",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_19_legacy_and_production_fingerprints_are_separate",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_factory_matrix_startup_no_collection_or_business_writes[0-0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_factory_matrix_startup_no_collection_or_business_writes[0-1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_factory_matrix_startup_no_collection_or_business_writes[1-0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_factory_matrix_startup_no_collection_or_business_writes[1-1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_disabled_preserves_existing_notice_files",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_new_sidecar_initialization_failure_rejects_factory[corrupt-notice_source.db]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_new_sidecar_initialization_failure_rejects_factory[corrupt-notice_draft.db]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_new_sidecar_initialization_failure_rejects_factory[symlink-notice_source.db]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_new_sidecar_initialization_failure_rejects_factory[symlink-notice_draft.db]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_new_sidecar_initialization_failure_rejects_factory[capacity-notice_source.db]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_new_sidecar_initialization_failure_rejects_factory[capacity-notice_draft.db]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_configured_report_missing_draft_is_404",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_invalid_scan_rejected_before_source_read",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_capacity_rejection_preserves_business",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w17_saved_callback_uses_actual_identity_and_cached_saved_version",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w18_observer_bind_failure_never_reclassifies_success_or_leaks_slot[bind]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w18_observer_bind_failure_never_reclassifies_success_or_leaks_slot[diagnostic]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w18_observer_bind_failure_never_reclassifies_success_or_leaks_slot[observer]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w19_create_failure_retains_stage_later_explicit_generation_binds",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w17_no_observer_after_saved_assessment_but_job_persistence_fails[update]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w17_no_observer_after_saved_assessment_but_job_persistence_fails[commit]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w19_idempotent_request_and_read_job_do_not_notify_or_rebind",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w20_store_restart_no_batch_bind_explicit_saved_event_binds",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w20_pending_assessment_restart_keeps_existing_failed_job_policy_no_bind",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w21_recovery_fail_closed_no_hash_refresh_retry[missing]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w21_recovery_fail_closed_no_hash_refresh_retry[hash]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w21_recovery_fail_closed_no_hash_refresh_retry[revision]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w21_recovery_fail_closed_no_hash_refresh_retry[permissions]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w22_exact_replay_bound_freeze_and_independent_assessment_identity",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_lifecycle_assessment.py::test_w23_w24_real_lifecycle_to_draft_report_and_idle_get_restart_immutable",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_http_create_replay_and_download",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body3]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body4]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body5]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body6]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body7]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_body_is_400_without_write[body8]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_malformed_json_is_400_without_write",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_non_json_is_400_without_write[text/plain]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_non_json_is_400_without_write[application/x-www-form-urlencoded]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_cross_site_is_403_without_write[headers0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_cross_site_is_403_without_write[headers1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_exact_16k_body_is_accepted",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_streamed_body_over_16k_is_413_without_write",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_get_query_is_400[format=pdf]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_get_query_is_400[format=json&format=html]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_invalid_get_query_is_400[latest=true]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_get_uses_saved_bytes_without_source_reads",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_missing_report_and_cross_assessment_are_404",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_changed_task_set_with_same_key_is_409",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_unwired_optional_sources_are_explicitly_409[notice_refs-refs0-notice_snapshot_reader_not_available]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_unwired_optional_sources_are_explicitly_409[algorithm_refs-refs1-observation_snapshot_reader_not_available]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_unconfigured_report_service_does_not_initialize_store",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_p0_invalid_scan_stays_422",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_report_v2_api.py::test_openapi_publishes_post_get_and_request_contract",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_frozen_schema_source_hash_refs_and_all_canonical_kinds",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_expected_hash_and_cross_scan_rejected",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_derive_idempotency_preserves_patch_and_audit",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_deterministic_ids_across_independent_stores",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_workflow_audit_and_formal_facts_unchanged",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_final_nonblank_note_enforced_atomically[changes0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_final_nonblank_note_enforced_atomically[changes1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_final_nonblank_note_enforced_atomically[changes2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_final_nonblank_note_enforced_atomically[changes3]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes2]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes3]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes4]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes5]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes6]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes7]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes8]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_patch_does_not_write[changes9]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_note_omitted_preserved_and_note_only_terminal_check",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_stale_cas_has_no_audit_write",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_pagination_stable_scoped_and_readonly",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_superseded_read_view_no_state_or_audit_change",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_missing_sidecar_read_and_disabled_service_create_nothing",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_empty_evidence_not_invented_and_nonformal_rejected",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_page_limit[0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_page_limit[101]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_page_limit[no]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_page_limit[1.5]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_cursor_cannot_cross_assessment_binding",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_missing_assessment_and_cross_bound_task",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_derive_does_not_select_latest_or_use_qwen_text",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_task_accepts_frozen_common_evidence_ref[ref0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_task_accepts_frozen_common_evidence_ref[ref1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_diff_evidence_ref_remains_scan_only",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_derive_does_not_write[overrides0]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_invalid_derive_does_not_write[overrides1]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_p0_invalid_scan_request_keeps_422",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_patch_openapi_omission_preserves_without_advertised_defaults",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[task_id-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[task_id-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[task_id-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[task_id-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[task_id-existing_origin]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[scan_id-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[scan_id-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[scan_id-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[scan_id-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[scan_id-existing_origin]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_id-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_id-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_id-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_id-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_id-existing_origin]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[version-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[version-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[version-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[version-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[version-existing_origin]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[created_at-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[created_at-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[created_at-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[created_at-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[created_at-existing_origin]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[origin-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[origin-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[origin-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[origin-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[origin-existing_origin]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_version-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_version-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_version-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_version-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_binding[assessment_version-existing_origin]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[False-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[False-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[False-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[False-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[True-get]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[True-page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[True-patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_current_cross_bound_payload[True-derive_replay]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_history_binding[other_payload]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_history_binding[task_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_history_binding[version]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_history_binding[scan_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_history_binding[assessment_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_get_version_existing_protection[other_payload]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_get_version_existing_protection[task_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_get_version_existing_protection[version]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_get_version_existing_protection[scan_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_get_version_existing_protection[assessment_id]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_http_fail_closed[page]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_http_fail_closed[patch]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_remediation_api.py::test_audit004_http_fail_closed[derive]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_openapi_preserves_business_routes_with_additive_history_diff_and_graph_get",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_create_is_canonical_durable_queued_and_idempotent",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[http://github.com/example/repo-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://user:secret@github.com/example/repo-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://github.com/example/repo?token=secret-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://github.com/example/repo#fragment-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://github.com:8443/example/repo-url_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://127.0.0.1/example/repo-host_not_public]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://localhost/example/repo-host_not_public]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://github.com/-path_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[https://github.com/example/%2e%2e/repo-path_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_canonicalization_rejects_non_public_or_non_canonical_inputs[ https://github.com/example/repo-request_invalid]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_rejects_raw_control_characters_before_url_normalization[https://git\\nhub.com/example/repo]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_rejects_raw_control_characters_before_url_normalization[https://github.com/example/\\rOpenGuard]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_rejects_raw_control_characters_before_url_normalization[https://github.com/example/\\tOpenGuard]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_git_source_enforces_the_2048_utf8_byte_limit_not_code_points",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_request_validation_and_query_validation_use_the_same_error_envelope",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_queued_status_and_result_routes_never_fake_scan_results",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_resource_views_and_filters_preserve_p0_objects",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_risks_evidence_and_report_read_from_one_completed_snapshot",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_unknown_routes_and_methods_use_the_frozen_non_2xx_envelope[get-/api/v1/route-that-does-not-exist]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_unknown_routes_and_methods_use_the_frozen_non_2xx_envelope[post-/api/v1/scans/scn_00000000-0000-0000-0000-000000000000]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_unknown_routes_and_methods_use_the_frozen_non_2xx_envelope[delete-/api/v1/scans]",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_unexpected_exception_is_sanitized_and_has_matching_request_id",
+        "state": "PASS"
+      },
+      {
+        "nodeid": "tests/security/test_a3_fastapi_api_independent.py::test_real_uvicorn_disabled_git_rejects_without_queued_scan",
+        "state": "PASS"
+      }
+    ]
+  },
+  "p2_and_p2b_subset": {
+    "unique_nodes": 117,
+    "PASS": 117
+  },
+  "baseline_notice": {
+    "source": "evidence/baseline-notice-comparison.xml",
+    "sha256": "f11b70817b315da7c53e4fe91ad485f8bbf5e01eb684161f7131b256af5ba88e",
+    "counts": {
+      "FAIL": 2
+    },
+    "unique_nodes": 2,
+    "nodes": [
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-excerpt-notice_source_excerpt_truncated]",
+        "state": "FAIL"
+      },
+      {
+        "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-excerpt-notice_source_excerpt_truncated]",
+        "state": "FAIL"
+      }
+    ]
+  },
+  "genuine_product_fail_first": [
+    {
+      "source": "evidence/review-fail-first.xml",
+      "sha256": "b9cdb108a4f732aeea0284b56525e967c23259f2ce0c4b7aa73faecab9302e45",
+      "counts": {
+        "FAIL": 2
+      },
+      "unique_nodes": 2,
+      "nodes": [
+        {
+          "nodeid": "tests/unit/test_p2_contract.py::test_human_scope_is_not_upstream_license_provenance",
+          "state": "FAIL"
+        },
+        {
+          "nodeid": "tests/unit/test_p2_contract.py::test_get_rejects_valid_payload_relocated_under_other_row_id",
+          "state": "FAIL"
+        }
+      ]
+    },
+    {
+      "source": "evidence/source-hash-fail-first.xml",
+      "sha256": "559431f7f96f46e975fcb9eb2def10ad12a8c0ae81c1530f3781379cea484ada",
+      "counts": {
+        "FAIL": 1
+      },
+      "unique_nodes": 1,
+      "nodes": [
+        {
+          "nodeid": "tests/unit/test_p2_contract.py::test_missing_source_hash_is_not_replaced_by_evidence_record_hash",
+          "state": "FAIL"
+        }
+      ]
+    }
+  ],
+  "baseline": "6dc340776bc63c3b925d7fa3645efbbd40c4ccf9",
+  "model_calls": 0,
+  "formal_changes": 0,
+  "history_not_accumulated": true,
+  "preserved_private_intermediate_results": [
+    "targeted-1:39 fixture setup errors",
+    "targeted-2:38 pass,1 fixture source-hash error",
+    "final-backend:424 pass,4 fail;2 new route-list expectations updated,2 NOTICE baseline fails",
+    "final-contract:115 pass,1 new OpenAPI qualified-name expectation corrected",
+    "baseline first two attempts:missing static fixtures,not product failure"
+  ],
+  "source_hashes": {
+    "backend/app/api/main.py": "c7cfdb52af1232296c274e4497168af8000c36c5330c8c90f017b22f03a914c7",
+    "backend/app/api/p2.py": "04d8f2e3949a21705d93b6c4a7f7f6ea80bb66d7591e0d4266f6c02994de1b91",
+    "backend/app/p2/__init__.py": "17eed0e329e4a23aedd3d5b5c24a9f0f0e528c322884f0a8483850f6b1a146db",
+    "backend/app/p2/contract.py": "89c71a702cc9fa3855c20c8e6201b08f97ee0e9b4c14ea9f7ea662be19dbe2d9",
+    "backend/app/p2/service.py": "3926df9bbf5165fc695e80f451aef44025bea59e957c07a9499add690e158849",
+    "backend/app/p2/store.py": "6cc7bc1d9fbe042175e57f71a65c5a4b7e88a0943f5929e997eb86f72a4f4620",
+    "tests/security/test_a3_fastapi_api_independent.py": "86fdeba83a78f0869ec99774beae69bf5c270a4fa86bebeace4519d80a944e08",
+    "tests/unit/test_a3_fastapi_api.py": "ffd3485dbda03f0c16ac681c352c708d3d9538981b1b9ca64bd4edd953bd0fac",
+    "tests/unit/test_p1_notice_draft_production_wiring.py": "5cdb5f78c6161cecbcd12ca01f97c4b85ac7a87f64190bcbfb15c0aaa709472d",
+    "tests/unit/test_p1_notice_lifecycle_assessment.py": "721c91301cfe5ae3e8344537e7fc877bed2cea470abb5492b6369ee48c8ceef6",
+    "tests/unit/test_p1_remediation_api.py": "6a2552ff32821c93b9be10bcb6bfcfcb3580a28046c2958e56d9fa62fa860e34",
+    "tests/unit/test_p1_report_v2_api.py": "1137d8ed7cb1c3d2569a7bf775abcbbab6ad8a8ab00d1839507d47b17f0c8c8c",
+    "tests/unit/test_p2_contract.py": "44df83298ec7571f560874c8c0cb6ccdf82a8fb79d82a8f0bc83bee569b36b68",
+    "tests/unit/test_p2b_candidates.py": "cdc194951c02bc2fb156f157b408062800e4fe641731a68d56bd58c237019180",
+    "tests/unit/test_v4_assessment_api.py": "3af5fe6112b432fc8fc6d35d3492d1129d41d6d7f20daea878c8d79e6655aac5",
+    "tests/unit/test_v4_assessment_core.py": "5c4a75346d2a6494caee9645ce7de323c6f57ab7a2ac016a675cf11a54bf7400"
+  }
+}

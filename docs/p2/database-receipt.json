@@ -1,0 +1,242 @@
+{
+  "before": {
+    "assessment.db": {
+      "assessment_jobs": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "assessment_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "assessments": {
+        "rows": 1,
+        "canonical_content_sha256": "15576ede3761740484dfab747dd3f841c2d869db6ff8e7decf38b4bd81f89a8a"
+      },
+      "chat_sessions": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "chat_turns": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "notice_draft.db": {
+      "notice_drafts": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "notice_meta": {
+        "rows": 1,
+        "canonical_content_sha256": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22"
+      },
+      "notice_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "notice_source.db": {
+      "notice_source_bindings": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "notice_source_meta": {
+        "rows": 1,
+        "canonical_content_sha256": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22"
+      },
+      "notice_source_staged": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "p2.db": {
+      "p2_heads": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "p2_material_content": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "p2_meta": {
+        "rows": 1,
+        "canonical_content_sha256": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22"
+      },
+      "p2_objects": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "p2_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "remediation.db": {
+      "derive_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "task_versions": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tasks": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "report_v2.db": {
+      "report_artifacts": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "report_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "report_snapshots": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scans.db": {
+      "registry_metadata": {
+        "rows": 1,
+        "canonical_content_sha256": "5381b371dd42f7b3cee575d216e280fe859ceca1062062aac83e07ebdc062890"
+      },
+      "scan_runs": {
+        "rows": 1,
+        "canonical_content_sha256": "b4ca64e65cfdc666dab8e7eb4759021c66c762a6663684c2d3d468bc8e393e3f"
+      }
+    }
+  },
+  "after": {
+    "assessment.db": {
+      "assessment_jobs": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "assessment_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "assessments": {
+        "rows": 1,
+        "canonical_content_sha256": "15576ede3761740484dfab747dd3f841c2d869db6ff8e7decf38b4bd81f89a8a"
+      },
+      "chat_sessions": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "chat_turns": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "notice_draft.db": {
+      "notice_drafts": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "notice_meta": {
+        "rows": 1,
+        "canonical_content_sha256": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22"
+      },
+      "notice_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "notice_source.db": {
+      "notice_source_bindings": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "notice_source_meta": {
+        "rows": 1,
+        "canonical_content_sha256": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22"
+      },
+      "notice_source_staged": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "p2.db": {
+      "p2_heads": {
+        "rows": 1,
+        "canonical_content_sha256": "56b540eb1de4ce8582aeadbb46b389e69913f4a1e703a0dc868a9a78f23c78a2"
+      },
+      "p2_material_content": {
+        "rows": 1,
+        "canonical_content_sha256": "dfda04103d3f49eea3dfab9eb5e74b26c9ed9b43842a214ff255bf7b0c8224d9"
+      },
+      "p2_meta": {
+        "rows": 1,
+        "canonical_content_sha256": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22"
+      },
+      "p2_objects": {
+        "rows": 8,
+        "canonical_content_sha256": "4d39102d093d6688b4ab166a7b4766fc2a129c6d080ccb7d44245195d45ef316"
+      },
+      "p2_requests": {
+        "rows": 3,
+        "canonical_content_sha256": "3d79156f9bb6c745a873e0f7d29eb223229f711d6cbc37bbbf6d589669133f17"
+      }
+    },
+    "remediation.db": {
+      "derive_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "task_versions": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tasks": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "report_v2.db": {
+      "report_artifacts": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "report_requests": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "report_snapshots": {
+        "rows": 0,
+        "canonical_content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "scans.db": {
+      "registry_metadata": {
+        "rows": 1,
+        "canonical_content_sha256": "5381b371dd42f7b3cee575d216e280fe859ceca1062062aac83e07ebdc062890"
+      },
+      "scan_runs": {
+        "rows": 1,
+        "canonical_content_sha256": "b4ca64e65cfdc666dab8e7eb4759021c66c762a6663684c2d3d468bc8e393e3f"
+      }
+    }
+  },
+  "expected_changed_tables": [
+    "p2.db/p2_heads",
+    "p2.db/p2_material_content",
+    "p2.db/p2_objects",
+    "p2.db/p2_requests"
+  ],
+  "expected_new_rows": {
+    "p2_objects": 8,
+    "p2_heads": 1,
+    "p2_material_content": 1,
+    "p2_requests": 3
+  },
+  "unexpected_changes": [],
+  "post_material_reads_refusals_and_restarts_unchanged": true,
+  "original_database_access": "none; only restored private new root",
+  "old_historical_report_bytes": "not imported or claimed tested"
+}

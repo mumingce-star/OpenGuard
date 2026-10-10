@@ -109,6 +109,14 @@ def test_openapi_preserves_p0_routes_with_additive_history_diff_and_graph_get(ha
     paths = response.json()["paths"]
     assert {path: sorted(methods) for path, methods in paths.items()} == {
         "/api/v1/scans": ["get", "post"],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/binding': ['get'],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results': ['get', 'post'],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results/{result_id}': ['get'],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results/{result_id}/summary': ['get'],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/answers': ['post'],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/answers/{answer_id}': ['get'],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/materials': ['post'],
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/materials/{material_id}': ['get'],
         "/api/v1/scans/{target_scan_id}/diff": ["get"],
         "/api/v1/scans/{scan_id}/graph": ["get"],
         "/api/v1/scans/{scan_id}/resources/{resource_id}/profile": ["get"],

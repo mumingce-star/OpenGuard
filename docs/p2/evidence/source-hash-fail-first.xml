@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.786" timestamp="2026-10-10T05:44:59.715193+00:00" hostname="e0ceea68d954"><testcase classname="tests.unit.test_p2_contract" name="test_missing_source_hash_is_not_replaced_by_evidence_record_hash" time="0.239"><failure message="AssertionError: assert {'evd_123e4567...426614174000'} &lt; {'evd_123e4567...426614174000'}&#10;  &#10;  Both sets are equal">setup = (&lt;starlette.testclient.TestClient object at 0x7ffffdcfa7e0&gt;, &lt;fastapi.applications.FastAPI object at 0x7ffffc46b7d0&gt;, ...ate-key-1', 'parent_result_id': None}, PosixPath('/tmp/pytest-of-openguard/pytest-11/test_missing_source_hash_is_no0'))
+
+    def test_missing_source_hash_is_not_replaced_by_evidence_record_hash(setup):
+        def mutate(p):
+            p['evidence'][0]['content_hash'] = None
+        result = create(variant(setup, mutate))
+        resource = result['resources'][0]
+&gt;       assert set(resource['evidence_source_hashes']) &lt; set(resource['evidence_ids'])
+E       AssertionError: assert {'evd_123e4567...426614174000'} &lt; {'evd_123e4567...426614174000'}
+E         
+E         Both sets are equal
+
+tests/unit/test_p2_contract.py:521: AssertionError</failure></testcase></testsuite></testsuites>

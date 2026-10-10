@@ -9,3 +9,8 @@
 
 # Shared task logs retain every concurrent append during merge.
 docs/coordination/AGENT_WORKLOG.md merge=union
+
+# Preserve original JUnit bytes. The captured assertion marker "E " is evidence,
+# not source formatting; do not rewrite it to satisfy whitespace checks.
+docs/p2/evidence/*.xml -text
+docs/p2/evidence/source-hash-fail-first.xml -whitespace

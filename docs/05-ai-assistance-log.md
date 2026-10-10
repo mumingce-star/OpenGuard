@@ -483,3 +483,10 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 
 - 工具/模型：Codex GPT-6.1 Sol；AI 辅助审查 `evaluate_bound_candidate` 的同扫描 Evidence 闭包、许可/范围冲突、partial 和模型失败路径，补同摘要适用性冲突、依据来源 Hash 缺失、Evidence 重标、无命名缺口的 partial 和模型 fallback 回归。既有扫描/用途版本 pin 未重写，未改变候选逻辑或正式授权语义。
 - 本轮合成 P2B 定向 `57 passed in 0.56s`；编译、两份 JSON 解析、B 文件差异检查与有限敏感信息/第三方原文特征检查通过。全仓 `git diff --check` 因共享日志其他追加记录行尾空格未过；按日志只追加规则未改写其历史。
+
+## 2026-10-10 — P2 后端 A 正常 HTTP 候选
+
+- 工具/角色：Codex GPT-6 / 后端 A、Root。按 Owner 明确三项决定实现独立 result revision、确定性 P2B 接线与固定 v6 私有隔离 HTTP 验收；不是 Qwen L1 生成，未改变 Formal 或现有人审结论。
+- AI 辅助建立严格 DTO、SQLite 原子 sidecar、精确 GET、回答/小材料绑定、CAS/幂等与 companion summary；审查发现并以失败测试修复 SQL/payload错绑、P0人审来源过度提升、缺失材料Hash被记录Hash替代。没有以名称、provider或许可关键词认定新授权。
+- 本轮最终 430 唯一相关节点：428 PASS、2 FAIL、0 SKIP。两条 NOTICE excerpt fixture 失败在未修改父提交逐节点复现，未删改、skip 或冒充全绿。P2/P2B 117 个节点均通过；不与旧193/242/722等数字累加。
+- 固定 v6 必要原件在授权的新TEST_ONLY根恢复，真实HTTP单独统计，回答和既有许可片段只作用户断言/未核验观察；脱敏响应可转交，完整原文/数据库不入仓。现有Pydantic支持不算新增价值。Owner/xzb审阅及可信正向材料链仍缺；无模型、原库或 Formal 写入。

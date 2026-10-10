@@ -1981,3 +1981,13 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 | 三例上游固定 tag 文件身份/历史摘要的字段链、七维三态用途台账及 P2B 候选负向回归已上传。 | 既有 Git/ZIP 扫描、静态候选、报告与 B 内部离线 L1/L2/npm/D4 准备、拒绝矩阵。 | A/Root：冻结 DTO、可信出口、三例真实扫描/Evidence/用途版本和正式读回；B：真实材料、唯一 GET 与 D4；前端：正式 API 签收；Root：工件 baseline 和 Windows 跨模块门禁。 | Python `57 passed`，JSON、业务差异格式和敏感信息检查通过；共享日志先前一条追加记录有尾随空格，已用 AMENDMENT 登记。`0ce4921` 已推送 `codex/scan-reliability-integration`；`integration/p1` 保持 `aabd794`，`main` 未变。 |
 
 可报名/可参赛尚需竞赛材料、规则和基本复现签收；完整作品尚需正式 P2 补证链及跨栈回执；获奖竞争力尚需人工 Gold、正式 Bench、误差和受控性能证据。无统一分母或权重，不报告完成百分比。
+
+## 2026-10-10 P2 后端 A HTTP 契约候选（待 Owner Review）
+
+| 本轮完成 | 累计可独立演示 | 未完成/责任 | 验证与发布 |
+|---|---|---|---|
+| 默认工厂接入独立P2 Store/DTO/路由；精确结果GET、子集回答、小材料观察、CAS/幂等、原子新revision、同版companion | 既有团队扫描/Assessment/报告；本轮固定v6隔离真实HTTP可保存并刷新/重启读回独立结果1–3，原Formal不变 | A/cz：可信上游/适用性来源接纳与新真实正向样本；Owner/xzb：本候选与前端兼容、接收机合法固定输入及运行签收；NOTICE维护方：2条父本excerpt fixture失败 | 430唯一相关节点=428PASS/2FAIL/0SKIP，2FAIL在未改父提交复现；117个P2/P2B子集全过。最终31次真实HTTP单列，3次创建+3次同键重放。功能分支`codex/p2-stage1-backend-20261010`，提交/推送按本轮Owner授权执行；不合并integration/main/xzb |
+
+详见 `docs/p2/stage1-review.md`、`docs/spec/p2-backend-contract.md` 及相邻原始测试/脱敏HTTP回执。新材料仍pending、回答仍USER_ASSERTED，来源接纳缺口不能靠P0人审flag补齐；新正向许可判断为0，既有Pydantic支持不计新成果。阶段1整包仍PARTIAL、xzb整体阶段2仍BLOCKED，Owner Review待定。Qwen/proof、Python阶段A、Trio和Formal历史边界不变；无前端实现、无模型或原库写入、无PR/合并/部署。
+
+可报名/可参赛仍需规则/材料与基本复现签收；完整作品还缺上述真实正向链和跨栈签收；竞争力需人工Gold/Bench/误差及性能证据。本轮不编造完成百分比，也不把静态交接成功升级为接收机运行通过。

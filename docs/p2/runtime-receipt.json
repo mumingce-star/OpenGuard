@@ -1,0 +1,98 @@
+{
+  "container_image": "sha256:6510aeaf29bdcfb1b3bdb3655fef73d39f9bc6164ae876011a57c356c5cef23c",
+  "container_id": "e0ceea68d9540981324919dc017e494aafecd5f942f5d36c83e4dddcc64f12bc",
+  "container_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 137,
+    "Error": "",
+    "StartedAt": "2026-10-10T05:23:52.862989086Z",
+    "FinishedAt": "2026-10-10T05:50:40.208364511Z"
+  },
+  "network": "none",
+  "rootfs": "read-only",
+  "uid": "10001:10001",
+  "caps": "ALL dropped",
+  "no_new_privileges": true,
+  "limits": {
+    "cpus": 2,
+    "memory_bytes": 2147483648,
+    "pids": 128,
+    "tmpfs_bytes": 2147483648
+  },
+  "mounts": "own source read-only; own ignored evidence dir read-write; no business volume/socket/credentials",
+  "ports_published": [],
+  "default_factory_processes": [
+    {
+      "mode": "writable",
+      "pid": 3127,
+      "argv": [
+        "/opt/api/bin/python",
+        "-m",
+        "uvicorn",
+        "app.api.main:create_default_app",
+        "--factory",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "60837",
+        "--no-access-log"
+      ],
+      "utc": "2026-10-10T05:47:51.857940+00:00",
+      "exit_code": -15
+    },
+    {
+      "mode": "readonly",
+      "pid": 3129,
+      "argv": [
+        "/opt/api/bin/python",
+        "-m",
+        "uvicorn",
+        "app.api.main:create_default_app",
+        "--factory",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "58773",
+        "--no-access-log"
+      ],
+      "utc": "2026-10-10T05:47:53.652069+00:00",
+      "exit_code": -15
+    },
+    {
+      "mode": "disabled",
+      "pid": 3131,
+      "argv": [
+        "/opt/api/bin/python",
+        "-m",
+        "uvicorn",
+        "app.api.main:create_default_app",
+        "--factory",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "34043",
+        "--no-access-log"
+      ],
+      "utc": "2026-10-10T05:47:54.969946+00:00",
+      "exit_code": -15
+    }
+  ],
+  "api_shutdown": "SIGTERM(-15), logs confirm Application shutdown complete",
+  "container_stop": "docker stop CLI exit0; container ExitCode137, OOMKilled=false. Only sleep remained before stop; all evidence already on dedicated output mount.",
+  "other_container_state_ports_unchanged": true,
+  "other_worktrees_checked": 15,
+  "other_worktree_head_status_recorded_dirty_files_unchanged": true,
+  "protection_scope": "Recorded worktrees, task source copy and observed container states only; not full host/business database audit",
+  "fixed_original_sha256_unchanged": "2f301c90dc1219a17b5801fcd7f96912f2b30c208a3f9da7546806fced6f22d2",
+  "inference_calls": 0,
+  "original_business_db_writes": 0,
+  "formal_changes": 0,
+  "external_activity": "Only user-authorized Git fetch/push; no package/model/provider requests",
+  "stop_command_exit_code": 0
+}
