@@ -9564,3 +9564,36 @@
 - 接口、Schema、规则与决策：无新变更。今日三例是受控 TEST_ONLY、扫描终态 partial 和材料未核验观察，不能提升为正式许可授权、完整 Formal Report 或可交前端的正式 handoff。
 - 已知风险与下一步：A/Owner 冻结正式接纳、可信 npm 发布包适用性与人工范围核验、NOTICE/旧 Formal Report 读回；B 按冻结契约完成正式 D4；xzb 在相同不可变对象与兼容 SHA 上签收；Root 继续处理 P1 NOTICE、Bench/Gold、Windows 跨模块和 baseline 门禁。责任分别为 A/Owner、B、前端/xzb 和 Root。
 - GitHub：`git@github.com:mumingce-star/OpenGuard.git` 的工作分支 `30f0cce2fb8fd89109df39433bd9ccc27f23f1f8` 已读回；`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`；`main@476d954998be6ed943532791530f5d6234f4893f`。本轮日志/进度提交 SHA 另见上传回执。token：本次运行精确 token 数不可获得；开工估算 3,000～6,000，核验目标完成，缺精确遥测无法核定实际用量。
+## 20261010-1320-GPT6-P2Stage1Backend-START
+
+- 状态：START；作者/角色：GPT-6 / 后端 A、Root；Owner授权完成阶段1后端契约并提交推送独立功能分支，不合并集成线。
+- 基线：`integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`；cz最新`6dc340776bc63c3b925d7fa3645efbbd40c4ccf9`已含该集成点。新独立worktree/分支`codex/p2-stage1-backend-20261010`基于cz完整tip；其他工作区未提交成果保留。AGENTS/README/完整WORKLOG/PROGRESS及A交接资料已只读核对。
+- 已确认决策：L2生成独立不可变result revision，Assessment按原规则变化；固定v6必要原件仅复制至私有隔离验收root，对外交付脱敏回执和精确ID；L1接确定性P2B候选，保留candidate_only，Qwen/proof另设门禁。
+- 范围：新增`backend/app/p2/`、P2 HTTP route、默认工厂薄接线、相关测试/Schema/接口文档。L2受限小文本仅作未核验材料观察并进入非Formal结果；不改变Formal/NOTICE政策，不扩provider、不联网补材料、不实施前端。
+- 验收：绑定/冲突/幂等/CAS/旧版本/GET纯读/重启/同版摘要；现有依赖回归与私有v6真实loopback HTTP分别记录；不以合成正例或既有人审支持声称新增真实价值。最终功能分支普通push前检查敏感内容及diff。
+- 预计token范围：30,000–70,000；精确遥测不可获得。新增源码和合同由Owner/xzb复核；三个新材料样本缺正式扫描绑定保持独立缺口。
+
+## 20261010-1450-GPT6-P2Stage1Backend-PARTIAL
+
+- 状态：PARTIAL；作者/角色：GPT-6 / 后端 A、Root；本轮实现范围已形成待审候选，全部阶段1门禁尚未关闭。
+- 结果：正常工厂/HTTP/P2 SQLite sidecar接线；独立result revision、精确历史GET、显式子集回答、64KiB LICENSE/NOTICE观察、CAS/幂等、原子summary、资源复用与强绑定。P2默认关闭、写默认只读；不修改Formal或旧Assessment版本，不调用Qwen，不实现前端。
+- 源码基线：cz `6dc340776bc63c3b925d7fa3645efbbd40c4ccf9` 包含integration `aabd7940f65ec8a78b33c863b4db81b400509b7d`。没有吸收其他工作区未提交R6/离线L1成果；15个原worktree的HEAD/status/已登记dirty文件Hash前后相同。
+- 文件：`backend/app/p2/`、`backend/app/api/p2.py`、`main.py`薄接线、P2契约测试、两份旧OpenAPI清单追加路由、`schemas/p2/`、`docs/p2/`、规格、README、AI辅助日志与本协调记录。
+- 测试命令：同一network-none只读rootfs非root容器内，`python -m pytest -q -p no:cacheprovider` 对P2/P2B、V4 core/API、A3 API、NOTICE production/lifecycle、ReportV2 API、remediation API及A3安全集合。最终430唯一节点=428PASS/2FAIL/0SKIP；P2/P2B117节点属于子集。2条NOTICE excerpt fixture失败在未修改父代码逐节点复现，未删改或skip。真正Fail-first为SQL/payload身份、来源级别提升、缺失内容Hash冒用记录Hash共3节点；历史中间/采证错误保留不累计。
+- 真实验收：正常uvicorn工厂、真实loopback TCP、固定v6必要原件恢复到独立TEST_ONLY根，最终31个HTTP请求；3个result/summary版本、1个answer、1个material，重复原键不增版本。44/45未影响资源整行复用，GET和重启读回相同对象，404/409/413/422/503实际记录；仅4张P2表变化，非P2库逐表canonical digest相同。不是完整原库克隆；历史Report正文缺失未假称验收。只交脱敏响应与精确ID，原件/数据库不上传。
+- 安全修复：不把P0人审许可/scope推为upstream_verified，不用Evidence记录Hash替代材料内容Hash；资源与Scope/版本/许可冲突服务端拒绝。新材料pending、用户回答不等于义务已履行。stage1整体仍PARTIAL；需A/cz可信来源接纳/真实正例、Owner/xzb兼容和目标机签收，2条NOTICE旧fixture失败另行维护。
+- 收尾：所有任务API正常退出0；唯一任务容器已停止并保留实际State/ExitCode，其他容器状态/端口未变。无新provider、下载、Formal/原业务库/组员分支操作；本轮网络仅获准Git读取和后续功能分支push。
+- Git：Owner已授权提交推送`codex/p2-stage1-backend-20261010`，不merge、不PR、不部署；完整提交与push读回将追加记录。发布材料仅产品代码、Schema、测试和脱敏回执。Owner Review尚未发生。
+- token：本次运行精确token数不可获得；开工估算30,000–70,000，缺精确遥测不推定实际落在区间。目标范围未扩至前端/模型；代码和隔离HTTP完成，但总体门禁未全满足。
+
+## 20261010-1352-GPT6-P2Stage1Backend-AMENDMENT
+
+- 更正上一条收尾记录：API进程退出码实际为`-15`（SIGTERM），三个日志均包含`Application shutdown complete`，不是0；Docker stop命令退出0，但容器State.ExitCode=`137`、OOMKilled=false。停止前容器只剩sleep，证据已持久留存在任务输出挂载。其他容器状态/端口比对不变。详见`docs/p2/runtime-receipt.json`；不把命令退出码当容器退出码。
+- 上条记录ID中的`1450`为时间段误写；实际收尾在2026-10-10 13:50后（Asia/Shanghai），原记录不改写。最终测试与HTTP结果不受该记录更正影响。
+
+## 20261010-1355-GPT6-P2Stage1BackendPublish-PARTIAL
+
+- 作者/角色：GPT-6 / 后端 A、Root；状态PARTIAL。候选实现及证据提交`83fdff54be252b9355a503c4eec4c70489babb78`已普通推送至`mumingce-star/OpenGuard`的`codex/p2-stage1-backend-20261010`，远端完整SHA已读回。integration与cz仍分别为`aabd7940f65ec8a78b33c863b4db81b400509b7d`、`6dc340776bc63c3b925d7fa3645efbbd40c4ccf9`。没有PR、merge、部署或其他分支写入。
+- 提交前：28文件白名单、JSON重复键/非有限数检查、真实响应wire Hash及定向敏感信息检查通过；`git diff --check`通过。原始Fail-first JUnit的一条断言标记含尾随空白，仅该原始证据设置`.gitattributes`空白例外以保留原字节，未豁免产品/测试源码检查。
+- 最终后端430唯一节点428PASS/2个父本可复现FAIL/0SKIP；最终31次真实HTTP及隔离root逐表核对单列。模型/原业务库/Formal写入0；本机任务API和容器已停止，收尾码见上条AMENDMENT及runtime receipt。
+- Owner Review未发生，可信正向来源接纳/新真实正例与xzb兼容/接收机签收仍缺；阶段1整包不PASS，xzb整体阶段2仍BLOCKED。此追加仅记录已发生的分支发布，不提升接受状态、不进入下一工作包。

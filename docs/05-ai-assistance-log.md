@@ -494,3 +494,10 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - 工具/模型：Codex GPT-6.1 Sol；AI 辅助编写可重放的受控 manifest 扫描脚本、三例 HTTP/持久化读回闭包测试、A 候选材料与错误回执对账。使用进程内 TestClient，无项目服务启停；未安装或执行 is-number、lodash、express。
 - 固定 tag 六个文件通过真实 HTTPS GET 取得原始字节并核验 SHA-256/Git blob SHA-1；许可证原文只送入隔离 TEST_ONLY 的 A 材料入口，未提交原文到仓库。扫描 Evidence 仅是受控 manifest 观察；Material 仍为未核验用户提供观察，未发生可信 npm GET、官方发布包适用性认证、人工范围核验或义务履行。
 - 三例各有真实 ScanRun/Resource/Assessment/Evidence 及 P2 Result v1→v2/Material/companion Summary；express 独立 D4，不调整 L1 规则。受控负例和 GET 无副作用经服务端 HTTP/数据库摘要核验；正式 Owner 接纳及前端 handoff 仍待完成。
+
+## 2026-10-10 — P2 后端 A 正常 HTTP 候选
+
+- 工具/角色：Codex GPT-6 / 后端 A、Root。按 Owner 明确三项决定实现独立 result revision、确定性 P2B 接线与固定 v6 私有隔离 HTTP 验收；不是 Qwen L1 生成，未改变 Formal 或现有人审结论。
+- AI 辅助建立严格 DTO、SQLite 原子 sidecar、精确 GET、回答/小材料绑定、CAS/幂等与 companion summary；审查发现并以失败测试修复 SQL/payload 错绑、P0 人审来源过度提升、缺失材料 Hash 被记录 Hash 替代。没有以名称、provider 或许可关键词认定新授权。
+- 本轮最终 430 唯一相关节点：428 PASS、2 FAIL、0 SKIP。两条 NOTICE excerpt fixture 失败在未修改父提交逐节点复现，未删改、skip 或冒充全绿。P2/P2B 117 个节点均通过；不与旧 193/242/722 等数字累加。
+- 固定 v6 必要原件在授权的新 TEST_ONLY 根恢复，真实 HTTP 单独统计，回答和既有许可片段只作用户断言/未核验观察；脱敏响应可转交，完整原文/数据库不入仓。现有 Pydantic 支持不算新增价值。Owner/xzb 审阅及可信正向材料链仍缺；无模型、原库或 Formal 写入。

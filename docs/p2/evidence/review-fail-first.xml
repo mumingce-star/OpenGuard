@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.897" timestamp="2026-10-10T05:31:07.171788+00:00" hostname="e0ceea68d954"><testcase classname="tests.unit.test_p2_contract" name="test_human_scope_is_not_upstream_license_provenance" time="0.231"><failure message="assert False&#10; +  where False = all(&lt;generator object test_human_scope_is_not_upstream_license_provenance.&lt;locals&gt;.&lt;genexpr&gt; at 0x7ffffbd74900&gt;)">setup = (&lt;starlette.testclient.TestClient object at 0x7ffffc2daae0&gt;, &lt;fastapi.applications.FastAPI object at 0x7ffffc1804a0&gt;, ...eate-key-1', 'parent_result_id': None}, PosixPath('/tmp/pytest-of-openguard/pytest-4/test_human_scope_is_not_upstre0'))
+
+    def test_human_scope_is_not_upstream_license_provenance(setup):
+        # P0's reviewed flag and scope are not P2B's upstream/applicability receipt.
+        result = create(setup)
+&gt;       assert all(a['state'] != 'conditional_candidate' for r in result['resources'] for a in r['advice'])
+E       assert False
+E        +  where False = all(&lt;generator object test_human_scope_is_not_upstream_license_provenance.&lt;locals&gt;.&lt;genexpr&gt; at 0x7ffffbd74900&gt;)
+
+tests/unit/test_p2_contract.py:432: AssertionError</failure></testcase><testcase classname="tests.unit.test_p2_contract" name="test_get_rejects_valid_payload_relocated_under_other_row_id" time="0.078"><failure message="assert 200 == 503&#10; +  where 200 = &lt;Response [200 OK]&gt;.status_code">setup = (&lt;starlette.testclient.TestClient object at 0x7ffffbece5a0&gt;, &lt;fastapi.applications.FastAPI object at 0x7ffffbece2a0&gt;, ...eate-key-1', 'parent_result_id': None}, PosixPath('/tmp/pytest-of-openguard/pytest-4/test_get_rejects_valid_payload0'))
+
+    def test_get_rejects_valid_payload_relocated_under_other_row_id(setup):
+        c, _, base, _, root = setup
+        old = create(setup)
+        new = c.post(base + '/answers', json=answer_body(old)).json()['result']
+        with sqlite3.connect(root / 'p2.db') as db:
+            blob, sha = db.execute('SELECT payload,sha256 FROM p2_objects WHERE id=?', (new['result_id'],)).fetchone()
+            db.execute('UPDATE p2_objects SET payload=?,sha256=? WHERE id=?', (blob, sha, old['result_id']))
+        response = c.get(base + '/results/' + old['result_id'], params={'assessment_version': 1})
+&gt;       assert response.status_code == 503
+E       assert 200 == 503
+E        +  where 200 = &lt;Response [200 OK]&gt;.status_code
+
+tests/unit/test_p2_contract.py:445: AssertionError</failure></testcase></testsuite></testsuites>

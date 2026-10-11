@@ -203,3 +203,7 @@ OpenGuard 的团队自主代码和文档采用 [Apache License 2.0](LICENSE) 开
 ## P1 隔离联调入口
 
 已集成的 A02–A06 可通过[开发专用入口与接口交接说明](docs/p1/dev-integration.md)使用合成数据联调。该入口独立于生产，显式初始化和启动，仅允许 Task/Report 写入，不启用真实扫描、Qwen 或 Metadata；不代表 P1 新页面、Notice/Profile 或生产启用已经完成。
+
+## P2 后端契约候选
+
+独立 L1 结果、L2 回答及受限 LICENSE/NOTICE 材料观察已接入正常工厂和私有 sidecar；启用默认关闭，写入默认只读。见 [P2 HTTP 合同](docs/spec/p2-backend-contract.md)、[机器 Schema](schemas/p2/contract-v1.schema.json) 和 [阶段1验收回执](docs/p2/stage1-review.md)。结果维持 candidate_only/Formal none；来源接纳、新真实正向样本和接收端验收缺口未关闭，不能据 HTTP 成功直接宣布 xzb 整体阶段2就绪。

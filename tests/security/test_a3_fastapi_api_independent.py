@@ -284,6 +284,14 @@ def test_openapi_preserves_business_routes_with_additive_history_diff_and_graph_
     assert response.status_code == 200
     assert response.json()["paths"] == {
         "/api/v1/scans": {method: response.json()["paths"]["/api/v1/scans"][method] for method in ("get", "post")},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/binding': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/binding'][method] for method in ('get',)},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results'][method] for method in ('get', 'post')},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results/{result_id}': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results/{result_id}'][method] for method in ('get',)},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results/{result_id}/summary': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/results/{result_id}/summary'][method] for method in ('get',)},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/answers': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/answers'][method] for method in ('post',)},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/answers/{answer_id}': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/answers/{answer_id}'][method] for method in ('get',)},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/materials': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/materials'][method] for method in ('post',)},
+        '/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/materials/{material_id}': {method: response.json()["paths"]['/api/v1/scans/{scan_id}/assessments/{assessment_id}/p2/materials/{material_id}'][method] for method in ('get',)},
         "/api/v1/scans/{target_scan_id}/diff": {"get": response.json()["paths"]["/api/v1/scans/{target_scan_id}/diff"]["get"]},
         "/api/v1/scans/{scan_id}/graph": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/graph"]["get"]},
         "/api/v1/scans/{scan_id}/resources/{resource_id}/profile": {"get": response.json()["paths"]["/api/v1/scans/{scan_id}/resources/{resource_id}/profile"]["get"]},

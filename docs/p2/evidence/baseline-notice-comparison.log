@@ -1,0 +1,79 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_a3_06_11_content_and_no_authority_escalation[resolved-excerpt-notice_source_excerpt_truncated] _
+
+factory = namespace(path=PosixPath('/tmp/pytest-of-openguard/pytest-8/test_a3_06_11_content_and_no_a0'), registry=<app.persisten...sessments/asm_088cd9fa-151c-511f-9eb4-b2efc016d121', client=<starlette.testclient.TestClient object at 0x7ffffbf23d40>)
+state = 'excerpt', gap = 'notice_source_excerpt_truncated'
+relation = 'resolved'
+
+    @pytest.mark.parametrize('state,gap', [
+        ('full', None), ('excerpt', 'notice_source_excerpt_truncated'),
+        ('not_observed', 'notice_text_not_observed'), ('not_scanned', 'notice_text_not_scanned'),
+        ('read_failed', 'notice_text_read_failed'),
+    ])
+    @pytest.mark.parametrize('relation', ['resolved', 'unresolved'])
+    def test_a3_06_11_content_and_no_authority_escalation(factory, state, gap, relation):
+        e = factory
+        value = e.collection.model_dump(mode='json')
+        item = value['observations'][0]
+        if state == 'excerpt':
+            text = item['content']['text'][:9]
+            item['content'].update(state=state, text=text, byte_range=[0, len(text.encode())],
+                                  truncated=True, retained_bytes_sha256=hashlib.sha256(text.encode()).hexdigest())
+        elif state != 'full':
+            item['content'] = dict(state=state, gap_codes=[] if state == 'not_observed' else ['test_read_gap'])
+        # Collector-local subject, not a ScanRun component ID (this seed has none).
+        item['relation'] = dict(state=relation, subject='cmp_TEST_ONLY_unmapped' if relation == 'resolved' else None,
+                                basis='TEST_ONLY relation is not a formal Resource binding')
+>       e.collection = NoticeSourceCollection.model_validate(value)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for NoticeSourceCollection
+E       observations.0.content
+E         Value error, excerpt_content_invalid [type=value_error, input_value={'state': 'excerpt', 'tex...: None, 'gap_codes': []}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+tests/unit/test_p1_notice_draft_production_wiring.py:179: ValidationError
+_ test_a3_06_11_content_and_no_authority_escalation[unresolved-excerpt-notice_source_excerpt_truncated] _
+
+factory = namespace(path=PosixPath('/tmp/pytest-of-openguard/pytest-8/test_a3_06_11_content_and_no_a1'), registry=<app.persisten...sessments/asm_088cd9fa-151c-511f-9eb4-b2efc016d121', client=<starlette.testclient.TestClient object at 0x7ffffbd1b530>)
+state = 'excerpt', gap = 'notice_source_excerpt_truncated'
+relation = 'unresolved'
+
+    @pytest.mark.parametrize('state,gap', [
+        ('full', None), ('excerpt', 'notice_source_excerpt_truncated'),
+        ('not_observed', 'notice_text_not_observed'), ('not_scanned', 'notice_text_not_scanned'),
+        ('read_failed', 'notice_text_read_failed'),
+    ])
+    @pytest.mark.parametrize('relation', ['resolved', 'unresolved'])
+    def test_a3_06_11_content_and_no_authority_escalation(factory, state, gap, relation):
+        e = factory
+        value = e.collection.model_dump(mode='json')
+        item = value['observations'][0]
+        if state == 'excerpt':
+            text = item['content']['text'][:9]
+            item['content'].update(state=state, text=text, byte_range=[0, len(text.encode())],
+                                  truncated=True, retained_bytes_sha256=hashlib.sha256(text.encode()).hexdigest())
+        elif state != 'full':
+            item['content'] = dict(state=state, gap_codes=[] if state == 'not_observed' else ['test_read_gap'])
+        # Collector-local subject, not a ScanRun component ID (this seed has none).
+        item['relation'] = dict(state=relation, subject='cmp_TEST_ONLY_unmapped' if relation == 'resolved' else None,
+                                basis='TEST_ONLY relation is not a formal Resource binding')
+>       e.collection = NoticeSourceCollection.model_validate(value)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for NoticeSourceCollection
+E       observations.0.content
+E         Value error, excerpt_content_invalid [type=value_error, input_value={'state': 'excerpt', 'tex...: None, 'gap_codes': []}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+tests/unit/test_p1_notice_draft_production_wiring.py:179: ValidationError
+=============================== warnings summary ===============================
+../../opt/api/lib/python3.12/site-packages/starlette/testclient.py:53
+  /opt/api/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+--------- generated xml file: /evidence/baseline-notice-comparison.xml ---------
+=========================== short test summary info ============================
+FAILED tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-excerpt-notice_source_excerpt_truncated]
+FAILED tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-excerpt-notice_source_excerpt_truncated]
+2 failed, 1 warning in 0.85s

@@ -1,0 +1,43 @@
+{
+  "argv": [
+    "/opt/api/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/unit/test_p2_contract.py",
+    "tests/unit/test_p2b_candidates.py",
+    "tests/unit/test_v4_assessment_core.py",
+    "tests/unit/test_v4_assessment_api.py",
+    "tests/unit/test_a3_fastapi_api.py",
+    "tests/unit/test_p1_notice_draft_production_wiring.py",
+    "tests/unit/test_p1_notice_lifecycle_assessment.py",
+    "tests/unit/test_p1_report_v2_api.py",
+    "tests/unit/test_p1_remediation_api.py",
+    "tests/security/test_a3_fastapi_api_independent.py",
+    "--junitxml=/evidence/final-backend-4.xml"
+  ],
+  "cwd": "/work",
+  "utc": "2026-10-10T05:45:26.663097+00:00",
+  "python": "3.12.14 (main, Sep  1 2026, 00:10:15) [GCC 12.2.0]",
+  "hashes": {
+    "backend/app/api/main.py": "c7cfdb52af1232296c274e4497168af8000c36c5330c8c90f017b22f03a914c7",
+    "backend/app/api/p2.py": "04d8f2e3949a21705d93b6c4a7f7f6ea80bb66d7591e0d4266f6c02994de1b91",
+    "backend/app/p2/__init__.py": "17eed0e329e4a23aedd3d5b5c24a9f0f0e528c322884f0a8483850f6b1a146db",
+    "backend/app/p2/contract.py": "89c71a702cc9fa3855c20c8e6201b08f97ee0e9b4c14ea9f7ea662be19dbe2d9",
+    "backend/app/p2/service.py": "3926df9bbf5165fc695e80f451aef44025bea59e957c07a9499add690e158849",
+    "backend/app/p2/store.py": "6cc7bc1d9fbe042175e57f71a65c5a4b7e88a0943f5929e997eb86f72a4f4620",
+    "tests/security/test_a3_fastapi_api_independent.py": "86fdeba83a78f0869ec99774beae69bf5c270a4fa86bebeace4519d80a944e08",
+    "tests/unit/test_a3_fastapi_api.py": "ffd3485dbda03f0c16ac681c352c708d3d9538981b1b9ca64bd4edd953bd0fac",
+    "tests/unit/test_p1_notice_draft_production_wiring.py": "5cdb5f78c6161cecbcd12ca01f97c4b85ac7a87f64190bcbfb15c0aaa709472d",
+    "tests/unit/test_p1_notice_lifecycle_assessment.py": "721c91301cfe5ae3e8344537e7fc877bed2cea470abb5492b6369ee48c8ceef6",
+    "tests/unit/test_p1_remediation_api.py": "6a2552ff32821c93b9be10bcb6bfcfcb3580a28046c2958e56d9fa62fa860e34",
+    "tests/unit/test_p1_report_v2_api.py": "1137d8ed7cb1c3d2569a7bf775abcbbab6ad8a8ab00d1839507d47b17f0c8c8c",
+    "tests/unit/test_p2_contract.py": "44df83298ec7571f560874c8c0cb6ccdf82a8fb79d82a8f0bc83bee569b36b68",
+    "tests/unit/test_p2b_candidates.py": "cdc194951c02bc2fb156f157b408062800e4fe641731a68d56bd58c237019180",
+    "tests/unit/test_v4_assessment_api.py": "3af5fe6112b432fc8fc6d35d3492d1129d41d6d7f20daea878c8d79e6655aac5",
+    "tests/unit/test_v4_assessment_core.py": "5c4a75346d2a6494caee9645ce7de323c6f57ab7a2ac016a675cf11a54bf7400"
+  },
+  "exit_code": 1
+}

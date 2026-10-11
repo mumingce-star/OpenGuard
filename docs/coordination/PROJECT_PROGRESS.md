@@ -2008,3 +2008,15 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 ### 2026-10-10 17:02 GitHub 发布状态核验
 
 工作分支本地与 GitHub 远端同为 `30f0cce2fb8fd89109df39433bd9ccc27f23f1f8`，今天提交的 P2B 代码、测试与三例受控扫描回执均已上传；本轮无新的产品文件待提交。`integration/p1@aabd794`、`main@476d954` 未变；正式三例 handoff、A/Owner 接纳与前端签收仍未关闭。
+
+## 2026-10-10 P2 后端 A HTTP 契约候选（待 Owner Review）
+
+| 本轮完成 | 累计可独立演示 | 未完成/责任 | 验证与发布 |
+|---|---|---|---|
+| 默认工厂接入独立 P2 Store/DTO/路由；精确结果 GET、子集回答、小材料观察、CAS/幂等、原子新 revision、同版 companion。 | 既有团队扫描/Assessment/报告；固定 v6 隔离真实 HTTP 可保存并刷新/重启读回独立结果 1–3，原 Formal 不变。 | A/cz：可信上游/适用性来源接纳与新真实正向样本；Owner/xzb：候选与前端兼容、接收机合法固定输入及运行签收；NOTICE 维护方：2 条父本 excerpt fixture 失败。 | 430 唯一相关节点=428 PASS/2 FAIL/0 SKIP，2 FAIL 在未改父提交复现；117 个 P2/P2B 子集通过。最终 31 次真实 HTTP 单列，3 次创建+3 次同键重放。功能分支 `codex/p2-stage1-backend-20261010`，提交/推送按 Owner 授权执行；不合并 integration/main/xzb。 |
+
+详见 `docs/p2/stage1-review.md`、`docs/spec/p2-backend-contract.md` 及相邻原始测试/脱敏 HTTP 回执。新材料仍 pending、回答仍 USER_ASSERTED，来源接纳缺口不能靠 P0 人审 flag 补齐；新正向许可判断为 0，既有 Pydantic 支持不计新成果。阶段 1 整包仍 PARTIAL、xzb 整体阶段 2 仍 BLOCKED；无前端实现、无模型或原库写入、无 PR/部署。
+
+### P2 A 候选分支发布回执
+
+实现及证据 `83fdff54be252b9355a503c4eec4c70489babb78` 已上传 `codex/p2-stage1-backend-20261010` 并读回远端 SHA；integration、cz、main/xzb 未改。公开内容是源码、合同、Schema、测试、脱敏证据、日志文件，不含原数据库、完整私有材料或原模型输入。Owner Review 待定、整体 PARTIAL、xzb 整体阶段 2 BLOCKED；分支发布不是集成/生产接受。

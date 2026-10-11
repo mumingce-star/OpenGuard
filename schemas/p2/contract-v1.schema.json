@@ -1,0 +1,1274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p2-result:1",
+  "description": "P2 independent non-Formal HTTP DTOs. Select exact $defs entry by route.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Receipt"
+    },
+    {
+      "$ref": "#/$defs/Result"
+    },
+    {
+      "$ref": "#/$defs/ErrorEnvelope"
+    }
+  ],
+  "$defs": {
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "scan_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Scan Id",
+          "type": "string"
+        },
+        "assessment_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "assessment_version": {
+          "minimum": 1,
+          "title": "Assessment Version",
+          "type": "integer"
+        },
+        "registry_revision": {
+          "minimum": 1,
+          "title": "Registry Revision",
+          "type": "integer"
+        },
+        "project_revision": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Project Revision"
+        },
+        "facts_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Facts Hash",
+          "type": "string"
+        },
+        "usage_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Usage Hash",
+          "type": "string"
+        },
+        "rule_version": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "assessment_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Assessment Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scan_id",
+        "assessment_id",
+        "assessment_version",
+        "registry_revision",
+        "project_revision",
+        "facts_hash",
+        "usage_hash",
+        "rule_version",
+        "assessment_sha256"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "CreateRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "parent_result_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_.:-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent Result Id"
+        },
+        "idempotency_key": {
+          "maxLength": 100,
+          "minLength": 8,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Idempotency Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding",
+        "expected_revision",
+        "parent_result_id",
+        "idempotency_key"
+      ],
+      "title": "CreateRequest",
+      "type": "object"
+    },
+    "Subject": {
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Resource Id",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Version"
+        }
+      },
+      "required": [
+        "resource_id",
+        "version"
+      ],
+      "title": "Subject",
+      "type": "object"
+    },
+    "AnswerRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "parent_result_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_.:-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent Result Id"
+        },
+        "idempotency_key": {
+          "maxLength": 100,
+          "minLength": 8,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "question_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Question Id",
+          "type": "string"
+        },
+        "question_code": {
+          "enum": [
+            "DELIVERY_SCOPE_FOR_RESOURCES",
+            "OBLIGATION_FULFILLMENT_IN_DELIVERY"
+          ],
+          "title": "Question Code",
+          "type": "string"
+        },
+        "answer_code": {
+          "enum": [
+            "YES_INCLUDE",
+            "NO_EXCLUDE",
+            "NOT_DECIDED",
+            "FULFILLED",
+            "NOT_FULFILLED",
+            "NOT_DELIVERED_YET",
+            "UNKNOWN"
+          ],
+          "title": "Answer Code",
+          "type": "string"
+        },
+        "subjects": {
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "title": "Subjects",
+          "type": "array"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Evidence Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "binding",
+        "expected_revision",
+        "parent_result_id",
+        "idempotency_key",
+        "question_id",
+        "question_code",
+        "answer_code",
+        "subjects",
+        "evidence_ids"
+      ],
+      "title": "AnswerRequest",
+      "type": "object"
+    },
+    "MaterialRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "parent_result_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_.:-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent Result Id"
+        },
+        "idempotency_key": {
+          "maxLength": 100,
+          "minLength": 8,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "filename": {
+          "maxLength": 20,
+          "minLength": 1,
+          "title": "Filename",
+          "type": "string"
+        },
+        "content_base64": {
+          "maxLength": 87384,
+          "minLength": 1,
+          "title": "Content Base64",
+          "type": "string"
+        },
+        "source_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Sha256",
+          "type": "string"
+        },
+        "source_description": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Source Description",
+          "type": "string"
+        },
+        "completeness": {
+          "enum": [
+            "FULL_TEXT_CLAIMED",
+            "EXCERPT"
+          ],
+          "title": "Completeness",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding",
+        "expected_revision",
+        "parent_result_id",
+        "idempotency_key",
+        "subject",
+        "evidence_ids",
+        "filename",
+        "content_base64",
+        "source_sha256",
+        "source_description",
+        "completeness"
+      ],
+      "title": "MaterialRequest",
+      "type": "object"
+    },
+    "Advice": {
+      "additionalProperties": false,
+      "properties": {
+        "usage": {
+          "enum": [
+            "commercial",
+            "modified",
+            "distributed",
+            "network_service",
+            "training",
+            "redistributed_assets",
+            "source_disclosure"
+          ],
+          "title": "Usage",
+          "type": "string"
+        },
+        "saved_value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Saved Value"
+        },
+        "selection": {
+          "enum": [
+            "SELECTED",
+            "NOT_SELECTED",
+            "UNKNOWN"
+          ],
+          "title": "Selection",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "conditional_candidate",
+            "unknown",
+            "not_selected"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "scope": {
+          "const": "RESOURCE",
+          "default": "RESOURCE",
+          "title": "Scope",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "gaps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Gaps",
+          "type": "array"
+        },
+        "basis_evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Basis Evidence Ids",
+          "type": "array"
+        },
+        "rule_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rule Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "usage",
+        "saved_value",
+        "selection",
+        "state",
+        "conditions",
+        "gaps",
+        "basis_evidence_ids",
+        "rule_ids"
+      ],
+      "title": "Advice",
+      "type": "object"
+    },
+    "Question": {
+      "additionalProperties": false,
+      "properties": {
+        "question_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Question Id",
+          "type": "string"
+        },
+        "question_code": {
+          "enum": [
+            "DELIVERY_SCOPE_FOR_RESOURCES",
+            "OBLIGATION_FULFILLMENT_IN_DELIVERY"
+          ],
+          "title": "Question Code",
+          "type": "string"
+        },
+        "origin": {
+          "const": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+          "default": "DETERMINISTIC_P2_NOT_R6_AGGREGATE",
+          "title": "Origin",
+          "type": "string"
+        },
+        "subjects": {
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "title": "Subjects",
+          "type": "array"
+        },
+        "options": {
+          "items": {
+            "enum": [
+              "YES_INCLUDE",
+              "NO_EXCLUDE",
+              "NOT_DECIDED",
+              "FULFILLED",
+              "NOT_FULFILLED",
+              "NOT_DELIVERED_YET",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "title": "Options",
+          "type": "array"
+        },
+        "scope_rule": {
+          "const": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN",
+          "default": "EXPLICIT_SUBSET_ONLY_UNMENTIONED_UNKNOWN",
+          "title": "Scope Rule",
+          "type": "string"
+        }
+      },
+      "required": [
+        "question_id",
+        "question_code",
+        "subjects",
+        "options"
+      ],
+      "title": "Question",
+      "type": "object"
+    },
+    "ResourceResult": {
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "resource_kind": {
+          "enum": [
+            "component",
+            "ai_asset"
+          ],
+          "title": "Resource Kind",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "candidate",
+            "unknown",
+            "pending",
+            "partial"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "verification_state": {
+          "const": "candidate_only",
+          "default": "candidate_only",
+          "title": "Verification State",
+          "type": "string"
+        },
+        "scope": {
+          "title": "Scope",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "evidence_source_hashes": {
+          "additionalProperties": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "title": "Evidence Source Hashes",
+          "type": "object"
+        },
+        "material_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Material Ids",
+          "type": "array"
+        },
+        "answer_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Answer Ids",
+          "type": "array"
+        },
+        "gaps": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Gaps",
+          "type": "array"
+        },
+        "advice": {
+          "items": {
+            "$ref": "#/$defs/Advice"
+          },
+          "title": "Advice",
+          "type": "array"
+        },
+        "user_assertions": {
+          "additionalProperties": {
+            "enum": [
+              "YES_INCLUDE",
+              "NO_EXCLUDE",
+              "NOT_DECIDED",
+              "FULFILLED",
+              "NOT_FULFILLED",
+              "NOT_DELIVERED_YET",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "title": "User Assertions",
+          "type": "object"
+        },
+        "inherited_local_support": {
+          "title": "Inherited Local Support",
+          "type": "boolean"
+        },
+        "inherited_support_source": {
+          "const": "PARENT_ASSESSMENT_NOT_NEW_VALUE",
+          "default": "PARENT_ASSESSMENT_NOT_NEW_VALUE",
+          "title": "Inherited Support Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject",
+        "resource_kind",
+        "state",
+        "scope",
+        "evidence_ids",
+        "evidence_source_hashes",
+        "material_ids",
+        "answer_ids",
+        "gaps",
+        "advice",
+        "user_assertions",
+        "inherited_local_support"
+      ],
+      "title": "ResourceResult",
+      "type": "object"
+    },
+    "Result": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "openguard-p2-result/1",
+          "default": "openguard-p2-result/1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "algorithm_version": {
+          "const": "p2-bound-candidate/1",
+          "default": "p2-bound-candidate/1",
+          "title": "Algorithm Version",
+          "type": "string"
+        },
+        "result_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Result Id",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "previous_result_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_.:-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Previous Result Id"
+        },
+        "result_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Result Sha256",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "data_scope": {
+          "enum": [
+            "OWNER",
+            "TEST_ONLY"
+          ],
+          "title": "Data Scope",
+          "type": "string"
+        },
+        "computation": {
+          "const": "DETERMINISTIC_P2B",
+          "default": "DETERMINISTIC_P2B",
+          "title": "Computation",
+          "type": "string"
+        },
+        "publication_status": {
+          "const": "succeeded",
+          "default": "succeeded",
+          "title": "Publication Status",
+          "type": "string"
+        },
+        "formal_effect": {
+          "const": "none",
+          "default": "none",
+          "title": "Formal Effect",
+          "type": "string"
+        },
+        "model_calls": {
+          "const": 0,
+          "default": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "state": {
+          "enum": [
+            "candidate",
+            "unknown",
+            "pending",
+            "partial"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "created_at": {
+          "title": "Created At",
+          "type": "string"
+        },
+        "usage": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "propertyNames": {
+            "enum": [
+              "commercial",
+              "modified",
+              "distributed",
+              "network_service",
+              "training",
+              "redistributed_assets",
+              "source_disclosure"
+            ]
+          },
+          "title": "Usage",
+          "type": "object"
+        },
+        "resources": {
+          "items": {
+            "$ref": "#/$defs/ResourceResult"
+          },
+          "title": "Resources",
+          "type": "array"
+        },
+        "questions": {
+          "items": {
+            "$ref": "#/$defs/Question"
+          },
+          "title": "Questions",
+          "type": "array"
+        },
+        "material_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Material Ids",
+          "type": "array"
+        },
+        "answer_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Answer Ids",
+          "type": "array"
+        },
+        "recomputed_resource_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Recomputed Resource Ids",
+          "type": "array"
+        },
+        "reused_resource_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Reused Resource Ids",
+          "type": "array"
+        },
+        "companion_summary_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Companion Summary Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result_id",
+        "revision",
+        "previous_result_id",
+        "result_sha256",
+        "binding",
+        "data_scope",
+        "state",
+        "created_at",
+        "usage",
+        "resources",
+        "questions",
+        "material_ids",
+        "answer_ids",
+        "recomputed_resource_ids",
+        "reused_resource_ids",
+        "companion_summary_id"
+      ],
+      "title": "Result",
+      "type": "object"
+    },
+    "ResultIndex": {
+      "additionalProperties": false,
+      "properties": {
+        "head_result_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_.:-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Head Result Id"
+        },
+        "head_revision": {
+          "title": "Head Revision",
+          "type": "integer"
+        },
+        "result_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Result Ids",
+          "type": "array"
+        },
+        "has_more": {
+          "title": "Has More",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "head_result_id",
+        "head_revision",
+        "result_ids",
+        "has_more"
+      ],
+      "title": "ResultIndex",
+      "type": "object"
+    },
+    "Answer": {
+      "additionalProperties": false,
+      "properties": {
+        "answer_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Answer Id",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "integer"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "question_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Question Id",
+          "type": "string"
+        },
+        "question_code": {
+          "enum": [
+            "DELIVERY_SCOPE_FOR_RESOURCES",
+            "OBLIGATION_FULFILLMENT_IN_DELIVERY"
+          ],
+          "title": "Question Code",
+          "type": "string"
+        },
+        "answer_code": {
+          "enum": [
+            "YES_INCLUDE",
+            "NO_EXCLUDE",
+            "NOT_DECIDED",
+            "FULFILLED",
+            "NOT_FULFILLED",
+            "NOT_DELIVERED_YET",
+            "UNKNOWN"
+          ],
+          "title": "Answer Code",
+          "type": "string"
+        },
+        "subjects": {
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "title": "Subjects",
+          "type": "array"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "provenance": {
+          "const": "USER_ASSERTED",
+          "default": "USER_ASSERTED",
+          "title": "Provenance",
+          "type": "string"
+        },
+        "formal_effect": {
+          "const": "none",
+          "default": "none",
+          "title": "Formal Effect",
+          "type": "string"
+        },
+        "data_scope": {
+          "enum": [
+            "OWNER",
+            "TEST_ONLY"
+          ],
+          "title": "Data Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "answer_id",
+        "revision",
+        "binding",
+        "question_id",
+        "question_code",
+        "answer_code",
+        "subjects",
+        "evidence_ids",
+        "data_scope"
+      ],
+      "title": "Answer",
+      "type": "object"
+    },
+    "Material": {
+      "additionalProperties": false,
+      "properties": {
+        "material_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Material Id",
+          "type": "string"
+        },
+        "revision": {
+          "const": 1,
+          "default": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "filename": {
+          "title": "Filename",
+          "type": "string"
+        },
+        "source_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Source Sha256",
+          "type": "string"
+        },
+        "byte_count": {
+          "maximum": 65536,
+          "minimum": 1,
+          "title": "Byte Count",
+          "type": "integer"
+        },
+        "completeness": {
+          "enum": [
+            "FULL_TEXT_CLAIMED",
+            "EXCERPT"
+          ],
+          "title": "Completeness",
+          "type": "string"
+        },
+        "parse_status": {
+          "const": "text_observed",
+          "default": "text_observed",
+          "title": "Parse Status",
+          "type": "string"
+        },
+        "adoption_status": {
+          "const": "adopted_as_unverified_observation",
+          "default": "adopted_as_unverified_observation",
+          "title": "Adoption Status",
+          "type": "string"
+        },
+        "verification_state": {
+          "const": "pending",
+          "default": "pending",
+          "title": "Verification State",
+          "type": "string"
+        },
+        "source_level": {
+          "const": "user_supplied_unverified",
+          "default": "user_supplied_unverified",
+          "title": "Source Level",
+          "type": "string"
+        },
+        "formal_effect": {
+          "const": "none",
+          "default": "none",
+          "title": "Formal Effect",
+          "type": "string"
+        },
+        "data_scope": {
+          "enum": [
+            "OWNER",
+            "TEST_ONLY"
+          ],
+          "title": "Data Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "material_id",
+        "binding",
+        "subject",
+        "evidence_ids",
+        "filename",
+        "source_sha256",
+        "byte_count",
+        "completeness",
+        "data_scope"
+      ],
+      "title": "Material",
+      "type": "object"
+    },
+    "Summary": {
+      "additionalProperties": false,
+      "properties": {
+        "summary_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Summary Id",
+          "type": "string"
+        },
+        "result_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Result Id",
+          "type": "string"
+        },
+        "result_revision": {
+          "title": "Result Revision",
+          "type": "integer"
+        },
+        "result_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Result Sha256",
+          "type": "string"
+        },
+        "binding": {
+          "$ref": "#/$defs/Binding"
+        },
+        "material_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Material Ids",
+          "type": "array"
+        },
+        "answer_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Answer Ids",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "candidate",
+            "unknown",
+            "pending",
+            "partial"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "resource_states": {
+          "additionalProperties": {
+            "enum": [
+              "candidate",
+              "unknown",
+              "pending",
+              "partial"
+            ],
+            "type": "string"
+          },
+          "title": "Resource States",
+          "type": "object"
+        },
+        "formal_effect": {
+          "const": "none",
+          "default": "none",
+          "title": "Formal Effect",
+          "type": "string"
+        },
+        "report_kind": {
+          "const": "P2_COMPANION_NOT_FORMAL_REPORT",
+          "default": "P2_COMPANION_NOT_FORMAL_REPORT",
+          "title": "Report Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "summary_id",
+        "result_id",
+        "result_revision",
+        "result_sha256",
+        "binding",
+        "material_ids",
+        "answer_ids",
+        "state",
+        "resource_states"
+      ],
+      "title": "Summary",
+      "type": "object"
+    },
+    "Receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "result": {
+          "$ref": "#/$defs/Result"
+        },
+        "answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Answer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "material": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Material"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "Receipt",
+      "type": "object"
+    },
+    "ErrorBody": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "details": {
+          "additionalProperties": true,
+          "title": "Details",
+          "type": "object"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "request_id",
+        "details"
+      ],
+      "title": "ErrorBody",
+      "type": "object"
+    },
+    "ErrorEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "$ref": "#/$defs/ErrorBody"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "title": "ErrorEnvelope",
+      "type": "object"
+    }
+  }
+}
