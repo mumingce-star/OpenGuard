@@ -2033,3 +2033,7 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 
 机器闭包及具体适配缺口见docs/p2/p2b-closure-review.md。可独立离线演示pending材料/结果链；尚无三例新许可正向结论、旧Formal Report读回或正式前端签收。P2阶段1整体PARTIAL。
 参赛门禁：目标机运行与Java核心/真实链验收仍须独立关闭；完整提交门禁：发布、前端端到端、报告视频与匿名资源/AI材料；竞争力门禁：真人Gold、固定Bench/holdout、对比/消融与复现。没有统一分母，不给完成百分比。
+
+### 2026-10-11 GitHub 工作分支发布回执
+
+Root 已将前述 P2 A 本地合入 `647e4d8`、合入核验 `0d9d581` 和 B 离线闭包/测试/文档提交 `da142ea5c09ca23dec742133d9a31ae7226e402e` 非强制推送至 `origin/codex/scan-reliability-integration`；远端读回 SHA 与 `da142ea5c09ca23dec742133d9a31ae7226e402e` 一致。本轮产品提交含十四个经复核文件；`reports/`、pytest 缓存、原始私有材料均未上传。B 定向 90 passed/2 条既有弃用警告，暂存 diff-check 与新增材料敏感信息筛查通过。共享日志的收工/发布回执因另一在途任务同时追加，按追加规则单独处理，不提前发布其未完成记录。`integration/p1` 与 `main` 未合并，本次没有 PR 或 Owner Review；P2 总体仍 PARTIAL。
