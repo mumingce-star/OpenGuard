@@ -1,0 +1,111 @@
+{
+  "a_terminal_readback": null,
+  "artifacts": [
+    {
+      "path": "tests\\fixtures\\notice-license-facts-v3\\generate.mjs",
+      "sha256": "d3586cf650b860c1ce19c54faeef840627074b44661855639459bca6f431a953"
+    },
+    {
+      "path": "tests\\fixtures\\notice-license-facts-v3\\fixed-git-source.mjs",
+      "sha256": "03583a8eb97c1a807ceac238c057f7955d4768bbb2a1bf60c65a37d464bbf186"
+    },
+    {
+      "path": "tests\\fixtures\\notice-license-facts-v3\\README.md",
+      "sha256": "fc2b58d6f1cd27a88a72d2aaac632f62a3726f806d234b75655a1dcfd073e82a"
+    },
+    {
+      "path": "tests\\fixtures\\notice-license-facts-v3\\revisions\\source-binding-r2\\facts.json",
+      "sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795"
+    },
+    {
+      "path": "tests\\fixtures\\notice-license-facts-v3\\revisions\\source-binding-r2\\manifest.json",
+      "sha256": "f5a1a2d5c44e04c6c9c64363f95a97fd0dfabbf4b3e07b45255f3163279f8990"
+    },
+    {
+      "path": "tests\\fixtures\\notice-license-facts-v3\\revisions\\source-binding-r2\\amendment.json",
+      "sha256": "0e48d5bd2e063f1cd49426c199a82bbd40d913cf4cb24d9f1a4e2f9b1ef82389"
+    },
+    {
+      "path": "tests/notice_license_facts_v3.test.mjs",
+      "sha256": "d3b38ee774fb521ac3d7544d4a8195f4db85ec52bc6bf964ac3ae51e5a539e96"
+    },
+    {
+      "path": "tests/notice_license_facts_v3_revision.test.mjs",
+      "sha256": "cfabff743898c917b8865d7813c641dd8f0486bd8a3325389e779af2790d21e5"
+    },
+    {
+      "path": "tests/unit/test_b03_fixed_git_revision.py",
+      "sha256": "0f7ea71783b003b8a9e465a985d8bf4667498601d81846ead4f0d36f551969e4"
+    },
+    {
+      "path": "docs/p1/b03-source-binding-r2.md",
+      "sha256": "9f5c836a23f3868d948d8ad17945eba650c36949a8992bcab33f9a9c95a550f9"
+    }
+  ],
+  "checks": {
+    "diff_check": "passed",
+    "new_file_whitespace": "passed",
+    "node_syntax": "passed",
+    "original_schema": "passed",
+    "python_compile": "passed",
+    "sensitive_patterns": "0_matches",
+    "staging_area": "empty",
+    "strict_json": "passed"
+  },
+  "corrected_evidence": 8,
+  "environment": {
+    "node": "26.2.0",
+    "platform": "Windows",
+    "python": "3.12.10"
+  },
+  "evidence_source_and_selected_verified": 31,
+  "fact_semantics_changed": false,
+  "formal_gold": false,
+  "full_worklog_read_gate": "not_met_output_truncated",
+  "head": "bed87f58241acb4918c133c6854b99a528073b1d",
+  "independent_review": null,
+  "legacy_retained": true,
+  "p1_tracking_sha": "aabd7940f65ec8a78b33c863b4db81b400509b7d",
+  "published_commit": null,
+  "release_allowlist": [
+    "tests\\fixtures\\notice-license-facts-v3\\generate.mjs",
+    "tests\\fixtures\\notice-license-facts-v3\\fixed-git-source.mjs",
+    "tests\\fixtures\\notice-license-facts-v3\\README.md",
+    "tests\\fixtures\\notice-license-facts-v3\\revisions\\source-binding-r2\\facts.json",
+    "tests\\fixtures\\notice-license-facts-v3\\revisions\\source-binding-r2\\manifest.json",
+    "tests\\fixtures\\notice-license-facts-v3\\revisions\\source-binding-r2\\amendment.json",
+    "tests/notice_license_facts_v3.test.mjs",
+    "tests/notice_license_facts_v3_revision.test.mjs",
+    "tests/unit/test_b03_fixed_git_revision.py",
+    "docs/p1/b03-source-binding-r2.md",
+    "docs/p1/b03-source-binding-r2-validation.json",
+    "docs/05-ai-assistance-log.md",
+    "docs/coordination/PROJECT_PROGRESS.md",
+    "docs/coordination/change-requests.md",
+    "docs/coordination/AGENT_WORKLOG.md"
+  ],
+  "release_note": "共同日志/文档只选本轮B03修正追加；保护此前P1审计、P2、其他Root日志及reports/pytest/服务。无暂存提交推送。",
+  "remaining_source_mismatch": 0,
+  "schema": "openguard.b03-source-binding-correction-validation/1",
+  "scope": "P1_B03_only",
+  "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+  "source_files_verified": 15,
+  "status": "offline_passed_pending_independent_review_and_publication",
+  "tests": [
+    {
+      "command": "node --test tests/notice_license_facts_v3.test.mjs tests/notice_license_facts_v3_revision.test.mjs",
+      "exit_code": 0,
+      "failed": 0,
+      "passed": 10,
+      "skipped": 0
+    },
+    {
+      "command": "python -m pytest -q -p no:cacheprovider tests/unit/test_b03_fixed_git_revision.py tests/unit/test_b03_b04_v3_consumption_adapter.py tests/unit/test_p1_license_notice_facts_detector.py tests/security/test_p1_license_notice_facts_detector_independent.py --basetemp tmp/pytest-b03-r2-20261011",
+      "exit_code": 0,
+      "failed": 0,
+      "passed": 24,
+      "skipped": 0
+    }
+  ],
+  "token_estimate": "6000-12000; precise telemetry unavailable"
+}
