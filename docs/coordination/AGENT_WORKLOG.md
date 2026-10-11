@@ -9597,3 +9597,21 @@
 - 提交前：28文件白名单、JSON重复键/非有限数检查、真实响应wire Hash及定向敏感信息检查通过；`git diff --check`通过。原始Fail-first JUnit的一条断言标记含尾随空白，仅该原始证据设置`.gitattributes`空白例外以保留原字节，未豁免产品/测试源码检查。
 - 最终后端430唯一节点428PASS/2个父本可复现FAIL/0SKIP；最终31次真实HTTP及隔离root逐表核对单列。模型/原业务库/Formal写入0；本机任务API和容器已停止，收尾码见上条AMENDMENT及runtime receipt。
 - Owner Review未发生，可信正向来源接纳/新真实正例与xzb兼容/接收机签收仍缺；阶段1整包不PASS，xzb整体阶段2仍BLOCKED。此追加仅记录已发生的分支发布，不提升接受状态、不进入下一工作包。
+
+## 20261011-GPT5-远端全量拉取合并-START
+
+- 状态：START；作者与角色：GPT-5 / Root Coordinator；时间：2026-10-11（Asia/Shanghai）。
+- 目标与范围：按用户指定 GitHub 仓库拉取并安全合并项目最新内容，核对所有远端分支与当前含 P2B 的集成工作分支；不覆盖本机未跟踪的 `reports/` 目录，且不改写 `main`。
+- 开工核对与验收：已阅读 README、共享协作日志、PROJECT_PROGRESS、SOL_HANDOFF，检查分支、近期提交、远端与工作区；将执行 `fetch --prune`、祖先关系与可合并性检查。只有明确属于当前集成线、且不会倒退 P2B 的远端变更才会合并。预计 token 3,000～6,000，精确遥测不可获得。
+
+## 20261011-GPT5-远端全量拉取合并-COMPLETE
+
+- 状态：COMPLETE；作者与角色：GPT-5 / Root Coordinator；时间：2026-10-11（Asia/Shanghai）。
+- 任务目标与实际结果：已执行 `git fetch --prune origin` 并将远端明确的 P2 后端阶段分支 `origin/codex/p2-stage1-backend-20261010@afca4c2` 合并至当前 P2B 集成分支。合并提交为 `647e4d8 merge: integrate P2 stage1 backend`；包含 P2 Store/DTO/API、Schema、测试、脱敏回执与文档。`docs/05-ai-assistance-log.md`、工作日志和进度台账冲突均以保留两侧完整记录的方式解决。
+- 修改文件：合并引入远端 28 个 P2 文件；本轮额外仅向共享日志追加 START/COMPLETE，并保留未跟踪 `reports/` 及 pytest 临时目录。未改写 `main`，未删除文件或覆盖本机报告。
+- 命令与测试：fetch、祖先/文件差异核对、合并、`compileall`、5 份 JSON 解析、暂存差异格式检查均通过。P2/API 定向 pytest 在 Windows 产生 `2 failed, 2 passed, 113 errors`：均在既有 Unix 专用 `os.geteuid()` 上提前失败（`backend/app/api/main.py:773`、`backend/app/persistence/scan_registry.py:154`），未发现 P2 合并冲突或语法错误；未启动项目服务。
+- 接口、Schema、规则与重要决策：新增 P2 独立不可变 result revision、精确 GET、受限材料观察、CAS/幂等和 P2 路由/契约；仍保持 TEST_ONLY、pending/USER_ASSERTED/candidate_only 语义，不提升为正式许可授权或 Formal 结论。未合并其余非集成的历史或实验远端分支，避免把未审查的 P0/P1/前端分支混入当前 P2 线。
+- 已知风险与未完成项：当前分支相对远端领先 3 个提交（P2 分支的两个提交及本合并提交），尚未推送；用户本轮只要求拉取与合并，未执行推送。Windows `geteuid` 兼容门禁、Owner Review、可信来源接纳、真实正向样本、前端兼容/接收机签收仍待。
+- 下一步与责任模型：Terra/后端负责处理 Windows 权限兼容或在受控 Linux 环境复验；A/Owner 冻结可信来源和正式接纳；xzb/前端完成正式 API 签收；Root 在用户授权后执行发布前全量检查并推送当前集成分支。
+- 关联分支、提交、PR、Issue 或 evidence_id：`codex/scan-reliability-integration@647e4d8`，合并来源 `origin/codex/p2-stage1-backend-20261010@afca4c2`；无 PR、Issue 或新增 evidence_id。
+- token 使用说明：本次运行精确 token 数不可获得；开工估算 3,000～6,000。因实际发生冲突解决与验证，工作量超出初始范围；核心拉取、P2 合并和验证均已完成。
