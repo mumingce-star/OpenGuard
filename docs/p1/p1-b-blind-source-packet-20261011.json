@@ -1,0 +1,2026 @@
+{
+  "formal_gold": false,
+  "records": [
+    {
+      "case_id": "source_b7ccc725a9740b83",
+      "commit_sha": "18f25547f20cf5f01da69ac611e700e3bc9ebf21",
+      "evidence_sha256": "22f1520fd8c1c8972fa84694dfb4a30e2529d2d78f03a295e417ef847d61f1ab",
+      "input_sha256": "7b736ddbbec9c1f0f5c8a1cab0cb12593dc09633eddaf9464581dda589d2169f",
+      "judgment": null,
+      "locator": "src/anthropic/lib/credentials/_auth.py",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-python.git"
+    },
+    {
+      "case_id": "source_ab97a7d4a48c4a06",
+      "commit_sha": "18f25547f20cf5f01da69ac611e700e3bc9ebf21",
+      "evidence_sha256": "1040185a179892af5c7d9ba461649a54e1c0be9c0f658bfbad2af3e818426f43",
+      "input_sha256": "7b736ddbbec9c1f0f5c8a1cab0cb12593dc09633eddaf9464581dda589d2169f",
+      "judgment": null,
+      "locator": "src/anthropic/lib/credentials/_providers.py",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-python.git"
+    },
+    {
+      "case_id": "source_fbbde02873a82466",
+      "commit_sha": "18f25547f20cf5f01da69ac611e700e3bc9ebf21",
+      "evidence_sha256": "a1d6f6e88d0a817f6f10d505ba15941dcb007049a3778cdc34fd81cc463c0969",
+      "input_sha256": "7b736ddbbec9c1f0f5c8a1cab0cb12593dc09633eddaf9464581dda589d2169f",
+      "judgment": null,
+      "locator": "src/anthropic/lib/credentials/_workload.py",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-python.git"
+    },
+    {
+      "case_id": "source_55b417cc5c9ef508",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "6156974464133ec4b3c9bbd9e56e6107dc57d5ff14048a15d43aa6b5925d5e0b",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-esbuild/src/main.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_7fc3eb8ec2bc528f",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "a1a286bc63b2340b8872e2a1bff7825e672a577831ea19a52bc5b668b6692beb",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-esbuild/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_66be8ba9ee7f7d85",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "3300719d644f4038c21e7aab582ff229ec1d142386db0f9806532a30dd6072e9",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-service-worker/src/sw.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_05bc5a692a07f892",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "6156974464133ec4b3c9bbd9e56e6107dc57d5ff14048a15d43aa6b5925d5e0b",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-vite/src/main.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_bea9f1b79f49aa11",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "a1a286bc63b2340b8872e2a1bff7825e672a577831ea19a52bc5b668b6692beb",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-vite/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_0f40b32c570dc4c5",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "6156974464133ec4b3c9bbd9e56e6107dc57d5ff14048a15d43aa6b5925d5e0b",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-webpack/src/main.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_222c5f64ac43cbff",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "a1a286bc63b2340b8872e2a1bff7825e672a577831ea19a52bc5b668b6692beb",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-webpack/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_784b57ebfb92b03b",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "f11129da23d6318ac7561e6f6deb56211a896483127c91408761dde1917cf994",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/deno/main_test.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_3625ea9348d409ce",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "1ecd4ab36b053004a1d8bc5be4d118a08eac3ede1547401ec8aae43232c5ce04",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/node-pnpm/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_ba9bf1284d89c939",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "2f9a577125b753511789b0730c1bf6f769e571d258a96d83553ee8b3c61a6f03",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/node-ts-latest/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_23d1c86ff931910f",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "eb7846f6215ae17d8fa776f28c9fb0a8f6c75879500b9424e8e73c3f7424f541",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/node-ts-strictest/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_f6d430aa29875e53",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "701ccf1e466db602a37595386a93fe7a7155b204d534cddfe433baa013eec1eb",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/node-ts5.0/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_dcf1f45a37a5f69d",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "3c2de964c7ba9d0ece4b657230932c55ba91ad03388c93eec703972da9f47572",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/shared/type-tests.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_29157732e2435948",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "e7e2a84eee246ed7a037cb3c2170900f7663b80081fd88ab752eab4828af9665",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "ecosystem-tests/vercel-edge/src/handler.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_f35afefb48bb14b9",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "063123ab38a2c00752536d47fd51440618d57b50be8b902bcc7a324ab89d6b13",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "examples/managed-agents-observe-tool-calls.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_73aecc3a1df8278d",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "1a613a73089cee4366ca9253c185c7ac455a7375d12e3b66cd5e52bff7885753",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "examples/managed-agents-self-hosted-sandbox-worker.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_415ed551e7ebe028",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "4f735c938d89ae43fc622c18f9083829d85ab62a48f4bb8152206607b3161360",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "examples/managed-agents-streaming-deltas-manual.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_28eaf15876ccdf49",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "b39ca424620c33cd124763dce7e18cd70ee472c1b4d03d27f36726a3cbab15b5",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "examples/managed-agents-worker-dispatch.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_7dda1f50d5cc265e",
+      "commit_sha": "d49bdab458000bcdffe77bd84b03293f31824fb3",
+      "evidence_sha256": "7095a4ded774c4329b403b0445e0f5167e38e7d7979aa3e10e526e4298426161",
+      "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+      "judgment": null,
+      "locator": "tests/lib/helper-client.test.ts",
+      "source_repository": "https://github.com/anthropics/anthropic-sdk-typescript.git"
+    },
+    {
+      "case_id": "source_b7bb3129385093da",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "db55d3edee3edf7ab52ea3a610f9d4ce041684167c630fcac68aff9a0eab91d3",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/guiders/guider_utils.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_6d6fc12865ff59fe",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "99a0981a45ed82355a00ed3d9c91210eb3be2e7d401fe16b48a21cf80366b2dc",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/loaders/single_file_utils.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_215f4edb9cc26e63",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "e00f13b0606f258da926cd8c0a781e8b1acc7f0b489a83a8f6f5cc9d6275c18d",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/models/auto_model.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_f1df44c08750c513",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "12eaf36b912651d80e8a70866606381d39607e4a87111731f34178e20d46030f",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/models/modeling_utils.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_2640c9fab634d2ff",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "2900bf67951e325eed4da7d2d56a581f4ce7322b5f8dd491c8ed991b2f832437",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/animatediff/pipeline_animatediff_controlnet.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_a93778534a874994",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "459fb64e6f6004d3df87a840503b71c697c4d3100a04d61e1d4341a7effc48de",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/chroma/pipeline_chroma.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_0a5704e0356d3758",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "af14d8c4ce8e0527b0d1f755f826edbe1081994709624416a3a6c334d19db9d2",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/chroma/pipeline_chroma_img2img.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_6b5f524668b50709",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "7ef4c53ad0e11dfd760ed25ad2861b70feedf15dbdf4d8f41ec3040adc6fd954",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/chroma/pipeline_chroma_inpainting.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_9284e3cdf00979a2",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "61b3c74311096b0818b84e388823aaa24ef68bf33571ea6b9f44ad2b2a59ca69",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/consisid/pipeline_consisid.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_8e92c85f485e4ae4",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "e936abcc2e57db5d0044c49290f065deb9c76fdcbb070f20dae0c4ac01fa2f7e",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/controlnet_hunyuandit/pipeline_hunyuandit_controlnet.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_230626daf82fd60e",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "7851321a099f34c500b2c5b2f925219e60f21d68883f9af9a577f009b12d3a15",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/deprecated/pia/pipeline_pia.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_6cfb0c1c27507d86",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "a184fc7ad614d021b55ad9f5c6f9a51ba4ce2d4bcda60739e043619eba0e747b",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/diffusion_gemma/pipeline_diffusion_gemma.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_394de6996395f7fb",
+      "commit_sha": "899c9f3fd0e64f3206781c00c71c28249eff9ca5",
+      "evidence_sha256": "431d8912a9f7b07effb56009f43c03560d690157f19b53699c9278d804d532e0",
+      "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+      "judgment": null,
+      "locator": "src/diffusers/pipelines/dit/pipeline_dit.py",
+      "source_repository": "https://github.com/huggingface/diffusers.git"
+    },
+    {
+      "case_id": "source_aa2f7e3112d6f92c",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "5f3e76f444cc2a64193c9d1532138a7d1c04a3ba81b7d6a8384bcbb97cd942ef",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/abort_signal.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_99e54932e8bed5e5",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "1d7a26c6a68cdfe3978d4ccc82957d70f7f92a87204d30668b71d5f53e7e5b3b",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/api_error.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_61c3ae904d4dc17d",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "508dd9b41f847a9a82e38f500ac2a81bd43641973e1fc073b4391478a88b02c8",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/api_version.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_61b6bb03f7c7dceb",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "302cbcb8fb13c0170031d6794a62e1115c042c2542c47d8b89fd2b1e0ee2a357",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/batch_embedding_file.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_ef728ee3494a4ef2",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "6a16789bf5d4e215687d72ff1a8bc4f795c022bded89a68d3127c88c595e445c",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/chats.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_3564fc11c22d841f",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "4ace6b1372135d9b4f4d3cd0a37f54bfb2f24614610e9f414862f1c0434f19a3",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/count_tokens.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_e5bf77e1a05bc3d7",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "1f2e970b9694b0a7159950a6d05e21a238c51ea0f66b53d21feef5c4c8d1ddd7",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/credentials_generic_operations.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_17ea2c26ca76900a",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "a8887e95e97738c04017cf312407838c3d9e7628b938d7dc9207312d86b47e7a",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/embed_content.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_b2a7d840abaca95b",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "158d1f9d5b52767435841b8b40659493140f5205c158f3ab21bd178546cc82d8",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/environment_files.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_9eb2985fc3bda2f8",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "fc1ea365151c7bd6d863e12650646e3950b4af46a33dd81c876cd1686bce9fb7",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/environment_lifecycle_test.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_31f63b7fa4a98a8e",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "f63b571920c12f488924d5fd2463781ec49c2252335519886e297f25384df5f1",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/file_search_stores.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_390efdfb04853ebb",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "331ae1bed65945c5becd1bdb610540eb487a0d4e2a560727e87e52db687f55ce",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_code_execution.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_3f1e0c56f02785e6",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "04dffaa506daf54bcfed2bcd97db2a30ecfaf45586095e45276b4e03e2ff1090",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_latlong.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_019b10e8a572c07b",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "2e4784ee99273353eb26daf9d7afe551ddf12752b6b361fb0b3287304950d249",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_log_prob.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_dfe85eb5bd419dd1",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "e7aca7a85a990f3059d7ddf51dd9d10ed4877041de7665fab222323855d64d26",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_model_configuration.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_c26225638ac7947d",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "c1a986e1a2f496caf5ac3528450cde8c0841a42280180452d3d72790abf5e607",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_response_schema_accept_json_schema.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_9e8c7bbdda15d16a",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "8e2c19a5a902b0255d1a9e7b73bc467f92accfacc87aa2d49e14a33cc2ce42aa",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_search_grounding.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_16a304a2300e87df",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "47583fab068a67ddb77aee523edb08dc8506609bd1fe8a82585e35daee007061",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_system_instructions.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_75dfbc43680a2468",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "b402e93cf1b9e92920095722bf2b3e27636a0dc49fbd2c3ca6e85a57c983caff",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_text.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_c8323feb66b064c9",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "4ca1d9d5469c1329192949c4f71d3993ab90a65b8b89d4167b511061cf7271ae",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_text_vertex_apikey.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_0ab57c121f009f62",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "3c8873aa8bdcd06fe43ccdfe0fe8da9fd5f1686d9f031f3f8ea827fa2e3e5d4c",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_content_with_url_context.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_b011fedd8e970354",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "b1bd8f84a2c0b51867329efc221ffe460b138acb92245fd4d55860b5d85600fc",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_image.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_61d93b036c21a64f",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "6dd2c1b2e86a73305ab5bd9db6afe253583f58c32c9de1d2ea6d5f299241f114",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_videos.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_548e9a7dfb8e8b65",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "1baf282256bd0c205690d03223b7413bf1a959c157ec2078d1fd90886d4945cc",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_videos_extension.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_edc83f30797f3951",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "7c1ae7c6213f6407ac1ae3519d86743abb9f356a5b909be7d3729f190b9f8ad4",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/generate_videos_rai_filtered.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_78fe7ced598ff7b0",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "42f9aee8d56d2496b5f536041fb4ab595ae4be1196d9c4945fc70662d4ca5bfc",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/get_model_info.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_09c423486d63e6e8",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "b7ccf04e4549f6c28f6e8db845e86aaf03636d51e937f33e68b422afdae98906",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_basic.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_ab020d9b47e3c15d",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "8df9b2f046d97fe1a1f28d597119fb8587f77af043669710564d524883654f36",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_continuation.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_4a5519f166700b47",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "3aa5f07aa57e81b68ed92818c99693fb31167b5ed8f6b22ff137667dacaf2417",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_function_calling_server_state.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_177e4b9c0af41451",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "04a251882e692bd7d698a7799baf1051dd01875b509880e25997fc0e116dc6d3",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_get.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_128f8a9804cb87dc",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "59f0e283f9ca25281ca3de0aeaa37af1245ca2ab26320423eada6c9988571a3e",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_input_text_and_audio.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_c3962650c75accdf",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "48561bf553c838a569a51a94c4399cd377c618eb7485f40cdc1672c7ab7f1e29",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_input_text_and_audio_with_generate_content.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_4cdf1554b2a27e46",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "547a8733194ac049835f7626edb90d8f7f49dd0d1445d5ca41b3f0cf9fd2d44b",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_input_text_and_image.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_09602081c28a6ac6",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "9c4223c3da7c4d4cdc814856a5aa0c2d3789d868f838b6b23683cc6ba20b9303",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_input_text_and_image_with_generate_content.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_d9be3acdd9b227f2",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "2a0a797ee2296f05b87dff3d1ce6f45bce6ba0d7fede806a5117ee6efd28bfaa",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_response_audio.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_fd788eb28aefa93f",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "de9fd07659f453ab3b52dd5ed35edb3abdd9f3ede39308472f0ba43487857859",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_response_audio_with_generate_content.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_0d283551c5b34544",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "047d799b2de2613b7df779934bc0d25a0faba258503e34698723d14a46d2739e",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_response_image.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_e5fa48d805f7473f",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "d69443feee0b688cecc7e5826cf05979b2ab9b2458f0bfbaaf55b50164b069e4",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_multimodal_response_image_with_generate_content.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_e3510098b07a2439",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "4a810b44ed5dc790299c26375b100dfb8f680b3ca6fbd0dc0ee8fbd31da7cd7f",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_stateful.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_7a5b40f5eae109ad",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "18c8745b8b8ae450189c46457e5454677997dcd71e11a7d62b0fdedd11a5f73e",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_streaming.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_d5fcf473cac82ad2",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "127c7ed918db249a424e47d14c74e8dc1da113124c3b50a4987ab38a750e1d53",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_structured_output_json.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_65ef2dc976d9195b",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "8f186137b2d043a9ff18f9dc74605c295e125de217b3d94d066a4528003345c8",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_tool_call_with_code_execution.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_63cb4885a21443cb",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "cbc22d03249a672d2ea0a44490039f0d02ceaedea84aed917d988189a4d6eaaf",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_tool_call_with_computer_use.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_4725f1e597174403",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "a189fa9ffa0516e83b8c79d894efd28e12c4dc3368885df2646279f003d2d7a3",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_tool_call_with_functions.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_079d3ca7fab2a813",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "055ace1a1641b6a5b2d1fbbc5ce0333f26db47e8dadf89c6d847a7112f7b92fc",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_tool_call_with_google_search.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_4df419762aa0da59",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "b3b7bc4f0e324dac6a9d58827b74199dae4895b89eb1187fbd52d835af478420",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_tool_call_with_mcp_server.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_d61abe6e0df94ba8",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "9e4da7807230e36154ad9f8a400adeffbc24d00a367f58320fe4b6424826abc1",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_tool_call_with_mime_type.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_ea89efe6a6a44805",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "ca03563a27cd3c8325a2b290050638ac531b420cd90b3b017ecda381022989a8",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_tool_call_with_url_context.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_b5dee450a10c3402",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "64903a5c02f6277124a62bbc306a68858c1ef71af999b73d5e1bd03e8463d7e0",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/interactions_with_config.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_e906e0405271d8af",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "70853d83ee2926cc394a3616ecd69cf347899843ba97a6b081dab70c4efc5657",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/list_models.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_2f08d3e18b6af53a",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "f083d19941fb72d8a422ed40111d7bd37d4dcb87f0e74e5bd9c890d5a4876eba",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/recontext_image_virtual_try_on.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_42e1b3a97dad153f",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "ef652f23ba720f5633aa2db17382d6b4c477c876619946969a1d2385dbec2066",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/register_files.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_0daf2d933cc411cd",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "9d019a0361fb163175ac8475c9da1a1fffdc6228e1280b18b20bbf15365b9839",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/trigger_generic_operations.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_8327bdfa8a703fed",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "7b32bd0ab741bfb26c2026584a8e560be3daf82b06960f12588bb2313c71e62d",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/tunings.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_dae514eca0d59594",
+      "commit_sha": "ca5690c0999f499f69bb69ea6187ef29d26ddfef",
+      "evidence_sha256": "4f6ba3c2ca56f870e613bd8b42143392c9405596002bf109c48bbea1de494d1e",
+      "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+      "judgment": null,
+      "locator": "sdk-samples/upscale_image.ts",
+      "source_repository": "https://github.com/googleapis/js-genai.git"
+    },
+    {
+      "case_id": "source_43affd3a83dac87d",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "c3fa07c7b3b28d6da5c3adbb056bcc9453e3c0837934cd44baca2ef9d8aab054",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "google/genai/_gaos/google_genai.py",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_8a7f6f5fcaa08ab7",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "09072b10b1b001cbef607d309f3c39601ecceacb6d5d3852b708f31ff09d55b3",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "google/genai/_gaos/lib/compat_errors.py",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_6a9bba85e8ae94cf",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "6e241f5be729eda20b91dc9fe18ec6f3a1800050fb19a26c97edb3c6d99f118b",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "google/genai/_gaos/utils/logger.py",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_03991793cb845a1c",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "64d53f858606224ef444c7ad8d19bab3e1fb2bea675dfbb57f714494388072d7",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "google/genai/client.py",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_5dca762397fc0a88",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "6a2b8226d581ba497cb3300bd50580dc524a736ea0c919979f068ba5709682b0",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "google/genai/live.py",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_262851b78a374ad0",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "f7cf0985af5b1630b45e1ae151720c13976b8b832f9d482e6f885c3cc60cd1ef",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "google/genai/local_tokenizer.py",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_674715b765f6d2d3",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "e85656482eb8fdd206d7d4e47a71559add7df19eed9f099f47696b4c0d964922",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "google/genai/tests/conftest.py",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_e9923a19312dd18f",
+      "commit_sha": "6e36aaae5b03b955de6297b71f57452cfc744ac8",
+      "evidence_sha256": "267ee7db446b730311086fe228d26e875ba5f1ecc47acae76b29f40b15fa13fd",
+      "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+      "judgment": null,
+      "locator": "pyproject.toml",
+      "source_repository": "https://github.com/googleapis/python-genai.git"
+    },
+    {
+      "case_id": "source_05dbc25139851d61",
+      "commit_sha": "dea2bf33d79338b2e607689d4b77b9b37d31293b",
+      "evidence_sha256": "565a8011a78b03f6749563d35a0f81bfb35e994807607b21e7e9628d1cb521f1",
+      "input_sha256": "8c1e7eabd1e6107a57822da4a2f678a0dfed30149d54c52f2b1e61dbcca0415a",
+      "judgment": null,
+      "locator": "test/test_processing_utils.py",
+      "source_repository": "https://github.com/gradio-app/gradio.git"
+    },
+    {
+      "case_id": "source_3dc98b0e76c89de3",
+      "commit_sha": "ff1343764790ce1da1ffb38a049232d91b334b62",
+      "evidence_sha256": "09bff4e8962abe21eaea5ccf8c7630e3f6d5745c17068c76ea36f990b4e519bb",
+      "input_sha256": "ba71b11381d54a45715db81aca4c137a3a321768469ddc26daa34e0d35519d3d",
+      "judgment": null,
+      "locator": "haystack/components/generators/chat/azure.py",
+      "source_repository": "https://github.com/deepset-ai/haystack.git"
+    },
+    {
+      "case_id": "source_bf1d097039f6265b",
+      "commit_sha": "ff1343764790ce1da1ffb38a049232d91b334b62",
+      "evidence_sha256": "1a78540c1eb8f550b4b7a7e2cf077dadc5dde733905e88bde128c552ae76984d",
+      "input_sha256": "ba71b11381d54a45715db81aca4c137a3a321768469ddc26daa34e0d35519d3d",
+      "judgment": null,
+      "locator": "haystack/components/generators/chat/openai.py",
+      "source_repository": "https://github.com/deepset-ai/haystack.git"
+    },
+    {
+      "case_id": "source_3817319f312fcc75",
+      "commit_sha": "08fb7c83d0c220a787d85b6336d14adc0f042d74",
+      "evidence_sha256": "198a2cfa7304c4d1ba21711f33b634caeb11b79c8182a708df98dd340cc5d65e",
+      "input_sha256": "1ce83c806b4c18a6ffb9fe3911506ab4306e3d211dc29da5d1c5bbfa9b07720a",
+      "judgment": null,
+      "locator": "tests/test_metadata_util.py",
+      "source_repository": "https://github.com/huggingface/datasets.git"
+    },
+    {
+      "case_id": "source_78e00c38f976b3f7",
+      "commit_sha": "bc9b691aaeb1dac3fe63d11c68f2ba59f953c538",
+      "evidence_sha256": "831481feb06343a56b900a4a16cc64ebe5338628f190354db99aec8d6e692fc9",
+      "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+      "judgment": null,
+      "locator": "src/huggingface_hub/inference/_mcp/utils.py",
+      "source_repository": "https://github.com/huggingface/huggingface_hub.git"
+    },
+    {
+      "case_id": "source_119fdbc18f5836e2",
+      "commit_sha": "bc9b691aaeb1dac3fe63d11c68f2ba59f953c538",
+      "evidence_sha256": "86a615bc2371874fef75cdd5caa6fb7dc7494f5342f174caa634333d21d76eec",
+      "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+      "judgment": null,
+      "locator": "tests/test_buckets_cli.py",
+      "source_repository": "https://github.com/huggingface/huggingface_hub.git"
+    },
+    {
+      "case_id": "source_bb3bf8b2101a16d6",
+      "commit_sha": "bc9b691aaeb1dac3fe63d11c68f2ba59f953c538",
+      "evidence_sha256": "78ba30ab9fa079a24de5e0f5544e833a6b533a244ca51d29a1a42d7bdfc63624",
+      "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+      "judgment": null,
+      "locator": "tests/test_cli.py",
+      "source_repository": "https://github.com/huggingface/huggingface_hub.git"
+    },
+    {
+      "case_id": "source_fc37d26e12bb9d41",
+      "commit_sha": "bc9b691aaeb1dac3fe63d11c68f2ba59f953c538",
+      "evidence_sha256": "5eecdc8ff242d4da8f0c3f73c7602c618623ca3eaacd5d2ec6daf0d5182b4f91",
+      "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+      "judgment": null,
+      "locator": "tests/test_hf_api.py",
+      "source_repository": "https://github.com/huggingface/huggingface_hub.git"
+    },
+    {
+      "case_id": "source_e56fb79071fdd1ad",
+      "commit_sha": "bc9b691aaeb1dac3fe63d11c68f2ba59f953c538",
+      "evidence_sha256": "d2268a3911ee95309e347f84b603d4bcb0b9dd9b78f746336218ae13bc0da53c",
+      "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+      "judgment": null,
+      "locator": "tests/test_utils_hf_uris.py",
+      "source_repository": "https://github.com/huggingface/huggingface_hub.git"
+    },
+    {
+      "case_id": "source_cb64e19366959584",
+      "commit_sha": "bc9b691aaeb1dac3fe63d11c68f2ba59f953c538",
+      "evidence_sha256": "061d054c1ded156a2b3e229a820751f2859d496f05ada501335ed562992ccfca",
+      "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+      "judgment": null,
+      "locator": "tests/test_utils_http.py",
+      "source_repository": "https://github.com/huggingface/huggingface_hub.git"
+    },
+    {
+      "case_id": "source_652cb59d5cf42883",
+      "commit_sha": "bc9b691aaeb1dac3fe63d11c68f2ba59f953c538",
+      "evidence_sha256": "84a4cdde8770a5a8f00e7851787b2c45bd19aa0cb4cd9a53e627df5364c30743",
+      "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+      "judgment": null,
+      "locator": "utils/push_repocard_examples.py",
+      "source_repository": "https://github.com/huggingface/huggingface_hub.git"
+    },
+    {
+      "case_id": "source_727d1bafab1bc896",
+      "commit_sha": "7ca02f333aa6d5e4cf566a2dcc444d06758e2958",
+      "evidence_sha256": "fd28eb2b6f345a830d87f1d822d67ccbe08df1f5b9af17e730bdd6663b430810",
+      "input_sha256": "317b480129d140e7f1e596d1e12f651b961ffcf305094c8d30f29cc537023ccf",
+      "judgment": null,
+      "locator": "libs/partners/anthropic/langchain_anthropic/chat_models.py",
+      "source_repository": "https://github.com/langchain-ai/langchain.git"
+    },
+    {
+      "case_id": "source_df8c513a06262edd",
+      "commit_sha": "7ca02f333aa6d5e4cf566a2dcc444d06758e2958",
+      "evidence_sha256": "5d1eeed0593e3bd6c199b08a0a75ad74f2e1ae70eafaf423faf58fe32e7e9ede",
+      "input_sha256": "317b480129d140e7f1e596d1e12f651b961ffcf305094c8d30f29cc537023ccf",
+      "judgment": null,
+      "locator": "libs/partners/openai/langchain_openai/chat_models/base.py",
+      "source_repository": "https://github.com/langchain-ai/langchain.git"
+    },
+    {
+      "case_id": "source_cc5e63e9344f673b",
+      "commit_sha": "a56afcc73f0049ba822af9569fd413a2e90677eb",
+      "evidence_sha256": "e3dde31d6fb85e6152576d266ff7832c78da28a5626b56d9209fb1a84e9fa6c9",
+      "input_sha256": "06ff63cd865fd5c016720dfa90e260142dcc6cd341ca47c9412fff55307051bf",
+      "judgment": null,
+      "locator": "ms_agent/llm/anthropic_llm.py",
+      "source_repository": "https://github.com/modelscope/modelscope-agent.git"
+    },
+    {
+      "case_id": "source_846b07536bab89b1",
+      "commit_sha": "a56afcc73f0049ba822af9569fd413a2e90677eb",
+      "evidence_sha256": "cd17486d3ecf089dd589c795e7e67848ba1ef31ee23cf80e722954c7b6fef9aa",
+      "input_sha256": "06ff63cd865fd5c016720dfa90e260142dcc6cd341ca47c9412fff55307051bf",
+      "judgment": null,
+      "locator": "ms_agent/llm/transport/anthropic_messages.py",
+      "source_repository": "https://github.com/modelscope/modelscope-agent.git"
+    },
+    {
+      "case_id": "source_e7d541b57033e35a",
+      "commit_sha": "a56afcc73f0049ba822af9569fd413a2e90677eb",
+      "evidence_sha256": "60688b4985db39648a35f9a8c747cb46cb2016590fdc9300bca9186f262d92d7",
+      "input_sha256": "06ff63cd865fd5c016720dfa90e260142dcc6cd341ca47c9412fff55307051bf",
+      "judgment": null,
+      "locator": "tests/llm/test_thinking_effort.py",
+      "source_repository": "https://github.com/modelscope/modelscope-agent.git"
+    },
+    {
+      "case_id": "source_597aa4f3b98d1291",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d2a68c4be719fbb94d8d446233b3493239875d119d5a0570fb063fe6f3570351",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "ecosystem-tests/browser-direct-import/public/index.js",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_6d9b9c0b8fa58e7e",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "7e42199c4d450543c6f211e743c6ade3eeed671eb0c02c9927847766dbf8eccf",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "ecosystem-tests/deno/main_test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_8f6d754ba3934273",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d6e04c1e36c3b31b85e8f228326826872714298c3ef6eb11dafb2f004d128633",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "ecosystem-tests/node-ts-cjs-web/tests/import.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_71c801674528f28b",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d6e04c1e36c3b31b85e8f228326826872714298c3ef6eb11dafb2f004d128633",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "ecosystem-tests/node-ts-cjs/tests/import.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_6ec205899fa885a2",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "ecb866a94ad74ae1a0ae1bc6bf46c047df62d58f287e110ed9208ccf5aa56e59",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "examples/mtls/bun.mjs",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_550f62cd0f6b6b7c",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "1121f710ba16bd6fbd943a262b0bb076ca71fd35558f942319b5649fdb57a464",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "examples/responses/streaming-tools.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_b56cf66530d3c80f",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "136ace3bea0187a957339923706cb43402154891636617fe51200942c692044f",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "examples/responses/structured-outputs-tools.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_3d537fda71687e8c",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "adb5e53d4833de4ad772273a0bb664fa1882a415691547e1cb2ec53ea5766ed5",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "examples/responses/structured-outputs.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_7a72517ca44ad98e",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "950d36e27ee9814e911ec36208b1f7b9a529d8535bcedeabff2194b64dfe9102",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "scripts/test-packed-package.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_bf83ebbf37364241",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "4599cdb8be8c96e962591b2cab711c0e478b410b1e8fcce0671db89fe717c572",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/admin-api-keys.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4f60f619ea14dacb",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "ef8cc544842fe12c726f3400787ae3d1c994db2e26e1ebc8881c10d4291f0c62",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/audit-logs.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_22f3da563ee6ac34",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "4c1814e928c96d73e4dc9b313daa9b7fb2375fd314cbecb07b722e315a43d456",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/certificates.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_d68b8d3748f5c2f1",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "adc7c901899e76ef8662fc974e8650d5fd8e1b4f45970e2d9610fe5a9dd7edc4",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/data-retention.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4f432605f01e2e4d",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "0847afc060bdc64847f9288f6317b979e245424378e6d6e6398a4df40f145b17",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/external-storage.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_f85f11fb93db2407",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "0efb43086d7be37dcde8b402fa28a0508febb0224acafb4e7be5b520c59c22dc",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/groups/groups.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_54161d25f756cfb1",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "1c4e7e93f88e0f00ec8950f41c635b041d0a59cab9b8e2348a4da4310c22c65e",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/groups/roles.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_7ea99b015a7615fb",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "59d81de998058342122c5ddacd9e5d3a89f8ed7d9f5792fb25faa7aa7574c6a8",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/groups/users.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_25de3a3ff7a9eaeb",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "1b2f205e1877661de17dfcaa0ba3fe493d03a6cd2334afec5275eb1b570358e9",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/invites.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_906851b747e3f0d1",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "026625ea094d74700237365c876ce285d85ebb267196da4f1f966bfcf4539a6b",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/api-keys.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_c618a8cbd587e6d7",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "5b4398bbbb3fab7ace0cda383d4491b5aa581b3745d608114e704f8d4b85f92c",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/certificates.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_b0841119b641a9f4",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "ec7963737a16615e5224352844345738cbb4498013dc0b2bad194ef8a9618d9a",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/data-retention.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_0059fc64bd1241e3",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "3ff982f1a0f4e5490ca6d191c899f5776025bd55f2e28a49a93c2a8a6d98b09a",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/groups/groups.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_f4dea5c0e7cca395",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "efa6c23c65c176c26321a8f0d83488a9a360a82c23b3f3ce52bf6e24360ae4f1",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/groups/roles.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_8e6e4c37ab06efd4",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "61fb685dddfa70fbaf4dde91ea42923e98d384303396edf29461a30705aaaff7",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/hosted-tool-permissions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_3aec937e776262c4",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "56ee0ea5bffad1c2f29ac1b4d5123ea500d9bcd3e0eb55beb1e6dbc1b48b4fcd",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/model-permissions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_480dda433f61778a",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "0193f1dc02ba7a3c2b9501aa173795d987424206c32b699f0068b14018af45a8",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/projects.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_3794d363799e9616",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "b5d5f9e336f3169eb119f7f33d997ab36820313a32a707c0b749e2734734dff8",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/rate-limits.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_7c1f59083e522f66",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "9374efda3c063a36690b68e2c205599c233aac72f72366b884301c1541426882",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/roles.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_825156a692ee79e5",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "5acbd3c4ea9f0be970b3ff356bf6f8ddaf604a836ba3584e00340deeb80a05f1",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/service-accounts/api-keys.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4de40a0bb2a6b118",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "641a2088a67a0e9671f0a3e3a88e2575291c2e62f3a7ebe1e76182924605c497",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/service-accounts/service-accounts.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_2c2711252936bdd0",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "81a25e7fbed897cb309f038d963ec57510794ff1e8a4cc705b61da4107015a3e",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/spend-alerts.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_43775eec7447ac46",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "43846443a12ef7a8305186acf39be86e538fcb627a1400bad5cc973670345be9",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/spend-limit.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_a5245b58c337ace6",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "e24d50d4b2d38e16bb0f7ed7c83331f31e8d434e2b518a1e47a74ee01ced1c3e",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/users/roles.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_b4529cda4ac8da03",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "b62f969e6f9138f647ec0987e018d8a730fcab5e5d2c06b71d68368b5e4ef203",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/projects/users/users.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_6c333f340f39799b",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d3748b38494c715f3986a8a9e312692e1930037b07983567690f5695e4d6e3b1",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/roles.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_dda2c755a9827048",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "6c44f1d0a291a139e782b2d797c4c6319284d69e3079b4af48c2e4e2de3a52f3",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/spend-alerts.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_60408cb8b70d10a6",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "f762e9edbee0c4ed4582f57930c03c9bac05eee41cc97cb602f741a54131f54a",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/spend-limit.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_1c1f66884fd23aee",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "41a7564a8fc406b8dd230170de4e2745773720f735b6c3e57710aa87085ae0ce",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/usage.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_e4acf2d0467b3514",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "ca468086884a663d591ac0b41f221a7d577953ec5b72210128f454e20da18785",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/users/roles.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_46335e349f9c46b0",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "bc327c04303832c377f8cd8df73c02455014f22ce37b64215e9e68bfe1e7cf6c",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/admin/organization/users/users.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_b0e20efa3336990d",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "235812f9e440192ef48800e3612d28a302d1d0284166e8754344310b509a3d35",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/audio/speech.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_43bb2ffd897022f3",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "54e1975a6fab85c69028cc77a77b6b31a92537e688fa565ba0637717010094e0",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/batches.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4d4c3a9b67f40327",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "8394c93dcc5f99e797724b953427d73b63a00e2df6880c628d2b6ba3c52e5196",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/agents.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_f75b4d7a98557377",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "9a277b2646b8c3f641b2acda648aa67d2adeacd7f980e41b77a534223bd1bc48",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/environments/files.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_b47ec29fad27eb91",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "77e5f850dd1287c52330cf8a507b72ba70ac30a66a5226d466f8174d6b6e051c",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/environments/templates.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_f8c735c8363c51e6",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "5153b183d9294876dcd79fa78bb5e2a58a68b698bc547513a5320bef6f1022f9",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/artifacts.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_8646b50d1b076d1f",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "5bf7d8dc3f4d58653f4f5fd7645908f965e2822d2dfb5580a43c48b45eda3a85",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/events.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_23f888707486ab91",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d6c75f461fc5a89b2df9034185417a6b08d3ce2b6391f23cf49c78a53e804140",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/items.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_67f0d895eed31df1",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "b2ef8e0b6ff354928d9267e7065e29f7be9433a49b996e2031f44ad7f6473380",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/sessions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_7c4348eee29c1d89",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "eb3f28fec3a8954babbb774d0d24c7295eff15c66e77d3c7c8dfd8d3eda8b634",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/subagents/items.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4b738dac8f59f657",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "94827197b240270df1867c3bd677c76c317245422996091f29686c9f2c00ac1f",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/subagents/subagents.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_d61824032083388c",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "8aee2a7cd4d45ca4d7e39ba137db31983c28551deeaf0341b7a87423e7184b4a",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/subagents/turns/items.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4e19018921322a5d",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "9cf859b33550e0bc1fc04987b793956e2def73e5ea5a5ce57e2add8026a67dd6",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/subagents/turns/turns.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_cac0776e18738689",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "2083b6b53afba53f08caa1d2a9a300c1e4523c4837c1c6a27ccdaa872d40e76d",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/traces.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_fb645c29189a3613",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "25ae514904b88ed203507fb7b58d6eec1ea041fea808be1b52297dd462a0f9e4",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/sessions/turns.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_3e75b42254452ba5",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "eb78efffe1ee291ceae4073c0ce0040e7087696857422c1fbd5eb3708a5191b5",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/vaults/credentials.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_65cccf19fffc7746",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "ef57c584798065cc2e570c08a187f43ea5341d53739300e168d2dc00291e469e",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/agents/vaults/vaults.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_8930dc1ab6a62658",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "da4067f0e7c4acccdee1d171f7f32fa3f2a39ee0750c28683525b695478d4a18",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/assistants.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_850d47ea1afd9903",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "3ec12ab0a0dbb64b73633ad74e8c9fc61e6ebbeea219008008f8b5bc61dfcf81",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/chatkit/sessions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_0449c7f7c1497f27",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "9f22060ecea3d2692fd059ba7abf57ce9b39117375b429b70fc12ea9745af652",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/chatkit/threads.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4af8d9b4320fd20a",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "dc46f8048bd505259d3cc5ab165fa52aae0b0c5914bc9c5ba91366cddd52eaf0",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/responses/input-items.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_8d20159bf4e09873",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "633b1a71e0d840cb9d2f4dbbf5ddb8a0d6fca21e3a3fbe5e56906f6cfbb869c1",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/responses/input-tokens.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_50cd246b016a0121",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "a4053f742b4da310f6a8ac5b7752eaa8a253a0b8bd360528ba5ca247332ba3d0",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/responses/responses.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_9d1adc06246c57fb",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "641a2199db66f3cc0eda9e47e668a3d35a1c2eb39fc06d8417fffb0b67548a78",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/threads/messages.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_72d1ddefe27679c9",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "bf039df5e743707d2ce51d0db2be1a3965b4aa6a9dc3287414196b299254bd41",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/threads/runs/runs.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_c2446cbbf8fb10be",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d19e40a153149eb772ed933cbe09d76bd70c23c6d5c75233ba20d1565f319783",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/threads/runs/steps.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_7dede514b772f87d",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "865c57d1e912365803d7f9ec0f6ecb02bc45c8ed03eb678b72308c8016c9f879",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/beta/threads/threads.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_9b97241d866daa20",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "f0db79f0e403941829d6aa4ea15a65d00df2f11a7bdcf0c42368808400d456f3",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/chat/completions/completions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_051c4f19da81b805",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "622988647a60dffed673e1f427ef801d939b4964648e8692b9e8f8ca78480676",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/chat/completions/messages.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_1e9a1c70c8514913",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "91b4d50e3b3fb8ed22da78f11ad62c7afc311d677afd67d99f6c2a90212e2c81",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/completions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_e7d4f68c1c3ebae0",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "edf96bddde3551d01e87b605718c666b8f84ae9ad991de302a1376c489029d03",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/containers/containers.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_e511007a16d4f7dd",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "b6511b47813e305a5b73da1d33853f0cae9becea2117dba06952ba31b6bfa9f0",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/containers/files/content.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_23046a2c63569845",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "99526c690b7d67aa3c062a0577b4facb6df675df755e5d0857fe00b581b1728f",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/containers/files/files.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_95d66f77279e4bb6",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "fa2dc80704577bb57b365022a09f637965e7aa7117568ff91e6a41ed474eaa15",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/conversations/conversations.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_2a927afafe316790",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "90a2e49eadc7f92a362afe260f94268f2707ddd632e0a35e830c1a27ec13c304",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/conversations/items.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_9af8cd1a1184a37e",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "327d6012a6111ee0c16ad5ebff63c2823f03aa8bf4e41f9e7dbe2f8ca9503f0d",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/embeddings.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_91aa056f33b03bb4",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "16aa1eb916e8648dd2c3ced407e7e7ae6168b059f02670eeec94c8de06907135",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/evals/evals.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_9b0f800cd74f3a24",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d4ac6ba04aad7f7454cbd2671c947d5782a62f4019de7a4f35d187f4614a0a16",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/evals/runs/output-items.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_84922e7abcea7882",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "888f3353c194d025dc9de04f26dda91a79c115ce6b4c790d4985635be3c7aa3d",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/evals/runs/runs.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_285e9e10268440a4",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "77ae108b278d5bebd9a2f73313c09eef38f66110bd0a35a43f2cb5555147da5e",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/fine-tuning/alpha/graders.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_eedbe607f3df28db",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "312aac54c565f66539c09081405fb84a77a1ae169e5f2ed77a07e8a27ec45a6a",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/fine-tuning/checkpoints/permissions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_f2344878b1dd32f8",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "a03aa3ed97f8cd93cd9582df125499efa3ef834ba815a0a5182aa4d3ffd52ffe",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/fine-tuning/jobs/checkpoints.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_c8cb0ff4cff8994a",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "9e1f0dc6ccbed0c1a0d2f9b4e886c0754054ea08604d6657395857122eddfe97",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/fine-tuning/jobs/jobs.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_fc1c7d0d6a0dbee0",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "a5ef94b558b6cde14e0a82eca2456fd955c39c6f926acb98310423dee5cff897",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/live/live.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_53d8c879b37330a2",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "41b311519aac446fdc89f567649b8d3bc1ab7a56d91444951ae757c241fcb956",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/live/sessions.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_c8f0621b00bbbe43",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "3857229120c7c9a34968cc9524247ccaa3a782fb5802e7449da7d5937d2c4a62",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/models.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_c57437b462d5e803",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "7b666924d7aab2bdc35f57f3f17bc8c3ab55271e7b33f1e328954b10cca53de1",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/moderations.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_84ea8e254224cbdb",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "677c5060effd0e966f3534321bd90a6fda66e8f811bfc53d13fead41f07bbe43",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/realtime/calls.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_2ba97506fd04ec53",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "ba7b6a6e5839b00a9d59c49c2703b7cca2fa3b2ab88893e1693134e47872f2a1",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/realtime/client-secrets.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_40ca3ffc91ba4c7b",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "cd0bc010f691250ba0e032843dc366862366f1669867b6e57efc6e68669db6f7",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/realtime/translations/client-secrets.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_9744c8ae12d1a373",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "33751e280541993ad1fedca30bac9eded18f1f1453f329d70ce20cefeb6d3413",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/responses/input-items.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_75e6a403717f3fab",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "c37ec54711eb2ee98f031f2065e8a086df1e0a96f3a0e2f91847cdf05b649c3d",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/responses/input-tokens.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_0e3d64babc1ad1bc",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "3020e08f57e86497d2793c5a823699a42d99f85ead17a57441a141169ae639c3",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/responses/responses.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_fbf4091d55c8bcda",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "260e126ef9fd62745c2ce102296d782448ee8e4a58f324d40b66739a934dbc86",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/skills/versions/content.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_e1407d16a212e0c2",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "0808aefdfc67ce78bf084c23ca406a666a37a6cc0f217383df4f4b8c78cf8d95",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/uploads/uploads.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_b7fccb86059334c7",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "173b2941a1d0b97370715014f8f90f34d64de1f4d53152b365242a76ea7b081e",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/vector-stores/file-batches.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_0d2f3b8d0f77a499",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "61a9861ff39f3115943d9cf49edb7f99023802bee090a1386c603e98b8b4c700",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/vector-stores/files.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_547b5113db8ac3ac",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "acd140c78af0a3400d930e0c1d4eec6d8a358dc3b265d0ff0239decd80f239f6",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/vector-stores/vector-stores.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_8cae187347254b00",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "26376e8da613dabba6e0b44bfdf6b80d4199159b52ae296669abaaae8e3ead03",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/webhooks/event-types.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_497491f0528293de",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "06d56bf06a82f947cb24a4be4e0e4576394f3976c375834c6bbde19b9d0ac896",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/api-resources/webhooks/webhooks.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_ba464fff1a0bd0d1",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "d3f1a6575cc46fa12e225643153d4a67ca9b63b69b08364369b0c4a011f314c1",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/lib/ResponseStream.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_4b3412ed5bb065fa",
+      "commit_sha": "7423ac3e9351c46300cd094479cded5551a72eb4",
+      "evidence_sha256": "4f6168f1a8eb51374c9f3c58d8ac69899f97b50b9d35202c89229d26cc09e486",
+      "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+      "judgment": null,
+      "locator": "tests/realtime-node-loopback.test.ts",
+      "source_repository": "https://github.com/openai/openai-node.git"
+    },
+    {
+      "case_id": "source_c43c83459fc0c466",
+      "commit_sha": "919b6236382f3f9f76d8453efb9f9ad03cff1126",
+      "evidence_sha256": "1f3bed482f07d88a10f5528c22d4b9ae6601fd14b5c721ece6bb82e0528eabb5",
+      "input_sha256": "d6a6c2caf8fcac0ac6a058115e96faf1bebcd407c7291eb80fa8121f1ec4a8e0",
+      "judgment": null,
+      "locator": "examples/module_client.py",
+      "source_repository": "https://github.com/openai/openai-python.git"
+    },
+    {
+      "case_id": "source_8f26c4e8b458bad2",
+      "commit_sha": "919b6236382f3f9f76d8453efb9f9ad03cff1126",
+      "evidence_sha256": "d7fd6240d5a9c537987fca035d6f8b844bf42cef464b71eb1f161b2d4da7377c",
+      "input_sha256": "d6a6c2caf8fcac0ac6a058115e96faf1bebcd407c7291eb80fa8121f1ec4a8e0",
+      "judgment": null,
+      "locator": "tests/lib/test_old_api.py",
+      "source_repository": "https://github.com/openai/openai-python.git"
+    },
+    {
+      "case_id": "source_7ea11e1a6165d455",
+      "commit_sha": "c30b115286e000e98711fae5e85993547b73d826",
+      "evidence_sha256": "e45b9a62cb38184f0c0f62b495c91745e8af8b3771578470822c4625653e7a18",
+      "input_sha256": "a934158963507410a3d699658e4e8270a864fd98830fabcd7bd7c07117917b8c",
+      "judgment": null,
+      "locator": "examples/agent_from_any_llm.py",
+      "source_repository": "https://github.com/huggingface/smolagents.git"
+    },
+    {
+      "case_id": "source_aa0f58e04cf9b588",
+      "commit_sha": "c30b115286e000e98711fae5e85993547b73d826",
+      "evidence_sha256": "6d61583a33d11a49630719589e8beb2c9dea25597faa6c14ea99774ad77e8e75",
+      "input_sha256": "a934158963507410a3d699658e4e8270a864fd98830fabcd7bd7c07117917b8c",
+      "judgment": null,
+      "locator": "examples/async_agent/main.py",
+      "source_repository": "https://github.com/huggingface/smolagents.git"
+    },
+    {
+      "case_id": "source_baf0aed645373921",
+      "commit_sha": "c30b115286e000e98711fae5e85993547b73d826",
+      "evidence_sha256": "764134b000c2f7c47aef610ac5372581316accc13c1608031357f3942e758f4a",
+      "input_sha256": "a934158963507410a3d699658e4e8270a864fd98830fabcd7bd7c07117917b8c",
+      "judgment": null,
+      "locator": "examples/gradio_ui.py",
+      "source_repository": "https://github.com/huggingface/smolagents.git"
+    },
+    {
+      "case_id": "source_2efb9bd43c1a89d7",
+      "commit_sha": "c30b115286e000e98711fae5e85993547b73d826",
+      "evidence_sha256": "7a0ce19c344e99e98247d8562da53a742b1ccd6f4bfe760d54a70d60bd7175ed",
+      "input_sha256": "a934158963507410a3d699658e4e8270a864fd98830fabcd7bd7c07117917b8c",
+      "judgment": null,
+      "locator": "examples/rag.py",
+      "source_repository": "https://github.com/huggingface/smolagents.git"
+    },
+    {
+      "case_id": "source_68f6a07ec266e669",
+      "commit_sha": "c30b115286e000e98711fae5e85993547b73d826",
+      "evidence_sha256": "310fcff0495ae17928aaf74000cb07189a8a58829f45f18c668317c3066a6ce8",
+      "input_sha256": "a934158963507410a3d699658e4e8270a864fd98830fabcd7bd7c07117917b8c",
+      "judgment": null,
+      "locator": "examples/server/main.py",
+      "source_repository": "https://github.com/huggingface/smolagents.git"
+    },
+    {
+      "case_id": "source_b0e81fea5c4e27ec",
+      "commit_sha": "c30b115286e000e98711fae5e85993547b73d826",
+      "evidence_sha256": "fe09584641825a2c1170a28446c0b773ab7d700db7b2afa70ba34ab87f580dc7",
+      "input_sha256": "a934158963507410a3d699658e4e8270a864fd98830fabcd7bd7c07117917b8c",
+      "judgment": null,
+      "locator": "examples/text_to_sql.py",
+      "source_repository": "https://github.com/huggingface/smolagents.git"
+    }
+  ],
+  "reviewer_receipt": null,
+  "schema": "openguard.p1-blind-source-review-preparation/1",
+  "selection_bias": "机器分歧所在文件的选择性复核，不能估计总体Recall；无系统答案但不称正式Gold盲包",
+  "status": "preparation_not_gold",
+  "task": "从固定源文件独立列出受限静态资源引用及理由；不猜运行、许可或授权"
+}
