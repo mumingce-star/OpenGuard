@@ -507,3 +507,23 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 GPT-6 Sol辅助新增既有三例真实回执的DTO/Schema/Hash/精确路径校验与npm可信回执拒绝测试，修正前端草案before状态/重复gap；编写可信来源与人工范围提案。用户确认A来源/Owner适用性分工，尚未签发合同。团队须复核A正式来源/Evidence物化及目标机前端验收；未改规则、Formal或A源码，未新增依赖或第三方正文。B定向、Windows阻断、父本NOTICE与baseline分别记录在docs/p2/p2b-closure-review.md与共享收工日志；不把合成验证当成官方GET、Gold或许可授权。
 
 补充：本轮Fail-first发现并修复backend/app/p2b/npm_metadata.py忽略可信回执timed_out的问题；HTTP200也不能覆盖超时，异常类型失败关闭。最终B90 passed；仅内部B适配器变化，A须复核正式出口契约，未修改规则或提升三例许可结论。
+
+## 2026-10-11 P1 后端 B 离线来源与证据链复核
+
+GPT-6 Sol仅辅助P1固定来源/原ZIP哈希审计、39 facts逐项对账、28 HF/ModelScope fixture检查、无答案源入口packet与空真人裁决模板，新增benchmarks/p1_b_offline_audit.py及对应安全测试。未使用P2 TEST_ONLY，未改A/前端/冻结Schema或规则，未下载原文、安装依赖、联网抓取或启停服务。固定Git字节复算发现v3前端package来源commit/hash错绑，8项npm Evidence待新不可变revision和Luna/Sol独立复核，旧包保留。314机器分歧只是文件/行身份核验，语义仍待真人；无Gold、正式质量/性能或AI代签。团队须复核源粒度/输入权利与独立评审、A终态和前端回执。主P1定向232 passed，A生命周期122 Windows setup errors单列；最终命令/结果见docs/p1/p1-b-validation-20261011.json。没有新增第三方依赖，资源台账无需引入新条目。
+
+## 2026-10-11 B03固定Git来源修正
+
+用户明确要求修正后，GPT-6 Sol辅助将v3生成器改为固定commit普通Git blob读取及身份复验，创建source-binding-r2 facts/amendment/manifest，保留旧包/旧审计；新增工作树污染、非法ref/path/tree、篡改和禁止覆盖反例。未执行目标工程/联网/安装/启停服务/提交推送，未改A/前端/Schema/许可证规则或P2；无新第三方依赖。Node10、Python24通过，31 source/selected Hash复算匹配；独立签收和A生产绑定仍待Luna/Sol、Root/A，Codex不代真人许可或Gold批准。详见docs/p1/b03-source-binding-r2.md和validation回执。
+
+## 2026-10-11 P2 B Owner授权的限定离线材料核对
+
+GPT-6.1 Sol辅助新增只读helper、CLI和30项负例/条款定位测试，联合既有B回归120 passed/两条已有弃用warning。复用三例原Material/Result与21个null用途值，新增事实/证据/正向许可建议均0。原LICENSE已取得，本机未定位到对应字节，本次真实数据仅做元数据一致性复核；条款byte/line定位用第一方合成文本测试，不冒充真实原文人审或Gold。不联网/生成业务模型/启停服务/写数据库/改Formal/Schema/正式规则/发布。无新增依赖或第三方材料，资源登记沿用既有台账。A接口签发与Evidence存储、Owner真实范围、旧Formal读回和前端/独立审核仍待；代码与证据等待人工复核，P2整体PARTIAL。
+
+## 2026-10-11 P2 B当前口径与条件依赖复核
+
+GPT-6.1 Sol辅助复核七文件Hash/大小与现有DTO/Result/引用/用途校验，补12项外部依赖（责任/字段/解除/解锁任务），追加过期状态更正；没有新增产品源码或测试。两套既有离线CLI本轮运行与原JSON一致；120 passed/2warnings仅为20:42历史实测，未重复pytest。既有LICENSE原件已取得，本轮获准本地资料未找到匹配字节；已请求保管方的已有原件读取位置/只读方式，未重索正文或联网，metadata_only/bytes_not_re_read保留。三例21null、新事实/Evidence/正向建议0；不代签Gold、来源、范围或履行。无新依赖/第三方正文、业务模型、服务、数据库、Formal/Schema或发布动作；独立审核及外部门禁仍待。
+
+## 2026-10-11 P2 B匹配真实字节接续验收
+
+GPT-6.1 Sol辅助独立复核已有is-number@7.0.0本地LICENSE字节与package身份、旧三摘要、4锚点直接切片/行号/唯一性、7原工件/DTO/Schema/Result pin/引用/用途，完成revision2外部依赖快照及交接说明。不把原字节定位复算计新增事实/Evidence，不改来源pending，不签许可/范围/履行，不代Gold。新JSON只记录已知字节定位与门禁状态、不保存正文或本机私有路径；旧JSON保持。源码未变，既有120历史pytest复用而非本轮实测；actual CLI/字节/schema/闭包检查通过。无新依赖/第三方材料引入、业务模型/服务/网络/数据库/Formal/公共Schema或发布动作。团队/Owner需独立审查，A/Owner/前端/Root按10剩余正式门禁负责。

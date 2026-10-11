@@ -212,3 +212,7 @@ B 单测逐项验证：错 resource ID/版本、悬空/重复 Evidence、已核�
 当前以 docs/p2/p2b-closure-review.md 为最新事实审计，p2b-evidence-closure.json 为三例已有真实身份的离线DTO/Schema/Hash闭包；历史“无真实ID”描述不再代表当前状态。三例仍TEST_ONLY/CONTROLLED_FIRST_PARTY_MANIFEST_ONLY/pending，完整Assessment投影之外的读回及旧Formal Report仍缺。交接草案before状态已与服务unknown一致，缺口去重；草案未升级正式handoff。
 
 A来源/Owner适用性责任已由用户确认，但不是合同或回执批准。最小提案见 docs/p2/p2b-source-admission-proposal.md；coverage gap提前返回遗漏、npm provider_declared_unverified未接入Result及规则来源字段待A冻结。express未用于调参。阶段1仍PARTIAL，发布由Root处理。
+
+## 2026-10-11 当前口径更正：限定离线授权与已有交付
+
+本文件2026-10-08及阶段1历史描述的“三例身份为空”“合同未获离线采用”不再代表当前状态。三例真实TEST_ONLY身份、Material/Result与精确路径已于2026-10-10取得；Owner现已允许以A afca4c26c2fa45fa285fc9cabf48f52c54a59229的P2 v1合同/Schema开展限定离线工作，不以A01—A09全部完成为前提。七字段实际全null，不采用来源台账设想用途。20:42历史组合120 passed包含原90，当前状态复核未重跑pytest。已取得is-number LICENSE，只缺获准原字节读取位置，本轮metadata_only/bytes_not_re_read，不索要重新上传。详细当前状态及每个门禁责任/字段/解除条件/可解锁任务见docs/p2/p2b-current-status.md与p2b-external-dependencies.json。历史回执原字节保留；可信签发/范围/Evidence/npm/旧Formal/前端仍独立缺口，新七文件本地待Owner复核、未获发布授权，P2仍PARTIAL。

@@ -2037,3 +2037,54 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 ### 2026-10-11 GitHub 工作分支发布回执
 
 Root 已将前述 P2 A 本地合入 `647e4d8`、合入核验 `0d9d581` 和 B 离线闭包/测试/文档提交 `da142ea5c09ca23dec742133d9a31ae7226e402e` 非强制推送至 `origin/codex/scan-reliability-integration`；远端读回 SHA 与 `da142ea5c09ca23dec742133d9a31ae7226e402e` 一致。本轮产品提交含十四个经复核文件；`reports/`、pytest 缓存、原始私有材料均未上传。B 定向 90 passed/2 条既有弃用警告，暂存 diff-check 与新增材料敏感信息筛查通过。共享日志的收工/发布回执因另一在途任务同时追加，按追加规则单独处理，不提前发布其未完成记录。`integration/p1` 与 `main` 未合并，本次没有 PR 或 Owner Review；P2 总体仍 PARTIAL。
+
+## 2026-10-11 P1 后端 B 离线事实复核（PARTIAL，未发布）
+
+本节仅 P1，不计 P2 TEST_ONLY 回执。当前工作分支 bed87f5，P1 远端跟踪 aabd794；本地 main 074cccdb、origin/main 476d954，均未由本轮变更。
+
+| 本轮完成 / 累计证据 | 未完成与责任 | 验证 / 发布 |
+|---|---|---|
+| 固定来源只读 audit：30 来源、25 fixed/completed、5 failed、18 重复匹配键；314 train/dev 原 ZIP 文件 SHA/行号复核、39 facts 对账行、28 HF/ModelScope fixture 身份/Hash、224 无答案源入口文件与空真人模板。 | A：固定输入/inventory/终态/Formal/STAGED-BOUND/Draft/Report/重启和 Linux 性能原收据；前端：同 ID/API/版本浏览器与下载Hash签收；Luna/真人/Sol：异机、独立 Gold/裁决、新 holdout 与等级审批。 | P1 主定向 232 passed；新增审计最终回归见相邻验证回执；Node P1 两组11+4 passed。A 边界122 setup errors为Windows os.geteuid，未进入业务断言。暂存区未操作，无commit/push/PR；Root逐文件验收发布。 |
+| v3 31项字段Hash已复算；23 source Hash匹配、8 npm Evidence源文件错绑：固定9d67b88的frontend/package.json实际SHA a8e9bab…，包声明16e9db4…；工作树一致和generate --check不证明固定commit一致。 | B/Root另建不可变facts revision/amendment，Luna/Sol验证；A不得自动接纳这8项。未改旧facts/Schema/规则。 | 回归锁定拒绝将错绑来源当通过；缺A终态格全部null，所有真人签收未填，正式质量/性能均null。 |
+
+详见 docs/p1/p1-b-offline-audit-20261011.md、同名JSON、p1-b-validation-20261011.json。已确认 Detector 错误0、无法判断0、待真人语义裁决314；不据机器FN/FP调规则，不读旧holdout个案、不删除重复Evidence、5失败保留分母。开工巨大日志/进度输出截断，逐字完整阅读流程门禁未满足，未冒称满足。现有受支持平台扫描/候选/报告可按历史演示，本轮离线审计可复算；尚无P1完整终态签收/正式Gold或Linux性能。可参赛须目标机/Java核心与材料验收；完整作品须source修正/A全链/前端/发布；竞争力须真人Gold、新holdout、对比消融和受控性能。无统一权重分母，不报百分比。
+
+## 2026-10-11 B03 source-binding-r2 修正（本机通过，未发布）
+
+B已修正生成器：全部15个来源读取固定9d67b88的Git blob，8项npm source Hash错绑在新不可变revision修正；旧v3 facts和上一轮审计原字节保留。31 facts/字段Hash/关系/gap语义不变，Schema不变，producer3.0.1；新canonical package SHA为466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096。Node10 passed、Python24 passed，31source/selected复算全部通过。详见docs/p1/b03-source-binding-r2.md与修订facts/amendment/manifest。
+
+Luna/Sol独立审核、Root逐文件验收发布、A新facts pin/Assessment/BOUND/Draft/Report终态签收仍待；不静默替换旧对象。无stage/commit/push，当前bed87f5/P1跟踪aabd794，main不改；P2和其他未提交成果保留。整体P1仍PARTIAL。本轮离线来源闭包可复算；参赛目标机/Java/材料，完整作品生产绑定/前端/发布，竞争力Gold/新holdout/对比消融/性能门禁未由本修正自动关闭。
+
+## 2026-10-11 P2 B限定离线材料核对（PARTIAL，等待Owner复核）
+
+Owner已允许B以A afca4c26c2fa45fa285fc9cabf48f52c54a59229的P2 v1合同/Schema提前离线开发，不以A01—A09全部完成为开工条件；未批准生产/Formal/Schema破坏性变更、联网、正式模型或发布。
+
+| 本轮/累计可运行项 | 未关闭与责任 | 本轮验证与GitHub状态/下一步 |
+|---|---|---|
+| 新B只读Material/Result/摘要/用途核对器与CLI，条款字节行号定位；累计保留三例TEST_ONLY回执与旧离线闭包。 | A：可信来源、不可变commit/npm内容关系、Evidence物化/存储、coverage/npm DTO和旧完整Formal读回；Owner：真实交付范围/用途/适用性；独立审核/前端各自签收。 | 新30+旧90=120 passed/2已有warning；Schema/compile/diff通过。源码/测试/脱敏JSON本地未发布；Owner复核后另行决定发布。 |
+| 三例现有材料pending，21个null原值保留；新增事实/证据/正向建议0。 | LICENSE已取得，不重复索取；本机未找到对应原字节，条款定位仅合成验证，真实三例本轮仅元数据核对。A02/A03/A05正式闭环仍独立门禁。 | baseline退出1/FIXTURE_DRIFT，当前522项；未重写baseline。Windows geteuid/NOTICE历史失败未由本轮关闭。 |
+
+交付docs/p2/p2b-offline-material-audit.md/JSON/validation与p2b-a-handoff-requirements.md。当前工作分支codex/scan-reliability-integration@bed87f5；本轮没有stage/commit/push/PR/merge/deploy，既有P1未提交成果保留。历史GitHub发布快照与本轮新增成果区分，未联网核验远端。
+已有受支持环境扫描、候选、报告和TEST_ONLY材料/结果链按历史证据可演示，本轮CLI独立可运行；尚无新可信正向结论/完整旧Formal读回/前端正式签收。可报名/可参赛仍须Owner平台/权利资格与目标机/Java核心确认；完整作品须独立门禁/端到端/集成发布及报告视频/匿名资源AI材料；获奖竞争力须真人Gold、新独立holdout、对比消融/质量性能复现。整体P2保持PARTIAL，不报百分比。
+
+## 2026-10-11 P2 B当前状态与外部依赖复核（PARTIAL）
+
+| 本轮 / 累计完成 | 未完成及责任 | 验证 / 发布 / 下一步 |
+|---|---|---|
+| 复算七文件；六项旧manifest Hash/大小匹配，第七validation自身Hash单独留存。当前audit/closure CLI均与既有JSON相同；三例身份/路径精确，21null保留。已有helper/CLI与120项历史验收直接复用，无重复实现/测试。 | 原件保管方提供已取得LICENSE的获准读取方式；A按A–H独立闭环，Owner真实范围/用途，前端接收机签收。 | 本轮CLI/DTO/Schema/严格JSON/Hash/引用/diff通过；120 passed/2warnings是历史20:42结果，未重跑。最新七文件与本轮3文件本地未发布，等待Owner复核。 |
+| 新增p2b-current-status.md、p2b-external-dependencies.json、p2b-status-validation.json；12依赖项含负责方/精确字段/解除条件/解锁任务，3组完整固定对象与GET路径。历史规格/审查/提案只追加日期更正。 | 原字节位置未找到，已在当前用户对话请求已有原件读取方式；metadata_only/bytes_not_re_read。Windows/NOTICE历史失败与baseline522/FIXTURE_DRIFT未重跑/关闭。 | 无网络/服务/模型/库写入/commit/push/merge/deploy；保护既有P1/B03和P2七文件。下一步原件只读核对、A来源/存储/旧Formal与Owner范围并行，获授权后才npm/前端/发布。 |
+
+已有离线核对可独立运行、受支持环境历史扫描/候选/报告可按既有证据演示；尚无三例新可信正向/完整旧Formal/前端正式签收。报名/参赛仍需Owner资格权利/平台材料与目标机/Java核心；完整作品须正式闭环/独立审核/端到端/发布与报告视频匿名资源AI材料；竞争力须真人Gold、新holdout、对比消融、质量性能复现。当前分支bed87f5，历史已发布与新本地范围分开；百万字符日志逐字完整阅读门禁未满足，具体读取范围见状态验证回执。整个P2仍PARTIAL。
+
+### 2026-10-11 is-number本地匹配字节已定位（P2仍PARTIAL）
+
+按用户本地查询授权，在已安装工具的依赖目录找到is-number@7.0.0代码及LICENSE；包名/版本已核对，LICENSE1091字节、SHA256=35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2、Git blob SHA1=9af4a67d206f24ecdbb5fdff2839041ca0bbd346全部与旧材料记录一致。地址仅在当前用户对话提供，公开文档不保存本机私有路径。调用已有CLI只读匹配字节，四条文本锚点各唯一，字节区间/行号见docs/p2/p2b-isnumber-clause-readback.json；不输出正文，不改旧metadata_only历史回执，新增事实/Evidence/正向建议0，七null保留。此前is-number“本机无匹配可读字节”停止点已解除；只是本机安装副本字节相同，不证明旧私有sidecar位置、受信来源、npm归档关系或适用性。lodash/express未重读，A/Owner/前端/发布门禁不变。新JSON本地未发布，无网络/服务/数据库/模型/commit/push；独立门禁仍待对应责任方。
+
+### 2026-10-11 P2 B匹配字节接续验收（PARTIAL，待Owner复核）
+
+| 本轮及累计结果 | 剩余责任 | 验证与发布/下一步 |
+|---|---|---|
+| 复用原7文件、120项历史验收、三例完整身份/GET及真实条款readback；本轮4条真实byte/line/唯一性直接独立复核、CLI/closure与旧回执相等，7原Hash/大小保持。 | BYTES已解除，无需重复原件/地址请求；A只限定离线可用，正式B–H、Owner、前端、发布共10项仍开放。 | DTO/Schema/pin/引用/21null/JSON/diff/敏感通过；源码未改不重跑pytest。新3文档本地未发布，Owner复核后对应责任方补门禁。 |
+| 新p2b-readback-review.md、p2b-external-dependencies-readback.json、p2b-readback-validation.json；新依赖快照Hash关联旧清单，仅改BYTES，旧JSON不覆盖。 | 来源等级/适用范围/履行/旧Formal未签；lodash/express仍metadata_only，express规则不调。 | 新事实/Evidence/正向建议0；三例21null保持；无联网/模型/服务/库访问/Formal/Schema/commit/push/merge/deploy。 |
+
+现有离线核对/文本定位可独立运行，历史受支持扫描/候选/报告依历史演示；未具备新可信正向、旧完整Formal或前端正式签收。报名/参赛资格权利、目标机/Java核心；完整作品正式闭环/独立审核/端到端/发布及材料；竞争力真人Gold/new holdout/对比消融/质量性能仍待独立验证。Windows/NOTICE/baseline历史失败与完整日志逐字阅读限制不因本轮关闭。工作分支bed87f5，发布未授权，整个P2保持PARTIAL。

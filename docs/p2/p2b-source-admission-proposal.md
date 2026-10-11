@@ -72,3 +72,7 @@ A还需修订当前提前返回路径的扫描coverage gap传播、npm observati
 
 当前可信来源回执、Owner适用性回执、不可变commit/npm适用关系、可信npm GET及旧Formal读回均missing。
 本提案的URL/hash只是待接受候选，不签发任何新正向建议，不放行阶段1或正式前端交接。
+
+## 2026-10-11 授权与条件任务澄清
+
+Owner已允许A afca4c26c2fa45fa285fc9cabf48f52c54a59229的现有P2 v1合同/Schema用于限定TEST_ONLY离线兼容开发；本提案仍不是已批准新DTO或已签发来源回执。A01—A09全部完成不是离线核对/负例/缺口分析开工条件。上方is-number显式true条件仅描述真实证据齐备后可做的条件候选验收，不要求Owner制造肯定用途或授权；当前三例21项null原值保留。原件已取得，本机未找到已获准字节位置时仅请求读取方式，不重新索取/抓取。A来源、Owner范围/适用性和履行相互独立；精确请求、状态及解除条件见p2b-external-dependencies.json，当前口径见p2b-current-status.md。生产、联网、正式模型、服务启停、公共Schema/Formal修改和提交发布仍未获授权。

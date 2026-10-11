@@ -142,3 +142,28 @@ D4 所需 A 回执：三个真实 ScanRun 的同一 `scan_id` 补证前后只读
 - 验收：三例既有身份不变，严格DTO/Schema及结果Hash，GET只读；正向门槛未满足则命名gap。跨模型源码接口变更由A实现、Owner复核。
 
 - 本轮B额外修复已复现的npm attested适配器忽略timed_out字段问题：先1失败，再失败关闭；异常类型原因npm_transport_timeout_invalid。A正式回执冻结时必须包含严格布尔超时状态；不改变Formal或许可语义，A复核内部接线兼容。最终B定向90 passed。
+
+## CR-20261011-P1B-terminal-and-source-receipts
+
+- 提出者：GPT-6 Sol / 后端B；状态：PARTIAL / 待Root转交A、前端及真人；本会话无跨聊天消息发送工具，未声称已经送达或签收。
+- 精确A与前端清单：docs/p1/p1-b-offline-audit-20261011.md；P1基线aabd794与当前bed87f5分开，禁止P2 TEST_ONLY代替P1。
+- 已确认B03缺陷：v3固定9d67b88的frontend/package.json字节SHA与包声明不同，影响8项npm Evidence。generator读取工作树却硬编码旧commit；工作树生成器通过不证明Git身份。B/Root另建不可变revision/amendment，从固定blob取得字节，保留旧包并使依赖结果失效；Luna/Sol独立验收。当前旧包不改，A不得自动接纳受影响Evidence。
+- A需要同一提交SHA+可复现命令的固定Git/ZIP、scan_id/registry、input/inventory/facts/package Hash、资源/Evidence、Formal Assessment、STAGED/BOUND、NoticeDraft/Report V2、partial/失败/零候选/负例与重启只读回执，以及controlled_linux原性能字段。精确字段见清单第1–9项。
+- 前端需要同scan_id/API/版本、pending/partial、Profile/NoticeDraft、Report V2下载字节Hash、刷新/重启与错误状态的接收机浏览器签收，精确字段见清单第1–6项。
+- 真人/Luna负责来源权利、异机与双人独立Gold/第三人裁决/新holdout；Sol基于真实证据批准等级；Codex不代签许可适用性、独立性或Gold。5失败留分母，重复Evidence保留，314语义候选待裁决。
+
+### CR-20261011-P1B-terminal-and-source-receipts：B03修正交付补充
+
+用户已明确授权B修正。新包tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json以固定Git原字节生成，旧包不改；canonical pin=466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096，8项source Hash修正，31字段/事实语义不变。amendment/manifest闭包与正反例已本机验收；Luna/Sol独立签收、Root发布仍待。A必须显式接纳新包/new facts hash并按自身CAS/终态契约创建新Assessment/NOTICE绑定/Draft/Report，旧派生结果失效或标历史；不得以旧ID/版本伪造新包已消费。B没有改A实现或填回执，前端交接依新A正式签发。
+
+### CR-20261011-P2B-owner-limited-offline：限定B离线开发与A精确缺口
+
+Owner允许B不等待A01—A09全部完成即开展TEST_ONLY离线工作，采用A afca4c26c2fa45fa285fc9cabf48f52c54a59229的P2 v1合同/Schema；不批准生产/Formal/破坏性变更或发布。新增独立只读offline_material_audit helper、CLI、30项测试和脱敏对账；没有接入A运行时或修改公共DTO/规则。A02/A03/A05正式来源/证据/存储仍独立门禁。精确已有GET/Binding/Material/Result与待A确认的签发、Evidence物化、coverage/npm DTO、旧Formal读回字段见docs/p2/p2b-a-handoff-requirements.md；这是需求清单，不是已存在新路由。A/Root需复核helper与接口需求，Luna/Sol独立复核测试/证据，Owner独立确认真实用途和交付范围。旧is-number LICENSE已取得、不重复索取；本轮未重读其原字节，现有观察复用且新增事实0。
+
+### CR-20261011-P2B-status-dependencies：外部依赖逐项解除条件
+
+仅交付当前口径与需求字段，不创建新公共DTO/接口。机器清单docs/p2/p2b-external-dependencies.json含A–H、BYTES、OWNER、FRONTEND、RELEASE共12项，每项负责方/当前状态/字段材料/解除条件/可解锁任务/执行权限分开；已有三例精确身份与GET路径直接引用旧闭包。现有合同和实现仅获限定TEST_ONLY离线使用，A02/A03/A05正式闭环独立。已在当前用户对话请求原件保管方提供已取得LICENSE的获准读取位置或只读方式，不重新索取/抓取正文；尚未收到回复。不主动向其他聊天/外部人员发消息。A/Owner/前端按清单回填，Root后续另获发布授权才处理白名单。
+
+### CR-20261011-P2B-readback：BYTES门禁已解除，正式条件门禁保持
+
+is-number匹配字节已找到并独立复核，原件读取地址请求不再待办。最新p2b-external-dependencies-readback.json仅更新BYTES状态并保存旧清单/原readback摘要，其余11条目及三例路径不变。A仅afca4c2/P2v1限定离线可用，B–H/OWNER/FRONTEND/RELEASE共10项正式门禁仍需同样字段、解除条件与执行权。本地安装副本相同字节不代原私有存储/受信来源/npm包关系证明，不提升Evidence或Formal。Root后续获授发布权时只取本轮3新文件及相关治理追加，保留原7文件和P1边界；不得把账户私有路径/第三方正文或库上传。

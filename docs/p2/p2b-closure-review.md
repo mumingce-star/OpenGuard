@@ -111,3 +111,7 @@ B 命令：设置 `PYTHONPATH=backend`、`PYTHONUTF8=1`，
 GitHub：本轮未stage/commit/push/PR，交Root逐文件复核发布。整个阶段1仍PARTIAL。
 
 补充本轮Fail-first修复：可信npm回执包含timed_out=true且HTTP200时，旧B适配器忽略超时并误输出official_metadata_observed；新测试先实测1 failed，修复后超时返回failed/timeout/pending，异常类型拒绝npm_transport_timeout_invalid。缺该可选字段仍按false兼容旧内部调用；A正式回执必须显式冻结字段并由A控制验证器。最终B定向90 passed，规则candidates.py、A源码、公共DTO/Schema未修改。
+
+## 2026-10-11 当前状态补充（保留上文历史验收）
+
+上文90项是13:48历史实测子集；20:42最新离线组合是120 passed/2已有warning，本轮状态复核只执行CLI、工件Hash/DTO/Schema/闭包检查，未重跑pytest。Owner已允许指定afca4c2/P2v1用于限定TEST_ONLY离线开发，完整正式签收与来源签发不因该授权自动成立。三例身份/精确GET已有，七用途全null，Material仍pending。is-number原件已取得，本机未定位到对应原字节，已请求已有原件的获准读取位置或只读方式，不重复索取正文。旧Formal、A签发/存储、npm及前端门禁独立；当前依赖与解锁条件见p2b-current-status.md和p2b-external-dependencies.json。历史已发布与新七文件未发布分开，整体PARTIAL。
