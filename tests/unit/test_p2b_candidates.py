@@ -615,3 +615,59 @@ def test_simulated_a_attestation_is_required_for_official_observation():
     failed = parse_attested_response(body=body, receipt={**receipt, "http_status": 503},
                                      verify_attestation=lambda _row: True)
     assert failed["state"] == "failed" and failed["official_metadata_observed"] is False
+
+
+@pytest.mark.parametrize("change,error", [
+    ({"request_method": "POST"}, "npm_transport_target_mismatch"),
+    ({"request_url": SOURCE_URL + "?x=1"}, "npm_transport_target_mismatch"),
+    ({"redirect_count": False}, "npm_transport_target_mismatch"),
+    ({"transport_policy_id": " "}, "npm_transport_policy_missing"),
+    ({"transport_policy_id": "p" * 129}, "npm_transport_policy_missing"),
+    ({"response_bytes": True}, "npm_transport_size_mismatch"),
+    ({"response_sha256": None}, "npm_transport_hash_missing"),
+    ({"observed_at": datetime(2026, 10, 8)}, "npm_time_must_be_utc"),
+    ({"observed_at": "2026-10-08T00:00:00Z"}, "npm_time_must_be_utc"),
+])
+def test_attested_npm_receipt_rejects_missing_or_mistyped_trust_fields(change, error):
+    body = b'{"name":"is-number","version":"7.0.0","license":"MIT"}'
+    receipt = {"request_method": "GET", "request_url": SOURCE_URL, "final_url": SOURCE_URL,
+               "redirect_count": 0, "transport_policy_id": "synthetic-test-only", "http_status": 200,
+               "observed_at": NOW, "response_bytes": len(body),
+               "response_sha256": hashlib.sha256(body).hexdigest()}
+    with pytest.raises(ValueError, match=error):
+        parse_attested_response(body=body, receipt={**receipt, **change}, verify_attestation=lambda _: True)
+
+
+@pytest.mark.parametrize("verifier", [lambda _: 1, lambda _: "true", lambda _: None,
+                                     lambda _: (_ for _ in ()).throw(RuntimeError("synthetic"))])
+def test_attested_npm_verifier_requires_literal_true_and_fails_closed(verifier):
+    body = b'{"name":"is-number","version":"7.0.0","license":"MIT"}'
+    receipt = {"request_method": "GET", "request_url": SOURCE_URL, "final_url": SOURCE_URL,
+               "redirect_count": 0, "transport_policy_id": "synthetic-test-only", "http_status": 200,
+               "observed_at": NOW, "response_bytes": len(body),
+               "response_sha256": hashlib.sha256(body).hexdigest()}
+    with pytest.raises(ValueError, match="npm_transport_unverified"):
+        parse_attested_response(body=body, receipt=receipt, verify_attestation=verifier)
+
+
+def test_attested_npm_timeout_cannot_be_promoted_by_http_200():
+    body = b'{"name":"is-number","version":"7.0.0","license":"MIT"}'
+    receipt = {"request_method": "GET", "request_url": SOURCE_URL, "final_url": SOURCE_URL,
+               "redirect_count": 0, "transport_policy_id": "synthetic-test-only", "http_status": 200,
+               "observed_at": NOW, "response_bytes": len(body), "timed_out": True,
+               "response_sha256": hashlib.sha256(body).hexdigest()}
+    parsed = parse_attested_response(body=body, receipt=receipt, verify_attestation=lambda _: True)
+    assert parsed["state"] == "failed" and parsed["reason"] == "timeout"
+    assert parsed["official_metadata_observed"] is False
+    assert parsed["authorization_status"] == "pending"
+
+
+@pytest.mark.parametrize("timed_out", [None, "false", 0])
+def test_attested_npm_timeout_flag_must_be_boolean(timed_out):
+    body = b'{"name":"is-number","version":"7.0.0"}'
+    receipt = {"request_method": "GET", "request_url": SOURCE_URL, "final_url": SOURCE_URL,
+               "redirect_count": 0, "transport_policy_id": "synthetic-test-only", "http_status": 200,
+               "observed_at": NOW, "response_bytes": len(body), "timed_out": timed_out,
+               "response_sha256": hashlib.sha256(body).hexdigest()}
+    with pytest.raises(ValueError, match="npm_transport_timeout_invalid"):
+        parse_attested_response(body=body, receipt=receipt, verify_attestation=lambda _: True)

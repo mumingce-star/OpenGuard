@@ -501,3 +501,9 @@ LLM输出只作辅助，自动校验包括格式、任务/证据引用、有限�
 - AI 辅助建立严格 DTO、SQLite 原子 sidecar、精确 GET、回答/小材料绑定、CAS/幂等与 companion summary；审查发现并以失败测试修复 SQL/payload 错绑、P0 人审来源过度提升、缺失材料 Hash 被记录 Hash 替代。没有以名称、provider 或许可关键词认定新授权。
 - 本轮最终 430 唯一相关节点：428 PASS、2 FAIL、0 SKIP。两条 NOTICE excerpt fixture 失败在未修改父提交逐节点复现，未删改、skip 或冒充全绿。P2/P2B 117 个节点均通过；不与旧 193/242/722 等数字累加。
 - 固定 v6 必要原件在授权的新 TEST_ONLY 根恢复，真实 HTTP 单独统计，回答和既有许可片段只作用户断言/未核验观察；脱敏响应可转交，完整原文/数据库不入仓。现有 Pydantic 支持不算新增价值。Owner/xzb 审阅及可信正向材料链仍缺；无模型、原库或 Formal 写入。
+
+## 2026-10-11 P2 B 离线证据闭包复核
+
+GPT-6 Sol辅助新增既有三例真实回执的DTO/Schema/Hash/精确路径校验与npm可信回执拒绝测试，修正前端草案before状态/重复gap；编写可信来源与人工范围提案。用户确认A来源/Owner适用性分工，尚未签发合同。团队须复核A正式来源/Evidence物化及目标机前端验收；未改规则、Formal或A源码，未新增依赖或第三方正文。B定向、Windows阻断、父本NOTICE与baseline分别记录在docs/p2/p2b-closure-review.md与共享收工日志；不把合成验证当成官方GET、Gold或许可授权。
+
+补充：本轮Fail-first发现并修复backend/app/p2b/npm_metadata.py忽略可信回执timed_out的问题；HTTP200也不能覆盖超时，异常类型失败关闭。最终B90 passed；仅内部B适配器变化，A须复核正式出口契约，未修改规则或提升三例许可结论。

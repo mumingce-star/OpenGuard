@@ -206,3 +206,9 @@ B 单测逐项验证：错 resource ID/版本、悬空/重复 Evidence、已核�
 三例同一 Assessment version 1 上各有 P2 Result v1→v2，唯一新增项是对应 LICENSE tag 文件材料；after 均为 `pending` 且 `formal_effect=none`，旧 Result 精确 GET 保持可读。express 是独立 D4 保留例，未用于调整 L1 规则。服务端返回 `recomputed_resource_ids` 各一项、`reused_resource_ids=[]`（每次扫描仅含一个资源），前端不得自行计算第二套差异；同版 companion Summary 的 `report_kind=P2_COMPANION_NOT_FORMAL_REPORT`，旧正式 Report ID/读回仍缺。A 候选接口对无效 scan 404、错 Assessment 409、错资源 404、错版本 409、错 Evidence 409、非法材料名 422 给出精确错误码/`details.state`，见机器回执；冲突 verified Evidence 的 409 拒绝另由 A 合成契约测试覆盖，三例正常扫描没有此类冲突，绝不注入伪造 Evidence。GET 前后三个数据库 SHA-256 一致，无写入副作用。
 
 当前 A 候选 SHA `afca4c26c2fa45fa285fc9cabf48f52c54a59229` 的 Owner Review 仍待签收。阶段 1 保持 **PARTIAL**：缺可信 npm 发布包来源/适用性证明、人工核验范围、NOTICE 获取或明确检查结论、原 Formal Report 读回、前端兼容 SHA 与 Owner 正式接纳。`frontend-handoff-draft.json` 已列三例真实 TEST_ONLY ID 和 URL，但不是正式前端交付；同步 201 表示独立结果保存，不表示授权 verified、Formal Assessment 被 P2 改写或义务履行。
+
+## 2026-10-11 B 闭包与当前合同校验
+
+当前以 docs/p2/p2b-closure-review.md 为最新事实审计，p2b-evidence-closure.json 为三例已有真实身份的离线DTO/Schema/Hash闭包；历史“无真实ID”描述不再代表当前状态。三例仍TEST_ONLY/CONTROLLED_FIRST_PARTY_MANIFEST_ONLY/pending，完整Assessment投影之外的读回及旧Formal Report仍缺。交接草案before状态已与服务unknown一致，缺口去重；草案未升级正式handoff。
+
+A来源/Owner适用性责任已由用户确认，但不是合同或回执批准。最小提案见 docs/p2/p2b-source-admission-proposal.md；coverage gap提前返回遗漏、npm provider_declared_unverified未接入Result及规则来源字段待A冻结。express未用于调参。阶段1仍PARTIAL，发布由Root处理。

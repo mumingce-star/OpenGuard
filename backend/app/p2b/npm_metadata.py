@@ -105,6 +105,9 @@ def parse_attested_response(*, body: bytes, receipt: dict[str, Any],
             or receipt.get("final_url") != SOURCE_URL or type(receipt.get("redirect_count")) is not int
             or receipt["redirect_count"] != 0):
         raise ValueError("npm_transport_target_mismatch")
+    timed_out = receipt.get("timed_out", False)
+    if type(timed_out) is not bool:
+        raise ValueError("npm_transport_timeout_invalid")
     policy_id = receipt.get("transport_policy_id")
     if not isinstance(policy_id, str) or not policy_id.strip() or len(policy_id) > 128:
         raise ValueError("npm_transport_policy_missing")
@@ -122,7 +125,7 @@ def parse_attested_response(*, body: bytes, receipt: dict[str, Any],
     parsed = parse_official_response(
         body=body, source_url=SOURCE_URL, status=receipt.get("http_status"),
         observed_at=receipt.get("observed_at"),
-        expected_sha256=response_sha256,
+        expected_sha256=response_sha256, timed_out=timed_out,
     )
     if parsed["state"] != "parsed_untrusted_transport":
         return parsed

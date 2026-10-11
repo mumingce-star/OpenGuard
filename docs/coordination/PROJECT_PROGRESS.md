@@ -2020,3 +2020,16 @@ B05 已固化 detector/config/input/prediction/result artifact 与 Hash/错误�
 ### P2 A 候选分支发布回执
 
 实现及证据 `83fdff54be252b9355a503c4eec4c70489babb78` 已上传 `codex/p2-stage1-backend-20261010` 并读回远端 SHA；integration、cz、main/xzb 未改。公开内容是源码、合同、Schema、测试、脱敏证据、日志文件，不含原数据库、完整私有材料或原模型输入。Owner Review 待定、整体 PARTIAL、xzb 整体阶段 2 BLOCKED；分支发布不是集成/生产接受。
+
+## 2026-10-11 P2 B 证据闭包与接纳提案（PARTIAL）
+
+| 分类 | 本轮／累计状态 | 验证／责任／GitHub |
+|---|---|---|
+| B已验收 | 三例既有真实TEST_ONLY身份复用；输入与manifest来源摘要、DTO/Schema、Result自Hash/关联/精确GET离线闭包；新增npm拒绝矩阵；草案before状态及重复gap修正 | B最终定向90 passed；真实回执+合成负向分开。B历史e891d26已发布，本轮待Root逐文件发布 |
+| A实际合入 | afca4c26c2fa45fa285fc9cabf48f52c54a59229实际为0d9d581祖先，647e4d8合并点；Owner Review仍pending | 本地集成未在线读回/发布；合入代码不等于合同批准 |
+| 待A/Owner | 来源与包版本绑定、Owner人工范围、不可变commit、coverage gap/npm观察DTO与规则溯源、旧完整Assessment/Report、新真实受支持情形、可信npm唯一GET | 提案docs/p2/p2b-source-admission-proposal.md；不自造upstream_verified或正例 |
+| 待前端 | 获准同根/等价不可变回执、兼容提交、固定对象/旧新版/同版Summary/浏览器展示 | xzb在接收机签收；draft与B截图不代签 |
+| 失败/阻断 | P2本轮60 setup errors（os.geteuid）；NOTICE历史父本两条excerpt_content_invalid，本轮UTF8后两条setup errors；baseline FIXTURE_DRIFT | Windows由A/Root，NOTICE维护者，工件清单由Root；不以历史Linux428/2冒充当前全绿 |
+
+机器闭包及具体适配缺口见docs/p2/p2b-closure-review.md。可独立离线演示pending材料/结果链；尚无三例新许可正向结论、旧Formal Report读回或正式前端签收。P2阶段1整体PARTIAL。
+参赛门禁：目标机运行与Java核心/真实链验收仍须独立关闭；完整提交门禁：发布、前端端到端、报告视频与匿名资源/AI材料；竞争力门禁：真人Gold、固定Bench/holdout、对比/消融与复现。没有统一分母，不给完成百分比。

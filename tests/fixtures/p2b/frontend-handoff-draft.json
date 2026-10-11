@@ -197,21 +197,11 @@
       "rule_id": "V4-MIT",
       "before": {
         "license_text_state": "unknown",
-        "candidate_state": "pending",
+        "candidate_state": "unknown",
         "gaps": [
+          "controlled_manifest_only",
           "license_text_and_applicability_unverified",
           "object_scope_unverified",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
           "upstream_source_attestation_missing"
         ]
       },
@@ -279,21 +269,11 @@
       "rule_id": "V4-MIT",
       "before": {
         "license_text_state": "unknown",
-        "candidate_state": "pending",
+        "candidate_state": "unknown",
         "gaps": [
-          "file_scope_unverified",
-          "separate_terms_for_examples_and_vendor_files",
           "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
+          "license_text_and_applicability_unverified",
+          "object_scope_unverified",
           "upstream_source_attestation_missing"
         ]
       },
@@ -361,20 +341,11 @@
       "rule_id": "V4-MIT",
       "before": {
         "license_text_state": "unknown",
-        "candidate_state": "pending",
+        "candidate_state": "unknown",
         "gaps": [
-          "independent_reconciliation_pending",
           "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
-          "upstream_source_attestation_missing",
-          "controlled_manifest_only",
+          "license_text_and_applicability_unverified",
+          "object_scope_unverified",
           "upstream_source_attestation_missing"
         ]
       },

@@ -291,8 +291,9 @@ def main() -> None:
             entry["p2_before_result_id"] = record.get("p2", {}).get("before", {}).get("result_id")
             entry["p2_after_result_id"] = record.get("p2", {}).get("after", {}).get("result_id")
             entry["p2_summary_id"] = record.get("p2", {}).get("summary", {}).get("summary_id")
-            entry["before"]["gaps"] = [x for x in entry["before"]["gaps"] if x != "real_scan_binding_missing"]
-            entry["before"]["gaps"].extend(["controlled_manifest_only", "upstream_source_attestation_missing"])
+            entry["before"]["candidate_state"] = record["p2"]["before"]["state"]
+            entry["before"]["gaps"] = sorted(set(record["p2"]["before"]["resources"][0]["gaps"]
+                                                  + ["controlled_manifest_only"]))
             if record.get("p2"):
                 entry["server_before"] = {"result_id": record["p2"]["before"]["result_id"],
                                           "revision": record["p2"]["before"]["revision"],

@@ -131,3 +131,14 @@ D4 所需 A 回执：三个真实 ScanRun 的同一 `scan_id` 补证前后只读
 - B `reconcile_object` 的候选对账结果新增 `suggestions_updated`、前后 `basis_evidence_ids` 与 `basis_source_sha256`；同一用途的依据变化需可见，不可仅看建议数量。新增 Evidence 的非空 `content_sha256` 格式无效、既有 Evidence 删除/改写、非目标对象或证据变化、旧工件摘要不一致均拒绝，A 应保留失败原因和原 Assessment/报告。B 的摘要格式检查不能代替 A 的来源认证与读回证明。
 - B 区分 `invalid_added_content_hash`（新增 Evidence 内容摘要格式错误）与 `invalid_readback_hash`（旧 Assessment/报告读回摘要格式错误）；A 接纳回执应原样保留具体原因码，不能合并成成功状态或笼统的许可结论。
 - A 正式接纳/拒绝矩阵需返回材料预检与服务端最终状态的区别、Material ID、对象/版本、是否有人工适用性签收、拒绝后旧 Assessment/报告仍可读的回执。A 出口失败需记录固定 GET 目标、最终 URL、UTC 时间、HTTP 状态或超时、响应大小/Hash、策略 ID 和失败码。未给这些回执时，机器草案 `frontend-handoff-draft.json` 的相关字段保持 `null`/`false`，前端不得将其当真实验收数据。
+
+## CR-20261011-P2B-source-scope-admission
+
+- 提出者：GPT-6 Sol / 后端 B；状态：待A/Owner正式接纳。用户仅确认“A来源、Owner适用性”的提案责任分工，不是Owner Review通过。
+- 提案：docs/p2/p2b-source-admission-proposal.md；三例脱敏闭包：docs/p2/p2b-evidence-closure.json；适配及拒绝审计：docs/p2/p2b-closure-review.md。
+- A待办：固定commit与tag文件字节、npm包版本关系的可信签发；原子P2 Evidence物化/绑定、撤销与冲突；扫描coverage gap在提前返回路径传播；npm observation进入Result的正式DTO；B候选规则来源与父Formal规则版本分离；完整旧Assessment/Report精确只读Hash。
+- Owner待办：批准合同版本、签发明确文件范围/排除项/用途版本和适用性；不接受MIT关键词、P0人审flag、文件名/URL或上传者verified=true自动升级。
+- B当前改动：只新增离线闭包验证与缺失拒绝测试，修正草案before状态与缺口重放去重；不改变A/Schema/Formal/规则。前端接收机验收仍待获准数据根及合同。
+- 验收：三例既有身份不变，严格DTO/Schema及结果Hash，GET只读；正向门槛未满足则命名gap。跨模型源码接口变更由A实现、Owner复核。
+
+- 本轮B额外修复已复现的npm attested适配器忽略timed_out字段问题：先1失败，再失败关闭；异常类型原因npm_transport_timeout_invalid。A正式回执冻结时必须包含严格布尔超时状态；不改变Formal或许可语义，A复核内部接线兼容。最终B定向90 passed。
