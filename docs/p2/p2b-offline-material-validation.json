@@ -1,0 +1,103 @@
+{
+  "kind": "openguard.p2b.offline-material-validation/1",
+  "date": "2026-10-11",
+  "overall": "PARTIAL",
+  "author": "GPT-6.1 Sol",
+  "source_head": "bed87f58241acb4918c133c6854b99a528073b1d",
+  "a_test_only_baseline": "afca4c26c2fa45fa285fc9cabf48f52c54a59229",
+  "owner_authorization": "limited_offline_TEST_ONLY_only",
+  "tests": {
+    "command": "python -m pytest -q -p no:cacheprovider tests/unit/test_p2b_offline_material_audit.py tests/unit/test_p2b_candidates.py tests/unit/test_p2b_three_scan_readback.py tests/unit/test_p2b_receipt_closure.py --tb=short",
+    "passed": 120,
+    "new_tests": 30,
+    "existing_tests": 90,
+    "failed": 0,
+    "warnings": 2,
+    "exit_code": 0
+  },
+  "schema_check": "Draft202012Validator.check_schema and existing receipt DTO/Schema regressions passed",
+  "compileall": "passed",
+  "diff_check": "passed",
+  "sensitive_pattern_hits": 0,
+  "protected_paths_unchanged": [
+    "backend/app/p2",
+    "backend/app/api/p2.py",
+    "schemas/p2",
+    "docs/spec/p2-backend-contract.md",
+    "backend/app/p2b/candidates.py",
+    "tests/fixtures/p2b/three-scan-readback.json",
+    "tests/fixtures/p2b/real-source-index.json",
+    "docs/p2/p2b-evidence-closure.json"
+  ],
+  "artifacts": [
+    {
+      "path": "backend/app/p2b/offline_material_audit.py",
+      "sha256": "6dc09c020664be0065dee77e21156688ebf911ec0dec66243642406bc32d86c2",
+      "byte_count": 7298
+    },
+    {
+      "path": "benchmarks/p2b_offline_material_audit.py",
+      "sha256": "3074182961ceb01d506f7ede30691479dbc1c7b807950b5c7d9a9d06f9caa094",
+      "byte_count": 1658
+    },
+    {
+      "path": "tests/unit/test_p2b_offline_material_audit.py",
+      "sha256": "77122c56bdccfa4fb19615add38418c6bfd21b3324d79b727e0f356edb46d662",
+      "byte_count": 7012
+    },
+    {
+      "path": "docs/p2/p2b-a-handoff-requirements.md",
+      "sha256": "50dfec754067d7689eabdf533ca7af9ac10eb0b81a5827fcca7d3c901cf2c411",
+      "byte_count": 5526
+    },
+    {
+      "path": "docs/p2/p2b-offline-material-audit.md",
+      "sha256": "a88c943d684d18c686a489a738f02ff33119668f52f77ad08c31dbedd3da67e8",
+      "byte_count": 3693
+    },
+    {
+      "path": "docs/p2/p2b-offline-material-audit.json",
+      "sha256": "d5f77c490d6f6b7c6d856034cd98d1546b96ff379fddf615d9a39c743f585bd0",
+      "byte_count": 11615
+    }
+  ],
+  "hash_scope": "six delivery artifacts; this receipt and append-only governance records excluded from self-hashing",
+  "baseline": {
+    "exit_code": 1,
+    "valid": false,
+    "artifact_count": 522,
+    "diagnostics": [
+      {
+        "code": "FIXTURE_DRIFT"
+      }
+    ],
+    "rewritten": false
+  },
+  "actual_evidence_grade": "existing real TEST_ONLY receipt metadata reconciled; clause mapping verified with synthetic text only",
+  "original_license_already_acquired": true,
+  "original_license_bytes_re_read_this_run": false,
+  "new_facts": 0,
+  "new_evidence_ids": [],
+  "new_positive_license_advice": 0,
+  "usage_null_values_preserved": 21,
+  "live_scan_requests": 0,
+  "live_get_requests": 0,
+  "network_requests": 0,
+  "model_calls": 0,
+  "database_writes": 0,
+  "service_start_stop": 0,
+  "formal_effect": "none",
+  "stage_commit_push_merge_deploy": 0,
+  "github": "local uncommitted; publication not authorized; no live remote check",
+  "a_windows_contract_regression": "not rerun; historical os.geteuid setup blocker remains independent",
+  "notice_parent_failures": "not rerun or closed",
+  "full_old_formal_readbacks": null,
+  "process_limitation": "full log output truncated; no claim of complete verbatim reading",
+  "development_check_correction": "initial local self-check KeyError after_result; fixed by explicit original Result payload and closure pin checks",
+  "token": "本次运行精确 token 数不可获得",
+  "token_estimate": [
+    8000,
+    16000
+  ],
+  "within_estimate": "cannot_determine_without_telemetry"
+}

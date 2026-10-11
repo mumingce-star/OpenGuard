@@ -1,0 +1,144 @@
+{
+  "kind": "openguard.p2b.isnumber-clause-readback/1",
+  "date": "2026-10-11",
+  "overall": "PARTIAL",
+  "local_package_name": "is-number",
+  "local_package_version": "7.0.0",
+  "read_access": "local_read_only_installed_dependency_copy",
+  "source_location": "local_private_path_not_exported",
+  "source_identity": "installed_copy_bytes_equal_historical_LICENSE_not_proof_of_original_private_sidecar_or_trusted_source",
+  "byte_count": 1091,
+  "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+  "git_blob_sha1": "9af4a67d206f24ecdbb5fdff2839041ca0bbd346",
+  "cli_exit_code": 0,
+  "audit": {
+    "kind": "openguard.p2b.offline-material-audit/1",
+    "case_id": "P2B-POS-ISNUMBER-7",
+    "data_scope": "TEST_ONLY",
+    "overall": "PARTIAL",
+    "binding": {
+      "scan_id": "scn_761868e1-b9fa-4225-af23-d05c93d7b80f",
+      "assessment_id": "asm_2071ba47-8de3-5046-88cc-4ec03b089c97",
+      "assessment_version": 1,
+      "registry_revision": 9,
+      "project_revision": null,
+      "facts_hash": "b4d4e6f7f71ecedfc79cd42a069c035e69570f1cb491f05405938789d7eea72e",
+      "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+      "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "assessment_sha256": "1ca8da48aa515502fb922a0f14388f5875801c08837db51628f0aa197aa4d4a2"
+    },
+    "subject": {
+      "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+      "version": "7.0.0"
+    },
+    "material_id": "p2mat_2414eae690a988d553a19cd091fd6560c3add60bbf69c4d716aeddb15a0b77b1",
+    "result_id": "p2res_3910c073174a8aefc76f3f1ffe4a76fd7d4260d78cc7f2ecddee6c061b0f184c",
+    "content_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+    "byte_count": 1091,
+    "source_level": "user_supplied_unverified",
+    "verification_state": "pending",
+    "observation_accounting": "existing_unverified_observation_reused",
+    "new_facts": 0,
+    "new_evidence_ids": [],
+    "new_positive_license_advice": [],
+    "formal_effect": "none",
+    "model_calls": 0,
+    "usage": {
+      "commercial": null,
+      "distributed": null,
+      "modified": null,
+      "network_service": null,
+      "redistributed_assets": null,
+      "source_disclosure": null,
+      "training": null
+    },
+    "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+    "byte_verification": "existing_hashes_rechecked",
+    "clause_mapping": [
+      {
+        "topic": "permission_text",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 68,
+            "end_byte_exclusive": 112,
+            "start_line": 5,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "topic": "notice_retention",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 502,
+            "end_byte_exclusive": 573,
+            "start_line": 12,
+            "end_line": 12
+          }
+        ]
+      },
+      {
+        "topic": "warranty_disclaimer",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 630,
+            "end_byte_exclusive": 662,
+            "start_line": 15,
+            "end_line": 15
+          }
+        ]
+      },
+      {
+        "topic": "liability_disclaimer",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 832,
+            "end_byte_exclusive": 892,
+            "start_line": 17,
+            "end_line": 18
+          }
+        ]
+      }
+    ],
+    "scope_analysis": {
+      "text_mapping_is_applicability_proof": false,
+      "covers_npm_archive": "unverified",
+      "covers_dependencies_or_vendor": "unverified",
+      "delivery_inclusion": "owner_confirmation_required",
+      "obligation_fulfillment": "independent_confirmation_required"
+    },
+    "remaining_gaps": [
+      "full_formal_assessment_readback_missing",
+      "immutable_commit_binding_missing",
+      "license_text_and_applicability_unverified",
+      "npm_release_content_relationship_unverified",
+      "object_scope_unverified",
+      "obligation_fulfillment_unverified",
+      "old_formal_report_readback_missing",
+      "owner_delivery_scope_unconfirmed",
+      "owner_license_applicability_unconfirmed",
+      "scan_coverage_incomplete",
+      "trusted_source_receipt_missing",
+      "uploaded_material_applicability_pending",
+      "upstream_source_attestation_missing",
+      "usage_commercial_unknown",
+      "usage_distributed_unknown",
+      "usage_modified_unknown",
+      "usage_network_service_unknown",
+      "usage_redistributed_assets_unknown",
+      "usage_source_disclosure_unknown",
+      "usage_training_unknown"
+    ]
+  },
+  "other_cases": "metadata_only_not_reread",
+  "third_party_full_text_exported": false,
+  "database_writes": 0,
+  "network_requests": 0,
+  "service_start_stop": 0,
+  "model_calls": 0,
+  "publication": "local_only_not_authorized"
+}

@@ -1,0 +1,195 @@
+{
+  "kind": "openguard.p2b.readback-validation/1",
+  "date": "2026-10-11",
+  "overall": "PARTIAL",
+  "source_head": "bed87f58241acb4918c133c6854b99a528073b1d",
+  "a_test_only_baseline": "afca4c26c2fa45fa285fc9cabf48f52c54a59229",
+  "actual_checks": {
+    "checks": [
+      {
+        "topic": "permission_text",
+        "locator": {
+          "start_byte": 68,
+          "end_byte_exclusive": 112,
+          "start_line": 5,
+          "end_line": 5
+        },
+        "direct_byte_slice_line_and_unique_match": true
+      },
+      {
+        "topic": "notice_retention",
+        "locator": {
+          "start_byte": 502,
+          "end_byte_exclusive": 573,
+          "start_line": 12,
+          "end_line": 12
+        },
+        "direct_byte_slice_line_and_unique_match": true
+      },
+      {
+        "topic": "warranty_disclaimer",
+        "locator": {
+          "start_byte": 630,
+          "end_byte_exclusive": 662,
+          "start_line": 15,
+          "end_line": 15
+        },
+        "direct_byte_slice_line_and_unique_match": true
+      },
+      {
+        "topic": "liability_disclaimer",
+        "locator": {
+          "start_byte": 832,
+          "end_byte_exclusive": 892,
+          "start_line": 17,
+          "end_line": 18
+        },
+        "direct_byte_slice_line_and_unique_match": true
+      }
+    ],
+    "prior_seven": [
+      {
+        "path": "backend/app/p2b/offline_material_audit.py",
+        "sha256": "6dc09c020664be0065dee77e21156688ebf911ec0dec66243642406bc32d86c2",
+        "byte_count": 7298
+      },
+      {
+        "path": "benchmarks/p2b_offline_material_audit.py",
+        "sha256": "3074182961ceb01d506f7ede30691479dbc1c7b807950b5c7d9a9d06f9caa094",
+        "byte_count": 1658
+      },
+      {
+        "path": "tests/unit/test_p2b_offline_material_audit.py",
+        "sha256": "77122c56bdccfa4fb19615add38418c6bfd21b3324d79b727e0f356edb46d662",
+        "byte_count": 7012
+      },
+      {
+        "path": "docs/p2/p2b-a-handoff-requirements.md",
+        "sha256": "50dfec754067d7689eabdf533ca7af9ac10eb0b81a5827fcca7d3c901cf2c411",
+        "byte_count": 5526
+      },
+      {
+        "path": "docs/p2/p2b-offline-material-audit.md",
+        "sha256": "a88c943d684d18c686a489a738f02ff33119668f52f77ad08c31dbedd3da67e8",
+        "byte_count": 3693
+      },
+      {
+        "path": "docs/p2/p2b-offline-material-audit.json",
+        "sha256": "d5f77c490d6f6b7c6d856034cd98d1546b96ff379fddf615d9a39c743f585bd0",
+        "byte_count": 11615
+      },
+      {
+        "path": "docs/p2/p2b-offline-material-validation.json",
+        "sha256": "b268389c41a95489af74f96162474f1ff404e16d7cd97c81a15d4dc97be3dcb9",
+        "byte_count": 3957
+      }
+    ],
+    "cli_result_equal": true,
+    "closure_equal": true,
+    "schema_valid": true,
+    "nulls": 21,
+    "new_facts": 0,
+    "dependency_old_hash": "5e9052d5290069952a7be2ae22271e2bf193e6871fc2e31a3870c3d4a425ceea",
+    "previous_readback_hash": "eaa0e3a0a2695251a9037e5f246e1c192d0bfcaf72fbbf81949da3724b9e3f17",
+    "changed_dependency_ids": [
+      "BYTES"
+    ]
+  },
+  "package_identity": "local package.json name=is-number/version=7.0.0 read_only_not_executed",
+  "source_location": "private_local_path_omitted",
+  "byte_evidence_grade": "actual_read_only_installed_LICENSE_copy_same_bytes_as_existing_observation_not_authenticated_publisher",
+  "independent_locator_method": "direct saved byte slices, whitespace normalization, LF line recount, normalized whole-text uniqueness; no helper-generated expected locators",
+  "commands": [
+    "python benchmarks/p2b_offline_material_audit.py --is-number-license <private_read_only_local_path>",
+    "python tests/fixtures/p2b/verify_receipt_closure.py",
+    "git diff --quiet HEAD -- protected_paths",
+    "git diff --check"
+  ],
+  "pytest_this_run": "not_executed_no_source_change_prior_sufficient_tests_reused",
+  "latest_history_tests": {
+    "passed": 120,
+    "warnings": 2,
+    "date": "2026-10-11 20:42",
+    "new": 30,
+    "old": 90,
+    "not_this_run": true
+  },
+  "dependency_snapshot": {
+    "entries": 12,
+    "available_limited_offline": [
+      "A"
+    ],
+    "completed_limited_readback": [
+      "BYTES"
+    ],
+    "remaining_formal_gates": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "OWNER",
+      "FRONTEND",
+      "RELEASE"
+    ],
+    "changed_ids": [
+      "BYTES"
+    ],
+    "other_entries_and_fixed_case_paths_unchanged": true,
+    "does_not_approve_new_public_DTO": true
+  },
+  "artifacts": [
+    {
+      "path": "docs/p2/p2b-readback-review.md",
+      "sha256": "72c7a8fa447fc7f53989248f4ea7435b2cf0864d1baaafe35020444ab62d8177",
+      "byte_count": 6843
+    },
+    {
+      "path": "docs/p2/p2b-external-dependencies-readback.json",
+      "sha256": "69144bf43c68867834f779cccc4282247a8860ecc89dfc99538d712ad34122d7",
+      "byte_count": 24595
+    }
+  ],
+  "protected_tracked_paths_unchanged": [
+    "backend/app/p2",
+    "backend/app/api/p2.py",
+    "schemas/p2",
+    "docs/spec/p2-backend-contract.md",
+    "backend/app/p2b/candidates.py",
+    "tests/fixtures/p2b",
+    "docs/p2/p2b-evidence-closure.json",
+    "docs/p2/stage1-review.md"
+  ],
+  "submission_whitelist_increment": [
+    "docs/p2/p2b-readback-review.md",
+    "docs/p2/p2b-external-dependencies-readback.json",
+    "docs/p2/p2b-readback-validation.json",
+    "append-only current-status/AI/progress/change-requests/worklog records for this task only"
+  ],
+  "preserved_existing_delivery": "seven original files plus previous isnumber-clause-readback/old dependency and validation JSON; not rewritten",
+  "new_facts": 0,
+  "new_evidence_ids": [],
+  "new_positive_license_advice": 0,
+  "usage_null_values_preserved": 21,
+  "license_state": "pending/user_supplied_unverified",
+  "formal_effect": "none",
+  "live_network_or_HTTP": 0,
+  "database_access": 0,
+  "model_calls": 0,
+  "service_start_stop": 0,
+  "stage_commit_push_merge_deploy": 0,
+  "sensitive_pattern_hits": 0,
+  "github": "local_uncommitted_publication_not_authorized_no_remote_check",
+  "independent_open_failures": "Windows_geteuid/NOTICE_parent/baseline_FIXTURE_DRIFT historical not rerun or closed",
+  "log_reading_scope": "prior conversation reads and this turn README1-20/log last25/progress last12/Sol1-24, readback full/current dependency and B helper slices; full million-character log verbatim gate not satisfied",
+  "full_verbatim_log_read": false,
+  "token": "本次运行精确 token 数不可获得",
+  "token_estimate": [
+    4000,
+    8000
+  ],
+  "within_estimate": "unknown_without_telemetry",
+  "scope_change": "none"
+}

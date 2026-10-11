@@ -1,0 +1,135 @@
+{
+  "kind": "openguard.p2b.status-validation/1",
+  "date": "2026-10-11",
+  "overall": "PARTIAL",
+  "source_head": "bed87f58241acb4918c133c6854b99a528073b1d",
+  "a_baseline": "afca4c26c2fa45fa285fc9cabf48f52c54a59229",
+  "prior_seven_artifacts_unchanged": [
+    {
+      "path": "backend/app/p2b/offline_material_audit.py",
+      "sha256": "6dc09c020664be0065dee77e21156688ebf911ec0dec66243642406bc32d86c2",
+      "byte_count": 7298
+    },
+    {
+      "path": "benchmarks/p2b_offline_material_audit.py",
+      "sha256": "3074182961ceb01d506f7ede30691479dbc1c7b807950b5c7d9a9d06f9caa094",
+      "byte_count": 1658
+    },
+    {
+      "path": "tests/unit/test_p2b_offline_material_audit.py",
+      "sha256": "77122c56bdccfa4fb19615add38418c6bfd21b3324d79b727e0f356edb46d662",
+      "byte_count": 7012
+    },
+    {
+      "path": "docs/p2/p2b-a-handoff-requirements.md",
+      "sha256": "50dfec754067d7689eabdf533ca7af9ac10eb0b81a5827fcca7d3c901cf2c411",
+      "byte_count": 5526
+    },
+    {
+      "path": "docs/p2/p2b-offline-material-audit.md",
+      "sha256": "a88c943d684d18c686a489a738f02ff33119668f52f77ad08c31dbedd3da67e8",
+      "byte_count": 3693
+    },
+    {
+      "path": "docs/p2/p2b-offline-material-audit.json",
+      "sha256": "d5f77c490d6f6b7c6d856034cd98d1546b96ff379fddf615d9a39c743f585bd0",
+      "byte_count": 11615
+    },
+    {
+      "path": "docs/p2/p2b-offline-material-validation.json",
+      "sha256": "b268389c41a95489af74f96162474f1ff404e16d7cd97c81a15d4dc97be3dcb9",
+      "byte_count": 3957
+    }
+  ],
+  "actual_checks": {
+    "prior_manifest_hashes_and_sizes": 6,
+    "seventh_validation_hash_recorded_and_unchanged": true,
+    "offline_audit_cli_saved_output_equal": true,
+    "receipt_closure_cli_saved_output_equal": true,
+    "material_result_DTO_schema_hash_pin_references": "passed_by_existing_CLI_and_closure_checks",
+    "Draft202012_schema_valid": true,
+    "strict_json_valid": true,
+    "exact_case_identity_and_paths": 3,
+    "null_usage_values_preserved": 21,
+    "dependency_entries_checked": 12,
+    "sensitive_pattern_hits": 0
+  },
+  "artifacts": [
+    {
+      "path": "docs/p2/p2b-current-status.md",
+      "sha256": "79849a8b6edb28871f3b50fe3f72fddab8e80720f1f06f5d68e7b32d704a2357",
+      "byte_count": 8625
+    },
+    {
+      "path": "docs/p2/p2b-external-dependencies.json",
+      "sha256": "5e9052d5290069952a7be2ae22271e2bf193e6871fc2e31a3870c3d4a425ceea",
+      "byte_count": 23527
+    }
+  ],
+  "protected_tracked_paths_unchanged": [
+    "backend/app/p2",
+    "backend/app/api/p2.py",
+    "schemas/p2",
+    "docs/spec/p2-backend-contract.md",
+    "backend/app/p2b",
+    "tests/unit/test_p2b_candidates.py",
+    "tests/unit/test_p2b_three_scan_readback.py",
+    "tests/unit/test_p2b_receipt_closure.py",
+    "tests/fixtures/p2b",
+    "docs/p2/p2b-evidence-closure.json",
+    "docs/p2/stage1-review.md"
+  ],
+  "pytest_this_run": "not_executed_no_code_change_and_prior_sufficient_tests",
+  "latest_pytest_history": {
+    "passed": 120,
+    "warnings": 2,
+    "new_in_that_run": 30,
+    "existing_in_that_run": 90,
+    "origin": "docs/p2/p2b-offline-material-validation.json; previous_20:42_run"
+  },
+  "original_read_access_search": {
+    "scope": "existing ignored local artifacts only; no system/account/container/network access",
+    "candidate_files_hashed": 1,
+    "file_access_errors": 0,
+    "matched_files": 0,
+    "custodian_read_access_request": "pending in current user chat; existing original location or read-only method only"
+  },
+  "original_bytes_already_acquired": true,
+  "original_bytes_re_read_this_run": false,
+  "new_facts": 0,
+  "new_evidence_ids": [],
+  "new_positive_license_advice": 0,
+  "formal_effect": "none",
+  "network_requests": 0,
+  "live_get_requests": 0,
+  "database_access": 0,
+  "model_calls": 0,
+  "service_start_stop": 0,
+  "stage_commit_push_merge_deploy": 0,
+  "independent_open_failures": {
+    "Windows_geteuid": "historical_setup_blocker_not_rerun",
+    "NOTICE": "historical_parent_failures_not_rerun",
+    "baseline": "historical_FIXTURE_DRIFT_522_not_rerun_or_rewritten"
+  },
+  "github": "local_uncommitted_no_publication_authorization_no_remote_check",
+  "reading_scope": {
+    "log_total_lines_at_check": 9858,
+    "complete_verbatim_reading": false,
+    "this_turn_complete_supplemental_ranges": [
+      "9530-9551",
+      "last35_at_pre_START_read"
+    ],
+    "partial_or_truncated": [
+      "last100_combined_output",
+      "full_preparation_spec_with_helper_combined_output"
+    ],
+    "other_reads": "README1-35,progress last70 and last25,Sol1-85,P2-related historical search records and existing seven files in prior turn"
+  },
+  "token": "本次运行精确 token 数不可获得",
+  "token_estimate": [
+    5000,
+    10000
+  ],
+  "within_estimate": "unknown_without_telemetry",
+  "scope_change": "none; no new implementation or tests"
+}
