@@ -9925,3 +9925,12 @@
 - 目标：按用户再次授权审查并上传今天在 `bed87f5` 后形成的、可公开的代码/测试/必要脱敏资料至 `mumingce-star/OpenGuard` 工作分支，并汇总今天任务。预计涉及 P1 B、B03 固定来源、P2B 离线审计相关已修改/新增文件及共享日志、进度；不纳入 `reports/`、pytest 缓存或私有原文。
 - 基线：`codex/scan-reliability-integration@bed87f5`；远端同 SHA，`integration/p1`/`main` 未变。日志显示今天上述工作均有 PARTIAL/COMPLETE 收工，未见其他模型仍在改同文件；正式 A/Owner/前端门禁不因上传而关闭。
 - 验收：逐项复核改动和来源/敏感信息、跑相关定向测试与严格 JSON/生成器检查、`git diff --check`、暂存清单核对，普通提交、非强制推送及远端 SHA 读回。估算 token 10,000～20,000；本次运行精确遥测不可获得。不启停项目服务。
+
+### [20261011-2349-GPT61Sol-当日GitHub发布收工] COMPLETE
+
+- 作者：GPT-6.1 Sol；角色：Root Coordinator；时间：2026-10-11 23:49（Asia/Shanghai）。
+- 目标与结果：逐包验收并上传今天 `bed87f5` 后全部适合公开的代码/测试/必要脱敏记录；远端工作分支已读回 `70e0cf705c1d88686ecdd1930320e6e5a1cc9a2e`。本轮上传任务完成；P1/P2 产品仍 PARTIAL，未声称正式 A/Owner/前端签收、PR、`integration/p1` 或 `main` 合并。
+- 修改/提交：P1 B 审计七文件 `09c61cb`；B03 固定来源十一文件 `8f9db3c`；P2B 离线核验十四文件 `ca0dc31`；AI/协调日志、进度、CR 和规格追加七文件 `70e0cf7`；随后追加本收工与发布进度回执。未覆盖旧事实、旧回执或其他模型记录，`reports/`、pytest 缓存、原始第三方正文、本机私有路径不上传。
+- 命令/验证：必读文件按序完整由工具读取并审阅近期及相关记录；Git 分支/状态/近期提交/远端读回；P1 定向 234 passed；B03 Node 10 passed/Python 24 passed；P2B 定向 120 passed、2 条既有弃用警告；固定修订生成器 `--check`、P2B 离线 CLI/闭包、15 JSON 解析、三组验证回执 Hash 复核、`git diff --check`、暂存清单及敏感信息检查通过。未启停项目服务、未抓取来源或运行正式扫描。大体量历史日志逐字人工审阅不能由整文件工具读取替代；保留此流程限制。
+- 接口/Schema/规则/决策：公共接口、Schema、Formal 和许可规则未变；B03 用固定 Git blob 的新不可变 source-binding-r2，旧包作为含缺陷历史保留；P2B 仅复用 TEST_ONLY 材料观察，无新增正向授权。发布仅供独立复核，不代表独立审核或 Owner 批准。
+- 风险/下一步责任：Luna/Sol 独立复核 B03/P1，A 以新 pin 建立终态和正式来源/Evidence/旧 Formal 读回，Owner 确认范围与用途，xzb 在获准接收机验收前端；Root 后续处理 Windows `os.geteuid`、NOTICE 父本、baseline 漂移及 PR/集成审查。关联 `codex/scan-reliability-integration@70e0cf7`；`integration/p1@aabd794`、`main@476d954` 未改，无 PR/Issue/evidence_id 新签发。精确 token 数不可获得；开工估算 10,000～20,000，发布范围完成，无遥测判断实际是否在范围内。

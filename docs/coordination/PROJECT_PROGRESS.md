@@ -2088,3 +2088,9 @@ Owner已允许B以A afca4c26c2fa45fa285fc9cabf48f52c54a59229的P2 v1合同/Schem
 | 新p2b-readback-review.md、p2b-external-dependencies-readback.json、p2b-readback-validation.json；新依赖快照Hash关联旧清单，仅改BYTES，旧JSON不覆盖。 | 来源等级/适用范围/履行/旧Formal未签；lodash/express仍metadata_only，express规则不调。 | 新事实/Evidence/正向建议0；三例21null保持；无联网/模型/服务/库访问/Formal/Schema/commit/push/merge/deploy。 |
 
 现有离线核对/文本定位可独立运行，历史受支持扫描/候选/报告依历史演示；未具备新可信正向、旧完整Formal或前端正式签收。报名/参赛资格权利、目标机/Java核心；完整作品正式闭环/独立审核/端到端/发布及材料；竞争力真人Gold/new holdout/对比消融/质量性能仍待独立验证。Windows/NOTICE/baseline历史失败与完整日志逐字阅读限制不因本轮关闭。工作分支bed87f5，发布未授权，整个P2保持PARTIAL。
+
+### 2026-10-11 当日追加成果的 GitHub 发布回执
+
+用户再次授权上传后，Root 将 `bed87f5` 之后的三组公开源码/测试/脱敏材料及共享记录分四个提交非强制推送至 `origin/codex/scan-reliability-integration`：P1 B 离线审计 `09c61cb`、B03 固定 Git 来源修订 `8f9db3c`、P2B 离线材料核验 `ca0dc31`、协调记录 `70e0cf7`。远端读回 `70e0cf705c1d88686ecdd1930320e6e5a1cc9a2e` 一致；`integration/p1` 与 `main` 未合并或修改，无 PR/部署。上述各任务历史“未发布”记录保留为当时状态，以本条为最新发布状态。
+
+本轮重新实测 P1 定向 234 passed、B03 Node 10 passed/Python 24 passed、P2B 定向 120 passed（2 条已有依赖弃用警告）；固定修订 `--check`、离线 CLI、15 份 JSON 解析、待提交 diff-check、公开范围与敏感信息筛查通过。`reports/`、pytest 缓存、第三方正文和本机私有路径未上传。发布仅代表工作分支可供复核：B03 独立审核和 A 新绑定、P1 正式 Gold/终态链、P2B 可信来源/Owner 范围/旧 Formal/前端签收及 Windows/NOTICE/baseline 门禁均未关闭，项目 P1/P2 仍 PARTIAL。
