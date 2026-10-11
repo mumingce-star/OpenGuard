@@ -1,0 +1,45 @@
+{
+  "schema": "openguard.p1-b-human-review-preparation/1",
+  "status": "unsubmitted_preparation",
+  "formal_gold": false,
+  "formal_metrics": null,
+  "purpose": "train/dev来源与语义独立审阅准备；选择性错误队列不能代整体Gold",
+  "source_packet_sha256": null,
+  "repository_commit": null,
+  "reviewer": {
+    "type": null,
+    "anonymous_id": null,
+    "independent_from_other_reviewers": null,
+    "has_not_seen_predictions_or_machine_error_kinds": null,
+    "has_not_seen_ai_drafts_or_prior_decisions": null,
+    "exposure_description": null
+  },
+  "records": [],
+  "record_format": {
+    "case_id": null,
+    "source_commit": null,
+    "input_sha256": null,
+    "source_file_sha256": null,
+    "locator": null,
+    "line_range": null,
+    "resource_type": null,
+    "provider": null,
+    "canonical_name": null,
+    "judgment": null,
+    "allowed_judgments": ["confirmed_static_reference", "not_static_reference", "uncertain", "out_of_scope"],
+    "reason": null,
+    "license_applicability": "pending_separate_human_review"
+  },
+  "submitted_at": null,
+  "review_submission_sha256": null,
+  "adjudication": {
+    "third_human_id": null,
+    "first_review_sha256": null,
+    "second_review_sha256": null,
+    "disagreements": [],
+    "resolution_sha256": null,
+    "approved_at": null
+  },
+  "grade_approval": {"sol_receipt": null, "new_holdout_freeze_sha256": null},
+  "notes": "模板不是回执，Codex不得填写真人独立性或签收。正式提交须转换为经Sol/Luna复核的冻结契约。"
+}

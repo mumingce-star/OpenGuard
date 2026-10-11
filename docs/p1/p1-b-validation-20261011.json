@@ -1,0 +1,121 @@
+{
+  "artifacts": [
+    {
+      "path": "benchmarks/p1_b_offline_audit.py",
+      "sha256": "8ffb046d15ffc297629126b2b3a4eee6b369bc5eaca047fae1880cecbbab34bd"
+    },
+    {
+      "path": "tests/unit/test_p1_b_offline_audit.py",
+      "sha256": "bb5e2fe940ae05e9962cf1c2315642cc0800c61dfa9001594126dce38aa4bc49"
+    },
+    {
+      "path": "docs/p1/p1-b-offline-audit-20261011.md",
+      "sha256": "b259a3eb6bc18a319c812e948091e51f85212130c247de8c9e4829ee0ba74d40"
+    },
+    {
+      "path": "docs/p1/p1-b-offline-audit-20261011.json",
+      "sha256": "80fc67ccc2d00029a448e6d350f8ffd42ca66c49a80ef648eac85e32c07c26e4"
+    },
+    {
+      "path": "docs/p1/p1-b-human-review-template-20261011.json",
+      "sha256": "f53645dfe5c49bfc7b45ba62d3434760c13b62c89906febf7d5d95a748e55117"
+    },
+    {
+      "path": "docs/p1/p1-b-blind-source-packet-20261011.json",
+      "sha256": "84b4bb6b642c0fda7b97606f74d648d429f1792a17e804fcc60441dbc35b92bc"
+    }
+  ],
+  "blind_packet_file_count": 224,
+  "checks": [
+    {
+      "command": "python -m pytest -q -p no:cacheprovider tests/unit/test_p1_b_offline_audit.py tests/unit/test_p1_license_notice_facts_detector.py tests/security/test_p1_license_notice_facts_detector_independent.py tests/unit/test_b03_b04_v3_consumption_adapter.py tests/unit/test_notice_source_collector.py tests/security/test_notice_source_contract_independent.py tests/unit/test_auto_static_review.py tests/unit/test_p1_huggingface_metadata_parser.py tests/security/test_p1_huggingface_metadata_parser_independent.py tests/unit/test_p1_modelscope_metadata_parser.py tests/unit/test_p1_metadata_transport.py tests/security/test_p1_metadata_transport_independent.py tests/unit/test_notice_source_selector.py --basetemp tmp/pytest-p1-b-combined-20261011",
+      "errors": 0,
+      "exit_code": 0,
+      "failed": 0,
+      "passed": 232,
+      "skipped": 0
+    },
+    {
+      "command": "python -m pytest -q -p no:cacheprovider tests/unit/test_p1_b_offline_audit.py --basetemp tmp/pytest-p1-b-blind-final-20261011",
+      "errors": 0,
+      "exit_code": 0,
+      "failed": 0,
+      "note": "最后盲审答案隔离增补后的新增文件复验，与232重叠不累加",
+      "passed": 14,
+      "skipped": 0
+    },
+    {
+      "command": "node --test tests/b07_performance_receipt_v2.test.mjs tests/b06_error_analysis_closure.test.mjs tests/b06_reference_candidates.test.mjs tests/p1_license_notice_facts_detector_contract.test.mjs tests/notice_license_facts_v3.test.mjs",
+      "exit_code": 0,
+      "failed": 0,
+      "passed": 11,
+      "skipped": 0
+    },
+    {
+      "command": "node --test --test-name-pattern='^B06|^B07' tests/b06_b07_p2b_contract.test.mjs",
+      "exit_code": 0,
+      "failed": 0,
+      "note": "P2B节点不执行，不计P1验收",
+      "passed": 4,
+      "skipped": 0
+    },
+    {
+      "cause": "Windows os.geteuid missing; no business assertions reached",
+      "command": "python -m pytest -q -p no:cacheprovider tests/unit/test_p1_notice_source_binding.py tests/unit/test_p1_notice_source_adapter.py --basetemp tmp/pytest-p1-b-a-boundary-20261011 --tb=line",
+      "error_phase": "setup",
+      "errors": 122,
+      "exit_code": 1,
+      "failed": 0,
+      "passed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python -m compileall -q benchmarks/p1_b_offline_audit.py tests/unit/test_p1_b_offline_audit.py",
+      "exit_code": 0
+    }
+  ],
+  "final_checks": {
+    "blind_packet_reproduction": "passed",
+    "diff_check": "passed",
+    "new_file_whitespace": "passed",
+    "sensitive_check": "passed_0_matches",
+    "source_field_hashes": 31,
+    "source_file_mismatches": 8,
+    "staging_area": "empty",
+    "strict_json": "passed"
+  },
+  "formal_gold": false,
+  "formal_metrics": null,
+  "formal_performance": null,
+  "head": "bed87f58241acb4918c133c6854b99a528073b1d",
+  "intermediate_failure": {
+    "cause": "new basetemp parent missing",
+    "passed": 186,
+    "resolved_by": "primary combined 232 passed using tmp",
+    "setup_errors": 1
+  },
+  "mandatory_full_worklog_read": "not_met_tool_output_truncated",
+  "next_owner": "Root/Luna/Sol/A/frontend/human_reviewers",
+  "node": "26.2.0",
+  "p1_tracking_sha": "aabd7940f65ec8a78b33c863b4db81b400509b7d",
+  "p2_receipts_used": false,
+  "platform": "Windows",
+  "publication": "not_staged_not_committed_not_pushed",
+  "python": "3.12.10",
+  "release_allowlist": [
+    "benchmarks/p1_b_offline_audit.py",
+    "tests/unit/test_p1_b_offline_audit.py",
+    "docs/p1/p1-b-offline-audit-20261011.md",
+    "docs/p1/p1-b-offline-audit-20261011.json",
+    "docs/p1/p1-b-human-review-template-20261011.json",
+    "docs/p1/p1-b-blind-source-packet-20261011.json",
+    "docs/p1/p1-b-validation-20261011.json",
+    "docs/05-ai-assistance-log.md",
+    "docs/coordination/PROJECT_PROGRESS.md",
+    "docs/coordination/change-requests.md",
+    "docs/coordination/AGENT_WORKLOG.md"
+  ],
+  "release_scope_note": "共享日志含此前P2未提交追加；只允许本P1 START/收工记录，不得整文件混入P1提交。其他共同文档仅本轮P1追加。排除reports/tmp/.pytest*/数据库/ZIP/P2文件。",
+  "schema": "openguard.p1-b-validation/1",
+  "status": "PARTIAL"
+}
