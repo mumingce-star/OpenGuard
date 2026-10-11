@@ -1,0 +1,94 @@
+{
+  "schema": "openguard.b03-source-binding-amendment/1",
+  "amendment_id": "B03-source-binding-r2",
+  "status": "correction_prepared_pending_independent_review",
+  "created_at": "2026-10-11T11:26:46Z",
+  "parent": {
+    "artifact": "tests/fixtures/notice-license-facts-v3/facts.json",
+    "file_sha256": "4f2a8304ad457dffdc7e4ba276e3602bf93b4f83b1e7e177bbcb84f4a8d841f7",
+    "canonical_package_sha256": "ea04f17caf7202c4c560502b7dcec73ecc164e01f7d2c53083e6c21d0d12a8c9"
+  },
+  "replacement": {
+    "artifact": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json",
+    "file_sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+    "canonical_package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096"
+  },
+  "reason": "fixed_commit_label_was_bound_to_worktree_bytes",
+  "affected_evidence": [
+    {
+      "evidence_id": "evidence.dependency.npm.@tailwindcss--vite",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde"
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.react",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0"
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.react-dom",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0"
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.tailwindcss",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde"
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.@types--react",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0"
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.@types--react-dom",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0"
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.typescript",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "3af9aa1515fb306719690d68faeeba3baa17e906ed76725825dc7cf2755f00d4"
+    },
+    {
+      "evidence_id": "evidence.dependency.npm.vite",
+      "source_path": "frontend/package.json",
+      "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "previous_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc",
+      "corrected_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+      "selected_content_sha256": "2b25487b72c9ea7a8328bea959487b5dfe3efe583eb2c25713e8f339b34303fc"
+    }
+  ],
+  "fact_semantics_changed": false,
+  "selected_content_changed": false,
+  "authorization_status": "pending",
+  "lifecycle": {
+    "old_artifact": "retained_source_binding_defect",
+    "old_derived_results": "require_invalidation_or_explicit_historical_only",
+    "new_a_consumption": "requires_new_facts_hash_binding_not_automatic_replacement"
+  },
+  "independent_review": null,
+  "human_approval": null,
+  "a_terminal_readback": null
+}

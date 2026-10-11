@@ -1,19 +1,24 @@
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readFixedGitSource } from './fixed-git-source.mjs';
 
 const fixtureDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(fixtureDir, '..', '..', '..');
 const capturedAt = '2026-09-22T09:30:00Z';
-const producer = { name: 'openguard-b03-b04-inventory-generator', version: '3.0.0' };
+const revisionCreatedAt = '2026-10-11T11:26:46Z';
+const producer = { name: 'openguard-b03-b04-inventory-generator', version: '3.0.1' };
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
-const fileBytes = (path) => readFileSync(path);
+const sourceBytes = new Map();
+const fileBytes = (path) => {
+  const sourcePath = relative(rootDir, path).replaceAll('\\', '/');
+  if (!sourceBytes.has(sourcePath)) sourceBytes.set(sourcePath, readFixedGitSource(rootDir, sourceRevision, sourcePath));
+  return sourceBytes.get(sourcePath);
+};
 const fileHash = (path) => sha256(fileBytes(path));
 const canonical = (value) => JSON.stringify(value);
-// This fixture captures bytes from the published P1 baseline.  It must not
-// inherit the caller's current HEAD, otherwise any unrelated merge makes the
-// immutable facts package appear stale without changing a source input.
+// 哈希与声明 revision 必须取自同一 Git blob，不能读取当前工作树。
 const sourceRevision = '9d67b88f39fa4aaa8ab24048aea224204eabd490';
 const evidence = [];
 const facts = [];
@@ -71,7 +76,7 @@ addFact({
 });
 
 const pyprojectPath = 'backend/pyproject.toml';
-const pyproject = readFileSync(join(rootDir, pyprojectPath), 'utf8');
+const pyproject = fileBytes(join(rootDir, pyprojectPath)).toString('utf8');
 const pythonDependencies = [
   ['runtime', 'fastapi', 'fastapi==0.141.1'], ['runtime', 'packaging', 'packaging==26.3'], ['runtime', 'pydantic', 'pydantic==2.13.4'],
   ['runtime', 'python-multipart', 'python-multipart==0.0.32'], ['runtime', 'uvicorn', 'uvicorn==0.52.4'],
@@ -84,7 +89,7 @@ for (const [usageScope, name, declaration] of pythonDependencies) {
 }
 
 const pomPath = 'backend/java/pom.xml';
-const pom = readFileSync(join(rootDir, pomPath), 'utf8');
+const pom = fileBytes(join(rootDir, pomPath)).toString('utf8');
 const javaDependencies = [
   ['runtime', 'org.springframework.boot', 'spring-boot-starter-web', null, null],
   ['runtime', 'com.fasterxml.jackson.core', 'jackson-databind', null, null],
@@ -101,7 +106,7 @@ for (const [usageScope, groupId, artifactId, version, scope] of javaDependencies
 }
 
 const packagePath = 'frontend/package.json';
-const packageJson = JSON.parse(readFileSync(join(rootDir, packagePath), 'utf8'));
+const packageJson = JSON.parse(fileBytes(join(rootDir, packagePath)).toString('utf8'));
 for (const [section, usageScope] of [['dependencies', 'runtime'], ['devDependencies', 'development']]) {
   for (const [name, version] of Object.entries(packageJson[section])) {
     const pointer = `/${section}/${name.replaceAll('~', '~0').replaceAll('/', '~1')}`;
@@ -111,10 +116,10 @@ for (const [section, usageScope] of [['dependencies', 'runtime'], ['devDependenc
 }
 
 const profilePath = 'tests/fixtures/huggingface/resource-profile-v1/manifest.json';
-const profile = JSON.parse(readFileSync(join(rootDir, profilePath), 'utf8'));
+const profile = JSON.parse(fileBytes(join(rootDir, profilePath)).toString('utf8'));
 for (const record of profile.records) {
   const snapshotPath = `tests/fixtures/huggingface/resource-profile-v1/${record.fixture}`;
-  const raw = readFileSync(join(rootDir, snapshotPath));
+  const raw = fileBytes(join(rootDir, snapshotPath));
   if (fileHash(join(rootDir, snapshotPath)) !== record.source_file_sha256) throw new Error(`snapshot hash mismatch: ${record.case_id}`);
   const pointer = record.field_evidence.declared_license_raw;
   const declared = record.observed.declared_license_raw;
@@ -125,22 +130,86 @@ for (const record of profile.records) {
 const packageObject = {
   schema_version: 'openguard.notice-license-facts/3',
   package_status: 'draft_facts_only',
-  generated_at: capturedAt,
+  generated_at: revisionCreatedAt,
   producer,
   source_inputs: [
     'LICENSE', 'backend/pyproject.toml', 'backend/java/pom.xml', 'frontend/package.json', profilePath,
-  ].map((path) => ({ path, source_file_sha256: fileHash(join(rootDir, path)), source_revision: path === profilePath ? 'resource-profile-v1' : sourceRevision })),
+  ].map((path) => ({ path, source_file_sha256: fileHash(join(rootDir, path)), source_revision: sourceRevision })),
   evidence,
   facts,
   report_v3_rows: facts.map((fact) => ({ fact_id: fact.fact_id, subject_id: fact.subject.canonical_id, authorization_status: fact.authorization_status, license_expression_id: null, fact_provenance_evidence_ids: fact.fact_provenance_evidence_ids, relationship_states: Object.fromEntries(Object.entries(fact.relationships).map(([key, value]) => [key, value.state])), gap_codes: fact.gaps.map((gap) => gap.code) })),
 };
 
-if (process.argv.includes('--check')) {
-  const existing = readFileSync(join(fixtureDir, 'facts.json'), 'utf8');
-  const generated = `${JSON.stringify(packageObject, null, 2)}\n`;
-  if (existing !== generated) throw new Error('facts.json is stale; run generate.mjs');
-} else {
-  writeFileSync(join(fixtureDir, 'facts.json'), `${JSON.stringify(packageObject, null, 2)}\n`);
+const revisionDir = join(fixtureDir, 'revisions', 'source-binding-r2');
+const generated = `${JSON.stringify(packageObject, null, 2)}\n`;
+const sortKeys = value => Array.isArray(value) ? value.map(sortKeys) : value && typeof value === 'object'
+  ? Object.fromEntries(Object.keys(value).sort().map(key => [key, sortKeys(value[key])])) : value;
+const canonicalHash = value => sha256(JSON.stringify(sortKeys(value)));
+const legacyPath = join(fixtureDir, 'facts.json');
+const legacyBytes = readFileSync(legacyPath);
+if (sha256(legacyBytes) !== '4f2a8304ad457dffdc7e4ba276e3602bf93b4f83b1e7e177bbcb84f4a8d841f7') {
+  throw new Error('legacy_artifact_hash_mismatch');
 }
-
-console.log(JSON.stringify({ facts: facts.length, evidence: evidence.length, output: relative(rootDir, join(fixtureDir, 'facts.json')) }));
+const legacy = JSON.parse(legacyBytes);
+if (canonicalHash(legacy.facts) !== canonicalHash(packageObject.facts)
+    || canonicalHash(legacy.report_v3_rows) !== canonicalHash(packageObject.report_v3_rows)) {
+  throw new Error('unexpected_fact_semantics_change');
+}
+const changed = evidence.flatMap(item => {
+  const previous = legacy.evidence.find(old => old.evidence_id === item.evidence_id);
+  if (!previous || previous.selected_content_sha256 !== item.selected_content_sha256) {
+    throw new Error('unexpected_selected_content_change');
+  }
+  return previous.source_file_sha256 === item.source_file_sha256 ? [] : [{
+    evidence_id: item.evidence_id, source_path: item.source_path, source_revision: sourceRevision,
+    previous_source_file_sha256: previous.source_file_sha256,
+    corrected_source_file_sha256: item.source_file_sha256,
+    selected_content_sha256: item.selected_content_sha256,
+  }];
+});
+const artifactPath = relative(rootDir, join(revisionDir, 'facts.json')).replaceAll('\\', '/');
+const amendment = {
+  schema: 'openguard.b03-source-binding-amendment/1', amendment_id: 'B03-source-binding-r2',
+  status: 'correction_prepared_pending_independent_review', created_at: revisionCreatedAt,
+  parent: { artifact: 'tests/fixtures/notice-license-facts-v3/facts.json',
+    file_sha256: sha256(legacyBytes), canonical_package_sha256: canonicalHash(legacy) },
+  replacement: { artifact: artifactPath, file_sha256: sha256(generated), canonical_package_sha256: canonicalHash(packageObject) },
+  reason: 'fixed_commit_label_was_bound_to_worktree_bytes', affected_evidence: changed,
+  fact_semantics_changed: false, selected_content_changed: false, authorization_status: 'pending',
+  lifecycle: { old_artifact: 'retained_source_binding_defect',
+    old_derived_results: 'require_invalidation_or_explicit_historical_only',
+    new_a_consumption: 'requires_new_facts_hash_binding_not_automatic_replacement' },
+  independent_review: null, human_approval: null, a_terminal_readback: null,
+};
+const amendmentBytes = `${JSON.stringify(amendment, null, 2)}\n`;
+const manifest = {
+  schema: 'openguard.b03-fixed-git-revision/1', revision_id: 'source-binding-r2',
+  status: 'offline_validated_pending_independent_review', source_commit: sourceRevision,
+  generated_at: revisionCreatedAt, producer,
+  sources: [...sourceBytes].sort(([a], [b]) => a.localeCompare(b, 'en')).map(([path, bytes]) => ({
+    path, source_commit: sourceRevision, size_bytes: bytes.length, sha256: sha256(bytes),
+  })),
+  artifacts: [{ path: 'facts.json', size_bytes: Buffer.byteLength(generated), sha256: sha256(generated),
+    canonical_package_sha256: canonicalHash(packageObject) },
+  { path: 'amendment.json', size_bytes: Buffer.byteLength(amendmentBytes), sha256: sha256(amendmentBytes) }],
+  parent_file_sha256: sha256(legacyBytes), affected_evidence_count: changed.length,
+  independent_review: null, a_terminal_readback: null,
+};
+const records = { 'facts.json': generated, 'amendment.json': amendmentBytes,
+  'manifest.json': `${JSON.stringify(manifest, null, 2)}\n` };
+if (process.argv.includes('--stdout')) {
+  process.stdout.write(generated);
+} else if (process.argv.includes('--records-stdout')) {
+  process.stdout.write(`${JSON.stringify(records)}\n`);
+} else {
+  if (process.argv.includes('--check')) {
+    for (const [name, bytes] of Object.entries(records)) {
+      if (readFileSync(join(revisionDir, name), 'utf8') !== bytes) throw new Error('fixed_revision_artifact_mismatch');
+    }
+  } else {
+    // 新修订只写一次；旧 facts.json 和已存在的新修订均不可覆盖。
+    mkdirSync(revisionDir, { recursive: true });
+    for (const [name, bytes] of Object.entries(records)) writeFileSync(join(revisionDir, name), bytes, { flag: 'wx' });
+  }
+  console.log(JSON.stringify({ facts: facts.length, evidence: evidence.length, affected_evidence: changed.length, output: artifactPath }));
+}

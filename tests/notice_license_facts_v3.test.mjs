@@ -12,12 +12,16 @@ const facts = JSON.parse(readFileSync(join(fixture, 'facts.json'), 'utf8'));
 const approved = JSON.parse(readFileSync(join(fixture, 'approved-archive-observations.json'), 'utf8'));
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 
-test('v3 facts are reproducible from real project inputs', () => {
+test('v3 corrected revision is reproducible from fixed Git blobs; legacy remains historical', () => {
   execFileSync('node', [join(fixture, 'generate.mjs'), '--check'], { cwd: root, stdio: 'pipe' });
   assert.equal(facts.schema_version, 'openguard.notice-license-facts/3');
   assert.equal(facts.package_status, 'draft_facts_only');
   assert.equal(facts.facts.length, 31);
   assert.equal(facts.evidence.length, 31);
+  const corrected = JSON.parse(readFileSync(join(fixture, 'revisions/source-binding-r2/facts.json'), 'utf8'));
+  assert.equal(corrected.facts.length, 31);
+  const source = corrected.source_inputs.find(item => item.path === 'frontend/package.json');
+  assert.equal(source.source_file_sha256, hash(execFileSync('git', ['show', `${source.source_revision}:${source.path}`], { cwd: root })));
 });
 
 test('every fact is source-bound and all conclusions fail closed', () => {
