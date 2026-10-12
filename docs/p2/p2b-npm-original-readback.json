@@ -1,0 +1,468 @@
+{
+  "kind": "openguard.p2b.npm-original-readback/1",
+  "date": "2026-10-12",
+  "overall": "PARTIAL",
+  "byte_readback_status": "PASS",
+  "verification_grade": "USER_TRANSFERRED_ORIGINAL_RESPONSE_BYTES_WITH_HISTORICAL_ACQUISITION_RECEIPT_RECHECKED_OFFLINE",
+  "files": [
+    {
+      "attachment_name": "START_HERE.md",
+      "byte_count": 5894,
+      "sha256": "903fe990c3b6ecefe3c0c38c4ded61cc3ee018a0517e9d9a57ba87127601b2e8",
+      "manifest_path": "START_HERE.md"
+    },
+    {
+      "attachment_name": "TRANSFER_MANIFEST.json",
+      "byte_count": 12413,
+      "sha256": "00755ce87c23bb34f7ecca61ec3618d1f2e8d919d61135596ad23bac90932a0b",
+      "manifest_path": null
+    },
+    {
+      "attachment_name": "M1_REVIEW_ORIGINAL.md",
+      "byte_count": 3277,
+      "sha256": "19aa7aaf321389fc00fec34be2d044648a6f4e4bd562338e60d9afc452758035",
+      "manifest_path": "handoff/M1_REVIEW_ORIGINAL.md"
+    },
+    {
+      "attachment_name": "human-review-pending-is-number.json",
+      "byte_count": 829,
+      "sha256": "e8ab8d21c26265ff0d1baa1766288ec68b9ebd4648eda7bd81f9ebe60b05354f",
+      "manifest_path": "receipts/human-review-pending-is-number.json"
+    },
+    {
+      "attachment_name": "material-adoption-http-event-24.json",
+      "byte_count": 13753,
+      "sha256": "44c64dfd3c35f2e38be37cc816c093f7f16f6313b428b0cd4678be2c79a14689",
+      "manifest_path": "receipts/material-adoption-http-event-24.json"
+    },
+    {
+      "attachment_name": "source-receipt-is-number-7.0.0.json",
+      "byte_count": 1776,
+      "sha256": "f7981bc17848f838b93bf6735d62ded44a732023afa3d55d783a4957adb7e3d5",
+      "manifest_path": "receipts/source-receipt-is-number-7.0.0.json"
+    },
+    {
+      "attachment_name": "member-0.txt",
+      "byte_count": 1599,
+      "sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620",
+      "manifest_path": "sources/npm/is-number-7.0.0/member-0.txt"
+    },
+    {
+      "attachment_name": "member-1.txt",
+      "byte_count": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "manifest_path": "sources/npm/is-number-7.0.0/member-1.txt"
+    },
+    {
+      "attachment_name": "npm-metadata.json",
+      "byte_count": 3199,
+      "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25",
+      "manifest_path": "sources/npm/is-number-7.0.0/npm-metadata.json"
+    },
+    {
+      "attachment_name": "release.tgz",
+      "byte_count": 3730,
+      "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "manifest_path": "sources/npm/is-number-7.0.0/release.tgz"
+    }
+  ],
+  "checks": [
+    {
+      "name": "manifest:sources/npm/is-number-7.0.0/npm-metadata.json",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:sources/npm/is-number-7.0.0/release.tgz",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:sources/npm/is-number-7.0.0/member-0.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:sources/npm/is-number-7.0.0/member-1.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:handoff/M1_REVIEW_ORIGINAL.md",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:receipts/source-receipt-is-number-7.0.0.json",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:receipts/material-adoption-http-event-24.json",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:receipts/human-review-pending-is-number.json",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest:START_HERE.md",
+      "status": "PASS"
+    },
+    {
+      "name": "exact_package_and_version_metadata_member_receipt",
+      "status": "PASS"
+    },
+    {
+      "name": "metadata:raw_bytes_receipt_size_sha_headers_UTC_HTTP",
+      "status": "PASS"
+    },
+    {
+      "name": "tarball:raw_bytes_receipt_size_sha_headers_UTC_HTTP",
+      "status": "PASS"
+    },
+    {
+      "name": "exact_URLs",
+      "status": "PASS"
+    },
+    {
+      "name": "tarball_SHA1_from_original_metadata",
+      "status": "PASS"
+    },
+    {
+      "name": "tarball_SHA512_SRI_original_metadata_and_receipt",
+      "status": "PASS"
+    },
+    {
+      "name": "bounded_in_memory_tar_complete_regular_members",
+      "status": "PASS"
+    },
+    {
+      "name": "exact_member_bytes:package/package.json",
+      "status": "PASS"
+    },
+    {
+      "name": "exact_member_bytes:package/LICENSE",
+      "status": "PASS"
+    },
+    {
+      "name": "NOTICE_absent_in_this_complete_tar_not_no_obligation",
+      "status": "PASS"
+    },
+    {
+      "name": "original_license_anchor_byte_line_unique:permission_text",
+      "status": "PASS"
+    },
+    {
+      "name": "original_license_anchor_byte_line_unique:notice_retention",
+      "status": "PASS"
+    },
+    {
+      "name": "original_license_anchor_byte_line_unique:warranty_disclaimer",
+      "status": "PASS"
+    },
+    {
+      "name": "original_license_anchor_byte_line_unique:liability_disclaimer",
+      "status": "PASS"
+    },
+    {
+      "name": "M1_event_request_material_result_binding",
+      "status": "PASS"
+    },
+    {
+      "name": "M1_license_content_hash_material_and_human",
+      "status": "PASS"
+    },
+    {
+      "name": "Result_canonical_sha_revision_and_parent",
+      "status": "PASS"
+    },
+    {
+      "name": "Material_actual_Evidence_subset_and_result_closure",
+      "status": "PASS"
+    },
+    {
+      "name": "pending_seven_nulls_no_rule_or_basis_promotion",
+      "status": "PASS"
+    },
+    {
+      "name": "current_frontend_accepts_recorded_M1_Result_Material",
+      "status": "PASS"
+    },
+    {
+      "name": "HTTP_request_OMITTED_not_reconstructed",
+      "status": "PASS"
+    }
+  ],
+  "check_groups_passed": 30,
+  "metadata": {
+    "byte_count": 3199,
+    "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25",
+    "name": "is-number",
+    "version": "7.0.0",
+    "declared_license": "MIT",
+    "license_declaration_state": "provider_declared_unverified",
+    "repository": {
+      "url": "git+https://github.com/jonschlinkert/is-number.git",
+      "type": "git"
+    },
+    "dist": {
+      "tarball": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "shasum": "7535345b896734d5f80c4d06c50955527a14f12b",
+      "integrity": "sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==",
+      "fileCount": 4,
+      "unpackedSize": 9615
+    }
+  },
+  "acquisition_receipt": {
+    "file": "source-receipt-is-number-7.0.0.json",
+    "json_pointer": "/metadata and /tarball",
+    "metadata": {
+      "url": "https://registry.npmjs.org/is-number/7.0.0",
+      "utc": "2026-10-11T04:20:01.770081+00:00",
+      "status": 200,
+      "bytes": 3199,
+      "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25",
+      "headers": {
+        "Content-Type": "application/json",
+        "Content-Length": "3199"
+      }
+    },
+    "tarball": {
+      "url": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "utc": "2026-10-11T04:20:02.661901+00:00",
+      "status": 200,
+      "bytes": 3730,
+      "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "headers": {
+        "Content-Type": "application/octet-stream",
+        "Content-Length": "3730",
+        "ETag": "\"6c6e00114e00c2815fc0aeae3da1af23\"",
+        "Last-Modified": "Wed, 04 Jul 2018 15:09:05 GMT"
+      }
+    },
+    "request_method": null,
+    "final_urls": null,
+    "redirect_count": null,
+    "timed_out": null,
+    "transport_policy_id": null,
+    "verifier_identity": null,
+    "formal_source_admission": "NOT_ISSUED",
+    "meaning": "historical_URL_UTC_HTTP_headers_size_hash_record_not_authenticated_trusted_egress_receipt"
+  },
+  "tarball": {
+    "byte_count": 3730,
+    "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+    "sha1_verified": true,
+    "sha512_SRI_verified": true,
+    "members": [
+      {
+        "path": "package/package.json",
+        "type": "REGULAR_FILE",
+        "byte_count": 1599,
+        "sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620"
+      },
+      {
+        "path": "package/index.js",
+        "type": "REGULAR_FILE",
+        "byte_count": 411,
+        "sha256": "04255e482e181687823a95b207802ddd32e746c65dce4c95a5176fc192735960"
+      },
+      {
+        "path": "package/LICENSE",
+        "type": "REGULAR_FILE",
+        "byte_count": 1091,
+        "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
+      },
+      {
+        "path": "package/README.md",
+        "type": "REGULAR_FILE",
+        "byte_count": 6514,
+        "sha256": "8e676a0587ba350889df0a5fb883aeab26609ee36432e29441f55af3a0cb16ba"
+      }
+    ],
+    "package_json_matches_transferred_member": true,
+    "license_matches_transferred_member": true,
+    "notice": "NOT_FOUND_IN_THIS_COMPLETE_ARCHIVE_NOT_NO_OBLIGATION"
+  },
+  "clauses": {
+    "license_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+    "byte_offsets": "ZERO_BASED_HALF_OPEN",
+    "line_numbers": "ONE_BASED",
+    "locators": [
+      {
+        "topic": "permission_text",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 68,
+            "end_byte_exclusive": 112,
+            "start_line": 5,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "topic": "notice_retention",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 502,
+            "end_byte_exclusive": 573,
+            "start_line": 12,
+            "end_line": 12
+          }
+        ]
+      },
+      {
+        "topic": "warranty_disclaimer",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 630,
+            "end_byte_exclusive": 662,
+            "start_line": 15,
+            "end_line": 15
+          }
+        ]
+      },
+      {
+        "topic": "liability_disclaimer",
+        "status": "anchor_observed",
+        "locators": [
+          {
+            "start_byte": 832,
+            "end_byte_exclusive": 892,
+            "start_line": 17,
+            "end_line": 18
+          }
+        ]
+      }
+    ],
+    "anchors_not_full_clause_boundaries": true,
+    "verification": "THIS_RUN_ORIGINAL_NPM_ARCHIVE_LICENSE_BYTES"
+  },
+  "M1": {
+    "binding": {
+      "scan_id": "scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d",
+      "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79",
+      "assessment_version": 1,
+      "registry_revision": 9,
+      "project_revision": null,
+      "facts_hash": "b3176cd5538a2436371c093d2c8590f81abdc75159da7863261a63d0d1c50dca",
+      "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+      "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "assessment_sha256": "1ef11cf12667ced7a2b7ca0c8a19c850f0a94aa16410fccab253ad7b65963f80"
+    },
+    "subject": {
+      "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+      "version": "7.0.0"
+    },
+    "material_id": "p2mat_c5090e4fd86a58311fab75962e7d545057d2e8b028c358d467f764b225e0c61b",
+    "material_revision": 1,
+    "material_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+    "actual_material_evidence_ids": [
+      "evd_41bb871f-014f-5e63-9744-cbbc4036edcd"
+    ],
+    "resource_evidence_ids": [
+      "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+      "evd_64abc673-5b47-546b-b7b2-4578a931c8de"
+    ],
+    "result_id": "p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83",
+    "result_revision": 3,
+    "result_sha256": "00c297c662b1ad5efadbc6e92fe2d2401a6b53d555013c497427457ce74a7dca",
+    "previous_result_id": "p2res_c3dd21f24d2f94df3f09ebb47f0d15ffd38ee05e8dbead64530c43f6e6037040",
+    "summary_id": "p2sum_e16fe5df4395f6fea3abb83a00ca1d6d26cdf048f9e6d0b3b09a9b409979ff4a",
+    "summary_body_available": false,
+    "answer_ids": [
+      "p2ans_31f95e79d2f0052a41f712f7dfd34e9fb5a91a5e726ac33893dfd37bd9fc7c2f"
+    ],
+    "answer_bodies_available": false,
+    "usage": {
+      "commercial": null,
+      "modified": null,
+      "distributed": null,
+      "network_service": null,
+      "training": null,
+      "redistributed_assets": null,
+      "source_disclosure": null
+    },
+    "user_assertions": {
+      "DELIVERY_SCOPE_FOR_RESOURCES": "NOT_DECIDED"
+    },
+    "gaps": [
+      "license_text_and_applicability_unverified",
+      "object_scope_unverified",
+      "uploaded_material_applicability_pending",
+      "upstream_source_attestation_missing",
+      "user_statement_not_independently_verified"
+    ],
+    "formal_effect": "none",
+    "verification_state": "pending",
+    "source_level": "user_supplied_unverified",
+    "exact_get_paths": {
+      "binding": "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/binding",
+      "material": "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/materials/p2mat_c5090e4fd86a58311fab75962e7d545057d2e8b028c358d467f764b225e0c61b?assessment_version=1",
+      "result": "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/results/p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83?assessment_version=1",
+      "summary": "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/results/p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83/summary?assessment_version=1"
+    },
+    "live_get_performed": false,
+    "object_source": {
+      "file": "material-adoption-http-event-24.json",
+      "result_pointer": "/response/result",
+      "material_pointer": "/response/material",
+      "request_pointer": "/request",
+      "parent_original_pointer": "/24",
+      "parent_files_available": false,
+      "parent_excerpt_provenance": "parent_Hash_range_and_exact_extraction_claim_recorded_in_TRANSFER_MANIFEST_not_independently_recomputed"
+    }
+  },
+  "human_review": {
+    "package": "is-number",
+    "version": "7.0.0",
+    "subject": {
+      "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+      "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79"
+    },
+    "reviewer": null,
+    "reviewed_at": null,
+    "scope": null,
+    "conclusion": "PENDING_HUMAN_REVIEW",
+    "signoff_by_codex": false
+  },
+  "changes": {
+    "resolved": [
+      "original_npm_metadata_body_unavailable",
+      "original_release_archive_unavailable",
+      "original_LICENSE_member_unreadable",
+      "M1_complete_Material_and_Result_identity_unavailable"
+    ],
+    "new_observations": [
+      "原始元数据与精确版本发行包/包内LICENSE一致性可复算",
+      "M1 r3完整Material/Result/Binding与原文摘要可核对",
+      "四个锚点在实际npm发行包LICENSE原字节上复核"
+    ],
+    "new_business_facts": 0,
+    "new_Evidence_ids": [],
+    "new_positive_license_advice": [],
+    "old_P2B_scan_binding_reused": false
+  },
+  "remaining_gates": [
+    "A_trusted_source_admission_and_transport_policy_verifier",
+    "Owner_real_usage_delivery_scope_exclusions",
+    "designated_human_applicability_conditions_and_fulfillment_review",
+    "A_new_Evidence_namespace_store_basis_and_coverage",
+    "full_old_Formal_Assessment_Report_and_same_revision_Summary_readback",
+    "M1_STOP_resume_decision_and_receiver_live_acceptance"
+  ],
+  "limits": [
+    "Manifest完整父文件和其原字节片段归属未独立重算（父文件未提供）",
+    "HTTP请求正文在历史记录已省略；本轮未重建请求或用重序列化推算request_sha256/response_sha256",
+    "npm公开签名存在于原响应，但未做密码学验签；不能据此签发可信来源",
+    "与旧三例scn_761868e1链分开，只按原文Hash引用，不能借用M1原件提升旧对象状态"
+  ],
+  "actions": {
+    "network_requests": 0,
+    "filesystem_extractions": 0,
+    "package_installs": 0,
+    "target_code_execution": 0,
+    "service_start_stop": 0,
+    "database_writes": 0,
+    "model_calls": 0
+  },
+  "publication": "NOT_AUTHORIZED_NO_RAW_THIRD_PARTY_BYTES_OR_PRIVATE_PATHS_COPIED"
+}

@@ -1,0 +1,487 @@
+{
+  "kind": "openguard.p2b.handoff-validation/1",
+  "date": "2026-10-12",
+  "source_head": "50d8704a362f6e6615c1ed95d7f06da2bc3e871f",
+  "overall": "PARTIAL",
+  "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER",
+  "actual_checks": [
+    {
+      "name": "strict_packet_JSON_syntax_no_duplicate_keys",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:docs/p2/p2b-evidence-closure.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:docs/p2/p2b-isnumber-clause-readback.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:docs/p2/p2b-external-dependencies-readback.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:docs/p2/real-http-receipts.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:docs/p2/runtime-receipt.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:tests/fixtures/p2b/three-scan-readback.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:tests/fixtures/p2b/frontend-handoff-draft.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "strict_JSON:schemas/p2/contract-v1.schema.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/p2/m1-local-evidence-blocker-20261011.md",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/coordination/P2_FRONTEND_PARALLEL_HANDOFF_20261012.md",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/p2/p2b-evidence-closure.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/p2/p2b-isnumber-clause-readback.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/p2/p2b-external-dependencies-readback.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/p2/real-http-receipts.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/p2/runtime-receipt.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:tests/fixtures/p2b/three-scan-readback.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:tests/fixtures/p2b/frontend-handoff-draft.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:schemas/p2/contract-v1.schema.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_artifact_hash:docs/spec/p2-backend-contract.md",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/api/p2.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2/__init__.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2/contract.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2/service.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2/store.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2b/__init__.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2b/candidates.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2b/materials.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2b/npm_metadata.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2b/offline_material_audit.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:backend/app/p2b/reconcile.py",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:docs/spec/p2-backend-contract.md",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:frontend/src/services/p2Advice.ts",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:frontend/src/services/p2Workflow.ts",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "source_baseline_equal:schemas/p2/contract-v1.schema.json",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "HEAD_still_pinned",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-POS-ISNUMBER-7:full_Binding_material_summary_gets",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-POS-ISNUMBER-7:result_revision_1_digest_predecessor_reference",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-POS-ISNUMBER-7:result_revision_2_digest_predecessor_reference",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-POS-ISNUMBER-7:natural_gap_and_seven_unknown_uses",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-LIMIT-LODASH-41721:full_Binding_material_summary_gets",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-LIMIT-LODASH-41721:result_revision_1_digest_predecessor_reference",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-LIMIT-LODASH-41721:result_revision_2_digest_predecessor_reference",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-LIMIT-LODASH-41721:natural_gap_and_seven_unknown_uses",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-HOLDOUT-EXPRESS-4182:full_Binding_material_summary_gets",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-HOLDOUT-EXPRESS-4182:result_revision_1_digest_predecessor_reference",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-HOLDOUT-EXPRESS-4182:result_revision_2_digest_predecessor_reference",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "B_P2B-HOLDOUT-EXPRESS-4182:natural_gap_and_seven_unknown_uses",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "21_null_uses_preserved",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "fixed_v6_Result_1_digest_and_chain",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "fixed_v6_Result_2_digest_and_chain",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "fixed_v6_Result_3_digest_and_chain",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "fixed_v6_Material_Answer_Summary_object_JSON_hashes",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "M1_Stop_and_missing_pins_no_Binding_transfer",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "different_digest_types_not_substituted",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "A_H_and_independent_responsibilities_precise",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "historical_synthetic_wrong_version_not_real_source",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "proposal_no_approval_or_new_facts_Evidence_positive",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "no_private_path_secret_or_LICENSE_fulltext_in_new_packet",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    },
+    {
+      "name": "git_diff_check_tracked",
+      "status": "PASS",
+      "grade": "OFFLINE_LOCAL_STATIC_NOT_RECEIVER"
+    }
+  ],
+  "passed_static_checks": 60,
+  "result_self_digests_checked": 9,
+  "usage_null_values_checked": 21,
+  "artifacts": [
+    {
+      "path": "docs/p2/m1-b-technical-supplement-20261012.md",
+      "byte_count": 15571,
+      "sha256": "58e2c228daa2a8a007e9173103d2a7bf5b368d27868da1844acb2a820c2e4852"
+    },
+    {
+      "path": "docs/p2/p2b-version-object-alignment-20261012.json",
+      "byte_count": 76318,
+      "sha256": "b9adf35bb6c5ea4a647ab45eedb00dccf453fcb7c8ec8bd83e9b6f8f9f6c0670"
+    }
+  ],
+  "input_artifacts": [
+    {
+      "path": "docs/p2/m1-local-evidence-blocker-20261011.md",
+      "byte_count": 3277,
+      "sha256": "19aa7aaf321389fc00fec34be2d044648a6f4e4bd562338e60d9afc452758035"
+    },
+    {
+      "path": "docs/coordination/P2_FRONTEND_PARALLEL_HANDOFF_20261012.md",
+      "byte_count": 7728,
+      "sha256": "5b16071625d639bf5a6fa45e92874e4165c7f24ab63433ec253b4d9bd6acdace"
+    },
+    {
+      "path": "docs/p2/p2b-evidence-closure.json",
+      "byte_count": 34816,
+      "sha256": "1e8cab8e794733042c6e8f357630a92e23943f2ea5b409f4affd934f4f4d1bae"
+    },
+    {
+      "path": "docs/p2/p2b-isnumber-clause-readback.json",
+      "byte_count": 5149,
+      "sha256": "eaa0e3a0a2695251a9037e5f246e1c192d0bfcaf72fbbf81949da3724b9e3f17"
+    },
+    {
+      "path": "docs/p2/p2b-external-dependencies-readback.json",
+      "byte_count": 24595,
+      "sha256": "69144bf43c68867834f779cccc4282247a8860ecc89dfc99538d712ad34122d7"
+    },
+    {
+      "path": "docs/p2/real-http-receipts.json",
+      "byte_count": 890057,
+      "sha256": "49bdad90cda72a838cee717c681b0db03f8d0acfa9832ab3ed59e023459675cc"
+    },
+    {
+      "path": "docs/p2/runtime-receipt.json",
+      "byte_count": 2911,
+      "sha256": "ea12f9c51573cffd3bbd8fe539e6b53223319196b94a46d73b993e4c493c95ed"
+    },
+    {
+      "path": "tests/fixtures/p2b/three-scan-readback.json",
+      "byte_count": 99404,
+      "sha256": "4dcaec08952deee7133124e6b6fba3304080366dbb11a7105cc2b9f68ff11bf8"
+    },
+    {
+      "path": "tests/fixtures/p2b/frontend-handoff-draft.json",
+      "byte_count": 19962,
+      "sha256": "c5aa0ffdfd1e60b5beb2fbc4362375893a58f226a1aa8b517bcd68dc73d65142"
+    },
+    {
+      "path": "schemas/p2/contract-v1.schema.json",
+      "byte_count": 31223,
+      "sha256": "0e9cd019af276b7a29957a90f15563d0a140ba1e3391fe8005bb3125ed6f49d4"
+    },
+    {
+      "path": "docs/spec/p2-backend-contract.md",
+      "byte_count": 13913,
+      "sha256": "f2800b67aa076581bf60f14030e087451b719e7425ce87423c6495817ea43103"
+    }
+  ],
+  "public_schema_validation_this_run": "identity_and_original_hash_equal; historical_DTO_Draft202012_checks_reused; no_new_domain_object_or_public_Schema_change",
+  "unit_tests_this_run": "not_run_no_source_change",
+  "historical_tests": {
+    "B_tests": {
+      "passed": 120,
+      "warnings": 2,
+      "this_run": false
+    },
+    "frontend_tests": {
+      "passed": 133,
+      "build": "PASS",
+      "this_run": false
+    },
+    "Root_static_compatibility": {
+      "checks": 12,
+      "results": 6,
+      "materials": 3,
+      "summaries": 3,
+      "grade": "STATIC_RECORDED_HTTP_NOT_RECEIVER",
+      "this_run": false
+    }
+  },
+  "environment": {
+    "node": "v26.2.0",
+    "python312": "existing .venv process creation failed; py -3.12 no suitable runtime; no installation or environment repair",
+    "database_access": 0,
+    "live_HTTP_or_network": 0,
+    "service_start_stop": 0,
+    "model_calls": 0
+  },
+  "limitations": [
+    "M1 referenced private RESULT/MANIFEST/http-events/human-review files not read this run; complete IDs/Binding/GET remain missing",
+    "ec4c680 candidate Git commit not present locally; candidate/source/Schema/interface comparison cannot be performed",
+    "27 approved GET manifest not found in current public handoff; cannot claim receiver checks",
+    "Python3.12 inaccessible in this process; historical test results not re-run",
+    "restricted pytest directories emitted permission-denied warnings on status/rg; no escalation, cleanup or whole-machine completeness claim"
+  ],
+  "historical_failures_still_open": [
+    "Windows os.geteuid initialization",
+    "NOTICE parent excerpt fixtures",
+    "baseline FIXTURE_DRIFT historical522; not re-run or baseline rewritten"
+  ],
+  "log_reading": {
+    "snapshot_at_START": {
+      "physical_lines": 9999,
+      "bytes": 1782595,
+      "sha256": "5a70ea3c89ce7d70713100ddd4f01ac8215c4019747fd75b3e8a69a7d148ec15"
+    },
+    "fully_reviewed_recent_intervals": [
+      [
+        9800,
+        9880
+      ],
+      [
+        9881,
+        9921
+      ],
+      [
+        9922,
+        9999
+      ]
+    ],
+    "not_fully_reviewed_intervals": [
+      [
+        1,
+        9799
+      ]
+    ],
+    "truncated_combined_outputs": [
+      "README/Sol/contract combined output; Sol296 and contract120 later reread numbered",
+      "9881..9999 plus progress1900..2113 combined output; recent log intervals separately available; progress only recent tail2058..2113 confidently read",
+      "bulk real-http-receipts selected responses; replaced by identity/event/selected object projections; full 23000-line dump not read"
+    ],
+    "PROJECT_PROGRESS_not_fully_reviewed": [
+      [
+        1,
+        2057
+      ]
+    ],
+    "full_verbatim_historical_log_gate_satisfied": false,
+    "concurrent_recent_records": "other GPT6 B two-case task START at21:19 read; separate output files protected"
+  },
+  "git_diff_check": {
+    "exit_code": 0,
+    "note": "tracked files; new artifact whitespace separately checked before close"
+  },
+  "publication": "this_package_local_uncommitted; olderB/frontend_published_history_reused; no_stage_commit_push_merge_deploy",
+  "token": {
+    "exact": "本次运行精确 token 数不可获得",
+    "estimated_start": [
+      8000,
+      16000
+    ],
+    "within_estimate": null,
+    "scope": "unchanged_offline_technical_supplement_only"
+  },
+  "artifact_whitespace_and_JSON_check": "PASS_three_new_artifacts",
+  "commands_this_run": [
+    "git branch --show-current; git status --short; git log -8 --oneline",
+    "git rev-parse --verify <sha>^{commit}; git merge-base --is-ancestor; git show <sha>:<frozen-path>",
+    "node via PowerShell stdin: strict JSON duplicate-key rejection, source/file SHA256,9 Result self digests, Binding/GET/predecessor/material/summary/reference/21null checks;60 checks PASS",
+    "git diff --check",
+    "node via PowerShell stdin: new artifact JSON/whitespace and immutable input Hash verification",
+    "./.venv/Scripts/python.exe - (failed before script started)",
+    "py -3.12 --version (no suitable runtime)"
+  ]
+}

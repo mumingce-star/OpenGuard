@@ -1,0 +1,786 @@
+{
+  "kind": "openguard.internal.m1-automated-confirmation/1",
+  "overall": "PARTIAL",
+  "observed_at_utc": "2026-10-12T14:52:35.939Z",
+  "author": "GPT-6 Codex",
+  "review_type": "自动静态技术核查",
+  "git": {
+    "branch": "codex/scan-reliability-integration",
+    "head": "50d8704a362f6e6615c1ed95d7f06da2bc3e871f"
+  },
+  "scope": {
+    "tracked_file_count": 752,
+    "selected_current_inputs": 19,
+    "reference_search": "所有tracked文件原字节中的is-number字面量；指定19份当前输入",
+    "runtime_execution": false,
+    "actual_images_inspected": false,
+    "final_submission_manifest_available": false,
+    "complete_historical_semantic_review": false
+  },
+  "subject": {
+    "package": "is-number",
+    "version": "7.0.0",
+    "binding": {
+      "scan_id": "scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d",
+      "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79",
+      "assessment_version": 1,
+      "registry_revision": 9,
+      "project_revision": null,
+      "facts_hash": "b3176cd5538a2436371c093d2c8590f81abdc75159da7863261a63d0d1c50dca",
+      "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+      "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "assessment_sha256": "1ef11cf12667ced7a2b7ca0c8a19c850f0a94aa16410fccab253ad7b65963f80"
+    },
+    "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+    "material_id": "p2mat_c5090e4fd86a58311fab75962e7d545057d2e8b028c358d467f764b225e0c61b",
+    "result_id": "p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83",
+    "result_revision": 3
+  },
+  "confirmations": {
+    "actual_use": {
+      "technical_status": "CONFIRMED_WITHIN_REPOSITORY_SCOPE",
+      "observed_role": "扫描组件识别、精确npm元数据响应校验、LICENSE材料及Material/Result绑定的测试和演示对象",
+      "runtime_library_imports_observed": 0,
+      "frontend_dependency": false,
+      "m1_business_usage_status": "UNCONFIRMED",
+      "m1_usage": {
+        "commercial": null,
+        "modified": null,
+        "distributed": null,
+        "network_service": null,
+        "training": null,
+        "redistributed_assets": null,
+        "source_disclosure": null
+      },
+      "limitation": "仓库用途与M1七用途声明不同；缺少M1原始输入manifest和实际交付物，不跨scan借用旧测试例"
+    },
+    "delivery_scope": {
+      "technical_status": "CONFIRMED_CONFIGURATION_ONLY",
+      "source_delivery": "tracked测试manifest、样例生成/校验器代码及脱敏验证记录；未见tracked包源码目录或tgz",
+      "container_configuration": "工具/API镜像含tool-smoke.py样例声明及API内npm_metadata.py校验器；Web最终阶段复制dist；tests/docs不在Docker白名单",
+      "upstream_package_bytes_distribution": "NOT_ESTABLISHED_FOR_FINAL_ARTIFACTS",
+      "m1_assertion": {
+        "DELIVERY_SCOPE_FOR_RESOURCES": "NOT_DECIDED"
+      },
+      "limitation": "未构建或读取最终镜像/SBOM/完整源码交付manifest；不排除基础镜像、扫描工具内第三方副本；最终交付范围仍未确认"
+    },
+    "designated_license_reviewer": {
+      "status": "UNCONFIRMED",
+      "reviewer": null,
+      "reviewed_at": null,
+      "scope": null,
+      "recorded_responsible_role": "旧交接指向cz或授权审核者；这是补件责任描述，未发现独立Owner任命及已签认身份",
+      "automated_technical_reviewer": "GPT-6 Codex",
+      "human_signoff": false,
+      "appointment_record_verified": false,
+      "reason": "本轮自动核查指令未提供被指定人的身份；自动技术审核不能生成历史真人任命或签名"
+    }
+  },
+  "evidence": [
+    {
+      "path": "frontend/package.json",
+      "bytes": 1050,
+      "sha256": "15e8e526569c678d993c59431ddcb504a68a4bdd54811f6889fc77382ecc2661",
+      "tracked": true
+    },
+    {
+      "path": "frontend/pnpm-lock.yaml",
+      "bytes": 28255,
+      "sha256": "357bf1d00f49ffcddcfb13fadf232f79bd864341d210fd8ea324106ee679185f",
+      "tracked": true
+    },
+    {
+      "path": "tests/fixtures/syft-real/package.json",
+      "bytes": 135,
+      "sha256": "4e7c946432baf8db8ae43ca9781f492c6f1d95a5f4f33523ea757dd3a308f568",
+      "tracked": true
+    },
+    {
+      "path": "tests/fixtures/syft-real/package-lock.json",
+      "bytes": 540,
+      "sha256": "801446d7ba54156867ae909751083d5225483126eeab93b010b84d3ca224c2b5",
+      "tracked": true
+    },
+    {
+      "path": "tests/unit/test_b3_syft_real_output.py",
+      "bytes": 1502,
+      "sha256": "132f571ba4c63e1d2402f4b5563864201f88aab3cd99c7775f9d06a0718c104f",
+      "tracked": true
+    },
+    {
+      "path": "tests/fixtures/p2b/run_three_scans.py",
+      "bytes": 21814,
+      "sha256": "012a460e35e2490ccea2362116b55bb6c7d681bf5574f2ca09f4fa391f70d07d",
+      "tracked": true
+    },
+    {
+      "path": "tests/fixtures/p2b/three-scan-readback.json",
+      "bytes": 99404,
+      "sha256": "4dcaec08952deee7133124e6b6fba3304080366dbb11a7105cc2b9f68ff11bf8",
+      "tracked": true
+    },
+    {
+      "path": "backend/app/p2b/npm_metadata.py",
+      "bytes": 7180,
+      "sha256": "eb7790f46b5053b490706c3caff5a61373c4a89c44140c9335331e935f5650a6",
+      "tracked": true
+    },
+    {
+      "path": "deploy/tool-smoke.py",
+      "bytes": 11308,
+      "sha256": "e433e4df70f36b36703c23d37f16484723d96eef62aa28447b8cf4523b3ca928",
+      "tracked": true
+    },
+    {
+      "path": "deploy/smoke.py",
+      "bytes": 25851,
+      "sha256": "989021e597557d22c2eaddaaeabef7998a57621c1bf0138999dfb44608f20f33",
+      "tracked": true
+    },
+    {
+      "path": "deploy/Dockerfile.web",
+      "bytes": 603,
+      "sha256": "3b00e754ed5240ab588d495080e64efe4406c38bd499b52462225e80553b6edc",
+      "tracked": true
+    },
+    {
+      "path": "deploy/Dockerfile.scanner",
+      "bytes": 3823,
+      "sha256": "737dde0d1377bed992886b6dbe34c4060ed4595c37cfa5bad1a1f4894fd0e2a0",
+      "tracked": true
+    },
+    {
+      "path": "deploy/compose.yaml",
+      "bytes": 2497,
+      "sha256": "0e98819c0755a6e5abe7834c9cf5bc60b84bdb3c76042639bc9ef57cd4440555",
+      "tracked": true
+    },
+    {
+      "path": ".dockerignore",
+      "bytes": 370,
+      "sha256": "4252b29c466030e36001e920f71b2e34909b701e4a8ff22642fae01f2a888057",
+      "tracked": true
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 900,
+      "sha256": "45f87f3e8917049b4ff4c0b8c88a8dfea824d82ec8114231971e78c298ab4ca0",
+      "tracked": true
+    },
+    {
+      "path": "docs/p2/m1-local-evidence-blocker-20261011.md",
+      "bytes": 3277,
+      "sha256": "19aa7aaf321389fc00fec34be2d044648a6f4e4bd562338e60d9afc452758035",
+      "tracked": true
+    },
+    {
+      "path": "docs/p2/p2b-npm-original-readback.json",
+      "bytes": 16229,
+      "sha256": "e33a405de1e549e03a447f45935412a841588c204ff31cd804e6a2405ce79351",
+      "tracked": false
+    },
+    {
+      "path": "docs/p2/p2b-next-task-plan.md",
+      "bytes": 22417,
+      "sha256": "4d086834ae17a2cb87a77df7bfb9df790b173004ce108de81c379d7236ef27c1",
+      "tracked": false
+    },
+    {
+      "path": "docs/p2/p2b-two-case-handoff.md",
+      "bytes": 9755,
+      "sha256": "2759922f666038c5631b11461d4d5f055f5a5944417bba8cebebd4280736cd7f",
+      "tracked": false
+    }
+  ],
+  "tracked_literal_references": [
+    {
+      "path": "backend/app/p2b/npm_metadata.py",
+      "sha256": "eb7790f46b5053b490706c3caff5a61373c4a89c44140c9335331e935f5650a6",
+      "lines": [
+        10,
+        12
+      ]
+    },
+    {
+      "path": "benchmarks/p2b_offline_material_audit.py",
+      "sha256": "3074182961ceb01d506f7ede30691479dbc1c7b807950b5c7d9a9d06f9caa094",
+      "lines": [
+        18,
+        28
+      ]
+    },
+    {
+      "path": "deploy/README.md",
+      "sha256": "772a22fcdde68c8375862d34c278f7738d0036270e2791af91dc4a21ec3aec6f",
+      "lines": [
+        98,
+        340,
+        357
+      ]
+    },
+    {
+      "path": "deploy/smoke.py",
+      "sha256": "989021e597557d22c2eaddaaeabef7998a57621c1bf0138999dfb44608f20f33",
+      "lines": [
+        336,
+        339,
+        340,
+        372,
+        374
+      ]
+    },
+    {
+      "path": "deploy/tool-smoke.py",
+      "sha256": "e433e4df70f36b36703c23d37f16484723d96eef62aa28447b8cf4523b3ca928",
+      "lines": [
+        221,
+        227,
+        228,
+        240
+      ]
+    },
+    {
+      "path": "docs/05-ai-assistance-log.md",
+      "sha256": "f0b56e8ed2f9405ba9b071ff98ff1ae9742946f8aaf07011baa609b6e328ea70",
+      "lines": [
+        494,
+        529
+      ]
+    },
+    {
+      "path": "docs/coordination/AGENT_WORKLOG.md",
+      "sha256": "e05967eabd9155c78e353cf7dc201d1707d094d8578a324720e7fcb03af8127c",
+      "lines": [
+        619,
+        621,
+        5156,
+        5486,
+        9009,
+        9011,
+        9047,
+        9357,
+        9361,
+        9410,
+        9498,
+        9515,
+        9532,
+        9822,
+        9842,
+        9883,
+        9888,
+        9889,
+        9898,
+        9907,
+        9914,
+        9983,
+        10049,
+        10057,
+        10102,
+        10171,
+        10260,
+        10340,
+        10347,
+        10384
+      ]
+    },
+    {
+      "path": "docs/coordination/PROJECT_PROGRESS.md",
+      "sha256": "47417acbf11ad64bd4621e7ff32ba89fcfc795b1fc056323915e47de0bd1542e",
+      "lines": [
+        300,
+        650,
+        668,
+        1884,
+        1885,
+        2079,
+        2081,
+        2118
+      ]
+    },
+    {
+      "path": "docs/coordination/change-requests.md",
+      "sha256": "660f490bc80ed5fb4eaa29ed37122b35860fa25f533821a3c4f53715b4488a22",
+      "lines": [
+        107,
+        116,
+        123,
+        161,
+        169
+      ]
+    },
+    {
+      "path": "docs/p2/evidence/final-backend-4.xml",
+      "sha256": "e8d4795d217823b00a92ea0be197a0d8843649b90e1794e8796ea5d0865ca8a9",
+      "lines": [
+        1
+      ]
+    },
+    {
+      "path": "docs/p2/m1-local-evidence-blocker-20261011.md",
+      "sha256": "19aa7aaf321389fc00fec34be2d044648a6f4e4bd562338e60d9afc452758035",
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-a-handoff-requirements.md",
+      "sha256": "50dfec754067d7689eabdf533ca7af9ac10eb0b81a5827fcca7d3c901cf2c411",
+      "lines": [
+        11,
+        40
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-closure-review.md",
+      "sha256": "6fb2daceee0521b832419df0fde43b0fa19b10f7076c7b0bbefe54f5b69ef29b",
+      "lines": [
+        25,
+        117
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-current-status.md",
+      "sha256": "a17128ca4ec0617523f5419f7387e91c7913ecff003cd9478bd981ee2e92051d",
+      "lines": [
+        22,
+        31,
+        35,
+        75,
+        91,
+        93,
+        97
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-evidence-closure.json",
+      "sha256": "1e8cab8e794733042c6e8f357630a92e23943f2ea5b409f4affd934f4f4d1bae",
+      "lines": [
+        27,
+        31,
+        49,
+        79,
+        108,
+        109,
+        119,
+        120
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-external-dependencies-readback.json",
+      "sha256": "69144bf43c68867834f779cccc4282247a8860ecc89dfc99538d712ad34122d7",
+      "lines": [
+        46,
+        48,
+        57,
+        145,
+        257,
+        261
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-external-dependencies.json",
+      "sha256": "5e9052d5290069952a7be2ae22271e2bf193e6871fc2e31a3870c3d4a425ceea",
+      "lines": [
+        41,
+        140,
+        252,
+        256
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-isnumber-clause-readback.json",
+      "sha256": "eaa0e3a0a2695251a9037e5f246e1c192d0bfcaf72fbbf81949da3724b9e3f17",
+      "lines": [
+        5
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-offline-material-audit.md",
+      "sha256": "a88c943d684d18c686a489a738f02ff33119668f52f77ad08c31dbedd3da67e8",
+      "lines": [
+        20,
+        33
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-readback-review.md",
+      "sha256": "72c7a8fa447fc7f53989248f4ea7435b2cf0864d1baaafe35020444ab62d8177",
+      "lines": [
+        11,
+        46,
+        47,
+        54
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-readback-validation.json",
+      "sha256": "b2bfe9b4aae26e48fbdfa2979b63273a0a4cdd916d239929f65a090d10e55843",
+      "lines": [
+        98,
+        103
+      ]
+    },
+    {
+      "path": "docs/p2/p2b-source-admission-proposal.md",
+      "sha256": "23c0d40af9f2f737676d59c5f43ad3e5a91f2ada6d10f9ec223069c58f76f540",
+      "lines": [
+        28,
+        63,
+        67,
+        78
+      ]
+    },
+    {
+      "path": "docs/p2/test-receipt.json",
+      "sha256": "30a751afed5ca11e463bb63d6e2f490494d38f8e119a7c7fb9fb85fe5a2db1c9",
+      "lines": [
+        449,
+        453,
+        457,
+        469,
+        473
+      ]
+    },
+    {
+      "path": "docs/security/a2-security-acceptance.md",
+      "sha256": "2030ca451c802a6fbd00885f0f2fdf300ec8c240a2c7a097698aa51520e9ce2c",
+      "lines": [
+        381,
+        412,
+        431
+      ]
+    },
+    {
+      "path": "docs/spec/p2b-independent-preparation.md",
+      "sha256": "7801e6bf954a8ac16a578d23e4b514763ff3e4b2d564e3bc027f2d2e3caed90f",
+      "lines": [
+        11,
+        19,
+        27,
+        53,
+        69,
+        86,
+        105,
+        140,
+        159,
+        182,
+        196,
+        218
+      ]
+    },
+    {
+      "path": "tests/fixtures/p2b/frontend-handoff-draft.json",
+      "sha256": "c5aa0ffdfd1e60b5beb2fbc4362375893a58f226a1aa8b517bcd68dc73d65142",
+      "lines": [
+        170,
+        172,
+        386
+      ]
+    },
+    {
+      "path": "tests/fixtures/p2b/real-source-index.json",
+      "sha256": "d854bda7892ec9a171696037589fb2eb097ed4ea583080457d81ae3ba8be290e",
+      "lines": [
+        28,
+        29,
+        43,
+        49,
+        58,
+        84,
+        85,
+        95,
+        96
+      ]
+    },
+    {
+      "path": "tests/fixtures/p2b/run_three_scans.py",
+      "sha256": "012a460e35e2490ccea2362116b55bb6c7d681bf5574f2ca09f4fa391f70d07d",
+      "lines": [
+        31
+      ]
+    },
+    {
+      "path": "tests/fixtures/p2b/three-scan-readback.json",
+      "sha256": "4dcaec08952deee7133124e6b6fba3304080366dbb11a7105cc2b9f68ff11bf8",
+      "lines": [
+        32,
+        36,
+        55,
+        85,
+        123,
+        136,
+        137,
+        146,
+        147,
+        155,
+        156,
+        166,
+        167
+      ]
+    },
+    {
+      "path": "tests/fixtures/syft-real/package-lock.json",
+      "sha256": "801446d7ba54156867ae909751083d5225483126eeab93b010b84d3ca224c2b5",
+      "lines": [
+        11,
+        14,
+        16
+      ]
+    },
+    {
+      "path": "tests/fixtures/syft-real/package.json",
+      "sha256": "4e7c946432baf8db8ae43ca9781f492c6f1d95a5f4f33523ea757dd3a308f568",
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "tests/security/test_a4_ai_assets_independent.py",
+      "sha256": "8602ed04ec626a9fbdb5cc58131d50e57b4a3c6e087df05a804f3162778080a8",
+      "lines": [
+        119,
+        121,
+        122,
+        128
+      ]
+    },
+    {
+      "path": "tests/unit/test_a4_local_zip_pipeline.py",
+      "sha256": "1ed475ab3a0433382e74ea7061550ae9dd3b26a8da8d1c0de82d3a5bbe1a6d53",
+      "lines": [
+        546,
+        548,
+        549
+      ]
+    },
+    {
+      "path": "tests/unit/test_b3_syft_real_output.py",
+      "sha256": "132f571ba4c63e1d2402f4b5563864201f88aab3cd99c7775f9d06a0718c104f",
+      "lines": [
+        40
+      ]
+    },
+    {
+      "path": "tests/unit/test_p2b_candidates.py",
+      "sha256": "fc7d8f57979a0094526f2ce7055a9a0cbaf06fcc2250d4a4a9fadf16d59a7620",
+      "lines": [
+        61,
+        109,
+        216,
+        533,
+        545,
+        554,
+        555,
+        556,
+        568,
+        569,
+        580,
+        581,
+        595,
+        632,
+        644,
+        654,
+        667
+      ]
+    }
+  ],
+  "import_matches": [],
+  "appointment_search": {
+    "candidate_locations": [
+      {
+        "path": "docs/05-ai-assistance-log.md",
+        "line": 569
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 9357
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10145
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10162
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10170
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10261
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10290
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10316
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10331
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10332
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10340
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10347
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10384
+      },
+      {
+        "path": "docs/coordination/AGENT_WORKLOG.md",
+        "line": 10387
+      },
+      {
+        "path": "docs/coordination/PROJECT_PROGRESS.md",
+        "line": 2118
+      },
+      {
+        "path": "docs/coordination/PROJECT_PROGRESS.md",
+        "line": 2175
+      },
+      {
+        "path": "docs/coordination/PROJECT_PROGRESS.md",
+        "line": 2177
+      },
+      {
+        "path": "docs/coordination/PROJECT_PROGRESS.md",
+        "line": 2183
+      },
+      {
+        "path": "docs/p2/p2b-closure-review.md",
+        "line": 117
+      },
+      {
+        "path": "docs/p2/p2b-current-status.md",
+        "line": 22
+      },
+      {
+        "path": "docs/p2/p2b-readback-review.md",
+        "line": 54
+      },
+      {
+        "path": "docs/p2/p2b-next-task-plan.md",
+        "line": 3
+      },
+      {
+        "path": "docs/p2/p2b-next-task-plan.md",
+        "line": 74
+      },
+      {
+        "path": "docs/p2/p2b-next-task-plan.md",
+        "line": 181
+      },
+      {
+        "path": "docs/p2/p2b-next-task-plan.md",
+        "line": 194
+      },
+      {
+        "path": "docs/p2/p2b-next-task-plan.md",
+        "line": 201
+      },
+      {
+        "path": "docs/p2/p2b-next-task-plan.md",
+        "line": 207
+      }
+    ],
+    "conclusion": "可读记录只有职责描述及pending/null，不证明任命或签认"
+  },
+  "checks": [
+    {
+      "name": "M1精确scan与Assessment版本绑定",
+      "status": "PASS"
+    },
+    {
+      "name": "M1包版本与LICENSE摘要绑定",
+      "status": "PASS"
+    },
+    {
+      "name": "M1七用途原值均未知",
+      "status": "PASS"
+    },
+    {
+      "name": "M1交付范围原值未决定",
+      "status": "PASS"
+    },
+    {
+      "name": "M1人审未签认",
+      "status": "PASS"
+    },
+    {
+      "name": "Syft测试夹具仅声明精确依赖",
+      "status": "PASS"
+    },
+    {
+      "name": "前端直接和开发依赖无此包",
+      "status": "PASS"
+    },
+    {
+      "name": "前端锁文件无此包",
+      "status": "PASS"
+    },
+    {
+      "name": "tracked可执行源码无此包导入语句",
+      "status": "PASS"
+    },
+    {
+      "name": "受控扫描生成器只写两份manifest",
+      "status": "PASS"
+    },
+    {
+      "name": "旧测试例与M1为不同scan",
+      "status": "PASS"
+    },
+    {
+      "name": "工具镜像复制声明样例脚本",
+      "status": "PASS"
+    },
+    {
+      "name": "Web最终阶段只复制前端dist",
+      "status": "PASS"
+    },
+    {
+      "name": "Docker上下文采用白名单且未放行tests和docs",
+      "status": "PASS"
+    },
+    {
+      "name": "tracked未见is-number包目录及tgz发行包",
+      "status": "PASS"
+    },
+    {
+      "name": "M1正式效果仍为none",
+      "status": "PASS"
+    }
+  ],
+  "check_groups_passed": 16,
+  "formal_effect": "none",
+  "new_business_evidence": 0,
+  "original_objects_modified": false,
+  "remaining": [
+    "M1精确输入manifest/实际用途证据与用途声明",
+    "最终实际交付文件manifest或镜像SBOM及排除项",
+    "Owner明确指定的审核身份及真实审核记录"
+  ],
+  "actions": {
+    "service_changes": 0,
+    "network_requests": 0,
+    "package_installations": 0,
+    "scanned_code_executions": 0,
+    "business_database_writes": 0,
+    "commits": 0,
+    "pushes": 0
+  },
+  "publication": "本地新增，未提交/推送；不是正式公共DTO或人工回执"
+}

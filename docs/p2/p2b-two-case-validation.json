@@ -1,0 +1,191 @@
+{
+  "kind": "openguard.p2b.two-case-validation/1",
+  "date": "2026-10-12",
+  "baseline_sha": "50d8704a362f6e6615c1ed95d7f06da2bc3e871f",
+  "overall": "PARTIAL",
+  "checks_status": "PASS",
+  "evidence_grade": "OFFLINE_HISTORICAL_HTTP_REFERENCE_HASH_AND_CURRENT_FRONTEND_VALIDATION_NOT_LIVE_GET",
+  "check_groups_passed": 19,
+  "current_frontend_objects_validated": 8,
+  "checks": [
+    {
+      "name": "source_file_hashes_and_sizes",
+      "status": "PASS"
+    },
+    {
+      "name": "all_json_pointers_and_file_pins",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-POS-ISNUMBER-7:identity_binding_and_original_objects",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-POS-ISNUMBER-7:seven_nulls_and_no_authorization_promotion",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-POS-ISNUMBER-7:manifest_evidence_material_and_source_closure",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-POS-ISNUMBER-7:canonical_result_digests_and_predecessors",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-POS-ISNUMBER-7:exact_gets_and_same_revision_summary",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-POS-ISNUMBER-7:scan_coverage_and_rule_source_boundaries",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-POS-ISNUMBER-7:current_frontend_static_acceptance",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-LIMIT-LODASH-41721:identity_binding_and_original_objects",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-LIMIT-LODASH-41721:seven_nulls_and_no_authorization_promotion",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-LIMIT-LODASH-41721:manifest_evidence_material_and_source_closure",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-LIMIT-LODASH-41721:canonical_result_digests_and_predecessors",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-LIMIT-LODASH-41721:exact_gets_and_same_revision_summary",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-LIMIT-LODASH-41721:scan_coverage_and_rule_source_boundaries",
+      "status": "PASS"
+    },
+    {
+      "name": "P2B-LIMIT-LODASH-41721:current_frontend_static_acceptance",
+      "status": "PASS"
+    },
+    {
+      "name": "isnumber_existing_clause_locator_binding",
+      "status": "PASS"
+    },
+    {
+      "name": "npm_missing_originals_not_fabricated_and_m1_separated",
+      "status": "PASS"
+    },
+    {
+      "name": "offline_no_side_effect_and_sensitive_content_screen",
+      "status": "PASS"
+    }
+  ],
+  "sources": [
+    {
+      "file": "docs/p2/p2b-evidence-closure.json",
+      "sha256": "1e8cab8e794733042c6e8f357630a92e23943f2ea5b409f4affd934f4f4d1bae",
+      "byte_count": 34816
+    },
+    {
+      "file": "tests/fixtures/p2b/three-scan-readback.json",
+      "sha256": "4dcaec08952deee7133124e6b6fba3304080366dbb11a7105cc2b9f68ff11bf8",
+      "byte_count": 99404
+    },
+    {
+      "file": "tests/fixtures/p2b/real-source-index.json",
+      "sha256": "d854bda7892ec9a171696037589fb2eb097ed4ea583080457d81ae3ba8be290e",
+      "byte_count": 14357
+    },
+    {
+      "file": "tests/fixtures/p2b/frontend-handoff-draft.json",
+      "sha256": "c5aa0ffdfd1e60b5beb2fbc4362375893a58f226a1aa8b517bcd68dc73d65142",
+      "byte_count": 19962
+    },
+    {
+      "file": "docs/p2/p2b-isnumber-clause-readback.json",
+      "sha256": "eaa0e3a0a2695251a9037e5f246e1c192d0bfcaf72fbbf81949da3724b9e3f17",
+      "byte_count": 5149
+    },
+    {
+      "file": "docs/p2/m1-local-evidence-blocker-20261011.md",
+      "sha256": "19aa7aaf321389fc00fec34be2d044648a6f4e4bd562338e60d9afc452758035",
+      "byte_count": 3277
+    },
+    {
+      "file": "docs/spec/p2-backend-contract.md",
+      "sha256": "f2800b67aa076581bf60f14030e087451b719e7425ce87423c6495817ea43103",
+      "byte_count": 13913
+    },
+    {
+      "file": "schemas/p2/contract-v1.schema.json",
+      "sha256": "0e9cd019af276b7a29957a90f15563d0a140ba1e3391fe8005bb3125ed6f49d4",
+      "byte_count": 31223
+    },
+    {
+      "file": "backend/app/p2b/candidates.py",
+      "sha256": "f6c452508033b29c19dbe61e94a5421bdd04f8ce74860ccbdfd59d6a2a94a236",
+      "byte_count": 11656
+    },
+    {
+      "file": "backend/app/p2b/npm_metadata.py",
+      "sha256": "eb7790f46b5053b490706c3caff5a61373c4a89c44140c9335331e935f5650a6",
+      "byte_count": 7180
+    }
+  ],
+  "outputs": [
+    {
+      "file": "docs/p2/p2b-two-case-index.json",
+      "sha256": "4305c9364e7ccad5ebdd941bb3b68e55719790c084dce8145075725ab6c76f6a",
+      "byte_count": 53534
+    },
+    {
+      "file": "docs/p2/p2b-two-case-handoff.md",
+      "sha256": "2759922f666038c5631b11461d4d5f055f5a5944417bba8cebebd4280736cd7f",
+      "byte_count": 9755
+    }
+  ],
+  "failures_or_limits": [
+    {
+      "item": "real_positive_usage_example",
+      "status": "NOT_AVAILABLE",
+      "reason": "saved_usage_all_null_and_source_scope_human_attestation_pending"
+    },
+    {
+      "item": "official_npm_original_record",
+      "status": "NOT_AVAILABLE_IN_CHECKED_LOCAL_PACKAGE",
+      "reason": "metadata_receipt_blocked;M1_archive_history_only;existing_raw_access_requested"
+    },
+    {
+      "item": "python_runtime",
+      "status": "STARTUP_FAILED",
+      "command": "python --version",
+      "reason": "existing_venv_referenced_runtime_unavailable;no_environment_changes"
+    },
+    {
+      "item": "python_DTO_and_Draft202012_schema_and_full_test_suite",
+      "status": "NOT_RERUN",
+      "reason": "no_product_code_changed;frontend_shape_checks_and_digest/reference_checks_only;historical_120_tests_are_separate"
+    },
+    {
+      "item": "full_history_reading",
+      "status": "OUTPUT_TRUNCATED",
+      "reason": "full_read_requested;recent_and_relevant_entries_reread;not_claimed_complete"
+    }
+  ],
+  "accounting": {
+    "new_business_objects": 0,
+    "new_facts": 0,
+    "new_evidence_ids": [],
+    "new_positive_advice": [],
+    "database_writes": 0,
+    "network_requests": 0,
+    "model_calls": 0,
+    "service_start_stop": 0
+  },
+  "publication": "LOCAL_NOT_STAGED_COMMITTED_OR_PUSHED"
+}
