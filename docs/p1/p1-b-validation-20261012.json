@@ -1,0 +1,189 @@
+{
+  "schema": "openguard.p1-b-validation/1",
+  "status": "PARTIAL",
+  "generated_at": "2026-10-12T13:57:41.647Z",
+  "environment": {
+    "platform": "win32",
+    "node": "v26.2.0",
+    "python": "UNAVAILABLE_EXIT_101",
+    "docker": "QUERY_UNAVAILABLE_EXIT_1"
+  },
+  "reading_gate": {
+    "satisfied": false,
+    "read_scope": "README完整；日志开头/近期/相关历史、进度近期/相关、SOL部分及重点P1材料分段核对；历史日志/进度及SOL全文未读完，不声称满足",
+    "product_modification_started": false
+  },
+  "commands": [
+    {
+      "command": "node docs/p1/p1-b-evidence-followup-20261012.mjs docs/p1/p1-b-evidence-followup-20261012.json",
+      "exit_code": 0,
+      "kind": "OFFLINE_MACHINE_SAME_AGENT",
+      "checks": {
+        "pass": 221,
+        "fail": 0
+      },
+      "python_detector_executed": false
+    },
+    {
+      "command": ".venv/Scripts/python.exe --version",
+      "exit_code": 101,
+      "kind": "ENVIRONMENT_START_ERROR",
+      "business_assertions_executed": false
+    },
+    {
+      "command": "docker ps --format <name-image-ports>",
+      "exit_code": 1,
+      "kind": "READ_ONLY_ENVIRONMENT_QUERY_ERROR",
+      "service_started_or_stopped": false
+    }
+  ],
+  "verification_lanes": {
+    "synthetic_tool_validation": {
+      "platform": "win32",
+      "measured_linux": false,
+      "checks": [
+        {
+          "name": "合成成功及失败两回执结构通过",
+          "status": "PASS"
+        },
+        {
+          "name": "缺环境拒绝",
+          "status": "PASS"
+        },
+        {
+          "name": "缺阶段拒绝",
+          "status": "PASS"
+        },
+        {
+          "name": "缺source SHA拒绝",
+          "status": "PASS"
+        },
+        {
+          "name": "缺input SHA拒绝",
+          "status": "PASS"
+        },
+        {
+          "name": "缺config SHA拒绝",
+          "status": "PASS"
+        },
+        {
+          "name": "缺result SHA拒绝",
+          "status": "PASS"
+        },
+        {
+          "name": "汇总保留失败/未运行阶段/禁止正式结论",
+          "status": "PASS"
+        },
+        {
+          "name": "重复receipt_id拒绝",
+          "status": "PASS"
+        },
+        {
+          "name": "记录run_id未被当前工具强制唯一的边界",
+          "status": "PASS"
+        },
+        {
+          "name": "记录同环境不同input仍通过的边界",
+          "status": "PASS"
+        },
+        {
+          "name": "公开工件无敏感模式:docs/p1/p1-b-evidence-followup-20261012.md",
+          "status": "PASS"
+        },
+        {
+          "name": "公开工件无敏感模式:docs/p1/p1-b-evidence-followup-20261012.mjs",
+          "status": "PASS"
+        },
+        {
+          "name": "公开工件无敏感模式:docs/p1/p1-b-evidence-followup-20261012.json",
+          "status": "PASS"
+        },
+        {
+          "name": "221机器检查与未签收状态保存",
+          "status": "PASS"
+        }
+      ],
+      "duplicates": {
+        "receipt_id": 1,
+        "run_id_not_enforced": 0,
+        "same_input_not_enforced": 0
+      },
+      "formal_metrics": null,
+      "formal_performance": null
+    },
+    "real_P1_execution": null,
+    "independent_acceptance": null,
+    "historical": {
+      "source": "docs/p1/p1-b-validation-20261011.json; docs/p2/test-receipt.json",
+      "rerun_this_run": false,
+      "added_to_current_counts": false
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/p1/p1-b-evidence-followup-20261012.md",
+      "size_bytes": 23900,
+      "sha256": "e228e1b7546cd18f914c002ba330ba099a91365e1001acad10f75168c58810c7"
+    },
+    {
+      "path": "docs/p1/p1-b-evidence-followup-20261012.mjs",
+      "size_bytes": 20918,
+      "sha256": "acc8336a7f1c1a46cf94ee6732460d9c5421a9a509c5fc5083ef1c1d03e6c438"
+    },
+    {
+      "path": "docs/p1/p1-b-evidence-followup-20261012.json",
+      "size_bytes": 169416,
+      "sha256": "0c74387b981bf8b2af5cc9437ca1c383ef22d237f898148fed642ed5d4674d76"
+    }
+  ],
+  "publication_whitelist": [
+    "docs/p1/p1-b-evidence-followup-20261012.md",
+    "docs/p1/p1-b-evidence-followup-20261012.mjs",
+    "docs/p1/p1-b-evidence-followup-20261012.json",
+    "docs/p1/p1-b-validation-20261012.json"
+  ],
+  "coordination_append_only": [
+    "docs/coordination/AGENT_WORKLOG.md",
+    "docs/coordination/PROJECT_PROGRESS.md",
+    "docs/05-ai-assistance-log.md"
+  ],
+  "excluded": [
+    "reports/",
+    "tmp/",
+    "caches",
+    "databases",
+    "archives",
+    "third_party_bodies",
+    "P2_changes",
+    "preexisting_user_changes"
+  ],
+  "third_party": {
+    "added_dependencies": 0,
+    "added_sources": 0,
+    "existing_ledger": "third_party/README.md"
+  },
+  "git": {
+    "authorized_to_publish": false,
+    "staged": false,
+    "committed": false,
+    "pushed": false
+  },
+  "tests": {
+    "pytest_not_run": true,
+    "unit_test_suite_not_rerun": true,
+    "current_machine_and_tool_checks_are_not_test_counts": true
+  },
+  "checks_result": {
+    "pass": 15,
+    "fail": 0
+  },
+  "token": {
+    "exact_unavailable": true,
+    "start_estimate": [
+      12000,
+      24000
+    ],
+    "actual_within_range": "unknown",
+    "scope": "只读采证与交接，P1总门禁未闭合"
+  }
+}

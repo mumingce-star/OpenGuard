@@ -1,0 +1,375 @@
+{
+  "schema": "openguard.b03-r2-independent-role-review/1",
+  "status": "PARTIAL",
+  "review_decision": "QUALIFIED",
+  "generated_at": "2026-10-12T14:43:19.530Z",
+  "reviewer": {
+    "model": "GPT-6 Codex",
+    "role": "Sol独立审查角色",
+    "independent_context": true,
+    "same_machine": true,
+    "real_sol_model": false,
+    "human_signoff": false,
+    "independent_external_signoff": null,
+    "production_binding_verified": false
+  },
+  "parent_start_id": "20261012-223207-GPT6-P1B独立审查续接",
+  "start_id": "20261012-223646-GPT6-Sol角色B03r2独立审查",
+  "scope": "用户授权B03 r2既有入口独立执行与原件/契约静态审核；仅新建本回执与追加日志；不改产品或旧工件",
+  "reading_gate": {
+    "satisfied": false,
+    "readme": "全文",
+    "sol_handoff": "全文",
+    "worklog": "尾240首次输出截断，追加前尾12；巨大历史未全文逐字审阅",
+    "project_progress": "尾70；历史未完整逐字审阅",
+    "contract": "Raw首次输出中段截断，关键126起80行补读；不称全部文档全量审计"
+  },
+  "environment": {
+    "node": "v26.2.0",
+    "platform": "win32",
+    "arch": "x64",
+    "git_head": "50d8704a362f6e6615c1ed95d7f06da2bc3e871f",
+    "branch": "codex/scan-reliability-integration",
+    "network_accessed": false,
+    "service_started_or_stopped": false,
+    "python_or_pytest_executed": false
+  },
+  "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+  "input_pins": [
+    {
+      "path": "docs/spec/p1-workspace-contract.md",
+      "sha256": "0b2e24aa83649982ac8dab2f9c55a908144dae741d463879eea11c626c06e824",
+      "size_bytes": 23244
+    },
+    {
+      "path": "docs/p1/b03-source-binding-r2.md",
+      "sha256": "9f5c836a23f3868d948d8ad17945eba650c36949a8992bcab33f9a9c95a550f9",
+      "size_bytes": 5531
+    },
+    {
+      "path": "docs/p1/p1-b-evidence-followup-20261012.mjs",
+      "sha256": "acc8336a7f1c1a46cf94ee6732460d9c5421a9a509c5fc5083ef1c1d03e6c438",
+      "size_bytes": 20918
+    },
+    {
+      "path": "docs/p1/p1-b-evidence-followup-20261012.json",
+      "sha256": "0c74387b981bf8b2af5cc9437ca1c383ef22d237f898148fed642ed5d4674d76",
+      "size_bytes": 169416
+    },
+    {
+      "path": "docs/p1/p1-b-validation-20261012.json",
+      "sha256": "e7abaa99f7f03a60dfc7a16b4fb54029bb72f34bb7004314d27600fd340e857f",
+      "size_bytes": 5229
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/facts.json",
+      "sha256": "4f2a8304ad457dffdc7e4ba276e3602bf93b4f83b1e7e177bbcb84f4a8d841f7",
+      "size_bytes": 86768
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json",
+      "sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+      "size_bytes": 86789
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/manifest.json",
+      "sha256": "f5a1a2d5c44e04c6c9c64363f95a97fd0dfabbf4b3e07b45255f3163279f8990",
+      "size_bytes": 5149
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/amendment.json",
+      "sha256": "0e48d5bd2e063f1cd49426c199a82bbd40d913cf4cb24d9f1a4e2f9b1ef82389",
+      "size_bytes": 5303
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/fixed-git-source.mjs",
+      "sha256": "03583a8eb97c1a807ceac238c057f7955d4768bbb2a1bf60c65a37d464bbf186",
+      "size_bytes": 1424
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/generate.mjs",
+      "sha256": "d3586cf650b860c1ce19c54faeef840627074b44661855639459bca6f431a953",
+      "size_bytes": 14609
+    },
+    {
+      "path": "backend/app/detectors/license_notice_facts_v3_adapter.py",
+      "sha256": "aabbcb7010519ff6b42281681680be59de037e0350cf8c4c0c509eb2a9f9d8a1",
+      "size_bytes": 4912
+    },
+    {
+      "path": "backend/app/p1/notice_source_adapter.py",
+      "sha256": "2966a91d83679586260cff11d28da833621ba318569e0f657eaf1fb84df72997",
+      "size_bytes": 20617
+    },
+    {
+      "path": "backend/app/notice_source/models.py",
+      "sha256": "10392d5392ef3bcc3480032d6f3181d19f4264a11bc2fae124c3125f3b9c9b8b",
+      "size_bytes": 9488
+    },
+    {
+      "path": "backend/app/notice_source/collector.py",
+      "sha256": "ee9cf2d55d603840d08cc49d9bee71663f7e6c5e42604d85356b0a22e96d75fe",
+      "size_bytes": 5487
+    },
+    {
+      "path": "tests/unit/test_p1_notice_draft_production_wiring.py",
+      "sha256": "5cdb5f78c6161cecbcd12ca01f97c4b85ac7a87f64190bcbfb15c0aaa709472d",
+      "size_bytes": 19486
+    }
+  ],
+  "execution": {
+    "command": [
+      "node",
+      "docs/p1/p1-b-evidence-followup-20261012.mjs",
+      "tmp/sol-r2-review-20261012143848308.json"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "452508dfd36b0b521fb8b49707dd5da88b8ca340512718004929e50aed0a2330",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_sha256": "0a655add3f5f8e00d96ec55df61994ac7077143e88becdefe40205bdb2c94352",
+    "output_path": "tmp/sol-r2-review-20261012143848308.json",
+    "receipt_checks": {
+      "pass": 221,
+      "fail": 0,
+      "not_pytest": true,
+      "not_production": true
+    },
+    "children": "generator --check及两B06 CLI均为本次既有入口执行；不是业务pytest"
+  },
+  "additional_independent_checks": {
+    "command": [
+      "node",
+      "-"
+    ],
+    "exit_code": 0,
+    "artifact_path": "tmp/sol-r2-independent-checks-20261012.json",
+    "artifact_sha256": "7233bade41fbb87ee617cff6629cd9ee5d74ac90a9581a9ef646be2c46f659fd",
+    "pass": 9,
+    "fail": 0,
+    "checks": [
+      {
+        "name": "15固定source的精确ls-tree路径/mode/blob/SHA1身份/字节SHA256/大小/同commit",
+        "status": "PASS"
+      },
+      {
+        "name": "旧新原字节与canonical各自amendment闭包且两摘要类型不同",
+        "status": "PASS"
+      },
+      {
+        "name": "31Evidence原件sourceSHA来自精确manifest且重复身份无",
+        "status": "PASS"
+      },
+      {
+        "name": "8来源修正详细字段/amendment逐项一致而selected均未改",
+        "status": "PASS"
+      },
+      {
+        "name": "31fact/report语义/pending/空许可保留",
+        "status": "PASS"
+      },
+      {
+        "name": "旧下游需失效或历史，新A需新hash且未代填三个签收字段",
+        "status": "PASS"
+      },
+      {
+        "name": "v3 adapter受限消费与source pin，不将其当冻结Schema验证器",
+        "status": "PASS"
+      },
+      {
+        "name": "excerpt历史失败最小建议与严格模型、当前collector一致",
+        "status": "PASS"
+      },
+      {
+        "name": "复核入口输出及命令摘要/退出码/221机器检查闭包",
+        "status": "PASS"
+      }
+    ],
+    "counts_not_added_to_entry_checks": true,
+    "method": "独立Node stdin静态/原字节核对，Git cat-file blob逐项验证；选定字段复算采用已审阅采证入口，其输出另pin，不重复复制大JSON",
+    "reproduction": {
+      "argv": [
+        "node",
+        "-"
+      ],
+      "stdin_read_only_check_source": "const fs=require('node:fs'),cp=require('node:child_process'),crypto=require('node:crypto'),assert=require('node:assert/strict');\nconst sha=v=>crypto.createHash('sha256').update(v).digest('hex'),sort=v=>Array.isArray(v)?v.map(sort):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,sort(v[k])])):v,canonical=v=>sha(JSON.stringify(sort(v)));\nconst base='tests/fixtures/notice-license-facts-v3',r=base+'/revisions/source-binding-r2',read=p=>fs.readFileSync(p),load=p=>JSON.parse(read(p)),m=load(r+'/manifest.json'),a=load(r+'/amendment.json'),old=load(base+'/facts.json'),now=load(r+'/facts.json');\nconst git=args=>cp.execFileSync('git',args,{env:{...process.env,GIT_NO_LAZY_FETCH:'1',GIT_NO_REPLACE_OBJECTS:'1'},timeout:20000,maxBuffer:2000000});\nconst checks=[];function check(name,fn){try{fn();checks.push({name,status:'PASS'});}catch(e){checks.push({name,status:'FAIL',message:e.message});}}\ncheck('15固定source的精确ls-tree路径/mode/blob/SHA1身份/字节SHA256/大小/同commit',()=>{assert.equal(m.sources.length,15);assert.equal(git(['cat-file','-t',m.source_commit]).toString().trim(),'commit');for(const s of m.sources){assert.equal(s.source_commit,m.source_commit);const entry=git(['ls-tree','-z',s.source_commit,'--',s.path]).toString();const match=/^100644 blob ([a-f0-9]{40})\\t([^\\x00]+)\\x00$/.exec(entry);assert(match);assert.equal(match[2],s.path);const bytes=git(['cat-file','blob',match[1]]);assert.equal(crypto.createHash('sha1').update('blob '+bytes.length+'\\0').update(bytes).digest('hex'),match[1]);assert.equal(sha(bytes),s.sha256);assert.equal(bytes.length,s.size_bytes);}});\ncheck('旧新原字节与canonical各自amendment闭包且两摘要类型不同',()=>{for(const [p,v,x] of [[base+'/facts.json',old,a.parent],[r+'/facts.json',now,a.replacement]]){assert.equal(sha(read(p)),x.file_sha256);assert.equal(canonical(v),x.canonical_package_sha256);assert.notEqual(x.file_sha256,x.canonical_package_sha256);}});\ncheck('31Evidence原件sourceSHA来自精确manifest且重复身份无',()=>{assert.equal(now.evidence.length,31);assert.equal(new Set(now.evidence.map(e=>e.evidence_id)).size,31);for(const e of now.evidence)assert.equal(e.source_file_sha256,m.sources.find(s=>s.path===e.source_path)?.sha256);});\ncheck('8来源修正详细字段/amendment逐项一致而selected均未改',()=>{const changes=now.evidence.filter(e=>old.evidence.find(o=>o.evidence_id===e.evidence_id).source_file_sha256!==e.source_file_sha256);assert.equal(changes.length,8);assert.equal(a.affected_evidence.length,8);for(const e of now.evidence)assert.equal(e.selected_content_sha256,old.evidence.find(o=>o.evidence_id===e.evidence_id).selected_content_sha256);for(const e of changes){const d=a.affected_evidence.find(v=>v.evidence_id===e.evidence_id);assert(d);assert.equal(d.source_path,e.source_path);assert.equal(d.source_revision,e.source_revision);assert.equal(d.corrected_source_file_sha256,e.source_file_sha256);assert.equal(d.previous_source_file_sha256,old.evidence.find(o=>o.evidence_id===e.evidence_id).source_file_sha256);assert.equal(d.selected_content_sha256,e.selected_content_sha256);}});\ncheck('31fact/report语义/pending/空许可保留',()=>{assert.equal(now.facts.length,31);assert.equal(canonical(old.facts),canonical(now.facts));assert.equal(canonical(old.report_v3_rows),canonical(now.report_v3_rows));assert(now.facts.every(f=>f.authorization_status==='pending'&&f.license_expression_id===null));});\ncheck('旧下游需失效或历史，新A需新hash且未代填三个签收字段',()=>{assert.equal(a.lifecycle.old_derived_results,'require_invalidation_or_explicit_historical_only');assert.equal(a.lifecycle.new_a_consumption,'requires_new_facts_hash_binding_not_automatic_replacement');assert.equal(a.independent_review,null);assert.equal(a.human_approval,null);assert.equal(a.a_terminal_readback,null);assert.equal(m.independent_review,null);assert.equal(m.a_terminal_readback,null);});\nconst adapter=read('backend/app/detectors/license_notice_facts_v3_adapter.py').toString();\ncheck('v3 adapter受限消费与source pin，不将其当冻结Schema验证器',()=>{assert(adapter.includes('hmac.compare_digest(actual, expected_package_sha256)'));assert(adapter.includes('openguard.notice-license-facts-consumption/1'));assert(!adapter.includes('jsonschema'));assert(!adapter.includes('source_file_sha256'));assert(!adapter.includes('selected_content_sha256'));});\nconst fixture=read('tests/unit/test_p1_notice_draft_production_wiring.py').toString(),model=read('backend/app/notice_source/models.py').toString(),collector=read('backend/app/notice_source/collector.py').toString();\ncheck('excerpt历史失败最小建议与严格模型、当前collector一致',()=>{const b=fixture.split(\"if state == 'excerpt':\")[1].split(\"elif state != 'full':\")[0];assert(!b.includes('excerpt_bytes_sha256'));assert(model.includes('self.excerpt_bytes_sha256 != self.retained_bytes_sha256'));assert(collector.includes('excerpt_bytes_sha256=(hashlib.sha256(retained).hexdigest()'));});\nconst evidenceRun=load('tmp/sol-r2-review-20261012143848308.json'),execution=load('tmp/sol-r2-review-20261012143848308.json.execution.json');\ncheck('复核入口输出及命令摘要/退出码/221机器检查闭包',()=>{assert.equal(execution.exit_code,0);assert.equal(sha(read(execution.output)),execution.output_sha256);assert.equal(evidenceRun.receipt_checks.pass,221);assert.equal(evidenceRun.receipt_checks.fail,0);assert.equal(evidenceRun.new_real_P1_chain,null);assert.equal(evidenceRun.formal_metrics,null);assert.equal(evidenceRun.independent_acceptance,null);});",
+      "source_recorded_utf8_lf_sha256": "cde76b452aebfb7b76986d8a2b5c13ddf450710d43680664126f8a8062898770",
+      "source_record_note": "原运行实际stdin从第一条require至第九项check的精确只读检查段，按LF记录；未捕获当时PowerShell管道传输原字节，此SHA仅对应记录文本，不冒充原stdin wire摘要。未修改检查或再次执行。",
+      "omitted_original_tail": "原运行尾部构造proof对象（timestamp/node/platform/arch/git_head/checks/pass/fail）、以wx写tmp/sol-r2-independent-checks-20261012.json、打印含checks_sha256的摘要并设置process.exitCode；仅省略结果组装/写出段，无省略任何检查。",
+      "replay_scope": "附加9项原执行仅本机可复现，依赖两份固定ignored tmp原件：既有入口output及execution元数据。公开检查段自身会catch并记录错误，裸node -默认exit0且没有结果输出，不能以它的exit0当PASS。没有保证这些临时原件在外部环境可取得，不将9项称完整公开验收入口。",
+      "rerun_after_documentation": false,
+      "omitted_original_tail_limitation": "此前省略tail包含process.exitCode失败传播及console输出；不能把公开前缀独立执行当原运行完整验收。原9项断言保持原样，后附harness仅提供记录建议，未执行。",
+      "proposed_nonwriting_result_harness": {
+        "status": "PROPOSED_NOT_EXECUTED",
+        "append_after_recorded_source": true,
+        "source": "const replayFailed = checks.filter(item => item.status === 'FAIL').length;\nconsole.log(JSON.stringify({ checks, pass: checks.length - replayFailed, fail: replayFailed }));\nprocess.exitCode = replayFailed ? 1 : 0;\n",
+        "behavior": "输出全部9项状态；任一FAIL设置exit1，全PASS设置exit0。仅建议的只读复现尾部，不写文件，不声称已执行，也不改变原九项断言。"
+      },
+      "original_exit_and_output_statements": {
+        "actual_executed_source": "console.log(JSON.stringify({...proof,checks_sha256:sha(read('tmp/sol-r2-independent-checks-20261012.json'))}));process.exitCode=proof.fail?1:0;",
+        "context": "原运行此前先构造proof和以wx写入其tmp回执，proof.fail=checks中FAIL数；完整原执行工具返回exit0与9项PASS结果。此两语句为原实际尾部，不应直接追加在缺proof对象的公开前缀后。"
+      },
+      "original_execution_metadata": {
+        "path": "tmp/sol-r2-review-20261012143848308.json.execution.json",
+        "source_file_sha256": "ed24ca5b0d0c0405af1163456293b863f7de5f4eb05e35ff94b8b37ec5b5c13d",
+        "size_bytes": 1302,
+        "required_fields": {
+          "exit_code": 0,
+          "output": "tmp/sol-r2-review-20261012143848308.json",
+          "output_sha256": "0a655add3f5f8e00d96ec55df61994ac7077143e88becdefe40205bdb2c94352"
+        },
+        "other_recorded_fields": {
+          "generated_at": "2026-10-12T14:39:04.417Z",
+          "command": [
+            "node",
+            "docs/p1/p1-b-evidence-followup-20261012.mjs",
+            "tmp/sol-r2-review-20261012143848308.json"
+          ],
+          "stdout": "{\"output\":\"tmp/sol-r2-review-20261012143848308.json\",\"pass\":221,\"fail\":0,\"status\":\"PARTIAL\"}",
+          "stdout_sha256": "452508dfd36b0b521fb8b49707dd5da88b8ca340512718004929e50aed0a2330",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "node": "v26.2.0",
+          "platform": "win32",
+          "arch": "x64",
+          "input_pins": {
+            "docs/p1/p1-b-evidence-followup-20261012.mjs": "acc8336a7f1c1a46cf94ee6732460d9c5421a9a509c5fc5083ef1c1d03e6c438",
+            "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+            "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/manifest.json": "f5a1a2d5c44e04c6c9c64363f95a97fd0dfabbf4b3e07b45255f3163279f8990",
+            "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/amendment.json": "0e48d5bd2e063f1cd49426c199a82bbd40d913cf4cb24d9f1a4e2f9b1ef82389"
+          }
+        },
+        "material_note": "全部从实际原execution.json读取，没有新增或重造原运行字段；第9项只读取exit_code/output/output_sha256。可复制这些记录用于核对其元数据，但不能凭复制元数据证明其所指机器输出原件存在或一致。metadata对象不是原文件逐字节替代，原文件pin另列。"
+      },
+      "required_local_artifacts": [
+        {
+          "path": "tmp/sol-r2-review-20261012143848308.json",
+          "sha256": "0a655add3f5f8e00d96ec55df61994ac7077143e88becdefe40205bdb2c94352",
+          "size_bytes": 169416,
+          "published": false
+        },
+        {
+          "path": "tmp/sol-r2-review-20261012143848308.json.execution.json",
+          "sha256": "ed24ca5b0d0c0405af1163456293b863f7de5f4eb05e35ff94b8b37ec5b5c13d",
+          "size_bytes": 1302,
+          "published": false
+        }
+      ]
+    }
+  },
+  "object_boundaries": [
+    {
+      "object": "B03 v3 fixture",
+      "schema": "openguard.notice-license-facts/3",
+      "file_sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+      "canonical_package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+      "authority": "固定本机Git fixture事实观察；HF upstream revision只按fixture声明，不提升官方授权"
+    },
+    {
+      "object": "B02 v2 candidate input",
+      "schema": "openguard.notice-license-facts/2",
+      "authority": "另一个固定包与候选pin，不接受v3冒充，不据r2 hash重写旧候选"
+    },
+    {
+      "object": "production NOTICE collection/package",
+      "schema": "openguard.notice-source/1",
+      "authority": "受控活跃session collection，A绑定真实terminal registry/input/inventory/facts；package hash另独立排除自身；不是v3 canonical或ScanRun facts_hash"
+    }
+  ],
+  "findings": [
+    {
+      "id": "S1",
+      "severity": "boundary",
+      "status": "CONFIRMED_STATIC",
+      "path": "backend/app/detectors/license_notice_facts_v3_adapter.py",
+      "function": "consume_v3_facts",
+      "detail": "仅比较caller expected canonical pin和有限事实/关系/引用结构；未调用冻结JSON Schema，未核验source_file_sha256/selected_content_sha256或固定Git原件。不是r2原件缺陷；caller自行计算pin只能证明自洽，不能替代A受信来源核验。",
+      "required_action": "A先按冻结Schema及来源准入核验正确新包，再显式创建新版本观察/绑定；不提升Formal或授权。"
+    },
+    {
+      "id": "S2",
+      "severity": "evidence_limit",
+      "status": "CONFIRMED_SEARCH_SCOPE",
+      "command": [
+        "rg",
+        "-n",
+        "consume_v3_facts|canonical_v3_facts_sha256|source_package_sha256",
+        "backend/app/p1",
+        "backend/app/api/main.py",
+        "backend/app/pipeline"
+      ],
+      "detail": "当前检索范围未见consume_v3_facts调用，只见v2 candidate admission source_package_sha256；不能据adapter存在宣布A已消费，也不据局部未见调用推断未部署或所有路径不存在。A合法接纳仍待其明确路径及回执。",
+      "original_invocation": {
+        "shell": "powershell",
+        "search_pattern_quoted": true,
+        "standalone_exit_code_not_captured": true,
+        "containing_exec_exit_code": 0,
+        "containing_exec_note": "实际工具调用先读fixed-git-source/generator，随后rg作为末条命令；整次exec exit0，输出只有v2 candidate admission三条source_package_sha256行。此处未另存独立rg状态，不能造出额外遥测。"
+      },
+      "search_semantics": "单个正则参数内竖线为alternation，不是shell管道；该范围未见consume_v3_facts/canonical_v3_facts_sha256，只见source_package_sha256。检索absent不推出所有路径或部署不存在。"
+    },
+    {
+      "id": "S3",
+      "severity": "historical_failure",
+      "status": "CONFIRMED_STATIC_NOT_FIXED",
+      "path": "tests/unit/test_p1_notice_draft_production_wiring.py",
+      "line": 173,
+      "detail": "excerpt分支更新retained hash但未设excerpt_bytes_sha256；models.Content.content_semantics要求两者相等，collector当前已正确设置。历史两个参数失败保持，非本轮pytest结果。",
+      "minimal_owner_patch": "A在excerpt测试分支设置excerpt_bytes_sha256=SHA256(text.encode(utf-8))，byte_range保留UTF-8字节长度，whole_bytes_sha256保留原始全文摘要；受支持环境复跑两失败及相关负例，不弱化模型。"
+    },
+    {
+      "id": "S4",
+      "severity": "verification_limit",
+      "status": "CONFIRMED",
+      "detail": "入口221检查证明固定工件/来源selected/hash/保存引用闭包；无live输入终态、Assessment/BOUND/Draft/Report、浏览器下载或重启。source_line_check复用旧逐行审计、未重解压；旧holdout暴露/314未裁决保持。不得将机器计数当生产/真人Gold/正式指标。"
+    }
+  ],
+  "schema_validation": {
+    "current_run": false,
+    "current_run_detail": "本轮原件哈希、有限结构/语义与生成器--check；未执行Python或专用JSON Schema验证器",
+    "historical_reference": "docs/p1/b03-source-binding-r2.md记录Node10/Python24及原Schema验证；历史复用，不称本轮重跑或因此生产可用"
+  },
+  "lifecycle": {
+    "old_artifact": "retained_source_binding_defect",
+    "old_derived_results": "require_invalidation_or_explicit_historical_only",
+    "new_a_consumption": "requires_new_facts_hash_binding_not_automatic_replacement",
+    "old_manifest_or_amendment_modified": false,
+    "independent_review_in_old_manifest": null,
+    "human_approval": null,
+    "a_terminal_readback": null
+  },
+  "safe_consumption_conclusion": "本机固定Git来源r2修订技术一致性PASS；QUALIFIED允许作为新的离线观察审查材料。A完成新来源接纳/新版本绑定及旧派生失效或历史标记前，不使用旧Scan/Assessment/BOUND/Report身份宣称重算；pending/unknown不提升为授权、义务、Formal、Gold或正式指标。",
+  "qualified_reasons": [
+    "同机独立上下文模型观察，非真人/异机/外部签收",
+    "完整共享历史阅读门禁未满足；仅安全只读核查",
+    "A合法消费/来源准入与新生产链/前端/恢复未验收",
+    "NOTICE两历史失败未修改或实跑关闭",
+    "本轮未执行专用Schema验证器或Python业务套件"
+  ],
+  "publishing": {
+    "committed": false,
+    "pushed": false,
+    "merged": false,
+    "deployed": false,
+    "github_status": "本回执本地新建，历史分支发布不等于main或生产"
+  },
+  "token": {
+    "exact_available": false,
+    "note": "本次运行精确 token 数不可获得",
+    "start_estimate": "3000-6000",
+    "actual_within_estimate": "不可核定",
+    "scope_adjustment": "未扩产品；增加9组独立Node原字节/静态检查以补足证明边界，检查计数不相加"
+  },
+  "command_documentation_amendment": {
+    "generated_at": "2026-10-12T14:47:42.325Z",
+    "prior_receipt_sha256": "47f77d1047f2ed26af4d70bff7c5c0a85cef81e8b9c8cf8f7f2f0c00c92d0610",
+    "prior_size_bytes": 12261,
+    "scope": "仅补实际stdin检查段与结构化rg argv/原退出状态边界，不重跑检查，不改变QUALIFIED、计数或签收状态",
+    "business_tests_rerun": false
+  },
+  "reproduction_closure_amendment": {
+    "generated_at": "2026-10-12T14:51:56.053Z",
+    "prior_receipt_sha256": "1312dfbade99f7d23b4dcf7755354b67dc25cda255735c62fbd597683dfd4bce",
+    "prior_size_bytes": 20109,
+    "scope": "一次补清前缀复现失败退出和本机ignored依赖；原9断言/结果/QUALIFIED/221计数和签收状态不变；不再执行9项、采证入口或业务",
+    "exact_token_telemetry_available": false
+  }
+}

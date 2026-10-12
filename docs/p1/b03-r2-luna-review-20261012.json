@@ -1,0 +1,438 @@
+{
+  "schema": "openguard.b03-independent-observation-review/1",
+  "review_id": "20261012-223546-GPT6-Luna-role-r2",
+  "received_at": "2026-10-12T14:40:14.885Z",
+  "reviewer": {
+    "model": "GPT-6 Codex",
+    "role": "Luna独立审查代理",
+    "identity_note": "不代表真实Luna模型、真人、异机或生产签收"
+  },
+  "independent_context": true,
+  "same_machine": true,
+  "observation_review": "PASS",
+  "review_scope": "固定Git来源身份、字节、选定字段与r2修订语义的同机独立复核",
+  "product_signoff": false,
+  "human_signoff": false,
+  "production_binding_verified": false,
+  "a_admission": null,
+  "human_approval": null,
+  "production_readback": null,
+  "reading_gate": {
+    "satisfied": false,
+    "note": "README与LUNA_HANDOFF完整；历史共享日志/进度未完整逐字阅读，本次仅只读核对和独立审查记录"
+  },
+  "environment": {
+    "platform": "win32",
+    "architecture": "x64",
+    "node": "v26.2.0",
+    "git": "git version 2.54.0.windows.1",
+    "head": "50d8704a362f6e6615c1ed95d7f06da2bc3e871f",
+    "branch": "codex/scan-reliability-integration",
+    "remote_verified": false
+  },
+  "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+  "pins": [
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json",
+      "size_bytes": 86789,
+      "sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795"
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/manifest.json",
+      "size_bytes": 5149,
+      "sha256": "f5a1a2d5c44e04c6c9c64363f95a97fd0dfabbf4b3e07b45255f3163279f8990"
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/amendment.json",
+      "size_bytes": 5303,
+      "sha256": "0e48d5bd2e063f1cd49426c199a82bbd40d913cf4cb24d9f1a4e2f9b1ef82389"
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/facts.json",
+      "size_bytes": 86768,
+      "sha256": "4f2a8304ad457dffdc7e4ba276e3602bf93b4f83b1e7e177bbcb84f4a8d841f7"
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/generate.mjs",
+      "size_bytes": 14609,
+      "sha256": "d3586cf650b860c1ce19c54faeef840627074b44661855639459bca6f431a953"
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v3/fixed-git-source.mjs",
+      "size_bytes": 1424,
+      "sha256": "03583a8eb97c1a807ceac238c057f7955d4768bbb2a1bf60c65a37d464bbf186"
+    },
+    {
+      "path": "docs/p1/p1-b-evidence-followup-20261012.mjs",
+      "size_bytes": 20918,
+      "sha256": "acc8336a7f1c1a46cf94ee6732460d9c5421a9a509c5fc5083ef1c1d03e6c438"
+    },
+    {
+      "path": "docs/p1/p1-b-evidence-followup-20261012.json",
+      "size_bytes": 169416,
+      "sha256": "0c74387b981bf8b2af5cc9437ca1c383ef22d237f898148fed642ed5d4674d76"
+    },
+    {
+      "path": "docs/p1/p1-b-validation-20261012.json",
+      "size_bytes": 5229,
+      "sha256": "e7abaa99f7f03a60dfc7a16b4fb54029bb72f34bb7004314d27600fd340e857f"
+    },
+    {
+      "path": "docs/p1/p1-b-offline-audit-20261011.json",
+      "size_bytes": 733808,
+      "sha256": "80fc67ccc2d00029a448e6d350f8ffd42ca66c49a80ef648eac85e32c07c26e4"
+    },
+    {
+      "path": "backend/app/detectors/license_notice_facts_v3_adapter.py",
+      "size_bytes": 4912,
+      "sha256": "aabbcb7010519ff6b42281681680be59de037e0350cf8c4c0c509eb2a9f9d8a1"
+    },
+    {
+      "path": "backend/app/p1/notice_source_adapter.py",
+      "size_bytes": 20617,
+      "sha256": "2966a91d83679586260cff11d28da833621ba318569e0f657eaf1fb84df72997"
+    }
+  ],
+  "independent_run": {
+    "command": [
+      "node",
+      "docs/p1/p1-b-evidence-followup-20261012.mjs",
+      "tmp/luna-r2-review-20261012-223546.json"
+    ],
+    "exit_code": 0,
+    "raw_receipt": {
+      "path": "tmp/luna-r2-review-20261012-223546.json",
+      "size_bytes": 169416,
+      "sha256": "842f031ae32314e9f501db0e53b0f0f8a49416679d85c3e652fb31db0391b8a6"
+    },
+    "entry_machine_checks": {
+      "pass": 221,
+      "fail": 0,
+      "scope": "入口全部B01-B06和历史NOTICE检查，不仅r2"
+    },
+    "supplementary_review_checks": {
+      "pass": 28,
+      "fail": 0
+    },
+    "business_pytest_tests_executed": 0,
+    "counts_are_not_added": true,
+    "commands": [
+      {
+        "command": [
+          "node",
+          "tests/fixtures/notice-license-facts-v3/generate.mjs",
+          "--check"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "node",
+          "benchmarks/taxonomies/validate-b06-fn-fp-taxonomy.mjs",
+          "benchmarks/taxonomies/b06-fn-fp-taxonomy.json"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "node",
+          "benchmarks/taxonomies/validate-b06-rule-improvement-ledger.mjs",
+          "benchmarks/taxonomies/b06-fn-fp-taxonomy.json",
+          "benchmarks/taxonomies/b06-rule-improvement-ledger.json"
+        ],
+        "exit_code": 0
+      }
+    ]
+  },
+  "bounded_result": {
+    "regular_git_blobs": 15,
+    "evidence_sources_and_selected_hashes": 31,
+    "facts": 31,
+    "affected_evidence": 8,
+    "changed_source_path": "frontend/package.json",
+    "raw_package_sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+    "canonical_package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+    "canonical_definition": "对完整解析对象递归排序对象键，数组保序，JSON.stringify紧凑UTF-8；仅该固定对象约定，不宣称RFC8785通用实现",
+    "old_derived_results": "应显式历史保留或失效；本次未改变其状态"
+  },
+  "findings": [
+    {
+      "severity": "info",
+      "finding": "固定Git blob身份与来源字节闭包独立通过；8条来源修正精确落在frontend/package.json，选定字段与事实/report语义不变。"
+    },
+    {
+      "severity": "scope",
+      "finding": "HF provider revision仅上游fixture声明；本仓库固定blob证明留存字节，不能证明上游live真实性、授权或人工核验。"
+    },
+    {
+      "severity": "scope",
+      "finding": "复用入口Git读取和固定TOML/XML选择逻辑可核这些fixture；不是通用解析器、依赖求解或完整扫描准确性验证。"
+    },
+    {
+      "severity": "scope",
+      "finding": "canonical v3 pin含完整对象；NOTICE自摘要排除自身package_hash。不得互换成A facts_hash/inventory/NOTICE package_hash。"
+    },
+    {
+      "severity": "scope",
+      "finding": "入口回执固有verification_kind仍写same-agent/not-independent，且current_state为pending。它是执行器预设说明；本独立上下文事实由本review单独记录，未改旧回执或原manifest。"
+    },
+    {
+      "severity": "gate",
+      "finding": "同机独立审查足以接受指定r2来源观察的字节闭包；异机复验、真人、A合法消费及终态/Assessment/STAGED-BOUND/Draft/Report/下载重启门禁未关闭。"
+    }
+  ],
+  "git_blobs": [
+    {
+      "path": "backend/java/pom.xml",
+      "git_blob_oid": "6d6e1e5d45b1e14044ed145931b0097582bf0cc7",
+      "mode": "100644",
+      "size_bytes": 1983,
+      "sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "git_blob_oid": "4894afb6a06c061b828b97f0b2500cfef1fcdf73",
+      "mode": "100644",
+      "size_bytes": 1001,
+      "sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+    },
+    {
+      "path": "frontend/package.json",
+      "git_blob_oid": "0c97e9c64ce6f86b65d354e846cce1442defc693",
+      "mode": "100644",
+      "size_bytes": 651,
+      "sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a"
+    },
+    {
+      "path": "LICENSE",
+      "git_blob_oid": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "mode": "100644",
+      "size_bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+      "git_blob_oid": "f4aefafaa6e0305ed34d9bf28f480fbc11040825",
+      "mode": "100644",
+      "size_bytes": 9341,
+      "sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json",
+      "git_blob_oid": "22d130c639ddf5f1293533ad7302f807872cfa04",
+      "mode": "100644",
+      "size_bytes": 626,
+      "sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json",
+      "git_blob_oid": "51797726846a145181b363854fb38c6de4a3c0d7",
+      "mode": "100644",
+      "size_bytes": 620,
+      "sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json",
+      "git_blob_oid": "6176fa9faab8faed5d025192d69a72ed6cf7633c",
+      "mode": "100644",
+      "size_bytes": 606,
+      "sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json",
+      "git_blob_oid": "4ab98997fc6c09bc71bd44b14c954464bfa4187d",
+      "mode": "100644",
+      "size_bytes": 623,
+      "sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json",
+      "git_blob_oid": "53ded09702688224d64cc90562680888be13b20a",
+      "mode": "100644",
+      "size_bytes": 614,
+      "sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json",
+      "git_blob_oid": "b513f06d585f9630d94af72fedd631fb675db2b1",
+      "mode": "100644",
+      "size_bytes": 741,
+      "sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json",
+      "git_blob_oid": "ba90ec00f6d164af24f7681e30943aa516d118c7",
+      "mode": "100644",
+      "size_bytes": 702,
+      "sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json",
+      "git_blob_oid": "0612e3144c588a9473bdba02c4afac4c2360695c",
+      "mode": "100644",
+      "size_bytes": 725,
+      "sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json",
+      "git_blob_oid": "9f68152608a61c67ccba881461cafe739a7d3584",
+      "mode": "100644",
+      "size_bytes": 707,
+      "sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json",
+      "git_blob_oid": "6a28904b29c019a820211ab92159debbbb1d3ee2",
+      "mode": "100644",
+      "size_bytes": 795,
+      "sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86"
+    }
+  ],
+  "supplementary_checks": [
+    {
+      "name": "entry receipt fresh independent run and zero failures",
+      "status": "PASS"
+    },
+    {
+      "name": "single fixed commit across all 15 unique source paths",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: backend/java/pom.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: backend/pyproject.toml",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: frontend/package.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: LICENSE",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git object identity and raw bytes: tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest listed artifacts exact size and raw hashes",
+      "status": "PASS"
+    },
+    {
+      "name": "31 unique facts and 31 unique evidence",
+      "status": "PASS"
+    },
+    {
+      "name": "five source inputs use same pinned raw blobs and revision",
+      "status": "PASS"
+    },
+    {
+      "name": "all evidence source files close over fixed blob bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "all eight amendment entries exactly bind old new selected fields",
+      "status": "PASS"
+    },
+    {
+      "name": "eight npm selections independently resolve RFC6901 pointer strings",
+      "status": "PASS"
+    },
+    {
+      "name": "all selected hashes unchanged and fact report semantics unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "parent and replacement raw canonical pins distinguish formats",
+      "status": "PASS"
+    },
+    {
+      "name": "observation remains draft pending unlicensed expression",
+      "status": "PASS"
+    },
+    {
+      "name": "original approval and A binding fields remain null",
+      "status": "PASS"
+    },
+    {
+      "name": "entry script pin agrees with independently executed receipt",
+      "status": "PASS"
+    }
+  ],
+  "public_scope": {
+    "third_party_bodies": false,
+    "blind_case_answers": false,
+    "absolute_local_paths": false,
+    "secrets": false,
+    "databases_or_archives": false
+  },
+  "publishing": {
+    "committed": false,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+  "token_note": {
+    "exact": "本次运行精确token数不可获得",
+    "initial_estimate": "3,000～6,000",
+    "actual_within_estimate": null
+  },
+  "supplementary_reproduction": {
+    "command": [
+      "node",
+      "--input-type=module"
+    ],
+    "input_transport": "PowerShell单引号here-string经stdin",
+    "exit_code": 0,
+    "checks_pass": 28,
+    "checks_fail": 0,
+    "source_kind": "原实际stdin程序的完整28项检查前缀；只省略output路径及wx存在守卫、review构造和写入段，以便只读复现。保留执行过的全部断言，不添加新断言。",
+    "stdin_source": "import {readFileSync,writeFileSync,existsSync} from 'node:fs';\nimport {createHash} from 'node:crypto';\nimport {execFileSync} from 'node:child_process';\nconst hash=(v,alg='sha256')=>createHash(alg).update(v).digest('hex');\nconst raw=p=>readFileSync(p), load=p=>JSON.parse(raw(p));\nconst sort=v=>Array.isArray(v)?v.map(sort):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,sort(v[k])])):v;\nconst canon=v=>hash(JSON.stringify(sort(v)));\nconst base='tests/fixtures/notice-license-facts-v3', r=base+'/revisions/source-binding-r2';\nconst receiptPath='tmp/luna-r2-review-20261012-223546.json', receipt=load(receiptPath);\nconst manifest=load(r+'/manifest.json'), amend=load(r+'/amendment.json'), current=load(r+'/facts.json'), old=load(base+'/facts.json');\nconst git=args=>execFileSync('git',args,{encoding:null,timeout:20000,maxBuffer:16777216,env:{...process.env,GIT_NO_LAZY_FETCH:'1',GIT_NO_REPLACE_OBJECTS:'1'}});\nconst checks=[]; const check=(name,condition)=>{checks.push({name,status:condition?'PASS':'FAIL'});if(!condition)throw Error(name);};\ncheck('entry receipt fresh independent run and zero failures',receipt.generated_at>'2026-10-12T14:35:00Z'&&receipt.receipt_checks.pass===221&&receipt.receipt_checks.fail===0&&receipt.commands.every(c=>c.exit_code===0));\ncheck('single fixed commit across all 15 unique source paths',manifest.source_commit==='9d67b88f39fa4aaa8ab24048aea224204eabd490'&&manifest.sources.length===15&&new Set(manifest.sources.map(s=>s.path)).size===15&&manifest.sources.every(s=>s.source_commit===manifest.source_commit));\nconst blobs=[];const sourceBytes=new Map();\nfor(const s of manifest.sources){\n const tree=git(['ls-tree','-z',manifest.source_commit,'--',s.path]).toString('utf8');\n const m=/^100644 blob ([a-f0-9]{40})\\t([^\\x00]+)\\x00$/.exec(tree);\n if(!m||m[2]!==s.path)throw Error('not exact regular blob');\n const b=git(['cat-file','blob',m[1]]);\n const objectHash=hash(Buffer.concat([Buffer.from(`blob ${b.length}\\0`),b]),'sha1');\n check('Git object identity and raw bytes: '+s.path,objectHash===m[1]&&b.length===s.size_bytes&&hash(b)===s.sha256);\n sourceBytes.set(s.path,b);blobs.push({path:s.path,git_blob_oid:m[1],mode:'100644',size_bytes:b.length,sha256:hash(b)});\n}\ncheck('manifest listed artifacts exact size and raw hashes',manifest.artifacts.every(a=>raw(r+'/'+a.path).length===a.size_bytes&&hash(raw(r+'/'+a.path))===a.sha256));\ncheck('31 unique facts and 31 unique evidence',current.facts.length===31&&current.evidence.length===31&&new Set(current.facts.map(f=>f.fact_id)).size===31&&new Set(current.evidence.map(e=>e.evidence_id)).size===31);\ncheck('five source inputs use same pinned raw blobs and revision',current.source_inputs.length===5&&current.source_inputs.every(s=>sourceBytes.has(s.path)&&hash(sourceBytes.get(s.path))===s.source_file_sha256&&s.source_revision===manifest.source_commit));\ncheck('all evidence source files close over fixed blob bytes',current.evidence.every(e=>sourceBytes.has(e.source_path)&&hash(sourceBytes.get(e.source_path))===e.source_file_sha256));\nconst changes=current.evidence.filter(e=>old.evidence.find(p=>p.evidence_id===e.evidence_id).source_file_sha256!==e.source_file_sha256);\ncheck('all eight amendment entries exactly bind old new selected fields',changes.length===8&&amend.affected_evidence.length===8&&new Set(amend.affected_evidence.map(e=>e.evidence_id)).size===8&&changes.every(e=>{const a=amend.affected_evidence.find(a=>a.evidence_id===e.evidence_id),p=old.evidence.find(p=>p.evidence_id===e.evidence_id);return a&&a.source_path===e.source_path&&a.source_revision===manifest.source_commit&&a.previous_source_file_sha256===p.source_file_sha256&&a.corrected_source_file_sha256===e.source_file_sha256&&a.selected_content_sha256===e.selected_content_sha256&&e.source_path==='frontend/package.json';}));\nconst packageBlob=JSON.parse(sourceBytes.get('frontend/package.json'));\ncheck('eight npm selections independently resolve RFC6901 pointer strings',changes.every(e=>{const selected=e.selected_json_pointer.split('/').slice(1).reduce((o,t)=>o[t.replaceAll('~1','/').replaceAll('~0','~')],packageBlob);return typeof selected==='string'&&hash(selected)===e.selected_content_sha256;}));\ncheck('all selected hashes unchanged and fact report semantics unchanged',current.evidence.every(e=>old.evidence.find(p=>p.evidence_id===e.evidence_id).selected_content_sha256===e.selected_content_sha256)&&canon(old.facts)===canon(current.facts)&&canon(old.report_v3_rows)===canon(current.report_v3_rows));\ncheck('parent and replacement raw canonical pins distinguish formats',hash(raw(base+'/facts.json'))===amend.parent.file_sha256&&canon(old)===amend.parent.canonical_package_sha256&&hash(raw(r+'/facts.json'))===amend.replacement.file_sha256&&canon(current)===amend.replacement.canonical_package_sha256&&amend.replacement.file_sha256!==amend.replacement.canonical_package_sha256);\ncheck('observation remains draft pending unlicensed expression',current.package_status==='draft_facts_only'&&current.facts.every(f=>f.authorization_status==='pending'&&f.license_expression_id===null));\ncheck('original approval and A binding fields remain null',amend.independent_review===null&&amend.human_approval===null&&amend.a_terminal_readback===null&&manifest.independent_review===null&&manifest.a_terminal_readback===null);\nconst pinPaths=[r+'/facts.json',r+'/manifest.json',r+'/amendment.json',base+'/facts.json',base+'/generate.mjs',base+'/fixed-git-source.mjs','docs/p1/p1-b-evidence-followup-20261012.mjs','docs/p1/p1-b-evidence-followup-20261012.json','docs/p1/p1-b-validation-20261012.json','docs/p1/p1-b-offline-audit-20261011.json','backend/app/detectors/license_notice_facts_v3_adapter.py','backend/app/p1/notice_source_adapter.py'];\nconst pins=pinPaths.map(path=>({path,size_bytes:raw(path).length,sha256:hash(raw(path))}));\ncheck('entry script pin agrees with independently executed receipt',pins.find(p=>p.path===receipt.verification_entry.path).sha256===receipt.verification_entry.sha256);\n",
+    "stdin_sha256": "31ed19de17d837bea217339dccae9e0e71a6a27cef92c2d90c2ebf75a81ff662",
+    "replay_powershell": "(Get-Content -LiteralPath docs/p1/b03-r2-luna-review-20261012.json -Raw | ConvertFrom-Json).supplementary_reproduction.stdin_source | node --input-type=module",
+    "replay_note": "在仓库根目录执行；成功exit0，检查抛错则非0。依赖本review所pin的独立tmp原回执。此次仅补录实际检查代码，未重复运行28项。"
+  }
+}
