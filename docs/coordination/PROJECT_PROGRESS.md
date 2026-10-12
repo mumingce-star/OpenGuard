@@ -2110,3 +2110,124 @@ Owner已允许B以A afca4c26c2fa45fa285fc9cabf48f52c54a59229的P2 v1合同/Schem
 - 当前工作分支 codex/scan-reliability-integration 已合入 P2 前端 origin/codex/p2-readiness@9ad9998（合并 326c226）及 M1 交接 origin/codex/p2-m1-blocker-handoff-20261011@0db50a9（合并 8ef9070）。上方准备记录为历史状态，本条为最新本地合并状态；main/integration/p1 未改，尚未推送本轮合并。
 - 本轮前端 133/133 测试、TypeScript 检查、Vite 生产构建及 diff-check 通过。新增版本化 P2 工作台、L1 候选与 L2 回答/材料交互代码；真实目标机与后端写入、旧 Formal、Owner/来源及前端签收仍待 A/Owner/xzb，P2 整体 PARTIAL。
 - 可独立验证前端构建和合成合同交互、既有离线扫描/材料/结果链；可参赛仍需资格材料、目标机及 Java 核心签收；完整作品仍需正式跨栈闭环与交付材料；竞争力仍需真人 Gold、独立 Bench/holdout、对比消融及性能复现。Root 负责合并发布，A/前端负责联调，Luna/Sol 负责独立审核。
+
+## 2026-10-12 21:28 后端B截图两例交付（PARTIAL，本地待发布）
+
+| 本轮及累计完成 | 未完成／责任 | 验证与GitHub状态／下一步 |
+|---|---|---|
+| 新增p2b-two-case-handoff.md、p2b-two-case-index.json及validation；复用is-number@7.0.0与lodash@4.17.21全部原ID/Binding/GET/Hash/manifest Evidence/Result1→2/同版Summary。is-number为最接近文本支持样例，未冒称真实正向用途；lodash为范围缺口，未断言许可禁止。 | 真实正向用途缺：Owner真实用途/交付范围，指定审核人适用性与履行，A可信来源与Evidence闭包。官方npm原始响应/发行包与获取回执只读位置由A/原件保管方提供；现有M1发行包摘要不跨scan借用。 | 本轮19组离线Hash/指针/闭包/版本检查通过；当前前端8历史对象验证通过，网络0。不是新live GET/接收机或官方原字节核验。新增文档本地未提交/推送；旧B已发布与当前集成本地状态分开。 |
+| 七用途原值共14null保留，材料pending，新增事实/Evidence/正向许可建议0，未重复生成业务对象。 | 旧完整Formal、旧版Summary原字节、受准环境接收签收仍待A/前端；Python现有venv启动失败，未更改环境或声称重跑120测试。 | 公共Schema/代码未改；diff-check及新文档敏感/空白检查通过。优先拿已有官方原始记录，不重复抓取LICENSE；审核与来源到位后B继续核对。 |
+
+可独立运行既有离线核对/文本定位与前端静态交互，历史支持环境扫描/报告可按历史证据演示。尚无新可信正向用途、完整旧Formal及跨栈接收签收。可报名/参赛仍待资格权利/目标机/Java核心；完整作品仍待正式闭环/独立审核/端到端/发布及材料；竞争力仍待真人Gold/新holdout/对比消融/质量性能复现。不编造百分比。本轮不接管M1在途技术补件及STOP。
+
+
+## 2026-10-12 P2 B：M1技术补件与版本对象对齐（PARTIAL）
+
+| 本轮/累计成果 | 未完成及责任 | 验证、发布与下一步 |
+|---|---|---|
+| 本轮三份草稿：M1五项补件、五条对象链/不同摘要/接口和版本差异、A–H及Owner/审核者/前端/Root12项依赖；累计B3真实TEST_ONLY链、四锚点、已发布源码/前端复用。 | A唯一获批运行组合/受信来源/归档关系/Evidence/coverage/npmDTO/完整旧Formal/恢复；ec4c680源码不可本机解析，capture/resolve映射和M1完整ID/Hash/GET缺。 | 本轮60静态检查PASS，含9Result摘要及21null；历史120B/133前端/build/Root12静态复用。当前增量仅本地未提交；旧B ca0dc31与前端7dd84b5已发布，本地50d8704合入尚未推送。 |
+| 三例21null/pending、Formal不变，新事实/Evidence/正向0；M1原LICENSE已持有，不重索或重复生成。 | Owner用途/范围/履行与M1明确续接，cz/审核者独立确认；前端最终批准27GET清单及获准根真POST/CAS/幂等/超时/重启/浏览器签收。 | M1 STOP保持；来源、适用性、履行分开；未决请求仅内存。普通pending材料保存不强求肯定人审。 |
+| 当前离线文档收口，源码/测试/Schema及并行B两例工作保护。 | Python3.12启动不可用；Windows geteuid、NOTICE父本、baseline历史失败、完整日志逐字阅读门禁仍开。 | Node现有环境核对JSON/Hash/引用/diff通过；不装依赖、不服务/网络/数据库/模型/提交/推送/合并/部署。 |
+
+入口docs/p2/m1-b-technical-supplement-20261012.md及机器表/validation。已有离线核对/文本定位/前端静态交互可独立验证，历史支持环境扫描/候选/报告依历史演示；新可信许可结论、完整旧Formal和跨栈真实签收尚未具备。可报名/参赛仍须资格权利/目标机/Java核心；完整作品须正式闭环/独立审核/端到端/发布与报告视频匿名资源AI材料；竞争力须真人Gold、新holdout、对比消融和质量性能复现。不报百分比，P2 PARTIAL，当前增量交Owner复核。精确token数不可获得，开工估算8,000～16,000，范围未扩张，实际是否在区间不可核定。
+
+### 2026-10-12 21:47:38 B：用户指定npm交接路径已核对，缺口保持
+
+用户提供tests/fixtures/p2b/frontend-handoff-draft.json；本轮原字节19962 bytes、SHA256 c5aa0ffdfd1e60b5beb2fbc4362375893a58f226a1aa8b517bcd68dc73d65142，与既有two-case-index的source pin相同，/npm全部原字段一致。其/npm.state仍blocked_awaiting_trusted_egress，UTC/final URL/HTTP/响应Hash/大小/policy均null，official_metadata_observed=false；formal_fields_pending_a仍包含official_npm_get_receipt。已核对关联source-index/three-scan-readback，只记录Git tag/材料/扫描观察，不能补出官方获取原件。本轮完成路径核对，无新业务工件；原任务仍PARTIAL。A/原件保管方需交付已有官方精确版本原始响应与获取回执，若未取得则由A按既有出口授权执行；B不重新抓取或提升pending。本轮不提交/推送，项目正式闭环及各参赛门禁不变。
+
+
+## 2026-10-12 P2 B 既有六份交付复核（本轮复核收口，业务/发布PARTIAL）
+
+| 本轮与累计 | 剩余/责任 | 验证/发布/下一步 |
+|---|---|---|
+| 两例及M1六份草稿保持原字节，三例与v6不同链/Binding/版本/前驱/同版Summary/Evidence闭包/21null复核。没有新工件或产品修改。 | A可信来源/Evidence/coverage/npmDTO/旧完整Formal/最终组合；保管方官方响应回执及TRANSFER/RESULT索引；Owner范围用途/审核履行/M1续接；前端真接收；Root发布。 | 本轮19组离线复核PASS，61摘要大小引用/29文件/81Pointer/9Result自摘要；初次检查器3组误解析非JSON失败纠正后仅重跑失败组。历史B120、前端133/build与其他静态验收不相加。 |
+| 四锚点/两例索引/M1五项草稿/已发布B与前端直接复用，新事实Evidence正向0，M1 STOP保留。 | npm定位/P2draft路径已收工，仍无真实响应；不扩本机搜索/重索LICENSE或阶段1整包。ec4c680/旧capture映射/M1对象/27批准GET清单缺。 | 六份脱敏交付及必要P2治理追加仅列发布白名单，敏感模式0命中；无提交/推送/合并/部署；P1并行及reports保护。 |
+
+历史支持环境扫描报告可演示，离线核对/文本定位/前端静态可验证；尚无新可信许可正向/完整旧Formal/跨栈签收。报名参赛资格权利/目标机/Java，完整作品正式闭环/独立审核/端到端/发布材料，竞争力真人Gold/holdout/对比消融/性能仍独立待验。完整历史阅读/Python环境/Windows/NOTICE/baseline门禁未关闭；源码无改，未执行Python/DTO/Schema/pytest重跑。精确token不可获得，估算3,000～7,000，范围未扩，无法核定实际是否在区间。
+
+## 2026-10-12 P1 B 证据续核（PARTIAL，仅只读盘点）
+
+| 本轮完成 / 累计可复用 | 未完成与责任 | 验证 / 发布 / 下一步 |
+|---|---|---|
+| r2固定Git15source/31Evidence来源及选定字段SHA、新旧file/canonical摘要、8变更、31fact闭包；新只读复核入口/机器回执。旧包/旧审计字节保留。 | 完整历史阅读门禁未满足，未产品修改；Luna/Sol独立审核；A先确认v3合法消费路径、新事实版本/绑定及旧结果历史/失效状态。 | 本轮221机器检查PASS/0FAIL（不是pytest/独立签收）；生成器/B06 CLI通过。09c61cb/8f9db3c历史工作分支已发布且本地HEAD/origin缓存包含；integration/main包含关系未证实，本轮四工件仅本地未提交。 |
+| B01 28fixture/3manifest身份及SHA；B02 v2保存17候选Hash/Pointer/Evidence、2零候选/0义务；B05 30台账/25固定归档/5失败Hash闭包；B06 314未裁决、14train/dev重复组、224无答案入口/空模板。 | A固定Git及ZIP输入→库存→终态→Assessment→NOTICE STAGED/BOUND→Draft→Report→下载→重启同版真实链/实际Profile；前端同ID/版本API浏览器及下载SHA；真人双盲/第三人裁决、Luna新盲集、Sol等级批准。 | Python本轮启动101未执行detector/audit/pytest；原来源逐行核验沿用已pin旧审计，不冒称本轮重新解压。旧repeated_match_keys=18是额外重复观察数，不是18组；全split未重算。无正式Gold/指标。 |
+| NOTICE两条历史excerpt失败定位，当前夹具/模型与6dc340父本基线字节相同；工厂已经接lifecycle/BOUND/Draft/Report，不重实现。B07采样/字段与工具边界已交接。 | A维护生产接线夹具缺excerpt_bytes_sha256，受支持环境复跑并交真实链；A受控Linux原测量。N2/N3保持Owner已接受deferred。 | Linux历史2FAIL和Windowssetup/current环境失败分开；本轮未修复/重跑。B07合成工具15检查PASS/0FAIL，无实测；重复receipt拒绝，run_id唯一及input/config cohort另对账。Docker只读查询1，不服务启停。 |
+
+入口docs/p1/p1-b-evidence-followup-20261012.md/.mjs/.json与p1-b-validation-20261012.json；A/前端/真人/Root共14项精确依赖和发布白名单已准备，未实际发送/签收。保护P2/用户未提交/reports/缓存；无网络、业务DB、模型、stage/commit/push/merge/deploy。无新增第三方依赖/来源。
+
+累计受支持环境历史Git/ZIP扫描/候选/报告与B离线工具可复用，当前Node证据入口可独立运行；本机Python失效不称所有能力此刻可运行。NOTICE真实新绑定/浏览器/恢复和P1独立审核/正式Gold/受控性能/集成发布未关闭。报名参赛仍须资格权利/目标机/Java核心；完整作品须正式闭环/独立接收/发布及匿名报告视频资源AI材料；竞争力须真人Gold/new holdout/对比消融与可信质量性能。不编完成百分比。精确token不可获得，开工估算12,000～24,000，范围收口只读记录，整体PARTIAL，无法核定实际是否在区间。
+## 2026-10-12 P2 B 最新条件续接计划（分析交付，业务PARTIAL）
+
+本轮新增docs/p2/p2b-next-task-plan.md，归纳P2主线、B已做/当前/条件任务、八项A与前端/Owner/保管方资料、解除条件及中文Codex指令。纳入21:47npm路径与21:57六工件复核收口：无新输入或具体缺陷时，不重复现有复核/文档/回归；可信来源、用途范围、新Evidence、旧完整Formal、接收机/M1续接和发布仍分项等待。累计实现/四锚点/两例/M1草稿及白名单直接复用。11引用存在、空白/敏感模式0；不重跑产品测试。旧B ca0dc31/前端7dd84b5有历史功能分支发布记录，本轮计划仅本地未提交，未在线远端核验或提交推送。Root独立审核，A/Owner/前端按件解除条件，B只核验实际增量。服务/网络/数据库/模型/部署均无。
+
+当前离线核对/文本定位/前端静态可验证，支持环境扫描报告有历史证据；尚缺新可信正向/完整旧Formal/跨栈真签收。本机Python及完整历史阅读限制保留；资格权利/目标机/Java核心、完整作品闭环/审核/端到端/发布材料、竞争力Gold/holdout/对比消融/质量性能分别未关。不编百分比。精确token不可获得，估算4,000～8,000，实际区间不可核定。
+
+### 2026-10-12T22:25:40 P2 B条件续接：新原件并行核验中
+
+本轮状态核对复用21:57六工件验收与22:06计划，不重跑或改业务工件。22:21:39另一个后端B任务登记收到10份npm/M1原始文件，正在核验，尚无该任务收工回执；这不是继续使用旧draft冒充原响应，也尚不证明官方来源/适用性。本轮不争写其p2b-npm-original-readback.md/.json；先由该任务出具Manifest/Hash/身份/版本/获取/绑定分项结果，再缩减缺口，不重复索取同批材料。共享日志此前“未见新原始文件”快照已追加AMENDMENT更正。A受信来源/Evidence/coverage/最终组合/旧Formal、Owner范围用途/履行及M1明确续接、前端真实接收、Root独立审核发布仍分别待对应证据与授权。M1 STOP、21null/PARTIAL保留，收到资料不等于取得产品或发布权。
+
+当前HEAD50d8704，既有六工件白名单复用；本轮白名单增量仅日志四条与本进度追加，其他任务产物不连带。计划Hash/日志前缀/敏感空白核对通过，业务测试0，B120/前端133/build与旧静态记录仅历史。本轮不修改产品，不网络/服务/库/模型/提交发布；完整历史阅读和Python/Windows/NOTICE/baseline限制保留。离线核对/文本定位/前端静态依既有验收可验证；新可信候选/完整旧Formal/跨栈签收未具备；资格权利/目标机/Java、完整作品闭环审核材料发布、竞争力Gold/盲集对比消融性能仍待。精确token不可获得，开工估算3,000～6,000，增加必要到件更正，无遥测不能核定实际区间。
+
+## 2026-10-12 22:27:40 B实际npm原件已到件（增量核对PASS，整体PARTIAL）
+
+用户转交10份实际npm/M1资料。本轮Manifest所列9件大小/SHA256及Manifest自身Hash已核对，10附件前后未变；npm元数据3199bytes SHA256 42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25，发行包3730bytes SHA256 7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e，元数据SHA1/SHA512 SRI与发行包一致；4个普通成员完整内存检查，LICENSE1091bytes及package.json与转交成员逐字节相等。四锚点在本次实际发行包成员复核。此前原字节/获取记录未到件状态是历史，现在已解除；不能再重复索要同一原件。
+
+M1 scn_fb8856de/asm_6c664ed7的完整Binding/Material/Result r3已到件并核对，Result canonical Hash通过；两个对象通过现有前端离线验证器。全部30组检查PASS；历史结构化HTTP请求content_base64已省略，不重构请求/响应原报文；父文件不在包内，其excerpt归属Hash/区间仅记录转交声明。传输回执有URL/UTC/HTTP/headers/Hash/大小，但method/final URL/redirect/timeout/policy/验证器尚未明确，正式source admission仍NOT_ISSUED。元数据MIT仅provider声明，七用途null、材料pending、人审reviewer/date/scope空、真实范围/履行/新Evidence/旧Formal/接收机及M1 STOP独立保留，正向许可成果0。
+
+交付docs/p2/p2b-npm-original-readback.md/.json，只新增脱敏读回；未上传原件/第三方全文/归档/私有路径，未改旧两例/M1草稿/业务代码/Schema，源码与业务测试未重跑。无服务/网络/业务DB/模型/安装/目标代码执行/stage/commit/push。两份新记录本地待Owner复核，发布授权未授予。下一步A正式来源/Evidence/缺失传输字段，Owner与指定审核者用途范围/条款/履行及M1续接，前端获准根真签收，B按实际新增资料核对。当前离线原件核对可运行，历史支持扫描报告可演示；可信正向/完整Formal/接收机尚缺。资格权利/目标机/Java、完整闭环/独立审核/发布材料、Gold/holdout/对比消融/性能门禁不变，不报百分比。
+
+### 2026-10-12 22:38:01 P2 B原件后条件清单已更新（PARTIAL）
+
+p2b-next-task-plan.md末尾追加第九节，保留原16168bytes前缀/SHA a0287262102b53b5d08b5e010b7862de916040a9192fe8a65dc709438931182a；当前22417bytes/SHA 4d086834ae17a2cb87a77df7bfb9df790b173004ce108de81c379d7236ef27c1。引用已验npm-original-readback（JSON SHA e33a405de1e549e03a447f45935412a841588c204ff31cd804e6a2405ce79351），未重跑30组原件核对或新造同义工件。
+
+本轮把原件不可读/包内LICENSE关系/四锚点仅安装副本/M1 Material-Result完整身份四缺口标为解除，将五补件和T1–T9逐项缩减到A正式接纳/传输缺字段/可引用Evidence/coverage，Owner真实用途范围及M1产品续接，指定审核人适用性/条件/履行，完整旧Formal/同版Summary/Answer正文及前端真实接收、Root发布。M1真实七用途null/NOT_DECIDED、人审pending、正向许可0保持。已询问当前用户实际用途/交付范围/指定审核人，答复前不代填；原件同批不重复索取。B当前独立核验/技术交接已收口，P2整体PARTIAL。
+
+本轮只增量验证计划引用/读回状态/ID/前缀保护/Hash/敏感/空白与diff；未改源码/Schema/规则/旧回执，不服务/联网/业务DB/模型/安装/提交/推送，P1独立审查在途保护。旧B功能分支发布、本轮npm读回和计划本地增量分开，公开发布未授权。当前离线核对/文本定位/静态前端可验证，支持环境历史扫描报告可演示；可信真实正向/完整Formal/跨栈真签收尚缺。资格权利/目标机/Java；完整闭环/审核/端到端/发布材料；真人Gold/新holdout/对比消融/性能门禁独立待关闭。不报百分比。
+
+## 2026-10-12 22:53:49 P1 B独立上下文审查与依赖续接（PARTIAL）
+
+关联START 20261012-223207-GPT6-P1B独立审查续接。本轮实际派发并收到Luna/Sol角色的两份同机GPT-6 Codex独立上下文审查，不复制B原JSON当签收；既有入口各一次221机器PASS/0FAIL，Luna额外28与Sol额外9的检查各自保留、不相加，不是pytest/异机/真人或生产。r2固定来源观察PASS，Sol消费语义QUALIFIED，未发现新来源字节缺陷；v3 adapter caller pin及有限结构检查不替A验源/冻结Schema验收，局部无调用检索不证明部署状态。原manifest/amendment签收null及旧包/旧派生身份均未改。
+
+在现有docs/p1/p1-b-evidence-followup-20261012.md仅追加第10节：14依赖逐项发送/到件/验证，A-R2仅同机审查于2026-10-12到件，A意见仍缺；其余P1真实链/前端/真人/Linux仍未到。已有资料/缺件/负责方/解除条件/解锁入口复用第5节。可直接转交A/前端/真人的正文交当前Root，因无对应跨聊天发送工具，未称已向A/前端/真人发送或签收。P2十原件及其后续技术计划/用途查询成果不与P1互借。
+
+新必要工件只有docs/p1/b03-r2-luna-review-20261012.json与b03-r2-sol-review-20261012.json；同机审查附实际检查代码/命令/原件摘要。Sol复现前缀原省略检查输出/失败退出段，裸node exit0不能证明九项PASS；父明确该限制并要求补注，原九项执行结果保留，不重跑或篡改历史结果。两回执依赖本机tmp，异机需自有新输出/真实执行元数据，不能伪造字节相同或扩大材料。原四工件除MD末尾增量外保持原字节；validation的旧MD pin继续代表23900bytes历史前缀。
+
+累计B01离线Profile/B02候选/B03固定来源/B04 collector与严格Content/B05固定台账/B06空盲审入口/B07工具可复用；历史受支持扫描/报告可演示，本轮不声称当前Python或全栈可跑。NOTICE两历史Linux FAIL仍待A夹具修正和原节点支持环境复验，Windows setup与解释器/容器失败另列；N2/N3延期不新增阻断。A合法r2消费和Git/ZIP同版本input→inventory→terminal→Assessment→STAGED/BOUND→Draft→Report→下载/重启，实际Profile、受控Linux原测、前端同对象浏览器、真人双标/裁决/new holdout、Sol等级/Root发布与完整历史阅读仍开，整体PARTIAL。
+
+Git保持codex/scan-reliability-integration@50d8704；09c61cb/8f9db3c有历史工作分支发布，缓存包含关系未显示integration/main含它们；四续核工件及两review本地未发布，不核在线或部署。未stage/commit/push/merge/deploy/服务/网络/DB/安装/执行来源代码或修改产品。Root白名单仅前轮四工件、本轮两review与MD第10节和三治理追加片段，排除P2/reports/tmp/正文/归档/私有资料。无新第三方资源依赖，资源台账沿用。
+
+参赛仍须资格权利/目标机/Java核心，完整作品仍须真实闭环/接收机/审核/发布及材料，竞争力仍须Gold/new holdout/对比消融/可信质量性能，不报百分比。本次运行精确token数不可获得；父开工估算8,000～16,000，两个审查角色各3,000～6,000；增加必要复现注释/边界核阅，未扩产品范围，实际区间不可核定。
+
+### 2026-10-12 22:54:00 M1三项自动证据核查（PARTIAL）
+
+用户授权自动确认用途/交付范围/指定审核人。本轮新增docs/p2/m1-automated-confirmation-20261012.md/.json，读取752个tracked文件，35文件有is-number字面量，tracked可执行源码中直接包导入模式0；19份当前输入Hash/size固定且复核未变，16组静态检查PASS、输出JSON/定位/敏感/空白检查PASS。确认仓库用作扫描、npm响应与许可证材料/绑定测试演示对象，前端manifest/锁文件无依赖；tracked未见对应包目录/tgz，Docker含样例/校验器代码且Web最终阶段仅复制dist、tests/docs被上下文白名单排除。这只确认当前配置；未检最终镜像/基础工具内副本或交付manifest，不确认全部实际包分发。
+
+M1精确scn_fb8856de/asm_6c664ed7 v1保持，旧三例scn_761868e1不同，禁止跨scan代填。七用途null/NOT_DECIDED、人审reviewer/date/scope=null仍是实际记录；旧cz/授权审核者是补件角色，未发现真实任命/签认。自动技术审核者GPT-6 Codex不冒充许可真人；三项正式确认整体PARTIAL。Owner/A负责M1精确输入/用途，Owner交付维护者负责最终manifest/SBOM，Owner/指定审核者负责任命和独立审核；原许可/Evidence/Formal均不改。
+
+当前codex/scan-reliability-integration@50d8704，两核查工件仅本地未提交，未stage/commit/push/merge/deploy；原件及P1并行产物保护。本轮服务/联网/安装/模型/业务DB/目标代码/产品测试0，既有30组原件与历史测试不计本轮。离线核对/静态前端可验证、扫描报告依历史演示；真实可信正向/完整Formal/接收机闭环仍缺。资格权利/目标机/Java；完整闭环/审核/端到端/发布及材料；真人Gold/holdout/对比消融/质量性能门禁仍待，不报百分比。完整历史语义阅读限制保留。精确token不可获得，开工估算6,000～12,000，自动核查执行，正式业务仍PARTIAL，实际是否在区间无法核定。
+
+### 2026-10-12 23:13:14 M1用户三项答复已收到，正式状态仍PARTIAL
+用户明确仓库角色为扫描/npm元数据/许可证测试演示；M1自身用途未确认、七null保持。用户描述当前声明/测试/校验代码且未发现包源码/归档，但最终交付范围未确认，NOT_DECIDED保持；尚无可核实指定审核人，cz/授权审核者只责任描述，reviewer/date/scope空。答复记入next-task-plan末尾USER_CHAT_STATEMENT，与既有M1自动核查边界一致，不重复询问已答内容、不重跑检查，不写Formal/Result/新Evidence或改变Hash。下一步Owner/A给真正新增M1用途关联、最终交付manifest/SBOM与真实审核任命/结果；来源签发/旧Formal/接收机/发布各门禁独立待。计划与治理本地未发布，项目PARTIAL。
+
+
+## 2026-10-12 23:31:30 P2全景及后端B任务分工分析（分析交付，业务PARTIAL）
+
+| 本轮 / 累计 | 未完成 / 责任 | 验证 / 发布 / 下一步 |
+|---|---|---|
+| 在已有p2b-next-task-plan.md追加第十节：现行P2范围、已有模块、W1—W10按件依赖、A/前端/Owner增量清单和详细中文Codex指令。第九节到件及用户答复更新优先于旧描述。 | A来源接纳/正式Evidence/coverage/完整旧Formal与同版Answer/Summary；Owner真实用途范围/审核任命/M1续接；前端真实接收；Root独立发布。 | 计划原23939bytes前缀SHA保持；引用/围栏/空白/敏感检查PASS；本轮产品测试0，旧120/133/build/30等不重跑不相加。 |
+| B L1/材料/npm/对账模块、三例/v6回执、新npm/M1原件技术核对与前端工作台已有；不重新开发。 | M1七null/NOT_DECIDED/reviewer空及STOP保留；没有新可信许可正向结论。 | codex/scan-reliability-integration@50d8704，ahead7按当前缓存；旧功能分支已发布和本地待发布分开，本轮未stage/commit/push/PR/merge/deploy。 |
+
+现可独立复核离线原件/条款/绑定和静态前端，扫描报告可演示依支持环境历史回执，本机当前全栈未复验。尚缺真实可信条件候选、完整旧Formal及跨栈真签收。参赛资格权利/目标机/Java核心，完整作品闭环/独立审核/发布及匿名报告视频资源AI材料，竞争力真人Gold/new holdout/对比消融/可信质量性能分别待验，无统一分母不报百分比。完整历史逐字审阅门禁未满足；全文件机器检索不冒称语义全读。本次运行精确token数不可获得；估算8,000～16,000，分析与指令范围已交付，业务PARTIAL，实际区间不可核定。
+
+### 2026-10-12 23:39:50 后端B源码Word整理
+- 本轮：按用户要求，将backend/app/p2b六个现有模块整理为19页Word文档；679行源码逐行读回、六文件原字节SHA-256、OOXML完整性和有限敏感模式核验PASS；Word真实导出预览后逐页观察19页，修正目录表格宽度和标题样式。
+- 交付：仓库外获准artifact目录中的OpenGuard后端B代码说明.docx，仅本地交付；代码、契约、规则、第三方台账和业务证据未变化，无产品测试重跑。累计B离线候选/材料/npm/对账能力保持；A/Owner/审核人/前端的真实闭环仍待补，P2整体PARTIAL，GitHub本轮未发布。
+- 下一步：用户使用Word文档；原业务依赖按既有责任接续，不为文档整理重复索要原件。
+
+### 2026-10-12 23:59:39 P1 B最小协作请求核查（PARTIAL，无新增P1到件）
+
+本轮只读重点九工件/近期登记，摘要与22:57审查收工相同；23:28P1记录仅任务分析，P2用户答复/分析/Word和新条件续接另属在途，不当P1真链。B独立任务已收口，不派发/重跑两review、221/28/9、Bench/性能或业务测试，不新增同义工件，不改六份P1交付。
+
+Root请优先转发既有10.2节的三项最小请求：A-RUN实际完整运行SHA/镜像/有效非敏感配置；A-R2合法v3观察消费路径、pin、新版本及旧派生历史/失效；A-NOTICE两excerpt夹具UTF-8 retained/excerpt摘要修复、whole保留及支持环境原节点和collector/model/wiring回执。三项负责方均A，当前均待Root转发、未向A发送、到件日期null、审核未执行；分别由实际运行回执、A明确准入/版本意见、原始回归结果解除，不把Root可读当A收到。14依赖的其他字段/解除条件/解锁任务复用既有表，无新资料不另造清单。
+
+累计离线parser/候选/collector/固定来源/Bench台账/盲审入口/回执工具与同机机器审查可复用；A两输入同版真链/Profile/Linux、前端真实浏览器、真人Gold/new holdout、Sol等级、外部异机/Root发布仍缺。完整历史语义阅读门禁未满足，仅只读治理；NOTICE Linux两FAIL/Windows setup/解释器容器限制未关闭，N2/N3保持延期。Git 50d8704和origin缓存不变，旧09c61cb/8f9db3c功能分支发布、六工件本地未发布分开。仅本轮三治理追加片段交Root，P1/P2/reports/缓存均保护；无产品/规则/Schema/接口变更，无新资源依赖、网络/服务/DB/安装/被扫描代码执行/提交发布。参赛资格权利/目标机/Java、完整作品真实闭环/签收发布材料、竞争力真人Gold/对比消融/可信质量性能仍待。精确token不可获得；估算4,000～8,000，实际区间不可核定，未扩产品范围。
