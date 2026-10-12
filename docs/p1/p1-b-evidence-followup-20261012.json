@@ -1,0 +1,4170 @@
+{
+  "schema": "openguard.p1-b-evidence-followup/1",
+  "status": "PARTIAL",
+  "generated_at": "2026-10-12T13:50:26.544Z",
+  "verification_kind": "OFFLINE_MACHINE_SAME_AGENT_NOT_INDEPENDENT_ACCEPTANCE",
+  "environment": {
+    "platform": "win32",
+    "node": "v26.2.0"
+  },
+  "reading_gate": {
+    "satisfied": false,
+    "reason": "历史日志/进度未完整逐字阅读；仅安全只读盘点及记录，无产品修改"
+  },
+  "verification_entry": {
+    "path": "docs/p1/p1-b-evidence-followup-20261012.mjs",
+    "sha256": "acc8336a7f1c1a46cf94ee6732460d9c5421a9a509c5fc5083ef1c1d03e6c438"
+  },
+  "source_artifacts_before_sha256": {
+    "docs/p1/p1-b-offline-audit-20261011.json": "80fc67ccc2d00029a448e6d350f8ffd42ca66c49a80ef648eac85e32c07c26e4",
+    "tests/fixtures/notice-license-facts-v3/facts.json": "4f2a8304ad457dffdc7e4ba276e3602bf93b4f83b1e7e177bbcb84f4a8d841f7",
+    "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+    "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/amendment.json": "0e48d5bd2e063f1cd49426c199a82bbd40d913cf4cb24d9f1a4e2f9b1ef82389",
+    "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/manifest.json": "f5a1a2d5c44e04c6c9c64363f95a97fd0dfabbf4b3e07b45255f3163279f8990"
+  },
+  "checks": [
+    {
+      "name": "source_commit为固定commit",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:backend/java/pom.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:backend/pyproject.toml",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:frontend/package.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:LICENSE",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Git来源:tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json",
+      "status": "PASS"
+    },
+    {
+      "name": "修订与已发布Git工件字节一致:facts.json",
+      "status": "PASS"
+    },
+    {
+      "name": "修订与已发布Git工件字节一致:amendment.json",
+      "status": "PASS"
+    },
+    {
+      "name": "修订与已发布Git工件字节一致:manifest.json",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.root.license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.fastapi",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.packaging",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.pydantic",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.python-multipart",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.uvicorn",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.httpx2",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.jsonschema",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.python.pytest",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.java.spring-boot-starter-web",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.java.jackson-databind",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.java.json-schema-validator",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.java.spring-boot-starter-test",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.@tailwindcss--vite",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.react",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.react-dom",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.tailwindcss",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.@types--react",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.@types--react-dom",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.typescript",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.dependency.npm.vite",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-model-gpt2.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-model-bert-base-uncased.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-model-roberta-base.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-model-distilbert-base-uncased.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-model-all-minilm-l6-v2.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-dataset-imdb.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-dataset-squad.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-dataset-glue.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-dataset-numinamath-tir.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Evidence来源及选定字段:evidence.ai.hf-dataset-fineweb.declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "8条受影响Evidence与amendment一致",
+      "status": "PASS"
+    },
+    {
+      "name": "31事实及report行语义未改",
+      "status": "PASS"
+    },
+    {
+      "name": "选定内容Hash未改",
+      "status": "PASS"
+    },
+    {
+      "name": "old:file与canonical独立匹配",
+      "status": "PASS"
+    },
+    {
+      "name": "r2:file与canonical独立匹配",
+      "status": "PASS"
+    },
+    {
+      "name": "独立审核/真人/A读回保持null",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.root.openguard",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.fastapi",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.packaging",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.pydantic",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.python-multipart",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.uvicorn",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.httpx2",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.jsonschema",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.python.pytest",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.java.spring-boot-starter-web",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.java.jackson-databind",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.java.json-schema-validator",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.java.spring-boot-starter-test",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.@tailwindcss--vite",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.react",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.react-dom",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.tailwindcss",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.@types--react",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.@types--react-dom",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.typescript",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.dependency.npm.vite",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-model-gpt2",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-model-bert-base-uncased",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-model-roberta-base",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-model-distilbert-base-uncased",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-model-all-minilm-l6-v2",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-dataset-imdb",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-dataset-squad",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-dataset-glue",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-dataset-numinamath-tir",
+      "status": "PASS"
+    },
+    {
+      "name": "事实引用闭包:fact.ai.hf-dataset-fineweb",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-model-gpt2",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-model-bert-base-uncased",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-model-roberta-base",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-model-distilbert-base-uncased",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-model-all-minilm-l6-v2",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-dataset-imdb",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-dataset-squad",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-dataset-glue",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-dataset-numinamath-tir",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-dataset-fineweb",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-missing-license-and-revision",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-conflicting-declared-license",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v1:hf-noassertion-is-not-a-license-expression",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-model-bloom-560m",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-model-stable-diffusion-2-1",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-model-gpt2",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-model-bert-base-uncased",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-model-roberta-base",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-dataset-openr1-math-220k",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-dataset-c4",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-dataset-imdb",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-dataset-squad",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-dataset-glue",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-missing-observation-fields",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-conflicting-license-array",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-unsupported-metadata-fields",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:huggingface:v2:hf-illegal-identity",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile:modelscope:v1:ms-dataset-demo",
+      "status": "PASS"
+    },
+    {
+      "name": "B02仅固定v2 pin",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_f2251add-0971-5434-b998-f3044e47c766",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_c0b6baae-c7e4-552a-939c-6fdfb1af2956",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_277842de-33d5-5ac7-b4ac-d1d90786566c",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_deafeb6b-9a29-5e7d-87fd-cbddc5d95dad",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_96e989ba-3712-5aa5-8151-e687349084b4",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_2a564146-036d-5f7f-a1db-3572b7f4ac3e",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_6c909a6d-db3d-583f-8764-ec50bd827ad8",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_a24aed1c-892d-54de-8a6b-4c03ae8d312b",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_12fb89f8-0926-5df6-bcc4-eb43de15ec8f",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_eb606b14-c8a4-5d84-88bb-5f177ee5771c",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_919b103b-78f1-50df-a1c2-8f9e6bf8d614",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_4e3fe0be-bfde-5a8d-b911-61a477f5c7f8",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_ff19644e-d986-5575-92cf-71409bfc156f",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_26af1e2f-723a-5960-952b-07095ed77d35",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_dedd94ee-f20c-5ad3-ac95-5775d7b63c10",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_a22d12af-a76c-5c94-af45-11edaaa57332",
+      "status": "PASS"
+    },
+    {
+      "name": "历史候选绑定:b02_13f58641-6a26-599c-9cac-287ac632df3e",
+      "status": "PASS"
+    },
+    {
+      "name": "Bench冻结和历史审计摘要闭包",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:sampleproject",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:sampleproject",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:sampleproject",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:smolagents",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:smolagents",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:smolagents",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:openai_python",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:openai_python",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:openai_python",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:openai_node",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:openai_node",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:openai_node",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:anthropic_python",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:anthropic_python",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:anthropic_python",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:anthropic_ts",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:anthropic_ts",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:anthropic_ts",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:google_python",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:google_python",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:google_python",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:google_js",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:google_js",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:google_js",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:modelscope",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:modelscope",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:modelscope",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:modelscope_agent",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:modelscope_agent",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:modelscope_agent",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:litellm",
+      "status": "PASS"
+    },
+    {
+      "name": "失败不删除:litellm",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:haystack",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:haystack",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:haystack",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:llama_index",
+      "status": "PASS"
+    },
+    {
+      "name": "失败不删除:llama_index",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:langchain",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:langchain",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:langchain",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:gradio",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:gradio",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:gradio",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:huggingface_hub",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:huggingface_hub",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:huggingface_hub",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:hf_datasets",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:hf_datasets",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:hf_datasets",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:diffusers",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:diffusers",
+      "status": "PASS"
+    },
+    {
+      "name": "train/dev artifact:diffusers",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:vllm",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:vllm",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:autogen",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:autogen",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:crewai",
+      "status": "PASS"
+    },
+    {
+      "name": "失败不删除:crewai",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:mcp_python",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:mcp_python",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:mcp_ts",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:mcp_ts",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:openai_cookbook",
+      "status": "PASS"
+    },
+    {
+      "name": "失败不删除:openai_cookbook",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:gemini_cookbook",
+      "status": "PASS"
+    },
+    {
+      "name": "失败不删除:gemini_cookbook",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:openai_quickstart_python",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:openai_quickstart_python",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:openai_quickstart_node",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:openai_quickstart_node",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:anthropic_quickstarts",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:anthropic_quickstarts",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:transformers_js_examples",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:transformers_js_examples",
+      "status": "PASS"
+    },
+    {
+      "name": "采集台账:gemini_quickstart",
+      "status": "PASS"
+    },
+    {
+      "name": "固定归档:gemini_quickstart",
+      "status": "PASS"
+    },
+    {
+      "name": "30来源/25fixed/5失败保留",
+      "status": "PASS"
+    },
+    {
+      "name": "314分歧及14组train/dev重复保留",
+      "status": "PASS"
+    },
+    {
+      "name": "224入口无答案/模板未签",
+      "status": "PASS"
+    },
+    {
+      "name": "两条原始JUnit完整摘要",
+      "status": "PASS"
+    },
+    {
+      "name": "当前夹具与失败父本字节一致",
+      "status": "PASS"
+    },
+    {
+      "name": "当前严格内容模型与父本一致",
+      "status": "PASS"
+    },
+    {
+      "name": "历史/修订工件未写:docs/p1/p1-b-offline-audit-20261011.json",
+      "status": "PASS"
+    },
+    {
+      "name": "历史/修订工件未写:tests/fixtures/notice-license-facts-v3/facts.json",
+      "status": "PASS"
+    },
+    {
+      "name": "历史/修订工件未写:tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json",
+      "status": "PASS"
+    },
+    {
+      "name": "历史/修订工件未写:tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/amendment.json",
+      "status": "PASS"
+    },
+    {
+      "name": "历史/修订工件未写:tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/manifest.json",
+      "status": "PASS"
+    }
+  ],
+  "commands": [
+    {
+      "command": [
+        "node",
+        "tests/fixtures/notice-license-facts-v3/generate.mjs",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"facts\":31,\"evidence\":31,\"affected_evidence\":8,\"output\":\"tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json\"}"
+    },
+    {
+      "command": [
+        "node",
+        "benchmarks/taxonomies/validate-b06-fn-fp-taxonomy.mjs",
+        "benchmarks/taxonomies/b06-fn-fp-taxonomy.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"valid\":true,\"errors\":[],\"category_count\":7,\"gold_frozen\":false}"
+    },
+    {
+      "command": [
+        "node",
+        "benchmarks/taxonomies/validate-b06-rule-improvement-ledger.mjs",
+        "benchmarks/taxonomies/b06-fn-fp-taxonomy.json",
+        "benchmarks/taxonomies/b06-rule-improvement-ledger.json"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"valid\":true,\"errors\":[],\"gold_frozen\":false,\"formal_metrics_claimed\":false}"
+    }
+  ],
+  "sections": {
+    "git": {
+      "head": "50d8704a362f6e6615c1ed95d7f06da2bc3e871f",
+      "branch": "codex/scan-reliability-integration",
+      "cached_refs": {
+        "origin/codex/scan-reliability-integration": "246bfba90c6094db7c7bad3c4d5cdcdb693ae9f1",
+        "origin/integration/p1": "aabd7940f65ec8a78b33c863b4db81b400509b7d",
+        "main": "074cccdbda14f9bcf9be5184c577541959e83209",
+        "origin/main": "476d954998be6ed943532791530f5d6234f4893f"
+      },
+      "containing_refs": {
+        "09c61cbf62911773fc38d8a6d4333ef356fd48cf": [
+          "codex/scan-reliability-integration",
+          "remotes/origin/codex/scan-reliability-integration"
+        ],
+        "8f9db3c3615cfe97d9748ff7c90ac7f4e73b654b": [
+          "codex/scan-reliability-integration",
+          "remotes/origin/codex/scan-reliability-integration"
+        ]
+      },
+      "remote_verified_this_run": false
+    },
+    "b03": {
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "sources": [
+        {
+          "path": "backend/java/pom.xml",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 1983,
+          "sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "actual_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "actual_size_bytes": 1983,
+          "status": "PASS"
+        },
+        {
+          "path": "backend/pyproject.toml",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 1001,
+          "sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_size_bytes": 1001,
+          "status": "PASS"
+        },
+        {
+          "path": "frontend/package.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 651,
+          "sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_size_bytes": 651,
+          "status": "PASS"
+        },
+        {
+          "path": "LICENSE",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 11357,
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "actual_file_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "actual_size_bytes": 11357,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 9341,
+          "sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "actual_file_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "actual_size_bytes": 9341,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 626,
+          "sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5",
+          "actual_file_sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5",
+          "actual_size_bytes": 626,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 620,
+          "sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795",
+          "actual_file_sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795",
+          "actual_size_bytes": 620,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 606,
+          "sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06",
+          "actual_file_sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06",
+          "actual_size_bytes": 606,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 623,
+          "sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648",
+          "actual_file_sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648",
+          "actual_size_bytes": 623,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 614,
+          "sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766",
+          "actual_file_sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766",
+          "actual_size_bytes": 614,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 741,
+          "sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916",
+          "actual_file_sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916",
+          "actual_size_bytes": 741,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 702,
+          "sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f",
+          "actual_file_sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f",
+          "actual_size_bytes": 702,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 725,
+          "sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc",
+          "actual_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc",
+          "actual_size_bytes": 725,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 707,
+          "sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9",
+          "actual_file_sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9",
+          "actual_size_bytes": 707,
+          "status": "PASS"
+        },
+        {
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json",
+          "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "size_bytes": 795,
+          "sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86",
+          "actual_file_sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86",
+          "actual_size_bytes": 795,
+          "status": "PASS"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "evidence.root.license",
+          "kind": "repository_file",
+          "locator": "LICENSE",
+          "source_path": "LICENSE",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "whole_file",
+          "source_file_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "selected_content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "actual_selected_content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "prior_source_file_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.fastapi",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.dependencies[fastapi]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "8d4541f2b94805fd330493f77ec273a03deb89a623d6408b919bcb2e07af9d72",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "8d4541f2b94805fd330493f77ec273a03deb89a623d6408b919bcb2e07af9d72",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.packaging",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.dependencies[packaging]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "b0ed3d65d95fc15ccc8dc5e02e997f2de85358cdcd15c0fdb1c0a4de13a25f97",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "b0ed3d65d95fc15ccc8dc5e02e997f2de85358cdcd15c0fdb1c0a4de13a25f97",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.pydantic",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.dependencies[pydantic]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "f7357a287249977e5e98778e77cb343901a033ba817758e4a7c64f2837df096b",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "f7357a287249977e5e98778e77cb343901a033ba817758e4a7c64f2837df096b",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.python-multipart",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.dependencies[python-multipart]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "994d37da08546ddcd189ee201f24b7cce420186a8d7cdb6a61be43e3ffccb04f",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "994d37da08546ddcd189ee201f24b7cce420186a8d7cdb6a61be43e3ffccb04f",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.uvicorn",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.dependencies[uvicorn]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "8b180c7986941523ee77737c2dcc4f2a568f1351f41fb4a85711104ca7b56a7b",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "8b180c7986941523ee77737c2dcc4f2a568f1351f41fb4a85711104ca7b56a7b",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.httpx2",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.optional-dependencies.dev[httpx2]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "1900e0a7a5a3fa89b64470f7cf07b465372233cf45c24e4c72155cfa4cac1c98",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "1900e0a7a5a3fa89b64470f7cf07b465372233cf45c24e4c72155cfa4cac1c98",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.jsonschema",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.optional-dependencies.dev[jsonschema]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "26c5a68f7225b548eda60ab6442a39deb2a532775129951916c67cf84d01be7b",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "26c5a68f7225b548eda60ab6442a39deb2a532775129951916c67cf84d01be7b",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.python.pytest",
+          "kind": "repository_file",
+          "locator": "backend/pyproject.toml#project.optional-dependencies.dev[pytest]",
+          "source_path": "backend/pyproject.toml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "toml_declaration",
+          "source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "selected_content_sha256": "59c2cfda3ce5d2e0c764f970febd72f2e945d11be273986db54e59f6f3fb547f",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3",
+          "actual_selected_content_sha256": "59c2cfda3ce5d2e0c764f970febd72f2e945d11be273986db54e59f6f3fb547f",
+          "prior_source_file_sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+        },
+        {
+          "evidence_id": "evidence.dependency.java.spring-boot-starter-web",
+          "kind": "repository_file",
+          "locator": "backend/java/pom.xml#dependency[groupId=org.springframework.boot;artifactId=spring-boot-starter-web]",
+          "source_path": "backend/java/pom.xml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "xml_dependency",
+          "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "selected_content_sha256": "666701249b83228c54bb2e024ea094014deef39fcbaf087138bf939eaa282eb2",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "actual_selected_content_sha256": "666701249b83228c54bb2e024ea094014deef39fcbaf087138bf939eaa282eb2",
+          "prior_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077"
+        },
+        {
+          "evidence_id": "evidence.dependency.java.jackson-databind",
+          "kind": "repository_file",
+          "locator": "backend/java/pom.xml#dependency[groupId=com.fasterxml.jackson.core;artifactId=jackson-databind]",
+          "source_path": "backend/java/pom.xml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "xml_dependency",
+          "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "selected_content_sha256": "7edc56060e48d63e66b499ef0ab124edca32475dc15611cae19f7db21e7b6365",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "actual_selected_content_sha256": "7edc56060e48d63e66b499ef0ab124edca32475dc15611cae19f7db21e7b6365",
+          "prior_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077"
+        },
+        {
+          "evidence_id": "evidence.dependency.java.json-schema-validator",
+          "kind": "repository_file",
+          "locator": "backend/java/pom.xml#dependency[groupId=com.networknt;artifactId=json-schema-validator]",
+          "source_path": "backend/java/pom.xml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "xml_dependency",
+          "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "selected_content_sha256": "c30bf92ab4547fe519cb1309d29073bb8696a6ea3abef137df5c8b1d8cee85cb",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "actual_selected_content_sha256": "c30bf92ab4547fe519cb1309d29073bb8696a6ea3abef137df5c8b1d8cee85cb",
+          "prior_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077"
+        },
+        {
+          "evidence_id": "evidence.dependency.java.spring-boot-starter-test",
+          "kind": "repository_file",
+          "locator": "backend/java/pom.xml#dependency[groupId=org.springframework.boot;artifactId=spring-boot-starter-test]",
+          "source_path": "backend/java/pom.xml",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "xml_dependency",
+          "source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "selected_content_sha256": "d4379a87a8daf53abeac32b81ce0b0619123214bfe334fdf83c00f3fa6da69d4",
+          "selected_json_pointer": null,
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077",
+          "actual_selected_content_sha256": "d4379a87a8daf53abeac32b81ce0b0619123214bfe334fdf83c00f3fa6da69d4",
+          "prior_source_file_sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.@tailwindcss--vite",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/dependencies/@tailwindcss~1vite",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde",
+          "selected_json_pointer": "/dependencies/@tailwindcss~1vite",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.react",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/dependencies/react",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "selected_json_pointer": "/dependencies/react",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.react-dom",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/dependencies/react-dom",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "selected_json_pointer": "/dependencies/react-dom",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.tailwindcss",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/dependencies/tailwindcss",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde",
+          "selected_json_pointer": "/dependencies/tailwindcss",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "3df918231ed648087dae8bdd6624d7d7b337ee4ca3694fe04b5ddb760bfa6cde",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.@types--react",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/devDependencies/@types~1react",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "selected_json_pointer": "/devDependencies/@types~1react",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.@types--react-dom",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/devDependencies/@types~1react-dom",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "selected_json_pointer": "/devDependencies/@types~1react-dom",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "d1d99be141a5641491fe73f4afb5d8a1869618d9a5d25081f78e450dc8141fa0",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.typescript",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/devDependencies/typescript",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "3af9aa1515fb306719690d68faeeba3baa17e906ed76725825dc7cf2755f00d4",
+          "selected_json_pointer": "/devDependencies/typescript",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "3af9aa1515fb306719690d68faeeba3baa17e906ed76725825dc7cf2755f00d4",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.dependency.npm.vite",
+          "kind": "repository_file",
+          "locator": "frontend/package.json#/devDependencies/vite",
+          "source_path": "frontend/package.json",
+          "source_url": null,
+          "source_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "selected_content_sha256": "2b25487b72c9ea7a8328bea959487b5dfe3efe583eb2c25713e8f339b34303fc",
+          "selected_json_pointer": "/devDependencies/vite",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a",
+          "actual_selected_content_sha256": "2b25487b72c9ea7a8328bea959487b5dfe3efe583eb2c25713e8f339b34303fc",
+          "prior_source_file_sha256": "16e9db4fb169ef63a982912b983e8259332e580554a451e4053c3f43e73b05fc"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-model-gpt2.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json",
+          "source_url": "https://huggingface.co/api/models/openai-community/gpt2",
+          "source_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9",
+          "selected_content_sha256": "78198e7ab262449ad56e4ca48e10a36f98dda6fd5a377875dd7425afcca2312b",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9",
+          "actual_selected_content_sha256": "78198e7ab262449ad56e4ca48e10a36f98dda6fd5a377875dd7425afcca2312b",
+          "prior_source_file_sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-model-bert-base-uncased.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json",
+          "source_url": "https://huggingface.co/api/models/google-bert/bert-base-uncased",
+          "source_revision": "86b5e0934494bd15c9632b12f734a8a67f723594",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc",
+          "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc",
+          "actual_selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "prior_source_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-model-roberta-base.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json",
+          "source_url": "https://huggingface.co/api/models/FacebookAI/roberta-base",
+          "source_revision": "e2da8e2f811d1448a5b465c236feacd80ffbac7b",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f",
+          "selected_content_sha256": "78198e7ab262449ad56e4ca48e10a36f98dda6fd5a377875dd7425afcca2312b",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f",
+          "actual_selected_content_sha256": "78198e7ab262449ad56e4ca48e10a36f98dda6fd5a377875dd7425afcca2312b",
+          "prior_source_file_sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-model-distilbert-base-uncased.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json",
+          "source_url": "https://huggingface.co/api/models/distilbert/distilbert-base-uncased",
+          "source_revision": "12040accade4e8a0f71eabdb258fecc2e7e948be",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916",
+          "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916",
+          "actual_selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "prior_source_file_sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-model-all-minilm-l6-v2.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json",
+          "source_url": "https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2",
+          "source_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86",
+          "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86",
+          "actual_selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "prior_source_file_sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-dataset-imdb.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json",
+          "source_url": "https://huggingface.co/api/datasets/stanfordnlp/imdb",
+          "source_revision": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766",
+          "selected_content_sha256": "c8c317de489c9971a7dbb62622af5caf41de5c0c20095c1ac0f1ac5fda104d6d",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766",
+          "actual_selected_content_sha256": "c8c317de489c9971a7dbb62622af5caf41de5c0c20095c1ac0f1ac5fda104d6d",
+          "prior_source_file_sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-dataset-squad.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json",
+          "source_url": "https://huggingface.co/api/datasets/rajpurkar/squad",
+          "source_revision": "7b6d24c440a36b6815f21b70d25016731768db1f",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648",
+          "selected_content_sha256": "f47afee7611dc74d2f76585dce91fbcd78899496e40ab9d868cdf5a9e2c9db3d",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648",
+          "actual_selected_content_sha256": "f47afee7611dc74d2f76585dce91fbcd78899496e40ab9d868cdf5a9e2c9db3d",
+          "prior_source_file_sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-dataset-glue.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json",
+          "source_url": "https://huggingface.co/api/datasets/nyu-mll/glue",
+          "source_revision": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06",
+          "selected_content_sha256": "c8c317de489c9971a7dbb62622af5caf41de5c0c20095c1ac0f1ac5fda104d6d",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06",
+          "actual_selected_content_sha256": "c8c317de489c9971a7dbb62622af5caf41de5c0c20095c1ac0f1ac5fda104d6d",
+          "prior_source_file_sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-dataset-numinamath-tir.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json",
+          "source_url": "https://huggingface.co/api/datasets/AI-MO/NuminaMath-TIR",
+          "source_revision": "77a91d7b7a1a98ac4b1beb7d86c09d156b935dcd",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5",
+          "selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5",
+          "actual_selected_content_sha256": "4b77b33be70c243e93630753368638e28bb66e77935606b15aba3614339c3ee0",
+          "prior_source_file_sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5"
+        },
+        {
+          "evidence_id": "evidence.ai.hf-dataset-fineweb.declared-license",
+          "kind": "provider_snapshot",
+          "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json#/payload/cardData/license",
+          "source_path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json",
+          "source_url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb",
+          "source_revision": "9bb295ddab0e05d785b879661af7260fed5140fc",
+          "content_scope": "json_pointer_value",
+          "source_file_sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795",
+          "selected_content_sha256": "5857b430bff9459a18ccd4bec31fad9d3711b90f37f5a263fbe21d5eab9ce1f9",
+          "selected_json_pointer": "/payload/cardData/license",
+          "captured_at": "2026-09-22T09:30:00Z",
+          "producer": {
+            "name": "openguard-b03-b04-inventory-generator",
+            "version": "3.0.1"
+          },
+          "git_blob_revision": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+          "actual_source_file_sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795",
+          "actual_selected_content_sha256": "5857b430bff9459a18ccd4bec31fad9d3711b90f37f5a263fbe21d5eab9ce1f9",
+          "prior_source_file_sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795"
+        }
+      ],
+      "rows": [
+        {
+          "fact_id": "fact.root.openguard",
+          "subject": {
+            "category": "root_project",
+            "canonical_id": "openguard",
+            "display_name": "OpenGuard",
+            "version": null,
+            "usage_scope": "root_project"
+          },
+          "fact_sha256": "3e74d4e1d02515d603bdde242a7b5c73b05340c5660b5eed4c2b8077831e69d9",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.root.license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "text_observed",
+              "evidence_ids": [
+                "evidence.root.license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_ROOT_NOTICE_FILE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_ROOT_COPYRIGHT_ASSERTION_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.fastapi",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:fastapi",
+            "display_name": "fastapi",
+            "version": "0.141.1",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "2c7778e1061a30028b33ef65cbf6533ef73d4acdb148ee22ebca89a6eca58e57",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.fastapi"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.packaging",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:packaging",
+            "display_name": "packaging",
+            "version": "26.3",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "1a64d450b252d9b76267bc62b008fa1019482b31e47e0a5efe64a149d0f867f8",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.packaging"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.pydantic",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:pydantic",
+            "display_name": "pydantic",
+            "version": "2.13.4",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "b607ed0d9f20ea43aebe35a5c5ab5ecdb42c26e9b486c70b1a68f1eb5b4eb5fc",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.pydantic"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.python-multipart",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:python-multipart",
+            "display_name": "python-multipart",
+            "version": "0.0.32",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "f1330a7d8f66163fe56f3ebb74b92bce7088c688b581de492f5d28160401650a",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.python-multipart"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.uvicorn",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:uvicorn",
+            "display_name": "uvicorn",
+            "version": "0.52.4",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "e1b27fa362a02f4ba5d9b08d77306781d0e88103285a237fd7c29d950ab37f25",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.uvicorn"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.httpx2",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:httpx2",
+            "display_name": "httpx2",
+            "version": "2.12.0",
+            "usage_scope": "development"
+          },
+          "fact_sha256": "38067cc7722a24f3309351cd9903300ec3385170da8168218da9a38011ee8004",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.httpx2"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.jsonschema",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:jsonschema",
+            "display_name": "jsonschema",
+            "version": "4.26.0",
+            "usage_scope": "development"
+          },
+          "fact_sha256": "b89da41c6ded12135660bb5edde4fb52b05f59288dfaf444f7615f91a10b240f",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.jsonschema"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.python.pytest",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "pypi:pytest",
+            "display_name": "pytest",
+            "version": "8.4.2",
+            "usage_scope": "development"
+          },
+          "fact_sha256": "b30a7e8d59596f51b6900592b10386333d6630bac6d2c26241ec7ab1779155f2",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.python.pytest"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.java.spring-boot-starter-web",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "maven:org.springframework.boot:spring-boot-starter-web",
+            "display_name": "spring-boot-starter-web",
+            "version": null,
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "207e4c56c833b423e6f3b80e66236454157cf5cec8aca565a231a6a83703fc9f",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.java.spring-boot-starter-web"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.java.jackson-databind",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "maven:com.fasterxml.jackson.core:jackson-databind",
+            "display_name": "jackson-databind",
+            "version": null,
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "ddb80e1faa69d133147f0b73f0c353673782988329351187ae365521af3e90ca",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.java.jackson-databind"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.java.json-schema-validator",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "maven:com.networknt:json-schema-validator",
+            "display_name": "json-schema-validator",
+            "version": "2.0.4",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "a17fef527fdbe50b9030731e1ec7b068c9129e670e791267a8bf4aaa2a6d153f",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.java.json-schema-validator"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.java.spring-boot-starter-test",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "maven:org.springframework.boot:spring-boot-starter-test",
+            "display_name": "spring-boot-starter-test",
+            "version": null,
+            "usage_scope": "test"
+          },
+          "fact_sha256": "22f59a0904142b3558347d8ecb526e7767858cd9ae0644fa20e8f6bb52a19145",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.java.spring-boot-starter-test"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_VERSION_NOT_DECLARED_IN_POM",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.@tailwindcss--vite",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:@tailwindcss/vite",
+            "display_name": "@tailwindcss/vite",
+            "version": "^4.3.0",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "a1aa1e121e9648028a4b0903a3bd7009cb31c076ba2b2cbe0cbbcae89b7f979e",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.@tailwindcss--vite"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.react",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:react",
+            "display_name": "react",
+            "version": "^19.2.0",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "6845796a11d0dfa2f0861b5e13d9e05bfa279636c9ea09dba5f2259540103600",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.react"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.react-dom",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:react-dom",
+            "display_name": "react-dom",
+            "version": "^19.2.0",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "0591dc4a1809770d9c954529afe859594f751d9680c8a8613387217f97c51853",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.react-dom"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.tailwindcss",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:tailwindcss",
+            "display_name": "tailwindcss",
+            "version": "^4.3.0",
+            "usage_scope": "runtime"
+          },
+          "fact_sha256": "961a071bba39938b0f4882cdf696cf2d457950459b3f8047ad2b180de05f0ab6",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.tailwindcss"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.@types--react",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:@types/react",
+            "display_name": "@types/react",
+            "version": "^19.2.0",
+            "usage_scope": "development"
+          },
+          "fact_sha256": "92cb81c7fa4c405bd7c604631b09b487b4c52455f8a55d12c7b3b191ad69c9e3",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.@types--react"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.@types--react-dom",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:@types/react-dom",
+            "display_name": "@types/react-dom",
+            "version": "^19.2.0",
+            "usage_scope": "development"
+          },
+          "fact_sha256": "97cbb8d1e4dcaafda9d497aacb2fbaaac8af5cb769a08b509f229328f4e4cbce",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.@types--react-dom"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.typescript",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:typescript",
+            "display_name": "typescript",
+            "version": "^5.9.0",
+            "usage_scope": "development"
+          },
+          "fact_sha256": "d00c858dc1e78893ceea856661393d868d6107ecc47db44b96a66a1bce1ddda6",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.typescript"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.dependency.npm.vite",
+          "subject": {
+            "category": "dependency",
+            "canonical_id": "npm:vite",
+            "display_name": "vite",
+            "version": "^8.1.0",
+            "usage_scope": "development"
+          },
+          "fact_sha256": "d5c3e0c189ef6942ea669bb8897ec3d7f9f36fdf86d8b9b10566468d92a10dac",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.dependency.npm.vite"
+          ],
+          "relationships": {
+            "license": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_DEPENDENCY_LICENSE_TEXT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_DEPENDENCY_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-model-gpt2",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "model:openai-community/gpt2",
+            "display_name": "openai-community/gpt2",
+            "version": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+            "usage_scope": "model"
+          },
+          "fact_sha256": "d9e40c3c467d5aacb8df0cf42b9aa1e17b701a766b0f3747c99adb72e1902427",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-model-gpt2.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-model-gpt2.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-model-bert-base-uncased",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "model:google-bert/bert-base-uncased",
+            "display_name": "google-bert/bert-base-uncased",
+            "version": "86b5e0934494bd15c9632b12f734a8a67f723594",
+            "usage_scope": "model"
+          },
+          "fact_sha256": "6a615a2ff444ce397ff803ffecdbbb0e93315820d8cc1d8ebd4d3b6d95976656",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-model-bert-base-uncased.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-model-bert-base-uncased.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-model-roberta-base",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "model:FacebookAI/roberta-base",
+            "display_name": "FacebookAI/roberta-base",
+            "version": "e2da8e2f811d1448a5b465c236feacd80ffbac7b",
+            "usage_scope": "model"
+          },
+          "fact_sha256": "84dbbf7545df4e6262a540b6690f0dc8aefe5c6787c95afb1f36b698e3e8f4ba",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-model-roberta-base.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-model-roberta-base.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-model-distilbert-base-uncased",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "model:distilbert/distilbert-base-uncased",
+            "display_name": "distilbert/distilbert-base-uncased",
+            "version": "12040accade4e8a0f71eabdb258fecc2e7e948be",
+            "usage_scope": "model"
+          },
+          "fact_sha256": "da379bc0c4b676e9c829cd73575ffeea0e97416df9735b1dff954bb4d7baebd6",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-model-distilbert-base-uncased.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-model-distilbert-base-uncased.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-model-all-minilm-l6-v2",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "model:sentence-transformers/all-MiniLM-L6-v2",
+            "display_name": "sentence-transformers/all-MiniLM-L6-v2",
+            "version": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+            "usage_scope": "model"
+          },
+          "fact_sha256": "d8c1b6fd38b0250d3d4ef6123c66c6e82fa8ac14afca62d6539d85c96b94896b",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-model-all-minilm-l6-v2.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-model-all-minilm-l6-v2.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-dataset-imdb",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "dataset:stanfordnlp/imdb",
+            "display_name": "stanfordnlp/imdb",
+            "version": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+            "usage_scope": "dataset"
+          },
+          "fact_sha256": "900c8d8960f09b06bf0c82e0a96dd71e37ca94335c4f3cd57d97d130f2f98d6d",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-imdb.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-dataset-imdb.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-dataset-squad",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "dataset:rajpurkar/squad",
+            "display_name": "rajpurkar/squad",
+            "version": "7b6d24c440a36b6815f21b70d25016731768db1f",
+            "usage_scope": "dataset"
+          },
+          "fact_sha256": "09f0b24d54947c7e4c869f8256655b5f3090240ed41f49970be1e6dec825c52c",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-squad.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-dataset-squad.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-dataset-glue",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "dataset:nyu-mll/glue",
+            "display_name": "nyu-mll/glue",
+            "version": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c",
+            "usage_scope": "dataset"
+          },
+          "fact_sha256": "82c4837bf86e46b4476773d4bb54149cf003d0d7d83fb982e2df94392e1d4690",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-glue.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-dataset-glue.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-dataset-numinamath-tir",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "dataset:AI-MO/NuminaMath-TIR",
+            "display_name": "AI-MO/NuminaMath-TIR",
+            "version": "77a91d7b7a1a98ac4b1beb7d86c09d156b935dcd",
+            "usage_scope": "dataset"
+          },
+          "fact_sha256": "4ef7160d931fc07e407e2b6b47fe9f56617c5bea6ca1823fccfad907c259861d",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-numinamath-tir.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-dataset-numinamath-tir.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        },
+        {
+          "fact_id": "fact.ai.hf-dataset-fineweb",
+          "subject": {
+            "category": "ai_resource",
+            "canonical_id": "dataset:HuggingFaceFW/fineweb",
+            "display_name": "HuggingFaceFW/fineweb",
+            "version": "9bb295ddab0e05d785b879661af7260fed5140fc",
+            "usage_scope": "dataset"
+          },
+          "fact_sha256": "607975c09ea0eada6a0097a3ca8852056cf1dc6e8ac80f8f72cd63cf1173a352",
+          "package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096",
+          "evidence_ids": [
+            "evidence.ai.hf-dataset-fineweb.declared-license"
+          ],
+          "relationships": {
+            "license": {
+              "state": "provider_declared_unverified",
+              "evidence_ids": [
+                "evidence.ai.hf-dataset-fineweb.declared-license"
+              ]
+            },
+            "notice": {
+              "state": "gap",
+              "evidence_ids": []
+            },
+            "copyright": {
+              "state": "gap",
+              "evidence_ids": []
+            }
+          },
+          "gaps": [
+            {
+              "code": "GAP_AI_NOTICE_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            },
+            {
+              "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+              "severity": "unknown",
+              "evidence_ids": []
+            }
+          ],
+          "inventory": null,
+          "a_terminal": null,
+          "assessment": null,
+          "notice_bound": null,
+          "draft_report": null
+        }
+      ],
+      "affected_evidence_ids": [
+        "evidence.dependency.npm.@tailwindcss--vite",
+        "evidence.dependency.npm.react",
+        "evidence.dependency.npm.react-dom",
+        "evidence.dependency.npm.tailwindcss",
+        "evidence.dependency.npm.@types--react",
+        "evidence.dependency.npm.@types--react-dom",
+        "evidence.dependency.npm.typescript",
+        "evidence.dependency.npm.vite"
+      ],
+      "old": {
+        "artifact": "tests/fixtures/notice-license-facts-v3/facts.json",
+        "file_sha256": "4f2a8304ad457dffdc7e4ba276e3602bf93b4f83b1e7e177bbcb84f4a8d841f7",
+        "canonical_package_sha256": "ea04f17caf7202c4c560502b7dcec73ecc164e01f7d2c53083e6c21d0d12a8c9"
+      },
+      "current": {
+        "artifact": "tests/fixtures/notice-license-facts-v3/revisions/source-binding-r2/facts.json",
+        "file_sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+        "canonical_package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096"
+      },
+      "old_state": "historical_source_binding_defect",
+      "current_state": "offline_machine_verified_pending_independent_review_and_A_admission",
+      "independent_review": null,
+      "a_terminal_readback": null,
+      "historical_audit_tool": {
+        "path": "benchmarks/p1_b_offline_audit.py",
+        "sha256": "8ffb046d15ffc297629126b2b3a4eee6b369bc5eaca047fae1880cecbbab34bd",
+        "reads_retained_old_v3": true,
+        "use": "仅历史缺陷盘点；不是r2当前可信输入入口"
+      }
+    },
+    "b01_b02": {
+      "profiles": [
+        {
+          "case_id": "hf-model-gpt2",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/openai-community/gpt2",
+          "fixture_version": "v1",
+          "identity": "openai-community/gpt2",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/models/openai-community/gpt2?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=pipeline_tag&expand[]=library_name&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json"
+        },
+        {
+          "case_id": "hf-model-bert-base-uncased",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/google-bert/bert-base-uncased",
+          "fixture_version": "v1",
+          "identity": "google-bert/bert-base-uncased",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "86b5e0934494bd15c9632b12f734a8a67f723594",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/models/google-bert/bert-base-uncased?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=pipeline_tag&expand[]=library_name&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json"
+        },
+        {
+          "case_id": "hf-model-roberta-base",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/FacebookAI/roberta-base",
+          "fixture_version": "v1",
+          "identity": "FacebookAI/roberta-base",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "e2da8e2f811d1448a5b465c236feacd80ffbac7b",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/models/FacebookAI/roberta-base?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=pipeline_tag&expand[]=library_name&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json"
+        },
+        {
+          "case_id": "hf-model-distilbert-base-uncased",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/distilbert/distilbert-base-uncased",
+          "fixture_version": "v1",
+          "identity": "distilbert/distilbert-base-uncased",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "12040accade4e8a0f71eabdb258fecc2e7e948be",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/models/distilbert/distilbert-base-uncased?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=pipeline_tag&expand[]=library_name&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json"
+        },
+        {
+          "case_id": "hf-model-all-minilm-l6-v2",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2",
+          "fixture_version": "v1",
+          "identity": "sentence-transformers/all-MiniLM-L6-v2",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=pipeline_tag&expand[]=library_name&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json"
+        },
+        {
+          "case_id": "hf-dataset-imdb",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/stanfordnlp/imdb",
+          "fixture_version": "v1",
+          "identity": "stanfordnlp/imdb",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/datasets/stanfordnlp/imdb?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json"
+        },
+        {
+          "case_id": "hf-dataset-squad",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/rajpurkar/squad",
+          "fixture_version": "v1",
+          "identity": "rajpurkar/squad",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "7b6d24c440a36b6815f21b70d25016731768db1f",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/datasets/rajpurkar/squad?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json"
+        },
+        {
+          "case_id": "hf-dataset-glue",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/nyu-mll/glue",
+          "fixture_version": "v1",
+          "identity": "nyu-mll/glue",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/datasets/nyu-mll/glue?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json"
+        },
+        {
+          "case_id": "hf-dataset-numinamath-tir",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/AI-MO/NuminaMath-TIR",
+          "fixture_version": "v1",
+          "identity": "AI-MO/NuminaMath-TIR",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "77a91d7b7a1a98ac4b1beb7d86c09d156b935dcd",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/datasets/AI-MO/NuminaMath-TIR?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json"
+        },
+        {
+          "case_id": "hf-dataset-fineweb",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb",
+          "fixture_version": "v1",
+          "identity": "HuggingFaceFW/fineweb",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "9bb295ddab0e05d785b879661af7260fed5140fc",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795",
+          "source_kind": "offline_regression_fixture",
+          "source_url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb?expand[]=sha&expand[]=lastModified&expand[]=private&expand[]=gated&expand[]=disabled&expand[]=tags&expand[]=cardData",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json"
+        },
+        {
+          "case_id": "hf-missing-license-and-revision",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": null,
+          "fixture_version": "v1",
+          "identity": null,
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "2542f703080e7f04c56164b918995a316c2e4534d1a19be3591c44a07c4b5a97",
+          "source_kind": "synthetic_negative_case",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/counterexamples/missing-license-and-revision.json"
+        },
+        {
+          "case_id": "hf-conflicting-declared-license",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": null,
+          "fixture_version": "v1",
+          "identity": null,
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "0ad24ec3ba61806c06758f44ad2543617cb754ffbe570fc90cd05f1bea2ed121",
+          "source_kind": "synthetic_negative_case",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/counterexamples/conflicting-license.json"
+        },
+        {
+          "case_id": "hf-noassertion-is-not-a-license-expression",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": null,
+          "fixture_version": "v1",
+          "identity": null,
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "c4e40371748f7efb35caa667180011fd6ace8de8f5674938cde527a0660818fc",
+          "source_kind": "synthetic_negative_case",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v1/counterexamples/noassertion-license.json"
+        },
+        {
+          "case_id": "hf-model-bloom-560m",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/bigscience/bloom-560m",
+          "fixture_version": "v2",
+          "identity": "bigscience/bloom-560m",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "revision_quality": "synthetic_fixture_revision",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "570a1ce14344d3153d9b8389161e3ed6c21a1be04591696d2718ca9bcf7bf5b1",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/models/bigscience--bloom-560m.json"
+        },
+        {
+          "case_id": "hf-model-stable-diffusion-2-1",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/stabilityai/stable-diffusion-2-1",
+          "fixture_version": "v2",
+          "identity": "stabilityai/stable-diffusion-2-1",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "cccccccccccccccccccccccccccccccccccccccc",
+          "revision_quality": "synthetic_fixture_revision",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "9eba414801dc6d8ddda29c66340f59c4ba481ceb6aa1c1b09c11185190851871",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/models/stabilityai--stable-diffusion-2-1.json"
+        },
+        {
+          "case_id": "hf-model-gpt2",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/openai-community/gpt2",
+          "fixture_version": "v2",
+          "identity": "openai-community/gpt2",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "af4e5e400ea5060db6a1a1838eb119dd4a0dcd38e4d4f47693e0d9c93e55fe78",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/models/openai-community--gpt2.json"
+        },
+        {
+          "case_id": "hf-model-bert-base-uncased",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/google-bert/bert-base-uncased",
+          "fixture_version": "v2",
+          "identity": "google-bert/bert-base-uncased",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "86b5e0934494bd15c9632b12f734a8a67f723594",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "699c9e60a1f91be3bc6b50b57f5e50620b6483673cd6591f654d96fb5c57a261",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/models/google-bert--bert-base-uncased.json"
+        },
+        {
+          "case_id": "hf-model-roberta-base",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/models/FacebookAI/roberta-base",
+          "fixture_version": "v2",
+          "identity": "FacebookAI/roberta-base",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": "e2da8e2f811d1448a5b465c236feacd80ffbac7b",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "07f7ca605f57db98db22a5a50b50f459e10afd097b087a08b5bebef6814f0e9a",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/models/facebookai--roberta-base.json"
+        },
+        {
+          "case_id": "hf-dataset-openr1-math-220k",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/open-r1/OpenR1-Math-220k",
+          "fixture_version": "v2",
+          "identity": "open-r1/OpenR1-Math-220k",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "dddddddddddddddddddddddddddddddddddddddd",
+          "revision_quality": "synthetic_fixture_revision",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "43e319d8c6b876cc62cdb967f9bff18e3676c8b9ee01f8be7bb1a92c11dbdd2c",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/datasets/open-r1--openr1-math-220k.json"
+        },
+        {
+          "case_id": "hf-dataset-c4",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/allenai/c4",
+          "fixture_version": "v2",
+          "identity": "allenai/c4",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "revision_quality": "synthetic_fixture_revision",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "14b7742adf51991a99b934e4f0a275a9830767d72c80f3b19f303750416b43f8",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/datasets/allenai--c4.json"
+        },
+        {
+          "case_id": "hf-dataset-imdb",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/stanfordnlp/imdb",
+          "fixture_version": "v2",
+          "identity": "stanfordnlp/imdb",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "64a5462a0f9e1cfc7e83569b19e9eb7bff22af390aa07bd0502c21a1d413f3cc",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/datasets/stanfordnlp--imdb.json"
+        },
+        {
+          "case_id": "hf-dataset-squad",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/rajpurkar/squad",
+          "fixture_version": "v2",
+          "identity": "rajpurkar/squad",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "7b6d24c440a36b6815f21b70d25016731768db1f",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "023a5d32f85663ba8edbc967e2a34ca5e14f2d183601345da44b4e8d4f38aeb2",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/datasets/rajpurkar--squad.json"
+        },
+        {
+          "case_id": "hf-dataset-glue",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://huggingface.co/api/datasets/nyu-mll/glue",
+          "fixture_version": "v2",
+          "identity": "nyu-mll/glue",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c",
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "ab50136ffa95753b47cf01ca8efd27695bdc872f82c679380b946e4de47e47de",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/snapshots/datasets/nyu-mll--glue.json"
+        },
+        {
+          "case_id": "hf-missing-observation-fields",
+          "expected_error": null,
+          "expected_gaps": [
+            "private_value_unavailable",
+            "gate_value_unavailable",
+            "disabled_value_unavailable"
+          ],
+          "expected_source_url": null,
+          "fixture_version": "v2",
+          "identity": null,
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "9bb758de318920f2a5fb5388084cbcd68695d5703911f1f5c06af9376ee90898",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/counterexamples/missing-observation-fields.json"
+        },
+        {
+          "case_id": "hf-conflicting-license-array",
+          "expected_error": null,
+          "expected_gaps": [
+            "conflicting_declared_license"
+          ],
+          "expected_source_url": null,
+          "fixture_version": "v2",
+          "identity": null,
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "dataset",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "001e9894a858e6e1fea781e888084fe2b5c6c33e6749a162bf4d41f5d359501f",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/counterexamples/conflicting-license-array.json"
+        },
+        {
+          "case_id": "hf-unsupported-metadata-fields",
+          "expected_error": null,
+          "expected_gaps": [
+            "unsupported_last_modified_value",
+            "unsupported_pipeline_tag_value",
+            "unsupported_library_name_value",
+            "declared_license_unavailable"
+          ],
+          "expected_source_url": null,
+          "fixture_version": "v2",
+          "identity": null,
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "b1beb19e60c5ab46a911821674df9e3786b5b6f022848aae5a62a03a06668899",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/counterexamples/unsupported-metadata-fields.json"
+        },
+        {
+          "case_id": "hf-illegal-identity",
+          "expected_error": "metadata_invalid",
+          "expected_gaps": [],
+          "expected_source_url": null,
+          "fixture_version": "v2",
+          "identity": null,
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "8d031e89f34db5640e87770b0f3d82b09136a9b155525e02fce1b0a5df61e6ef",
+          "provider": "huggingface",
+          "resource_kind": "model",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "ed42aefba0040ba7c3a5b5e989e026ed5c856531082548c2a4c280dc35d9d87c",
+          "source_kind": "offline_regression_fixture",
+          "source_url": null,
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/huggingface/resource-profile-v2/counterexamples/illegal-identity.json"
+        },
+        {
+          "case_id": "ms-dataset-demo",
+          "expected_error": null,
+          "expected_gaps": [],
+          "expected_source_url": "https://modelscope.cn/api/v1/datasets/acme/demo-dataset",
+          "fixture_version": "v1",
+          "identity": "acme/demo-dataset",
+          "independent_receipt": null,
+          "independent_state": "待签收",
+          "manifest_sha256": "6bda33b4e7faebaa62513abaca50837ed21f71c4f47ab33096b1e42708051ec5",
+          "provider": "modelscope",
+          "resource_kind": "dataset",
+          "revision": null,
+          "revision_quality": "fixture_observed_not_independently_attested",
+          "source_fields_state": "snapshot_fields_only_not_transport_attestation",
+          "source_file_sha256": "fb373894f10bcf6c02ac00649a1669eb2c9f95a9dbe354e1a9377174851b173b",
+          "source_kind": "offline_provider_snapshot",
+          "source_url": "https://modelscope.cn/api/v1/datasets/acme/demo-dataset",
+          "upstream_response_sha256": null,
+          "path": "tests/fixtures/modelscope/resource-profile-v1/snapshots/datasets/acme--demo-dataset.json"
+        }
+      ],
+      "v2_file_sha256": "36fa84ded555530848ea47d88cfa28dec1414653f87d00664cc0ead22c42e95c",
+      "v2_canonical_package_sha256": "9cdcb294c7e46ce57a2e3b4a92e5693439dbc6b82f15e138b61b6cc6df172577",
+      "candidate_count": 17,
+      "obligation_count": 0,
+      "zero_candidate_fact_ids": [
+        "fact.dep.jackson-databind",
+        "fact.dep.springboot"
+      ],
+      "candidate_detector_executed_this_run": false,
+      "mode": "复核已保存候选引用和hash，不代替Python检测器执行",
+      "v3_as_v2": false,
+      "notice_source_as_v3": false
+    },
+    "b05_b06": {
+      "hashes": {
+        "catalog.json": "383c0835514951bce4c231f58586faa9d9d720171059da9a035a477bb8c555ad",
+        "freeze.json": "9b231001a31e68f3d8e445223b16c2211a96457bf17a9db8a7a5527a8f2691d9",
+        "runs/baseline_v5_audit.json": "324393aab9c604a8c838abb4132643b002b4607405c0c72aa457f7f0fe9180b9",
+        "metrics/baseline_v5_audit.json": "be4f014e4fe7b1753da5328a059dd59512504f20eb953410b8d45795d8d709d5",
+        "review-train-dev-v1.json": "55483cc07af689764bfb4dade310c9b2cb586c8febfaaf88eb1111b9e98f13c4"
+      },
+      "sample_count": 30,
+      "fixed_count": 25,
+      "failed_count": 5,
+      "train_dev_artifacts": [
+        {
+          "sample_id": "sampleproject",
+          "input_sha256": "b3eccda9bfb92813e361eed4f074b97165233eb94ebc60166608ce5412d08a07",
+          "prediction_sha256": "7f4761953e5e3d1f91d34833cf642f7a865ced5dfed92609805c7ee398cee524",
+          "gold_sha256": "64aa5acc9dd1a118f477012df8b8fe127751fa377630c59d1aef7bbdb436bab4"
+        },
+        {
+          "sample_id": "smolagents",
+          "input_sha256": "a934158963507410a3d699658e4e8270a864fd98830fabcd7bd7c07117917b8c",
+          "prediction_sha256": "e868732ffff1cf4947ffc613f1a20f8cc4348355ac66de786273011069ca9746",
+          "gold_sha256": "9da0c76aeaf4f92060e104659a8ac57aa2af2d342797455958ca23860ddfb6df"
+        },
+        {
+          "sample_id": "openai_python",
+          "input_sha256": "d6a6c2caf8fcac0ac6a058115e96faf1bebcd407c7291eb80fa8121f1ec4a8e0",
+          "prediction_sha256": "b1383df6fbaaba7887088bf3033e430a5d3b4654884f9b132f87ddec67c6ecdd",
+          "gold_sha256": "b9e69261320ed1d29a44bc48895d4ef9dae0eb34c7748f2b491dca853c3a0ca9"
+        },
+        {
+          "sample_id": "openai_node",
+          "input_sha256": "098a2b375cfa50ec6a562bc9ea8e702152b1298f5123e33567bfcc542979c573",
+          "prediction_sha256": "29cfe0798c648beee89b87a4fe961abfd579f00b403e41db00110103ec298ee3",
+          "gold_sha256": "ff2ae199878d77da43dd058bf68ee905a015448ac7b8edb806d12b8d8bfebefb"
+        },
+        {
+          "sample_id": "anthropic_python",
+          "input_sha256": "7b736ddbbec9c1f0f5c8a1cab0cb12593dc09633eddaf9464581dda589d2169f",
+          "prediction_sha256": "0fd0886101673cbd4844e2b072a34f2ede30f33ee3bba453742bc9d3a2172762",
+          "gold_sha256": "df002f9feadc707642b6ba9879e807bfec3c9e7b07c46bf5034591a9e3efee34"
+        },
+        {
+          "sample_id": "anthropic_ts",
+          "input_sha256": "9d2ea869ef23a9eaa528c783e1c8a2d8ee436686b65fe6a4d8e1022bbe9e72e7",
+          "prediction_sha256": "68d8ae1d65624a97ff6c6029d3ea42e9ff3fdfb4f90299a1d2f6eb7d6469b675",
+          "gold_sha256": "48ecfc2e4c8515237ad5fa7e6f8d09ef1865346ca5a27430a53ddee7f24674e2"
+        },
+        {
+          "sample_id": "google_python",
+          "input_sha256": "744361893a5a1477bfd36cacf62c241e891bc57e618be6d14e7e49ccd5d68d60",
+          "prediction_sha256": "7aa3ca6270beaef063895e85864c269294f77cd8da893bcc409465acbfeca3ba",
+          "gold_sha256": "23f681978e4ab7ce5acea22ef543a4babc66f7cde14090c58fc2102921a363ed"
+        },
+        {
+          "sample_id": "google_js",
+          "input_sha256": "d2f6893315b833832217afb165f62980e2666610dace9eda515dd6e9fdd17955",
+          "prediction_sha256": "b6e36d9e2d41130391fab8f538bfde22096c9ee767b0ffcd246f295c828fd368",
+          "gold_sha256": "a74f336c1c688c6245e5febb6286cd5cfc3a9a8709c74e4fcb632480b71773a2"
+        },
+        {
+          "sample_id": "modelscope",
+          "input_sha256": "db404071be1f70f44f78bf6b34974420cf61687c307f87d2b9cf919097ccdb2c",
+          "prediction_sha256": "4b198dedb374fea84e0edc6acd0eb197d813c66521bfb75689c289ffbcbf097c",
+          "gold_sha256": "06d431a5ce77869ec2271cd50bce79c13f20d78a931feac73260a236ae478da4"
+        },
+        {
+          "sample_id": "modelscope_agent",
+          "input_sha256": "06ff63cd865fd5c016720dfa90e260142dcc6cd341ca47c9412fff55307051bf",
+          "prediction_sha256": "2bf81928a72c83dad1298cceef53a8d574b70524e8765d43430553292f566ff6",
+          "gold_sha256": "d42501db4300010f39c94e8dd0fa3e0c2ecf6198bb71a159c9628c0c84a2927b"
+        },
+        {
+          "sample_id": "haystack",
+          "input_sha256": "ba71b11381d54a45715db81aca4c137a3a321768469ddc26daa34e0d35519d3d",
+          "prediction_sha256": "c751c0d2eb7684c5831de38ed38edd9128dfc76172c3ef04a8c1e74dfb8b31c9",
+          "gold_sha256": "a5c9159f21c48e3a857f55fda438ee3d47aae1bbca122af24c7204064f8cfb3e"
+        },
+        {
+          "sample_id": "langchain",
+          "input_sha256": "317b480129d140e7f1e596d1e12f651b961ffcf305094c8d30f29cc537023ccf",
+          "prediction_sha256": "e01929bcc19f77cb5d604b2ff7ec5017f6c2b8de034c4340d87f9f1c374d12e7",
+          "gold_sha256": "c9a03b23666369a7b4c816c458cbbd84cc1334fa66b645c2f42757393525c254"
+        },
+        {
+          "sample_id": "gradio",
+          "input_sha256": "8c1e7eabd1e6107a57822da4a2f678a0dfed30149d54c52f2b1e61dbcca0415a",
+          "prediction_sha256": "c32349556a49170d34c69f20f47b6fe3e8f0533b52f4a689b217b1af48a8a5ac",
+          "gold_sha256": "d6a9f2afee8892c0dc6b881c256dabcd734bc3c83abd30eeac7c7c7172670683"
+        },
+        {
+          "sample_id": "huggingface_hub",
+          "input_sha256": "06f293373f9ba53e7c22150ed0d8a4ae74456e1aca392f75769ec54f35704402",
+          "prediction_sha256": "5fc2c0c31cb9c0bd49828ee5f708736c2fdec0281cfa86124cf19f095b621ec8",
+          "gold_sha256": "40d2db237dda02af3576273c7bf2794d03c2ef789691ba588e2a1b73ad87db58"
+        },
+        {
+          "sample_id": "hf_datasets",
+          "input_sha256": "1ce83c806b4c18a6ffb9fe3911506ab4306e3d211dc29da5d1c5bbfa9b07720a",
+          "prediction_sha256": "a21dfab42b74f07d37eeaea93403ca0ee533cee4645ddbef1c7cf5b0b86d0bbb",
+          "gold_sha256": "46838e8f721e0b8d6554e115c93539cd19cea798823f29ae9c4c2dd2913eff0e"
+        },
+        {
+          "sample_id": "diffusers",
+          "input_sha256": "f0e8fe63e4fb156f3ef513846a39e3c01ec31185aa64325cf059c6235f14ca94",
+          "prediction_sha256": "35887aa38d21ccd09d746962cd4209ded4a2bd9c7940e8000734b63c31ee1303",
+          "gold_sha256": "66a7d1e1e2b2ada379058c42ced59dcba0b181fc9fffde284ac9242df42baa9a"
+        }
+      ],
+      "repeated_train_dev_groups": 14,
+      "historical_all_split_repeated_count": 18,
+      "all_split_repeat_count_recomputed_this_run": false,
+      "machine_disagreements": 314,
+      "machine_kinds": {
+        "FN": 44,
+        "FP": 270
+      },
+      "confirmed_detector_errors": 0,
+      "adjudication_pending": 314,
+      "source_line_check": "复用旧审计逐行核验；本轮固定归档/artifact/queue摘要重新闭包，未重解压或重裁决",
+      "blind_packet": {
+        "path": "docs/p1/p1-b-blind-source-packet-20261011.json",
+        "sha256": "84b4bb6b642c0fda7b97606f74d648d429f1792a17e804fcc60441dbc35b92bc",
+        "count": 224
+      },
+      "template": {
+        "path": "docs/p1/p1-b-human-review-template-20261011.json",
+        "sha256": "f53645dfe5c49bfc7b45ba62d3434760c13b62c89906febf7d5d95a748e55117"
+      },
+      "old_holdout_exposed": true,
+      "holdout_cases_parsed_this_run": false,
+      "new_holdout": null,
+      "formal_gold": false,
+      "formal_metrics": null
+    },
+    "notice_failure": {
+      "classification": "历史Linux业务校验失败；不是本轮Windows setup错误",
+      "baseline_sha": "6dc340776bc63c3b925d7fa3645efbbd40c4ccf9",
+      "fixture_introducing_commit": "064a3d03c4f087bdbfc96e7564ac4a77fae4a11c 04435e56cec38ab47aaf82125a56ab34359a5555",
+      "fixture_path": "tests/unit/test_p1_notice_draft_production_wiring.py",
+      "fixture_sha256": "5cdb5f78c6161cecbcd12ca01f97c4b85ac7a87f64190bcbfb15c0aaa709472d",
+      "model_path": "backend/app/notice_source/models.py",
+      "model_sha256": "10392d5392ef3bcc3480032d6f3181d19f4264a11bc2fae124c3125f3b9c9b8b",
+      "junit": {
+        "path": "docs/p2/evidence/baseline-notice-comparison.xml",
+        "sha256": "f11b70817b315da7c53e4fe91ad485f8bbf5e01eb684161f7131b256af5ba88e",
+        "nodes": [
+          {
+            "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[resolved-excerpt-notice_source_excerpt_truncated]",
+            "state": "FAIL"
+          },
+          {
+            "nodeid": "tests/unit/test_p1_notice_draft_production_wiring.py::test_a3_06_11_content_and_no_authority_escalation[unresolved-excerpt-notice_source_excerpt_truncated]",
+            "state": "FAIL"
+          }
+        ],
+        "timestamp": "2026-10-10T05:40:05.715774+00:00",
+        "failure": "observations.0.content: excerpt_content_invalid; fixture line 179"
+      },
+      "historical_environment": {
+        "image": "sha256:6510aeaf29bdcfb1b3bdb3655fef73d39f9bc6164ae876011a57c356c5cef23c",
+        "network": "none",
+        "rootfs": "read-only",
+        "uid": "10001:10001",
+        "limits": {
+          "cpus": 2,
+          "memory_bytes": 2147483648,
+          "pids": 128,
+          "tmpfs_bytes": 2147483648
+        },
+        "python_exact_version": null,
+        "kernel": null,
+        "environment_note": "未获得完整解释器/内核证明，不能从镜像摘要猜测"
+      },
+      "fixture_defect": "excerpt分支未设置excerpt_bytes_sha256；须等于retained_bytes_sha256。whole原始Hash继续保留。",
+      "owner": "A生产接线测试维护方；B不覆盖其夹具",
+      "fixed_this_run": false,
+      "business_test_rerun": false,
+      "proposed_negative_cases": [
+        "excerpt Hash缺失/错值拒绝",
+        "坏UTF-8/字节范围错配/retained篡改拒绝",
+        "非ASCII合法excerpt与原whole独立Hash通过"
+      ],
+      "owner_accepted_deferred_notes": [
+        "N2=DEFERRED_NONBLOCKING",
+        "N3=DEFERRED_SECURITY_HARDENING"
+      ]
+    }
+  },
+  "synthetic_tests": null,
+  "new_real_P1_chain": null,
+  "independent_acceptance": null,
+  "formal_metrics": null,
+  "formal_performance": null,
+  "receipt_checks": {
+    "pass": 221,
+    "fail": 0,
+    "not_pytest_counts": true
+  },
+  "publishing": {
+    "authorized": false,
+    "committed": false,
+    "pushed": false
+  }
+}
