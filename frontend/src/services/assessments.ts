@@ -80,6 +80,12 @@ export function validateJob(x: unknown, requestId: string): Job {
 const prefix = (id: string) => '/scans/' + encodeURIComponent(id);
 const json = (value: unknown) => ({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) });
 export async function listAssessments(id: string, signal?: AbortSignal) { const x = await request(prefix(id) + '/assessments', {}, signal); if (!obj(x) || !Array.isArray(x.items)) return fail(); return { items: x.items.map(a => validateAssessment(a, id)), usage: x.usage as Usage | null, pending_job: x.pending_job == null ? null : validateJob(x.pending_job, String((x.pending_job as Record<string, unknown>).request_id)) }; }
+export async function readExactAssessment(scanId: string, assessmentId: string, signal?: AbortSignal) {
+ if (!/^[A-Za-z0-9_.:-]{1,200}$/.test(assessmentId)) return fail();
+ const result = validateAssessment(await request(prefix(scanId) + '/assessments/' + encodeURIComponent(assessmentId), {}, signal), scanId);
+ if (result.id !== assessmentId) return fail();
+ return result;
+}
 export async function createAssessment(id: string, usage: Usage, request_id: string) { return validateJob(await request(prefix(id) + '/assessments', json({ usage, request_id })), request_id); }
 export async function getJob(id: string, requestId: string, signal?: AbortSignal) { return validateJob(await request(prefix(id) + '/assessments/jobs/' + encodeURIComponent(requestId), {}, signal), requestId); }
 export async function getChat(id: string, signal?: AbortSignal) { return validateChat(await request(prefix(id) + '/chat', {}, signal)); }

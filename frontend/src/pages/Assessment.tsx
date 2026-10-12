@@ -3,6 +3,7 @@ import type { Scan } from '../types/domain';
 import { ApiError } from '../services/scans';
 import {
   listAssessments,
+  readExactAssessment,
   createAssessment,
   getJob,
   getChat,
@@ -21,6 +22,8 @@ import {
 import { presentProjectSummary } from '../services/assessmentPresentation';
 import { Header, Panel } from '../components/ui';
 import { UsageForm } from '../components/UsageForm';
+import { P2Workbench } from '../components/P2Workbench';
+import type { P2Result } from '../types/p2Advice';
 
 const labels = {
   conditional: '可按条件使用',
@@ -176,6 +179,7 @@ export function Assessment({
   scan,
   query,
   selectVersion,
+  selectP2Result,
   openResources,
   compact = false,
   initialChatOpen = false,
@@ -183,6 +187,7 @@ export function Assessment({
   scan: Scan;
   query: URLSearchParams;
   selectVersion: (id: string) => void;
+  selectP2Result?: (result: P2Result) => void;
   openResources?: () => void;
   compact?: boolean;
   initialChatOpen?: boolean;
@@ -279,6 +284,10 @@ export function Assessment({
     async function read() {
       try {
         const result = await listAssessments(scan.id, controller.signal);
+        if (requested && !result.items.some(item => item.id === requested)) {
+          const exact = await readExactAssessment(scan.id, requested, controller.signal);
+          result.items.push(exact);
+        }
         if (controller.signal.aborted || readEpoch.current !== epoch) return;
         setItems(result.items);
 
@@ -326,7 +335,7 @@ export function Assessment({
     };
     // A response belongs to this mounted scan only; App keys this component by scan and mode.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scan.id, scan.mode, compact, revision, job?.request_id]);
+  }, [scan.id, scan.mode, compact, revision, job?.request_id, requested]);
 
   async function generate() {
     if (lock.current) return;
@@ -486,6 +495,19 @@ export function Assessment({
                 第 {selected.version} 版 · {presets[selected.usage.preset]} · {new Date(selected.generated_at).toLocaleString()}
               </p>
               <ProjectSummaryBlock summary={selected.summary} />
+              {!compact && selectP2Result && (
+                <P2Workbench
+                  key={selected.id + ':' + selected.version}
+                  scanId={scan.id}
+                  assessmentId={selected.id}
+                  assessmentVersion={selected.version}
+                  query={query}
+                  onSelect={selectP2Result}
+                  evidenceIds={scan.evidence.map(item => item.id)}
+                  onEvidence={setEvidenceId}
+                  openResources={openResources}
+                />
+              )}
               {!compact && openResources && (
                 <div className="og-actions">
                   <button type="button" onClick={openResources}>查看本次扫描的模型与数据集资源卡片</button>

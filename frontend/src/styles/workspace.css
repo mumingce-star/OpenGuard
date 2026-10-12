@@ -1627,6 +1627,22 @@
 /* Project assessment reuses existing workspace panels and evidence styling. */
 .og-assessment { display: grid; gap: 1.25rem; }
 .og-assessment-grid, .og-usage-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.og-p2-panel, .og-p2-result { display: grid; gap: .75rem; min-width: 0; }
+.og-p2-panel > p, .og-p2-result p { margin: .25rem 0; }
+.og-p2-panel > button { justify-self: start; }
+.og-p2-main { padding: 1rem; border: 1px solid var(--border, #334155); border-left: 4px solid #bda982; border-radius: .75rem; overflow-wrap: anywhere; }
+.og-p2-main strong { display: block; font-size: 1.2rem; }
+.og-p2-main small { display: block; overflow-wrap: anywhere; color: var(--og-muted); }
+.og-p2-test-only { color: #f1cf91; }
+.og-p2-resource, .og-p2-advice { border: 1px solid var(--border, #334155); border-radius: .75rem; padding: .75rem 1rem; min-width: 0; overflow-wrap: anywhere; }
+.og-p2-resource > summary { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .35rem 1rem; }
+.og-p2-resource > summary strong { overflow-wrap: anywhere; }
+.og-p2-resource > summary span { color: var(--og-muted); }
+.og-p2-resource ul, .og-p2-advice ul { margin-block: .35rem; padding-left: 1.4rem; }
+.og-p2-advice { margin-block: .7rem; background: rgba(255,255,255,.025); }
+.og-p2-evidence { display: flex; flex-wrap: wrap; gap: .5rem; }
+.og-p2-evidence span { overflow-wrap: anywhere; color: var(--og-muted); }
+.og-p2-rest > summary { cursor: pointer; }
 .og-assessment .og-actions { flex-wrap: wrap; }
 .og-assessment pre, .og-chat-turn p { white-space: pre-wrap; overflow-wrap: anywhere; }
 .og-assessment pre { max-height: 24rem; overflow: auto; }
@@ -2173,3 +2189,21 @@
 .og-task-edit { display: grid; grid-template-columns: minmax(130px, 180px) minmax(180px, 1fr) auto; gap: 10px; align-items: end; }
 .og-task-edit textarea { min-height: 65px; width: 100%; }
 @media (max-width: 850px) { .og-task-edit { grid-template-columns: 1fr; } }
+
+/* P2 independent Result, answer and observation forms inside the existing Assessment workspace. */
+.og-p2-panel, .og-p2-result { grid-template-columns: minmax(0, 1fr); width: 100%; box-sizing: border-box; overflow-wrap: anywhere; }
+.og-p2-panel > *, .og-p2-result > *, .og-p2-panel details, .og-p2-panel fieldset, .og-p2-panel li { min-width: 0; max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
+.og-p2-panel form, .og-p2-summary, .og-p2-reference, .og-p2-panel > section[aria-label="保存恢复"] { min-width: 0; padding: .85rem; border: 1px solid var(--border, #334155); border-radius: .75rem; overflow-wrap: anywhere; }
+.og-p2-panel fieldset { display: grid; gap: .7rem; min-width: 0; border: 0; padding: 0; }
+.og-p2-panel legend { font-weight: 700; padding-bottom: .6rem; }
+.og-p2-panel label { display: grid; gap: .3rem; min-width: 0; }
+.og-p2-panel label:has(> input[type="checkbox"]) { display: flex; align-items: flex-start; gap: .45rem; }
+.og-p2-panel input:not([type="checkbox"]), .og-p2-panel select, .og-p2-panel textarea { max-width: 100%; min-width: 0; width: 100%; box-sizing: border-box; }
+.og-p2-panel textarea { min-height: 4.5rem; }
+.og-p2-panel button { justify-self: start; max-width: 100%; overflow-wrap: anywhere; }
+.og-p2-panel details button, .og-p2-reference button { margin: .2rem .5rem .2rem 0; }
+.og-p2-subjects { display: grid; gap: .35rem; max-height: 15rem; overflow: auto; }
+.og-p2-panel .og-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.og-p2-summary h3, .og-p2-reference h3 { margin: 0 0 .5rem; }
+@media (max-width: 760px) { .og-p2-panel form, .og-p2-summary, .og-p2-reference { padding: .65rem; } }
+@media print { .og-p2-panel form, .og-p2-panel > section[aria-label="保存恢复"], .og-p2-panel > label:has(input[type="checkbox"]) { display: none !important; } .og-p2-summary { break-inside: avoid; } }
