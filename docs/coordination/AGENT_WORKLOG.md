@@ -10586,3 +10586,12 @@
 - 目标：按用户授权核对并上传 `246bfba` 后的已提交代码与工作区内可公开的必要源码/文档，汇报 10 月 13 日实际继续的任务；保持 `integration/p1` 和 `main` 不变。预计仅处理当前已记录的 P1/P2 交接、审查和脱敏回执、三个协调文档；排除 `reports/`、pytest 缓存、私有原件/正文。
 - 基线：当前 `codex/scan-reliability-integration@50d8704`，GitHub 同名工作分支 `246bfba`，目标远端尚未含 10 月 12 日前端合入；工作区无已暂存文件，最新 P1/P2 任务均已收工但总体 PARTIAL。A/Owner/前端正式门禁不因上传而关闭。
 - 验收：逐文件公开范围和敏感信息复核、相关测试/机器回执复验、`git diff --check`、暂存清单与提交差异核对、非强制推送及远端 SHA 读回。估算 token 8,000～16,000，精确遥测不可获得。不启停服务，不擅自修改产品源码或原回执。
+
+### [20261013-0015-GPT61Sol-GitHub增量发布收工] COMPLETE
+
+- 作者：GPT-6.1 Sol；角色：Root Coordinator；时间：2026-10-13 00:15（Asia/Shanghai）。
+- 目标与结果：今天继续核对 P1/P2 最新到件并完成 GitHub 增量上传；远端 `codex/scan-reliability-integration@df60e665384fbb3b6273bd27a6674065bc5bbf79` 已读回。用户要求的作品代码上传已完成；正式 P1/P2 验收仍 PARTIAL，未合并 `integration/p1`/`main`，无 PR/部署。
+- 修改/上传：10 月 12 日已在本地合入的 P2 前端工作台及 M1 阻塞交接随推送发布（本地 `50d8704`）；本轮提交 P1 六份脱敏跟进/核对脚本 `6a369aa`、P2 十一份 npm/M1/两例交接资料 `3866df0`、AI/工作日志/进度三份追加 `df60e66`，并追加本收工与发布回执。不上传内部截图执行提示词、`reports/`、pytest 缓存、原始第三方正文或本机私有路径；无业务代码另行修改。
+- 命令与验证：依次机器读取 README/完整工作日志/进度/SOL_HANDOFF，重点审阅最新及相关记录；核对分支、状态、远端三引用及 `246bfba` 为本地祖先。前端 `npm --prefix frontend test` 133 passed，`npm --prefix frontend run build` 通过；P1 新离线脚本在忽略的 tmp 输出 221 pass/0 fail；十份新增 JSON 解析、待提交 `git diff --check`、新增文件空白与敏感模式检查通过，提交文件清单明确排除非作品资料。没有启动/停止项目服务。历史超长日志虽由工具整文件读取，未逐字人工语义审阅，保留此流程限制。
+- 接口/Schema/规则/决策：本轮未新改公共接口、Schema、Formal 或许可证规则；前端工作台仍是历史已合入实现，静态/单测成功不代接收机真实签收。P1 审查回执明确同机角色而非真人/真实 Luna、Sol 或异机签收；P2 npm 200/Hash 是历史原始记录，不是正式受信 A 出口或来源接纳。
+- 风险与下一步：A 补实际运行 SHA、B03 r2 消费/旧派生处理、NOTICE 两条夹具及 P1 同版链；A/Owner 补 P2 正式来源/Evidence/旧 Formal 与真实范围用途；前端操作者补接收机浏览器/网络回执；Luna/Sol/真人完成独立 Gold/等级/新 holdout，Root 另行进行 PR/集成评审。关联分支 `codex/scan-reliability-integration@df60e66`，`integration/p1@aabd794`、`main@476d954` 未变，无 PR/Issue/evidence_id 新签发。精确 token 数不可获得；开工估算 8,000～16,000，上传范围完成，无遥测判断实际是否落入区间。
