@@ -2104,3 +2104,9 @@ Owner已允许B以A afca4c26c2fa45fa285fc9cabf48f52c54a59229的P2 v1合同/Schem
 | P2 需求/契约/页面 | 未定义、未实现 | 等待用户提供 P2 计划书后再分解 |
 
 本轮只完成开工准备，不代表 P2 已启动或任何 P2 功能已完成。未修改产品代码、公共 API/Schema、依赖或数据，未提交/推送/PR/合并；待 P2 计划书到位后先冻结边界和验收口径再开发。
+
+## 2026-10-12 P2 前端与 M1 交接本地集成
+
+- 当前工作分支 codex/scan-reliability-integration 已合入 P2 前端 origin/codex/p2-readiness@9ad9998（合并 326c226）及 M1 交接 origin/codex/p2-m1-blocker-handoff-20261011@0db50a9（合并 8ef9070）。上方准备记录为历史状态，本条为最新本地合并状态；main/integration/p1 未改，尚未推送本轮合并。
+- 本轮前端 133/133 测试、TypeScript 检查、Vite 生产构建及 diff-check 通过。新增版本化 P2 工作台、L1 候选与 L2 回答/材料交互代码；真实目标机与后端写入、旧 Formal、Owner/来源及前端签收仍待 A/Owner/xzb，P2 整体 PARTIAL。
+- 可独立验证前端构建和合成合同交互、既有离线扫描/材料/结果链；可参赛仍需资格材料、目标机及 Java 核心签收；完整作品仍需正式跨栈闭环与交付材料；竞争力仍需真人 Gold、独立 Bench/holdout、对比消融及性能复现。Root 负责合并发布，A/前端负责联调，Luna/Sol 负责独立审核。

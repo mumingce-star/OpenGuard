@@ -9951,3 +9951,17 @@
 - **修改/发布边界**：未修改前端、后端、Schema、依赖、Bench 或运行数据；仅追加本日志与进度回执。未提交、未推送、未创建 PR、未修改 `integration/p1`/`main`/其他成员分支，未启停服务。
 - **当前决策/下一步**：P2 开工前唯一待输入是用户的 P2 计划书。收到后先将其映射为前端责任、后端依赖、契约冻结点与分阶段验收，再决定正式 P2 分支命名和实现顺序；本轮不自行推断。
 - **token 使用说明**：本次运行精确 token 数不可获得；开工估算 8,000–16,000，用户缩窄范围后已在准备范围内完整收口。
+
+## 20261012-1000-GPT6-P2远端合并-START
+
+- 作者与角色：GPT-6 / Root Coordinator；日期：2026-10-12（Asia/Shanghai）；状态 START。用户授权拉取并合并最新项目。当前工作分支 codex/scan-reliability-integration@246bfba，工作区仅有本机 reports/与受限 pytest 目录；远端新增 P2 readiness 前端和 M1 blocker handoff 分支，拟合并两者并保留双方协调记录。
+- 预计文件及验收：前端 13 个源码/测试文件、交接文档及协调日志/进度；执行前端测试、构建、diff-check 与祖先关系检查，不启停服务、不推送。预计 token 3,000～7,000；精确遥测不可获得。历史日志体量较大，本轮复核近期与相关条目，未声称逐字完整历史审阅。
+
+## 20261012-1000-GPT6-P2远端合并-COMPLETE
+
+- 作者与角色：GPT-6 / Root Coordinator；日期：2026-10-12（Asia/Shanghai）；状态 COMPLETE。已 fetch 全部远端引用，将 origin/codex/p2-readiness@9ad9998 与 origin/codex/p2-m1-blocker-handoff-20261011@0db50a9 合入当前 codex/scan-reliability-integration；合并提交分别为 326c226、8ef9070。
+- 文件与冲突：新增 P2 前端候选展示、版本工作台、服务/类型与测试、前端交接及 M1 blocker 文档；PROJECT_PROGRESS 冲突保留双方完整历史。共享日志自动合并，两侧记录及本轮 START 保留；本机 reports/pytest 目录原样保留。
+- 验证：npm --prefix frontend test 为 133 passed、0 failed；npm --prefix frontend run build 的 TypeScript 与 Vite 构建通过；git diff --cached --check 和 git diff --check 通过。未启停服务或执行后端真实写入。前端真实目标机/后端写入/旧 Formal 签收不因测试通过而提升。
+- 接口与决策：原样合入已发布的前端 P2 合同消费者，新增不可变 Result/同版 Summary 展示及 L2 显式写入流程；后端公共契约未改。其余六条非祖先历史/实验功能分支保留未整合状态，需另按具体差异审核。
+- 发布与风险：合并结果本地已提交，尚未推送，main/integration/p1 未修改；正式 P2 目标机、来源/Owner 范围、旧 Formal 及前端签收依然待 A/Owner/xzb，Windows/NOTICE/评测门禁仍开放。下一步 Root 按发布授权推送，A/前端完成真实端到端联调，Luna/Sol 独立审核。
+- token：本次运行精确 token 数不可获得；开工估算 3,000～7,000，合并与本轮验证范围已完成，无精确遥测判断实际是否落入区间。
