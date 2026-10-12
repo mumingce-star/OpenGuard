@@ -9934,3 +9934,20 @@
 - 命令/验证：必读文件按序完整由工具读取并审阅近期及相关记录；Git 分支/状态/近期提交/远端读回；P1 定向 234 passed；B03 Node 10 passed/Python 24 passed；P2B 定向 120 passed、2 条既有弃用警告；固定修订生成器 `--check`、P2B 离线 CLI/闭包、15 JSON 解析、三组验证回执 Hash 复核、`git diff --check`、暂存清单及敏感信息检查通过。未启停项目服务、未抓取来源或运行正式扫描。大体量历史日志逐字人工审阅不能由整文件工具读取替代；保留此流程限制。
 - 接口/Schema/规则/决策：公共接口、Schema、Formal 和许可规则未变；B03 用固定 Git blob 的新不可变 source-binding-r2，旧包作为含缺陷历史保留；P2B 仅复用 TEST_ONLY 材料观察，无新增正向授权。发布仅供独立复核，不代表独立审核或 Owner 批准。
 - 风险/下一步责任：Luna/Sol 独立复核 B03/P1，A 以新 pin 建立终态和正式来源/Evidence/旧 Formal 读回，Owner 确认范围与用途，xzb 在获准接收机验收前端；Root 后续处理 Windows `os.geteuid`、NOTICE 父本、baseline 漂移及 PR/集成审查。关联 `codex/scan-reliability-integration@70e0cf7`；`integration/p1@aabd794`、`main@476d954` 未改，无 PR/Issue/evidence_id 新签发。精确 token 数不可获得；开工估算 10,000～20,000，发布范围完成，无遥测判断实际是否在范围内。
+## 20261007-OpenGuard-P2开工准备-start
+
+- **状态**：START；**作者与角色**：GPT-6.1 Sol（Root Coordinator / P2 开工基线准备）；**日期时间**：2026-10-07（Asia/Shanghai）。
+- **目标与范围**：按用户要求获取团队仓库最新状态，确认 P1 正式集成基线，建立与旧 P1 feature 隔离的 P2 本地准备分支，输出 P2 启动前门禁/范围/验证清单并执行前端基线回归。本轮不新增 P2 业务功能、不修改后端或公共 Schema。
+- **Preflight**：已读取全局控制台、反思日志、README、协作日志/进度台账和 SOL_HANDOFF；原分支 `p1/xzb-frontend-f01-f07@360614a` 工作区干净并保留不动。定向 fetch 后 `origin/integration/p1=aabd7940f65ec8a78b33c863b4db81b400509b7d`，已吸收 P1 前端、NOTICE 生产消费、Metadata/Detector/Bench 与生命周期更新；远程无正式 P2 分支。
+- **分支决策**：从 `origin/integration/p1@aabd794` 创建本地 `codex/p2-readiness`，不复用旧 P1 feature，不修改 `integration/p1`、`main` 或其他成员分支。未获得用户后续发布授权前不推送。
+- **预计文件与验收**：新增 `docs/spec/p2-readiness.md`，只追加本日志与 `PROJECT_PROGRESS.md`；运行前端单测、TypeScript/Vite build、`git diff --check` 与待提交范围复核。预计 token 8,000–16,000，精确遥测不可获得。
+
+## 20261007-OpenGuard-P2开工准备-result
+
+- **状态**：COMPLETE；**作者与角色**：GPT-6.1 Sol（Root Coordinator / P2 开工基线准备）；**日期时间**：2026-10-07（Asia/Shanghai）。
+- **用户缩窄后的实际范围**：用户明确要求等待 P2 计划书后再做具体行动，因此本轮只完成仓库同步、基线隔离和前端健康检查；原预计的 `docs/spec/p2-readiness.md` 没有创建，未定义 P2 需求、架构、API、页面或验收口径。
+- **基线结果**：团队最新正式基线为 `origin/integration/p1@aabd7940f65ec8a78b33c863b4db81b400509b7d`；已从该 SHA 创建本地 `codex/p2-readiness`，跟踪 `origin/integration/p1`。原 `p1/xzb-frontend-f01-f07@360614a` 保留不动，远程未发现正式 P2 分支。
+- **验证**：在最新基线的 `frontend/` 实际运行 `npm test`，122/122 通过；`npm run build` 通过 TypeScript 与 Vite 8.2.2 生产构建，55 modules，JS 394.45 kB / gzip 121.56 kB，CSS 57.33 kB / gzip 13.46 kB。`git diff --check` 通过；未运行无关后端全仓套件。
+- **修改/发布边界**：未修改前端、后端、Schema、依赖、Bench 或运行数据；仅追加本日志与进度回执。未提交、未推送、未创建 PR、未修改 `integration/p1`/`main`/其他成员分支，未启停服务。
+- **当前决策/下一步**：P2 开工前唯一待输入是用户的 P2 计划书。收到后先将其映射为前端责任、后端依赖、契约冻结点与分阶段验收，再决定正式 P2 分支命名和实现顺序；本轮不自行推断。
+- **token 使用说明**：本次运行精确 token 数不可获得；开工估算 8,000–16,000，用户缩窄范围后已在准备范围内完整收口。

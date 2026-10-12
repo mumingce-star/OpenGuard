@@ -201,7 +201,8 @@ export function App() {
         key={scan.mode + scan.id}
         scan={scan}
         query={route.query}
-        selectVersion={id => filter("assessment_id", id)}
+        selectVersion={id => { const q = new URLSearchParams(route.query); q.set('assessment_id', id); ['assessment_version','p2_result_id','p2_revision'].forEach(k => q.delete(k)); navigate('assessment', q.toString()); }}
+        selectP2Result={result => { const q = new URLSearchParams(route.query); q.set('assessment_id', result.binding.assessment_id); q.set('assessment_version', String(result.binding.assessment_version)); q.set('p2_result_id', result.result_id); q.set('p2_revision', String(result.revision)); navigate('assessment', q.toString()); }}
         openResources={() => navigate("resources")}
         initialChatOpen={route.page === "chat"}
       />

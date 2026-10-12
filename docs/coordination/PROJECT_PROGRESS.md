@@ -2094,3 +2094,13 @@ Owner已允许B以A afca4c26c2fa45fa285fc9cabf48f52c54a59229的P2 v1合同/Schem
 用户再次授权上传后，Root 将 `bed87f5` 之后的三组公开源码/测试/脱敏材料及共享记录分四个提交非强制推送至 `origin/codex/scan-reliability-integration`：P1 B 离线审计 `09c61cb`、B03 固定 Git 来源修订 `8f9db3c`、P2B 离线材料核验 `ca0dc31`、协调记录 `70e0cf7`。远端读回 `70e0cf705c1d88686ecdd1930320e6e5a1cc9a2e` 一致；`integration/p1` 与 `main` 未合并或修改，无 PR/部署。上述各任务历史“未发布”记录保留为当时状态，以本条为最新发布状态。
 
 本轮重新实测 P1 定向 234 passed、B03 Node 10 passed/Python 24 passed、P2B 定向 120 passed（2 条已有依赖弃用警告）；固定修订 `--check`、离线 CLI、15 份 JSON 解析、待提交 diff-check、公开范围与敏感信息筛查通过。`reports/`、pytest 缓存、第三方正文和本机私有路径未上传。发布仅代表工作分支可供复核：B03 独立审核和 A 新绑定、P1 正式 Gold/终态链、P2B 可信来源/Owner 范围/旧 Formal/前端签收及 Windows/NOTICE/baseline 门禁均未关闭，项目 P1/P2 仍 PARTIAL。
+## 2026-10-07 P2 开工前准备基线
+
+| 准备项 | 实际结果 | 状态/下一步 |
+|---|---|---|
+| 团队仓库 | `origin/integration/p1=aabd7940f65ec8a78b33c863b4db81b400509b7d` | 已获取最新 P1 发布基线 |
+| P2 隔离工作线 | 本地 `codex/p2-readiness` 从上述 SHA 创建 | 不复用旧 P1 feature；未推送 |
+| 前端健康门禁 | 122/122 测试；TypeScript + Vite build 通过；55 modules | 可作为 P2 前端回归起点 |
+| P2 需求/契约/页面 | 未定义、未实现 | 等待用户提供 P2 计划书后再分解 |
+
+本轮只完成开工准备，不代表 P2 已启动或任何 P2 功能已完成。未修改产品代码、公共 API/Schema、依赖或数据，未提交/推送/PR/合并；待 P2 计划书到位后先冻结边界和验收口径再开发。

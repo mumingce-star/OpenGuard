@@ -19,6 +19,10 @@ export function runtime(env = {}) {
     DOMException,
     FormData,
     Response,
+    TextEncoder,
+    TextDecoder,
+    Uint8Array,
+    btoa,
     Error,
     TypeError,
     Date,
@@ -51,6 +55,7 @@ export function runtime(env = {}) {
       compilerOptions: {
         module: ts.ModuleKind.CommonJS,
         target: ts.ScriptTarget.ES2022,
+        jsx: ts.JsxEmit.ReactJSX,
       },
     }).outputText;
     vm.runInNewContext(
@@ -61,7 +66,7 @@ export function runtime(env = {}) {
         exports: module.exports,
         require: (specifier) =>
           specifier.startsWith(".")
-            ? fromFile(path.resolve(path.dirname(filename), specifier + ".ts"))
+            ? fromFile([".ts", ".tsx"].map(extension => path.resolve(path.dirname(filename), specifier + extension)).find(candidate => fs.existsSync(candidate)))
             : require(specifier),
       },
       { filename },
