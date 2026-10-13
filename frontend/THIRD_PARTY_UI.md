@@ -22,6 +22,18 @@ No paid prompt, restricted template, paid component source, icon pack or image i
 - Usage: visual reference for the cyan-to-violet cursor trail on the landing page.
 - Implementation: `src/components/GlowCursor.tsx` is an original Canvas 2D implementation. It does not copy or redistribute React Bits component source, keeps pointer events available to the page, pauses in background tabs, and disables itself for coarse pointers and reduced-motion users.
 
+## React Flow — evidence graph (2026-09-03)
+
+2026-10-13 整合补记：以下是早期分支的历史使用记录。当前图谱使用 P1 后端契约实现，当前 package.json/pnpm-lock.yaml 不依赖 React Flow；历史声明文件保留供审计，不代表当前产品仍使用这些依赖。
+
+- Package: @xyflow/react 12.11.6; official source: https://reactflow.dev/learn and https://github.com/xyflow/xyflow
+- License: MIT, verified against the installed package LICENSE; retain upstream copyright/permission notice.
+- Usage: lazy-loaded evidence relationship canvas, zoom/pan/reset and node selection. Domain relations, page layout and evidence reader remain OpenGuard frontend code.
+- No Pro template or paid example source is copied. Default React Flow attribution remains visible.
+- Runtime dependency licenses are preserved in public/THIRD_PARTY_NOTICES.txt and copied to dist by Vite.
+- The lockfile includes @xyflow/system, Zustand, classcat and D3 dependencies; their exact versions and MIT/ISC/BSD notices are included in that file.
+- use-sync-external-store is overridden to 1.6.0 in pnpm-workspace.yaml because 1.2.0 declares no React 19 peer support. Version 1.6.0 declares React 19 support; pnpm peers check passes.
+
 ## Implementation references
 
 - React state organization: https://react.dev/learn/choosing-the-state-structure

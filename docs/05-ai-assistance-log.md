@@ -23,6 +23,8 @@
 | 2026-09-02 | GPT-5.6 Luna | 独立运行 A2-0/A2-1 本地 ZIP 安全测试；仅使用现有实现与安全验收作为输入，不修改 Terra backend 或既有 unit 测试 | `tests/security/test_a2_zip_security_independent.py` 与 `tests/security/README.md`：标准库动态 ZIP、ZIP64/data descriptor/header、路径/类型/配额/清理/inventory/no-follow 边界 | 保留按冻结 reason 断言的失败测试，不为通过而放宽期望；未修改 P0 模型、Schema/sample、backend、既有 tests 或 PROJECT_PROGRESS | 独立测试 35 项：21 passed、14 failed；全量 97 项：83 passed、14 failed。失败已按稳定 reason 漂移和 local/central header mismatch 分类升级；`git diff --check`、敏感信息和绝对路径检查待本轮收尾完成；未运行目标项目代码 | 是 |
 | 2026-09-02 | GPT-5.6 Luna | 按 Sol 裁决复测 A2-0/A2-1；仅将深度/UTF-8 路径长度两项测试 code 期望改为 `archive_limit_exceeded`，复核 Terra 的 13 项 reason 与 local/central header 修复 | 保留同一标准库动态 ZIP、ZIP64/data descriptor/header 与文件系统安全测试；未新增不透明 fixture | 未修改 backend、Terra unit、P0/Schema/sample 或 PROJECT_PROGRESS；未弱化安全边界 | 独立测试 `35 passed`；Terra ZIP unit `18 passed`；当前全量 `99 passed`；排除 Terra 本轮新增 2 项单测后，历史可比的 97 项为 `97 passed`、`2 deselected`；`git diff --check`、敏感信息和绝对路径检查随后完成 | 是 |
 | 2026-09-02 | GPT-5.6 Luna | 独立补测 SEC-A2-009 home shorthand 路径边界；仅增加首段 `~`/`~user` 拒绝与后续普通文件名波浪号允许的安全回归 | `tests/security/test_a2_zip_security_independent.py` 新增动态 ZIP/ inventory 用例；无第三方或不透明二进制 fixture | 未修改 backend、Terra unit、P0/Schema/sample 或 PROJECT_PROGRESS；不扩大“仅首段”窄规则 | 独立测试 `36 passed`；Terra ZIP unit `19 passed`；当前全量 `101 passed`；P0 `46 passed`；`git diff --check`、尾随空白、敏感信息与本机绝对路径检查通过 | 是 |
+| 2026-09-03 | GPT-5.6 Sol / Codex | 用户提供的前端负责人优化建议、现有前端与项目资料 | 前端任务闭环、证据阅读器、图谱、报告、响应式、测试与拟定接口契约 | 已获用户同步授权；团队 PR 审查待完成 | 16 项 Node 测试、12 组隔离 Chrome 流程、多尺寸截图、TypeScript/Vite 构建；接口测试使用拦截响应而非真实后端 | 待团队验收 |
+| 2026-09-07 | GPT-5.6 Sol / Codex | 用户指定新建扫描真实接口页 | 真实接口模式隐藏固定演示入口，mock 模式保留 | 待用户本地确认 | Node 测试、生产构建、浏览器模式断言 | 待团队验收 |
 
 记录原则：
 

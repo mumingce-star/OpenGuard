@@ -17,6 +17,10 @@
 | Ollama | 本地模型运行时 | 0.33.3 | https://github.com/ollama/ollama/releases/tag/v0.33.3；https://docs.ollama.com/macos | MIT；上游 `LICENSE` | A5 本地 loopback transport；以 `OLLAMA_NO_CLOUD=1`、`OLLAMA_NOHISTORY=1` 运行，只监听 `127.0.0.1` | 分发时保留上游许可证和来源；安装包不进入仓库，不静默升级锁定版本 | OpenGuard 自研 loopback/禁代理/超时/响应封装与 A5-0 接线；不复制 Ollama 实现 | 已核验（2026-09-04；官方 DMG 196424896 bytes、SHA-256 `cc21bd6a1486ddff3cdcbf00549f61d0a3e6e6893d6456a12d37c486161bcc43`；Developer ID Team `3MU9H2V9Y9`、Gatekeeper、公证、arm64 与运行版本通过） | 只公开版本、来源、摘要和复现说明；不再分发运行时 |
 | Qwen3 | 开放权重模型 | `qwen3:4b-instruct-2507-q4_K_M` | https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M；https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507 | Apache-2.0；模型页及 Qwen 模型仓库 | 本机 A5 整改建议结构化推理；仅把模型输出作为待人工核验 remediation，不提升为许可证事实 | 保留模型来源和许可证；不得把模型输出写成法律结论，不在公开仓库再分发权重 | OpenGuard 自研 canonical prompt、证据引用和 pending remediation；不复制或再分发权重 | 已核验（2026-09-04；锁定权重本机下载并完成 3/3 结构化推理） | 仅公开官方链接、摘要和聚合实测，不存放或再分发权重 |
 | Qwen3 Ollama manifest | 模型 manifest/blob 身份 | `sha256:0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`；blob `sha256:85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9` | 官方 registry manifest；模型页 https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M | 随对应 Qwen3 模型 | 完整 digest pinning 与每次 Provider 调用前的 tags 比对；模型 blob 只保留在本机缓存 | 保留摘要来源与校验记录；不得据摘要推断许可证规则正确或模型质量普适 | OpenGuard 自研 digest 比对和 ProducerRef/config_digest 绑定；不生成或托管模型 blob | 已核验（2026-09-04；磁盘 manifest 原始字节 SHA-256 与 API tags 均等于锁定值；2497280480-byte blob 重算 SHA-256 一致） | 仅记录摘要和官方链接，不公开 blob |
+| React Flow (@xyflow/react) | 前端图谱库 | 12.11.6 | https://reactflow.dev/learn | MIT | 懒加载缩放/平移/节点交互；不复制 Pro 模板 | 保留许可与版权声明 | 风险/证据关联及业务 UI 自行实现 | 已登记，待团队复核 | 锁文件安装；声明随静态站点发布 |
+| React Flow 运行时依赖 | npm 包 | 详见 frontend/public/THIRD_PARTY_NOTICES.txt | 各上游链接见声明文件 | MIT / ISC / BSD-3-Clause | @xyflow/system、Zustand、classcat、D3、use-sync-external-store | 保留各包授权文本；不将上游代码计为自研 | 仅通用交互基础库 | 已核对安装包声明 | 声明随静态站点发布 |
+
+2026-09-03 前端记录：React / ReactDOM / scheduler 的运行时声明也一并保留。完整使用边界见 frontend/THIRD_PARTY_UI.md；构建工具及既有资源的全项目台账仍需各负责人持续维护，本记录不代表完成整仓合规审计。
 
 所有依赖、模型、数据、框架、组件、工具、素材和第三方服务在首次引入时登记，不在提交前集中补录。
 
