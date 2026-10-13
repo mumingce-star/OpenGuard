@@ -10595,3 +10595,31 @@
 - 命令与验证：依次机器读取 README/完整工作日志/进度/SOL_HANDOFF，重点审阅最新及相关记录；核对分支、状态、远端三引用及 `246bfba` 为本地祖先。前端 `npm --prefix frontend test` 133 passed，`npm --prefix frontend run build` 通过；P1 新离线脚本在忽略的 tmp 输出 221 pass/0 fail；十份新增 JSON 解析、待提交 `git diff --check`、新增文件空白与敏感模式检查通过，提交文件清单明确排除非作品资料。没有启动/停止项目服务。历史超长日志虽由工具整文件读取，未逐字人工语义审阅，保留此流程限制。
 - 接口/Schema/规则/决策：本轮未新改公共接口、Schema、Formal 或许可证规则；前端工作台仍是历史已合入实现，静态/单测成功不代接收机真实签收。P1 审查回执明确同机角色而非真人/真实 Luna、Sol 或异机签收；P2 npm 200/Hash 是历史原始记录，不是正式受信 A 出口或来源接纳。
 - 风险与下一步：A 补实际运行 SHA、B03 r2 消费/旧派生处理、NOTICE 两条夹具及 P1 同版链；A/Owner 补 P2 正式来源/Evidence/旧 Formal 与真实范围用途；前端操作者补接收机浏览器/网络回执；Luna/Sol/真人完成独立 Gold/等级/新 holdout，Root 另行进行 PR/集成评审。关联分支 `codex/scan-reliability-integration@df60e66`，`integration/p1@aabd794`、`main@476d954` 未变，无 PR/Issue/evidence_id 新签发。精确 token 数不可获得；开工估算 8,000～16,000，上传范围完成，无遥测判断实际是否落入区间。
+
+### [20261013-0940-GPT61Sol-P1P2分支发布开工] START
+
+- 作者：GPT-6.1 Sol；角色：Root Coordinator；时间：2026-10-13 09:40（Asia/Shanghai）。
+- 目标：按用户最新授权核实 P1、P2 全部已完成且适合公开的代码是否分别存在于 GitHub 合适工作分支；缺失部分通过非强制推送补齐。仅在既有集成门禁允许时更新集成分支，不将上传等同正式验收或 `main` 合并。
+- 基线：本地 `codex/scan-reliability-integration@54ac7cf`，工作区无已暂存文件；未跟踪截图内部提示词及 `reports/` 保护。最近 P1/P2 任务技术与交接已收工，产品总体仍 PARTIAL；当前日志未显示同文件在途业务修改。
+- 预计文件：只追加共享日志和必要的 `PROJECT_PROGRESS.md` GitHub 发布状态；不修改 P1/P2 产品源码、Schema、规则或其他模型在途资料。验收：本地/远端分支与提交拓扑、拟上传文件清单、相关现有测试、`git diff --check`、敏感信息检查、远端 SHA 读回；不启动/停止服务，不强推。
+- token 估算：6,000～12,000；本次运行精确 token 数不可获得，实际是否落入区间待收工说明。
+
+## 20261013-0941-GPT6-Git拉取核验-START
+
+- 作者与角色：GPT-6 / Root Coordinator；日期：2026-10-13（Asia/Shanghai）；状态 START。范围为用户指定远端的全部引用获取与当前 P1/P2 集成线同步；预计仅追加本日志，不覆盖并行发布任务记录。验收为 fetch、ff-only merge、P2 祖先关系与 diff-check；估算 1,000～3,000 token。复用已读取 README/Sol 上下文，补读最新进度/日志；完整历史逐字审阅限制保持。
+
+## 20261013-0941-GPT6-Git拉取核验-COMPLETE
+
+- 作者与角色：GPT-6 / Root Coordinator；日期：2026-10-13（Asia/Shanghai）；状态 COMPLETE。git fetch --prune origin 成功；git merge --ff-only origin/codex/scan-reliability-integration 返回 Already up to date。当前与远端均为 54ac7cf，ahead/behind 为 0/0；P2 前后端分支祖先核验均退出 0，integration/p1 没有待合入提交。
+- 修改/验证：仅追加本日志，未修改业务代码、接口、Schema 或规则；git diff --check 通过，仅 CRLF 提示。本轮没有代码增量，未运行产品测试或服务。截图内部提示词、reports/、pytest 本机目录及并行发布记录保留；本轮无 stage/commit/push/PR/Issue/evidence_id。
+- 边界与风险：六条非祖先历史/实验分支仍未自动合入，不把各独立功能版本混作正式集成基线。P1/P2 已发布工作分支可复核，正式来源/Owner/完整 Formal/接收机签收、Java目标机与独立评测门禁仍待；本次 Git 同步不改变产品 PARTIAL 状态。
+- 下一步责任：并行 Root 发布任务按用户授权核对 P1/P2 分支发布；A/Owner 和前端继续同版正式接纳/签收，Luna/Sol 负责独立 Gold/Bench 审核。精确 token 数不可获得；开工估算 1,000～3,000，同步范围完成，实际是否在区间无法核定。
+
+### [20261013-0947-GPT61Sol-P1P2分支发布收工] COMPLETE
+
+- 作者：GPT-6.1 Sol；角色：Root Coordinator；时间：2026-10-13 09:47（Asia/Shanghai）；关联 START `20261013-0940-GPT61Sol-P1P2分支发布开工`。COMPLETE 仅指本轮授权的 P1/P2 工作分支上传，P1/P2 产品正式验收仍 PARTIAL。
+- 目标与结果：团队远端新增 `codex/p1-source-followup-20261013@471eb64a469d62631e200b83bb81f960957dde29` 与 `codex/p2-cumulative-20261013@54ac7cfc485ccada6d65862294d9c759bcb7c454`，在线读回 SHA 一致。前者自 `integration/p1@aabd794` 隔离 cherry-pick P1 专属 `09c61cb`、`8f9db3c`、`6a369aa`，产生三个新提交及 24 个变更路径；后者直接引用已发布完整工作分支，含 P1 基线与 P2 后端、前端、P2B。`integration/p1` 与 `main@476d954` 未变，无 PR/正式合并/部署。
+- 修改与上传范围：本轮仅新增两条 Git 工作分支，并向共享日志与 `PROJECT_PROGRESS.md` 追加发布记录；未修改产品接口、Schema、规则、风险语义或业务源码。P1 分支上传离线来源审计脚本/测试/脱敏文档、B03 固定 Git 来源夹具与测试；P2 累积分支无新文件内容。内部截图执行提示词、`reports/`、pytest 临时目录、原始第三方正文及密钥不纳入。
+- 命令与测试：git 分支/状态/提交/祖先/路径差异核验、`ls-remote` 上传前后读回、非强制 push；P1 Node 定向 `10 passed`，P2 前端 `133 passed`、TypeScript/Vite build 通过；P1 分支差异及 P2 新分支相对已发布源分支的 `git diff --check` 通过，有限凭据模式扫描候选文件均 0。完整 P1→P2 历史差异有旧共享日志行末空格，按追加式规则未改写旧记录；Python 无法创建进程，本轮 Python 定向测试未执行，不引用为本轮通过。未启停服务。
+- 决策与风险：P1 新增核验代码不混入 P2 功能；P2 为依赖 P1 基线的累积工作分支，非正式集成/可发布结论。A 正式来源/Evidence、同版运行与 NOTICE、Owner 用途范围/审核、前端目标机接收、Luna/Sol/真人独立 Gold/Bench 与外部复现仍待；Root 后续依评审门禁办理 PR/正式集成。无新 evidence_id/Issue、许可或合规签发。
+- token：本次运行精确 token 数不可获得；开工估算 6,000～12,000，分支上传范围已完成，未扩产品范围；因无精确遥测，无法核定实际是否落在估算区间。
