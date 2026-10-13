@@ -10623,3 +10623,51 @@
 - 命令与测试：git 分支/状态/提交/祖先/路径差异核验、`ls-remote` 上传前后读回、非强制 push；P1 Node 定向 `10 passed`，P2 前端 `133 passed`、TypeScript/Vite build 通过；P1 分支差异及 P2 新分支相对已发布源分支的 `git diff --check` 通过，有限凭据模式扫描候选文件均 0。完整 P1→P2 历史差异有旧共享日志行末空格，按追加式规则未改写旧记录；Python 无法创建进程，本轮 Python 定向测试未执行，不引用为本轮通过。未启停服务。
 - 决策与风险：P1 新增核验代码不混入 P2 功能；P2 为依赖 P1 基线的累积工作分支，非正式集成/可发布结论。A 正式来源/Evidence、同版运行与 NOTICE、Owner 用途范围/审核、前端目标机接收、Luna/Sol/真人独立 Gold/Bench 与外部复现仍待；Root 后续依评审门禁办理 PR/正式集成。无新 evidence_id/Issue、许可或合规签发。
 - token：本次运行精确 token 数不可获得；开工估算 6,000～12,000，分支上传范围已完成，未扩产品范围；因无精确遥测，无法核定实际是否落在估算区间。
+### [20260911-1615-GPT5-许可证高优修复] START - 修复B4/B5四项高优先级缺陷
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:15（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，基线 `c550651`（最新已获取 `origin/integration/p0`）。
+- 开工确认：已按顺序读取README、完整共享日志、项目进度及Sol交接，检查Git状态、最近提交和其他模型工作；新工作树干净，主工作树的人工标注/审计改动保持隔离，不覆盖。
+- 任务范围：修复AND/OR语义混同、标准化与规则覆盖衔接、证据/表达式一致性校验、共享LicenseExpression聚合冲突；新增失败回归、实现、变更说明和协作记录。不启动或停止服务，不安装新依赖，不处理其余四个中优问题。
+- 预计文件：`backend/app/licenses/spdx.py`、`backend/app/rules/engine.py`、`backend/app/pipeline/license_rules.py`、相关unit测试、`docs/coordination/change-requests.md`、本日志、进度和AI记录。验收：先红后绿的定向测试、许可证相关集成测试、全量可行回归、`git diff --check`。
+- 设计决策：在不改变冻结Schema的前提下，P0对含OR表达式保守输出“需要选择许可证”的复核提示且不生成必定义务；AND逐叶评估并显式报告未覆盖叶；共享许可证义务按完全相同内容去重，冲突内容仍失败。预计8,000～15,000 token，精确数不可获得。
+
+### [20260911-1640-GPT5-许可证高优修复收工] PARTIAL - 四项本地修复完成，Linux全量与发布待完成
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:40（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，基线 `c550651`。
+- 实际结果：实现受限表达式解析与AGPL映射；含OR时生成`license-choice-required`且不生成必定义务，纯AND逐叶执行并用`license-rule-coverage`显示未覆盖叶；缺失Evidence引用和expression/normalized_ids矛盾分别生成完整性unknown；聚合时相同ID/内容去重、相同ID/不同内容继续失败。规则执行版本升至`2026.09.2`，P0 Schema未改。
+- 文件：`backend/app/licenses/{__init__,spdx}.py`、`backend/app/rules/engine.py`、`backend/app/pipeline/license_rules.py`、`rules/{README.md,license-obligations.yaml}`、两个测试文件、change-requests、进度、AI记录和本日志。主工作树人工标注/审计文件未触碰；没有启动停止服务。
+- 测试：新增失败回归初始6失败/8通过；修复后许可证+B5+A4+AI provider/transport为149通过、1 deselected，compileall和diff检查通过。完整定向含持久化为25通过/1失败，失败在Windows缺`os.geteuid`；补齐锁定依赖后全量仍因`fcntl`及POSIX安全能力不能作为本轮绿灯。尝试筛选大范围用例时因README误入参数一次未运行，修正后为649通过/313失败/7跳过/36错误，失败以既有Windows/POSIX边界为主，未逐项归因，不能称全量回归通过。
+- 环境：使用清华PyPI镜像向既有`.venv`安装`backend[dev]`锁定依赖，环境不纳入Git。Docker Engine当前管道不存在，`wsl`命令在当前shell不可用；遵守用户要求未主动启动服务，故Linux持久化/全量回归未执行。
+- 接口/风险语义：新增内部`ParsedLicenseExpression`/`parse_license_expression`和4个诊断rule_id；OR语义为保守人工选择，不提供法律判断。相同共享义务去重是A4行为变化，真实碰撞仍拒绝。change request记录Sol/Terra/Luna复核要求。
+- 发布/未完成：本地代码目标完成，但未暂存、提交、推送，GitHub仍为`integration/p0@c550651`；完整括号/WITH/+、规则来源审核、场景条件、9条缺失fixture属中优后续。Sol复核语义，Terra复核实现，Luna复核测试，Root在Linux全量及用户授权后发布。
+- 项目状态：现有真实Git/ZIP、ScanCode/Syft、规则、AI、报告和Web历史演示能力沿用，但本轮未重新部署；可报名仍需权属/规则材料，可提交完整作品仍需Linux/异机端到端和人工签收，获奖竞争力仍需真实质量/性能/基线消融门禁。
+- 本次运行精确token数不可获得；开工估算8,000～15,000，四项实现完成，范围内额外补依赖和大范围回归但未启动服务；无法核定实际用量是否在区间。
+
+### [20260911-1645-GPT5-许可证高优修复发布] START - 复核、提交并推送任务分支
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:45（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，基线 `c550651`。
+- 用户已明确授权上传 GitHub。本轮只整理上一条记录列明的 B4/B5 四项高优修复、测试和必要协作文档；不合并 `main`，不修改运行服务，不纳入 `output`、虚拟环境、数据库、报告、密钥或本机私有文件。
+- 验收：复跑 149 项许可证/A4/AI 相关回归，执行 `compileall`、`git diff --check`、敏感信息与绝对路径扫描、暂存文件清单复核；通过后仅提交明确暂存文件并推送 `origin/codex/license-rule-p0-fixes`。预计 2,000～5,000 token，系统无精确遥测。
+
+### [20260911-1653-GPT5-许可证高优修复发布收工] BLOCKED - 本地提交完成，GitHub认证未完成
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 16:53（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，提交 `7e01949`。
+- 实际结果：12个核定文件已按显式清单暂存并提交，`git diff --cached --check`及规则JSON读取通过；未纳入`output`、虚拟环境、数据库、报告或其他工作树内容。规则版本为`2026.09.2`，提交未合并`main`。
+- 测试证据：提交源码与紧邻上一轮取得`149 passed, 1 deselected`的源码一致；本轮复跑前发现原Python 3.12安装路径已不存在，关联虚拟环境无法创建进程，因此没有伪报新的测试通过。该环境故障不改变上一轮测试结果，但仍需恢复Python后复跑。
+- 推送结果：SSH通过仓库配置访问`ssh.github.com:443`时被当前网络代理`198.18.0.4`关闭；HTTPS可达但本机无已保存GitHub账户。已启动官方设备码认证，等待约数分钟仍未获用户侧确认，随后终止等待进程；未记录、输出或索取密码/令牌。
+- 阻塞解除：用户在本机完成一次GitHub Credential Manager设备登录后，Root重新执行`git push -u https://github.com/mumingce-star/OpenGuard.git codex/license-rule-p0-fixes`，再追加发布回执、更新进度并提交推送。当前GitHub尚未包含`7e01949`。
+- 本次运行精确token数不可获得；开工估算2,000～5,000，完成本地整理和提交，上传因认证阻塞；范围未扩展、项目服务未启动或停止。
+
+### [20260911-1700-GPT5-GitHub浏览器会话接续] START - 使用当前浏览器账号完成命令行授权和推送
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:00（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，待推送提交 `7e01949`。
+- 用户截图确认浏览器已登录账号 `zhengchen529` 且可见 `mumingce-star/OpenGuard`。浏览器Cookie与Git Credential Manager凭据相互独立，本轮仅重新发起官方设备认证、核验远端写权限并继续HTTPS推送。
+- 预计仅更新发布回执、进度与AI记录并提交推送，不修改产品代码、不合并`main`、不启动或停止服务。验收为远端分支引用读取等于本地提交；预计1,000～3,000 token，精确数不可获得。
+
+### [20260911-1701-GPT5-GitHub浏览器会话接续收工] COMPLETE - 任务分支已发布
+
+- 作者：GPT-5 / Root Coordinator；时间：2026-09-11 17:01（Asia/Shanghai）；分支 `codex/license-rule-p0-fixes`，产品提交 `7e01949`。
+- 用户确认浏览器已有GitHub会话后，首次纯设备码流程因网络保持连接被服务器关闭，随后改用Git Credential Manager浏览器回调；账号`zhengchen529`授权成功且具备目标仓库写权限。未读取、记录或上传用户密码/令牌。
+- HTTPS推送成功：远端新增`codex/license-rule-p0-fixes`并包含`7e01949`的12个核定文件。SSH原配置仍受当前网络代理关闭影响，但不妨碍本次HTTPS发布。未修改`main`、`integration/p0`或组员分支，未启动/停止项目服务。
+- 验证与边界沿用上一发布记录：静态清单、diff、规则JSON和敏感范围通过；紧邻代码回归149通过/1排除，本轮Python 3.12安装入口失效故未产生新的测试结果。Linux全量、Sol/Terra/Luna复核及中优规则问题仍待，发布不等于P0最终签收。
+- 本次运行精确token数不可获得；开工估算1,000～3,000，浏览器授权与产品分支推送已在范围内完成。发布回执及进度更新作为后续纯文档提交继续推送到同一分支。
