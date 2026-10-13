@@ -43,3 +43,9 @@ No paid prompt, restricted template, paid component source, icon pack or image i
 ## P0 integration
 
 Core pages reused from team commit 83e8928. Graph pages and React Flow dependencies were not imported. Existing React, Tailwind and Vite lockfile dependencies are unchanged.
+
+## 2026-10-13 团队首页媒体整合
+
+- 来源：团队 `feat/p1-frontend-ui-upgrade@17b5998`，本地整合提交 `6486f94`；导入 `public/landing/openguard-hero-bg.mp4` 与 `public/landing/openguard-hero-poster.jpg`。
+- 用途：`src/components/HeroBackground.tsx` 首页背景视频与海报。组件注明 Owner-authorized neural-landing media；本轮没有独立取得作者、生成工具或再分发授权原件，因此不据此宣称权利审核完成。
+- 再分发门禁：素材 Owner 补充来源和可再分发授权回执；现有声明保留。无新增运行时依赖，也未下载外部新素材。

@@ -10788,3 +10788,20 @@
 - 已知风险与未完成内容：PR 尚待团队审查和合并；真实后端联调不属于本次按钮调整。
 - 下一步与责任模型：团队成员在 PR #1 审查；确认后由有权限成员合并至 main。
 - 关联提交/PR/Issue/evidence_id：功能提交 516bcff；PR https://github.com/mumingce-star/OpenGuard/pull/1 。本条收工记录通过后续独立文档提交同步。
+
+## 20261013-1000-GPT6-团队全分支整合-START
+
+- 作者与角色：GPT-6 / Root Coordinator；日期：2026-10-13（Asia/Shanghai）；状态 START。用户明确要求整合团队仓库所有内容，包括此前非祖先分支；将从 54ac7cf 创建 codex/team-integration-20261013 整合工作分支，保留已冻结 P1/P2 契约并审查七条未包含的远端分支，历史重复实现按最终产品兼容解决。
+- 范围：许可证修复、P1 专属 followup、Pydantic 审查、前端工作流/UI、两份成员交接及协作文档；先临时保留本地日志/进度追加，其他未跟踪用户文件保留。验收：所有远端 heads 为整合结果祖先、相关规则与前端测试/构建、diff-check、冲突与敏感增量核对。不开服务、不改 main、不主动推送。
+- 预计 token 8,000～16,000，精确遥测不可获得；复用 README/Sol 及近期相关历史上下文，完整历史逐字语义审阅限制继续保持；跨前后端由 Root 整合，需要 A/前端后续真实环境复核。
+
+## 20261013-1005-GPT6-团队全分支整合-COMPLETE
+
+- 作者与角色：GPT-6 / Root Coordinator；日期：2026-10-13（Asia/Shanghai）；状态 COMPLETE，限用户要求的全分支本地整合，不代表 P1/P2 产品门禁完成。
+- 目标与结果：成功 fetch 团队仓库，在 `codex/team-integration-20261013` 整合此前七条非祖先分支，最终远端 refs 未合并列表为空。基线含 `54ac7cf` 与并行完成的发布回执 `7caddf4`；本轮七个合并提交 `70923a2`、`0ba120a`、`5210fd1`、`5ad620f`、`5d6cf8a`、`fed4655`、`6486f94`。本地协调追加临时保留后成功恢复，用户未跟踪内容不动。
+- 修改/新增：两份 P1 成员交接、Pydantic 审查、首页视频/海报/HeroBackground、Landing/NewScan/Overview/CSS、历史前端契约/优化/第三方声明/工作区配置及协调记录；新增 `docs/coordination/TEAM_INTEGRATION_20261013.md`，追加本日志、进度、AI 辅助和媒体登记。范围清单可由 `git diff --name-only 54ac7cf HEAD` 复核。
+- 命令与测试：`git fetch --prune origin` 成功；远端 `--no-merged=HEAD` 空；`npm --prefix frontend test` 133 passed/0 failed/0 skipped；`npm --prefix frontend run build` TypeScript/Vite PASS；backend PYTHONPATH 下两份 B4/B5 定向 pytest 17 passed。最终合并增量 `git diff 54ac7cf HEAD --check` PASS，索引未解决冲突为空；完成记录暂存后继续复核空白/文件范围与有限敏感模式。
+- 接口/规则/重要决策：后端、规则和 Schema 相对 `54ac7cf` 无产品变更；旧前端冲突保留现行 P1/P2 兼容契约和容错，不回退报告/取消态/P2 路由，不重新引入 React Flow 或旧 override。独有历史记录完整保留；UI 新增并验证，无新增运行时依赖。
+- 风险/未完成：此前历史文档空行问题已在后续合并修正。未做全服务、目标机真实浏览器或独立评测；P1/P2 仍 PARTIAL，A/Owner 同版真链/正式接纳、前端签收、媒体权利和真人 Gold 等待负责方。完整历史逐字语义审阅限制仍未关闭，不宣称最终审计。未启动/停止服务、未改 main、未推送/PR/部署；报告、内部截图提示词、缓存不暂存。
+- 下一步与责任：用户若要求发布，由 Root 验收后推送本整合分支并走 PR；A/Owner 补真实运行与范围/权利签发，前端补目标机签收，Luna/Sol 接独立评测与最终审计。
+- token：本次运行精确 token 数不可获得；开工估算 8,000～16,000，实际是否在该区间无法核定；既定全分支本地整合范围已完成，未扩展至服务联调或发布。
