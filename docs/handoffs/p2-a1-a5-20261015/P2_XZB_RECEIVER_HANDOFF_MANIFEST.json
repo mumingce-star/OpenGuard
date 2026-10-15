@@ -1,0 +1,3810 @@
+{
+  "schema": "openguard.readonly-handoff/1",
+  "task": "P2 A1-A5 total delivery review",
+  "result": "PARTIAL_HANDOFF_READY",
+  "review_date": "2026-10-15",
+  "path_base": "LOCAL_COMPETITION_ROOT (local-only; not included)",
+  "scope": "静态读取、Hash核验、已运行环境元数据；仅新增本目录文件",
+  "unified_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+  "frontend_declared": {
+    "status": "FRONTEND_CURRENT_SOURCE_NOT_RECEIVED",
+    "check_status": "BLOCKED_MISSING_SOURCE",
+    "evidence_level": [
+      "BLOCKED_MISSING_EVIDENCE",
+      "TARGET_MACHINE_PENDING"
+    ],
+    "declared_base_head": "9ad9998d6f3df82618966c5865d13006a1efe6bc",
+    "declared_file_count": 81,
+    "declared_aggregate_sha256": "c92a2143f1cdc46f903089f22237a62b95f183f75dd0111b78bfa991d5a732bd",
+    "manifest_algorithm": null,
+    "aggregate_computed": false,
+    "current_source_sha256": null,
+    "required_files": [
+      "docs/coordination/P2_FRONTEND_SOURCE_20261013.json",
+      "docs/coordination/P2_STAGE2_TO_5_RECEIPT_20261013.md",
+      "manifest列明的81份原字节源码及其未提交增量"
+    ],
+    "d1_statement": "最新xzb要求明确D1已做；本轮不否定其已做声明。142单测、TypeScript/build及11项TEST_ONLY浏览器检查目前仅有该说明转述，独立回执原件未取得，不能签成当前兼容PASS。",
+    "static_checklist": [
+      {
+        "item": "scan_id / assessment_id / assessment_version 与 result_id / revision 分开",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "精确 Result GET 和固定 URL",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "Summary 对应同一 result_id / revision / hash",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "L1 候选与缺口展示",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "L2 Answer / Material 绑定",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "parent_result_id / expected_revision CAS 冲突",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "idempotency_key 重放",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "手动恢复 / 刷新 / 新旧原值",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "facts_hash / usage_hash / rule_version 绑定",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      },
+      {
+        "item": "Formal 保持、companion 非 Formal、前端不产生许可肯定事实",
+        "status": "BLOCKED_MISSING_SOURCE",
+        "backend_reference": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "artifact_id": "file-001",
+      "artifact_type": "unified_archive",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/OpenGuard_P2_STAGE1_UNIFIED_TEST_ONLY_20261011.zip",
+      "external_original_path": null,
+      "bytes": 3661872,
+      "sha256": "743600b7748d07df7dcb587617cfc3825547d58e53cad33eb95c348905275854",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-002",
+      "artifact_type": "44_file_manifest",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/TRANSFER_MANIFEST.json",
+      "external_original_path": null,
+      "bytes": 7594,
+      "sha256": "9911c53cf6ffb7428469fa3f99c1a5cf6e87daf9d993598b3865f17e99d002b6",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-003",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/CANDIDATE_IDENTITY.json",
+      "external_original_path": null,
+      "bytes": 813,
+      "sha256": "391237919ccb7e8b38099fbc529fbaf394a2fe7e2d01b6058f1ae6e64202d1ad",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-004",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/P2_TEST_ONLY_DATA.tar.gz",
+      "external_original_path": null,
+      "bytes": 47775,
+      "sha256": "81187fc5e2304db9ecc3775cf0733bba31582161c7867093ab9e8f5beaae5c7f",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-005",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/SOURCE.zip",
+      "external_original_path": null,
+      "bytes": 3109069,
+      "sha256": "46e0ba649df89a1a7b444bfa8dee4e37c52a580dd2785f2f54281c603e3557f4",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-006",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/SOURCE_FILES_SHA256.json",
+      "external_original_path": null,
+      "bytes": 128437,
+      "sha256": "a800e9af136ae23f2c29c5baf1cf9d57c166677e37c7d34480d122b03502d86d",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-007",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/START_HERE.md",
+      "external_original_path": null,
+      "bytes": 877,
+      "sha256": "f816785af9f302de56cb0b3938b494618450f4c6394b80b421472393f974b29a",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-008",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/RECEIVE.md",
+      "external_original_path": null,
+      "bytes": 12289,
+      "sha256": "22d17bc3ec1c7fabd403becfae74ceebf65e6269adfe882e8296014e43eb1b1a",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-009",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/acceptance-result.json",
+      "external_original_path": null,
+      "bytes": 47331,
+      "sha256": "3385217c5904778938721a14f8009a5ad4e954cd91a41af6187321b089fab21a",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-010",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/database-checks.json",
+      "external_original_path": null,
+      "bytes": 24434,
+      "sha256": "5bae1639452e4bed3effe28c8bac362c506db8c01b37f93be2017628fbe286fa",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-011",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/evidence/final.log",
+      "external_original_path": null,
+      "bytes": 6242,
+      "sha256": "2e88000654c97ec7aa4a80b0dbd9de6406aa174c14b33845408697090c02b0c0",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-012",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/evidence/final.xml",
+      "external_original_path": null,
+      "bytes": 69096,
+      "sha256": "5c1f0f04fc25e3eb21406e037fcd34f5efa255732b01fd8c82cb0f3fe82ad2d3",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-013",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/evidence/harness-intermediate-failures.json",
+      "external_original_path": null,
+      "bytes": 5182,
+      "sha256": "7680a3cf47c5d5f069242e6923fdf7b37824c210bfce75ab76ced3632ca66c60",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-014",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/evidence/receiver-tool-check.json",
+      "external_original_path": null,
+      "bytes": 8219,
+      "sha256": "18bd3f192f5eba57008f9f2261f9c1e7ea3bf4b6442f5ad93c27942b38c7a8c9",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-015",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/evidence/receiver-tool-gets.json",
+      "external_original_path": null,
+      "bytes": 11809,
+      "sha256": "893e93d2ea96352600410ff16eb419b87d29277d644f8c69f72f157a0a2cd54a",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-016",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/evidence/test-command-and-source.json",
+      "external_original_path": null,
+      "bytes": 108434,
+      "sha256": "dcb28b1e86f7df1a92e3b7394bf6d914f76b633c7bd882fe60d375f0b5efc099",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-017",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/final.log",
+      "external_original_path": null,
+      "bytes": 6242,
+      "sha256": "2e88000654c97ec7aa4a80b0dbd9de6406aa174c14b33845408697090c02b0c0",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-018",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/formal-bindings.json",
+      "external_original_path": null,
+      "bytes": 1450,
+      "sha256": "2a23fa03f8970fa47e1442559a8d11afcf99201c11ae3b7627ecb28df8ec06f2",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-019",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/http-events.json",
+      "external_original_path": null,
+      "bytes": 1135440,
+      "sha256": "8e5b3f8640c07df41bad6d1c626e857da8198d68f0538776c2eca0aec1e61d30",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-020",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/human-review-pending.json",
+      "external_original_path": null,
+      "bytes": 2500,
+      "sha256": "2c9d4982729eba85c085088e9f999442756395cc6636064b78b7682382ccf651",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-021",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/npm-requests.json",
+      "external_original_path": null,
+      "bytes": 2648,
+      "sha256": "d5ba770d500c785be68c742648290f02ee7b5919835d80566acb456dbcb75c73",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-022",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/npm-source-receipts.json",
+      "external_original_path": null,
+      "bytes": 5329,
+      "sha256": "d9a7557ebff5d69d431e4c680877f0880f7223506ac8f860e7b9427b96205e10",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-023",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/requests.json",
+      "external_original_path": null,
+      "bytes": 320638,
+      "sha256": "0e13ecfb39aa320bc7ba007551b8d2d2c8d5177af598b321d907c04bd71b5c8a",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-024",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/runtime-sessions.json",
+      "external_original_path": null,
+      "bytes": 1953,
+      "sha256": "29872be204b3a00cd9656e733a2cc541976fe9ee478be65859e5b80f335c3c6b",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-025",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/shutdown-protection.json",
+      "external_original_path": null,
+      "bytes": 1171,
+      "sha256": "55a3132ef34ad84acd7e976b3f7163c1cb0fcbee4868ba93e8b852c2716376bf",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-026",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/evidence/verification-summary.json",
+      "external_original_path": null,
+      "bytes": 1299,
+      "sha256": "d0e00a36074c448393a7e2e1f9bc9eef0699112c5a076a925c9b9e0d49a51ec7",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-027",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/express-4.18.2/member-0.txt",
+      "external_original_path": null,
+      "bytes": 1249,
+      "sha256": "95a5762890e5c1c9808921cef095661fc482c5e1f0bba31446ac85595df6237c",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-028",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/express-4.18.2/member-1.txt",
+      "external_original_path": null,
+      "bytes": 2624,
+      "sha256": "2cd424f19ed994070c827b5448a3bc5fbee955bbbe81aff28204d8c5a5a89ebb",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-029",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/express-4.18.2/npm-metadata.json",
+      "external_original_path": null,
+      "bytes": 4245,
+      "sha256": "923313b8461cb28886fb8af1deb99617c8e3eb3ad8ac4d554526deb8670a1ba0",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-030",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/express-4.18.2/release.tgz",
+      "external_original_path": null,
+      "bytes": 55804,
+      "sha256": "8a4a69997fb326bd5966256709dbce2acff6cd53e048fc017c28b8c85f91c37e",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-031",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/is-number-7.0.0/member-0.txt",
+      "external_original_path": null,
+      "bytes": 1599,
+      "sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-032",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/is-number-7.0.0/member-1.txt",
+      "external_original_path": null,
+      "bytes": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-033",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/is-number-7.0.0/npm-metadata.json",
+      "external_original_path": null,
+      "bytes": 3199,
+      "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-034",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/is-number-7.0.0/release.tgz",
+      "external_original_path": null,
+      "bytes": 3730,
+      "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-035",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/lodash-4.17.21/member-0.txt",
+      "external_original_path": null,
+      "bytes": 1952,
+      "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-036",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/lodash-4.17.21/member-1.txt",
+      "external_original_path": null,
+      "bytes": 578,
+      "sha256": "8e41b07c744a0de0d2c1c23ed41418ecb0849abb56395d28802e601b4730d7c2",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-037",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/lodash-4.17.21/npm-metadata.json",
+      "external_original_path": null,
+      "bytes": 2567,
+      "sha256": "49938fac33dc7eccdadce7f837a054cc4ae2c6bb965ee547065bf3146b7414b8",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-038",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/lodash-4.17.21/release.tgz",
+      "external_original_path": null,
+      "bytes": 318961,
+      "sha256": "6a087ac9e5702a0c9d60fbcd48696012646ec8df1491dea472b150e79fcaf804",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-039",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/requests.json",
+      "external_original_path": null,
+      "bytes": 2648,
+      "sha256": "d5ba770d500c785be68c742648290f02ee7b5919835d80566acb456dbcb75c73",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-040",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/sources/npm/source-receipts.json",
+      "external_original_path": null,
+      "bytes": 5329,
+      "sha256": "d9a7557ebff5d69d431e4c680877f0880f7223506ac8f860e7b9427b96205e10",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-041",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/tools/acquire_sources.py",
+      "external_original_path": null,
+      "bytes": 4067,
+      "sha256": "c3eda5595d52c145772790a3a54407bc30cb1c9e6fe24a1ab1603e50bd390c34",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-042",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/tools/check_restored_package.py",
+      "external_original_path": null,
+      "bytes": 2119,
+      "sha256": "f8ca2f946bd1a49c72519b71aa154017dc10b3aef6206c80c997912705ef799c",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-043",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/tools/http_acceptance.py",
+      "external_original_path": null,
+      "bytes": 14197,
+      "sha256": "696a99df1f3766c4b90340afbb98a7202036d7d15bb6fa87045f38a17e50e3ab",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-044",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/tools/regression.py",
+      "external_original_path": null,
+      "bytes": 1322,
+      "sha256": "09cddcf44ffc06f4cc147745b85b97bb27610b42b45fdd5f765cacc5fec276ef",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-045",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/tools/restore_data.py",
+      "external_original_path": null,
+      "bytes": 1314,
+      "sha256": "38d887163197d7d7c636c9ad9e60a791aee88c66623a8669681a3038f0aa8530",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-046",
+      "artifact_type": "existing_transfer_original",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/TRANSFER/tools/verify_gets.py",
+      "external_original_path": null,
+      "bytes": 1299,
+      "sha256": "0608adb1f8cc936e61e337fa496e16c2005e262d1f9eeb40284459c6d73ef77c",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-047",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/docs/spec/p2-backend-contract.md",
+      "external_original_path": null,
+      "bytes": 13913,
+      "sha256": "f2800b67aa076581bf60f14030e087451b719e7425ce87423c6495817ea43103",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-048",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/schemas/p2/contract-v1.schema.json",
+      "external_original_path": null,
+      "bytes": 31223,
+      "sha256": "0e9cd019af276b7a29957a90f15563d0a140ba1e3391fe8005bb3125ed6f49d4",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-049",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/backend/app/p2/contract.py",
+      "external_original_path": null,
+      "bytes": 7611,
+      "sha256": "89c71a702cc9fa3855c20c8e6201b08f97ee0e9b4c14ea9f7ea662be19dbe2d9",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-050",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/backend/app/api/p2.py",
+      "external_original_path": null,
+      "bytes": 4230,
+      "sha256": "04d8f2e3949a21705d93b6c4a7f7f6ea80bb66d7591e0d4266f6c02994de1b91",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-051",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/backend/app/p2/service.py",
+      "external_original_path": null,
+      "bytes": 24300,
+      "sha256": "3926df9bbf5165fc695e80f451aef44025bea59e957c07a9499add690e158849",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-052",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/backend/app/p2/store.py",
+      "external_original_path": null,
+      "bytes": 6469,
+      "sha256": "6cc7bc1d9fbe042175e57f71a65c5a4b7e88a0943f5929e997eb86f72a4f4620",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-053",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/backend/app/api/main.py",
+      "external_original_path": null,
+      "bytes": 46235,
+      "sha256": "c7cfdb52af1232296c274e4497168af8000c36c5330c8c90f017b22f03a914c7",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-054",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/tools/p2_acceptance/restore_data.py",
+      "external_original_path": null,
+      "bytes": 1314,
+      "sha256": "38d887163197d7d7c636c9ad9e60a791aee88c66623a8669681a3038f0aa8530",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-055",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/tools/p2_acceptance/verify_gets.py",
+      "external_original_path": null,
+      "bytes": 1299,
+      "sha256": "0608adb1f8cc936e61e337fa496e16c2005e262d1f9eeb40284459c6d73ef77c",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-056",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/tools/p2_acceptance/http_acceptance.py",
+      "external_original_path": null,
+      "bytes": 14197,
+      "sha256": "696a99df1f3766c4b90340afbb98a7202036d7d15bb6fa87045f38a17e50e3ab",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-057",
+      "artifact_type": "source_or_contract",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/deploy/compose.yaml",
+      "external_original_path": null,
+      "bytes": 2497,
+      "sha256": "0e98819c0755a6e5abe7834c9cf5bc60b84bdb3c76042639bc9ef57cd4440555",
+      "source_commit": "ec4c680bf7bb0d7d0af583e5376336421361fc8d",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-058",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "正式提交材料/20261013_送审更新版/05_可复现成果包/openguard-runtime-amd64.tar.gz.json",
+      "external_original_path": null,
+      "bytes": 539,
+      "sha256": "3b9a93e2f99d8b81a12c70249d91149d2543b5cae256bdd8c12183edfc52f4e2",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-059",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "正式提交材料/20261013_送审更新版/04_验证摘要/image-load-validation.json",
+      "external_original_path": null,
+      "bytes": 504,
+      "sha256": "87cd389165790a2bccaab2c80b1982e8ae2ae21cccc6e2dbcb0ab643d7a2cbfb",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-060",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "正式提交材料/20261013_送审更新版/DELIVERY_MANIFEST.json",
+      "external_original_path": null,
+      "bytes": 3646,
+      "sha256": "4c312b30fde0ba89eab308815342c8ab5ef16a09a911bd6756845f7e33123808",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-061",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/run3/packages/lodash.zip",
+      "external_original_path": null,
+      "bytes": 540,
+      "sha256": "dbc2fbe98da7584190e9996fa8cfe8ed249405f72240e03a9afc2977f5cdfd7a",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-062",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/run3/packages/express.zip",
+      "external_original_path": null,
+      "bytes": 540,
+      "sha256": "e0a7f4fa9b4c22170741357af23347da83eececbf2df09380064787ce3518cdc",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-063",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/run3/packages/is-number.zip",
+      "external_original_path": null,
+      "bytes": 543,
+      "sha256": "6415959e3d72e04005920bce9e6a89183d70d471a4481057485ac6defbb3936f",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-064",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "output/competition/recording-full-flow-20261013T082109Z/evidence/fixed-source-bundle.json",
+      "external_original_path": null,
+      "bytes": 2624,
+      "sha256": "a7148c93b9731933ce239c3fdaf761268d87185b5e7cea435f1306c7d109db12",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-065",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "output/competition/recording-full-flow-20261013T082109Z/evidence/host-fixed-source-capture.json",
+      "external_original_path": null,
+      "bytes": 1950,
+      "sha256": "1b8cf6cdcb85778448b37eb838d395081a15bf378fe3a5ab37445d7d233d0045",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-066",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "output/competition/recording-full-flow-20261013T082109Z/evidence/fixed-git-snapshot-real-source-verify.json",
+      "external_original_path": null,
+      "bytes": 1094,
+      "sha256": "171fa508ed304cd0360c5bb088df9c60f144fd667037f5ecd130f764c89f0087",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-067",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "output/competition/recording-full-flow-20261013T082109Z/evidence/fixed-source-bundle-restore.json",
+      "external_original_path": null,
+      "bytes": 1950,
+      "sha256": "446c2deb606d060cd272c6079db3b971ca486a0002ff5e2158cdd6e30a03becf",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-068",
+      "artifact_type": "runtime_or_fixed_input",
+      "relative_path": "output/competition/recording-full-flow-20261013T082109Z/runtime/host-fixed-source/http-server-0d3b7bb5.bundle",
+      "external_original_path": null,
+      "bytes": 462976,
+      "sha256": "b4d28764503ce135702d948878d8604495fd0addf38c7a070892e93d038c714b",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-069",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/OpenGuard_P2_XZB_只读交接材料_20261012.zip",
+      "external_original_path": null,
+      "bytes": 64232,
+      "sha256": "79cdb6025688e50cfd093fd2264837fc34340dd9471066339e9ef98b646c0b87",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-070",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/P2_XZB_D1_TO_D4_EVIDENCE_MATRIX.md",
+      "external_original_path": null,
+      "bytes": 6885,
+      "sha256": "b36e83a0eaa326d5f5f249954e4e2725171323416a84484c8c8f0f54bf6c8c46",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-071",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/P2_XZB_HANDOFF_MANIFEST.json",
+      "external_original_path": null,
+      "bytes": 238291,
+      "sha256": "73ac5b976810c11c4969b22942b17b6f2040fbb3fb19ed4ce0d6b75887c7b108",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-072",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/P2_XZB_HANDOFF_READONLY_REVIEW.md",
+      "external_original_path": null,
+      "bytes": 25722,
+      "sha256": "7f25e23544b43cb32c870cbce0a9d5160d1e23eb1739909607e83aaf4623a5b1",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-073",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/P2_XZB_OWNER_HANDOFF_MESSAGE.md",
+      "external_original_path": null,
+      "bytes": 4309,
+      "sha256": "22fe944b962c30febdfe10c4e6e895350fa3eee0621c8556be8a763f3ec9ae08",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-074",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/baseline-history-audit.json",
+      "external_original_path": null,
+      "bytes": 17731,
+      "sha256": "5004b6cde4bedd08375324a0ff87e1d83a8deddab0a5f347a63428d8ee38292a",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-075",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/baseline-history-audit.md",
+      "external_original_path": null,
+      "bytes": 10727,
+      "sha256": "3f4f47d7b5b3cbd8800c21adf592f5547e3c2ee2af747a27553b4b00a9cfe2a9",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-076",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/d1-blockers-audit.json",
+      "external_original_path": null,
+      "bytes": 28712,
+      "sha256": "ad090b1b8b2acce02c3d5a86da12b075c931c3451a0c1ce54e1c6e9244f99289",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-077",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/d1-blockers-audit.md",
+      "external_original_path": null,
+      "bytes": 5178,
+      "sha256": "bacbfdb04b2ab758e436c05ae64b2e05c2cfdd0df767b5d14713f94ddd09c525",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-078",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/demo-sample-boundary.json",
+      "external_original_path": null,
+      "bytes": 44378,
+      "sha256": "17ad386fef1ab321a15cb8c849a12dd46adad5a0d220bd1cf4fb278f796e5e03",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-079",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/docker-readonly.json",
+      "external_original_path": null,
+      "bytes": 17674,
+      "sha256": "4df14839898d6bf76a75775dfbf60fde3e99ed87f8addc20fe7c927dde048320",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-080",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/document-first-static-check.json",
+      "external_original_path": null,
+      "bytes": 340,
+      "sha256": "7153bdc6daaa8d8340166747c8e3815783ebef55f966d66ec9f0a6097fc17520",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-081",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/document-static-check.json",
+      "external_original_path": null,
+      "bytes": 357,
+      "sha256": "a439a777b99e76212cc7c454dfb81a9bfcd15a6da43f8a01ace536803fa565bc",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-082",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/git-before.json",
+      "external_original_path": null,
+      "bytes": 16898,
+      "sha256": "27639aae38debacff83eb7d51af56aafb90a19d400cfbe92f207e698db93e370",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-083",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/governance-read.json",
+      "external_original_path": null,
+      "bytes": 476196,
+      "sha256": "42d495dfe85de3e495ae319e0d3779b316d43552987b504eda7686d54b05ad3a",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-084",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/plans-read.json",
+      "external_original_path": null,
+      "bytes": 30567,
+      "sha256": "11362d3d4f1c0f2cb8c0afdb9bbf1c50ef914f5c3f3d0da5567a9754365bb8ec",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-085",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/protected-governance-dirty-before.json",
+      "external_original_path": null,
+      "bytes": 30603,
+      "sha256": "ab3f986889b75379fddf7e739b3d6f69ddda826c28b133f887b8dcef25559f83",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-086",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/protection-final.json",
+      "external_original_path": null,
+      "bytes": 14300,
+      "sha256": "adf4f32f01d29523b77b79851cc2dfdfdd427b749a02ba9d062690fd54bfb67a",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-087",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/protection-normal-mode-comparison.json",
+      "external_original_path": null,
+      "bytes": 16727,
+      "sha256": "2398e3ececeae1ecc37d755a59b9d1ac01122fc5c8ad3d53cd9316e489e893d5",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-088",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/sample-api-audit.json",
+      "external_original_path": null,
+      "bytes": 129286,
+      "sha256": "7e56edc09b6c33659d0eb6e8035a055839e6d075a9d5b282e78b734f9d62fecf",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-089",
+      "artifact_type": "historical_handoff",
+      "relative_path": "output/handoffs/p2-xzb-readonly-20261012T144616Z/work/sample-api-audit.md",
+      "external_original_path": null,
+      "bytes": 5841,
+      "sha256": "463d1aef44e8151d85403376e69e11d4d72e91f1302ee9da90cdbc5baed74794",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-090",
+      "artifact_type": "latest_xzb_requirement",
+      "relative_path": null,
+      "external_original_path": null,
+      "external_original_name": "P2_MUMINGCE_TOTAL_DELIVERY_20261013(2).md",
+      "external_location_status": "LOCAL_PRIVATE_LOCATION_REDACTED",
+      "bytes": 5443,
+      "sha256": "d35cf2463a1fd3199562d53e2068eef7928e0f875ba82d3ac4188ffa021343bc",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "READ_ONLY_REQUIREMENT",
+      "owner": "xzb",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-091",
+      "artifact_type": "runtime_oci_archive",
+      "relative_path": "正式提交材料/20261013_送审更新版/05_可复现成果包/openguard-runtime-amd64.tar.gz",
+      "external_original_path": null,
+      "bytes": 525268051,
+      "sha256": "327e3e5e4c711911b87cb3a29a5ee54470b93ab8a2b170588672b27a27e821e2",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": "sha256:6510aeaf29bdcfb1b3bdb3655fef73d39f9bc6164ae876011a57c356c5cef23c",
+      "image_id": "sha256:6510aeaf29bdcfb1b3bdb3655fef73d39f9bc6164ae876011a57c356c5cef23c",
+      "architecture": "linux/amd64 (OCI metadata); scanner launcher aarch64 per existing receipt",
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "HISTORICAL_RUNTIME_IMAGE_NOT_SELF_CONTAINED_P2_UNIFIED",
+      "owner": "A/Owner",
+      "delivery_status": "REQUIRES_OWNER_AUTHORIZATION",
+      "pending_input": "完整第三方再分发审查、统一源码组合及目标机架构验收未完成"
+    },
+    {
+      "artifact_id": "file-092",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/TRANSFER_MANIFEST.json",
+      "external_original_path": null,
+      "bytes": 12413,
+      "sha256": "00755ce87c23bb34f7ecca61ec3618d1f2e8d919d61135596ad23bac90932a0b",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-093",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/sources/npm/is-number-7.0.0/npm-metadata.json",
+      "external_original_path": null,
+      "bytes": 3199,
+      "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-094",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/sources/npm/is-number-7.0.0/npm-metadata.json",
+      "external_original_path": null,
+      "bytes": 3199,
+      "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-095",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/sources/npm/is-number-7.0.0/release.tgz",
+      "external_original_path": null,
+      "bytes": 3730,
+      "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-096",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/sources/npm/is-number-7.0.0/release.tgz",
+      "external_original_path": null,
+      "bytes": 3730,
+      "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-097",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/sources/npm/is-number-7.0.0/member-0.txt",
+      "external_original_path": null,
+      "bytes": 1599,
+      "sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-098",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/sources/npm/is-number-7.0.0/member-0.txt",
+      "external_original_path": null,
+      "bytes": 1599,
+      "sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-099",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/sources/npm/is-number-7.0.0/member-1.txt",
+      "external_original_path": null,
+      "bytes": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-100",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/sources/npm/is-number-7.0.0/member-1.txt",
+      "external_original_path": null,
+      "bytes": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-101",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/handoff/M1_REVIEW_ORIGINAL.md",
+      "external_original_path": null,
+      "bytes": 3277,
+      "sha256": "19aa7aaf321389fc00fec34be2d044648a6f4e4bd562338e60d9afc452758035",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-102",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "OpenGuard-usage-resolution-backend/output/manual-fixes/p2-03-m1-local-evidence-20261011T105421Z/delivery/REVIEW.md",
+      "external_original_path": null,
+      "bytes": 3277,
+      "sha256": "19aa7aaf321389fc00fec34be2d044648a6f4e4bd562338e60d9afc452758035",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-103",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/receipts/source-receipt-is-number-7.0.0.json",
+      "external_original_path": null,
+      "bytes": 1776,
+      "sha256": "f7981bc17848f838b93bf6735d62ded44a732023afa3d55d783a4957adb7e3d5",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-104",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "OpenGuard-p2-stage1-unified-20261011/output/p2-stage1-acceptance/sources/npm/source-receipts.json",
+      "external_original_path": null,
+      "bytes": 5329,
+      "sha256": "d9a7557ebff5d69d431e4c680877f0880f7223506ac8f860e7b9427b96205e10",
+      "source_commit": null,
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-105",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/receipts/material-adoption-http-event-24.json",
+      "external_original_path": null,
+      "bytes": 13753,
+      "sha256": "44c64dfd3c35f2e38be37cc816c093f7f16f6313b428b0cd4678be2c79a14689",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-106",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/receipts/human-review-pending-is-number.json",
+      "external_original_path": null,
+      "bytes": 829,
+      "sha256": "e8ab8d21c26265ff0d1baa1766288ec68b9ebd4648eda7bd81f9ebe60b05354f",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-107",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/handoffs/cz-m1-is-number-20261012/OpenGuard_CZ_M1_is-number-7.0.0_只读材料包/START_HERE.md",
+      "external_original_path": null,
+      "bytes": 5894,
+      "sha256": "903fe990c3b6ecefe3c0c38c4ded61cc3ee018a0517e9d9a57ba87127601b2e8",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-108",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/CZ_EXISTING_HANDOFF/historical-objects/result-r3.json",
+      "external_original_path": null,
+      "bytes": 8594,
+      "sha256": "3fca4fb0307304a3da4835f17b289fb8f0bc41e23c78c737db494124b55e6286",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-109",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/CZ_EXISTING_HANDOFF/historical-objects/material.json",
+      "external_original_path": null,
+      "bytes": 1307,
+      "sha256": "972babd4699e8d7c2f675f81179c6984662bc2f260a420089af014a7c8b069df",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-110",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/CZ_EXISTING_HANDOFF/historical-objects/answer-r2.json",
+      "external_original_path": null,
+      "bytes": 1180,
+      "sha256": "2b1740967749c4d362b02c536bd943fd1b078659c071521eeb812761201b38e5",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-111",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/CZ_EXISTING_HANDOFF/historical-objects/summary-r3.json",
+      "external_original_path": null,
+      "bytes": 1296,
+      "sha256": "c22acdc3150efaccc41de74fee8aab78e1845aebffa5acafbe47951bc0998d29",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-112",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/CZ_EXISTING_HANDOFF/historical-objects/binding.json",
+      "external_original_path": null,
+      "bytes": 581,
+      "sha256": "5f4a1b85e51d1a51322fcfec52e093123330e0a682ce6f7fe8767095a34fb3ed",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-113",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/aic2026-live-demo-20261012T102018Z/ux-r3/evidence/automatic-real-r3.json",
+      "external_original_path": null,
+      "bytes": 59261,
+      "sha256": "2bb5152e46c1aad55b8675a0e1f026ec57fb1dcedbaed41dda4a760458900a08",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-114",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/aic2026-live-demo-20261012T102018Z/runtime/automatic-sources/profile.json",
+      "external_original_path": null,
+      "bytes": 96983,
+      "sha256": "9f588265efccfdf6b01809a1ed4766d00fd309194cc6a3c94270ccf870402fc7",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-115",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/SOURCE_FILES.json",
+      "external_original_path": null,
+      "bytes": 135914,
+      "sha256": "447d91731f79a3089dca941fdc8ac14e8ff920c321a97043fd0887bef86c782c",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-116",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/CHANGED_FILES.json",
+      "external_original_path": null,
+      "bytes": 5018,
+      "sha256": "d0c7ede6aa7fe58aaaaef1406320d39910284fdeb920a4e4f14a12c61dd34c2a",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-117",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/REVIEW.md",
+      "external_original_path": null,
+      "bytes": 7167,
+      "sha256": "ff370bf70b8b61a168c409cb40443f320a5a84475cb7c43a480100968ff4ab72",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-118",
+      "artifact_type": "npm_or_saved_evidence",
+      "relative_path": "output/competition/team-integration-20261013T042528Z/delivery/CZ_EXISTING_HANDOFF/HISTORICAL_OBJECT_INDEX.json",
+      "external_original_path": null,
+      "bytes": 10398,
+      "sha256": "2b4e0995ecd77559518a530705108d349671dfe795bfa6861c49727b10967c5d",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "cz-p2b-two-case-handoff.md",
+      "artifact_type": "git_blob",
+      "relative_path": null,
+      "repository_relative_path": "docs/p2/p2b-two-case-handoff.md",
+      "git_object_locator": "7caddf4e870b5a0da561359cf85b4e8e66662cda:docs/p2/p2b-two-case-handoff.md",
+      "git_blob_sha1": "c7e61e46172d7925fd832f4d9df7984bef335332",
+      "bytes": 9755,
+      "sha256": "2759922f666038c5631b11461d4d5f055f5a5944417bba8cebebd4280736cd7f",
+      "source_commit": "7caddf4e870b5a0da561359cf85b4e8e66662cda",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "LOCAL_GIT_OBJECT_NOT_INCLUDED_IN_UNIFIED",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": "A限定接纳；未展开原件、未更改B分支"
+    },
+    {
+      "artifact_id": "cz-p2b-two-case-index.json",
+      "artifact_type": "git_blob",
+      "relative_path": null,
+      "repository_relative_path": "docs/p2/p2b-two-case-index.json",
+      "git_object_locator": "7caddf4e870b5a0da561359cf85b4e8e66662cda:docs/p2/p2b-two-case-index.json",
+      "git_blob_sha1": "2dd84c8837b78c21d36dbecf256328fc7153e256",
+      "bytes": 53534,
+      "sha256": "4305c9364e7ccad5ebdd941bb3b68e55719790c084dce8145075725ab6c76f6a",
+      "source_commit": "7caddf4e870b5a0da561359cf85b4e8e66662cda",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "LOCAL_GIT_OBJECT_NOT_INCLUDED_IN_UNIFIED",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": "A限定接纳；未展开原件、未更改B分支"
+    },
+    {
+      "artifact_id": "cz-p2b-two-case-validation.json",
+      "artifact_type": "git_blob",
+      "relative_path": null,
+      "repository_relative_path": "docs/p2/p2b-two-case-validation.json",
+      "git_object_locator": "7caddf4e870b5a0da561359cf85b4e8e66662cda:docs/p2/p2b-two-case-validation.json",
+      "git_blob_sha1": "07dcd57d366e60208abb82cc9794cf04ac8e6392",
+      "bytes": 5959,
+      "sha256": "086e3762877e884381b0ade60dc61243d8b7cf2b1f9f8e9fae6f1fa92b63182c",
+      "source_commit": "7caddf4e870b5a0da561359cf85b4e8e66662cda",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "LOCAL_GIT_OBJECT_NOT_INCLUDED_IN_UNIFIED",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": "A限定接纳；未展开原件、未更改B分支"
+    },
+    {
+      "artifact_id": "cz-m1-b-technical-supplement-20261012.md",
+      "artifact_type": "git_blob",
+      "relative_path": null,
+      "repository_relative_path": "docs/p2/m1-b-technical-supplement-20261012.md",
+      "git_object_locator": "7caddf4e870b5a0da561359cf85b4e8e66662cda:docs/p2/m1-b-technical-supplement-20261012.md",
+      "git_blob_sha1": "077b64e93f85781d6c3af43c2782e5ebb3e2da4f",
+      "bytes": 15571,
+      "sha256": "58e2c228daa2a8a007e9173103d2a7bf5b368d27868da1844acb2a820c2e4852",
+      "source_commit": "7caddf4e870b5a0da561359cf85b4e8e66662cda",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "LOCAL_GIT_OBJECT_NOT_INCLUDED_IN_UNIFIED",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": "A限定接纳；未展开原件、未更改B分支"
+    },
+    {
+      "artifact_id": "cz-p2b-version-object-alignment-20261012.json",
+      "artifact_type": "git_blob",
+      "relative_path": null,
+      "repository_relative_path": "docs/p2/p2b-version-object-alignment-20261012.json",
+      "git_object_locator": "7caddf4e870b5a0da561359cf85b4e8e66662cda:docs/p2/p2b-version-object-alignment-20261012.json",
+      "git_blob_sha1": "c2a9a41d1384a13981fb380469957812afded38a",
+      "bytes": 76318,
+      "sha256": "b9adf35bb6c5ea4a647ab45eedb00dccf453fcb7c8ec8bd83e9b6f8f9f6c0670",
+      "source_commit": "7caddf4e870b5a0da561359cf85b4e8e66662cda",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "LOCAL_GIT_OBJECT_NOT_INCLUDED_IN_UNIFIED",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": "A限定接纳；未展开原件、未更改B分支"
+    },
+    {
+      "artifact_id": "cz-p2b-handoff-validation-20261012.json",
+      "artifact_type": "git_blob",
+      "relative_path": null,
+      "repository_relative_path": "docs/p2/p2b-handoff-validation-20261012.json",
+      "git_object_locator": "7caddf4e870b5a0da561359cf85b4e8e66662cda:docs/p2/p2b-handoff-validation-20261012.json",
+      "git_blob_sha1": "35179dc1b0728b6fbcabbc2c25d8fa5b8358186e",
+      "bytes": 16317,
+      "sha256": "4f4b58e3e69edbc43d09bd3227911695d83bdbe1352c1be916aaad00f953f8b2",
+      "source_commit": "7caddf4e870b5a0da561359cf85b4e8e66662cda",
+      "source_worktree_identity": "OpenGuard-p2-stage1-unified-20261011",
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "LOCAL_GIT_OBJECT_NOT_INCLUDED_IN_UNIFIED",
+      "owner": "cz/A",
+      "delivery_status": "READY_FOR_STATIC_REVIEW",
+      "pending_input": "A限定接纳；未展开原件、未更改B分支"
+    },
+    {
+      "artifact_id": "file-125",
+      "artifact_type": "historical_A04_environment_block",
+      "relative_path": "OpenGuard-usage-resolution-backend/output/manual-fixes/p2-a04-coverage-gap-propagation-01-20261011T150416Z/delivery/REVIEW.md",
+      "external_original_path": null,
+      "bytes": 1517,
+      "sha256": "ee8ba94046d278503a3d96cf8f8821bee92f2a042a2418e5f1d95545b0e1ad8e",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "file-126",
+      "artifact_type": "historical_A04_environment_block",
+      "relative_path": "OpenGuard-usage-resolution-backend/output/manual-fixes/p2-a04-coverage-gap-propagation-01-20261011T150416Z/delivery/RESULT.json",
+      "external_original_path": null,
+      "bytes": 4378,
+      "sha256": "71acf8059726723f7154b88255c3add07110c3eedb8f4d265746a0e55ae15410",
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "ORIGINAL_VERIFIED"
+      ],
+      "environment": "TEST_ONLY",
+      "owner": "A",
+      "delivery_status": "READY_TO_REFERENCE",
+      "pending_input": null
+    },
+    {
+      "artifact_id": "frontend_manifest",
+      "artifact_type": "missing_original",
+      "relative_path": null,
+      "requested_repository_path": "docs/coordination/P2_FRONTEND_SOURCE_20261013.json",
+      "bytes": null,
+      "sha256": null,
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "BLOCKED_MISSING_EVIDENCE"
+      ],
+      "environment": null,
+      "owner": "xzb",
+      "delivery_status": "WAITING_FOR_SPECIFIC_INPUT",
+      "pending_input": "已冻结清单、81份原字节及聚合算法；无需重新推送"
+    },
+    {
+      "artifact_id": "frontend_receipt",
+      "artifact_type": "missing_original",
+      "relative_path": null,
+      "requested_repository_path": "docs/coordination/P2_STAGE2_TO_5_RECEIPT_20261013.md",
+      "bytes": null,
+      "sha256": null,
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "BLOCKED_MISSING_EVIDENCE"
+      ],
+      "environment": null,
+      "owner": "xzb",
+      "delivery_status": "WAITING_FOR_SPECIFIC_INPUT",
+      "pending_input": "原始D1和142单测/TypeScript/build/11浏览器回执及源码对应"
+    },
+    {
+      "artifact_id": "old_v6_formal",
+      "artifact_type": "missing_original",
+      "relative_path": null,
+      "requested_repository_path": null,
+      "bytes": null,
+      "sha256": null,
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "BLOCKED_MISSING_EVIDENCE"
+      ],
+      "environment": null,
+      "owner": "原件持有人/Owner",
+      "delivery_status": "WAITING_FOR_SPECIFIC_INPUT",
+      "pending_input": "固定Assessment v6原JSON/HTML及共享许可，或Owner保留缺件限制"
+    },
+    {
+      "artifact_id": "notice_fixture_fix",
+      "artifact_type": "missing_original",
+      "relative_path": null,
+      "requested_repository_path": null,
+      "bytes": null,
+      "sha256": null,
+      "source_commit": null,
+      "source_worktree_identity": null,
+      "image_digest": null,
+      "image_id": null,
+      "architecture": null,
+      "evidence_level": [
+        "BLOCKED_MISSING_EVIDENCE"
+      ],
+      "environment": null,
+      "owner": "维护者/xzb",
+      "delivery_status": "WAITING_FOR_SPECIFIC_INPUT",
+      "pending_input": "既有diff、精确候选、433/433 JUnit/日志、维护者审查及纳入证明"
+    }
+  ],
+  "fixed_cases": [
+    {
+      "package": "is-number",
+      "version": "7.0.0",
+      "grade": "TEST_ONLY_CONTROLLED_FIRST_PARTY_MANIFEST_WITH_NPM_RELEASE_MATERIAL",
+      "scan_id": "scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d",
+      "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+      "evidence_ids": [
+        "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+        "evd_64abc673-5b47-546b-b7b2-4578a931c8de"
+      ],
+      "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79",
+      "assessment_version": 1,
+      "binding": {
+        "scan_id": "scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d",
+        "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79",
+        "assessment_version": 1,
+        "registry_revision": 9,
+        "project_revision": null,
+        "facts_hash": "b3176cd5538a2436371c093d2c8590f81abdc75159da7863261a63d0d1c50dca",
+        "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "assessment_sha256": "1ef11cf12667ced7a2b7ca0c8a19c850f0a94aa16410fccab253ad7b65963f80"
+      },
+      "before_result_id": "p2res_e823ab84aef928cc402c56a712614c523f967d6e2927b621d1881a3711fdd5f3",
+      "after_result_id": "p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83",
+      "result_revision": 3,
+      "material_id": "p2mat_c5090e4fd86a58311fab75962e7d545057d2e8b028c358d467f764b225e0c61b",
+      "summary_id": "p2sum_e16fe5df4395f6fea3abb83a00ca1d6d26cdf048f9e6d0b3b09a9b409979ff4a",
+      "source_tarball_sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "license_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "fixed_get_hashes": {
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79": "652e98d9a98890090a4ae59acd467eb97b90e72f182642d2e0b01b2d06295f1d",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/report?format=json": "efb609ad0f95b3e4f4e0113f6eb5a4fe89f6a491607417906287cd91fbb80d9b",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/report?format=html": "f539487932a2c4aece541c032a5f7e60169c6daf2a0f5113e66630864ca5230e",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/evidence/evd_41bb871f-014f-5e63-9744-cbbc4036edcd": "651736ba307a720c6a290e3c4c3af9c196c3ccde1384a6e4ce8f80e1c358ca8b",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/evidence/evd_64abc673-5b47-546b-b7b2-4578a931c8de": "7bcf9cc57bc05bb4401291a2a2300a73e0addcbb11b74dd48853862426b64a42",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/results/p2res_e823ab84aef928cc402c56a712614c523f967d6e2927b621d1881a3711fdd5f3?assessment_version=1": "d3c51b4a1e5d0b9433bc65854adb5e33ad01751deb46e284a78b5a171dc28e76",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/results/p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83?assessment_version=1": "a1efe28a3d60e082f6ce98519072b94e24460682ccc637c957b72d312b56061a",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/results/p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83/summary?assessment_version=1": "9c7d36762cb0d7b9c5a6bc6709a0190b880eadea4124b5b26b5d0927baa16537",
+        "/api/v1/scans/scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d/assessments/asm_6c664ed7-7c41-512c-bbcc-a178a8edea79/p2/materials/p2mat_c5090e4fd86a58311fab75962e7d545057d2e8b028c358d467f764b225e0c61b?assessment_version=1": "7064fe97de73ad9788ffdcc1a44c8e703db97b62345921e16a3ece95b30ff357"
+      },
+      "human_applicability_review": "PENDING",
+      "initial_state": "unknown",
+      "final_state": "pending",
+      "errors": {
+        "wrong_resource": {
+          "error": {
+            "code": "p2_resource_not_found",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_5686d6b3-745a-4843-bc7d-3c9728eecff0",
+            "details": {
+              "reason": "p2_resource_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_version": {
+          "error": {
+            "code": "p2_resource_version_conflict",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_f1b5d0f8-3767-4696-806b-d5ccf6e852ca",
+            "details": {
+              "reason": "p2_resource_version_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_assessment": {
+          "error": {
+            "code": "p2_parent_binding_conflict",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_33c696cc-ea09-499a-a2a2-b11274a15bd2",
+            "details": {
+              "reason": "p2_parent_binding_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_evidence": {
+          "error": {
+            "code": "p2_evidence_wrong_resource",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_d90a8197-eec3-4deb-8ae8-1e0e4855c210",
+            "details": {
+              "reason": "p2_evidence_wrong_resource",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "unsupported_format": {
+          "error": {
+            "code": "p2_unsupported_material_name",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_6f15951e-015d-43d7-b25a-3d180f2441e7",
+            "details": {
+              "reason": "p2_unsupported_material_name",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "too_large": {
+          "error": {
+            "code": "p2_material_size_limit",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_c3f4dcb7-5c25-4b9d-8bc4-b429c86cef32",
+            "details": {
+              "reason": "p2_material_size_limit",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        }
+      }
+    },
+    {
+      "package": "lodash",
+      "version": "4.17.21",
+      "grade": "TEST_ONLY_CONTROLLED_FIRST_PARTY_MANIFEST_WITH_NPM_RELEASE_MATERIAL",
+      "scan_id": "scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3",
+      "resource_id": "cmp_0275b03d-5f19-5eaf-8ccf-f6b4caf5ac3e",
+      "evidence_ids": [
+        "evd_2e0913c6-0f00-5d28-a128-419be20d7a1b",
+        "evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41"
+      ],
+      "assessment_id": "asm_71b40610-e7c5-510a-92b2-31d164a633e0",
+      "assessment_version": 1,
+      "binding": {
+        "scan_id": "scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3",
+        "assessment_id": "asm_71b40610-e7c5-510a-92b2-31d164a633e0",
+        "assessment_version": 1,
+        "registry_revision": 9,
+        "project_revision": null,
+        "facts_hash": "1ec32434dc8e04c1e7acabd5884287359f29dd200d417b5cff1c79364e188fb6",
+        "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "assessment_sha256": "c6feafebab5008217d29a3bf0c66262d83925dffd2833c062363a785b6bb104e"
+      },
+      "before_result_id": "p2res_23ecace7e723d218eb58e1bd504dd1e6059eaeb458de9a80f86041eb6818f7de",
+      "after_result_id": "p2res_9cd0d08c1ac97283557bdc5154b924c2ba21b517f81f4e8891672e2b41e949fe",
+      "result_revision": 3,
+      "material_id": "p2mat_6a8fdbb975d6d9a10fe19dd6c327a46d971b4a5504cf0a9467162d17ce7e27ce",
+      "summary_id": "p2sum_9e9ba13a5a30704f35c183d2ca0945839c0cc31ccfc32440ee1fc4616102c369",
+      "source_tarball_sha256": "6a087ac9e5702a0c9d60fbcd48696012646ec8df1491dea472b150e79fcaf804",
+      "license_sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+      "fixed_get_hashes": {
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/assessments/asm_71b40610-e7c5-510a-92b2-31d164a633e0": "e83d932c8031fbbe338fd458ef4f825e23536e2c9ff458d7ea5ab335c9f3dad3",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/assessments/asm_71b40610-e7c5-510a-92b2-31d164a633e0/report?format=json": "c83dc274ca8cd701ac56d056abf838ef92bf2cd7a34bdb475ef095b74654c9c2",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/assessments/asm_71b40610-e7c5-510a-92b2-31d164a633e0/report?format=html": "719f0b56e01b579325a7d364821c1037900970d96b861f712512ffb65bd243cf",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/evidence/evd_2e0913c6-0f00-5d28-a128-419be20d7a1b": "fcfd97c80ba39bba45490f9100064db7cbbe47c7978cf9e9f43e571658c3e727",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/evidence/evd_9e89d86e-c485-5d57-bbd1-03a24ad15c41": "cbcbc13a3fc104f024fda696febdaba4dd51d826ed91026aa6ea3c60c6c4b7b4",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/assessments/asm_71b40610-e7c5-510a-92b2-31d164a633e0/p2/results/p2res_23ecace7e723d218eb58e1bd504dd1e6059eaeb458de9a80f86041eb6818f7de?assessment_version=1": "5ef6242c3b73b3cfe0cdeffcae8042c5ee730d424bf33b450fafa1b02206f756",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/assessments/asm_71b40610-e7c5-510a-92b2-31d164a633e0/p2/results/p2res_9cd0d08c1ac97283557bdc5154b924c2ba21b517f81f4e8891672e2b41e949fe?assessment_version=1": "ebc846b841af21e894743692e60218abfcedffe219240e767b494a9d7b9ba025",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/assessments/asm_71b40610-e7c5-510a-92b2-31d164a633e0/p2/results/p2res_9cd0d08c1ac97283557bdc5154b924c2ba21b517f81f4e8891672e2b41e949fe/summary?assessment_version=1": "f1bd02220db02a0f214ff867c98a7a941d789b3af3dcdfab89c3d5fb2bb49456",
+        "/api/v1/scans/scn_bf5f710b-c70e-4255-8060-2a3d55cddcf3/assessments/asm_71b40610-e7c5-510a-92b2-31d164a633e0/p2/materials/p2mat_6a8fdbb975d6d9a10fe19dd6c327a46d971b4a5504cf0a9467162d17ce7e27ce?assessment_version=1": "0007f0fe2984fc51071f32403d748d699c5239a547e9a5792d59cadfe32ebeed"
+      },
+      "human_applicability_review": "PENDING",
+      "initial_state": "unknown",
+      "final_state": "pending",
+      "errors": {
+        "wrong_resource": {
+          "error": {
+            "code": "p2_resource_not_found",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_eb3bbd86-c429-4b99-bc4b-3582c43f6c5f",
+            "details": {
+              "reason": "p2_resource_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_version": {
+          "error": {
+            "code": "p2_resource_version_conflict",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_2ebe3689-3126-42ef-b1a3-031f35c08f15",
+            "details": {
+              "reason": "p2_resource_version_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_assessment": {
+          "error": {
+            "code": "p2_parent_binding_conflict",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_7035fa74-e422-4938-a758-fc2650b436ce",
+            "details": {
+              "reason": "p2_parent_binding_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_evidence": {
+          "error": {
+            "code": "p2_evidence_wrong_resource",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_d7d5bba5-379f-47a0-9548-91878ae1417b",
+            "details": {
+              "reason": "p2_evidence_wrong_resource",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "unsupported_format": {
+          "error": {
+            "code": "p2_unsupported_material_name",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_313d2d75-2538-4ce4-8630-3b2be6fc65b1",
+            "details": {
+              "reason": "p2_unsupported_material_name",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "too_large": {
+          "error": {
+            "code": "p2_material_size_limit",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_20071afb-0747-4675-b4c7-d248445221d3",
+            "details": {
+              "reason": "p2_material_size_limit",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        }
+      }
+    },
+    {
+      "package": "express",
+      "version": "4.18.2",
+      "grade": "TEST_ONLY_CONTROLLED_FIRST_PARTY_MANIFEST_WITH_NPM_RELEASE_MATERIAL",
+      "scan_id": "scn_7b2704b8-9313-46e5-a6ce-4cb716315094",
+      "resource_id": "cmp_e44ba53d-8316-5bad-8a73-2fc20fd9f58f",
+      "evidence_ids": [
+        "evd_b0920381-1843-5689-87bb-54ff6f2f0d1a",
+        "evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9"
+      ],
+      "assessment_id": "asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85",
+      "assessment_version": 1,
+      "binding": {
+        "scan_id": "scn_7b2704b8-9313-46e5-a6ce-4cb716315094",
+        "assessment_id": "asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85",
+        "assessment_version": 1,
+        "registry_revision": 9,
+        "project_revision": null,
+        "facts_hash": "35e8bb275b706f5eefbd27a80e176ad97f036cad4b35d900ae5d7ce33ff3b556",
+        "usage_hash": "3f07c4057c6cad7a4b81ec9dab42095ccf877095b78be6197586b87cec19bf30",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "assessment_sha256": "716ba28225415738b93be5763e0ba7cadf803747fe30f9a761f1fd3bac799a59"
+      },
+      "before_result_id": "p2res_e9d040a05619e795f1adcbb05927fb403570b847753e74ab1d0b910e7975f1ba",
+      "after_result_id": "p2res_8286c522bc3e9085c7d1207a445220c2f8ab22fc69495b854df27190366f0146",
+      "result_revision": 3,
+      "material_id": "p2mat_63620942049ad82bc486747c12e442d99a805f3b22468dad853b121a833af970",
+      "summary_id": "p2sum_2ba1376955141ab7f157bcacd434f7fb630107913ca6d031c06f2c2ce38e9efb",
+      "source_tarball_sha256": "8a4a69997fb326bd5966256709dbce2acff6cd53e048fc017c28b8c85f91c37e",
+      "license_sha256": "95a5762890e5c1c9808921cef095661fc482c5e1f0bba31446ac85595df6237c",
+      "fixed_get_hashes": {
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/assessments/asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85": "03b7d73b459876003918630d7a03aa7a1da15fbfb45aafaadb3e6530e4f2ebae",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/assessments/asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85/report?format=json": "723a04644ba7649684eeaf74eb713732814091944b1a25ec6b84afc607f639c4",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/assessments/asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85/report?format=html": "030659d6bbb94a97cd8b81d51434485a803e949523ca0ecff0719bd33733d6bc",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/evidence/evd_b0920381-1843-5689-87bb-54ff6f2f0d1a": "2e7630f531f615d955867ff45b33929cdcb7cfde5692bcff62336619f05a0de7",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/evidence/evd_c3b6837b-013b-505b-81fe-3f338b2ab4e9": "94aff64d1dcdae8b9b53052ce77e0ca80e4b04f453f8c0adc113f05be567ebd9",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/assessments/asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85/p2/results/p2res_e9d040a05619e795f1adcbb05927fb403570b847753e74ab1d0b910e7975f1ba?assessment_version=1": "42931616751e8c258debe37112e5547717563d3d447823264bcd534af7c35a71",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/assessments/asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85/p2/results/p2res_8286c522bc3e9085c7d1207a445220c2f8ab22fc69495b854df27190366f0146?assessment_version=1": "55bff851ab468645a5acef7d9128457187ddcf83ad52ade22d3357c40dd7226a",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/assessments/asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85/p2/results/p2res_8286c522bc3e9085c7d1207a445220c2f8ab22fc69495b854df27190366f0146/summary?assessment_version=1": "5b91e41dc997810c6260b5e0cafd8aa525442ed3cf6ac73af61bde88b060e349",
+        "/api/v1/scans/scn_7b2704b8-9313-46e5-a6ce-4cb716315094/assessments/asm_a77d8b86-3fcf-5d6a-947e-bc9627a39e85/p2/materials/p2mat_63620942049ad82bc486747c12e442d99a805f3b22468dad853b121a833af970?assessment_version=1": "4761ff21018da6363f76e2d6fcbc58afa0c82a98f41484bcf050a51fda608dcc"
+      },
+      "human_applicability_review": "PENDING",
+      "initial_state": "unknown",
+      "final_state": "pending",
+      "errors": {
+        "wrong_resource": {
+          "error": {
+            "code": "p2_resource_not_found",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_7ef0fa74-8f4e-4585-98b7-5dcf9bca30c3",
+            "details": {
+              "reason": "p2_resource_not_found",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_version": {
+          "error": {
+            "code": "p2_resource_version_conflict",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_4581cfee-cb8a-4b23-8f9b-a31189138d5e",
+            "details": {
+              "reason": "p2_resource_version_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_assessment": {
+          "error": {
+            "code": "p2_parent_binding_conflict",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_4437dbd6-8f9b-48e8-a843-24a1a0ce7533",
+            "details": {
+              "reason": "p2_parent_binding_conflict",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "wrong_evidence": {
+          "error": {
+            "code": "p2_evidence_wrong_resource",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_cbe65729-a603-40fa-9445-5e5f5ff54230",
+            "details": {
+              "reason": "p2_evidence_wrong_resource",
+              "state": "conflict",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "unsupported_format": {
+          "error": {
+            "code": "p2_unsupported_material_name",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_507cfb14-bee5-4d3f-8868-37d9ad9da2d2",
+            "details": {
+              "reason": "p2_unsupported_material_name",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        },
+        "too_large": {
+          "error": {
+            "code": "p2_material_size_limit",
+            "message": "操作未完成；已保存结果保留。请按精确身份重新读取。",
+            "request_id": "req_5b068d17-6c74-4a7e-88f4-a5e83cd043e4",
+            "details": {
+              "reason": "p2_material_size_limit",
+              "state": "rejected",
+              "retry": "READ_EXACT_THEN_REUSE_SAME_KEY_AND_BODY"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "historical_counts": {
+    "sender_http": 176,
+    "sender_restore_get": 27,
+    "junit": {
+      "nodes": 433,
+      "unique": 433,
+      "failures": 2,
+      "errors": 0,
+      "skip": 0
+    },
+    "frontend_claim_only": {
+      "unit": 142,
+      "browser_TEST_ONLY": 11,
+      "new_originals_received": false
+    },
+    "B_counts_separate": {
+      "B_offline_tests": 120,
+      "included_prior_subset": 90,
+      "two_case_static_groups": 19,
+      "M1_handoff_static_checks": 60,
+      "npm_original_readback_groups": 30,
+      "this_task_product_tests": 0,
+      "summation_allowed": false
+    }
+  },
+  "configuration_proposal": {
+    "status": "STATIC_PROPOSAL_NOT_CREATED_OR_STARTED",
+    "read_root": null,
+    "write_root": null,
+    "receiver_api_base": null,
+    "source_mount": "fixed ec4c source -> /source read-only",
+    "data_root_requirement": "两个独立的新私有目录；不能使用发送机历史根或业务根",
+    "factory": "app.api.main:create_default_app --factory",
+    "historical_host": "127.0.0.1",
+    "historical_port_example": 18080,
+    "actual_reserved_port": null,
+    "network": "none for internal GET acceptance; browser port publishing requires separate explicit configuration",
+    "environment_common": {
+      "PYTHONPATH": "/source/backend",
+      "OPENGUARD_ENABLE_ASSESSMENTS": "1",
+      "OPENGUARD_ENABLE_P2": "1",
+      "OPENGUARD_P2_DATA_SCOPE": "TEST_ONLY",
+      "OPENGUARD_ENABLE_AI": "0",
+      "OPENGUARD_ENABLE_PUBLIC_GIT": "0",
+      "OPENGUARD_ENABLE_PROFILE_METADATA": "0",
+      "OPENGUARD_ENABLE_EXTERNAL_SCANNERS": "0",
+      "OPENGUARD_ENABLE_DURABLE_ZIP": "0"
+    },
+    "read_only_delta": {
+      "OPENGUARD_P2_READONLY": "1"
+    },
+    "writable_delta": {
+      "OPENGUARD_P2_READONLY": "0"
+    },
+    "OPENGUARD_DATA_DIR": "<new private restored root>/data",
+    "caveat": "P2_READONLY不是全站只读；DURABLE_ZIP=0并非禁用全部ZIP。正常工厂启动会初始化存储，不可在固定原根启动。",
+    "reset_policy": "仅接收机新建可写副本可在授权范围重置；固定恢复原件禁止init/apply"
+  },
+  "A4_M1": {
+    "binding": {
+      "scan_id": "scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d",
+      "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79",
+      "assessment_version": 1,
+      "registry_revision": 9,
+      "project_revision": null,
+      "facts_hash": "b3176cd5538a2436371c093d2c8590f81abdc75159da7863261a63d0d1c50dca",
+      "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+      "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "assessment_sha256": "1ef11cf12667ced7a2b7ca0c8a19c850f0a94aa16410fccab253ad7b65963f80"
+    },
+    "result_id": "p2res_eabfaa020c8a91cd4a5a309861ad4f0ab90cae07263d4ac48370b8a02b89fc83",
+    "revision": 3,
+    "previous_result_id": "p2res_c3dd21f24d2f94df3f09ebb47f0d15ffd38ee05e8dbead64530c43f6e6037040",
+    "result_sha256": "00c297c662b1ad5efadbc6e92fe2d2401a6b53d555013c497427457ce74a7dca",
+    "usage": {
+      "commercial": null,
+      "distributed": null,
+      "modified": null,
+      "network_service": null,
+      "redistributed_assets": null,
+      "source_disclosure": null,
+      "training": null
+    },
+    "state": "pending",
+    "resources": [
+      {
+        "subject": {
+          "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+          "version": "7.0.0"
+        },
+        "resource_kind": "component",
+        "state": "pending",
+        "verification_state": "candidate_only",
+        "scope": "unknown",
+        "evidence_ids": [
+          "evd_41bb871f-014f-5e63-9744-cbbc4036edcd",
+          "evd_64abc673-5b47-546b-b7b2-4578a931c8de"
+        ],
+        "evidence_source_hashes": {
+          "evd_41bb871f-014f-5e63-9744-cbbc4036edcd": "75232d624c49029d4660345c4571f4de848435d48761ab49e61d0242e874be7a",
+          "evd_64abc673-5b47-546b-b7b2-4578a931c8de": "cf66c6ceedc7478c2a87744714e0f6486807b08c2f38e695bc3979c70b90520d"
+        },
+        "material_ids": [
+          "p2mat_c5090e4fd86a58311fab75962e7d545057d2e8b028c358d467f764b225e0c61b"
+        ],
+        "answer_ids": [
+          "p2ans_31f95e79d2f0052a41f712f7dfd34e9fb5a91a5e726ac33893dfd37bd9fc7c2f"
+        ],
+        "gaps": [
+          "license_text_and_applicability_unverified",
+          "object_scope_unverified",
+          "uploaded_material_applicability_pending",
+          "upstream_source_attestation_missing",
+          "user_statement_not_independently_verified"
+        ],
+        "advice": [
+          {
+            "usage": "commercial",
+            "saved_value": null,
+            "selection": "UNKNOWN",
+            "state": "unknown",
+            "scope": "RESOURCE",
+            "conditions": [],
+            "gaps": [
+              "license_text_and_applicability_unverified",
+              "object_scope_unverified",
+              "uploaded_material_applicability_pending",
+              "upstream_source_attestation_missing",
+              "usage_commercial_unknown",
+              "user_statement_not_independently_verified"
+            ],
+            "basis_evidence_ids": [],
+            "rule_ids": []
+          },
+          {
+            "usage": "modified",
+            "saved_value": null,
+            "selection": "UNKNOWN",
+            "state": "unknown",
+            "scope": "RESOURCE",
+            "conditions": [],
+            "gaps": [
+              "license_text_and_applicability_unverified",
+              "object_scope_unverified",
+              "uploaded_material_applicability_pending",
+              "upstream_source_attestation_missing",
+              "usage_modified_unknown",
+              "user_statement_not_independently_verified"
+            ],
+            "basis_evidence_ids": [],
+            "rule_ids": []
+          },
+          {
+            "usage": "distributed",
+            "saved_value": null,
+            "selection": "UNKNOWN",
+            "state": "unknown",
+            "scope": "RESOURCE",
+            "conditions": [],
+            "gaps": [
+              "license_text_and_applicability_unverified",
+              "object_scope_unverified",
+              "uploaded_material_applicability_pending",
+              "upstream_source_attestation_missing",
+              "usage_distributed_unknown",
+              "user_statement_not_independently_verified"
+            ],
+            "basis_evidence_ids": [],
+            "rule_ids": []
+          },
+          {
+            "usage": "network_service",
+            "saved_value": null,
+            "selection": "UNKNOWN",
+            "state": "unknown",
+            "scope": "RESOURCE",
+            "conditions": [],
+            "gaps": [
+              "license_text_and_applicability_unverified",
+              "object_scope_unverified",
+              "uploaded_material_applicability_pending",
+              "upstream_source_attestation_missing",
+              "usage_network_service_unknown",
+              "user_statement_not_independently_verified"
+            ],
+            "basis_evidence_ids": [],
+            "rule_ids": []
+          },
+          {
+            "usage": "training",
+            "saved_value": null,
+            "selection": "UNKNOWN",
+            "state": "unknown",
+            "scope": "RESOURCE",
+            "conditions": [],
+            "gaps": [
+              "license_text_and_applicability_unverified",
+              "object_scope_unverified",
+              "uploaded_material_applicability_pending",
+              "upstream_source_attestation_missing",
+              "usage_training_unknown",
+              "user_statement_not_independently_verified"
+            ],
+            "basis_evidence_ids": [],
+            "rule_ids": []
+          },
+          {
+            "usage": "redistributed_assets",
+            "saved_value": null,
+            "selection": "UNKNOWN",
+            "state": "unknown",
+            "scope": "RESOURCE",
+            "conditions": [],
+            "gaps": [
+              "license_text_and_applicability_unverified",
+              "object_scope_unverified",
+              "uploaded_material_applicability_pending",
+              "upstream_source_attestation_missing",
+              "usage_redistributed_assets_unknown",
+              "user_statement_not_independently_verified"
+            ],
+            "basis_evidence_ids": [],
+            "rule_ids": []
+          },
+          {
+            "usage": "source_disclosure",
+            "saved_value": null,
+            "selection": "UNKNOWN",
+            "state": "unknown",
+            "scope": "RESOURCE",
+            "conditions": [],
+            "gaps": [
+              "license_text_and_applicability_unverified",
+              "object_scope_unverified",
+              "uploaded_material_applicability_pending",
+              "upstream_source_attestation_missing",
+              "usage_source_disclosure_unknown",
+              "user_statement_not_independently_verified"
+            ],
+            "basis_evidence_ids": [],
+            "rule_ids": []
+          }
+        ],
+        "user_assertions": {
+          "DELIVERY_SCOPE_FOR_RESOURCES": "NOT_DECIDED"
+        },
+        "inherited_local_support": false,
+        "inherited_support_source": "PARENT_ASSESSMENT_NOT_NEW_VALUE"
+      }
+    ],
+    "material": {
+      "material_id": "p2mat_c5090e4fd86a58311fab75962e7d545057d2e8b028c358d467f764b225e0c61b",
+      "revision": 1,
+      "binding": {
+        "scan_id": "scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d",
+        "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79",
+        "assessment_version": 1,
+        "registry_revision": 9,
+        "project_revision": null,
+        "facts_hash": "b3176cd5538a2436371c093d2c8590f81abdc75159da7863261a63d0d1c50dca",
+        "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "assessment_sha256": "1ef11cf12667ced7a2b7ca0c8a19c850f0a94aa16410fccab253ad7b65963f80"
+      },
+      "subject": {
+        "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+        "version": "7.0.0"
+      },
+      "evidence_ids": [
+        "evd_41bb871f-014f-5e63-9744-cbbc4036edcd"
+      ],
+      "filename": "LICENSE",
+      "source_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "byte_count": 1091,
+      "completeness": "FULL_TEXT_CLAIMED",
+      "parse_status": "text_observed",
+      "adoption_status": "adopted_as_unverified_observation",
+      "verification_state": "pending",
+      "source_level": "user_supplied_unverified",
+      "formal_effect": "none",
+      "data_scope": "TEST_ONLY"
+    },
+    "answer": {
+      "answer_id": "p2ans_31f95e79d2f0052a41f712f7dfd34e9fb5a91a5e726ac33893dfd37bd9fc7c2f",
+      "revision": 2,
+      "binding": {
+        "scan_id": "scn_fb8856de-91c3-41b7-b758-fcf35c2ea77d",
+        "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79",
+        "assessment_version": 1,
+        "registry_revision": 9,
+        "project_revision": null,
+        "facts_hash": "b3176cd5538a2436371c093d2c8590f81abdc75159da7863261a63d0d1c50dca",
+        "usage_hash": "b798ccebe449ef2f93c143e4cec1cc11ec27d5f5720f46eb0950e743e5242982",
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "assessment_sha256": "1ef11cf12667ced7a2b7ca0c8a19c850f0a94aa16410fccab253ad7b65963f80"
+      },
+      "question_id": "p2q_63d93f00c3d1128fe548e020bd422cf34ee83d687215033a46aee7d7cc28b23e",
+      "question_code": "DELIVERY_SCOPE_FOR_RESOURCES",
+      "answer_code": "NOT_DECIDED",
+      "subjects": [
+        {
+          "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+          "version": "7.0.0"
+        }
+      ],
+      "evidence_ids": [
+        "evd_41bb871f-014f-5e63-9744-cbbc4036edcd"
+      ],
+      "provenance": "USER_ASSERTED",
+      "formal_effect": "none",
+      "data_scope": "TEST_ONLY"
+    },
+    "summary_id": "p2sum_e16fe5df4395f6fea3abb83a00ca1d6d26cdf048f9e6d0b3b09a9b409979ff4a",
+    "human_review": {
+      "package": "is-number",
+      "version": "7.0.0",
+      "subject": {
+        "resource_id": "cmp_1fc87b46-9132-51b6-b39e-bf1af669ca8a",
+        "assessment_id": "asm_6c664ed7-7c41-512c-bbcc-a178a8edea79"
+      },
+      "tarball_sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "license_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "reviewer": null,
+      "reviewed_at": null,
+      "scope": null,
+      "conclusion": "PENDING_HUMAN_REVIEW",
+      "questions": [
+        "Confirm LICENSE applies to this exact official release and resource",
+        "Confirm saved usage and distribution scope",
+        "Review copyright/license and additional obligations",
+        "Determine NOTICE requirement separately; missing file is not no obligation"
+      ],
+      "signoff_by_codex": false
+    }
+  },
+  "A4_levels": {
+    "SOURCE_MATERIAL_ACQUIRED": "ORIGINAL_VERIFIED + HISTORICAL_SENDER_VERIFIED; npm raw response and release available",
+    "MATERIAL_OBSERVATION_ADOPTED": "historical HTTP event n=25; pending/user_supplied_unverified; normal P2 API/service path static present",
+    "NEW_FACT_CONFIRMED": "no new business fact or Evidence established; old r3 observation repeated does not count",
+    "HUMAN_APPLICABILITY_APPROVED": false
+  },
+  "A4_code_comparison": [
+    {
+      "path": "backend/app/p2b/__init__.py",
+      "unified_bytes": 75,
+      "unified_sha256": "5ee344ce985a12ee182a5386a1abacfcc1c3f556194d0d6ac5fbf4d2cc6334d6",
+      "B_bytes": 75,
+      "B_sha256": "5ee344ce985a12ee182a5386a1abacfcc1c3f556194d0d6ac5fbf4d2cc6334d6",
+      "same_as_unified": true,
+      "recording_source_equals_B": true,
+      "recording_source_path": "output/competition/team-integration-20261013T042528Z/source/backend/app/p2b/__init__.py"
+    },
+    {
+      "path": "backend/app/p2b/candidates.py",
+      "unified_bytes": 11656,
+      "unified_sha256": "f6c452508033b29c19dbe61e94a5421bdd04f8ce74860ccbdfd59d6a2a94a236",
+      "B_bytes": 11656,
+      "B_sha256": "f6c452508033b29c19dbe61e94a5421bdd04f8ce74860ccbdfd59d6a2a94a236",
+      "same_as_unified": true,
+      "recording_source_equals_B": true,
+      "recording_source_path": "output/competition/team-integration-20261013T042528Z/source/backend/app/p2b/candidates.py"
+    },
+    {
+      "path": "backend/app/p2b/materials.py",
+      "unified_bytes": 4315,
+      "unified_sha256": "e1129ab5480d7db494ae042f98fe0dbd7bf6597d5db1deb19f4df3170063e88d",
+      "B_bytes": 4315,
+      "B_sha256": "e1129ab5480d7db494ae042f98fe0dbd7bf6597d5db1deb19f4df3170063e88d",
+      "same_as_unified": true,
+      "recording_source_equals_B": true,
+      "recording_source_path": "output/competition/team-integration-20261013T042528Z/source/backend/app/p2b/materials.py"
+    },
+    {
+      "path": "backend/app/p2b/npm_metadata.py",
+      "unified_bytes": 7017,
+      "unified_sha256": "824845da28fd5103655b6f9a163fb707fca9aecaf8d1db78b034bffed00de1de",
+      "B_bytes": 7180,
+      "B_sha256": "eb7790f46b5053b490706c3caff5a61373c4a89c44140c9335331e935f5650a6",
+      "same_as_unified": false,
+      "recording_source_equals_B": true,
+      "recording_source_path": "output/competition/team-integration-20261013T042528Z/source/backend/app/p2b/npm_metadata.py"
+    },
+    {
+      "path": "backend/app/p2b/reconcile.py",
+      "unified_bytes": 6489,
+      "unified_sha256": "38d61255e9899a39f101ea63d1325eefc7d704f10adff8152bb1aef7fe72cf5b",
+      "B_bytes": 6489,
+      "B_sha256": "38d61255e9899a39f101ea63d1325eefc7d704f10adff8152bb1aef7fe72cf5b",
+      "same_as_unified": true,
+      "recording_source_equals_B": true,
+      "recording_source_path": "output/competition/team-integration-20261013T042528Z/source/backend/app/p2b/reconcile.py"
+    },
+    {
+      "path": "backend/app/p2b/offline_material_audit.py",
+      "unified_bytes": null,
+      "unified_sha256": null,
+      "B_bytes": 7298,
+      "B_sha256": "6dc09c020664be0065dee77e21156688ebf911ec0dec66243642406bc32d86c2",
+      "same_as_unified": false,
+      "recording_source_equals_B": true,
+      "recording_source_path": "output/competition/team-integration-20261013T042528Z/source/backend/app/p2b/offline_material_audit.py"
+    }
+  ],
+  "recording_conditional_candidate": {
+    "boundary": "SEPARATE_RECORDING_CANDIDATE_ONLY_NOT_UNIFIED_ACCEPTANCE",
+    "binding": {
+      "scan_id": "scn_c93dba2a-e272-4a8a-90d3-e3244aa99901",
+      "assessment_id": "asm_8cc7a59a-36c9-5df2-b8f3-45ba171f8799",
+      "assessment_version": 1,
+      "registry_revision": 13,
+      "project_revision": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+      "facts_hash": "bc7514c3ea2738e59cb3dc2559e04d4f75c2fabe523b6f2c99498b15ccce9ec6",
+      "usage_hash": "da62ee784bef22e0a10a98135229bf82c211adba27ddcdef11f54bac7ab061ae",
+      "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "assessment_sha256": "f87ec6928e5cdccf44e196ec24c89dff25548bc798cef9205588c04ad53c4a50"
+    },
+    "result_id": "p2res_fd12a726d5ccb7b548f866c601584e97b2f79ceb2318029b1ad3e1e6913139d1",
+    "result_revision": 3,
+    "review_id": "p2auto_d12f47d9de2b84d3a5df445861ed36ab5994dfb736f0b4ec2e6a0fe286b217af",
+    "chalk": {
+      "subject": {
+        "resource_id": "cmp_46dfbf17-96fb-5180-b199-63cf8661ec6b",
+        "version": "4.1.2"
+      },
+      "name": "chalk",
+      "license_expression": "MIT",
+      "state": "CONDITIONAL",
+      "priority": "routine",
+      "artifact_binding": "RESOLVED_URL_MATCH",
+      "conditions": [
+        "在软件副本或实质部分中保留版权声明及完整 MIT 许可声明。",
+        "对外提供该精确版本时核对实际交付清单；本条不证明声明已随交付物保留。"
+      ],
+      "reasons": [
+        "官方精确发行包与完整标准 MIT 文本匹配，可按条款条件安排使用和交付。"
+      ],
+      "evidence_ids": [
+        "evd_2164d83a-7d87-5734-8ca1-7e8d490eecf2",
+        "evd_3ef8ef7e-d51e-5bcb-8b78-edf530bf9f42",
+        "evd_801dc953-10fc-588d-8cbc-84cd0d663bed",
+        "evd_9f146ea9-c0e8-5602-aed3-04d427de568e"
+      ],
+      "source_refs": [
+        {
+          "kind": "metadata",
+          "url": "https://registry.npmjs.org/chalk/4.1.2",
+          "sha256": "57e786e1220220901708d3647f631b59e4b2f99266a444b5807b53527f9e592b"
+        },
+        {
+          "kind": "tarball",
+          "url": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
+          "sha256": "e84c643aa53e87ace6c3d368b3cddda24a2d1434a06b6dfbdb628ad2107df90a"
+        }
+      ],
+      "members": [
+        {
+          "member": "package/license",
+          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+        }
+      ],
+      "maintenance_deprecated": false,
+      "applicability_review": "NOT_SIGNED"
+    },
+    "profile_chalk": {
+      "subject": {
+        "resource_id": "cmp_46dfbf17-96fb-5180-b199-63cf8661ec6b",
+        "version": "4.1.2"
+      },
+      "name": "chalk",
+      "purl": "pkg:npm/chalk@4.1.2",
+      "evidence_ids": [
+        "evd_2164d83a-7d87-5734-8ca1-7e8d490eecf2",
+        "evd_3ef8ef7e-d51e-5bcb-8b78-edf530bf9f42",
+        "evd_801dc953-10fc-588d-8cbc-84cd0d663bed",
+        "evd_9f146ea9-c0e8-5602-aed3-04d427de568e"
+      ],
+      "status": "FETCHED",
+      "error_code": null,
+      "metadata": {
+        "url": "https://registry.npmjs.org/chalk/4.1.2",
+        "utc": "2026-10-12T12:36:11.018385+00:00",
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Content-Length": "2925",
+          "Last-Modified": "Mon, 12 Oct 2026 12:35:59 GMT"
+        },
+        "file": "19-metadata.json",
+        "bytes": 2925,
+        "sha256": "57e786e1220220901708d3647f631b59e4b2f99266a444b5807b53527f9e592b"
+      },
+      "tarball": {
+        "url": "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz",
+        "utc": "2026-10-12T12:36:11.979329+00:00",
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/octet-stream",
+          "Content-Length": "11577",
+          "ETag": "\"cf76e256de1debce9c7a21cd18df954d\"",
+          "Last-Modified": "Mon, 08 Sep 2025 19:09:14 GMT"
+        },
+        "file": "19-release.tgz",
+        "bytes": 11577,
+        "sha256": "e84c643aa53e87ace6c3d368b3cddda24a2d1434a06b6dfbdb628ad2107df90a"
+      },
+      "members": [
+        {
+          "member": "package/license",
+          "file": "19-member-0.txt",
+          "bytes": 1109,
+          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
+        },
+        {
+          "member": "package/package.json",
+          "file": "19-member-1.txt",
+          "bytes": 1197,
+          "sha256": "9cd907d34a45cb73b5c8a459d5602a36ccd456794665c529a3a5b0f02e196f26"
+        }
+      ]
+    }
+  },
+  "old_v6": {
+    "status": "OLD_V6_FORMAL_ORIGINAL_MISSING",
+    "scan_id": "scn_6c0f972a-18c1-4566-a7fa-df623053bea5",
+    "assessment_id": "asm_8412408d-1c91-51e1-99e0-c135239bf510",
+    "assessment_version": 6,
+    "identity_source": "P2_FRONTEND_CONTRACT_INDEX_R1.json /fixed_object_reference/binding",
+    "candidate_found": "同Scan 2026-09-24保存的openguard.report v1扫描报告，非Assessment v6 Formal",
+    "candidate_json_sha256": "d62331caabeef5dcaf55085eb0bc9f8963c19bc9e4838db033bd4f84875d4782",
+    "candidate_json_bytes": 191228,
+    "candidate_json_keys": [
+      "completeness",
+      "disclaimer",
+      "grouping",
+      "scan_run",
+      "schema",
+      "version"
+    ],
+    "substitution_allowed": false,
+    "needed": "原件持有人交付精确Assessment v6原JSON/HTML、字节Hash及共享许可，或Owner确认保留缺件限制；不阻止其他前端工作"
+  },
+  "notice_fix": {
+    "status": "BLOCKED_MISSING_EVIDENCE",
+    "latest_sender_statement": "xzb已有仅测试夹具补Hash窄修及隔离副本433/433回归",
+    "old_original_junit": {
+      "testcases": 433,
+      "unique": 433,
+      "failures": [
+        {
+          "classname": "tests.unit.test_p1_notice_draft_production_wiring",
+          "name": "test_a3_06_11_content_and_no_authority_escalation[resolved-excerpt-notice_source_excerpt_truncated]",
+          "time": "0.049"
+        },
+        {
+          "classname": "tests.unit.test_p1_notice_draft_production_wiring",
+          "name": "test_a3_06_11_content_and_no_authority_escalation[unresolved-excerpt-notice_source_excerpt_truncated]",
+          "time": "0.049"
+        }
+      ]
+    },
+    "old_junit_scope": "固定统一候选历史433唯一节点，431通过2失败；不是重新执行，也不用于否定后来窄修",
+    "new_patch_path": null,
+    "new_junit_path": null,
+    "new_source_identity": null,
+    "maintainer_review": null,
+    "integration_status": "INTEGRATION_NOT_VERIFIED",
+    "needed": "窄修实际diff、被测候选完整身份、433/433原始JUnit/日志、维护者复核与进入最新候选的证明；无需重跑或再次制作统一包"
+  },
+  "actions": {
+    "product_source_changes": 0,
+    "product_tests": 0,
+    "new_junit": 0,
+    "http_requests": 0,
+    "external_network_requests": 0,
+    "scans": 0,
+    "model_calls": 0,
+    "model_weight_reads": 0,
+    "database_operations": 0,
+    "containers_started": 0,
+    "containers_exec": 0,
+    "docker_build_pull_save_load": 0,
+    "services_started": 0,
+    "git_mutations": 0,
+    "unified_archive_repack": 0,
+    "messages_sent_to_xzb": 0
+  },
+  "protection": {
+    "checked_original_files": 844,
+    "all_checked_original_hashes_unchanged": true,
+    "git_worktrees_checked": 17,
+    "git_head_branch_dirty_unchanged": true,
+    "container_metadata_count": 107,
+    "container_stable_metadata_unchanged": true,
+    "scope_limit": "关键原件按身份台账核对；不声称全盘快照。业务数据库未打开，既有运行服务的内部写入未监控。A04原件为末段定位后只读核对。"
+  },
+  "states": {
+    "P2_03_M1_LOCAL_EVIDENCE": "BLOCKED_REAL_MATERIAL_OR_BINDING_MISSING",
+    "L2_DERIVED_RESULT": "NOT_YET_ESTABLISHED",
+    "ROOT_CAUSE": "ROOT_CAUSE_UNDETERMINED",
+    "LIVE_METADATA_PROFILE": "BLOCKED_PRECHECK_TASK_EXCEPTION_OSERROR",
+    "FULL_RUNTIME_PROFILE": "NOT_ESTABLISHED",
+    "REAL_MODEL_DIAGNOSTIC": "NOT_RUN_NOT_AUTHORIZED",
+    "OVERALL": "PARTIAL",
+    "OWNER_FINAL_ACCEPTANCE": "PENDING_OWNER_DECISION",
+    "PUBLISH_AUTHORIZATION": "NOT_GRANTED"
+  },
+  "state_note": "保留项目门禁；L2_DERIVED_RESULT门禁不否认TEST_ONLY独立Result历史存在。",
+  "self_hash_policy": "原本地Manifest及本次发布Manifest均由各自独立回执登记SHA；原DELIVERY_RECEIPT.json不在GitHub上传范围。",
+  "review_evidence_files": [
+    {
+      "relative_path": "evidence/a1-a5-original-identities.json",
+      "bytes": 10287,
+      "sha256": "fd01e2b582f6d6db15e2db40c81962cd2a3443a5179210cf2addfdf30d051461"
+    },
+    {
+      "relative_path": "evidence/a1-a5-readonly-audit.json",
+      "bytes": 8500,
+      "sha256": "66fc70552049eb5eb958a6e78464e4f0036b3dfec605269b4016d8298bd9d01a"
+    },
+    {
+      "relative_path": "evidence/a2-a3-extra-originals-before.json",
+      "bytes": 4359,
+      "sha256": "a32e6ee63959446e3abd725c2c82bc6855ec2ef0cab0edf7950b42ef7efd148b"
+    },
+    {
+      "relative_path": "evidence/a2-a3-static-configuration.json",
+      "bytes": 1408,
+      "sha256": "f567e61e324ac063d1c4f7cd4ace6449b9d42e8628641324f85c6ccc74229277"
+    },
+    {
+      "relative_path": "evidence/a4-cz-evidence.json",
+      "bytes": 87007,
+      "sha256": "1e55eeab8bf18fe5ee067dc930f38a4e96d633c7bf9c553579298ef9d2f2b59d"
+    },
+    {
+      "relative_path": "evidence/docker-after.json",
+      "bytes": 193899,
+      "sha256": "985ce2a1288766100ff6eadd6a67a1f7d35dcc123e48b04896aa8925f6e820e1"
+    },
+    {
+      "relative_path": "evidence/docker-before.json",
+      "bytes": 194839,
+      "sha256": "adaa863827c03f29c71cb995c87059cafb39a68e02496f5b56b9a470aa2b491b"
+    },
+    {
+      "relative_path": "evidence/git-after.json",
+      "bytes": 9016,
+      "sha256": "0aa6c2cd397691f9df74d79cc293786d61f58cd22f37187e71858e256067aecc"
+    },
+    {
+      "relative_path": "evidence/git-before.json",
+      "bytes": 8539,
+      "sha256": "b50cb7383bc9171143f9e08f5673fd8be5fb97fc69473b98a8de776aaeff8aa1"
+    },
+    {
+      "relative_path": "evidence/governance-read.json",
+      "bytes": 360821,
+      "sha256": "55277659924541d05b21191d83cd159d6dd1a2b3c7b6621b2eadd0bed2bb65c4"
+    },
+    {
+      "relative_path": "evidence/image-metadata.json",
+      "bytes": 838,
+      "sha256": "40fc5bebde7b848b65941ac27e5a6b4a6ff70db7e0174c79daf4a69ce5b1a796"
+    },
+    {
+      "relative_path": "evidence/originals-after.json",
+      "bytes": 242645,
+      "sha256": "7de328bdb6c1cf4ae5c92f9f4215fa9fd43af14d59dc6b6f97175be1ab8474af"
+    },
+    {
+      "relative_path": "evidence/primary-originals-before.json",
+      "bytes": 18572,
+      "sha256": "8bdf259c312f729756562c834c55362b6f105dad6ae82d8231f184a440caee8d"
+    },
+    {
+      "relative_path": "evidence/runtime-archive-inspection.json",
+      "bytes": 7903,
+      "sha256": "01268c937b80c7a16ac54cdca36bcdeb797c2d6d57ddb4681623923ea3e29164"
+    },
+    {
+      "relative_path": "evidence/runtime-oci-identities.json",
+      "bytes": 11900,
+      "sha256": "7c1e9e132542a968bed115122c1fa070114f8ba20d6bdf39c8db0c403550225f"
+    },
+    {
+      "relative_path": "evidence/unified-source-before.json",
+      "bytes": 218349,
+      "sha256": "c40f0ea8db593da7a5208a17af10ea2bfa5b16a9566edf7c0cad839c8d115060"
+    },
+    {
+      "relative_path": "evidence/unified-verification.json",
+      "bytes": 35516,
+      "sha256": "e8325ac09ad658007811cc1503fa118f26025b64f415533d67964c9324336055"
+    }
+  ],
+  "publication": {
+    "repository": "mumingce-star/OpenGuard",
+    "branch": "codex/p2-a1-a5-handoff-20261015",
+    "directory": "docs/handoffs/p2-a1-a5-20261015",
+    "authorized_scope": "仅五份脱敏交接文档；允许普通commit/push，不允许PR/合并/部署",
+    "source_originals": [
+      {
+        "name": "P2_OWNER_A1_A5_TOTAL_DELIVERY_REVIEW.md",
+        "source_bytes": 13095,
+        "source_sha256": "71d687d9bf26ad8f603a65e9e5c191e4f90e32c263c909d227c671d0369ce55a"
+      },
+      {
+        "name": "P2_XZB_RECEIVER_HANDOFF_INDEX.md",
+        "source_bytes": 35914,
+        "source_sha256": "ab1eba479debbe3d5abe148c3f7d0d6bb4b5b6c189b20e5749ba4660221f42f5"
+      },
+      {
+        "name": "P2_XZB_RECEIVER_HANDOFF_MANIFEST.json",
+        "source_bytes": 151709,
+        "source_sha256": "42b5ba8e87213a46b26a3b3e6b2b5b765c00ba037d45c59aad8f77293f30a27e"
+      },
+      {
+        "name": "P2_XZB_A1_A5_GATE_MATRIX.md",
+        "source_bytes": 4186,
+        "source_sha256": "d2672e68b8912ee4061e97dc47d505399d2abc6b9cc238f7342feca14c623803"
+      },
+      {
+        "name": "P2_MESSAGE_TO_XZB_READY_TO_SEND.md",
+        "source_bytes": 2469,
+        "source_sha256": "7e9b49c483382f50c9693a452a418b070009de6fb3582a99946e1a716520ef41"
+      }
+    ],
+    "published_markdown": [
+      {
+        "filename": "P2_MESSAGE_TO_XZB_READY_TO_SEND.md",
+        "bytes": 2769,
+        "sha256": "d5ac6eeac7fffdd91e54cb884fcab4aba2788a0df94415397ee3e2b53c82fe4b"
+      },
+      {
+        "filename": "P2_OWNER_A1_A5_TOTAL_DELIVERY_REVIEW.md",
+        "bytes": 13426,
+        "sha256": "2585f164506508e3d20354d1be78fbc7f310f92a517fa88e0e5f618946deb082"
+      },
+      {
+        "filename": "P2_XZB_A1_A5_GATE_MATRIX.md",
+        "bytes": 4501,
+        "sha256": "3eaeb83b94205c0403aab00c64d0f6bfd4bd10c481311651619d30f9a2a77414"
+      },
+      {
+        "filename": "P2_XZB_RECEIVER_HANDOFF_INDEX.md",
+        "bytes": 36229,
+        "sha256": "5b6265d021022e0306463a98d868e66d99852f5abf56bf8997af5f4ab7a0e5ee"
+      }
+    ],
+    "manifest_hash_receipt": "本Manifest的发布字节身份由Git blob及本地发布回执独立登记，避免自引用Hash",
+    "local_evidence_note": "artifacts及review_evidence_files记录的是已有本地/Git原件身份；这些材料未随本次五份文档上传，路径不是可用GitHub下载链接",
+    "original_audit_actions_note": "actions和protection字段属于原只读核对任务，不是本次GitHub上传行为计数",
+    "product_publish_authorization": "NOT_GRANTED"
+  }
+}
