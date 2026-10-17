@@ -84,6 +84,42 @@ test('P2 presentation keeps TEST_ONLY, pending, missing evidence and not selecte
   assert.doesNotMatch(html, /已核验|已授权|项目已合规/);
 });
 
+test('L1 main card shows the returned resource, usage judgment, conditions, gaps and Evidence before details', () => {
+  const r = runtime(), component = r.load('components/P2AdvicePanel.tsx');
+  const positive = result();
+  positive.state = 'candidate'; positive.resources[0].state = 'candidate';
+  positive.resources[0].evidence_source_hashes = { ev_1: sha };
+  positive.resources[0].advice[0] = {
+    usage: 'commercial', saved_value: true, selection: 'SELECTED', state: 'conditional_candidate', scope: 'RESOURCE',
+    conditions: ['保留后端列出的许可证文本'], gaps: ['上游适用性尚未核验'], basis_evidence_ids: ['ev_1'], rule_ids: ['RULE-1'],
+  };
+  const html = renderToStaticMarkup(createElement(component.P2ResultView, {
+    result: positive, evidenceIds: ['ev_1'], onEvidence: () => {},
+  }));
+  const main = html.slice(html.indexOf('og-p2-main'), html.indexOf('og-p2-resource'));
+  for (const expected of ['L1资源级用途建议', 'cmp_1', '7.0.0', '商业', '条件候选', '保留后端列出的许可证文本',
+    '上游适用性尚未核验', '查看 Evidence：ev_1', '材料观察引用：p2mat_1', '查看本资源源文件 Hash', sha]) assert.match(main, new RegExp(expected));
+  assert.match(main, /不等于已获授权/);
+  assert.match(main, /不是官方来源证明/);
+  assert.doesNotMatch(main, /项目已合规/);
+});
+
+test('L1 partial and no-advice cases do not invent a permitted usage or a deleted resource', () => {
+  const component = runtime().load('components/P2AdvicePanel.tsx');
+  const partial = result(); partial.state = 'partial'; partial.resources[0].advice = [];
+  partial.resources[0].scope = 'unknown';
+  const html = renderToStaticMarkup(createElement(component.P2ResultView, {
+    result: partial, evidenceIds: [], onEvidence: () => {},
+  }));
+  assert.match(html, /未出现的资源不能据此视为已删除/);
+  assert.match(html, /后端未返回该资源的用途判断/);
+  assert.match(html, /适用范围：<\/strong>未知，待核验/);
+  assert.match(html, /ev_1 未在本次扫描中定位/);
+  assert.match(html, /本资源源文件 Hash 未获取/);
+  const empty = { ...result(), resources: [] };
+  assert.match(renderToStaticMarkup(createElement(component.P2ResultView, { result: empty, evidenceIds: [], onEvidence: () => {} })), /不能由此推断扫描范围完整/);
+});
+
 test('contract failure never promotes unknown to a candidate', () => {
   const api = runtime().load('services/p2Advice.ts');
   const invalid = result();
@@ -93,4 +129,43 @@ test('contract failure never promotes unknown to a candidate', () => {
   invalid.formal_effect = 'updated';
   assert.throws(() => api.validateP2Result(invalid, binding()), /契约/);
   assert.equal(api.p2StateLabels.unknown, '未知，证据不足');
+});
+
+test('L1 read errors distinguish fixed-object absence, service outage and binding conflict', () => {
+  const r = runtime(), { ApiError } = r.load('services/scans.ts');
+  const { p2ReadErrorText } = r.load('components/P2Workbench.tsx');
+  assert.match(p2ReadErrorText(new ApiError(404, 'missing')), /不会改选最新版本/);
+  assert.match(p2ReadErrorText(new ApiError(503, 'disabled')), /Formal Assessment 仍可单独查看/);
+  assert.match(p2ReadErrorText(new ApiError(409, 'conflict')), /不会展示不匹配的建议/);
+  assert.match(p2ReadErrorText(new Error('network')), /network/);
+});
+
+test('P2B source hashes and suggestion basis stay inside the returned resource Evidence closure', () => {
+  const { validateP2Result } = runtime().load('services/p2Advice.ts');
+  const valid = result();
+  valid.resources[0].evidence_source_hashes = { ev_1: sha };
+  assert.equal(validateP2Result(valid, binding()).result_id, 'p2res_1');
+  const wrongSource = structuredClone(valid);
+  wrongSource.resources[0].evidence_source_hashes = { ev_other: sha };
+  assert.throws(() => validateP2Result(wrongSource, binding()), /契约/);
+  const wrongBasis = structuredClone(valid);
+  wrongBasis.resources[0].advice[0].basis_evidence_ids = ['ev_other'];
+  assert.throws(() => validateP2Result(wrongBasis, binding()), /契约/);
+});
+
+test('P2B material, answer and recomputation references cannot escape the fixed Result', () => {
+  const { validateP2Result } = runtime().load('services/p2Advice.ts');
+  const cases = [
+    value => { value.resources[0].material_ids = ['p2mat_other']; },
+    value => { value.resources[0].answer_ids = ['p2ans_other']; },
+    value => { value.material_ids.push('p2mat_orphan'); },
+    value => { value.answer_ids.push('p2ans_orphan'); },
+    value => { value.reused_resource_ids = ['cmp_1']; },
+    value => { value.recomputed_resource_ids = ['cmp_other']; },
+    value => { value.resources.push(structuredClone(value.resources[0])); },
+  ];
+  for (const mutate of cases) {
+    const invalid = result(); mutate(invalid);
+    assert.throws(() => validateP2Result(invalid, binding()), /契约/);
+  }
 });

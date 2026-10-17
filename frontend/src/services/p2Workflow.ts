@@ -9,6 +9,15 @@ const fail = (): never => { throw new Error('P2 回执身份或字段不符合�
 const prefix = (b: P2Binding) => `/scans/${encodeURIComponent(b.scan_id)}/assessments/${encodeURIComponent(b.assessment_id)}/p2`;
 const version = (b: P2Binding) => '?assessment_version=' + b.assessment_version;
 const bound = (x: unknown, b: P2Binding) => obj(x) && sameBinding(x as unknown as P2Binding, b);
+// Local deployment safeguard, not a server capability or authorization claim.
+export const p2ReadOnly = import.meta.env.VITE_P2_READ_ONLY === '1';
+
+export async function readPreviousP2Result(current: P2Result, signal?: AbortSignal) {
+  if (!current.previous_result_id) return null;
+  const previous = await readP2Result(current.binding, current.previous_result_id, current.revision - 1, signal);
+  if (previous.data_scope !== current.data_scope) throw new Error('前版数据范围不匹配，拒绝并排展示。');
+  return previous;
+}
 export const answerLabels: Record<P2AnswerCode, string> = {
   YES_INCLUDE: '包含选中资源', NO_EXCLUDE: '不包含选中资源', NOT_DECIDED: '范围尚未决定',
   FULFILLED: '我声明已履行（未经核验）', NOT_FULFILLED: '我声明尚未履行', NOT_DELIVERED_YET: '尚未交付', UNKNOWN: '未知',
@@ -127,6 +136,7 @@ export class P2WriteAttempt {
     return head;
   }
   async send(): Promise<P2Receipt> {
+    if (p2ReadOnly) throw new Error('当前前端为只读配置，不会发送P2写入请求。');
     if (this.state !== 'draft' && !(this.state === 'unknown' && this.recovered)) throw new Error('请先核对服务器状态；冲突或拒绝后不可自动重放。');
     this.state = 'sending'; this.recovered = false;
     const controller = new AbortController();

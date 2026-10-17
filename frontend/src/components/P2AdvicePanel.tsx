@@ -6,6 +6,7 @@ import { ApiError } from '../services/scans';
 import { Panel } from './ui';
 
 type View = { kind: 'loading' } | { kind: 'empty' } | { kind: 'error'; message: string } | { kind: 'ready'; result: P2Result };
+const resourceScope = (value: string) => value === 'resource' ? '资源级' : value === 'unknown' ? '未知，待核验' : value || '未获取';
 
 function EvidenceRefs({ ids, available, open }: { ids: string[]; available: Set<string>; open: (id: string) => void }) {
   if (!ids.length) return <p>没有返回 Evidence 引用；证据不足。</p>;
@@ -35,13 +36,13 @@ function ResourceDetail({ resource, available, open, openResources }: { resource
       <strong>{resource.subject.resource_id}</strong>
       <span>{resource.resource_kind === 'component' ? '软件组件' : '模型或数据资源'} · {p2StateLabels[resource.state]}</span>
     </summary>
-    <p>资源版本：{resource.subject.version || '未获取'} · 适用范围：{resource.scope || '未获取'}</p>
+    <p>资源版本：{resource.subject.version || '未获取'} · 适用范围：{resourceScope(resource.scope)}</p>
     <p>核验状态：仅为候选，尚未核验。继承的父评估支持不构成本次新增许可结论。</p>
     {openResources && <button type="button" onClick={openResources}>查看扫描资源卡片</button>}
     {resource.gaps.length ? <div><strong>尚缺信息</strong><ul>{resource.gaps.map((gap, i) => <li key={i}>{gap}</li>)}</ul></div> : null}
     <div><strong>本资源 Evidence</strong><EvidenceRefs ids={resource.evidence_ids} available={available} open={open} /></div>
     {Object.keys(resource.evidence_source_hashes).length
-      ? <details><summary>查看证据源文件 Hash</summary><ul>{Object.entries(resource.evidence_source_hashes).map(([id, hash]) => <li key={id}>{id}：{hash}</li>)}</ul></details>
+      ? <details><summary>查看证据源文件 Hash</summary><p>这是后端记录的源文件摘要，不证明官方来源、许可证适用性或义务履行。</p><ul>{Object.entries(resource.evidence_source_hashes).map(([id, hash]) => <li key={id}>{id}：{hash}</li>)}</ul></details>
       : <p>证据源文件 Hash 未获取；Evidence ID 本身不能替代源文件 Hash。</p>}
     {resource.material_ids.length ? <p>材料引用：{resource.material_ids.join('、')}（材料观察仍需核验）</p> : null}
     {resource.advice.length ? resource.advice.map(advice => <AdviceDetail key={advice.usage} advice={advice} available={available} open={open} />)
@@ -50,15 +51,46 @@ function ResourceDetail({ resource, available, open, openResources }: { resource
 }
 
 export function P2ResultView({ result, evidenceIds, onEvidence, openResources }: { result: P2Result; evidenceIds: string[]; onEvidence: (id: string) => void; openResources?: () => void }) {
+  const [selectedResourceId, setSelectedResourceId] = useState('');
+  const [selectedUsage, setSelectedUsage] = useState('');
   const available = new Set(evidenceIds);
   const first = result.resources.slice(0, 3);
   const remaining = result.resources.slice(3);
+  const focusedResource = result.resources.find(item => item.subject.resource_id === selectedResourceId) ?? result.resources[0];
+  const focusedAdvice = focusedResource?.advice.find(item => item.usage === selectedUsage) ?? focusedResource?.advice[0];
   return <div className="og-p2-result">
     {result.data_scope === 'TEST_ONLY' && <p className="og-p2-test-only">受控验收数据，仅用于功能验证；不是生产历史或许可证明。</p>}
     <div className="og-p2-main">
       <strong>{p2StateLabels[result.state]}</strong>
       <p>独立用途建议 · 资源级 · 第 {result.revision} 版。结果已保存，但不改变正式评估、许可核验或项目合规状态。</p>
       <small>绑定评估 {result.binding.assessment_id} 第 {result.binding.assessment_version} 版 · 结果 {result.result_id}</small>
+      {result.state === 'partial' && <p>本结果仅覆盖后端返回的部分信息；未出现的资源不能据此视为已删除。</p>}
+      {focusedResource && <section className="og-p2-focus" aria-label="L1资源级用途建议">
+        {result.resources.length > 1 && <label>聚焦资源
+          <select aria-label="聚焦资源" value={focusedResource.subject.resource_id} onChange={event => {
+            setSelectedResourceId(event.target.value); setSelectedUsage('');
+          }}>
+            {result.resources.map(item => <option key={item.subject.resource_id} value={item.subject.resource_id}>{item.subject.resource_id}</option>)}
+          </select>
+        </label>}
+        <p><strong>适用对象：</strong>{focusedResource.subject.resource_id} @ {focusedResource.subject.version ?? '版本未获取'}</p>
+        <p><strong>适用范围：</strong>{resourceScope(focusedResource.scope)} · <strong>资源状态：</strong>{p2StateLabels[focusedResource.state]}</p>
+        {focusedResource.advice.length > 1 && <label>聚焦用途
+          <select aria-label="聚焦用途" value={focusedAdvice?.usage ?? ''} onChange={event => setSelectedUsage(event.target.value)}>
+            {focusedResource.advice.map(item => <option key={item.usage} value={item.usage}>{usageFields[item.usage]}</option>)}
+          </select>
+        </label>}
+        {focusedAdvice
+          ? <AdviceDetail advice={focusedAdvice} available={available} open={onEvidence} />
+          : <p>后端未返回该资源的用途判断；不能从资源名称或其他用途推断允许或禁止。</p>}
+        {focusedResource.gaps.length > 0 && <div><strong>资源信息缺口</strong><ul>{focusedResource.gaps.map((gap, i) => <li key={i}>{gap}</li>)}</ul></div>}
+        <p>本卡仅转述后端保存的资源级判断与必要条件；未选择、未知或证据不足均不等于已获授权。</p>
+        <div><strong>原扫描 Evidence</strong><EvidenceRefs ids={focusedResource.evidence_ids} available={available} open={onEvidence} /></div>
+        <p>材料观察引用：{focusedResource.material_ids.join('、') || '未获取'}；引用本身不证明材料来源或适用性。</p>
+        {Object.keys(focusedResource.evidence_source_hashes).length
+          ? <details><summary>查看本资源源文件 Hash</summary><p>Hash 仅供核对后端记录，不是官方来源证明。</p><ul>{Object.entries(focusedResource.evidence_source_hashes).map(([id, hash]) => <li key={id}>{id}：{hash}</li>)}</ul></details>
+          : <p>本资源源文件 Hash 未获取；不能以 Evidence ID 代替。</p>}
+      </section>}
     </div>
     {result.resources.length ? <>
       <p>后端返回 {result.resources.length} 个资源的独立计算结果。未知、待核验和部分结果均保留原状态。</p>
