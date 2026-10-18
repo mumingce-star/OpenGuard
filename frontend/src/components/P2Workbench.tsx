@@ -1,14 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import type { P2Answer, P2AnswerCode, P2Binding, P2Material, P2Result, P2ResultIndex, P2Summary } from '../types/p2Advice';
 import { readP2Binding, readP2Index, readP2Result, p2StateLabels } from '../services/p2Advice';
-import { answerLabels, createFields, P2WriteAttempt, p2ErrorMessage, p2Selection, prepareAnswer, prepareMaterial, readP2Reference, readP2Summary } from '../services/p2Workflow';
+import { answerLabels, createFields, P2WriteAttempt, p2ErrorMessage, p2ReadOnly, p2Selection, prepareAnswer, prepareMaterial, readP2Reference, readP2Summary } from '../services/p2Workflow';
+import { P2VersionComparison } from './P2VersionComparison';
 import { assessmentReportUrl } from '../services/assessments';
+import { ApiError } from '../services/scans';
 import { Panel } from './ui';
 import { P2ResultView } from './P2AdvicePanel';
 
 // Unresolved attempts survive SPA navigation in this tab only. Never persist uploaded text or formal state.
 const attempts = new Map<string, P2WriteAttempt>();
 const message = (e: unknown) => e instanceof Error ? e.message : '读取失败，请重试。';
+export function p2ReadErrorText(error: unknown) {
+  if (error instanceof ApiError) {
+    if (error.status === 404) return '当前固定评估或独立结果未找到；不会改选最新版本。请核对 URL 与服务端对象。';
+    if (error.status === 503) return 'P2 读取服务不可用或未启用；Formal Assessment 仍可单独查看。请稍后重试。';
+    if (error.status === 409) return '独立结果与父评估版本不一致；不会展示不匹配的建议。';
+  }
+  return message(error);
+}
 type Props = { scanId: string; assessmentId: string; assessmentVersion: number; evidenceIds: string[];
   query: URLSearchParams; onSelect: (result: P2Result) => void; onEvidence: (id: string) => void; openResources?: () => void };
 
@@ -70,9 +80,10 @@ export function P2Workbench(props: Props) {
   const [completeness, setCompleteness] = useState<'FULL_TEXT_CLAIMED' | 'EXCERPT'>('EXCERPT');
   const [reference, setReference] = useState<P2Material | P2Answer | null>(null);
   const [referenceError, setReferenceError] = useState('');
+  const referenceController = useRef<AbortController | null>(null);
   const lock = useRef(false);
   const alive = useRef(true);
-  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  useEffect(() => { alive.current = true; return () => { alive.current = false; referenceController.current?.abort(); }; }, []);
   const unresolved = !!attempt && attempt.state !== 'saved';
   useEffect(() => {
     const warn = (e: BeforeUnloadEvent) => { if (unresolved) { e.preventDefault(); e.returnValue = ''; } };
@@ -81,7 +92,9 @@ export function P2Workbench(props: Props) {
   const query = props.query.toString();
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true); setReadError(''); setResult(null); setSummary(null); setSummaryError(''); setReference(null);
+    referenceController.current?.abort();
+    setLoading(true); setReadError(''); setBinding(null); setIndex(null); setHistory([]); setOffset(0);
+    setResult(null); setSummary(null); setSummaryError(''); setReference(null);
     setQuestionId(''); setAnswer(''); setSubjects([]); setResourceId(''); setEvidence([]); setFile(null);
     void (async () => {
       const selection = p2Selection(new URLSearchParams(query), assessmentVersion);
@@ -97,7 +110,7 @@ export function P2Workbench(props: Props) {
         try { const s = await readP2Summary(selected, controller.signal); if (!controller.signal.aborted) setSummary(s); }
         catch (e) { if (!controller.signal.aborted) setSummaryError(message(e)); }
       }
-    })().catch(e => { if (!controller.signal.aborted) { setReadError(message(e)); setLoading(false); } });
+    })().catch(e => { if (!controller.signal.aborted) { setReadError(p2ReadErrorText(e)); setLoading(false); } });
     return () => controller.abort();
   }, [scanId, assessmentId, assessmentVersion, query, reload]);
 
@@ -126,7 +139,7 @@ export function P2Workbench(props: Props) {
     await run(async () => { const r = await readP2Result(binding, id); if (alive.current) onSelect(r); });
   }
   const current = !!result && result.result_id === index?.head_result_id && result.revision === index.head_revision;
-  const editable = writeEnabled && !busy && !loading && !readError && !unresolved && current;
+  const editable = !p2ReadOnly && writeEnabled && !busy && !loading && !readError && !unresolved && current;
   const question = result?.questions.find(q => q.question_id === questionId);
   const resource = result?.resources.find(r => r.subject.resource_id === resourceId);
   const toggle = (values: string[], id: string, checked: boolean) => checked ? [...values, id] : values.filter(x => x !== id);
@@ -151,6 +164,7 @@ export function P2Workbench(props: Props) {
         <P2ResultView result={result} evidenceIds={evidenceIds} onEvidence={onEvidence} openResources={openResources} />
         <p>候选算法：{result.algorithm_version}；父 Formal 规则：{result.binding.rule_version}</p>
         <p>父 Assessment 第{result.binding.assessment_version}版 / 独立 Result 第{result.revision}版</p>
+        <P2VersionComparison key={result.result_id} current={result} />
         {summary && <P2SummaryView summary={summary} />}
         {summaryError && <p role="alert">同版摘要未读取成功：{summaryError}。结果仍已保存，不会生成替代报告。</p>}
         <div className="og-actions"><a href={assessmentReportUrl(scanId, assessmentId, 'html')} download>下载此父版本原 Formal HTML</a><a href={assessmentReportUrl(scanId, assessmentId, 'json')} download>下载此父版本原 Formal JSON</a></div>
@@ -158,17 +172,21 @@ export function P2Workbench(props: Props) {
         <details><summary>读回材料与用户声明</summary>
           {(['materials','answers'] as const).map(kind => (kind === 'materials' ? result.material_ids : result.answer_ids).map(id =>
             <button key={id} disabled={busy} onClick={() => void run(async () => {
+              referenceController.current?.abort();
+              const controller = new AbortController(); referenceController.current = controller;
               setReference(null); setReferenceError('');
-              try { const ref = await readP2Reference(result, kind, id); if (alive.current) setReference(ref); }
-              catch (e) { if (alive.current) setReferenceError(message(e)); }
+              try { const ref = await readP2Reference(result, kind, id, controller.signal); if (alive.current && !controller.signal.aborted) setReference(ref); }
+              catch (e) { if (alive.current && !controller.signal.aborted) setReferenceError(message(e)); }
+              finally { if (referenceController.current === controller) referenceController.current = null; }
             })}>{kind === 'materials' ? '材料' : '回答'}：{id}</button>))}
           {referenceError && <p role="alert">{referenceError}</p>}
           {reference && <P2ReferenceView value={reference} onEvidence={onEvidence} />}
         </details>
       </>}
-      <label><input type="checkbox" checked={writeEnabled} disabled={busy || unresolved} onChange={e => setWriteEnabled(e.target.checked)} />我确认在获准数据环境中显式提交P2结果（服务端仍可拒绝写入）</label>
+      {p2ReadOnly && <p role="status">当前前端为只读配置，P2写入已禁用；这不是后端授权状态。</p>}
+      <label><input type="checkbox" checked={writeEnabled} disabled={p2ReadOnly || busy || unresolved} onChange={e => setWriteEnabled(e.target.checked)} />我确认在获准数据环境中显式提交P2结果（服务端仍可拒绝写入）</label>
       {result && !current && <p>正在查看旧版；只读。需显式选择服务器head后重新填写，不能覆盖历史。</p>}
-      {!result && binding && !readError && <button disabled={!writeEnabled || busy || loading || unresolved} onClick={() => void run(() => send(new P2WriteAttempt('results', createFields(binding, null))))}>明确生成首个独立结果（不创建Assessment）</button>}
+      {!result && binding && !readError && <button disabled={p2ReadOnly || !writeEnabled || busy || loading || unresolved} onClick={() => void run(() => send(new P2WriteAttempt('results', createFields(binding, null))))}>明确生成首个独立结果（不创建Assessment）</button>}
       {result && <>
         <form onSubmit={e => { e.preventDefault(); if (!editable || !answer) return; void run(() => send(new P2WriteAttempt('answers', prepareAnswer(result, questionId, answer, subjects)))); }}>
           <fieldset disabled={!editable}><legend>L2 资源范围与履行声明</legend>
@@ -188,6 +206,7 @@ export function P2Workbench(props: Props) {
         }); }}>
           <fieldset disabled={!editable}><legend>L2 小文本材料</legend>
             <p>≤65,536原字节，每Assessment≤20份，请求体≤98,304字节；仅UTF-8 LICENSE/LICENCE/NOTICE（可带txt/md/rst）。缺少NOTICE不等于没有NOTICE义务。</p>
+            <p>只上传你有权提供的材料。请勿包含密钥、个人信息、商业秘密或无权分享的内容；提交后将由后端持久化，不能通过关闭页面撤回。</p>
             <label>精确资源<select value={resourceId} onChange={e => { setResourceId(e.target.value); setEvidence([]); }}><option value="">请选择资源</option>{result.resources.map(r => <option key={r.subject.resource_id} value={r.subject.resource_id}>{r.subject.resource_id} @ {r.subject.version ?? '版本未知，不能上传'}</option>)}</select></label>
             <div className="og-p2-subjects">{resource?.evidence_ids.map(id => <label key={id}><input type="checkbox" checked={evidence.includes(id)} onChange={e => setEvidence(toggle(evidence, id, e.target.checked))} />原扫描Evidence：{id}</label>)}</div>
             <label>材料文件<input type="file" onChange={e => setFile(e.target.files?.[0] ?? null)} /></label>
@@ -202,7 +221,7 @@ export function P2Workbench(props: Props) {
         <p>请求状态：{attempt.state}；键：{attempt.input.idempotency_key}；父Result：{attempt.input.parent_result_id ?? '无'} / expected_revision={attempt.input.expected_revision}。</p>
         <p>原请求仅保留在本标签页内存。关闭或刷新前请先处理；不会自动POST或另换请求键。</p>
         <button disabled={busy} onClick={() => void recover()}>只读核对服务器状态</button>
-        {attempt.state === 'unknown' && <button disabled={busy || !attempt.recovered} onClick={() => void run(() => send(attempt))}>手动重放原键与原内容</button>}
+        {attempt.state === 'unknown' && <button disabled={p2ReadOnly || busy || !attempt.recovered} onClick={() => void run(() => send(attempt))}>手动重放原键与原内容</button>}
         {(attempt.state === 'conflict' || attempt.state === 'rejected') && <button disabled={busy || !attempt.recovered} onClick={() => {
           attempts.delete(identity); setAttempt(null); setWriteMessage('原请求已结束；请确认当前父版本并重新填写，未自动提交。');
           if (recoveredHead) onSelect(recoveredHead); setReload(n => n + 1);

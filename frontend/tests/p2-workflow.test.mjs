@@ -60,6 +60,18 @@ test('write keeps original key/body through uncertain result and explicit read b
   assert.equal(attempt.state, 'saved'); assert.equal(posts, 2); assert.equal(bodies[0], bodies[1]);
 });
 
+test('a successful content-deduplicated write may reuse the current Result without inventing a revision', async () => {
+  const r = runtime(), p = r.load('services/p2Workflow.ts');
+  const attempt = new p.P2WriteAttempt('results', {
+    binding: binding(), expected_revision: 1, parent_result_id: 'p2res_1', idempotency_key: 'fixedkey_content_reuse',
+  });
+  r.setFetch(async () => Response.json({ result: result(1), answer: null, material: null }, { status: 201 }));
+  const receipt = await attempt.send();
+  assert.equal(receipt.result.result_id, 'p2res_1');
+  assert.equal(receipt.result.revision, 1);
+  assert.equal(attempt.state, 'saved');
+});
+
 test('CAS and input errors never turn into saved state or an automatic POST', async () => {
   const r = runtime(), p = r.load('services/p2Workflow.ts');
   const codes = [[409, 'p2_revision_conflict', 'conflict'], [422, 'p2_request_invalid', 'rejected'], [503, 'p2_read_only', 'unknown']];
@@ -104,4 +116,88 @@ test('receipt and rendered labels preserve unverified source and Formal boundary
   assert.match(markup, /非正式报告/); assert.match(markup, /不能替代或改写 Formal/);
   const ref = renderToStaticMarkup(createElement(components.P2ReferenceView, { value: answer, onEvidence: () => {} }));
   assert.match(ref, /USER_ASSERTED/); assert.match(ref, /不等于正式义务已履行/);
+});
+
+test('a reference GET aborts when its fixed Result context is left', async () => {
+  const r = runtime(), p = r.load('services/p2Workflow.ts');
+  const saved = result(2);
+  saved.material_ids = ['p2mat_1']; saved.resources[0].material_ids = ['p2mat_1'];
+  let started;
+  const requested = new Promise(resolve => { started = resolve; });
+  let aborted = false;
+  r.setFetch((url, options) => new Promise((resolve, reject) => {
+    assert.match(url, /\/p2\/materials\/p2mat_1\?assessment_version=2$/);
+    options.signal.addEventListener('abort', () => { aborted = true; reject(new DOMException('Aborted', 'AbortError')); }, { once: true });
+    started();
+  }));
+  const controller = new AbortController();
+  const pending = p.readP2Reference(saved, 'materials', 'p2mat_1', controller.signal);
+  await requested;
+  controller.abort();
+  await assert.rejects(pending, error => error.name === 'AbortError');
+  assert.equal(aborted, true);
+});
+
+test('previous snapshot GET pins parent id, revision and binding; missing first parent makes no request', async () => {
+  const r = runtime(), p = r.load('services/p2Workflow.ts');
+  const calls = [];
+  let response = result(1);
+  r.setFetch(async (url, init) => { calls.push([url, init.method ?? 'GET']); return Response.json(response); });
+  assert.equal(await p.readPreviousP2Result(result(1)), null);
+  assert.equal(calls.length, 0);
+  assert.equal((await p.readPreviousP2Result(result(2))).result_id, 'p2res_1');
+  assert.deepEqual(calls[0], ['/api/v1/scans/scn_1/assessments/asm_1/p2/results/p2res_1?assessment_version=2', 'GET']);
+  for (const bad of [
+    { ...result(), result_id: 'other' }, { ...result(), revision: 5 },
+    { ...result(), binding: { ...binding(), facts_hash: 'b'.repeat(64) } },
+    { ...result(), data_scope: 'OWNER' },
+  ]) { response = bad; await assert.rejects(p.readPreviousP2Result(result(2)), /契约|范围/); }
+});
+
+test('snapshot pair shows source values without treating recomputation or absent resource as a conclusion', () => {
+  const r = runtime(), { P2VersionPair } = r.load('components/P2VersionComparison.tsx');
+  const current = { ...result(2), resources: [], recomputed_resource_ids: [], state: 'partial' };
+  const html = renderToStaticMarkup(createElement(P2VersionPair, { previous: result(), current }));
+  for (const text of ['前版快照', '本版快照', 'p2res_1', 'p2res_2', '不是前端生成的差异结论', '重新计算不等于结论已改变', '不代表资源已删除', '缺口']) assert.ok(html.includes(text), text);
+});
+
+test('read-only deployment blocks initial and uncertain replay POSTs at transport boundary', async () => {
+  const r = runtime({ VITE_P2_READ_ONLY: '1' }), p = r.load('services/p2Workflow.ts');
+  let calls = 0; r.setFetch(async () => { calls++; throw new Error('must not fetch'); });
+  const attempt = new p.P2WriteAttempt('results', p.createFields(binding(), null));
+  await assert.rejects(attempt.send(), /只读/);
+  attempt.state = 'unknown'; attempt.recovered = true;
+  await assert.rejects(attempt.send(), /只读/);
+  assert.equal(calls, 0); assert.equal(attempt.state, 'unknown');
+  const { P2Workbench } = r.load('components/P2Workbench.tsx');
+  const html = renderToStaticMarkup(createElement(P2Workbench, { scanId: 'scn_1', assessmentId: 'asm_1', assessmentVersion: 2,
+    query: new URLSearchParams(), evidenceIds: [], onEvidence() {}, onSelect() {} }));
+  assert.match(html, /P2写入已禁用/);
+  assert.match(html, /type="checkbox" disabled=""/);
+});
+
+test('material boundary, capacity, evidence mismatch and source text validation never send requests', async () => {
+  const r = runtime(), p = r.load('services/p2Workflow.ts');
+  let calls = 0; r.setFetch(async () => { calls++; throw new Error('unexpected write'); });
+  const args = [result(), 'cmp_1', ['ev_1'], 'NOTICE.txt', new TextEncoder().encode('source'), 'user source', 'EXCERPT'];
+  for (const [position, value, pattern] of [[2, ['ev_other'], /Evidence/], [4, new Uint8Array(65537), /字节/],
+    [4, new Uint8Array([0]), /NUL/], [5, '', /来源说明/],
+    [0, { ...result(), material_ids: Array.from({ length: 20 }, (_, i) => 'mat_' + i) }, /20份/]]) {
+    const input = [...args]; input[position] = value; await assert.rejects(p.prepareMaterial(...input), pattern);
+  }
+  const input = [...args]; input[4] = new Uint8Array(65536).fill(65);
+  assert.equal((await p.prepareMaterial(...input)).content_base64.length, 87384);
+  assert.equal(calls, 0);
+});
+
+test('mismatched successful receipt stays unknown and a repeated click cannot POST while sending', async () => {
+  const r = runtime(), p = r.load('services/p2Workflow.ts');
+  let release; let calls = 0;
+  r.setFetch(() => { calls++; return new Promise(resolve => { release = resolve; }); });
+  const attempt = new p.P2WriteAttempt('results', p.createFields(binding(), null));
+  const pending = attempt.send();
+  await assert.rejects(attempt.send(), /核对/); assert.equal(calls, 1);
+  release(Response.json({ result: { ...result(), binding: { ...binding(), assessment_id: 'asm_other' } } }, { status: 201 }));
+  await assert.rejects(pending, /契约/); assert.equal(attempt.state, 'unknown');
+  await assert.rejects(attempt.send(), /核对/); assert.equal(calls, 1);
 });

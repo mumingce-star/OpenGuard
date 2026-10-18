@@ -10,6 +10,7 @@ const oneOf = <T extends string>(value: unknown, values: readonly T[]): value is
 const fail = (): never => { throw new Error('P2 独立结果与当前接口契约或评估版本不一致，未展示该建议。'); };
 const usages = ['commercial', 'modified', 'distributed', 'network_service', 'training', 'redistributed_assets', 'source_disclosure'] as const;
 const states = ['candidate', 'unknown', 'pending', 'partial'] as const;
+const unique = (values: string[]) => new Set(values).size === values.length;
 
 function binding(value: unknown, scanId: string, assessmentId: string, version: number): P2Binding {
   if (!object(value) || value.scan_id !== scanId || value.assessment_id !== assessmentId || value.assessment_version !== version ||
@@ -76,7 +77,31 @@ export function validateP2Result(value: unknown, expected: P2Binding): P2Result 
         (question.question_code === 'DELIVERY_SCOPE_FOR_RESOURCES' ? ['YES_INCLUDE','NO_EXCLUDE','NOT_DECIDED'] : ['FULFILLED','NOT_FULFILLED','NOT_DELIVERED_YET','UNKNOWN']).includes(option))) ||
     !strings(value.material_ids) || !strings(value.answer_ids) || !strings(value.recomputed_resource_ids) ||
     !strings(value.reused_resource_ids) || !id(value.companion_summary_id)) return fail();
-  return value as unknown as P2Result;
+  const result = value as unknown as P2Result;
+  const resourceIds = result.resources.map(resource => resource.subject.resource_id);
+  const resourceSet = new Set(resourceIds);
+  const materialSet = new Set(result.material_ids);
+  const answerSet = new Set(result.answer_ids);
+  const linkedMaterials = new Set(result.resources.flatMap(resource => resource.material_ids));
+  const linkedAnswers = new Set(result.resources.flatMap(resource => resource.answer_ids));
+  const recomputed = new Set(result.recomputed_resource_ids);
+  const reused = new Set(result.reused_resource_ids);
+  // These are references to saved backend objects, not new frontend evidence or conclusions.
+  if (!unique(resourceIds) || !unique(result.material_ids) || !unique(result.answer_ids) ||
+    !unique(result.recomputed_resource_ids) || !unique(result.reused_resource_ids) ||
+    linkedMaterials.size !== materialSet.size || linkedAnswers.size !== answerSet.size ||
+    result.recomputed_resource_ids.some(id => !resourceSet.has(id) || reused.has(id)) ||
+    result.reused_resource_ids.some(id => !resourceSet.has(id)) ||
+    recomputed.size + reused.size !== resourceSet.size ||
+    result.resources.some(resource => {
+      const evidence = new Set(resource.evidence_ids);
+      return !unique(resource.evidence_ids) || !unique(resource.material_ids) || !unique(resource.answer_ids) ||
+        Object.keys(resource.evidence_source_hashes).some(id => !evidence.has(id)) ||
+        resource.material_ids.some(id => !materialSet.has(id)) ||
+        resource.answer_ids.some(id => !answerSet.has(id)) ||
+        resource.advice.some(advice => !unique(advice.basis_evidence_ids) || advice.basis_evidence_ids.some(id => !evidence.has(id)));
+    })) return fail();
+  return result;
 }
 
 const prefix = (scanId: string, assessmentId: string) => '/scans/' + encodeURIComponent(scanId) + '/assessments/' + encodeURIComponent(assessmentId) + '/p2';
