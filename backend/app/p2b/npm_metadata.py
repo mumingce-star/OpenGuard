@@ -105,7 +105,7 @@ def parse_attested_response(*, body: bytes, receipt: dict[str, Any],
             or receipt.get("final_url") != SOURCE_URL or type(receipt.get("redirect_count")) is not int
             or receipt["redirect_count"] != 0):
         raise ValueError("npm_transport_target_mismatch")
-    timed_out = receipt.get("timed_out", False)
+    timed_out = receipt.get("timed_out")
     if type(timed_out) is not bool:
         raise ValueError("npm_transport_timeout_invalid")
     policy_id = receipt.get("transport_policy_id")
