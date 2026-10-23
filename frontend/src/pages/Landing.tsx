@@ -1,6 +1,7 @@
 import { GlowCursor } from "../components/GlowCursor";
 import { ParticleText } from "../components/ParticleText";
 import { HeroBackground } from "../components/HeroBackground";
+import { ActionButton, ArrowGlyph, FlipCard } from "../components/ui";
 export function Brand({
   onClick,
   compact = false,
@@ -55,12 +56,12 @@ export function Landing({
             让每一个风险，都有证据可循；让每一次发布，都更有底气。
           </p>
           <div className="hero-actions">
-            <button className="primary-button" type="button" onClick={onEnter}>
-              开始安全扫描 <span>↗</span>
+            <button className="primary-button og-arrow-button" type="button" onClick={onEnter}>
+              <span>开始安全扫描</span><ArrowGlyph />
             </button>
-            <button className="secondary-button" type="button" onClick={onDemo}>
+            <ActionButton kind="play" className="secondary-button" onClick={onDemo}>
               加载演示项目
-            </button>
+            </ActionButton>
           </div>
           <div className="hero-meta" aria-label="产品特性">
             <span>01 / 资源发现</span>
@@ -84,7 +85,7 @@ export function Landing({
             负责解释与整改。三个来源清晰分层，每个结论都能回到文件、字段与许可依据。
           </p>
         </div>
-        <div className="signal-card">
+        <div className="signal-card og-glass-card">
           <span className="signal-label">演示证据链 · RISK-001</span>
           <div className="signal-path">
             <span>requirements.txt:2</span>
@@ -100,6 +101,15 @@ export function Landing({
             <span className="source rule">规则判断</span>
             <span className="source ai">AI 推断</span>
           </div>
+        </div>
+      </section>
+
+      <section className="og-authority-section" aria-label="三个来源各司其职">
+        <div className="workflow-title"><p className="eyebrow">THREE SOURCES / ONE EVIDENCE CHAIN</p><h2>理解每种信息，也理解它的边界。</h2></div>
+        <div className="og-flip-grid">
+          <FlipCard index="01" title="扫描事实" summary="从资源身份、版本和原文位置开始。">扫描记录描述已观测的事实；未获取的信息仍为未知，部分扫描不会被解释为资源已删除。</FlipCard>
+          <FlipCard index="02" title="规则与正式评估" summary="判断有出处，版本有绑定。">Formal Assessment 是正式评估来源。任务完成和用户声明都不会自动改变许可、授权或义务履行结论。</FlipCard>
+          <FlipCard index="03" title="AI 辅助解释" summary="把线索讲清楚，帮助下一步核查。">AI 内容用于辅助理解和行动建议；保留证据缺口与待核验状态，不进入 Formal Conclusion。</FlipCard>
         </div>
       </section>
 
@@ -131,6 +141,25 @@ export function Landing({
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="og-brand-story" aria-labelledby="brand-story-title">
+        <article className="og-brand-story-card">
+          <div className="og-brand-story-orbit" aria-hidden="true"><span>OG</span></div>
+          <div className="og-brand-story-copy">
+            <p className="eyebrow">EVIDENCE BEFORE CONCLUSION</p>
+            <h2 id="brand-story-title">一眼看见结论，也能一路追到证据。</h2>
+            <p>OpenGuard 将扫描事实、规则判断、Formal Assessment 与 AI 辅助解释分层呈现。未知仍是未知，待核验不会被包装成已核验。</p>
+            <ul aria-label="OpenGuard 展示原则">
+              <li><strong>事实可追溯</strong><span>资源、Finding、Evidence 保持真实引用</span></li>
+              <li><strong>状态不夸大</strong><span>partial、pending、unknown 清晰可辨</span></li>
+              <li><strong>报告可复核</strong><span>固定快照与下载附件来自后端</span></li>
+            </ul>
+            <button className="secondary-button og-arrow-button" type="button" onClick={onEnter}>
+              <span>进入可追溯工作台</span><ArrowGlyph />
+            </button>
+          </div>
+        </article>
       </section>
     </main>
   );

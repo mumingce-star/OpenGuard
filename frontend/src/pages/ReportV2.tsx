@@ -5,7 +5,7 @@ import { listAssessments, type Assessment } from '../services/assessments';
 import { listAllTasks, type RemediationTask } from '../services/remediationTasks';
 import { classifyReportObservations, createReportV2, downloadReportV2, loadReportV2, reportCreateControl, type ReportDocument, type ReportSection } from '../services/reportV2';
 import { createNoticeDraft, type NoticeDraft } from '../services/noticeDrafts';
-import { Header, Panel, useNotice } from '../components/ui';
+import { ActionButton, DownloadControl, Header, HelpTip, LoadingDots, Panel } from '../components/ui';
 
 type State = { kind: 'idle' | 'loading' | 'ready' | 'error'; document?: ReportDocument; html?: string; message?: string };
 const names: Record<string, string> = {
@@ -25,13 +25,12 @@ export function ReportV2({ scan, query, open }: {
   query: URLSearchParams;
   open: (assessmentId: string, snapshotId: string) => void;
 }) {
-  const notify = useNotice();
   const assessmentId = query.get('assessment_id')?.trim() ?? '';
   const snapshotId = query.get('snapshot_id')?.trim() ?? '';
   const [entryAssessment, setEntryAssessment] = useState(assessmentId);
   const [entrySnapshot, setEntrySnapshot] = useState(snapshotId);
   const [state, setState] = useState<State>({ kind: 'idle' });
-  const [downloading, setDownloading] = useState<'json' | 'html' | null>(null);
+  const [downloading, setDownloading] = useState(false);
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [createAssessmentId, setCreateAssessmentId] = useState(assessmentId);
   const [reportTasks, setReportTasks] = useState<RemediationTask[]>([]);
@@ -86,10 +85,9 @@ export function ReportV2({ scan, query, open }: {
     return () => controller.abort();
   }, [scan.id, scan.mode, assessmentId, snapshotId, reload]);
   async function save(format: 'json' | 'html') {
-    setDownloading(format);
+    setDownloading(true);
     try { await downloadReportV2(scan.id, assessmentId, snapshotId, format); }
-    catch (error) { notify(error instanceof Error ? error.message : '下载失败，请重试。', 'error'); }
-    finally { setDownloading(null); }
+    finally { setDownloading(false); }
   }
   async function create() {
     if (!createAssessmentId || createLoading || creating || loadError) return;
@@ -151,7 +149,7 @@ export function ReportV2({ scan, query, open }: {
           </div>}
           {noticeError && <p role="alert" className="og-error">{noticeError}</p>}
         </div>
-        <button type="button" onClick={create} disabled={createControl.disabled}>{createControl.label}</button>
+        <ActionButton onClick={create} disabled={createControl.disabled} aria-busy={creating}>{createControl.label}</ActionButton>
         {createLoading && <span role="status">正在读取 Assessment 与 Task 版本…</span>}
         {loadError && <p role="alert" className="og-error">{loadError}</p>}
         {createError && <div role="alert" className="og-error"><p>{createError}</p><p>不会自动再次提交；手动重试会沿用同一请求标识、Assessment、Task 与 NOTICE 引用，避免产生第二份报告。</p></div>}
@@ -166,7 +164,7 @@ export function ReportV2({ scan, query, open }: {
       {scan.mode !== 'api' && <p role="status">演示模式不提供正式报告。请切换真实接口和真实扫描。</p>}
     </Panel>
     {state.kind === 'idle' && <Panel title="尚未选择 Report V2"><p>未读取固定快照，不会用演示或旧报告冒充。旧版 P0 附件仍可在下方单独下载。</p></Panel>}
-    {state.kind === 'loading' && <Panel title="正在读取固定快照"><p role="status">仅发起 JSON/HTML GET，不会创建扫描、Assessment、报告或调用 AI。</p></Panel>}
+    {state.kind === 'loading' && <Panel title="正在读取固定快照"><LoadingDots label="正在读取后端固定报告" detail="仅发起 JSON/HTML GET，不会创建扫描、Assessment、报告或调用 AI。" /></Panel>}
     {state.kind === 'error' && <Panel title="Report V2 暂不可用"><p role="alert">{state.message}</p><button onClick={() => setReload(value => value + 1)}>重试读取</button><p>旧版 P0 报告不会作为 Report V2 替代；可单独下载核查。</p></Panel>}
     {state.kind === 'ready' && document && state.html && <>
       <Panel title="来源与版本" caption="以下信息来自已保存的 Report V2 JSON；正式正文由后端 HTML 原样显示。">
@@ -191,14 +189,14 @@ export function ReportV2({ scan, query, open }: {
           <section id="v2-graph" className="og-v2-boundary"><h2>图谱摘要</h2><p>{observations.graph.length ? '后端快照包含已绑定的图谱观察；不代表未知关系或授权已确认。' : '此快照没有已绑定的图谱观察章节；NOTICE 观察不会被当作图谱，也不补造节点或关系。'}</p></section>
           <section id="v2-actions" className="og-v2-boundary"><h2>Action Plan</h2><p>{has('workflow') ? '后端报告中保存了任务版本与处理状态；done 不等于项目合规，dismissed 不等于不适用。' : '此快照没有任务章节。'}</p></section>
           <section id="v2-notice" className="og-v2-boundary draft"><h2>NOTICE 草稿 · 非正式结论</h2>{document.binding.notice_refs.length ? <><p>以下引用来自后端固定快照；保留文本、缺失字段与来源保留在原始报告中。空许可证或义务引用仍为未知，不表示授权或义务已履行。</p><ul>{document.binding.notice_refs.map(ref => <li key={ref.draft_id}><code>{ref.draft_id}</code> · hash {ref.content_hash}</li>)}</ul></> : <p>当前快照未包含 NOTICE 草稿；不能据此判断 NOTICE 不存在或无需履行义务，前端不会补造正文。</p>}</section>
-          <section id="v2-provenance" className="og-v2-boundary"><h2>Provenance · 来源</h2><p>以下章节元数据来自报告快照；详情及完整依据保留在后端 HTML 的附录中。</p><ul>{sections.map((section, index) => <li key={index}><strong>{sectionName(section, graphSections, noticeSections)}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul><details><summary>查看后端保存的 Provenance 原始字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details></section>
+          <section id="v2-provenance" className="og-v2-boundary"><h2>Provenance · 来源 <HelpTip label="来源 Hash 说明">Hash 来自后端固定快照；前端不会猜测或重新生成正式来源 Hash。</HelpTip></h2><p>以下章节元数据来自报告快照；详情及完整依据保留在后端 HTML 的附录中。</p><ul>{sections.map((section, index) => <li key={index}><strong>{sectionName(section, graphSections, noticeSections)}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul><details><summary>查看后端保存的 Provenance 原始字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details></section>
           <section className="og-v2-boundary formal" aria-label="后端固定 HTML 报告"><h2>后端固定报告正文</h2><iframe ref={frame} title="Report V2 后端原始 HTML 正文" srcDoc={state.html} sandbox="allow-same-origin" /></section>
-          <section id="v2-download" className="og-v2-boundary"><h2>下载固定附件</h2><div className="og-actions"><button disabled={!!downloading} onClick={() => save('html')}>下载 P1 HTML</button><button disabled={!!downloading} onClick={() => save('json')}>下载 P1 JSON</button><button onClick={() => frame.current?.contentWindow?.print()}>打印后端报告</button></div><p>附件由后端 GET 返回；下载失败会提示，不用旧版报告静默代替。</p></section>
+          <section id="v2-download" className="og-v2-boundary"><h2>下载固定附件</h2><div className="og-actions"><DownloadControl disabled={downloading} onDownload={() => save('html')}>下载 P1 HTML</DownloadControl><DownloadControl disabled={downloading} onDownload={() => save('json')}>下载 P1 JSON</DownloadControl><button onClick={() => frame.current?.contentWindow?.print()}>打印后端报告</button></div><p>附件由后端 GET 返回；下载失败会提示，不用旧版报告静默代替。</p></section>
         </div>
       </div>
     </>}
     <Panel title="P0 历史附件" caption="旧版扫描报告独立保留，不等同于 Report V2 或新的 Formal Conclusion。">
-      {p0.length ? <div className="og-actions">{p0.map(format => <a key={format} href={reportDownloadUrl(scan.id, format)} download>下载 P0 {format}</a>)}</div> : <p>当前扫描没有已发布的 P0 报告附件。</p>}
+      {p0.length ? <div className="og-actions">{p0.map(format => <DownloadControl key={format} href={reportDownloadUrl(scan.id, format)} filename={`${scan.id}.${format === 'resource_inventory' ? 'csv' : format}`} format={format === 'json' ? 'application/json' : format === 'html' ? 'text/html' : 'text/csv'}>下载 P0 {format}</DownloadControl>)}</div> : <p>当前扫描没有已发布的 P0 报告附件。</p>}
     </Panel>
   </div>;
 }

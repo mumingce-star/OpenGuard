@@ -21,6 +21,7 @@ function browserLicenses() {
   }).join('\n\n---\n\n');
 }
 export default defineConfig({
+  build: { rollupOptions: { input: ['index.html', 'ui-preview.html'] } },
   plugins: [tailwindcss(), {
     name: 'openguard-browser-licenses',
     apply: 'build',

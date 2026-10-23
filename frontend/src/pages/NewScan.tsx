@@ -9,7 +9,7 @@ import {
 } from "../services/scans";
 import { validateGithub, validateZip } from "../services/model";
 import { scenarios, type Scenario } from "../mocks/data";
-import { Panel, useNotice } from "../components/ui";
+import { ActionButton, Panel, SegmentedControl, useNotice } from "../components/ui";
 
 function InputIcon({ kind }: { kind: "repository" | "upload" | "archive" | "info" }) {
   const paths = {
@@ -38,6 +38,7 @@ export function NewScan({
     [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [usage, setUsage] = useState(emptyUsage);
   const [scenario, setScenario] = useState<Scenario>("standard");
   const picker = useRef<HTMLInputElement>(null),
@@ -137,34 +138,10 @@ export function NewScan({
               : "请确认后端已实现约定接口"
           }
         >
-          <div className="og-tabs">
-            <button
-              type="button"
-              aria-pressed={tab === "github"}
-              disabled={busy}
-              onClick={() => {
-                setTab("github");
-                changed();
-              }}
-            >
-              <InputIcon kind="repository" /> GitHub 仓库
-            </button>
-            <button
-              type="button"
-              aria-pressed={tab === "zip"}
-              disabled={busy}
-              onClick={() => {
-                setTab("zip");
-                changed();
-              }}
-            >
-              <InputIcon kind="upload" /> 上传 ZIP
-            </button>
-          </div>
+          <SegmentedControl label="扫描输入方式" value={tab} disabled={busy} onChange={value => { setTab(value); changed(); }} options={[{ value: 'github', label: <><InputIcon kind="repository" /> GitHub 仓库</> }, { value: 'zip', label: <><InputIcon kind="upload" /> 上传 ZIP</> }]} />
           {tab === "github" ? (
             <div className="og-form-section">
-              <label className="og-field">
-                公开仓库地址
+              <label className="og-field og-floating-field">
                 <input
                   disabled={busy}
                   type="url"
@@ -177,21 +154,28 @@ export function NewScan({
                   aria-invalid={!!error}
                   aria-describedby="scan-error"
                 />
+                <span>公开仓库地址</span>
               </label>
               <p className="og-muted">公开 Git 需由服务管理员启用；提交时由后端校验。</p>
             </div>
           ) : (
             <div className="og-form-section">
               <div
-                className="og-drop-zone"
+                className={`og-drop-zone ${dragging ? "is-dragging" : ""}`}
+                onDragEnter={() => { if (!busy) setDragging(true); }}
                 onDragOver={(e) => e.preventDefault()}
+                onDragLeave={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDragging(false);
+                }}
                 onDrop={(e) => {
                   e.preventDefault();
+                  setDragging(false);
                   if (!busy) select(e.dataTransfer.files[0] ?? null);
                 }}
+                aria-busy={busy}
               >
                 <div className="og-upload-symbol"><InputIcon kind="archive" /></div>
-                <strong>{file ? file.name : "拖放 ZIP 文件到这里"}</strong>
+                <strong>{file ? file.name : dragging ? "松开即可选择此 ZIP" : "拖放 ZIP 文件到这里"}</strong>
                 <p>
                   {file
                     ? (file.size / 1024 / 1024).toFixed(2) + " MB"
@@ -216,8 +200,8 @@ export function NewScan({
                     {file ? "重新选择" : "选择 ZIP 文件"}
                   </button>
                   {file && (
-                    <button
-                      type="button"
+                    <ActionButton
+                      kind="remove"
                       disabled={busy}
                       onClick={() => {
                         setFile(null);
@@ -225,7 +209,7 @@ export function NewScan({
                       }}
                     >
                       移除文件
-                    </button>
+                    </ActionButton>
                   )}
                 </div>
               </div>
@@ -265,7 +249,7 @@ export function NewScan({
             {mode === "mock" && <button type="button" disabled={busy} onClick={demo}>
               载入固定演示
             </button>}
-            <button
+            <ActionButton
               className="og-primary"
               disabled={busy}
               type="submit"
@@ -275,7 +259,7 @@ export function NewScan({
                 : mode === "mock"
                   ? "校验输入并播放演示"
                   : "提交真实扫描"}
-            </button>
+            </ActionButton>
           </div>
         </div>
       </form>

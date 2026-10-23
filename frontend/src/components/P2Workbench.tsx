@@ -5,7 +5,7 @@ import { answerLabels, createFields, P2WriteAttempt, p2ErrorMessage, p2ReadOnly,
 import { P2VersionComparison } from './P2VersionComparison';
 import { assessmentReportUrl } from '../services/assessments';
 import { ApiError } from '../services/scans';
-import { Panel } from './ui';
+import { ActionButton, Checkbox, DownloadControl, LoadingDots, Panel } from './ui';
 import { P2ResultView } from './P2AdvicePanel';
 
 // Unresolved attempts survive SPA navigation in this tab only. Never persist uploaded text or formal state.
@@ -146,7 +146,7 @@ export function P2Workbench(props: Props) {
   return <Panel title="P2 用途建议与补充材料 · 独立结果">
     <div className="og-p2-panel">
       <p>以下为确定性资源候选，不是 Qwen 答疑或 Formal Conclusion。候选算法和父评估规则分别展示。</p>
-      {loading && <p role="status">正在读取固定版本…</p>}
+      {loading && <LoadingDots label="正在读取固定版本…" />}
       {readError && <p role="alert" className="og-error">{readError} 不会改选 latest 或自动生成。</p>}
       <div className="og-actions">
         <button disabled={busy} onClick={() => setReload(n => n + 1)}>重新读取固定结果</button>
@@ -167,7 +167,7 @@ export function P2Workbench(props: Props) {
         <P2VersionComparison key={result.result_id} current={result} />
         {summary && <P2SummaryView summary={summary} />}
         {summaryError && <p role="alert">同版摘要未读取成功：{summaryError}。结果仍已保存，不会生成替代报告。</p>}
-        <div className="og-actions"><a href={assessmentReportUrl(scanId, assessmentId, 'html')} download>下载此父版本原 Formal HTML</a><a href={assessmentReportUrl(scanId, assessmentId, 'json')} download>下载此父版本原 Formal JSON</a></div>
+        <div className="og-actions"><DownloadControl href={assessmentReportUrl(scanId, assessmentId, 'html')} format="text/html" filename={`${assessmentId}.html`}>下载此父版本原 Formal HTML</DownloadControl><DownloadControl href={assessmentReportUrl(scanId, assessmentId, 'json')} format="application/json" filename={`${assessmentId}.json`}>下载此父版本原 Formal JSON</DownloadControl></div>
         <p>原报告是否存在由后端响应确认；这里不把 P2 摘要当作旧v6报告。</p>
         <details><summary>读回材料与用户声明</summary>
           {(['materials','answers'] as const).map(kind => (kind === 'materials' ? result.material_ids : result.answer_ids).map(id =>
@@ -184,7 +184,7 @@ export function P2Workbench(props: Props) {
         </details>
       </>}
       {p2ReadOnly && <p role="status">当前前端为只读配置，P2写入已禁用；这不是后端授权状态。</p>}
-      <label><input type="checkbox" checked={writeEnabled} disabled={p2ReadOnly || busy || unresolved} onChange={e => setWriteEnabled(e.target.checked)} />我确认在获准数据环境中显式提交P2结果（服务端仍可拒绝写入）</label>
+      <Checkbox checked={writeEnabled} disabled={p2ReadOnly || busy || unresolved} onChange={e => setWriteEnabled(e.target.checked)}>我确认在获准数据环境中显式提交P2结果（服务端仍可拒绝写入）</Checkbox>
       {result && !current && <p>正在查看旧版；只读。需显式选择服务器head后重新填写，不能覆盖历史。</p>}
       {!result && binding && !readError && <button disabled={p2ReadOnly || !writeEnabled || busy || loading || unresolved} onClick={() => void run(() => send(new P2WriteAttempt('results', createFields(binding, null))))}>明确生成首个独立结果（不创建Assessment）</button>}
       {result && <>
@@ -194,9 +194,9 @@ export function P2Workbench(props: Props) {
             {question && <>
               <label>回答<select value={answer} onChange={e => setAnswer(e.target.value as P2AnswerCode)}><option value="">请选择</option>{question.options.map(code => <option key={code} value={code}>{answerLabels[code]}</option>)}</select></label>
               <p>只提交勾选的资源；未勾选不等于排除。用户声明不会替代正式评估。</p>
-              <div className="og-p2-subjects">{question.subjects.map(s => <label key={s.resource_id}><input type="checkbox" checked={subjects.includes(s.resource_id)} onChange={e => setSubjects(toggle(subjects, s.resource_id, e.target.checked))} />{s.resource_id} @ {s.version ?? '版本未获取'}</label>)}</div>
+              <div className="og-p2-subjects">{question.subjects.map(s => <Checkbox compact key={s.resource_id} checked={subjects.includes(s.resource_id)} onChange={e => setSubjects(toggle(subjects, s.resource_id, e.target.checked))}>{s.resource_id} @ {s.version ?? '版本未获取'}</Checkbox>)}</div>
             </>}
-            <button type="submit" disabled={!answer || !subjects.length}>确认提交所选资源的声明</button>
+            <ActionButton kind="send" type="submit" aria-busy={busy} disabled={!answer || !subjects.length}>确认提交所选资源的声明</ActionButton>
           </fieldset>
         </form>
         <form onSubmit={e => { e.preventDefault(); if (!editable || !file) return; void run(async () => {
@@ -208,11 +208,11 @@ export function P2Workbench(props: Props) {
             <p>≤65,536原字节，每Assessment≤20份，请求体≤98,304字节；仅UTF-8 LICENSE/LICENCE/NOTICE（可带txt/md/rst）。缺少NOTICE不等于没有NOTICE义务。</p>
             <p>只上传你有权提供的材料。请勿包含密钥、个人信息、商业秘密或无权分享的内容；提交后将由后端持久化，不能通过关闭页面撤回。</p>
             <label>精确资源<select value={resourceId} onChange={e => { setResourceId(e.target.value); setEvidence([]); }}><option value="">请选择资源</option>{result.resources.map(r => <option key={r.subject.resource_id} value={r.subject.resource_id}>{r.subject.resource_id} @ {r.subject.version ?? '版本未知，不能上传'}</option>)}</select></label>
-            <div className="og-p2-subjects">{resource?.evidence_ids.map(id => <label key={id}><input type="checkbox" checked={evidence.includes(id)} onChange={e => setEvidence(toggle(evidence, id, e.target.checked))} />原扫描Evidence：{id}</label>)}</div>
+            <div className="og-p2-subjects">{resource?.evidence_ids.map(id => <Checkbox compact key={id} checked={evidence.includes(id)} onChange={e => setEvidence(toggle(evidence, id, e.target.checked))}>原扫描Evidence：{id}</Checkbox>)}</div>
             <label>材料文件<input type="file" onChange={e => setFile(e.target.files?.[0] ?? null)} /></label>
             <label>来源说明<textarea value={description} maxLength={512} onChange={e => setDescription(e.target.value)} /></label>
             <label>完整性声明<select value={completeness} onChange={e => setCompleteness(e.target.value as typeof completeness)}><option value="EXCERPT">节选（可能不完整）</option><option value="FULL_TEXT_CLAIMED">我声称为全文（未经核验）</option></select></label>
-            <button type="submit" disabled={!resource?.subject.version || !evidence.length || !file || !description.trim()}>确认提交未核验材料</button>
+            <ActionButton kind="send" type="submit" aria-busy={busy} disabled={!resource?.subject.version || !evidence.length || !file || !description.trim()}>确认提交未核验材料</ActionButton>
           </fieldset>
         </form>
       </>}

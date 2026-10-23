@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
-import { Empty, Header, StatusBadge } from "../components/ui";
+import { ArrowGlyph, Empty, Header, SearchGlyph, StatusBadge } from "../components/ui";
 import { historyPath, scanPath } from "../hooks/useRoute";
 import {
   getHistory,
@@ -116,13 +116,13 @@ function HistoryRow({ item, open }: { item: ScanHistoryItem; open: () => void })
 
       <button
         type="button"
-        className="og-history-open"
+      className="og-history-open og-arrow-button"
         onClick={(event) => {
           event.stopPropagation();
           open();
         }}
       >
-        打开任务 <span aria-hidden="true">→</span>
+        <span>打开任务</span><ArrowGlyph />
       </button>
     </li>
   );
@@ -235,13 +235,14 @@ export function History({
 
       <form className="og-panel og-history-filters" onSubmit={apply}>
         <div className="og-history-filter-grid">
-          <label className="og-field og-history-search">
-            搜索公开项目或仓库
-            <input
+          <label className="og-field og-history-search og-search-field">
+            <span>搜索公开项目或仓库</span>
+            <span className="og-search-control"><SearchGlyph /><input
+              type="search"
               value={draft.q}
               onChange={(event) => setDraft((value) => ({ ...value, q: event.target.value }))}
               placeholder="例如 openai 或 github.com/owner/repo"
-            />
+            /></span>
           </label>
           <label className="og-field">
             扫描状态
@@ -287,7 +288,7 @@ export function History({
           </div>
           <div className="og-actions">
             <button type="button" onClick={() => go(historyPath())}>重置筛选</button>
-            <button type="submit" className="og-primary">应用筛选</button>
+            <button type="submit" className="og-primary og-arrow-button"><span>应用筛选</span><ArrowGlyph /></button>
           </div>
         </div>
       </form>
@@ -319,7 +320,7 @@ export function History({
         >
           <div className="og-actions">
             {activeFilters.length > 0 && <button onClick={() => go(historyPath())}>清除筛选</button>}
-            <button className="og-primary" onClick={() => go("/app/new-scan?mode=api")}>新建扫描</button>
+            <button className="og-primary og-arrow-button" onClick={() => go("/app/new-scan?mode=api")}><span>新建扫描</span><ArrowGlyph /></button>
           </div>
         </Empty>
       ) : result ? (
@@ -349,7 +350,7 @@ export function History({
             )}
             <button
               type="button"
-              className="og-primary"
+              className="og-primary og-arrow-button"
               disabled={!result.next_cursor}
               onClick={() => {
                 const next = new URLSearchParams(queryKey);
@@ -357,7 +358,7 @@ export function History({
                 go(historyPath(next));
               }}
             >
-              {result.next_cursor ? "下一批记录" : "已到最后一批"}
+              <span>{result.next_cursor ? "下一批记录" : "已到最后一批"}</span>{result.next_cursor && <ArrowGlyph />}
             </button>
           </div>
         </nav>

@@ -3,7 +3,7 @@ import type { Scan } from "../types/domain";
 import { graphNodeKinds, type GraphNodeKind, type ResourceGraphView } from "../types/p1Graph";
 import { edgeAppearance, filterResourceGraph, getResourceGraph, graphEdgeLabels, graphKindLabels, layoutResourceGraph } from "../services/p1Graph";
 import { useReducedMotion } from "../hooks/useReducedMotion";
-import { Empty, Header, Panel } from "../components/ui";
+import { ArrowGlyph, Checkbox, Empty, Header, HelpTip, LoadingDots, Panel, SearchGlyph } from "../components/ui";
 import { EvidenceReader } from "../components/EvidenceReader";
 
 type Props = { scan: Scan; query: URLSearchParams; filter: (name: string, value: string) => void };
@@ -71,8 +71,8 @@ export function Graph({ scan, query, filter }: Props) {
   }
 
   if (scan.mode !== "api") return <><Header eyebrow="P1 / RESOURCE GRAPH" title="资源关系图" description="Graph 页面只读取真实冻结接口，演示模式不会合成节点或关系。" /><Empty title="真实图谱不可用于演示数据" detail="请从真实扫描上下文打开此页面。" /></>;
-  if (loading) return <><Header eyebrow="P1 / RESOURCE GRAPH" title="资源关系图" description="正在只读加载已存储扫描事实，不会触发扫描、Assessment 或远程请求。" /><Empty title="正在读取资源关系图…" detail="仅请求 GET /api/v1/scans/{scan_id}/graph。" /></>;
-  if (error) return <><Header eyebrow="P1 / RESOURCE GRAPH" title="资源关系图" description="读取失败不会回退到 Mock，也不会补造关系。" /><Empty title="无法读取资源关系图" detail={error}><button type="button" onClick={() => setAttempt((value) => value + 1)}>重试真实接口</button></Empty></>;
+  if (loading) return <><Header eyebrow="P1 / RESOURCE GRAPH" title="资源关系图" description="正在只读加载已存储扫描事实，不会触发扫描、Assessment 或远程请求。" /><LoadingDots label="正在读取资源关系图" detail="仅请求 GET /api/v1/scans/{scan_id}/graph。" /></>;
+  if (error) return <><Header eyebrow="P1 / RESOURCE GRAPH" title="资源关系图" description="读取失败不会回退到 Mock，也不会补造关系。" /><Empty title="无法读取资源关系图" detail={error}><button className="og-arrow-button" type="button" onClick={() => setAttempt((value) => value + 1)}><span>重试真实接口</span><ArrowGlyph /></button></Empty></>;
   if (!view) return <Empty title="资源关系图不可用" detail="接口没有返回可展示的数据。" />;
 
   return <>
@@ -80,8 +80,8 @@ export function Graph({ scan, query, filter }: Props) {
     {view.coverage.scan_gaps.length > 0 && <div className="og-scan-coverage-notice" role="status"><strong>扫描部分完成，关系图仅覆盖当前已有事实。</strong><span>未出现的资源不代表已删除；覆盖限制：{view.coverage.scan_gaps.join("；")}</span></div>}
     <Panel title={`事实关系 · ${visible.nodes.length} / ${view.coverage.node_count} 节点`} caption={`${visible.edges.length} / ${view.coverage.edge_count} 条后端事实边 · ${view.coverage.scope === "all" ? "全量已有事实" : "后端筛选闭包"}`}>
       <div className="og-graph-toolbar">
-        <label className="og-field">搜索节点<input type="search" value={search} placeholder="名称或原始 ID" onChange={(event) => filter("graph_q", event.target.value)} /></label>
-        <fieldset><legend>节点类型</legend>{graphNodeKinds.map((kind) => <label key={kind}><input type="checkbox" checked={!kinds.length || kinds.includes(kind)} onChange={() => toggleKind(kind)} />{graphKindLabels[kind]}</label>)}</fieldset>
+        <label className="og-field og-search-field"><span>搜索节点</span><span className="og-search-control"><SearchGlyph /><input type="search" value={search} placeholder="名称或原始 ID" onChange={(event) => filter("graph_q", event.target.value)} /></span></label>
+        <fieldset><legend>节点类型 <HelpTip label="节点类型筛选说明">筛选只隐藏画布中的类型，不改变后端节点、边或事实关系。</HelpTip></legend>{graphNodeKinds.map((kind) => <Checkbox key={kind} checked={!kinds.length || kinds.includes(kind)} onChange={() => toggleKind(kind)}>{graphKindLabels[kind]}</Checkbox>)}</fieldset>
         <div className="og-graph-zoom" aria-label="图谱缩放"><button type="button" disabled={zoom === zoomValues[0]} onClick={() => filter("graph_zoom", String(zoomValues[Math.max(0, zoomValues.indexOf(zoom) - 1)]))} aria-label="缩小">−</button><output>{Math.round(zoom * 100)}%</output><button type="button" disabled={zoom === zoomValues.at(-1)} onClick={() => filter("graph_zoom", String(zoomValues[Math.min(zoomValues.length - 1, zoomValues.indexOf(zoom) + 1)]))} aria-label="放大">＋</button><button type="button" onClick={() => filter("graph_zoom", "")}>重置</button></div>
       </div>
       <div className="og-graph-legend" aria-label="关系语义图例"><span><i className="solid" />明确包含关系</span><span><i className="dashed" />观测或规则引用</span><span><i className="dotted" />Evidence 支持</span><small>线型依据冻结边类型映射；前端不判断关系置信度。</small></div>

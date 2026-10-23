@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Scan, EvidenceKind } from "../types/domain";
 import { safeUrl } from "../services/model";
-import { copyText, Empty, useNotice } from "./ui";
+import { ActionButton, copyText, Empty, useNotice } from "./ui";
 const labels: Record<EvidenceKind, string> = {
   code: "项目代码",
   license: "许可原文",
@@ -115,7 +115,7 @@ export function EvidenceReader({
             </pre>
           )}
           <div className="og-actions">
-            <button
+            <ActionButton kind="copy"
               type="button"
               onClick={() =>
                 void copyText(
@@ -130,7 +130,7 @@ export function EvidenceReader({
               }
             >
               复制引用
-            </button>
+            </ActionButton>
             {sourceUrl ? (
               <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
                 打开原始来源 ↗

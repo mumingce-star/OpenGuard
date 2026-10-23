@@ -10805,3 +10805,72 @@
 - 风险/未完成：此前历史文档空行问题已在后续合并修正。未做全服务、目标机真实浏览器或独立评测；P1/P2 仍 PARTIAL，A/Owner 同版真链/正式接纳、前端签收、媒体权利和真人 Gold 等待负责方。完整历史逐字语义审阅限制仍未关闭，不宣称最终审计。未启动/停止服务、未改 main、未推送/PR/部署；报告、内部截图提示词、缓存不暂存。
 - 下一步与责任：用户若要求发布，由 Root 验收后推送本整合分支并走 PR；A/Owner 补真实运行与范围/权利签发，前端补目标机签收，Luna/Sol 接独立评测与最终审计。
 - token：本次运行精确 token 数不可获得；开工估算 8,000～16,000，实际是否在该区间无法核定；既定全分支本地整合范围已完成，未扩展至服务联调或发布。
+
+## 20261021-1139-GPT5-uiverse-ui-upgrade-START
+
+- **状态**：START；作者：GPT-5，Root Coordinator。目标：在最新团队整合前端基线 `5c1379c` 上，将用户确认的 Uiverse 视觉方案增量适配到现有 React 工作台，不修改业务语义、后端、公共 API 或 Schema。
+- **范围/预计文件**：优先调整 New Scan 上传区、History/资源/图谱搜索、Report/P0 下载入口、首页/详情导航按钮；随后补短时加载反馈和首页品牌动效卡片。预计修改 `frontend/src/pages/`、`frontend/src/components/`、`frontend/src/styles/`、相关前端测试、第三方资源登记及本日志/进度记录。保留现有首页科技背景和正式状态语义，不引入依赖。
+- **验收方法**：相关单测、完整前端测试、TypeScript/Vite build、`git diff --check`，并在本地预览中检查首页、New Scan、History、资源/图谱搜索、报告下载、键盘、窄屏与 `prefers-reduced-motion`。API 不可用时只签收静态/错误态，不用 Mock 冒充真实接口。
+- **协作/发布**：主工作区已有三项未提交文件，已创建隔离分支 `codex/uiverse-ui-upgrade`，不覆盖用户修改。用户未授权本轮提交、推送、合并或部署；完成本地预览后等待验收。估算 8,000—16,000 tokens，精确遥测不可获得。
+
+## 20261021-1732-GPT5-uiverse-ui-upgrade-COMPLETE
+
+- **状态/作者/角色**：COMPLETE（仅本轮 UI 方案范围）；GPT-5 Codex / Root Coordinator；2026-10-21 17:32（Asia/Shanghai）。
+- **目标与实际结果**：在现有 P1/P2 React 工作台增量落地六类用户确认的 Uiverse 视觉方向：真实 ZIP 上传区、URL 驱动搜索/筛选、报告与资源下载按钮、箭头导航、短时加载点及首页品牌说明卡。保留 Formal Assessment、unknown/pending/verified、partial、Finding/Task 等原业务语义，未修改后端、公共 API、Schema 或业务数据。
+- **修改/新增文件**：`frontend/src/components/ui.tsx`，`frontend/src/pages/{Landing,NewScan,History,Resources,Graph,Report,ReportV2}.tsx`，`frontend/src/styles/workspace.css`，`frontend/package.json`，新增 `frontend/tests/ui-polish.test.mjs`、`frontend/tests/ui-browser-smoke.mjs`；更新 `third_party/README.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志。
+- **测试与命令**：`npm test` 148 passed/0 failed；`npm exec tsc -- --noEmit` PASS；Vite build 输出到隔离 QA 目录，61 modules、CSS 84.76 kB、JS 444.30 kB，PASS；真实 Chromium 离线 UI smoke 10 项 PASS，覆盖 Landing/New Scan/History、390px、键盘焦点、reduced-motion 和显式 503 错误态；`git diff --check` PASS。截图保存于本机 Codex visualizations 目录。
+- **接口/规则/决策**：浏览器 smoke 仅拦截本地静态构建并让 API 返回 `503 offline_smoke`，用于验证页面不会伪造数据；不作为真实后端验收。Uiverse 仅作视觉参考，未复制源码/素材、未新增依赖，来源/作者/MIT 标识和适配边界已登记。
+- **风险/未完成**：Codex 内置浏览器对本机临时端口发生隔离超时，改用真实 Playwright Chromium 完成视觉/交互验收；正式 API 全链路未因纯 UI 改造重跑。当前改动仍是本地隔离工作分支，未提交、未推送、未合并、未部署，不宣称 P1/P2 整体完成。
+- **下一步/责任**：用户通过本地预览与截图确认视觉；若授权，再由 Root 复核敏感信息和文件清单后提交/推送功能分支。既有 P1/P2 真实数据、目标机、评测及发布门禁继续由原责任方关闭。
+- **关联版本/证据**：分支 `codex/uiverse-ui-upgrade`，基线 `5c1379cedc9ed89601439cd34143bb140290b7ce`；无新 commit/PR/evidence_id。精确 token 数不可获得；开工估算 8,000～16,000，既定 UI 范围完成，实际区间无法核定。
+
+## 20261021-1742-GPT5-ui-preview-recovery-START
+
+- **状态/作者/范围**：START；GPT-5 Codex / Root Coordinator。用户报告 `4186` 预览打不开；本轮只诊断本机预览进程、端口与地址，不修改产品源码、API、Schema 或数据，不提交、推送、合并或部署。预计 1,000～3,000 tokens，精确遥测不可获得。
+
+## 20261021-1750-GPT5-ui-preview-recovery-COMPLETE
+
+- **状态/结果**：COMPLETE。确认原预览进程位于隔离网络，宿主浏览器连接超时；用户地址还误带 `/**`。已停止隔离进程，改用隐藏的宿主机只读 Node 静态服务器监听 `127.0.0.1:4186`，对正确根地址实测 HTTP 200。
+- **修改/验证**：项目产品文件无变化；预览辅助脚本与日志仅位于 Codex visualizations 目录，不纳入竞赛仓库。`curl --noproxy "*" -I http://127.0.0.1:4186/` 返回 `HTTP/1.1 200 OK`；Codex 浏览器打开请求已排队。
+- **风险/下一步**：正确地址必须是 `http://127.0.0.1:4186/`，不得带星号。该服务用于本机 UI 预览，正式 API 页面仍取决于后端是否运行。未改现有 UI 验收结论或 P1/P2 业务门禁。
+- **发布/token**：分支仍为 `codex/uiverse-ui-upgrade`，无新提交/推送/PR/部署。本次运行精确 token 数不可获得；估算 1,000～3,000，预览恢复范围已完成。
+
+## 20261021-1835-GPT5-uiverse-fidelity-correction-START
+
+- **状态/作者/目标**：START；GPT-5 Codex / Root Coordinator。用户指出收藏设计与当前实现的视觉关联不足，尤其下载按钮未呈现收藏款“紫色描边胶囊 + 独立圆形下载区 + 文字”的核心结构。本轮纠正视觉保真度，不改变下载行为、业务语义、API、Schema 或数据。
+- **预计范围/验收**：优先修改 `frontend/src/styles/workspace.css` 和 `frontend/tests/ui-polish.test.mjs`，必要时最小调整共享 UI；对照用户收藏页与当前 Report 页面，运行相关前端测试、TypeScript、build、diff-check，并在现有报告预览中截图验收。继续保持键盘、窄屏、reduced-motion；不新增依赖。
+- **协作/发布/token**：仍在隔离分支 `codex/uiverse-ui-upgrade`，不覆盖主工作区，不提交、推送、合并或部署。估算 3,000～7,000 tokens，精确遥测不可获得。
+
+## 20261021-2301-GPT5-uiverse-fidelity-correction-COMPLETE
+
+- **状态/作者/角色**：COMPLETE（限收藏款下载按钮的视觉保真纠正）；GPT-5 Codex / Root Coordinator；2026-10-21 23:01（Asia/Shanghai）。
+- **目标与结果**：确认初版只借用了紫色渐变，未体现用户收藏款的核心结构；已将 P0 报告下载入口改为紫色双层描边胶囊、左侧独立圆形下载区和右侧文字区，同时保留“导出演示 JSON”的真实业务文案与既有下载行为。未修改后端、公共 API、Schema、正式状态语义或数据。
+- **修改/新增文件**：`frontend/src/styles/workspace.css`、`frontend/tests/ui-polish.test.mjs`、`frontend/tests/ui-browser-smoke.mjs`；追加本机全局反思日志经验记录，并更新本日志、项目进度与 AI 辅助记录。
+- **验证**：`npm test` 148 passed/0 failed；`npm exec tsc -- --noEmit` PASS；Vite build PASS（61 modules，CSS 85.67 kB，JS 444.30 kB）；真实 Playwright Chromium UI smoke 14 项 PASS，新增收藏款结构计算样式断言和报告页截图；`git diff --check` PASS。临时 `node_modules` 目录联接已移除。
+- **接口/规则/决策**：视觉参考来自 Uiverse `nazar-gavrylyk/evil-dragon-24`，继续遵守既有“参考构成、项目内重写、无第三方源码/包复制”的登记边界；按钮键盘焦点、窄屏和 `prefers-reduced-motion` 保持覆盖。
+- **风险/未完成**：本轮只纠正下载按钮保真度，其他收藏元素仍是适配现有工作台语义的设计映射而非像素级复刻。正式 API 全链路未因纯视觉纠正重跑；改动仍未提交、未推送、未合并、未部署。
+- **下一步/责任**：用户刷新 `http://127.0.0.1:4186/` 并打开固定演示的“合规报告”检查；确认后再决定是否对其他收藏控件逐项提高保真度或授权发布。
+- **版本/token**：分支 `codex/uiverse-ui-upgrade`，基线 `5c1379cedc9ed89601439cd34143bb140290b7ce`，无新 commit/PR。精确 token 数不可获得；开工估算 3,000～7,000，本轮纠正与验收范围完成，实际区间无法核定。
+
+## 20261023-UI18-GPT6Sol-START
+
+- **作者/角色/状态**：GPT-6 Sol / Root Coordinator / START；2026-10-23（Asia/Shanghai）。落实用户批准的18个Uiverse来源UI计划，范围为原生选择控件、按钮、下载状态、浮动字段、提示、首页卡片和P1/P2页面应用；不改后端、DTO、Formal或依赖，不提交、推送、合并、部署。
+- **保护**：主工作区三处既有修改不触碰；UI工作线16处已有修改先完整归档于主项目忽略output。原C盘工作树跨盘move被Git拒绝后，以非破坏复制及git worktree repair迁至D盘同项目下的OpenGuard-ui-upgrade，原C盘副本保留，不再作为工作入口。分支仍codex/uiverse-ui-upgrade@5c1379c。
+- **预计文件/验收**：ui.tsx、workspace.css及调用页面、独立控件样板、UI测试、来源登记、AI记录和协调日志。测试/TypeScript/Vite、浏览器桌面/窄屏/键盘/reduced-motion/打印/下载错误与请求审计；正式API离线单列。开工token估算15,000—28,000，精确遥测不可获得。
+
+## 20261023-UI18-GPT6Sol-RESULT
+
+- **作者/角色/状态**：GPT-6 Sol / Root Coordinator / PARTIAL（实现与本机UI验证通过，原款视觉与正式API签收待办）；2026-10-23（Asia/Shanghai）。实现用户批准18项设计映射：原生checkbox/SVG绘制、radio滑块、浮动字段、主/发送/复制/演示/移除按钮、下载busy/error/retry、可Escape关闭提示、首页玻璃卡/可点击翻转卡、P2内凹表单与任务备注。独立ui-preview.html明确无业务数据。
+- **文件**：frontend/src/components/ui.tsx及AIResourceCard/EvidenceReader/P2Workbench；Assessment/Graph/Landing/NewScan/Report/ReportV2/Resources/Risks页面；workspace.css；独立样板HTML/TSX/静态说明文本；vite多入口；UI浏览器测试及属性顺序无关的只读checkbox断言；third_party来源表；AI日志及本验收/进度记录。原有History等改动完整保留。
+- **验证**：最终前端148 PASS / 0 FAIL / 0 SKIP；TypeScript+Vite63 modules PASS；Chromium11组场景PASS，含1440/1024/390px、键盘、提示Escape、减少动效、下载busy/503/双击锁/重试/真实附件字节、打印正文、零pageerror及GET-only审计。代表性对比度14.66/9.32/4.13/6.39通过对应阈值，不宣称全站认证。git diff --check PASS；backend/Schema/services/types/锁文件diff为空。
+- **证据/预览**：详见UI_UPGRADE_ACCEPTANCE_20261023.md及主项目忽略output/ui-upgrade-20261023/browser-final/receipt.json、前后截图和comparison.html。独立隐藏预览PID55760，127.0.0.1:4189首页、ui-preview.html、New Scan均HTTP200。既有UI归档Hash及当前三个核心源码完整Hash已记录；无新commit SHA。
+- **失败及修正**：早期UI源文件断言随公共组件改为DownloadControl；只读checkbox测试从属性顺序改为同元素disabled语义。截图复查修正首页标题换行；补测修正Escape后焦点悬停仍显示tooltip的问题。下载生成失败现在向公共控件返回false，避免显示假成功。最初临时依赖联接误建在嵌套空目录，核对后仅移除该联接与空目录，现复用已有锁定依赖，无安装。
+- **风险/下一步/责任**：原Uiverse公开原款截图遇Cloudflare，登录会话结构读取超时；保留失败，不将挑战页当原款或宣称逐项像素签收。用户应在4189样板/作品检查对应视觉；8082后端离线，正式API链待恢复后另验。UI测试仅对业务API返回测试503，无伪造成功扫描；P2锁/CAS/幂等和Formal保留，无后端范围变更。原C盘副本保留，正式UI工作路径现位于D盘。无提交、推送、PR、合并或部署。
+- **整体门禁/token**：当前可独立演示静态首页、选择/上传表单、组件状态、演示报告及真实API离线错误。完整作品的正式运行身份、人审、生产NOTICE及评测/发布门禁仍由原责任方关闭，不能以本轮UI通过宣称参赛或完整作品完成。精确token数不可获得；开工估算15,000—28,000，已完成实现与本机验证范围，原款与真实链验收仍未完，无法核定实际token是否在区间内。
+
+## 20261023-1328-GPT6Sol-UI-PUBLISH-START
+
+- 作者：GPT-6 Sol / Root Coordinator；用户本轮明确授权上传新增UI。范围仅为独立工作线 codex/uiverse-ui-upgrade 已有UI、测试、来源和协调文档，不修改主工作区及其他分支；不合并、部署或创建PR。
+- 预计验证：重新执行前端测试、TypeScript/Vite、UI浏览器smoke、diff检查、敏感信息和待提交文件清单复核；普通提交并仅推送该功能分支，核对远端完整SHA。基线5c1379cedc9ed89601439cd34143bb140290b7ce，工作区已有28项本UI任务改动。
+- 协作限制：完整历史共享日志超大，工具完整读取输出被截断；复核近期UI记录及进度，不宣称完成全历史逐字审计。原款动态视觉签收、后端真实链验收仍保持待办，不因上传升级状态。
+- 开工估算3,000—7,000 tokens；本次运行精确token数不可获得。
