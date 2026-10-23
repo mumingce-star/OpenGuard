@@ -46,10 +46,16 @@ public final class StructuredReports {
                 + ": " + escape(finding.message()) + " (" + escape(finding.evidencePath()) + ")</li>")
                 .reduce("", String::concat);
         return "<!doctype html><html><head><meta charset=\"utf-8\"><title>OpenGuard scan report</title>"
-                + "</head><body><h1>OpenGuard scan report</h1><p>Status: " + escape(result.status())
+                + "<style>body{font-family:system-ui,sans-serif;line-height:1.6;max-width:72rem;margin:2rem auto;padding:1rem}li,p{overflow-wrap:anywhere}@media print{li{break-inside:avoid}}</style>"
+                + "</head><body><h1>OpenGuard scan report</h1><p>独立 Java 核心 · 声明与文本观察均待核验，不构成许可结论。</p><p>Status: " + escape(result.status())
                 + "</p><p>Source: " + escape(result.source()) + "</p><h2>Resource profile drafts</h2><p>"
-                + result.resourceProfiles().stream().map(profile -> escape(profile.providerResourceId()) + " (authorization: pending)").reduce("", (a, b) -> a.isEmpty() ? b : a + ", " )
+                + result.resourceProfiles().stream().map(profile -> escape(profile.providerResourceId()) + " (authorization: pending)").collect(java.util.stream.Collectors.joining(", "))
                 + "</p><h2>Findings</h2><ul>" + items
+                + "</ul><h2>Coverage diagnostics</h2><ul>"
+                + result.diagnostics().stream().map(value -> "<li>" + escape(value) + "</li>").collect(java.util.stream.Collectors.joining())
+                + "</ul><h2>Resources</h2><ul>"
+                + result.components().stream().map(value -> "<li>" + escape(value.name()) + " " + escape(value.version())
+                    + " (" + escape(value.evidencePath()) + ") — pending</li>").collect(java.util.stream.Collectors.joining())
                 + "</ul></body></html>";
     }
 

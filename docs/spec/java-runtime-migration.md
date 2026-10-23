@@ -33,3 +33,7 @@ CLI 不提供远程 URL 自动检出，也不会调用 ScanCode、Syft、Python�
 | `cli.py`、API、持久化、AI、pipeline、reporting | 未迁移 | 现有 Java CLI/报告是并行入口；完整 API、SQLite、异步管线和 AI 降级必须以契约测试逐段替换。 |
 
 因此，本模块是 Java 主线的第一条真实扫描纵切，不是生产切换声明。删除 Python 或切换部署入口的前置条件是：完整 P0 Schema 对照、同输入稳定输出对照、外部工具隔离回归、API/数据库迁移和端到端验收全部通过。
+
+## 2026-10-22 本期交付决策
+
+用户已确定 Web 保持 Python 后端，Java 扫描/报告核心独立交付。本期不继续本文件早期的全栈替换设想；准确运行命令及支持边界见 backend/java/README.md。独立 DTO 和 CLI 的验证不代表 Python API、完整P0或不可信ZIP/Git摄取已迁移。

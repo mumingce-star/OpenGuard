@@ -46,7 +46,7 @@ public final class RepositoryScanner {
         var diagnostics = new ArrayList<String>();
         List<Path> paths;
         try (var walked = Files.walk(normalizedRoot)) {
-            paths = walked.filter(Files::isRegularFile)
+            paths = walked.filter(path -> Files.isRegularFile(path, java.nio.file.LinkOption.NOFOLLOW_LINKS))
                     .filter(path -> !path.startsWith(normalizedRoot.resolve(".git")))
                     .sorted(Comparator.comparing(path -> normalizedRoot.relativize(path).toString()))
                     .limit(MAX_FILES + 1).toList();
@@ -74,7 +74,7 @@ public final class RepositoryScanner {
             parseHuggingFaceFixture(path, relative, profiles, diagnostics);
         }
         List<ScanResult.Finding> findings = findings(licenses, assets);
-        return new ScanResult("0.1.1", "scn_" + UUID.randomUUID(), "completed", source, revision,
+        return new ScanResult("0.1.1", "scn_" + UUID.randomUUID(), diagnostics.isEmpty() ? "completed" : "partial", source, revision,
                 Instant.now().toString(), List.copyOf(components), List.copyOf(licenses), List.copyOf(assets),
                 List.copyOf(profiles), List.copyOf(evidence), findings, List.copyOf(diagnostics));
     }
@@ -90,7 +90,11 @@ public final class RepositoryScanner {
                 if (name.equalsIgnoreCase("dependencies") || name.equalsIgnoreCase("project")) {
                     continue;
                 }
-                String version = matcher.group(2) == null ? "unknown" : matcher.group(2);
+                String candidate = matcher.group(2);
+                // A lower bound or wildcard is not an observed installed/exact version.
+                String exact = "^\s*[\"']?" + Pattern.quote(name) + "\s*===?\s*"
+                        + Pattern.quote(candidate == null ? "" : candidate) + "\s*[\"']?\s*$";
+                String version = candidate != null && matcher.group().matches(exact) ? candidate : "unknown";
                 components.add(new ScanResult.Component(name, version, "pypi", relative));
                 evidence.add(new ScanResult.Evidence("manifest_field", relative, matcher.group().strip()));
             }
@@ -134,7 +138,7 @@ public final class RepositoryScanner {
             String spdx = upper.contains("MIT LICENSE") ? "MIT"
                     : upper.contains("APACHE LICENSE") ? "Apache-2.0"
                     : upper.contains("BSD-3-CLAUSE") || (upper.contains("REDISTRIBUTION AND USE") && upper.contains("NEITHER THE NAME")) ? "BSD-3-Clause"
-                    : upper.contains("GNU GENERAL PUBLIC LICENSE") ? "GPL-3.0-or-later" : "NOASSERTION";
+                    : "NOASSERTION";
             licenses.add(new ScanResult.License(spdx, relative, "pending"));
             evidence.add(new ScanResult.Evidence("license_text", relative, excerpt.lines().findFirst().orElse("")));
         } catch (IOException exception) {
