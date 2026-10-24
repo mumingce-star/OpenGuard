@@ -15,6 +15,7 @@ import {
   SeverityBadge,
   useNotice,
   copyText,
+  ActionButton,
 } from "../components/ui";
 import { EvidenceReader } from "../components/EvidenceReader";
 export function Risks({
@@ -240,12 +241,12 @@ export function RiskDetail({
           <Panel
             title="整改建议"
             action={
-              <button
+              <ActionButton kind="copy"
                 disabled={!risk.remediation}
                 onClick={() => void copyText(risk.remediation!, notify)}
               >
                 复制建议
-              </button>
+              </ActionButton>
             }
           >
             {risk.remediation?.startsWith("【资源级AI解释】") && <p className="og-warning">来源说明：【资源级AI解释】为模型辅助解释；【扫描事实】【读取范围】【结论边界】及【证据定位】【事实导航】等步骤由程序依据扫描记录整理，不是模型原话，也不表示链接已核验授权。</p>}

@@ -10,6 +10,10 @@ import {
   Dialog,
   SeverityBadge,
   download,
+  DownloadGlyph,
+  DownloadControl,
+  Checkbox,
+  SearchGlyph,
   useNotice,
 } from "../components/ui";
 import { EvidenceReader } from "../components/EvidenceReader";
@@ -39,7 +43,8 @@ export function Resources({
         eyebrow={"INVENTORY / " + scan.id}
         description="模型、数据集与其他第三方资源均只展示扫描事实；未知保持未知，Finding 只是待核查线索。"
         action={
-          scan.mode === "api" ? (scan.reportFormats?.includes("resource_inventory") ? <a href={reportDownloadUrl(scan.id, "resource_inventory")} download>下载完整资源清单</a> : <span>资源清单尚未发布</span>) : <button
+          scan.mode === "api" ? (scan.reportFormats?.includes("resource_inventory") ? <DownloadControl href={reportDownloadUrl(scan.id, "resource_inventory")} filename={`${scan.id}-resources.csv`} format="text/csv">下载完整资源清单</DownloadControl> : <span>资源清单尚未发布</span>) : <button
+            className="og-download-button"
             onClick={() =>
               download(
                 scan.id + "-filtered-resources.csv",
@@ -49,18 +54,19 @@ export function Resources({
               )
             }
           >
-            导出筛选结果 CSV（{rows.length}）
+            <DownloadGlyph /><span>导出筛选结果 CSV（{rows.length}）</span>
           </button>
         }
       />
       <div className="og-filters">
-        <label className="og-field">
-          搜索资源
-          <input
+        <label className="og-field og-search-field">
+          <span>搜索资源</span>
+          <span className="og-search-control"><SearchGlyph /><input
+            type="search"
             value={query.get("q") ?? ""}
             onChange={(e) => filter("q", e.target.value)}
             placeholder="名称、版本、来源…"
-          />
+          /></span>
         </label>
         <label className="og-field">
           类型
@@ -91,14 +97,12 @@ export function Resources({
             ))}
           </select>
         </label>
-        <label className="og-check">
-          <input
-            type="checkbox"
+        <Checkbox
             checked={query.get("unknown") === "1"}
             onChange={(e) => filter("unknown", e.target.checked ? "1" : "")}
-          />
+          >
           仅许可待确认
-        </label>
+        </Checkbox>
       </div>
       <Panel
         title={`模型与数据集资源卡片 · ${aiRows.length}`}

@@ -152,3 +152,22 @@ uvicorn==0.52.4
 - 原有固定Python/Debian基础镜像的BUILDPLATFORM构建阶段安装Debian GCC（gcc元包4:12.2.0-3，gcc-12为12.2.0-14+deb12u1）、libc6-dev2.36-9+deb12u14。来源为Debian签名bookworm仓库；官方入口 https://packages.debian.org/bookworm/gcc 、https://packages.debian.org/bookworm/libc6-dev 。编译器不复制进最终API，构建包及其传递闭包本轮未新增精确版本锁，不外推全部构建供应链冻结。
 - 启动器静态链接GNU运行库，不能因代码自研而忽略运行库许可。原Debian libc6及gcc-12-base版权文件已从构建层复制到 `/opt/openguard/scanner-libc-copyright` 和 `/opt/openguard/scanner-gcc-copyright`，保留LGPL及相关例外/各组件条款全文。当前仅发布源码与构建说明，不发布二进制镜像；若分发静态二进制，须先落实适用的对应源码/重链接等义务，不能以台账链接替代。
 - 不增加Python运行包、扫描工具版本、模型或远端服务。新增构建资源与跨架构build要求属于本次必要实现，不扩展P1/P2。
+
+## 2026-10-21 Uiverse 界面设计参考（无新增运行依赖）
+
+本轮只参考 Uiverse 页面公开展示的交互构图，自行使用现有 React、SVG 与 CSS 重绘；没有复制粘贴作者源码、下载附件、引入 npm 包或加入外部运行资源。Uiverse 将这些公开 UI 元素标为 MIT；以下链接保留作者、原页面和访问日期，实际提交仍为 OpenGuard 现有样式体系内的改写。
+
+| 参考元素 | 作者/原页面 | 用途与改写边界 |
+|---|---|---|
+| ZIP 上传卡 | Yaya12085 / https://uiverse.io/Yaya12085/yellow-goat-62 | 仅参考虚线卡片、中心图标和拖放反馈；文件校验、安全边界与提交逻辑保持 OpenGuard 原实现。 |
+| 搜索输入 | Lakshay-art / https://uiverse.io/Lakshay-art/curvy-earwig-22 | 仅参考聚焦描边和搜索图标；继续使用 History、Resource、Graph 的真实 URL/API 筛选。 |
+| 下载按钮 | nazar-gavrylyk / https://uiverse.io/nazar-gavrylyk/evil-dragon-24 | 仅参考图标与按钮层级；下载地址、格式和错误语义仍来自既有后端契约。 |
+| 箭头操作按钮 | cssbuttons-io / https://uiverse.io/cssbuttons-io/massive-mayfly-74 | 仅参考箭头位移动效；不增加导航或写操作。 |
+| 三点加载器 | mobinkakei / https://uiverse.io/mobinkakei/grumpy-turtle-41 | 仅参考三点节奏；保留可读状态文案、`role=status` 和 reduced-motion 静态回退。 |
+| 品牌说明卡 | Smit-Prajapati / https://uiverse.io/Smit-Prajapati/spicy-rat-83 | 仅参考聚焦式卡片构图；内容改为 OpenGuard 证据优先原则，不展示虚构数据或结论。 |
+
+许可：MIT（以各原页面公开声明为准）；访问日期：2026-10-21。由于未导入作者代码或发行包，无独立版本号、归档 Hash 或额外 NOTICE 文件；本节作为设计来源与改写边界记录。
+
+## 2026-10-23 扩展收藏 UI 实现
+
+用户批准的18项设计来源、三项可识别特征、调用位置、源码/版本/Hash适用边界及动态原款截图签收限制，见 [Uiverse UI references](uiverse-ui-references.md)。本轮在原React/CSS中独立实现，无新依赖、作者源码或外部运行资源导入。实际下载遵循GET，保留失败与显式重试；不复制原设计可能存在的定时假进度。历史六项记录继续保留。

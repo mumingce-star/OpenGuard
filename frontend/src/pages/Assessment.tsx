@@ -20,7 +20,7 @@ import {
   type ReviewView,
 } from '../services/assessments';
 import { presentProjectSummary } from '../services/assessmentPresentation';
-import { Header, Panel } from '../components/ui';
+import { Checkbox, Header, Panel } from '../components/ui';
 import { UsageForm } from '../components/UsageForm';
 import { P2Workbench } from '../components/P2Workbench';
 import type { P2Result } from '../types/p2Advice';
@@ -694,14 +694,12 @@ export function Assessment({
                     已保存 {chat.items.length} / {chat.limits.max_turns} 轮；每条最多 {chat.limits.max_message_chars} 字符。历史跨刷新保留，切版本仍显示各条所属版本。
                   </p>
                 )}
-                <label>
-                  <input
-                    type="checkbox"
+                <Checkbox
                     checked={showAllHistory}
                     onChange={e => setShowAllHistory(e.target.checked)}
-                  />
+                  >
                   查看其他评估版本的历史问答（旧答复不代表本版结论）
-                </label>
+                </Checkbox>
 
                 <div className="og-chat-history">
                   {chat?.items

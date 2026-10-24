@@ -1,0 +1,2 @@
+OpenGuard UI interaction sample.
+This static file contains no scan, Assessment, license or authorization result.

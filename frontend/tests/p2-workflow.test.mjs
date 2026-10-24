@@ -173,7 +173,7 @@ test('read-only deployment blocks initial and uncertain replay POSTs at transpor
   const html = renderToStaticMarkup(createElement(P2Workbench, { scanId: 'scn_1', assessmentId: 'asm_1', assessmentVersion: 2,
     query: new URLSearchParams(), evidenceIds: [], onEvidence() {}, onSelect() {} }));
   assert.match(html, /P2写入已禁用/);
-  assert.match(html, /type="checkbox" disabled=""/);
+  assert.match(html, /<input(?=[^>]*type="checkbox")(?=[^>]*disabled="")[^>]*>/);
 });
 
 test('material boundary, capacity, evidence mismatch and source text validation never send requests', async () => {

@@ -4,6 +4,7 @@ import { factVerificationLabels } from "../types/domain";
 import type { ResourceProfileState } from "../types/p1ResourceProfile";
 import { getResourceProfile, refreshResourceProfile } from "../services/p1ResourceProfiles";
 import { evidenceSources, resourceCardFacts } from "../services/resourceCardPresentation";
+import { HelpTip, LoadingDots } from './ui';
 
 function FactBadge({ value }: { value: keyof typeof factVerificationLabels }) {
   return <span className={`og-fact-status ${value}`}>{factVerificationLabels[value]}</span>;
@@ -72,7 +73,7 @@ export function AIResourceCard({
     } finally { setRefreshing(false); }
   }
   return (
-    <article className={`og-ai-resource-card ${resource.type.toLowerCase()}`}>
+    <article className={`og-ai-resource-card og-glass-card ${resource.type.toLowerCase()}`}>
       <header>
         <div className="og-ai-resource-title">
           <span className="og-resource-kind">{typeLabel}</span>
@@ -86,7 +87,7 @@ export function AIResourceCard({
 
       <dl className="og-ai-resource-facts">
         <div><dt>provider</dt><dd>{facts.provider ?? "未获取"}</dd></div>
-        <div><dt>version</dt><dd>{facts.version ?? "未获取"}</dd></div>
+        <div><dt>version <HelpTip label="资源版本说明">版本只展示 Resource 与 Profile 返回的事实；未获取不代表最新版本。</HelpTip></dt><dd>{facts.version ?? "未获取"}</dd></div>
         <div><dt>revision</dt><dd>{facts.revision ?? (facts.revisionConflicted ? "证据不足（观测冲突）" : "未获取")}</dd></div>
         <div><dt>Profile 身份键</dt><dd title={profileIdentity ?? "未获取"}>{profileIdentity ?? "未获取"}</dd></div>
         <div><dt>Profile 实例键</dt><dd title={profileInstance ?? "未获取"}>{profileInstance ?? "未获取"}</dd></div>
@@ -113,7 +114,7 @@ export function AIResourceCard({
 
       <div className={`og-profile-state ${profileState.status}`}>
         <span>Resource Profile</span>
-        {profileState.status === "loading" && <strong>正在只读查询…</strong>}
+        {profileState.status === "loading" && <LoadingDots label="正在只读查询 Profile…" />}
         {profileState.status === "ready" && <strong>已读取 · {profileState.profile.profile_id}</strong>}
         {profileState.status === "missing" && <strong>{profileState.detail}</strong>}
         {profileState.status === "error" && (
