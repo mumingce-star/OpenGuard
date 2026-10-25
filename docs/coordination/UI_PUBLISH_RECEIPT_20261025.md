@@ -40,3 +40,11 @@
 Owner审查并决定UI集成；本次不创建PR、不合并、不部署。用户可继续审看视觉；团队正式镜像、P2接线、生产NOTICE、人工许可审阅、旧报告/评测及参赛/发布门禁按原清单独立跟踪，本次上传不宣布整个作品完成。
 
 精确token数不可获得。开工估算5,000—10,000；实际消耗是否在区间内不可核定。本轮只验证并发布现有成果，不增加产品范围。
+
+## 实际上传结果
+
+- 功能提交：`50cebe9df85c95d4219ea6deca2a258d0dd6667f`，`feat(ui): refine workbench hierarchy and responsive navigation`。
+- 目标：[团队UI功能分支](https://github.com/mumingce-star/OpenGuard/tree/codex/uiverse-ui-upgrade)。普通push成功后，独立读取远端引用与上述SHA完全一致。
+- 24个明确文件，16项既有冻结文件Hash全部一致；新增内容敏感模式/本机绝对路径检查0命中，待提交差异检查PASS。功能提交后的工作区干净。
+- 首次push超时保留；确认远端未改变后通过系统代理和HTTP/1.1重试同一个commit成功，不强推，不重复生成commit。
+- 本节与协调台账作为独立docs提交随后同步，不再改变已验证产品源码。不创建PR、不合并、不部署；Owner可按功能提交单独review。

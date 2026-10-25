@@ -11007,3 +11007,10 @@
 - 本次实际重新执行npm test：148/0/0；npm run build（TypeScript+Vite）：PASS，63模块；UI浏览器13组PASS、结果页浏览器6组PASS，Graph100/300/500采样170/183/246ms，键盘/缩放/窄屏/打印/下载锁与失败重试及URL恢复通过。两套均显式TEST_ONLY，0真实业务写入/意外pageerror；不累计模拟/昨日live为本次唯一测试数。当前4189及历史GET连接被拒绝，仅记录离线，不恢复或部署环境。
 - 发布文件为既有UI/测试/来源、AI/协调记录和新增验收说明；临时截图/HTTP原件/数据库/镜像/dist/node_modules均不上传。新增UI_PUBLISH_RECEIPT_20261025.md说明范围及证据。新增源于项目重绘，无新第三方代码/资产/依赖。现有冻结16文件待提交复核；运行与旧样本证据文档只作历史材料，不把当前旧镜像P2接口缺失算通过。
 - Git直连查询等待无结果，系统代理定向查询/fetch成功，仅结束本次已核对PID的只读Git进程，不修改全局配置。普通功能分支push授权明确；待实际push及远端SHA核对后追加COMPLETE。Owner负责后续集成审查，生产NOTICE、人审、正式运行身份、评测/参赛/发布等门禁不在本轮关闭；token精确值不可获得，估算5,000—10,000，实际范围无法核定。
+
+## 20261025-1956-GPT6-UI-PUBLISH-COMPLETE
+
+- 作者/角色：GPT-6 / Root Coordinator。已按用户授权完成UI成果上传，功能提交50cebe9df85c95d4219ea6deca2a258d0dd6667f，团队远端codex/uiverse-ui-upgrade经独立ls-remote核对完全一致。24文件：既有UI源码/两套浏览器测试/第三方来源与AI记录/协调及验收文档。未上传本机output、数据库、镜像、HTTP原件、截图、dist、依赖或缓存；主工作区原三项修改和其他worktree未动。16项冻结文件Hash全部一致，新增内容敏感模式及机器绝对路径检查0命中，diff检查PASS。
+- 本次执行结果保持148单元PASS、TypeScript/Vite63模块PASS、13组UI与6组结果页浏览器PASS；没有修改产品后重用旧测试，测试后产品Hash未变化。最新UI预览4189离线，仅记录GET连接拒绝，未启动服务、扫描、Assessment、Qwen或报告生成；昨日live回执保留为历史证据，未冒充本次重跑。
+- 首次push低速超时，查询确认远端仍旧2ee6003；通过系统代理并仅对该命令指定HTTP/1.1重推同一功能commit成功，未重做commit、强推、改全局Git配置。此发布记录随后作为独立docs提交在同分支普通上传；实际最终HEAD由远端核对回传，不在文档自造自引用SHA。
+- 无backend/API/Schema/services/types/依赖变化、PR、merge或部署；不改integration/p1/main及其他成员分支。Owner下一步审查UI相对最新集成的兼容性；原款视觉、人审、正式运行/NOTICE、旧报告/评测与参赛发布门禁依旧，不把UI功能线上传当整作品完成。遵循verify-and-stop，只补发布证明后停止。精确token数不可获得，开工5,000—10,000，已完成授权范围，实际消耗区间无法核定。
