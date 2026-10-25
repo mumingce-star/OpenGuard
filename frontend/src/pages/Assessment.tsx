@@ -459,7 +459,7 @@ export function Assessment({
       {loading && <p role="status">正在读取已保存评估…</p>}
       {error && <p className="og-error" role="alert">{error}</p>}
 
-      <div className="og-actions">
+      <div className="og-actions og-assessment-toolbar">
         <button disabled={busy} onClick={() => setRevision(n => n + 1)}>
           重新读取评估
         </button>
@@ -487,27 +487,23 @@ export function Assessment({
         <p className="og-error">当前扫描中未找到所选评估版本，不会替换为其他任务的结论。</p>
       )}
 
+      {!compact && selected && <nav className="og-section-nav" aria-label="评估内容导航">
+        <a href="#assessment-formal">正式评估</a>
+        <a href="#assessment-obligations">义务与依据</a>
+        <a href="#assessment-ai">AI 辅助解释</a>
+        {selectP2Result && <a href="#assessment-p2">用途建议与材料</a>}
+      </nav>}
+
       <div className={compact ? '' : 'og-assessment-layout' + (chatOpen ? '' : ' chat-collapsed')}>
         <div className="og-assessment-main">
           {selected ? (
             <>
-              <p>
+              <section id="assessment-formal" className="og-formal-region" aria-label="正式评估与用途维度">
+              <div className="og-authority-heading"><span>FORMAL ASSESSMENT</span><strong>正式评估</strong><small>当前已保存版本的结论与依据</small></div>
+              <p className="og-version-line">
                 第 {selected.version} 版 · {presets[selected.usage.preset]} · {new Date(selected.generated_at).toLocaleString()}
               </p>
               <ProjectSummaryBlock summary={selected.summary} />
-              {!compact && selectP2Result && (
-                <P2Workbench
-                  key={selected.id + ':' + selected.version}
-                  scanId={scan.id}
-                  assessmentId={selected.id}
-                  assessmentVersion={selected.version}
-                  query={query}
-                  onSelect={selectP2Result}
-                  evidenceIds={scan.evidence.map(item => item.id)}
-                  onEvidence={setEvidenceId}
-                  openResources={openResources}
-                />
-              )}
               {!compact && openResources && (
                 <div className="og-actions">
                   <button type="button" onClick={openResources}>查看本次扫描的模型与数据集资源卡片</button>
@@ -600,13 +596,9 @@ export function Assessment({
                 />
               )}
 
-              <Panel title="AI 辅助解释">
-                <p role="status">{aiLabels[selected.ai_status] ?? 'AI 状态待核对'}</p>
-                {selected.ai_summary && <p>{selected.ai_summary}</p>}
-                {references(selected.ai_evidence_ids ?? [])}
-              </Panel>
+              </section>
 
-              <Panel title="需要履行的义务">
+              <div id="assessment-obligations"><Panel title="需要履行的义务" className="og-obligations-panel">
                 <p>识别出义务不代表已经履行。</p>
                 {selected.obligations.length ? (
                   <CompactRows
@@ -625,7 +617,27 @@ export function Assessment({
                     )}
                   />
                 ) : <p>本版本没有列出确定的义务；未知许可仍需复核。</p>}
-              </Panel>
+              </Panel></div>
+
+              <div id="assessment-ai"><Panel title="AI 辅助解释" className="og-ai-region" caption="辅助阅读 · 不改变上方正式评估">
+                <p role="status">{aiLabels[selected.ai_status] ?? 'AI 状态待核对'}</p>
+                {selected.ai_summary && <p>{selected.ai_summary}</p>}
+                {references(selected.ai_evidence_ids ?? [])}
+              </Panel></div>
+
+              {!compact && selectP2Result && <section id="assessment-p2" aria-label="独立用途建议与补充材料">
+                <P2Workbench
+                  key={selected.id + ':' + selected.version}
+                  scanId={scan.id}
+                  assessmentId={selected.id}
+                  assessmentVersion={selected.version}
+                  query={query}
+                  onSelect={selectP2Result}
+                  evidenceIds={scan.evidence.map(item => item.id)}
+                  onEvidence={setEvidenceId}
+                  openResources={openResources}
+                />
+              </section>}
 
               <div className="og-actions">
                 <a download href={assessmentReportUrl(scan.id, selected.id, 'html')}>下载本版评估 HTML</a>

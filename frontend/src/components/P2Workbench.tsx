@@ -143,7 +143,7 @@ export function P2Workbench(props: Props) {
   const question = result?.questions.find(q => q.question_id === questionId);
   const resource = result?.resources.find(r => r.subject.resource_id === resourceId);
   const toggle = (values: string[], id: string, checked: boolean) => checked ? [...values, id] : values.filter(x => x !== id);
-  return <Panel title="P2 用途建议与补充材料 · 独立结果">
+  return <Panel title="P2 用途建议与补充材料 · 独立结果" className="og-p2-workbench" caption="独立结果与补充声明 · 不覆盖 Formal Assessment">
     <div className="og-p2-panel">
       <p>以下为确定性资源候选，不是 Qwen 答疑或 Formal Conclusion。候选算法和父评估规则分别展示。</p>
       {loading && <LoadingDots label="正在读取固定版本…" />}

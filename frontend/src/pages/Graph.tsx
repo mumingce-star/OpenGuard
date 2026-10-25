@@ -78,12 +78,13 @@ export function Graph({ scan, query, filter }: Props) {
   return <>
     <Header eyebrow="P1 / RESOURCE GRAPH" title="资源关系图" description="只展示后端 Graph API 返回的事实节点与关系；本图不是 Formal Assessment，许可观测不代表授权，Finding 仅为待核查线索。" />
     {view.coverage.scan_gaps.length > 0 && <div className="og-scan-coverage-notice" role="status"><strong>扫描部分完成，关系图仅覆盖当前已有事实。</strong><span>未出现的资源不代表已删除；覆盖限制：{view.coverage.scan_gaps.join("；")}</span></div>}
-    <Panel title={`事实关系 · ${visible.nodes.length} / ${view.coverage.node_count} 节点`} caption={`${visible.edges.length} / ${view.coverage.edge_count} 条后端事实边 · ${view.coverage.scope === "all" ? "全量已有事实" : "后端筛选闭包"}`}>
+    <Panel className="og-graph-panel" title={`事实关系 · ${visible.nodes.length} / ${view.coverage.node_count} 节点`} caption={`${visible.edges.length} / ${view.coverage.edge_count} 条后端事实边 · ${view.coverage.scope === "all" ? "全量已有事实" : "后端筛选闭包"}`}>
       <div className="og-graph-toolbar">
         <label className="og-field og-search-field"><span>搜索节点</span><span className="og-search-control"><SearchGlyph /><input type="search" value={search} placeholder="名称或原始 ID" onChange={(event) => filter("graph_q", event.target.value)} /></span></label>
         <fieldset><legend>节点类型 <HelpTip label="节点类型筛选说明">筛选只隐藏画布中的类型，不改变后端节点、边或事实关系。</HelpTip></legend>{graphNodeKinds.map((kind) => <Checkbox key={kind} checked={!kinds.length || kinds.includes(kind)} onChange={() => toggleKind(kind)}>{graphKindLabels[kind]}</Checkbox>)}</fieldset>
         <div className="og-graph-zoom" aria-label="图谱缩放"><button type="button" disabled={zoom === zoomValues[0]} onClick={() => filter("graph_zoom", String(zoomValues[Math.max(0, zoomValues.indexOf(zoom) - 1)]))} aria-label="缩小">−</button><output>{Math.round(zoom * 100)}%</output><button type="button" disabled={zoom === zoomValues.at(-1)} onClick={() => filter("graph_zoom", String(zoomValues[Math.min(zoomValues.length - 1, zoomValues.indexOf(zoom) + 1)]))} aria-label="放大">＋</button><button type="button" onClick={() => filter("graph_zoom", "")}>重置</button></div>
       </div>
+      <p className="og-graph-keyboard-hint">探索图谱<span><kbd>Tab</kbd> 聚焦节点 · 方向键移动 · <kbd>Enter</kbd> 查看详情</span></p>
       <div className="og-graph-legend" aria-label="关系语义图例"><span><i className="solid" />明确包含关系</span><span><i className="dashed" />观测或规则引用</span><span><i className="dotted" />Evidence 支持</span><small>线型依据冻结边类型映射；前端不判断关系置信度。</small></div>
       {!visible.nodes.length ? <Empty title="没有匹配节点" detail={view.nodes.length ? "请调整搜索或类型筛选；后端原图未被改写。" : "后端返回了合法空图，没有可展示的事实节点。"} /> : <div className="og-graph-shell">
         <div className="og-graph-canvas" tabIndex={0} aria-label={`资源关系图画布，共 ${visible.nodes.length} 个节点、${visible.edges.length} 条边`}>

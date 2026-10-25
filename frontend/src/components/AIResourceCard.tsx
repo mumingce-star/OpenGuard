@@ -89,10 +89,12 @@ export function AIResourceCard({
         <div><dt>provider</dt><dd>{facts.provider ?? "未获取"}</dd></div>
         <div><dt>version <HelpTip label="资源版本说明">版本只展示 Resource 与 Profile 返回的事实；未获取不代表最新版本。</HelpTip></dt><dd>{facts.version ?? "未获取"}</dd></div>
         <div><dt>revision</dt><dd>{facts.revision ?? (facts.revisionConflicted ? "证据不足（观测冲突）" : "未获取")}</dd></div>
-        <div><dt>Profile 身份键</dt><dd title={profileIdentity ?? "未获取"}>{profileIdentity ?? "未获取"}</dd></div>
-        <div><dt>Profile 实例键</dt><dd title={profileInstance ?? "未获取"}>{profileInstance ?? "未获取"}</dd></div>
         <div><dt>Evidence 来源</dt><dd>{sources.length ? sources.join("、") : "证据不足"}</dd></div>
       </dl>
+      <details className="og-resource-identity"><summary>Profile 身份与追溯</summary><dl className="og-ai-resource-facts">
+        <div><dt>Profile 身份键</dt><dd>{profileIdentity ?? "未获取"}</dd></div>
+        <div><dt>Profile 实例键</dt><dd>{profileInstance ?? "未获取"}</dd></div>
+      </dl></details>
 
       <div className="og-ai-resource-verification">
         <section>

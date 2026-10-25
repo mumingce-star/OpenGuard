@@ -157,14 +157,16 @@ export function Panel({
   caption,
   children,
   action,
+  className = "",
 }: {
   title: string;
   caption?: string;
   children: ReactNode;
   action?: ReactNode;
+  className?: string;
 }) {
   return (
-    <section className="og-panel">
+    <section className={`og-panel ${className}`.trim()}>
       <header className="og-panel-title">
         <div>
           <h2>{title}</h2>

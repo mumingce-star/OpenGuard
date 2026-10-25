@@ -69,6 +69,7 @@ export function App() {
   const { route, go, filter } = useRoute(),
     { scan, error, loading, reload } = useScan(route.scanId, route.mode);
   const [mobile, setMobile] = useState(false),
+    [navCollapsed, setNavCollapsed] = useState(false),
     [projecting, setProjecting] = useState(() => {
       try {
         return sessionStorage.getItem("og-projecting") === "1";
@@ -131,9 +132,9 @@ export function App() {
       return !v;
     });
   }
-  function navButton([page, label]: [Page, string], i: number) { return <button key={page} className={page === route.page ? "active" : ""} aria-current={page === route.page ? "page" : undefined} disabled={!(["new-scan", "history"].includes(page)) && !route.scanId} onClick={() => { setMobile(false); navigate(page); }}><Icon index={i} />{label}{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>; }
+  function navButton([page, label]: [Page, string], i: number) { return <button key={page} className={page === route.page ? "active" : ""} aria-label={label} title={navCollapsed ? label : undefined} aria-current={page === route.page ? "page" : undefined} disabled={!(["new-scan", "history"].includes(page)) && !route.scanId} onClick={() => { setMobile(false); navigate(page); }}><Icon index={i} /><span className="og-nav-label">{label}</span>{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>; }
   const detailPages: Page[] = ["risks", "resources", "graph", "remediation", "diff"];
-  const nav = <nav aria-label="工作台导航">{items.filter(([p]) => !detailPages.includes(p)).map(navButton)}<details open={detailPages.includes(route.page)}><summary>扫描明细</summary>{items.filter(([p]) => detailPages.includes(p)).map(navButton)}</details></nav>;
+  const nav = <nav aria-label="工作台导航">{items.filter(([p]) => !detailPages.includes(p)).map(navButton)}<details open={navCollapsed || detailPages.includes(route.page)}><summary aria-label="扫描明细"><span className="og-nav-label">扫描明细</span><span className="og-nav-compact-mark" aria-hidden="true">···</span></summary>{items.filter(([p]) => detailPages.includes(p)).map(navButton)}</details></nav>;
   const active = scan && ["queued", "running"].includes(scan.status);
   let content;
   if (route.page === "new-scan")
@@ -253,22 +254,23 @@ export function App() {
       {route.page === "home" ? (
         <Landing onEnter={() => navigate("new-scan")} onDemo={demo} />
       ) : (
-        <div className={"og-app" + (projecting ? " og-projecting" : "")}>
+        <div className={"og-app" + (projecting ? " og-projecting" : "") + (navCollapsed ? " og-nav-collapsed" : "")}>
           <a className="og-skip" href="#workspace-main">
             跳到主要内容
           </a>
           <aside className="og-sidebar">
-            <Brand onClick={() => go("/")} />
+            <Brand compact={navCollapsed} onClick={() => go("/")} />
             <div className="og-sidebar-context">
               <span>{route.page === "history" ? "历史视图" : "当前任务"}</span>
               <strong>{route.page === "history" ? "全部扫描任务" : scan?.project ?? "等待输入项目"}</strong>
               <small>{route.page === "history" ? "真实接口 · 只读查询" : route.scanId || "尚未创建"}</small>
             </div>
             {nav}
-            <footer>
+            <footer><p>
               证据先行，结论可溯
               <br />
               合规信息整理 · 非法律意见
+            </p><button type="button" className="og-nav-collapse" aria-label={navCollapsed ? "展开侧栏" : "收起侧栏"} aria-expanded={!navCollapsed} onClick={() => setNavCollapsed(value => !value)}><span aria-hidden="true">{navCollapsed ? "»" : "«"}</span><span className="og-nav-label">收起侧栏</span></button>
             </footer>
           </aside>
           <div className="og-workspace">
@@ -276,6 +278,8 @@ export function App() {
               <button
                 className="og-menu"
                 aria-label="打开导航"
+                aria-haspopup="dialog"
+                aria-expanded={mobile}
                 onClick={() => setMobile(true)}
               >
                 ☰
@@ -305,7 +309,7 @@ export function App() {
               <span>
                 {route.mode === "mock"
                   ? "合成快照 · 不代表真实项目扫描结果"
-                  : "仅展示接口返回结果 · 失败不会回退演示"}
+                  : "项目数据与评估结果来自扫描服务"}
               </span>
             </div>
             <main id="workspace-main" className="og-content">
