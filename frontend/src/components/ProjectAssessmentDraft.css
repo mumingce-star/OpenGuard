@@ -1,0 +1,21 @@
+.og-app .project-assessment-draft{background:#142038;border:1px solid #4e496c;border-left:4px solid #b8a6f3;border-radius:12px;padding:22px 26px;margin:0 0 18px;color:#eaf0fc}
+.og-app .project-assessment-draft>header{display:flex;align-items:center;flex-wrap:wrap;gap:12px;color:#bcc5d9;font-size:12px;margin-bottom:12px}
+.project-draft-source{display:inline-block;border:1px solid #71658f;border-radius:5px;padding:4px 8px;color:#dfd2ff;background:#2c2942;font-weight:600}
+.og-app .project-assessment-draft h2{font-size:26px;line-height:1.4;font-weight:650;margin:0 0 10px;letter-spacing:-.02em;color:#f3f5ff}
+.og-app .project-assessment-draft .project-draft-lead{max-width:76ch;color:#c1d0e4;font-size:14px;line-height:1.75;margin:0 0 18px}
+.project-draft-uses{display:grid;grid-template-columns:1fr 1fr;gap:24px;border-block:1px solid #34435b;padding:16px 0}
+.og-app .project-draft-uses h3,.og-app .project-draft-next h3{font-size:12px;font-weight:500;color:#a9bdd5;margin:0 0 7px}
+.og-app .project-draft-uses strong{font-size:16px;font-weight:600;color:#b2e6d6}
+.og-app .project-draft-uses p{font-size:13px;line-height:1.7;color:#bfcee2;margin:8px 0 0;max-width:64ch}
+.project-draft-next{margin:17px 0 14px}.project-draft-next ol{list-style:none;counter-reset:advice-step;padding:0;margin:10px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.project-draft-next li{counter-increment:advice-step;position:relative;padding-left:28px;font-size:12px;line-height:1.65;color:#abbdd4}.project-draft-next li:before{content:counter(advice-step);position:absolute;left:0;top:0;font-size:14px;color:#d3c5f1;border-bottom:1px solid #887ea3;width:18px}
+.project-draft-next li strong{display:block;font-size:13px;font-weight:600;color:#e0e9f6;margin-bottom:4px}.project-draft-next li span{display:block}
+.project-draft-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.project-draft-actions>span{color:#97abc3;font-size:11px;margin-left:auto}
+.og-app .project-assessment-draft>details>summary{color:#bac4dc;font-size:12px;margin-top:10px;cursor:pointer}.og-app .project-assessment-draft>details p{font-size:12px;line-height:1.7;color:#aebed4}.project-assessment-draft code{font-size:11px}
+.og-app .p2-assessment-view{gap:8px}.og-app .p2-assessment-view>.og-page-header{margin-bottom:0}.og-app .p2-assessment-view>.assessment-usage-details{margin:0}.og-app .p2-assessment-view .p2-context{margin:8px 0}.og-app .p2-assessment-view .p2-tabs{margin:10px 0}
+@media(max-width:760px){.og-app .project-assessment-draft{padding:18px 16px}.og-app .project-assessment-draft h2{font-size:21px}.project-draft-uses,.project-draft-next ol{grid-template-columns:1fr;gap:16px}.project-draft-actions>span{margin-left:0}}
+/* Keep the substantive assessment above the fold; saved usage stays accessible. */
+.og-app .p2-assessment-view>.og-page-header>div{display:flex;align-items:baseline;gap:8px 18px;flex-wrap:wrap}
+.og-app .p2-assessment-view>.og-page-header h1{font-size:24px;margin:0}
+.og-app .p2-assessment-view>.og-page-header p{font-size:13px;margin:0}
+.og-app .p2-assessment-view>.assessment-usage-details>summary{padding:2px 0;font-size:12px}

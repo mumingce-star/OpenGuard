@@ -1,0 +1,20 @@
+import { makeFixture } from '../bound-advice-maincard-corrected-fixture/fixture';
+import { fixedCommit, fixedLicenseHash, type OfficialSources, type Preview } from '../../src/services/officialSources';
+import type { Material, Receipt } from '../../src/services/p2';
+import licenseText from './LICENSE.txt?raw';
+export const CLASSIFICATION='SYNTHETIC_TEST_ONLY_NO_REAL_NETWORK_OR_MODEL';
+export function fixture(suffix:string){
+ const f=makeFixture();f.assessment.id+='_'+suffix;f.assessment.scan_id+='_'+suffix;f.binding.scan_id=f.assessment.scan_id;f.binding.assessment_id=f.assessment.id;f.binding.project_revision=fixedCommit;
+ f.scan.id=f.assessment.scan_id;f.scan.revision=fixedCommit;f.scan.resources[0].name='http-server';f.scan.resources[0].version='14.1.2';
+ for(const r of [f.result,f.newer]){r.result_id+='_'+suffix;r.binding={...f.binding};r.resources[0].subject.version='14.1.2';r.resources[0].state='unknown';for(const advice of r.resources[0].advice){if(advice.state==='conditional_candidate')advice.state='unknown';advice.conditions=[];advice.basis_evidence_ids=[];advice.rule_ids=[];}}
+ f.newer.previous_result_id=f.result.result_id;f.newer.resources[0].state='pending';f.newer.resources[0].material_ids=['mat_official_'+suffix];f.newer.material_ids=[...f.newer.resources[0].material_ids];
+ const material:Material={material_id:f.newer.material_ids[0],revision:1,binding:{...f.binding},subject:{...f.result.resources[0].subject},evidence_ids:[...f.result.resources[0].evidence_ids],filename:'LICENSE',source_sha256:fixedLicenseHash,byte_count:1124,completeness:'FULL_TEXT_CLAIMED',parse_status:'text_observed',adoption_status:'adopted_as_unverified_observation',verification_state:'pending',source_level:'user_supplied_unverified',formal_effect:'none',data_scope:'TEST_ONLY'};
+ const receipt:Receipt={result:f.newer,material,answer:null};
+ function status(newer=false):OfficialSources{
+  const r=newer?f.newer:f.result,cid='p2src_SYNTHETIC_'+suffix;
+  const quote=licenseText.slice(0,licenseText.indexOf('\n'));
+  const preview:Preview={coverage:'complete_fixed_sources',npm_metadata_status:'observed',source_failures:[],schema_version:'openguard-official-source-preview/1',preview_id:'p2prev_SYNTHETIC_'+suffix,preview_sha256:'3'.repeat(64),result_id:r.result_id,result_sha256:r.result_sha256,binding:{...r.binding},status:'succeeded',created_at:'2026-10-23T00:00:00Z',model_calls:1,model:{name:'Qwen_SYNTHETIC_TEST_ONLY',digest:'2'.repeat(64),runtime:'TEST_ONLY'},metrics:{elapsed_ms:1},clauses:[{source_candidate_id:cid,quote,start:0,end:[...quote].length,category:'condition'}],actions:[{text:'SYNTHETIC_TEST_ONLY：核实实际交付范围并保留对应原文。',source_candidate_ids:[cid],claim_level:'verification_action_only'}],changes:[],limitations:['SYNTHETIC_TEST_ONLY：未签发来源或许可适用性。']};
+  return{schema_version:'openguard-official-sources/1',binding:{...r.binding},result_id:r.result_id,result_sha256:r.result_sha256,fetch:{state:'ready',job_id:'job_SYNTHETIC_'+suffix,error_code:null,http_intents:6,http_dispatched:6,http_responses:6},candidate:{coverage:'complete_fixed_sources',npm_metadata_status:'observed',source_failures:[],candidate_id:cid,scan_id:f.assessment.scan_id,subject:{...r.resources[0].subject},commit:fixedCommit,sources:[{kind:'git_license',url:`https://raw.githubusercontent.com/http-party/http-server/${fixedCommit}/LICENSE`,sha256:fixedLicenseHash,byte_count:1124,source_level:'retrieved_unadopted_candidate',verification_state:'pending',retrieved_at:'2026-10-23T00:00:00Z'},{kind:'npm_metadata',url:'https://registry.npmjs.org/http-server/14.1.2',sha256:'4'.repeat(64),byte_count:99,source_level:'provider_declared_unverified',verification_state:'pending',retrieved_at:'2026-10-23T00:00:00Z'}],license_text:licenseText,adoption_status:'not_adopted',limitations:['SYNTHETIC_TEST_ONLY：Git LICENSE不自动证明npm发行包关系。']},analysis:{state:'ready',mode:newer?'saved_material':'unadopted_preview',error_code:null,preview:newer?null:preview,analysis_id:newer?'p2ai_SYNTHETIC_'+suffix:null},adopted_material_ids:newer?[material.material_id]:[]};
+ }
+ return{...f,status,receipt};
+}

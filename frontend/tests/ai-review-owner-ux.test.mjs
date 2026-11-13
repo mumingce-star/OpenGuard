@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import ts from 'typescript';
+import {createRequire} from 'node:module';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {runtime} from './runtime.mjs';
+const require=createRequire(import.meta.url);
+const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/ai-review-fixed-v6.json',import.meta.url),'utf8'));
+const result=fixture.snapshot.result;
+const assessment={id:fixture.binding.assessment_id,scan_id:fixture.binding.scan_id,version:6,facts_hash:fixture.binding.facts_hash,usage_hash:fixture.binding.usage_hash,rule_version:fixture.binding.rule_version};
+function api(){return runtime().load('services/aiReview.ts');}
+function html(value=fixture,evidence=[]){
+ let cursor=0;const states=[value,false];const service=api();
+ const react={useState(v){const n=cursor++;return [n<states.length?states[n]:v,()=>{}];},useEffect(){}};
+ const source=fs.readFileSync(new URL('../src/components/AiReview.tsx',import.meta.url),'utf8');
+ const js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
+ const mod={exports:{}};vm.runInNewContext(js,{module:mod,exports:mod.exports,require:n=>n==='react'?react:n.endsWith('/aiReview')?service:n.endsWith('/assessmentTier')?{tierAllowsDerived:()=>true,readAssessmentTier:async()=>{throw Error('not configured');}}:n==='./StageResult'?{StageResult:()=>null}:n==='./AssessmentTier'?{AssessmentTier:()=>null,TierUpgradePlans:()=>null}:n.endsWith('.css')?{}:require(n)});
+ return renderToStaticMarkup(mod.exports.AiReview({assessment,readOnly:true,evidence}));
+}
+const copy=()=>structuredClone(fixture);
+test('UX01 real DTO yields six assisted judgment groups with counts and unique resources',()=>{const groups=api().reviewGroups(result.items,'AI_ASSISTED');assert.equal(groups.length,6);assert.equal(groups.reduce((n,g)=>n+g.items.length,0),85);const g=groups.find(g=>g.code==='system_limit_explained');assert.equal(g.items.length,65);assert.equal(g.resourceCount,35);});
+test('UX02 assisted headline derives from changed DTO rather than fixed 85',()=>{const f=copy();f.snapshot.result.summary.item_counts.AI_ASSISTED=84;assert.match(html(f),/辅助研判 84 项/);});
+test('UX03 zero high confidence remains visible outside primary metrics',()=>{assert.match(html(),/高置信研判 0 项/);assert.doesNotMatch(html().split('ai-review-secondary')[0],/高置信研判/);});
+test('UX04 zero expert count remains visible and future nonzero is honest',()=>{assert.match(html(),/专家复核 0 项/);const f=copy();f.snapshot.result.summary.item_counts.NEEDS_EXPERT_REVIEW=3;assert.match(html(f),/专家复核 3 项/);assert.doesNotMatch(html(f),/未发现.*冲突/);});
+test('UX05 two questions explicitly cover nineteen factual items',()=>{assert.match(html(),/19 项.*2 个项目级问题/);});
+test('UX06 question coverage is derived from unique IDs',()=>{const f=copy();const q=f.snapshot.result.summary.questions[0];q.item_ids.push(q.item_ids[0]);q.resource_ids.push(q.resource_ids[0]);assert.match(html(f),/覆盖 18 项事项.*18 个资源/);});
+test('UX07 insufficient basis is separate from project questions',()=>{const h=html();assert.match(h,/系统仍无法安全判断的事项/);assert.match(h,/不要求你重复填写已回答的用途/);});
+test('UX08 item and unique resource denominators stay distinct',()=>{assert.match(html(),/127 项研判事项.*45 个不同资源/);assert.match(html(),/不代表合规率/);});
+test('UX09 scope subset explicitly includes AI resources without addition',()=>{assert.match(html(),/44 个资源，其中 27 个 AI 资源已包含在内/);assert.doesNotMatch(html(),/71 个资源/);});
+test('UX10 auxiliary judgment does not promote verification or authorization',()=>{const h=html();for(const forbidden of ['AI已核验','85项已解决','系统已授权','可以放心使用'])assert.ok(!h.includes(forbidden));assert.match(h,/不代表授权确认；必要义务仍须履行/);});
+test('UX11 grouping never invents judgments absent from data',()=>{assert.equal(api().reviewGroups([result.items[0]],'AI_ASSISTED').length,1);assert.equal(api().reviewGroups([result.items[0]],'AI_ASSISTED')[0].code,'system_limit_explained');});
+test('UX12 evidence views use only validated item refs and exact joined metadata',()=>{const i=result.items.find(i=>i.evidence_ids.length);const views=api().reviewEvidence(i,[{id:'unrelated',sourceKind:'license_text'},{id:i.evidence_ids[0],sourceKind:'manifest_field'}]);assert.equal(views.length,i.evidence_ids.length);assert.equal(views[0].kind,'依赖声明字段');assert.ok(!views.some(v=>v.id==='unrelated'));});
+test('UX13 no evidence kind is guessed from locator extension',()=>{const i={...result.items[0],evidence_ids:['e'],source_locators:['LICENSE']};assert.equal(api().reviewEvidence(i,[])[0].kind,'证据类型未提供');});
+test('UX14 technical IDs occur only in advanced details',()=>{const h=html();const ordinary=h.replace(/<details class="ai-review-technical">[\s\S]*?<\/details>/g,'').replace(/<details class="ai-review-provenance">[\s\S]*?<\/details>/g,'');assert.doesNotMatch(ordinary,/air_[a-f0-9]+|evd_[a-f0-9]+|PROJECT::|ressnap_/);});
+test('UX15 readonly refresh uses real GET contract twice and zero POST',async()=>{const r=runtime(),s=r.load('services/aiReview.ts'),calls=[];r.setFetch(async(u,o)=>{calls.push(o.method??'GET');return Response.json(fixture);});await s.loadReview(assessment,true);await s.loadReview(assessment,true);assert.deepEqual(calls,['GET','GET']);});
+test('UX16 changed selected assessment rejects existing aggregate',()=>{assert.throws(()=>api().validateReview(fixture,{...assessment,version:7}));});
+test('UX17 API failure never returns a mock result or writes',async()=>{const r=runtime(),s=r.load('services/aiReview.ts'),calls=[];r.setFetch(async(u,o)=>{calls.push(o.method??'GET');return new Response('unavailable',{status:503});});await assert.rejects(s.loadReview(assessment,true));assert.deepEqual(calls,['GET']);});
+test('UX18 grouping preserves source objects and confidence uncertainty facts',()=>{const before=JSON.stringify(result);const g=api().reviewGroups(result.items,'AI_ASSISTED').find(g=>g.code==='likely_dev_test_only');assert.equal(g.bands.LOW,8);assert.ok(g.uncertainties.includes('ACTUAL_DELIVERY_UNKNOWN'));assert.equal(JSON.stringify(result),before);});
+test('UX19 question reason uses saved why field and readonly does not offer answer submit',()=>{const h=html();assert.match(h,/已有仓库依据不能证明实际交付或履行事实/);assert.match(h,/只读查看：本页不收集或保存回答/);assert.doesNotMatch(h,/<form|type="submit"/);});
+test('UX20 malformed optional judgment and uncertainty metadata fail closed',()=>{for(const [field,val] of [['judgment_code',{}],['uncertainty_codes','NONE']]){const f=copy();f.snapshot.result.items[0][field]=val;assert.throws(()=>api().validateReview(f,assessment));}});
+test('UX21 legacy absent presentation metadata retains conservative generic display',()=>{const f=copy();delete f.snapshot.result.items[0].judgment_code;delete f.snapshot.result.items[0].uncertainty_codes;api().validateReview(f,assessment);assert.equal(api().reviewGroups([f.snapshot.result.items[0]],'AI_ASSISTED')[0].title,'辅助研判记录');});
+test('UX22 question item and resource coverage cannot include unrelated identities',()=>{for(const k of ['item_ids','resource_ids']){const f=copy();f.snapshot.result.summary.questions[0][k].push('unrelated');assert.throws(()=>api().validateReview(f,assessment));}});

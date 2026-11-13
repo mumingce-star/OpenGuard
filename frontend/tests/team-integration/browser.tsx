@@ -1,0 +1,52 @@
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import { P2Workbench } from '../../src/components/P2Workbench';
+import { pendingWriteFor } from '../../src/services/p2';
+import { fixture, TARGET, type ResponseOptions, type View } from './fixture';
+import { transport, check } from './transport';
+const report={classification:'SYNTHETIC_TEST_ONLY_REAL_REACT_AND_SERVICE_CLOSED_TRANSPORT',status:'NOT_RUN',cases:[] as any[]};
+declare global{interface Window{__P2_TEAM_INTEGRATION__:typeof report;runP2TeamIntegration:()=>Promise<typeof report>;}}
+window.__P2_TEAM_INTEGRATION__=report;
+const task=()=>new Promise<void>(resolve=>{const c=new MessageChannel();c.port1.onmessage=()=>{c.port1.close();c.port2.close();resolve();};c.port2.postMessage(null);});
+async function until(predicate:()=>boolean,label:string){const deadline=performance.now()+4000;while(!predicate()){if(performance.now()>deadline)throw Error('Not settled: '+label);await act(async()=>{await task();});}}
+async function idle(){await act(async()=>{for(let i=0;i<8;i++)await task();});}
+function mount(f:ReturnType<typeof fixture>,t:ReturnType<typeof transport>,initial:'r1'|'r2'){
+ const host=document.createElement('div');document.querySelector('#mounts')!.append(host);const root=createRoot(host);let disposed=false;
+ const bundle=(view:View)=>view==='A'?f.base:f.other;
+ function render(view:View,readOnly=false){const b=bundle(view);t.view(view);const r=initial==='r1'?b.result:b.newer;history.replaceState(null,'',`/app/scans/${b.assessment.scan_id}/assessment?mode=api&assessment_id=${b.assessment.id}&p2_result=${r.result_id}`);flushSync(()=>root.render(<P2Workbench scan={b.scan} assessment={b.assessment} readOnly={readOnly}/>));}
+ render('A');const node=host.querySelector('.p2-workbench');
+ const button=(label:string)=>Array.from(host.querySelectorAll<HTMLButtonElement>('button')).find(b=>b.textContent===label);
+ function click(label:string){const b=button(label);check(b,'Missing button '+label);check(!b.disabled,'Disabled button '+label);flushSync(()=>b.click());}
+ return{host,render,click,button,async ready(view:View='A'){const b=bundle(view),r=initial==='r1'?b.result:b.newer;await until(()=>host.querySelector<HTMLElement>('[data-bound-advice-maincard]')?.dataset.resultId===r.result_id&&!host.textContent?.includes('正在读取当前对象'),'fixed Result');check(host.querySelector('.p2-workbench')===node,'Workbench unexpectedly remounted');},async compare(){click('读取指定前版并排核对');await idle();},dispose(){if(!disposed){disposed=true;flushSync(()=>root.unmount());host.remove();}}};
+}
+type Context={f:ReturnType<typeof fixture>;t:ReturnType<typeof transport>;ui:ReturnType<typeof mount>};
+async function scenario(name:string,action:(c:Context)=>Promise<void>,options:ResponseOptions&{writes?:number}={}){
+ const f=fixture(),t=transport(f,options),prior=location.href;let ui:ReturnType<typeof mount>|undefined,error:unknown;window.fetch=t.fetch;
+ try{ui=mount(f,t,options.initial??'r2');await ui.ready();await action({f,t,ui});check(t.unknown.length===0,'Independent unknown ledger nonempty');check(t.nonGet.length===(options.writes??0),'Unexpected nonGET dispatch count');}
+ catch(e){error=e;}
+ finally{ui?.dispose();await t.drain();await idle();if(!error&&t.unknown.length)error=Error('Late unknown request');if(!error&&t.nonGet.length!==(options.writes??0))error=Error('Late nonGET request');history.replaceState(null,'',prior);report.cases.push({name,status:error?'failed':'passed',error:error instanceof Error?error.stack:error?String(error):null,requests:t.ledger,unknown:t.unknown,nonGet:t.nonGet});document.querySelector('#results')!.textContent=JSON.stringify(report,null,2);}
+}
+export async function runP2TeamIntegration(){
+ check(report.status==='NOT_RUN','One run per fresh page');report.status='running';
+ await scenario('fixed r2 displays the exact saved r1 parent beside it',async({f,t,ui})=>{await ui.compare();await until(()=>!!ui.host.querySelector('[data-p2-version-pair]'),'version pair');const pair=ui.host.querySelector<HTMLElement>('[data-p2-version-pair]')!;check(pair.dataset.previousResult===f.base.result.result_id&&pair.dataset.currentResult===f.base.newer.result_id,'Result identities mixed');check(pair.textContent?.includes('SYNTHETIC_USAGE：保留本版')&&pair.textContent?.includes('SYNTHETIC_USAGE：保留第二版'),'Saved conditions changed or missing');check(t.ledger.filter(x=>x.route==='fixed-r1-A').length===1,'Parent read count');});
+ for(const mismatch of ['binding','revision','scope','missing'] as const)await scenario('previous '+mismatch+' fails closed without latest fallback',async({t,ui})=>{await ui.compare();await until(()=>!!ui.host.querySelector('[data-p2-version-comparison] [role="alert"]'),'explicit comparison rejection');check(!ui.host.querySelector('[data-p2-version-pair]'),'Mismatching pair displayed');check(t.ledger.filter(x=>x.route==='fixed-r1-A').length===1,'Unexpected retry');},{previous:mismatch});
+ await scenario('held previous GET is aborted on Assessment switch',async({t,ui})=>{await ui.compare();await until(()=>t.ledger.some(x=>x.route==='fixed-r1-A'),'parent GET entered');ui.render('B');await ui.ready('B');check(t.ledger.find(x=>x.route==='fixed-r1-A')!.aborted,'Old parent GET not aborted');t.releasePrevious();await idle();check(!ui.host.querySelector('[data-p2-version-pair]'),'Old pair leaked');},{holdPrevious:true});
+ await scenario('consecutive material GET cancels first and preserves second',async({t,ui})=>{ui.click('读取已存材料 1');await until(()=>t.ledger.some(x=>x.route==='material-mat_team_1'),'first material GET');ui.click('读取已存材料 2');await until(()=>ui.host.querySelector('[data-material-inspection]')?.textContent?.includes('mat_team_2')??false,'second material');check(t.ledger.find(x=>x.route==='material-mat_team_1')!.aborted,'First GET not cancelled');t.releaseMaterial();await idle();check(ui.host.querySelector('[data-material-inspection]')?.textContent?.includes('mat_team_2'),'Late first GET replaced current material');},{holdMaterial:true});
+ await scenario('material GET cannot cross Assessment ABA',async({t,ui})=>{ui.click('读取已存材料 1');await until(()=>t.ledger.some(x=>x.route==='material-mat_team_1'),'material GET');ui.render('B');await ui.ready('B');ui.render('A');await ui.ready('A');t.releaseMaterial();await idle();check(t.ledger.find(x=>x.route==='material-mat_team_1')!.aborted,'ABA did not abort');check(!ui.host.querySelector('[data-material-inspection]'),'ABA revived old material');},{holdMaterial:true});
+ await scenario('material GET cancels when switching fixed Result within Assessment',async({t,ui})=>{ui.click('读取已存材料 1');await until(()=>t.ledger.some(x=>x.route==='material-mat_team_1'),'material GET');ui.click('查看当前结果 r2');await until(()=>ui.host.querySelector<HTMLElement>('[data-bound-advice-maincard]')?.dataset.resultRevision==='2','new Result');t.releaseMaterial();await idle();check(t.ledger.find(x=>x.route==='material-mat_team_1')!.aborted,'Result switch did not abort');check(!ui.host.querySelector('[data-material-inspection]'),'Old Result material leaked');},{holdMaterial:true,initial:'r1'});
+ await scenario('material GET cancels on unmount',async({t,ui})=>{ui.click('读取已存材料 1');await until(()=>t.ledger.some(x=>x.route==='material-mat_team_1'),'material GET');ui.dispose();check(t.ledger.find(x=>x.route==='material-mat_team_1')!.aborted,'Unmount did not abort');t.releaseMaterial();await idle();},{holdMaterial:true});
+ await scenario('sent Material POST receipt survives GET cancellation and new Result',async({f,t,ui})=>{
+  ui.click('补充 LICENSE / NOTICE');await until(()=>!!ui.host.querySelector('.p2-material-form'),'form');const form=ui.host.querySelector<HTMLFormElement>('.p2-material-form')!,select=form.querySelector<HTMLSelectElement>('select')!;
+  flushSync(()=>{select.value=TARGET;select.dispatchEvent(new Event('change',{bubbles:true}));});const checkbox=form.querySelector<HTMLInputElement>('input[type=checkbox]')!;flushSync(()=>checkbox.click());
+  const input=form.querySelector<HTMLInputElement>('input[type=file]')!,file=new File(['SYNTHETIC_TEST_ONLY material\n'],'LICENSE');Object.defineProperty(input,'files',{value:{0:file,length:1,item:()=>file},configurable:true});flushSync(()=>input.dispatchEvent(new Event('change',{bubbles:true})));
+  const desc=form.querySelector<HTMLInputElement>('input[maxlength="512"]')!,setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')!.set!;flushSync(()=>{setter.call(desc,'SYNTHETIC_TEST_ONLY local input');desc.dispatchEvent(new Event('input',{bubbles:true}));});
+  flushSync(()=>form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})));await until(()=>t.ledger.some(x=>x.route==='material-post'),'actual Service Material POST');const pending=pendingWriteFor(f.base.assessment);check(pending,'Sent request not retained');const raw=pending.serialized;
+  ui.click('读取已存材料 1');await until(()=>t.ledger.some(x=>x.route==='material-mat_team_1'),'GET after POST dispatch');t.releasePost();await until(()=>ui.host.querySelector<HTMLElement>('[data-bound-advice-maincard]')?.dataset.resultRevision==='3','actual receipt r3');check(t.ledger.find(x=>x.route==='material-mat_team_1')!.aborted,'New Result did not cancel old GET');t.releaseMaterial();await idle();
+  check(ui.host.querySelector('[data-material-inspection]')?.textContent?.includes('mat_team_3'),'GET cancellation swallowed POST receipt card');check(pendingWriteFor(f.base.assessment)===null,'Saved POST pending not resolved');check(t.nonGet[0].body===raw&&t.nonGet[0].status===201,'Original serialized POST/CAS changed or response absent');
+ },{holdMaterial:true,holdPost:true,writes:1});
+ await scenario('passive readOnly display only reads and never creates Result',async({t,ui})=>{ui.render('A',true);await idle();check(t.nonGet.length===0&&!t.unknown.length,'Passive GET contract');check(!!ui.host.querySelector('[data-bound-advice-maincard]'),'Saved Result lost after derived503');});
+ report.status=report.cases.every(x=>x.status==='passed')?'passed':'failed';document.querySelector('#results')!.textContent=JSON.stringify(report,null,2);return report;
+}
+window.runP2TeamIntegration=runP2TeamIntegration;
+document.querySelector<HTMLButtonElement>('#run')!.onclick=()=>void runP2TeamIntegration().catch(e=>{report.status='failed';document.querySelector('#results')!.textContent=JSON.stringify({...report,error:String(e)},null,2);});

@@ -1,0 +1,32 @@
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import {createServer} from 'node:http';
+import {dirname,join,resolve,extname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+const frontend=resolve(dirname(fileURLToPath(import.meta.url)),'../..'),task=resolve(frontend,'../..');
+const out=join(task,'evidence/frontend-official-usage-facts-final-v2'),dist=join(task,'artifacts/frontend-official-usage-facts-tests');
+await mkdir(out,{recursive:true});
+const {makeFrontendBuildConfig,loadVite}=await import(join(task,'helpers/frontend-config.mjs'));
+const config=await makeFrontendBuildConfig('frozen-tests');
+config.define['import.meta.env.VITE_OFFICIAL_SOURCE_AUTO']='"1"';config.define['import.meta.env.VITE_P2_AI_ANALYSIS']='"1"';
+config.build={outDir:dist,emptyOutDir:false,minify:false,rollupOptions:{input:join(frontend,'tests/official-sources/index.html')}};
+const vite=await loadVite();await vite.build(config);
+const server=createServer(async(req,res)=>{try{const path=decodeURIComponent(new URL(req.url,'http://127.0.0.1').pathname);if(path.includes('..'))throw Error('unsafe');const file=join(dist,path);res.setHeader('Content-Type',extname(file)==='.js'?'text/javascript':extname(file)==='.css'?'text/css':'text/html');res.end(await readFile(file));}catch{res.writeHead(404);res.end('NOT_FOUND');}});
+await new Promise((done,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',done);});
+const origin='http://127.0.0.1:'+server.address().port;
+const {chromium}=await import(process.env.OPENGUARD_PLAYWRIGHT || 'playwright-core');
+const rejected=[],consoleErrors=[];let browser;
+try{
+ browser=await chromium.launchPersistentContext(join(out,'private-profile'),{headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',viewport:{width:1500,height:1000},args:['--disable-background-networking','--disable-component-update','--no-first-run','--disable-default-apps'],env:{...process.env,TMPDIR:join(task,'runtime/tmp')}});
+ await browser.route('**/*',route=>{if(new URL(route.request().url()).origin!==origin){rejected.push(route.request().url());return route.abort();}return route.continue();});
+ const page=await browser.newPage();page.on('pageerror',e=>consoleErrors.push(String(e)));
+ await page.goto(origin+'/tests/official-sources/index.html#usage-facts-only');await page.locator('#run').click();await page.waitForFunction(()=>['passed','failed'].includes(window.__OFFICIAL_SOURCES__?.status),{timeout:90000});
+ const report=await page.evaluate(()=>window.__OFFICIAL_SOURCES__);
+ report.execution={argv:process.argv,cwd:process.cwd(),utc:new Date().toISOString(),origin,chrome:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',classification:'ACTUAL_REACT_COMPONENT_AND_SERVICE_WITH_SYNTHETIC_CLOSED_TRANSPORT',externalRequests:rejected,consoleErrors};
+ const sources={};for(const name of['browser.tsx','fixture.ts','transport.ts','run-usage-facts.mjs','index.html','LICENSE.txt']){const bytes=await readFile(join(frontend,'tests/official-sources',name));sources[name]={bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};}report.sources=sources;
+ await writeFile(join(out,'RESULT.json'),JSON.stringify(report,null,2));
+ const escape=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;');
+ await writeFile(join(out,'junit.xml'),`<?xml version="1.0"?><testsuite name="official-sources-react-service" tests="${report.cases.length}" failures="${report.cases.filter(x=>x.status!=='passed').length}">${report.cases.map(c=>`<testcase name="${escape(c.name)}">${c.status==='passed'?'':`<failure>${escape(c.error)}</failure>`}</testcase>`).join('')}</testsuite>`);
+ console.log(JSON.stringify({status:report.status,passed:report.cases.filter(x=>x.status==='passed').length,total:report.cases.length,rejected,consoleErrors,failures:report.cases.filter(x=>x.status!=='passed').map(c=>({name:c.name,error:c.error}))},null,2));
+ if(report.status!=='passed'||rejected.length||consoleErrors.length)process.exitCode=1;
+}finally{await browser?.close();await new Promise(r=>server.close(r));}
