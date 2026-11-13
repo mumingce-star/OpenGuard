@@ -300,9 +300,9 @@ export function Assessment({
       <Header
         title={p2WorkbenchEnabled ? scan.project+' · 项目评估' : compact ? '项目评估摘要' : '项目整体评估'}
         description={selected?.usage ? "本次用途："+usageTitle(selected.usage)+" · 第 "+selected.version+" 版" : selected ? "该历史评估未记录用途" : "读取本次已保存评估的用途与结果"}
+        action={selected?.usage&&<details key={selected.id+selected.version} className="assessment-usage-details"><summary>查看完整用途</summary><p>{usageDescription(selected.usage)}</p></details>}
       />
       {readOnly && <p className="og-use-draft" role="note">{readOnlyPreview ? '只读预览：可查看结果和依据，不能保存或重新评估。' : 'TEST_ONLY隔离工作台：仅可保存本页AI问题回答及尝试官方补证；用途评估、问答和其他业务写入关闭。'}</p>}
-      {selected?.usage&&<details key={selected.id+selected.version} className="assessment-usage-details"><summary>查看完整用途</summary><p>{usageDescription(selected.usage)}</p></details>}
       {loading && <p role="status">正在读取已保存评估…</p>}
       {error && <p className="og-error" role="alert">{error}</p>}
 

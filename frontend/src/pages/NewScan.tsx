@@ -115,8 +115,8 @@ export function NewScan({
     <div className="og-new-scan">
       <header className="og-scan-heading">
         <div className="og-scan-introduction">
-          <h1>从一个项目开始</h1>
-          <p>让资源、风险与每条证据在同一任务中保持一致。</p>
+          <h1>导入项目源码与用途声明</h1>
+          <p>选择待扫描的代码仓库或压缩包，填写七项预期用途作为评估基线。</p>
         </div>
         <div className="og-scan-mode">
           {!accountAuthEnabled&&<div className="og-mode-switch" aria-label="数据模式">
@@ -149,7 +149,7 @@ export function NewScan({
         </div>
       </header>
       <form onSubmit={submit} noValidate>
-        <section className="og-panel og-scan-composer" aria-label="扫描输入与用途">
+        <section className="og-panel og-scan-composer" aria-label="扫描输入与用途"><div className="og-v3-scan-source"><h2 className="og-v3-panel-title">1. 扫描来源与快照</h2>
           <SegmentedControl label="扫描输入方式" value={tab} disabled={busy} onChange={value => { setTab(value); setDragging(false); changed(); }} options={[{ value: 'github', label: <><InputIcon kind="repository" /> GitHub 仓库</> }, { value: 'zip', label: <><InputIcon kind="upload" /> 上传 ZIP</> }]} />
           {tab === "github" ? (
             <div className="og-form-section">
@@ -236,7 +236,8 @@ export function NewScan({
               </p>
             </div>
           )}
-        {mode === "api" && <section className="og-scan-usage-step" aria-label="扫描前用途"><p className="og-usage-intro">用途信息可选；未回答的事实保持未知，可稍后补充。</p><UsageForm compact value={usage} disabled={busy} onChange={value => { setUsage(value); changed(); }} /></section>}
+        <div className="og-v3-pipelines"><h3>默认启用分析管道</h3><p>依赖树与锁定版本解析 <span>静态扫描</span></p><p>许可声明与证据门禁校验 <span>保留缺口</span></p><p>Qwen3 辅助解读 <span>按需开启</span></p></div><p className="og-v3-source-note">未获取完整许可原文的依赖维持「未知 / 待核验」，不自动推断授权通过。</p></div>
+        {mode === "api" && <section className="og-scan-usage-step" aria-label="扫描前用途"><h2 className="og-v3-panel-title">2. 项目预期用途声明（7 项）</h2><p className="og-usage-intro">用途信息可选；未回答的事实保持未知，可稍后补充。</p><UsageForm matrix compact value={usage} disabled={busy} onChange={value => { setUsage(value); changed(); }} /></section>}
         </section>
         {mode === "mock" && (
           <label className="og-field">

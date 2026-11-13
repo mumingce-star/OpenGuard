@@ -86,7 +86,7 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   const { route, go, filter } = useRoute(),
     { scan, error, loading, reload } = useScan(route.scanId, route.mode);
   const chatMode = route.page === "assistant" || (route.page === "chat" && p2WorkbenchEnabled);
-  const [railCompact, setRailCompact] = useState(true);
+  const [railCompact, setRailCompact] = useState(chatMode);
   const [mobile, setMobile] = useState(false),
     [projecting, setProjecting] = useState(() => {
       try {
@@ -112,7 +112,7 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   useEffect(() => () => clearTimeout(timer.current), []);
   useEffect(() => {
     setMobile(false);
-    setRailCompact(true);
+    setRailCompact(chatMode);
   }, [route.page, route.scanId, route.riskId]);
   function created(s: Pick<Scan, "id" | "mode">) {
     go(scanPath(s.id, "progress", s.mode));
@@ -173,12 +173,16 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   function navButton([page, label]: [Page, string], compact: boolean) {
     const disabled = !(["new-scan", "history", "assistant"].includes(page)) && !route.scanId;
     return <NavTooltip key={page} label={label} enabled={compact} disabledReason={disabled ? "请先选择或创建扫描任务" : undefined}>
-      <button className={page === route.page ? "active" : ""} aria-label={label} title={compact ? undefined : label} aria-current={page === route.page ? "page" : undefined} disabled={disabled} onClick={() => { setMobile(false); setRailCompact(true); navigate(page); }}><Icon page={page} /><span className="og-nav-label">{label}</span>{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>
+      <button className={page === route.page ? "active" : ""} aria-label={label} title={compact ? undefined : label} aria-current={page === route.page ? "page" : undefined} disabled={disabled} onClick={() => { setMobile(false); setRailCompact(page === "assistant" || page === "chat"); navigate(page); }}><Icon page={page} /><span className="og-nav-label">{label}</span>{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>
     </NavTooltip>;
   }
   const detailPages: Page[] = ["risks", "resources", "graph", "remediation", "diff"];
   function navigation(compact: boolean) {
-    return <nav aria-label="工作台导航" className="og-workspace-nav">{compact ? items.map(item => navButton(item, true)) : <>{items.filter(([p]) => !detailPages.includes(p)).map(item => navButton(item, false))}<details open={detailPages.includes(route.page)}><summary>扫描明细</summary>{items.filter(([p]) => detailPages.includes(p)).map(item => navButton(item, false))}</details></>}</nav>;
+    return <nav aria-label="工作台导航" className="og-workspace-nav">{compact ? items.map(item => navButton(item, true)) : <>
+      <span className="og-nav-group-title">评估主流程</span>{items.filter(([p]) => !detailPages.includes(p) && p !== 'history' && p !== 'assistant').map(item => navButton(item, false))}
+      <span className="og-nav-group-title">证据与风险</span>{items.filter(([p]) => detailPages.includes(p)).map(item => navButton(item, false))}
+      <span className="og-nav-group-title">辅助工具</span>{items.filter(([p]) => p === 'assistant' || p === 'history').reverse().map(item => navButton(item, false))}
+    </>}</nav>;
   }
   const active = scan && ["queued", "running"].includes(scan.status);
   let content;
@@ -192,7 +196,7 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
       />
     );
   else if (route.page === "assistant")
-    content = <Assistant query={route.query} go={go} />;
+    content = <Assistant query={route.query} go={go} username={accountUser?.username} />;
   else if (route.page === "history")
     content = <History query={route.query} go={go} />;
   else if (route.page === "not-found")
@@ -314,11 +318,7 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
               <small>{route.page === "history" ? "真实接口 · 只读查询" : route.scanId || "尚未创建"}</small>
             </div>
             {navigation(railCompact)}
-            <footer>
-              证据先行，结论可溯
-              <br />
-              合规信息整理 · 非法律意见
-            </footer>
+            <footer className="og-sidebar-user"><span className="og-user-avatar" aria-hidden="true">{accountUser?.username.slice(0,1).toUpperCase() ?? 'U'}</span><span className="og-user-name">{accountUser?.username ?? '本地工作台'}</span>{accountUser && <button aria-label="退出登录" title="退出登录" onClick={()=>void logout()} disabled={logoutBusy}>{logoutBusy?'…':'退出'}</button>}{logoutError&&<span className="account-logout-error" role="alert">{logoutError}</span>}</footer>
           </aside>
           <div className="og-workspace">
             <header className="og-topbar">
@@ -331,11 +331,26 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
               >
                 ☰
               </button>
-              <strong>
+              <strong className="og-breadcrumb"><span>{scan?.project ?? "工作台"} / </span>
                 {items.find(([p]) => p === route.page)?.[1] ?? "工作台"}
               </strong>
               <div className="og-actions">
-                {accountUser&&<><span className="account-user" aria-label="当前账号">{accountUser.username}</span><button onClick={()=>void logout()} disabled={logoutBusy}>{logoutBusy?'正在退出…':'退出登录'}</button>{logoutError&&<span className="account-logout-error" role="alert">{logoutError}</span>}</>}
+            <details className={"og-mode-banner og-mode-status " + route.mode}><summary>{route.mode === "mock" ? "演示数据" : isFixedSourceScan(scan) ? "真实接口 · 固定快照" : "真实接口"}</summary><div>
+              <strong>
+                {route.mode === "mock" ? "演示数据" : "真实接口模式"}
+              </strong>
+              <span>
+                {route.mode === "mock"
+                  ? "合成快照 · 不代表真实项目扫描结果"
+                  : isFixedSourceScan(scan)
+                    ? officialSourcesEnabled
+                      ? "固定 GitHub 源码快照 · 本次重新扫描 · 官方补证与 Qwen 状态见项目评估"
+                      : "固定 GitHub 源码快照 · 本次重新扫描 · 未调用 Qwen3"
+                  : p2WorkbenchEnabled && route.page === "assessment"
+                    ? "真实扫描数据 · 预生成评估展示稿单独标注来源"
+                    : "仅展示接口返回结果 · 失败不会回退演示"}
+              </span>
+            </div></details>
                 {route.page === "assistant" ? (
                   <span>本机 Qwen3</span>
                 ) : route.page === "history" ? (
@@ -352,22 +367,6 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
                 </button>
               </div>
             </header>
-            <div className={"og-mode-banner " + route.mode}>
-              <strong>
-                {route.mode === "mock" ? "演示数据" : "真实接口模式"}
-              </strong>
-              <span>
-                {route.mode === "mock"
-                  ? "合成快照 · 不代表真实项目扫描结果"
-                  : isFixedSourceScan(scan)
-                    ? officialSourcesEnabled
-                      ? "固定 GitHub 源码快照 · 本次重新扫描 · 官方补证与 Qwen 状态见项目评估"
-                      : "固定 GitHub 源码快照 · 本次重新扫描 · 未调用 Qwen3"
-                  : p2WorkbenchEnabled && route.page === "assessment"
-                    ? "真实扫描数据 · 预生成评估展示稿单独标注来源"
-                    : "仅展示接口返回结果 · 失败不会回退演示"}
-              </span>
-            </div>
             <main id="workspace-main" className="og-content">
               {scan?.error && (
                 <div

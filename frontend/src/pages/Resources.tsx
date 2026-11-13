@@ -1,5 +1,5 @@
 import { reportDownloadUrl } from "../services/scans";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Scan } from "../types/domain";
 import { resourceTypes, severityLabels } from "../types/domain";
 import { filterResources, resourceCsv } from "../services/model";
@@ -7,9 +7,9 @@ import {
   Header,
   Panel,
   Empty,
-  Dialog,
   SeverityBadge,
   download,
+  copyText,
   DownloadGlyph,
   DownloadControl,
   Checkbox,
@@ -32,12 +32,14 @@ export function Resources({
 }) {
   const [selected, setSelected] = useState<string | null>(null),
     notify = useNotice();
+  const searchInput = useRef<HTMLInputElement>(null);
+  useEffect(()=>{const focus=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();searchInput.current?.focus();}};window.addEventListener('keydown',focus);return()=>window.removeEventListener('keydown',focus);},[]);
   const rows = filterResources(scan, query),
-    resource = scan.resources.find((r) => r.id === (selected ?? query.get("resource_id")));
+    resource = scan.resources.find((r) => r.id === (selected ?? query.get("resource_id"))) ?? rows[0];
   const aiRows = rows.filter((item) => item.type === "Model" || item.type === "Dataset");
   const sections = resourceTypes.filter(type => type !== "Model" && type !== "Dataset").map(type => ({ type, rows: rows.filter(r => r.type === type) })).filter(section => section.rows.length);
   return (
-    <>
+    <div className="og-v3-resources">
       <Header
         title="第三方资源清单"
         eyebrow={"INVENTORY / " + scan.id}
@@ -61,11 +63,12 @@ export function Resources({
         <label className="og-field og-search-field">
           <span>搜索资源</span>
           <span className="og-search-control"><SearchGlyph /><input
+            ref={searchInput}
             type="search"
             value={query.get("q") ?? ""}
             onChange={(e) => filter("q", e.target.value)}
             placeholder="名称、版本、来源…"
-          /></span>
+          /><kbd>⌘K</kbd></span>
         </label>
         <label className="og-field">
           类型
@@ -104,7 +107,7 @@ export function Resources({
         </Checkbox>
       </div>
       <p className="og-list-context">当前筛选显示 {rows.length} / {scan.resources.length} 项资源<span>筛选不改变扫描事实与许可核验状态</span></p>
-      <Panel
+      {aiRows.length > 0 && <Panel
         title={`模型与数据集资源卡片 · ${aiRows.length}`}
         caption="Resource、Profile 与 Evidence 分层展示；Profile 缺失不会由名称、Logo、provider 或 source URL 补造。"
       >
@@ -122,8 +125,8 @@ export function Resources({
             ))}
           </div>
         )}
-      </Panel>
-      <Panel
+      </Panel>}
+      <div className="og-v3-resource-grid"><Panel
         title={"其他资源 · " + sections.reduce((total, section) => total + section.rows.length, 0) + " / " + scan.resources.length}
         caption={scan.mode === "api" ? "筛选仅影响当前页面，下载包含完整资源清单" : "全量任务快照 · CSV 仅包含当前筛选结果"}
       >
@@ -131,15 +134,15 @@ export function Resources({
           <Empty title="没有符合条件的其他资源" detail="尝试调整搜索和筛选条件。" />
         ) : (
           <div className="og-resource-list">
-            {sections.map(section => <ResourceSection key={section.type} type={section.type} rows={section.rows} scan={scan} select={setSelected}/>)}
+            {sections.map(section => <ResourceSection key={section.type} type={section.type} rows={section.rows} scan={scan} select={setSelected} selected={resource?.id}/>)}
           </div>
         )}
       </Panel>
       {resource && (
-        <Dialog
-          title={"资源详情 · " + resource.name}
-          onClose={() => { setSelected(null); filter("resource_id", ""); }}
-        >
+        <aside className="og-v3-inspector" aria-label="资源证据速览"><header><h2>{resource.name} @ {resource.version??'版本未获取'} 证据速览</h2><button type="button" onClick={()=>void copyText(resource.id,notify)}>复制 资源 ID</button></header><div className="og-v3-inspector-body"><div className="og-v3-kv-grid"><div><small>Package URL</small><strong>{'未提供独立 PURL'}</strong></div><div><small>精确定位位置</small><strong>{(()=>{const e=scan.evidence.find(e=>resource.evidenceIds.includes(e.id));return e?`${e.path??e.label}${e.startLine?': L'+e.startLine:''}`:'未提供';})()}</strong></div><div><small>扫描观测许可</small><strong>{resource.license??'未知'} · {factVerificationLabels[resource.licenseVerification??'unknown']}</strong></div><div><small>关联原始线索</small><strong>{resource.evidenceIds.length} 条引用</strong></div></div>
+          <EvidenceReader key={resource.id} scan={scan} ids={resource.evidenceIds} />
+          <p className="og-v3-boundary">核验边界：清单中的许可声明不代表完整原文或授权证明，未知与待核验状态保持不变。</p>
+          <details><summary>完整资源身份与来源</summary>
           <dl className="og-meta">
             <dt>资源 ID</dt>
             <dd className="og-wrap-id">{resource.id}</dd>
@@ -157,7 +160,7 @@ export function Resources({
             </dd>
             <dt>授权状态</dt>
             <dd>{factVerificationLabels[resource.authorizationStatus ?? "unknown"]}</dd>
-          </dl>
+          </dl></details>
           <h3>相关待核查线索</h3>
           {scan.risks
             .filter((r) => r.resourceId === resource.id)
@@ -174,14 +177,16 @@ export function Resources({
                 <strong>{r.title}</strong>
               </button>
             ))}
-          <EvidenceReader scan={scan} ids={resource.evidenceIds} />
-        </Dialog>
-      )}
-    </>
+          </div></aside>
+      )}</div>
+    </div>
   );
 }
-function ResourceSection({ type, rows, scan, select }: { type: string; rows: Scan["resources"]; scan: Scan; select: (id: string) => void }) {
-  const [open, setOpen] = useState(false), [limit, setLimit] = useState(25), visible = open ? rows.slice(0, limit) : [];
+function ResourceSection({ type, rows, scan, select, selected }: { type: string; rows: Scan["resources"]; scan: Scan; select: (id: string) => void; selected?:string }) {
+  const [open, setOpen] = useState(true), [page, setPage] = useState(0);
+  const key=rows.map(r=>r.id).join('|');
+  useEffect(()=>setPage(0),[key]);
+  const current=Math.min(page,Math.max(0,Math.ceil(rows.length/10)-1)),visible=rows.slice(current*10,current*10+10);
   const label = ({ Package: "代码组件", Model: "模型", Dataset: "数据集", API: "接口", Service: "服务", Asset: "素材" } as Record<string, string>)[type];
-  return <section className="og-resource-section"><button className="og-risk-preview" aria-expanded={open} onClick={() => setOpen(v => !v)}><div><strong>{label}</strong><small>{rows.length} 项资源 · 默认按需显示</small></div><span>{open ? "收起" : "展开"}</span></button>{open && <><div className="og-resource-head"><span>名称 / 版本</span><span>观测许可</span><span>来源</span><span>待核查线索</span></div>{visible.map(r => <button className="og-resource-row" key={r.id} onClick={() => select(r.id)}><div><strong>{r.name}</strong><small>{r.version ?? "版本未获取"}</small></div><span>{r.license ?? "许可未获取"}<small>{factVerificationLabels[r.licenseVerification ?? "unknown"]}</small></span><span>{r.origin ?? "来源未获取"}<small>{scan.evidence.filter(e => r.evidenceIds.includes(e.id)).map(e => e.path ?? e.url ?? e.label).join("；") || "证据不足"}</small></span><span>{scan.risks.filter(x => x.resourceId === r.id).length} 条线索 →</span></button>)}<p>当前显示 {visible.length} / {rows.length} 项资源</p>{limit < rows.length && <div className="og-actions"><button onClick={() => setLimit(n => n + 25)}>继续显示后 25 项</button><button onClick={() => setLimit(rows.length)}>显示全部</button></div>}</>}</section>;
+  return <section className="og-resource-section"><button className="og-risk-preview" aria-expanded={open} onClick={() => setOpen(v => !v)}><div><strong>{label}</strong><small>{rows.length} 项资源</small></div><span>{open ? "收起" : "展开"}</span></button>{open && <><div className="og-resource-head"><span>名称 / 版本</span><span>观测许可</span><span>来源</span><span>线索</span></div>{visible.map(r => <button className={'og-resource-row'+(selected===r.id?' is-selected':'')} aria-pressed={selected===r.id} key={r.id} onClick={() => select(r.id)}><div><strong>{r.name}</strong><small>{r.version ?? "版本未获取"}</small></div><span>{r.license ?? "许可未获取"}<small>{factVerificationLabels[r.licenseVerification ?? "unknown"]}</small></span><span title={r.origin??''}>{r.origin ?? "来源未获取"}<small>{scan.evidence.filter(e => r.evidenceIds.includes(e.id)).map(e => e.path ?? e.url ?? e.label).join("；") || "证据不足"}</small></span><span>{scan.risks.filter(x => x.resourceId === r.id).length} →</span></button>)}<footer className="og-v3-panel-foot"><span>显示第 {current*10+1}–{current*10+visible.length} 项，共 {rows.length} 项</span><div className="og-actions"><button disabled={current===0} onClick={()=>setPage(current-1)}>上一页</button><button disabled={(current+1)*10>=rows.length} onClick={()=>setPage(current+1)}>下一页 →</button></div></footer></>}</section>;
 }

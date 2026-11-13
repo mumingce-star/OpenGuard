@@ -204,3 +204,15 @@
 - 公开副本处理：移除 8 个测试 runner 中的个人绝对路径；未登记再分发授权的首页视频/封面不发布。历史 helper 缺失在文档说明。
 - 计划验证：核对原始 SHA256、执行公开副本默认单测与构建、核查最终 GitHub 差异。既有失败项明确披露。
 - 交接：Terra 复核前端实现，Luna 复核测试可复现边界；不改变 API、Schema 或后端。
+
+### [20261113-1930-GPT6-frontend-ui-v3-publish-ready] COMPLETE - 前端发布副本验证完成
+
+- 作者：GPT-6 Codex / Root Coordinator；时间：2026-11-13（Asia/Shanghai）。
+- 目标与结果：现有前端基线及 UI v3 的公开副本已整理、检查并通过默认测试与构建；本提交准备提交至 `codex/frontend-ui-v3`，通过 PR 审查，不合并 main。
+- 修改文件：本提交的 12 个 UI 产品源码文件、frontend/UI_V3_VALIDATION.md、本共享日志；基线提交包含前端源码/配置/测试和必要资源及 AI 登记。
+- 验证命令与结果：按 package.json 的 test 脚本运行 Node test，187/187 通过；tsc --noEmit 通过；vite build 通过，既有大 chunk 警告保留；公开副本 runner 语法检查通过。
+- 来源核验：原始 272 个文件逐一匹配此前 SHA256，2 个未登记授权的首页媒体不发布；8 个 runner 私人路径参数化，README 标明快照边界。12 个 UI 文件与已验收本地源码哈希一致。
+- 接口与决策：32 个 services 未变，不修改后端或 API/Schema；维持桌面还原、窄屏可用和现有聊天能力范围。
+- 已知限制：扩展测试原基线同样有 16 项失败；历史浏览器专项依赖缺失 helper，ProjectChat 旧测试期望与只读归档不符；首页视频/封面不随源码发布；未完成跨平台、干净机器安装或真实 Qwen 推理验收。详见 UI_V3_VALIDATION.md。
+- 下一步：Terra/Luna 或项目成员在 PR 中独立审查；本条完成指发布副本准备和验证，远程上传/PR 状态以随后创建的 GitHub 分支和 PR 为准，不宣称主线已合并。
+- 关联：`codex/frontend-ui-v3`；不包含后端、运行数据或浏览器账号资料。

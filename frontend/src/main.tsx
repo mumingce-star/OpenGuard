@@ -10,6 +10,7 @@ import './pages/Report.css';
 import './styles/product-ui.css';
 import './styles/workbench-light.css';
 import './styles/workspace-nav.css';
+import './styles/workspace-v3.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
