@@ -193,3 +193,49 @@
 - 已知风险与未完成项：不同 Git 分支仍可能产生文本冲突；冲突处理必须保留双方完整记录。产品开发尚未开始。
 - 下一步与责任模型：项目协调者提交并发布本协作制度；后续具体任务由 Sol、Terra、Luna 按职责认领。
 - 关联提交/PR/Issue/evidence_id：本轮协作制度 Git 提交（本条所在提交）。
+
+### [20261113-1900-GPT6-frontend-ui-v3-upload] START - 发布前端基线与 UI v3
+
+- 作者：GPT-6 Codex / Root Coordinator；时间：2026-11-13（Asia/Shanghai）。
+- 目标：按用户确认，将现有前端基线和本轮 12 个 UI 文件分两次提交到 `codex/frontend-ui-v3`，创建 PR，不合并 main。
+- 基线：portable-v2 组合交付来源，不冒充单个历史 Git HEAD；main 当前仅有前端说明文件。
+- 预计文件：frontend 源码、配置、测试、依赖锁文件及说明；本共享日志、AI 辅助记录和资源清单。
+- 范围：只处理前端。无后端、运行数据、浏览器账号资料、依赖安装目录或构建产物。
+- 公开副本处理：移除 8 个测试 runner 中的个人绝对路径；未登记再分发授权的首页视频/封面不发布。历史 helper 缺失在文档说明。
+- 计划验证：核对原始 SHA256、执行公开副本默认单测与构建、核查最终 GitHub 差异。既有失败项明确披露。
+- 交接：Terra 复核前端实现，Luna 复核测试可复现边界；不改变 API、Schema 或后端。
+
+### [20261113-1930-GPT6-frontend-ui-v3-publish-ready] COMPLETE - 前端发布副本验证完成
+
+- 作者：GPT-6 Codex / Root Coordinator；时间：2026-11-13（Asia/Shanghai）。
+- 目标与结果：现有前端基线及 UI v3 的公开副本已整理、检查并通过默认测试与构建；本提交准备提交至 `codex/frontend-ui-v3`，通过 PR 审查，不合并 main。
+- 修改文件：本提交的 12 个 UI 产品源码文件、frontend/UI_V3_VALIDATION.md、本共享日志；基线提交包含前端源码/配置/测试和必要资源及 AI 登记。
+- 验证命令与结果：按 package.json 的 test 脚本运行 Node test，187/187 通过；tsc --noEmit 通过；vite build 通过，既有大 chunk 警告保留；公开副本 runner 语法检查通过。
+- 来源核验：原始 272 个文件逐一匹配此前 SHA256，2 个未登记授权的首页媒体不发布；8 个 runner 私人路径参数化，README 标明快照边界。12 个 UI 文件与已验收本地源码哈希一致。
+- 接口与决策：32 个 services 未变，不修改后端或 API/Schema；维持桌面还原、窄屏可用和现有聊天能力范围。
+- 已知限制：扩展测试原基线同样有 16 项失败；历史浏览器专项依赖缺失 helper，ProjectChat 旧测试期望与只读归档不符；首页视频/封面不随源码发布；未完成跨平台、干净机器安装或真实 Qwen 推理验收。详见 UI_V3_VALIDATION.md。
+- 下一步：Terra/Luna 或项目成员在 PR 中独立审查；本条完成指发布副本准备和验证，远程上传/PR 状态以随后创建的 GitHub 分支和 PR 为准，不宣称主线已合并。
+- 关联：`codex/frontend-ui-v3`；不包含后端、运行数据或浏览器账号资料。
+
+
+### [20261114-1536-GPT6-gemini-ui-recheck] START - Gemini 前端修复验收与 PR 更新
+
+- 作者：GPT-6 Codex / Root Coordinator；日期：2026-11-14（Asia/Shanghai）。
+- 范围：用户确认三项问题关闭、关键流程无新增回归、默认测试与构建通过后更新 PR #4；保留已知扩展测试失败披露，不合并 main。
+- 开工检查：已阅读协作文件；发布分支 codex/frontend-ui-v3 干净，HEAD 为 e006aad；远程 main 未变。
+- 预计修改：7 个 Gemini UI 源文件、前端验收说明及 README、资源登记、AI 辅助记录和本日志。
+- 边界：不修改后端、API、Schema、依赖或现有公开测试路径处理；不上传运行数据、账号资料或既有排除媒体。
+- 已执行验收：187 项默认测试、类型检查、双配置构建通过；扩展测试 1102/1117，原有 15 项失败；真实本地浏览器流程通过。详情将写入验收文档。
+
+
+### [20261114-1538-GPT6-gemini-ui-publish-ready] COMPLETE - 修复验收及公开副本准备完成
+
+- 作者：GPT-6 Codex / Root Coordinator；时间：2026-11-14（Asia/Shanghai）。
+- 目标与结果：UI-01/02/03 全部关闭；1440×900 桌面及 390×844 窄屏关键流程复验通过，满足用户确认的发布门槛。
+- 修改文件：7 个 Gemini 产品文件（完整清单见 frontend/UI_ACCEPTANCE_20261114.md）、前端 README/验收与视觉登记、资源台账、AI 辅助记录和本日志。
+- 命令与证据：package.json test 对应 Node 命令 187/187；tsc --noEmit 通过；默认与功能启用的 vite build 通过；node --test tests/*.test.mjs 为 1102/1117、15 项原有失败；Playwright + Chrome 10 组检查、23 个页面状态通过；git diff --check 和新增内容隐私扫描通过。
+- 一致性：269 个候选文件 SHA-256 与交付目录一致；7 个发布产品文件与已测候选一致；32 个 services 未变。公开副本既有 runner 参数化、媒体排除范围保持。
+- 接口/Schema/规则：无变更；未修改后端。本次仅同步用户提供的 Gemini 前端设计及修复，Codex 未另行修改产品代码。
+- 风险与未完成：15 项扩展失败和 chunk 警告保留；未执行真实 Qwen、干净安装、跨平台或全无障碍验收；独立人工 PR 审查待完成。
+- 下一步：推送本提交并更新 PR #4 标题/说明，由项目成员审查，不合并 main。本条 COMPLETE 指验收和发布副本准备，远程提交状态以 GitHub 为准。
+- 关联：codex/frontend-ui-v3；https://github.com/mumingce-star/OpenGuard/pull/4。

@@ -99,3 +99,12 @@
 - 技术报告；
 - 演示脚本和 3-5 分钟视频；
 - 最终答辩 PPT（晋级后）。
+
+## 2026-11-13 前端快照导入
+
+锁定依赖见 `frontend/package.json` 与 `frontend/pnpm-lock.yaml`，视觉参考与自主实现边界见 `frontend/THIRD_PARTY_UI.md`。本轮 UI v3 没有新增依赖；构建继续输出依赖许可证文本。首页视频和封面未有可确认再分发授权的登记，本次不上传。该快照不代表整份历史资源台账的授权审计已经完成。
+
+
+## 2026-11-14 Gemini 前端视觉更新
+
+来源为用户提供的 Gemini TSX/CSS（含认证页内联 SVG 和 CSS SVG 装饰），具体模型版本未提供。本次未下载第三方图像或新增依赖；登记不等于独立授权审计。既有首页视频/封面排除范围保持不变。详情见 frontend/THIRD_PARTY_UI.md 与 frontend/UI_ACCEPTANCE_20261114.md。

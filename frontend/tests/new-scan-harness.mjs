@@ -1,0 +1,20 @@
+import fs from 'node:fs';import vm from 'node:vm';import ts from 'typescript';import {runtime} from './runtime.mjs';
+export function nodes(n){if(!n||typeof n!=='object')return [];if(Array.isArray(n))return n.flatMap(nodes);return [n,...nodes(n.props?.children)];}
+export function text(n){if(n==null||typeof n==='boolean')return '';if(Array.isArray(n))return n.map(text).join('');if(typeof n!=='object')return String(n);return text(n.props?.children);}
+export function scanHarness(readOnly=false){
+ const r=runtime({VITE_OPENGUARD_READ_ONLY_PREVIEW:String(readOnly)}),states=[],refs=[],effects=[],calls=[],created=[];let si=0,ri=0,ei=0,dirty=true,tree,queued=[],resolve,reject;
+ const pending=new Promise((a,b)=>{resolve=a;reject=b});
+ const hooks={useState(v){let i=si++;if(!(i in states))states[i]=typeof v==='function'?v():v;return [states[i],v=>{states[i]=typeof v==='function'?v(states[i]):v;dirty=true;}];},useRef(v){return refs[ri++]??(refs[ri-1]={current:v});},useEffect(fn,deps){const i=ei++;if(!effects[i]){effects[i]={};queued.push(()=>{effects[i].clean=fn();});}}};
+ const props={mode:'api',onMode(mode){props.mode=mode;dirty=true;},onCreated:s=>created.push(s)};
+ // Render the current real input selector/action controls. The old harness
+ // looked for GitHub/ZIP <button>s, but the product uses SegmentedControl radios.
+ const uiModule={exports:{}};
+ const jsx=(type,props)=>[uiModule.exports.SegmentedControl,uiModule.exports.ActionButton].includes(type)&&typeof type==='function'?type(props):({type,props});
+ vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../src/components/ui.tsx',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText,{...r.shared,module:uiModule,exports:uiModule.exports,require:n=>n==='react'?{createContext:v=>({_value:v}),useContext:c=>c._value,useId:()=> 'test-scan-input-selector'}:n==='react/jsx-runtime'?{jsx,jsxs:jsx}:r.load(n.replace('../','')+'.ts')});
+ const m={exports:{}},src=fs.readFileSync(new URL('../src/pages/NewScan.tsx',import.meta.url),'utf8');
+ vm.runInNewContext(ts.transpileModule(src,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText,{...r.shared,module:m,exports:m.exports,require:n=>n==='react'?hooks:n==='react/jsx-runtime'?{jsx,jsxs:jsx}:n.endsWith('/UsageForm')?{UsageForm:'UsageForm'}:n.endsWith('/ui')?{...uiModule.exports,useNotice:()=>()=>{}}:n.endsWith('/scans')?{zipLimit:1024*1024,createApiScan:async(input,key)=>{calls.push({input,key});return pending;},createDemo:()=>({id:'demo',mode:'mock'})}:n.endsWith('/mocks/data')?{scenarios:{standard:'standard'}}:r.load(n.replace('../','')+'.ts')});
+ async function settle(){for(let j=0;j<15;j++){if(dirty){dirty=false;si=ri=ei=0;queued=[];tree=m.exports.NewScan(props);queued.forEach(f=>f());}await new Promise(f=>setImmediate(f));if(!dirty)return;}}
+ const button=t=>nodes(tree).find(n=>n.type==='button'&&text(n).includes(t));
+ const form=()=>nodes(tree).find(n=>n.type==='UsageForm');
+ return {calls,created,settle,button,form,get tree(){return tree;},get text(){return text(tree);},get confirm(){return nodes(tree).find(n=>n.props?.['aria-label']==='确认扫描前用途');},async submit(){const p=nodes(tree).find(n=>n.type==='form').props.onSubmit({preventDefault(){}});await settle();return {pending:p};},edit(v){form().props.onChange(v);},async git(){nodes(tree).find(n=>n.type==='input'&&n.props.type==='radio'&&n.props.value==='github').props.onChange();await settle();nodes(tree).find(n=>n.props?.type==='url').props.onChange({target:{value:'https://github.com/example/public'}});await settle();},async zip(){nodes(tree).find(n=>n.type==='input'&&n.props.type==='radio'&&n.props.value==='zip').props.onChange();await settle();nodes(tree).find(n=>n.props?.type==='file').props.onChange({target:{files:[{name:'synthetic.zip',size:123,type:'application/zip'}],value:'a'}});await settle();},resolve(){resolve({id:'scan-confirmed',mode:'api'});},reject(e){reject(e);},dispose(){effects.forEach(e=>e.clean?.());}};
+}
