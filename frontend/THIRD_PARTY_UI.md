@@ -31,3 +31,8 @@ No paid prompt, restricted template, paid component source, icon pack or image i
 ## P0 integration
 
 Core pages reused from team commit 83e8928. Graph pages and React Flow dependencies were not imported. Existing React, Tailwind and Vite lockfile dependencies are unchanged.
+
+
+## 2026-11-14 Gemini UI integration
+
+The user supplied Gemini-generated TSX/CSS, including the inline authentication illustration and CSS SVG decorations. Codex reviewed these source changes and tested the integrated UI; no external artwork was downloaded and no dependency was added in this update. The exact Gemini model/version was not supplied. This entry records provenance, not an independent rights determination. Previously excluded landing video/poster remain excluded.

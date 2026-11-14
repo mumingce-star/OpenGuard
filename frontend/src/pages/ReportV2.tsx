@@ -194,7 +194,7 @@ export function ReportV2({ scan, query, open }: {
         <details><summary>查看原始来源字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details>
       </details>
     </Panel>}
-    <details className="og-archive-help"><summary>归档如何使用 · 查看保存范围</summary>
+    <details className="og-archive-help" open><summary>归档如何使用 · 查看保存范围</summary>
       <div className="og-archive-guide">
         <div><strong>查看当前结论</strong><p>到「合规报告」阅读本次扫描的完整内容。</p></div>
         <div><strong>保留历史版本</strong><p>在这里保存报告；每份归档有自己的固定链接。</p></div>
@@ -243,7 +243,7 @@ export function ReportV2({ scan, query, open }: {
         <button type="submit" disabled={scan.mode !== 'api'}>读取报告</button>
       </form>
     </details>
-    <details className="og-archive-advanced"><summary>历史扫描附件</summary><p>这些附件属于扫描报告，与上方保存的评估归档分别保留。</p>
+    <details className="og-archive-advanced"><summary>历史扫描附件</summary><p>这些附件属于扫描报告（附件由后端 GET 返回），与上方保存的评估归档分别保留。</p>
       {p0.length ? <div className="og-actions">{p0.map(format => <a key={format} className="og-download-button" href={reportDownloadUrl(scan.id, format)} download><DownloadGlyph /><span>下载扫描附件 {format.toUpperCase()}</span></a>)}</div> : <p>当前扫描没有已发布的历史附件。</p>}
     </details>
   </div>;

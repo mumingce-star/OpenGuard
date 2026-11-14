@@ -187,7 +187,45 @@ export function Empty({
 }) {
   return (
     <div className="og-empty">
-      <span aria-hidden="true">◇</span>
+      <span className="og-empty-emblem" aria-hidden="true">
+        <svg viewBox="0 0 280 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Corner blueprint registration brackets */}
+          <path d="M10 22V10H22M258 10H270V22M10 82V94H22M258 94H270V82" stroke="#9ec0b0" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Horizontal & vertical axis guidelines */}
+          <line x1="20" y1="52" x2="260" y2="52" stroke="#d5e5dd" strokeWidth="1" strokeDasharray="3 3" />
+          <line x1="140" y1="8" x2="140" y2="96" stroke="#d5e5dd" strokeWidth="1" strokeDasharray="3 3" />
+          {/* Left wing: Dependency & AST node cards */}
+          <path d="M82 35C98 35 100 52 112 52M88 69C102 69 102 52 112 52" stroke="#6aa08b" strokeWidth="1.3" strokeDasharray="2.5 2.5" />
+          <rect x="26" y="23" width="56" height="24" rx="5" fill="#ffffff" stroke="#b9d5c7" strokeWidth="1.2" />
+          <circle cx="36" cy="35" r="3.2" fill="#2f8566" />
+          <line x1="44" y1="32" x2="72" y2="32" stroke="#19614b" strokeWidth="1.5" strokeLinecap="round" />
+          <line x1="44" y1="38" x2="64" y2="38" stroke="#7da393" strokeWidth="1.3" strokeLinecap="round" />
+          <rect x="32" y="57" width="56" height="22" rx="5" fill="#f1f7f4" stroke="#c5ddd1" strokeWidth="1.2" />
+          <circle cx="42" cy="68" r="2.8" fill="#5b947e" />
+          <line x1="50" y1="65" x2="78" y2="65" stroke="#477d68" strokeWidth="1.4" strokeLinecap="round" />
+          <line x1="50" y1="71" x2="68" y2="71" stroke="#8fb0a1" strokeWidth="1.2" strokeLinecap="round" />
+          {/* Center: Orbital verification dial & dossier */}
+          <circle cx="140" cy="52" r="40" fill="#f6faf8" stroke="#c3dcd0" strokeWidth="1.2" strokeDasharray="4 3" />
+          <circle cx="140" cy="52" r="30" fill="#ffffff" stroke="#d5e7de" strokeWidth="1.1" />
+          <path d="M140 8V14M140 90V96M96 52H102M178 52H184" stroke="#82ab99" strokeWidth="1.3" strokeLinecap="round" />
+          <rect x="124" y="32" width="32" height="40" rx="5" fill="#ecf5f0" stroke="#19614b" strokeWidth="1.5" />
+          <line x1="131" y1="41" x2="149" y2="41" stroke="#19614b" strokeWidth="1.6" strokeLinecap="round" />
+          <line x1="131" y1="48" x2="149" y2="48" stroke="#3f7c66" strokeWidth="1.4" strokeLinecap="round" />
+          <line x1="131" y1="55" x2="143" y2="55" stroke="#78a090" strokeWidth="1.4" strokeLinecap="round" />
+          <circle cx="151" cy="66" r="8.5" fill="#19614b" stroke="#ffffff" strokeWidth="1.5" />
+          <path d="M147.8 66l2.2 2.2 4.2-4.4" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Right wing: License & Evidence anchor nodes */}
+          <path d="M168 52C180 52 182 35 198 35M168 52C180 52 180 69 192 69" stroke="#6aa08b" strokeWidth="1.3" strokeDasharray="2.5 2.5" />
+          <rect x="198" y="23" width="56" height="24" rx="5" fill="#ffffff" stroke="#b9d5c7" strokeWidth="1.2" />
+          <rect x="205" y="30" width="10" height="10" rx="2.5" fill="#e6f2ec" stroke="#2f8566" strokeWidth="1.2" />
+          <line x1="220" y1="32" x2="245" y2="32" stroke="#19614b" strokeWidth="1.5" strokeLinecap="round" />
+          <line x1="220" y1="38" x2="238" y2="38" stroke="#7da393" strokeWidth="1.3" strokeLinecap="round" />
+          <rect x="192" y="57" width="56" height="22" rx="5" fill="#f1f7f4" stroke="#c5ddd1" strokeWidth="1.2" />
+          <circle cx="202" cy="68" r="2.8" fill="#2f8566" />
+          <line x1="210" y1="65" x2="238" y2="65" stroke="#477d68" strokeWidth="1.4" strokeLinecap="round" />
+          <line x1="210" y1="71" x2="229" y2="71" stroke="#8fb0a1" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+      </span>
       <h2>{title}</h2>
       {detail && <p>{detail}</p>}
       {children}

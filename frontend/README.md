@@ -4,6 +4,8 @@
 
 本次发布与 UI v3 的验证范围、已知失败和素材缺口见 [UI_V3_VALIDATION.md](UI_V3_VALIDATION.md)。需要匹配版本的后端才能运行真实扫描、评估和聊天；也可显式设置 `VITE_DATA_MODE=mock` 查看既有合成演示。
 
+最新 Gemini UI 与三项修复复验见 [UI_ACCEPTANCE_20261114.md](UI_ACCEPTANCE_20261114.md)。默认测试与构建通过；15 项已知扩展失败继续披露。
+
 ## 构建和默认测试
 
 使用支持当前 Vite 8 的 Node.js（建议 Node 22.12+）及 pnpm：
