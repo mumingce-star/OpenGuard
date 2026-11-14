@@ -92,9 +92,11 @@ export function useRoute() {
     window.history.scrollRestoration = "manual";
     const pop = () => {
       setRoute(readRoute());
-      requestAnimationFrame(() =>
-        window.scrollTo(0, Number(history.state?.scroll ?? 0)),
-      );
+      requestAnimationFrame(() => {
+        const target = window.location.hash && document.getElementById(window.location.hash.slice(1));
+        if (target) target.scrollIntoView({ block: "start" });
+        else window.scrollTo(0, Number(history.state?.scroll ?? 0));
+      });
     };
     window.addEventListener("popstate", pop);
     return () => window.removeEventListener("popstate", pop);

@@ -30,3 +30,15 @@ The three features in each row are design targets implemented in OpenGuard, not 
 Reduced motion disables decorative motion. Native input, disabled, focus and request semantics are retained. The separate `ui-preview.html` is explicitly a design sample, contains no business results and never submits to business APIs. Its static text download is not a report.
 
 Deferred: day/night theme, rating, bookmarks, login/logout and social branding. Previously documented `spicy-rat-83` is not newly imported; its historical record is retained, with no new source-fidelity claim.
+
+## 2026-10-24 project refinement
+
+The existing references were adapted further within project-owned CSS: primary actions now use a cyan surface for hierarchy; New Scan uses a single form surface and a separate explanation column; the original landing video and particle title remain. No additional third-party code, assets or dependencies were acquired. Earlier source hashes identify the October 23 snapshot, not this uncommitted refinement.
+
+Current SHA256: `frontend/src/components/ui.tsx` = `867a81311b9b5c80808850b4182e25010c826687722c70f77b9a3291ffac2067`; `frontend/src/styles/workspace.css` = `b9fe65a7ed66147070024ecdc913d02d391d98eaf92e196c42e4fccc3835b8f5`; `frontend/src/pages/Landing.tsx` = `94faa8daf16c6ab00dc29b1d3ff27cd856c2fe82478572dba47941cc338ed585`.
+
+### 2026-10-24 result-page continuation
+
+The preceding hashes identify the first refinement snapshot. Assessment/P2 authority surfaces, grouped inventory/history, Graph controls, report reading tools and task filters were subsequently refined in project-owned React/CSS. No new third-party code, assets, package or license was introduced. Source identity for this later uncommitted snapshot: `ui.tsx` SHA256 `e38f27c5f2c0cff38eaa171d20a1cf992c8eb8d624de1b6cf9d764210636e25b`; `workspace.css` SHA256 `736f2844c7316fc615f9dfd64f358fc74e11112bf6e12b2945efd6a38b92cf86`. Existing authorship/license records remain applicable; no new fidelity claim is made.
+
+Final local result-page snapshot after fragment-navigation and sticky-directory verification: `workspace.css` SHA256 `9c2ed509ea7d93f74ac7bc93ecce6f13413f8664dd2042edb1a7bd1dc7e5e761`; `ui.tsx` unchanged from the preceding result-page hash. No new third-party acquisition.

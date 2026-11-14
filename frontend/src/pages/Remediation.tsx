@@ -90,7 +90,7 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
   }
 
   if (scan.mode !== 'api') return <><Header title="整改任务" description="正式任务仅来自真实 Assessment 与 Task API；演示模式不生成任务。" /><Empty title="演示模式不可用" /></>;
-  return <>
+  return <section className="og-remediation-page">
     <Header eyebrow="P1 / REMEDIATION" title="整改任务工作台" description="任务是独立工作流，不改变 Formal Assessment。done 不等于项目合规；dismissed 不等于义务不适用。" />
     <div className="og-scan-coverage-notice"><strong>优先级：后端未提供</strong><span>冻结 Task 1.0 没有优先级字段；全部任务归入“未提供”组，前端不根据 Finding 严重度或标题猜测。</span></div>
     <Panel title="固定评估版本" caption="刷新只读服务器状态；生成任务需要明确点击，不由 GET 触发。" action={<button type="button" onClick={() => setAttempt(value => value + 1)} disabled={!!busy}>重新读取</button>}>
@@ -100,6 +100,11 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
     </Panel>
     {message && <p role="status" className="og-success">{message}</p>}
     {error && <div role="alert" className="og-error">{error}<button type="button" onClick={() => setAttempt(value => value + 1)}>重试读取</button></div>}
+    {!loading && tasks.length > 0 && <nav className="og-task-status-nav" aria-label="按任务处理状态筛选">
+      {statuses.map(status => <button type="button" key={status} aria-pressed={selectedStatus === status} onClick={() => filter('task_status', selectedStatus === status ? '' : status)}>
+        <span>{labels[status]}</span><strong>{tasks.filter(task => task.status === status).length}</strong><small>当前评估的任务</small>
+      </button>)}
+    </nav>}
     {loading ? <Empty title="正在读取真实任务…" /> : !selected ? <Empty title="没有可用 Formal Assessment" detail="请先在项目评估页完成正式评估。" /> : tasks.length === 0 ? <Empty title="暂无整改任务" detail="仅显式生成；此页面不会自动创建任务。" /> : <Panel title={`任务 · ${filtered.length} / ${tasks.length}`} caption="优先级未提供 → 状态 → 资源分组。">
       <div className="og-task-filters"><label>状态<select value={selectedStatus} onChange={event => filter('task_status', event.target.value === 'all' ? '' : event.target.value)}><option value="all">全部状态</option>{statuses.map(status => <option key={status} value={status}>{labels[status]}</option>)}</select></label><label>资源<select value={selectedResource} onChange={event => filter('task_resource', event.target.value === 'all' ? '' : event.target.value)}><option value="all">全部资源</option>{resources.map(id => <option key={id} value={id}>{scan.resources.find(item => item.id === id)?.name ?? id}</option>)}<option value="none">未绑定资源</option></select></label></div>
       {!filtered.length ? <Empty title="筛选后没有任务" /> : grouped.map(([key, rows]) => { const [status, resource] = key.split('|') as [TaskStatus, string]; return <section key={key} className="og-task-group"><h3>{labels[status]} · {resource === 'multiple' ? '跨资源任务' : resource === 'none' ? '未绑定资源' : scan.resources.find(item => item.id === resource)?.name ?? resource} <small>{rows.length} 项</small></h3>{rows.map(task => {
@@ -108,5 +113,5 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
         return <article key={task.task_id} className="og-task-card"><div className="og-task-heading"><div><small>{task.origin.kind} · {task.superseded ? '旧评估版本任务' : '当前评估版本'} · v{task.version}</small><h4>{task.title}</h4></div><span>{labels[task.status]}</span></div><p>来源：{task.origin.source_pointer}</p><p>关联 Finding：{links.findingIds.length ? links.findingIds.map(id => <button type="button" key={id} onClick={() => openRisk(id)}>{id}</button>) : '未提供直接关联'}</p><p>关联 Obligation：{links.obligation ? `${links.obligation.id} · ${links.obligation.action}` : '未提供直接关联'}</p><p>Evidence：{ids.length ? ids.map(id => <button type="button" key={id} onClick={() => setSelectedEvidence(current => current?.taskId === task.task_id && current.id === id ? null : { taskId: task.task_id, id })}>{id}</button>) : '未提供扫描证据'}</p>{task.evidence_refs.some(ref => ref.namespace === 'profile_observation') && <p>另含 Profile Observation 引用；当前扫描证据阅读器不冒充其原文。</p>}{selectedEvidence?.taskId === task.task_id && ids.includes(selectedEvidence.id) && <EvidenceReader key={selectedEvidence.id} scan={scan} ids={[selectedEvidence.id]} initialId={selectedEvidence.id} />}<div className="og-task-edit"><label>任务状态<select value={task.status} disabled={!!busy} onChange={event => update(task, { status: event.target.value as TaskStatus })}>{statuses.map(status => <option key={status} value={status}>{labels[status]}</option>)}</select></label><label>备注<textarea maxLength={2000} value={drafts[task.task_id] ?? task.note} onChange={event => setDrafts(value => ({ ...value, [task.task_id]: event.target.value }))} /></label><button type="button" disabled={!!busy || (drafts[task.task_id] ?? task.note) === task.note} onClick={() => update(task, { note: drafts[task.task_id] ?? task.note })}>保存备注</button></div><small>更新时间：{new Date(task.updated_at).toLocaleString()} · 服务端版本 {task.version}{busy === task.task_id ? ' · 保存中…' : ''}</small></article>;
       })}</section>; })}
     </Panel>}
-  </>;
+  </section>;
 }

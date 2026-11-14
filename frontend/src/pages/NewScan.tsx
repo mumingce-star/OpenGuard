@@ -97,7 +97,7 @@ export function NewScan({
       <header className="og-scan-heading">
         <div className="og-scan-introduction">
           <h1>从一个项目开始</h1>
-          <p>让资源、风险与每条证据在同一任务中保持一致。</p>
+          <p>上传项目，查看资源、证据与评估结果。</p>
         </div>
         <div className="og-scan-mode">
           <div className="og-mode-switch" aria-label="数据模式">
@@ -122,20 +122,17 @@ export function NewScan({
               真实接口
             </button>
           </div>
-          <p className="og-mode-note">
-            {mode === "mock"
-              ? "演示数据 · 不联网，不读取你的仓库或 ZIP，只播放固定合成快照。"
-              : "真实接口 · 地址校验、扫描和文件安全检查由后端执行。失败不会切换为演示结果。"}
-          </p>
+          {mode === "mock" && <p className="og-mode-note">固定合成演示，不会扫描你选择的项目。</p>}
         </div>
       </header>
-      <form onSubmit={submit} noValidate>
+      <div className="og-scan-layout">
+      <form onSubmit={submit} noValidate aria-label="新建扫描">
         <Panel
-          title="扫描输入"
+          title="选择项目"
           caption={
             mode === "mock"
-              ? "格式体验与真实扫描分开呈现"
-              : "请确认后端已实现约定接口"
+              ? "选择输入方式，体验固定演示流程"
+              : "从公开 GitHub 仓库或本地 ZIP 开始"
           }
         >
           <SegmentedControl label="扫描输入方式" value={tab} disabled={busy} onChange={value => { setTab(value); changed(); }} options={[{ value: 'github', label: <><InputIcon kind="repository" /> GitHub 仓库</> }, { value: 'zip', label: <><InputIcon kind="upload" /> 上传 ZIP</> }]} />
@@ -156,7 +153,7 @@ export function NewScan({
                 />
                 <span>公开仓库地址</span>
               </label>
-              <p className="og-muted">公开 Git 需由服务管理员启用；提交时由后端校验。</p>
+              <p className="og-muted">填写公开仓库地址。服务未启用公开 Git 时会提示原因。</p>
             </div>
           ) : (
             <div className="og-form-section">
@@ -179,7 +176,7 @@ export function NewScan({
                 <p>
                   {file
                     ? (file.size / 1024 / 1024).toFixed(2) + " MB"
-                    : "只做格式与大小预检，不在浏览器解压或执行项目"}
+                    : "或从电脑中选择项目文件"}
                 </p>
                 <input
                   ref={picker}
@@ -216,7 +213,7 @@ export function NewScan({
               <p className="og-muted">
                 {zipLimit
                   ? "已配置上限：" + zipLimit / 1024 / 1024 + " MB"
-                  : "上传大小与解压安全限制由后端检查。"}
+                  : "支持 ZIP，文件限制以服务提示为准。"}
               </p>
             </div>
           )}
@@ -244,14 +241,14 @@ export function NewScan({
           </p>
         )}
         <div className="og-form-footer">
-          <p className="og-scan-boundary"><InputIcon kind="info" /><span>扫描现有依赖与明确的许可证声明；未核验内容保留待核验状态。</span></p>
+          <p className="og-scan-boundary"><InputIcon kind="info" /><span>{mode === "mock" ? "演示数据不会作为真实项目结果。" : (tab === "zip" ? file : url.trim()) ? "确认项目与用途后，开始扫描。" : "选择 ZIP 或填写仓库地址后可开始。"}</span></p>
           <div className="og-actions">
             {mode === "mock" && <button type="button" disabled={busy} onClick={demo}>
               载入固定演示
             </button>}
             <ActionButton
               className="og-primary"
-              disabled={busy}
+              disabled={busy || (tab === "zip" ? !file : !url.trim())}
               type="submit"
             >
               {busy
@@ -263,6 +260,18 @@ export function NewScan({
           </div>
         </div>
       </form>
+      <aside className="og-scan-guide" aria-labelledby="scan-guide-title">
+        <p className="og-eyebrow">从输入到证据</p>
+        <h2 id="scan-guide-title">扫描后你将看到</h2>
+        <ol>
+          <li><span className="og-guide-icon"><InputIcon kind="repository" /></span><div><h3>资源清单</h3><p>集中查看发现的依赖、模型与数据集引用。</p></div></li>
+          <li><span className="og-guide-icon"><InputIcon kind="info" /></span><div><h3>风险与来源证据</h3><p>从待核查线索，回到文件位置与原始依据。</p></div></li>
+          <li><span className="og-guide-icon"><InputIcon kind="archive" /></span><div><h3>正式评估与报告</h3><p>查看已保存的评估版本与可用报告，继续复核。</p></div></li>
+        </ol>
+        <p className="og-guide-boundary">扫描完成不代表项目已合规；证据不足的内容保留未知或待核验状态。</p>
+        <details className="og-scan-help"><summary>了解扫描与数据边界</summary><p>只做格式与大小预检，不在浏览器解压或执行项目。</p><p>扫描与安全校验由服务执行。真实接口失败不会切换为演示结果；演示只播放固定合成快照。</p><p>扫描可能部分完成，请结合覆盖范围与证据继续核查。</p></details>
+      </aside>
+      </div>
     </div>
   );
 }

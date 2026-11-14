@@ -124,6 +124,8 @@ export function ReportV2({ scan, query, open }: {
   const createControl = reportCreateControl({ assessmentId: createAssessmentId, createLoading, creating, loadError, createError });
   return <div className="og-v2-page">
     <Header title="Assessment Report V2" description="读取后端已保存的固定版本报告；浏览器不生成、修改或重新判断正式结论。" eyebrow="OPENGUARD / IMMUTABLE REPORT" />
+    <details className="og-v2-tools" open={state.kind !== 'ready' || !!createError || !!noticeError || !!loadError}>
+    <summary>报告创建与快照切换<span>查看已保存报告时可收起此区</span></summary>
     <Panel title="创建固定版本报告" caption="这是明确的写操作：后端固定当前 Formal Assessment 与所列 Task 版本并保存报告；不会触发扫描、重新评估或 Qwen。">
       {scan.mode !== 'api' ? <p role="status">演示模式不创建正式报告。</p> : <div className="og-v2-create">
         <label>Formal Assessment<select value={createAssessmentId} disabled={createLoading || creating} onChange={event => setCreateAssessmentId(event.target.value)}><option value="">请选择</option>{assessments.map(item => <option key={item.id} value={item.id}>v{item.version} · {item.id}</option>)}</select></label>
@@ -163,6 +165,7 @@ export function ReportV2({ scan, query, open }: {
       </form>
       {scan.mode !== 'api' && <p role="status">演示模式不提供正式报告。请切换真实接口和真实扫描。</p>}
     </Panel>
+    </details>
     {state.kind === 'idle' && <Panel title="尚未选择 Report V2"><p>未读取固定快照，不会用演示或旧报告冒充。旧版 P0 附件仍可在下方单独下载。</p></Panel>}
     {state.kind === 'loading' && <Panel title="正在读取固定快照"><LoadingDots label="正在读取后端固定报告" detail="仅发起 JSON/HTML GET，不会创建扫描、Assessment、报告或调用 AI。" /></Panel>}
     {state.kind === 'error' && <Panel title="Report V2 暂不可用"><p role="alert">{state.message}</p><button onClick={() => setReload(value => value + 1)}>重试读取</button><p>旧版 P0 报告不会作为 Report V2 替代；可单独下载核查。</p></Panel>}
@@ -173,6 +176,7 @@ export function ReportV2({ scan, query, open }: {
       <div className="og-v2-layout">
         <nav aria-label="固定报告目录" className="og-v2-toc">
           <strong>目录与来源</strong>
+          <a href="#v2-body">阅读报告正文</a>
           <a href="#v2-executive">Executive Summary</a>
           <a href="#v2-formal">Formal Assessment</a>
           <a href="#v2-ai">AI 建议</a>
@@ -185,12 +189,12 @@ export function ReportV2({ scan, query, open }: {
         <div className="og-v2-content">
           <section id="v2-executive" className="og-v2-boundary"><h2>Executive Summary</h2><p>正文中的项目整体评价来自报告绑定的 Formal Assessment；不在此处重新摘要或推断风险数量。</p></section>
           <section id="v2-formal" className="og-v2-boundary formal"><h2>Formal Assessment · 正式评估</h2><p>{has('formal_assessment') ? '以下嵌入的是后端保存的原始 HTML 报告，不是前端重组的评估。' : '正式评估章节缺失；不能作为正式报告使用。'}</p></section>
+          <section id="v2-body" className="og-v2-boundary formal" aria-label="后端固定 HTML 报告"><h2>后端固定报告正文</h2><iframe ref={frame} title="Report V2 后端原始 HTML 正文" srcDoc={state.html} sandbox="allow-same-origin" /></section>
           <section id="v2-ai" className="og-v2-boundary ai"><h2>AI 建议 · 辅助解释</h2><p>{has('ai_explanation') ? '后端报告保留历史 AI 状态与正文；AI 不进入 Formal Conclusion。' : '此快照没有 AI 说明。'}</p></section>
           <section id="v2-graph" className="og-v2-boundary"><h2>图谱摘要</h2><p>{observations.graph.length ? '后端快照包含已绑定的图谱观察；不代表未知关系或授权已确认。' : '此快照没有已绑定的图谱观察章节；NOTICE 观察不会被当作图谱，也不补造节点或关系。'}</p></section>
           <section id="v2-actions" className="og-v2-boundary"><h2>Action Plan</h2><p>{has('workflow') ? '后端报告中保存了任务版本与处理状态；done 不等于项目合规，dismissed 不等于不适用。' : '此快照没有任务章节。'}</p></section>
           <section id="v2-notice" className="og-v2-boundary draft"><h2>NOTICE 草稿 · 非正式结论</h2>{document.binding.notice_refs.length ? <><p>以下引用来自后端固定快照；保留文本、缺失字段与来源保留在原始报告中。空许可证或义务引用仍为未知，不表示授权或义务已履行。</p><ul>{document.binding.notice_refs.map(ref => <li key={ref.draft_id}><code>{ref.draft_id}</code> · hash {ref.content_hash}</li>)}</ul></> : <p>当前快照未包含 NOTICE 草稿；不能据此判断 NOTICE 不存在或无需履行义务，前端不会补造正文。</p>}</section>
           <section id="v2-provenance" className="og-v2-boundary"><h2>Provenance · 来源 <HelpTip label="来源 Hash 说明">Hash 来自后端固定快照；前端不会猜测或重新生成正式来源 Hash。</HelpTip></h2><p>以下章节元数据来自报告快照；详情及完整依据保留在后端 HTML 的附录中。</p><ul>{sections.map((section, index) => <li key={index}><strong>{sectionName(section, graphSections, noticeSections)}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul><details><summary>查看后端保存的 Provenance 原始字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details></section>
-          <section className="og-v2-boundary formal" aria-label="后端固定 HTML 报告"><h2>后端固定报告正文</h2><iframe ref={frame} title="Report V2 后端原始 HTML 正文" srcDoc={state.html} sandbox="allow-same-origin" /></section>
           <section id="v2-download" className="og-v2-boundary"><h2>下载固定附件</h2><div className="og-actions"><DownloadControl disabled={downloading} onDownload={() => save('html')}>下载 P1 HTML</DownloadControl><DownloadControl disabled={downloading} onDownload={() => save('json')}>下载 P1 JSON</DownloadControl><button onClick={() => frame.current?.contentWindow?.print()}>打印后端报告</button></div><p>附件由后端 GET 返回；下载失败会提示，不用旧版报告静默代替。</p></section>
         </div>
       </div>

@@ -37,7 +37,7 @@ export function Resources({
   const aiRows = rows.filter((item) => item.type === "Model" || item.type === "Dataset");
   const sections = resourceTypes.filter(type => type !== "Model" && type !== "Dataset").map(type => ({ type, rows: rows.filter(r => r.type === type) })).filter(section => section.rows.length);
   return (
-    <>
+    <section className="og-resources-page">
       <Header
         title="第三方资源清单"
         eyebrow={"INVENTORY / " + scan.id}
@@ -58,7 +58,7 @@ export function Resources({
           </button>
         }
       />
-      <div className="og-filters">
+      <div className="og-filters og-inventory-filters" role="search" aria-label="资源筛选">
         <label className="og-field og-search-field">
           <span>搜索资源</span>
           <span className="og-search-control"><SearchGlyph /><input
@@ -104,6 +104,7 @@ export function Resources({
           仅许可待确认
         </Checkbox>
       </div>
+      <p className="og-list-context">当前筛选显示 {rows.length} / {scan.resources.length} 项资源<span>筛选不改变扫描事实与许可核验状态</span></p>
       <Panel
         title={`模型与数据集资源卡片 · ${aiRows.length}`}
         caption="Resource、Profile 与 Evidence 分层展示；Profile 缺失不会由名称、Logo、provider 或 source URL 补造。"
@@ -177,7 +178,7 @@ export function Resources({
           <EvidenceReader scan={scan} ids={resource.evidenceIds} />
         </Dialog>
       )}
-    </>
+    </section>
   );
 }
 function ResourceSection({ type, rows, scan, select }: { type: string; rows: Scan["resources"]; scan: Scan; select: (id: string) => void }) {

@@ -53,8 +53,9 @@ export function Landing({
           </div>
           <ParticleText text="OpenGuard" />
           <p className="hero-copy">
-            让每一个风险，都有证据可循；让每一次发布，都更有底气。
+            看清资源与风险，<strong>让结论有据可循。</strong>
           </p>
+          <p className="hero-detail">从项目扫描到正式评估，沿着证据找到每一步依据。</p>
           <div className="hero-actions">
             <button className="primary-button og-arrow-button" type="button" onClick={onEnter}>
               <span>开始安全扫描</span><ArrowGlyph />
@@ -75,26 +76,21 @@ export function Landing({
       <section id="capability" className="recognition-slice">
         <div>
           <p className="eyebrow">EXPLAINABLE BY DESIGN</p>
-          <h2>
-            不止告诉你“有风险”，
-            <br />
-            更告诉你“为什么”。
-          </h2>
+          <h2>从一条线索，<br />找到它的依据。</h2>
           <p className="section-copy">
-            扫描器发现事实，规则引擎给出判断，AI
-            负责解释与整改。三个来源清晰分层，每个结论都能回到文件、字段与许可依据。
+            资源、许可证声明与核查线索保持来源关联。打开 Evidence，继续核对文件、字段和上下文。
           </p>
         </div>
         <div className="signal-card og-glass-card">
-          <span className="signal-label">演示证据链 · RISK-001</span>
+          <span className="signal-label">示意 · 证据追溯路径</span>
           <div className="signal-path">
             <span>requirements.txt:2</span>
             <i>→</i>
             <span>transformers</span>
             <i>→</i>
-            <span>Apache-2.0</span>
+            <span>许可证声明</span>
             <i>→</i>
-            <strong>分发义务待核对</strong>
+            <strong>待核验</strong>
           </div>
           <div className="source-row">
             <span className="source scanner">扫描事实</span>
@@ -145,20 +141,14 @@ export function Landing({
 
       <section className="og-brand-story" aria-labelledby="brand-story-title">
         <article className="og-brand-story-card">
-          <div className="og-brand-story-orbit" aria-hidden="true"><span>OG</span></div>
           <div className="og-brand-story-copy">
-            <p className="eyebrow">EVIDENCE BEFORE CONCLUSION</p>
+            <p className="eyebrow">READY TO EXPLORE</p>
             <h2 id="brand-story-title">一眼看见结论，也能一路追到证据。</h2>
-            <p>OpenGuard 将扫描事实、规则判断、Formal Assessment 与 AI 辅助解释分层呈现。未知仍是未知，待核验不会被包装成已核验。</p>
-            <ul aria-label="OpenGuard 展示原则">
-              <li><strong>事实可追溯</strong><span>资源、Finding、Evidence 保持真实引用</span></li>
-              <li><strong>状态不夸大</strong><span>partial、pending、unknown 清晰可辨</span></li>
-              <li><strong>报告可复核</strong><span>固定快照与下载附件来自后端</span></li>
-            </ul>
+            <p>未知仍是未知，待核验不会被包装成已核验。</p>
+          </div>
             <button className="secondary-button og-arrow-button" type="button" onClick={onEnter}>
               <span>进入可追溯工作台</span><ArrowGlyph />
             </button>
-          </div>
         </article>
       </section>
     </main>

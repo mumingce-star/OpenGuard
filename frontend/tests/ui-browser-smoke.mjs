@@ -58,6 +58,7 @@ try {
     servedDist = path.resolve(process.env.OPENGUARD_UI_BASELINE);
     for (const [name, url] of [['landing', '/'], ['new-scan', '/app/new-scan?mode=api']]) {
       await page.goto(origin + url);
+      await page.screenshot({ path: path.join(output, `before-${name}-viewport.png`) });
       if (name === 'new-scan') await page.locator('input[type=file]').setInputFiles({ name: 'ui-demo.zip', mimeType: 'application/zip', buffer: Buffer.from('PK') });
       await page.screenshot({ path: path.join(output, `before-${name}.png`), fullPage: true });
     }
@@ -134,6 +135,17 @@ try {
   assert.equal(await page.getByRole('button', { name: '开始安全扫描' }).count(), 1);
   assert.equal(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
   await page.screenshot({ path: path.join(output, 'landing-desktop.png'), fullPage: true });
+  await page.screenshot({ path: path.join(output, 'landing-viewport.png') });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.waitForFunction(() => { const video = document.querySelector('.hero-background-video'); return video && !video.paused && video.currentTime > 0; });
+  const videoFrame = await page.locator('.hero-background-video').evaluate(video => ({ time: video.currentTime, source: video.getAttribute('src') }));
+  assert.equal(videoFrame.source, '/landing/openguard-hero-bg.mp4');
+  await page.waitForFunction(time => document.querySelector('.hero-background-video').currentTime > time + .3, videoFrame.time);
+  assert.ok(await page.locator('.particle-text').evaluate(canvas => canvas.width > 0 && canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data.some((v, i) => i % 4 === 3 && v > 0)));
+  await page.screenshot({ path: path.join(output, 'landing-motion.png') });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForFunction(() => document.querySelector('.hero-background-video').paused);
+  checks.push('existing hero video advances, particle canvas renders, reduced-motion pauses video');
   checks.push('landing source boundaries and one primary scan CTA');
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -147,11 +159,42 @@ try {
   ]);
   await page.getByRole('heading', { name: '从一个项目开始' }).waitFor();
   await page.getByRole('radio', { name: '上传 ZIP' }).check();
+  const submitScan = page.getByRole('button', { name: '提交真实扫描', exact: true });
+  assert.equal(await submitScan.isDisabled(), true);
+  await page.screenshot({ path: path.join(output, 'new-scan-empty.png'), fullPage: true });
   await page.locator('input[type=file]').setInputFiles({ name: 'ui-demo.zip', mimeType: 'application/zip', buffer: Buffer.from('PK') });
   await page.getByText('ui-demo.zip', { exact: true }).waitFor();
   assert.match(await page.locator('.og-drop-zone').getAttribute('class'), /og-drop-zone/);
   await page.screenshot({ path: path.join(output, 'new-scan-upload.png'), fullPage: true });
+  assert.equal(await submitScan.isEnabled(), true);
+  await page.getByRole('button', { name: '移除文件', exact: true }).click();
+  assert.equal(await submitScan.isDisabled(), true);
+  await page.getByRole('radio', { name: 'GitHub 仓库' }).check();
+  await page.getByRole('textbox', { name: '公开仓库地址' }).fill('https://example.com/not-github');
+  await submitScan.click();
+  await page.getByRole('alert').filter({ hasText: '请输入 https://github.com/' }).waitFor();
+  await page.getByRole('radio', { name: '上传 ZIP' }).check();
+  await page.getByRole('heading', { name: '扫描后你将看到' }).waitFor();
   checks.push('native ZIP selection and visible local file state');
+
+  await page.getByRole('button', { name: '收起侧栏', exact: true }).click();
+  assert.equal(await page.getByRole('button', { name: '展开侧栏', exact: true }).isVisible(), true);
+  await page.waitForFunction(() => Math.round(document.querySelector('.og-sidebar').getBoundingClientRect().width) === 76);
+  assert.equal(await page.locator('.og-sidebar').evaluate(el => Math.round(el.getBoundingClientRect().width)), 76);
+  await page.getByRole('button', { name: '展开侧栏', exact: true }).click();
+  for (const width of [1024, 786, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    assert.equal(await page.locator('.og-sidebar').isVisible(), false);
+    await page.getByRole('button', { name: '打开导航', exact: true }).click();
+    await page.getByRole('dialog').waitFor();
+    await page.keyboard.press('Escape');
+    assert.equal(await page.getByRole('dialog').count(), 0);
+    assert.equal(await page.getByRole('button', { name: '打开导航', exact: true }).evaluate(el => el === document.activeElement), true);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
+    await page.screenshot({ path: path.join(output, `new-scan-${width}.png`), fullPage: true });
+  }
+  checks.push('desktop rail and 1024/786/390px navigation drawer, Escape and focus restore');
+  await page.setViewportSize({ width: 1440, height: 900 });
 
   await page.goto(`${origin}/app/history?limit=20`);
   const search = page.getByRole('searchbox', { name: '搜索公开项目或仓库' });
