@@ -202,3 +202,11 @@ def test_unsupported_inputs_are_not_silently_converted_to_success(problem):
         content(doc, "formal_assessment")["dimensions"][0]["status"] = "approved"
     with pytest.raises(ValueError):
         render_report_html(doc)
+
+def test_delivery_cover_uses_only_fixed_binding_and_preserves_unknown_input():
+    doc=example()
+    doc['binding']['scan_ref']={'scan_id':'scn_delivery','input_hash':'a'*64}
+    html=render_report_html(doc).decode()
+    assert 'scn_delivery' in html and '输入 SHA-256：'+'a'*64 in html
+    doc['binding']['scan_ref']['input_hash']=None
+    assert '输入 SHA-256：未记录' in render_report_html(doc).decode()

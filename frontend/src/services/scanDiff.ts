@@ -52,17 +52,18 @@ export async function listAllHistory(signal?: AbortSignal): Promise<HistoryItem[
   } while (cursor);
   return items;
 }
-export function comparisonGate(base: HistoryItem | undefined, target: HistoryItem | undefined): string | null {
+export function comparisonGate(base: HistoryItem | undefined, target: HistoryItem | undefined, confirmZipPair = false): string | null {
   if (!target) return '目标扫描不在当前历史记录中。';
   if (!base) return '请选择基准扫描。';
   if (base.scan_id === target.scan_id) return '不能比较同一次扫描；请选择不同的基准和目标。';
   if (!['completed', 'partial'].includes(base.status) || !['completed', 'partial'].includes(target.status)) return '仅 completed 或 partial 扫描可比较；失败或执行中的扫描不能作为差异结论。';
+  if (confirmZipPair && base.source_type === 'zip' && target.source_type === 'zip') return null;
   if (base.project_identity.key !== target.project_identity.key || base.project_identity.method !== target.project_identity.method) return '两次扫描不属于同一后端项目身份，不能推断为同项目变化。ZIP 扫描默认仅有 scan_only 身份。';
   return null;
 }
-export async function getScanDiff(baseId: string, targetId: string, signal?: AbortSignal): Promise<ScanDiff> {
+export async function getScanDiff(baseId: string, targetId: string, signal?: AbortSignal, confirmZipPair = false): Promise<ScanDiff> {
   if (!baseId || !targetId || baseId === targetId) throw new Error('请选择两次不同的真实扫描。');
-  return validateDiff(await request('/scans/' + encodeURIComponent(targetId) + '/diff?base_scan_id=' + encodeURIComponent(baseId), { method: 'GET' }, signal), baseId, targetId);
+  return validateDiff(await request('/scans/' + encodeURIComponent(targetId) + '/diff?base_scan_id=' + encodeURIComponent(baseId) + (confirmZipPair ? '&confirm_zip_pair=true' : ''), { method: 'GET' }, signal), baseId, targetId);
 }
 export async function getDiffEvidence(ref: EvidenceRef, signal?: AbortSignal): Promise<EvidenceDetail> {
   const raw = await request('/scans/' + encodeURIComponent(ref.scan_id) + '/evidence/' + encodeURIComponent(ref.evidence_id), { method: 'GET' }, signal);

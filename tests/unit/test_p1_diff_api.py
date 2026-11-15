@@ -401,3 +401,18 @@ def test_invalid_package_name_does_not_invent_identity(env):
     a=snapshot(env,1,comps(component(name=' ',purl=False)))
     b=snapshot(env,2,comps(component(2,name=' ',purl=False)))
     assert all(r['kind']=='unmatched' for r in diff(env,a,b)['resources'])
+
+def test_explicit_zip_pair_reuses_diff_without_claiming_project_identity(env):
+    a = snapshot(env, 71, comps(component(version='1.0')), source='upload/input.zip', source_type='zip')
+    b = snapshot(env, 72, comps(component(version='2.0')), source='upload/input.zip', source_type='zip')
+    err(query(env, a, b), 409, 'not_comparable')
+    d = diff(env, a, b, confirm_zip_pair='true')
+    assert d['project_identity_key'].startswith('user_asserted_zip_pair:')
+    assert any('用户声明' in gap for gap in d['coverage']['gaps'])
+    assert any(row['kind'] == 'changed' for row in d['resources'])
+    assert env.registry.get(a.id).run.project.source_type.value == 'zip'
+    c = snapshot(env, 73, comps(), source='upload/changed.zip', source_type='zip')
+    removed = diff(env, a, c, confirm_zip_pair='true')
+    assert all(row['removal_confirmed'] is None for row in removed['resources'])
+    git = snapshot(env, 74)
+    err(query(env, a, git, confirm_zip_pair='true'), 400, 'invalid_argument')

@@ -254,12 +254,13 @@ def _router() -> APIRouter:
         base_scan_id: str,
         base_assessment_id: str | None = None,
         target_assessment_id: str | None = None,
+        confirm_zip_pair: bool = False,
     ) -> P1ScanDiffView:
         assessment = request.app.state.assessment_service
         value = DiffReader(
             request.app.state.scan_api_service._registry,
             assessment.store if assessment is not None else None,
-        ).compare(target_scan_id, base_scan_id, base_assessment_id, target_assessment_id)
+        ).compare(target_scan_id, base_scan_id, base_assessment_id, target_assessment_id, confirm_zip_pair=confirm_zip_pair)
         try:
             return P1ScanDiffView.model_validate(value)
         except ValidationError:

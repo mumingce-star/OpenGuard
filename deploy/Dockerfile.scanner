@@ -45,6 +45,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV PYTHONPATH=/app/backend
 WORKDIR /app
 COPY backend/pyproject.toml /app/backend/pyproject.toml
+ARG PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
 RUN /usr/local/bin/python -m venv /opt/api \
     && /opt/api/bin/python -c 'import subprocess,tomllib; d=tomllib.load(open("backend/pyproject.toml","rb")); pins=d["tool"]["openguard"]["api-lock"]["requirements"]; assert set(d["project"]["dependencies"]) <= set(pins), "API lock must include all direct pins"; subprocess.check_call(["/opt/api/bin/python","-m","pip","install","--no-cache-dir","--no-deps",*pins])' \
     && /opt/api/bin/python -m pip check \

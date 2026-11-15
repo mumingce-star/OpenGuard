@@ -34,16 +34,17 @@ export function ScanDiff({ targetId, mode, query, go }: { targetId: string; mode
   }, [mode, historyAttempt]);
   const base = history.find(item => item.scan_id === baseId);
   const target = history.find(item => item.scan_id === targetId);
-  const gate = comparisonGate(base, target);
+  const confirmZipPair = query.get('confirm_zip_pair') === 'true';
+  const gate = comparisonGate(base, target, confirmZipPair);
   useEffect(() => {
     setPage(0);
     setDiff(null);
     if (mode !== 'api' || historyState !== 'ready' || gate) { setDiffState('idle'); return; }
     const controller = new AbortController();
     setDiffState('loading');
-    getScanDiff(baseId, targetId, controller.signal).then(value => { setDiff(value); setDiffState('ready'); }, error => { if (!controller.signal.aborted) { setDiffError(String(error.message ?? error)); setDiffState('error'); } });
+    getScanDiff(baseId, targetId, controller.signal, confirmZipPair).then(value => { setDiff(value); setDiffState('ready'); }, error => { if (!controller.signal.aborted) { setDiffError(String(error.message ?? error)); setDiffState('error'); } });
     return () => controller.abort();
-  }, [mode, historyState, gate, baseId, targetId, diffAttempt]);
+  }, [mode, historyState, gate, baseId, targetId, diffAttempt, confirmZipPair]);
   useEffect(() => {
     if (!evidenceRef) return;
     const controller = new AbortController();
@@ -68,6 +69,10 @@ export function ScanDiff({ targetId, mode, query, go }: { targetId: string; mode
     <Header title="扫描差异" eyebrow="SCAN DIFF / READ ONLY" description="差异仅来自真实 Diff API；未观测到不等于已删除，整改状态也不改变正式 Assessment。" />
     {mode !== 'api' ? <Empty title="差异页面仅支持真实接口模式" detail="演示数据不用于正式扫描对比。" /> : historyState === 'loading' ? <Empty title="正在读取真实扫描历史…" /> : historyState === 'error' ? <Empty title="历史读取失败" detail={historyError}><button onClick={() => setHistoryAttempt(v => v + 1)}>重试</button></Empty> : <>
       <Panel title="选择两次扫描" caption="base 与 target 保存在 URL；只读取后端数据，不触发扫描或评估。"><div className="og-diff-selectors"><label>基准扫描<select aria-label="基准扫描" value={baseId} onChange={event => choose(event.target.value, targetId)}><option value="">请选择</option>{history.map(item => <option value={item.scan_id} key={item.scan_id}>{item.scan_id} · {shown(item.revision)} · {statusText[item.status]}</option>)}</select></label><label>目标扫描<select aria-label="目标扫描" value={target ? targetId : ''} onChange={event => choose(baseId, event.target.value)}><option value="">请选择</option>{history.map(item => <option value={item.scan_id} key={item.scan_id}>{item.scan_id} · {shown(item.revision)} · {statusText[item.status]}</option>)}</select></label></div><div className="og-diff-scanrefs">{[base, target].map((item, index) => <div key={index}><strong>{index ? '目标' : '基准'}</strong><p className="og-wrap">{item?.scan_id ?? '未选择'}</p><p>revision：{shown(item?.revision)}</p><p>状态：{item ? statusText[item.status] : '未获取'}；资源 {item ? item.component_count + item.ai_asset_count : '未获取'}；Finding {item?.finding_count ?? '未获取'}</p>{item && <button onClick={() => navigate(item.scan_id, 'progress')}>查看扫描 ↗</button>}</div>)}</div></Panel>
+      {base?.source_type === 'zip' && target?.source_type === 'zip' && <label><input type="checkbox" checked={confirmZipPair} onChange={event => {
+        const q = new URLSearchParams(query); if (event.target.checked) q.set('confirm_zip_pair', 'true'); else q.delete('confirm_zip_pair');
+        go(scanPath(targetId, 'diff', 'api', q));
+      }} />我确认这两份 ZIP 是同项目的前后输入。该关系仅为我的声明，不证明来源可信、授权通过或风险消除。</label>}
       {gate ? <Empty title="暂不能请求差异" detail={gate} /> : diffState === 'loading' ? <Empty title="正在读取真实 Diff…" /> : diffState === 'error' ? <Empty title="Diff 读取失败" detail={diffError}><button onClick={() => setDiffAttempt(v => v + 1)}>重试</button></Empty> : diff && <>
         <Panel title="覆盖范围与结论边界" caption={`后端 view_id：${diff.view_id}`}><p>基准覆盖：{diff.coverage.base_complete ? '完整' : '不完整'}；目标覆盖：{diff.coverage.target_complete ? '完整' : '不完整'}。</p><p>扫描状态：{statusText[diff.base.status]} → {statusText[diff.target.status]}；revision：{shown(diff.base.revision)} → {shown(diff.target.revision)}</p>{diff.coverage.gaps.length ? <ul>{diff.coverage.gaps.map((gap, index) => <li key={index} className="og-wrap">{gap}</li>)}</ul> : <p>后端未报告覆盖缺口。</p>}{(!diff.coverage.base_complete || !diff.coverage.target_complete) && <p className="og-diff-warning">存在部分扫描或覆盖缺口：未出现的资源不能视为已删除。</p>}</Panel>
         <Panel title={`资源变化 · ${diff.resources.length}`} caption="分类、字段变化及删除确认均来自后端；每页展示 50 项。">{diff.resources.length ? <><div className="og-diff-list">{resourceSlice(diff.resources, page).map((row, index) => <article className="og-diff-row" key={`${page}:${index}`}><strong>{kindText[row.kind]}</strong><p className="og-wrap">{row.before ? row.before.resource_id : '基准无此资源'} → {row.after ? row.after.resource_id : '目标未观测到'}</p><p>类型：{shown(row.before?.resource_kind)} → {shown(row.after?.resource_kind)}</p>{row.kind === 'not_observed_in_target' && <p className="og-diff-warning">{row.removal_confirmed === true ? '后端确认移除' : '仅目标扫描未观测到；不能断言删除'}</p>}{row.field_changes.map((field, i) => <p className="og-wrap" key={i}>{field.path}：{field.path.endsWith('/verification_status') ? verificationShown(field.before) : shown(field.before)} → {field.path.endsWith('/verification_status') ? verificationShown(field.after) : shown(field.after)}</p>)}{evidenceButtons(row.evidence_refs)}<div className="og-actions">{row.before && <button onClick={() => navigate(row.before!.scan_id, 'resources', row.before!.resource_id)}>基准资源 ↗</button>}{row.after && <button onClick={() => navigate(row.after!.scan_id, 'resources', row.after!.resource_id)}>目标资源 ↗</button>}</div></article>)}</div><div className="og-actions"><button disabled={page === 0} onClick={() => setPage(v => v - 1)}>上一页</button><span>第 {page + 1} / {Math.ceil(diff.resources.length / 50)} 页</span><button disabled={(page + 1) * 50 >= diff.resources.length} onClick={() => setPage(v => v + 1)}>下一页</button></div></> : <Empty title="无资源差异记录" detail="仅表示后端未返回资源差异；不等于两次扫描覆盖完全。" />}</Panel>

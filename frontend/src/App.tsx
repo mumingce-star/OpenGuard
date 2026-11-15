@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { navigationContext, selectAssessment, versionContext } from './services/versionContext';
 import type { Scan } from "./types/domain";
 import { useRoute, historyPath, scanPath, type Page } from "./hooks/useRoute";
 import { useScan } from "./hooks/useScan";
@@ -103,9 +104,6 @@ export function App() {
     }
   }
   function navigate(page: string, query = "", riskId?: string) {
-    if (!query && ["assessment", "chat", "report", "report-v2", "remediation"].includes(page) && route.query.get("assessment_id")) {
-      const preserved = new URLSearchParams(); preserved.set("assessment_id", route.query.get("assessment_id")!); query = preserved.toString();
-    }
     if (page === "history")
       go(historyPath(new URLSearchParams(query)));
     else if (page === "new-scan" || !route.scanId)
@@ -116,7 +114,7 @@ export function App() {
           route.scanId,
           page as Page,
           route.mode,
-          new URLSearchParams(query),
+          navigationContext(route.query, new URLSearchParams(query)),
           riskId,
         ),
       );
@@ -201,7 +199,7 @@ export function App() {
         key={scan.mode + scan.id}
         scan={scan}
         query={route.query}
-        selectVersion={id => { const q = new URLSearchParams(route.query); q.set('assessment_id', id); ['assessment_version','p2_result_id','p2_revision'].forEach(k => q.delete(k)); navigate('assessment', q.toString()); }}
+        selectVersion={(id, version) => navigate('assessment', selectAssessment(route.query, id, version).toString())}
         selectP2Result={result => { const q = new URLSearchParams(route.query); q.set('assessment_id', result.binding.assessment_id); q.set('assessment_version', String(result.binding.assessment_version)); q.set('p2_result_id', result.result_id); q.set('p2_revision', String(result.revision)); navigate('assessment', q.toString()); }}
         openResources={() => navigate("resources")}
         initialChatOpen={route.page === "chat"}
@@ -240,12 +238,11 @@ export function App() {
       />
     );
   else if (route.page === "graph") content = <Graph scan={scan} query={route.query} filter={filter} />;
-  else if (route.page === "remediation") content = <Remediation scan={scan} query={route.query} filter={filter} openRisk={id => navigate("risks", "", id)} />;
-  else if (route.page === "report") content = <><Assessment key={scan.mode + scan.id + "report"} compact scan={scan} query={route.query} selectVersion={id => filter("assessment_id", id)} /><details className="og-historical-report"><summary>查看历史扫描报告、四种原始附件与全部明细</summary><Report key={scan.mode + scan.id} scan={scan} /></details></>;
+  else if (route.page === "remediation") content = <Remediation scan={scan} query={route.query} filter={filter} selectVersion={(id, version) => navigate('remediation', selectAssessment(route.query, id, version).toString())} openRisk={id => navigate("risks", "", id)} />;
+  else if (route.page === "report") content = <><Assessment key={scan.mode + scan.id + "report"} compact scan={scan} query={route.query} selectVersion={(id, version) => navigate('report', selectAssessment(route.query, id, version).toString())} /><details className="og-historical-report"><summary>查看历史扫描报告、四种原始附件与全部明细</summary><Report key={scan.mode + scan.id} scan={scan} /></details></>;
   else if (route.page === "report-v2") content = <ReportV2 scan={scan} query={route.query} open={(assessmentId, snapshotId) => {
-    const params = new URLSearchParams();
-    if (assessmentId) params.set("assessment_id", assessmentId);
-    if (snapshotId) params.set("snapshot_id", snapshotId);
+    const params = versionContext(selectAssessment(route.query, assessmentId));
+    if (snapshotId) params.set("snapshot_id", snapshotId); else params.delete("snapshot_id");
     go(scanPath(scan.id, "report-v2", scan.mode, params));
   }} />;
   return (

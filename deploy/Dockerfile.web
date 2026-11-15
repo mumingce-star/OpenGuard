@@ -1,10 +1,12 @@
 FROM node:24-bookworm-slim@sha256:ba849c60be29959425b8734d57b8b4b7d56f98edd9504c9af091d5281095a71e AS build
 WORKDIR /frontend
+ARG NPM_CONFIG_REGISTRY=https://registry.npmmirror.com
 RUN npm install --global pnpm@10.30.0
 COPY frontend/package.json frontend/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY frontend/ ./
-ENV VITE_API_BASE_URL=/api/v1 VITE_DATA_MODE=api
+ARG VITE_P2_READ_ONLY=1
+ENV VITE_API_BASE_URL=/api/v1 VITE_DATA_MODE=api VITE_P2_READ_ONLY=$VITE_P2_READ_ONLY
 RUN pnpm build
 
 FROM nginx:stable-alpine@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c

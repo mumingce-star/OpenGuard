@@ -11,3 +11,14 @@ test('partial and absent Assessment remain explicit; malformed ownership rejecte
 test('500 returned resource rows paginate without computing changes', () => { const s = runtime().load('services/scanDiff.ts'), rows = Array.from({ length: 500 }, (_, i) => ({ id: i })); assert.equal(s.resourceSlice(rows, 0).length, 50); assert.equal(s.resourceSlice(rows, 9)[49].id, 499); assert.equal(s.resourceSlice(rows, 10).length, 0); });
 test('different backend revisions are shown as returned, without frontend synthesis', () => { const s = runtime().load('services/scanDiff.ts'), value = diff(); value.base.revision = 'commit_old'; value.target.revision = 'commit_new'; value.resources = []; assert.equal(s.validateDiff(value, id(1), id(2)).target.revision, 'commit_new'); assert.equal(value.resources.length, 0); });
 test('history and Diff interface failures propagate without mock fallback', async () => { const r = runtime(), s = r.load('services/scanDiff.ts'); r.setFetch(async () => new Response('{}', { status: 503 })); await assert.rejects(s.listAllHistory()); await assert.rejects(s.getScanDiff(id(1), id(2))); assert.equal(r.storage.size, 0); });
+
+test('ZIP comparison requires explicit pair confirmation and uses existing GET only', async () => {
+  const r = runtime(), p = r.load('services/scanDiff.ts');
+  const a = {scan_id:'a',source_type:'zip',status:'completed',project_identity:{method:'scan_only',key:'a'}};
+  const b = {scan_id:'b',source_type:'zip',status:'partial',project_identity:{method:'scan_only',key:'b'}};
+  assert.ok(p.comparisonGate(a,b)); assert.equal(p.comparisonGate(a,b,true),null);
+  assert.ok(p.comparisonGate(a,{...b,source_type:'git'},true));
+  let called; r.setFetch(async (url, options) => { called=[url,options.method]; return new Response('',{status:503}); });
+  await assert.rejects(p.getScanDiff('a','b',undefined,true));
+  assert.match(called[0], /confirm_zip_pair=true/); assert.equal(called[1],'GET');
+});

@@ -139,12 +139,20 @@ class AssessmentService:
 
     def generate_chat(self,sid,a,rid,message,generation):
         started=time.monotonic()
+        producer=getattr(self.provider,'producer',None)
+        trace={'model_id':getattr(producer,'model_id',None), 'runtime_version':getattr(producer,'version',None),
+               'prompt_version':PROMPT_VERSION,'assessment_id':a.id,'facts_hash':a.facts_hash,
+               'state_digest':None,'model_calls':0,'failure_code':None}
         try:
             history=self.chat.history(sid)['items']
             payload=context(self.run(sid),a,message,[h for h in history if h['assessment_id']==a.id])
+            trace['state_digest']=json.loads(payload)['state_digest']
+            trace['model_calls']=1
             result=validate(self.provider.generate_project(payload,30.0),payload)
-            self.chat.finish(sid,rid,generation,answer=result['answer'],evidence_ids=result['evidence_ids'],elapsed_seconds=time.monotonic()-started)
+            self.chat.finish(sid,rid,generation,answer=result['answer'],evidence_ids=result['evidence_ids'],elapsed_seconds=time.monotonic()-started,trace=trace)
         except Exception as e:
             code=getattr(e,'code',str(e))
-            self.chat.finish(sid,rid,generation,error=ERRORS.get(code,ERRORS['project_failed']),elapsed_seconds=time.monotonic()-started)
+            # Only bounded diagnostic identifiers, never arbitrary exception/source text.
+            trace['failure_code']=code if isinstance(code,str) and code.startswith('project_') and code.replace('_','').isalnum() and len(code)<80 else type(e).__name__
+            self.chat.finish(sid,rid,generation,error=ERRORS.get(code,ERRORS['project_failed']),elapsed_seconds=time.monotonic()-started,trace=trace)
         finally:self._slots.release()

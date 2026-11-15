@@ -442,3 +442,40 @@ Compose project、专属新数据卷和空闲 loopback 端口，AI/Public Git �
 5174现代理独立Docker API8011（openguard-v4-api），已开启Git、外部扫描器、durable ZIP和V4/Qwen；原8010进程已空闲关闭，8080生产未更新。数据卷openguard_v4_git_data从备份复制，3条无执行器的queued经用户授权通过registry CAS取消，不删除或重放。保留同样2CPU/4GiB、文件描述符、只读根文件系统、临时磁盘、无新增权限与扫描隔离。旧镜像保留，依赖未升级。本机运行与验收记录见output/v4-git-runtime；它是隔离部署，不是生产发布。
 
 当Git执行器未配置时，POST /api/v1/scans的Git输入现在返回503/git_scanning_unavailable，不创建queued记录。原先仅验证持久化的测试显式注入测试替身；真实uvicorn关闭开关的测试断言拒绝且活动任务为0。
+
+## Windows 交付演示（F01，2026-10-22）
+
+本入口复用现有 Python API/Linux amd64 工具镜像及 React Web。普通 compose 默认仍关闭评估和 P2；显式 delivery 配置开启评估、整改、NOTICE 和固定报告，AI/Git/远程 metadata 默认关闭。P2 是可选伴随结果，默认关闭且只读；开启写入也仅为 TEST_ONLY，不提供正式来源签发或许可确认。
+
+在仓库根目录的 PowerShell 执行以下独立步骤；Prepare 不启动 Docker Desktop 或任何服务。Start、Stop、Build 及真实扫描只在获准后执行：
+
+```powershell
+powershell -NoProfile -File deploy/delivery.ps1 -Action Prepare
+powershell -NoProfile -File deploy/delivery.ps1 -Action Build
+powershell -NoProfile -File deploy/delivery.ps1 -Action Start
+powershell -NoProfile -File deploy/delivery.ps1 -Action Status
+# 演示完成后，仅停止此隔离项目，保留 data 卷：
+powershell -NoProfile -File deploy/delivery.ps1 -Action Stop
+```
+
+固定项目 openguard-delivery-20261030、回环端口 8086、独立 named volume openguard-delivery-20261030_data；不指向原 openguard/预览/Owner 数据。启动前确认端口与该项目数据的归属，不能复用来源不明的同名卷。脚本清除本进程继承的功能变量，再读取显式配置，退出时恢复；不修改系统变量。
+
+需要演示 P2 材料/回答时，Prepare、Build、Start 三步一致追加 -EnableP2Write。前端只读是构建参数，切换后必须重新构建 web；服务端仍独立检查只读与 Assessment 依赖。P2 写入开关不能作为全站权限开关或来源可信证明。恢复常规演示时重新 Build/Start 且不带此参数。
+
+首次 Build 需要基础镜像、APT、ScanCode、Syft、npm 和 Python 下载。npm/Python 默认优先国内镜像，版本及原包摘要不变；可用 Docker build 参数 NPM_CONFIG_REGISTRY/PIP_INDEX_URL 指定受控源。没有镜像/依赖缓存时不能声称可离线构建。Docker Desktop 由操作者正常启动，后端不在 Windows 原生解释器中伪造 POSIX 权限。
+
+准备好镜像后可用 docker image save 导出此项目的 api/web 镜像，在另一台 Windows 由 docker image load 预加载，再 Start（--no-build）。保留实际 image ID、RepoDigests、平台、源码 HEAD/dirty 清单及配置；镜像 tag 不等于同一内容。AI 仍关闭，基本 ZIP/规则/报告不要求下载模型。已有锁定 Ollama 的 AI 演示需另定授权范围和模型身份，不能自动拉取或启动模型。
+
+当前配置验证与真实运行验收分别记录在交付矩阵。真实验收至少包括页面上传自有 ZIP、资源/风险/Evidence、固定 Assessment、Task 与 Report V2，以及 P0 四格式下载；获准 Stop/Start 后核对同 URL 的 SHA-256。检查失败时先保留记录，docker compose -p openguard-delivery-20261030 -f deploy/compose.yaml logs --tail 80 api web 只用于定位。不要 down -v，不自动修复或删除数据库；普通 GET 不生成对象。
+
+### 本轮真实验收脚本
+
+复用上述服务和现有API；deploy/delivery_acceptance.py仅使用Python标准库，不启动服务或直接访问数据库。先在全新输出目录执行prepare生成自有前后ZIP与SHA；获准后run显式添加--allow-test-writes，使用P2时加--p2。固定连接127.0.0.1:8086，默认不调用模型。原请求未知时保留receipt中的pending事件并停止，不自动POST重试。--ai只用于另获授权的真实模型场景，不属于默认delivery配置。
+
+~~~powershell
+.venv\Scripts\python.exe -X utf8 deploy/delivery_acceptance.py prepare --output <全新独立输出目录>
+.venv\Scripts\python.exe -X utf8 deploy/delivery_acceptance.py run --output <同一目录> --allow-test-writes --p2
+.venv\Scripts\python.exe -X utf8 deploy/delivery_acceptance.py verify --output <同一目录>
+~~~
+
+run覆盖两次真实ZIP、资源/风险/Evidence、真实评估派生任务/CAS、现有Diff、P0四格式和V2两格式及相同请求回执。配对ZIP需confirm_zip_pair=true；这是用户声明，不自动建立可信项目身份，默认比较仍拒绝无同项目身份的输入。截图/录制、浏览器前进后退/刷新/保存及重启前后verify另行留证，脚本通过不冒充浏览器或干净机器复现。
