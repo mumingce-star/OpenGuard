@@ -1,6 +1,5 @@
-import { GlowCursor } from "../components/GlowCursor";
 import { ParticleText } from "../components/ParticleText";
-import { HeroBackground } from "../components/HeroBackground";
+import { HeroEvidenceScene } from "../components/HeroEvidenceScene";
 import type { AccountUser } from '../services/auth';
 import { ActionButton, ArrowGlyph, FlipCard } from "../components/ui";
 export function Brand({
@@ -28,24 +27,24 @@ export function Landing({
   onDemo,
   accountMode = false,
   user = null,
+  view = "home",
 }: {
   onEnter: () => void;
   onDemo: () => void;
   accountMode?: boolean;
   user?: AccountUser | null;
+  view?: "home" | "about";
 }) {
+  const about = view === "about";
   return (
-    <main className="landing-shell">
-      <GlowCursor />
+    <main className={`landing-shell ${about ? "landing-about" : "landing-home"}`}>
       <div className="landing-intro">
-        <HeroBackground />
         <header className="landing-nav">
           <Brand
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => about ? window.location.assign("/") : window.scrollTo({ top: 0, behavior: "smooth" })}
           />
-          <nav aria-label="首页导航">
-            <a href="#capability">核心能力</a>
-            <a href="#workflow">工作流</a>
+          <nav aria-label={about ? "产品介绍导航" : "首页导航"}>
+            {about ? <><a className="landing-about-link" href="/">返回首页</a><a href="#capability">核心能力</a><a href="#workflow">工作流</a></> : <a className="landing-about-link" href="/about">了解 OpenGuard</a>}
             {accountMode&&<div className="landing-account-nav">{user?<strong>{user.username}</strong>:<><a href="/login">登录</a><a href="/register">注册账号</a></>}</div>}
             <button className="nav-cta" type="button" onClick={onEnter}>
               进入工作台
@@ -53,7 +52,14 @@ export function Landing({
           </nav>
         </header>
 
-        <section className="hero-section">
+        {about ? <section className="about-heading">
+          <p className="eyebrow">ABOUT OPENGUARD / 产品介绍</p>
+          <h1>让每条判断，都能找到依据。</h1>
+          <p>从仓库里的资源线索，到有出处的风险判断与可复核报告，OpenGuard 让开源合规工作沿着证据链向前推进。</p>
+          <div className="hero-meta" aria-label="产品流程">
+            <span>01 / 资源发现</span><span>02 / 许可证判断</span><span>03 / AI 风险解释</span><span>04 / 合规报告</span>
+          </div>
+        </section> : <section className="hero-section">
           <div className="hero-badge">
             <span /> AI 开源合规与溯源助手
           </div>
@@ -61,6 +67,7 @@ export function Landing({
           <p className="hero-copy">
             让每一个风险，都有证据可循；让每一次发布，都更有底气。
           </p>
+          <HeroEvidenceScene />
           <div className="hero-actions">
             <button className="primary-button og-arrow-button" type="button" onClick={onEnter}>
               <span>开始安全扫描</span><ArrowGlyph />
@@ -69,15 +76,12 @@ export function Landing({
               加载演示项目
             </ActionButton>}
           </div>
-          <div className="hero-meta" aria-label="产品特性">
-            <span>01 / 资源发现</span>
-            <span>02 / 许可证判断</span>
-            <span>03 / AI 风险解释</span>
-            <span>04 / 合规报告</span>
-          </div>
+          <a className="hero-about-link" href="/about">了解 OpenGuard <span aria-hidden="true">↗</span></a>
         </section>
+        }
       </div>
 
+      {about && <>
       <section id="capability" className="recognition-slice">
         <div>
           <p className="eyebrow">EXPLAINABLE BY DESIGN</p>
@@ -149,7 +153,7 @@ export function Landing({
         </div>
       </section>
       <section className="og-brand-story" aria-labelledby="brand-story-title">
-        <article className="og-brand-story-card">
+        <article className="og-brand-story-card og-favorite-story-card">
           <div className="og-brand-story-orbit" aria-hidden="true"><span>OG</span></div>
           <div className="og-brand-story-copy">
             <p className="eyebrow">EVIDENCE BEFORE CONCLUSION</p>
@@ -166,6 +170,7 @@ export function Landing({
           </div>
         </article>
       </section>
+      </>}
     </main>
   );
 }

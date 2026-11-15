@@ -17,6 +17,7 @@ export type Page =
   | "report"
   | "report-v2"
   | "not-found"
+  | "about"
   | "home";
 export function readRoute() {
   const { pathname, search } = window.location;
@@ -29,6 +30,8 @@ export function readRoute() {
         : defaultMode;
   if (pathname === "/")
     return { page: "home" as Page, scanId: "", riskId: "", query, mode };
+  if (pathname === "/about" || pathname === "/about/")
+    return { page: "about" as Page, scanId: "", riskId: "", query, mode };
   if (pathname === "/app/assistant" || pathname === "/app/assistant/")
     return { page: "assistant" as Page, scanId: "", riskId: "", query, mode: "api" as Mode };
   if (pathname === "/app/new-scan")
@@ -94,7 +97,7 @@ export function useRoute() {
   function restoreScroll(fallback: number, instant = false) {
     const chapter = /^\/app\/scans\/[^/]+\/report\/?$/.test(location.pathname)
       && /^#report-[0-5]$/.test(location.hash);
-    const landing = location.pathname === "/" && ["#capability", "#workflow"].includes(location.hash);
+    const landing = /^\/about\/?$/.test(location.pathname) && ["#capability", "#workflow"].includes(location.hash);
     const anchor = chapter || landing ? document.getElementById(location.hash.slice(1)) : null;
     // Resolve at restoration time: a report chapter may have been clicked
     // after a route change queued this frame. Never overwrite it with page top.

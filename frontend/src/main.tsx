@@ -11,6 +11,8 @@ import './styles/product-ui.css';
 import './styles/workbench-light.css';
 import './styles/workspace-nav.css';
 import './styles/workspace-v3.css';
+import './styles/landing-sage.css';
+import './styles/favorites-sage.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

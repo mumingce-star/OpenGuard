@@ -86,7 +86,12 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   const { route, go, filter } = useRoute(),
     { scan, error, loading, reload } = useScan(route.scanId, route.mode);
   const chatMode = route.page === "assistant" || (route.page === "chat" && p2WorkbenchEnabled);
-  const [railCompact, setRailCompact] = useState(chatMode);
+  const [railCompact, setRailCompact] = useState(() => {
+    try { return sessionStorage.getItem("og-rail-compact") === "1"; } catch { return false; }
+  });
+  const [narrowRail, setNarrowRail] = useState(() => window.matchMedia("(min-width: 761px) and (max-width: 1279px)").matches);
+  const [railPeek, setRailPeek] = useState(false);
+  const compactNav = narrowRail ? !railPeek : railCompact;
   const [mobile, setMobile] = useState(false),
     [projecting, setProjecting] = useState(() => {
       try {
@@ -111,9 +116,22 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   };
   useEffect(() => () => clearTimeout(timer.current), []);
   useEffect(() => {
+    const query = window.matchMedia("(min-width: 761px) and (max-width: 1279px)");
+    const sync = () => { setNarrowRail(query.matches); setRailPeek(false); };
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+  useEffect(() => {
     setMobile(false);
-    setRailCompact(chatMode);
+    setRailPeek(false);
   }, [route.page, route.scanId, route.riskId]);
+  function toggleRail() {
+    if (narrowRail) { setRailPeek(value => !value); return; }
+    setRailCompact(value => {
+      try { sessionStorage.setItem("og-rail-compact", value ? "0" : "1"); } catch { /* session only */ }
+      return !value;
+    });
+  }
   function created(s: Pick<Scan, "id" | "mode">) {
     go(scanPath(s.id, "progress", s.mode));
   }
@@ -173,7 +191,7 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   function navButton([page, label]: [Page, string], compact: boolean) {
     const disabled = !(["new-scan", "history", "assistant"].includes(page)) && !route.scanId;
     return <NavTooltip key={page} label={label} enabled={compact} disabledReason={disabled ? "请先选择或创建扫描任务" : undefined}>
-      <button className={page === route.page ? "active" : ""} aria-label={label} title={compact ? undefined : label} aria-current={page === route.page ? "page" : undefined} disabled={disabled} onClick={() => { setMobile(false); setRailCompact(page === "assistant" || page === "chat"); navigate(page); }}><Icon page={page} /><span className="og-nav-label">{label}</span>{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>
+      <button className={page === route.page ? "active" : ""} aria-label={label} title={compact ? undefined : label} aria-current={page === route.page ? "page" : undefined} disabled={disabled} onClick={() => { setMobile(false); setRailPeek(false); navigate(page); }}><Icon page={page} /><span className="og-nav-label">{label}</span>{page === "risks" && scan && <em>{scan.risks.length}</em>}</button>
     </NavTooltip>;
   }
   const detailPages: Page[] = ["risks", "resources", "graph", "remediation", "diff"];
@@ -302,23 +320,23 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   }} />;
   return (
     <NoticeContext.Provider value={notify}>
-      {route.page === "home" ? (
-        <Landing onEnter={() => navigate("new-scan")} onDemo={demo} accountMode={accountAuthEnabled} user={accountUser??null} />
+      {route.page === "home" || route.page === "about" ? (
+        <Landing view={route.page} onEnter={() => navigate("new-scan")} onDemo={demo} accountMode={accountAuthEnabled} user={accountUser??null} />
       ) : (
-        <div className={"og-app og-ui-refined og-workspace-light" + (projecting ? " og-projecting" : "") + (railCompact ? " og-workspace-rail-compact" : "") + (chatMode ? " og-chat-shell" : "")}>
+        <div className={"og-app og-ui-refined og-workspace-light" + (projecting ? " og-projecting" : "") + (compactNav ? " og-workspace-rail-compact" : "") + (narrowRail && railPeek ? " og-rail-peek" : "") + (chatMode ? " og-chat-shell" : "")}>
           <a className="og-skip" href="#workspace-main">
             跳到主要内容
           </a>
           <aside className="og-sidebar">
-            <Brand onClick={() => go("/")} compact={railCompact} />
-            <button className="og-workspace-rail-toggle" aria-label={railCompact ? "展开工作台导航" : "收起工作台导航"} aria-expanded={!railCompact} onClick={() => setRailCompact(v => !v)} title={railCompact ? "展开导航" : "收起导航"}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button>
+            <Brand onClick={() => go("/")} compact={compactNav} />
+            <button className="og-workspace-rail-toggle" aria-label={compactNav ? "展开工作台导航" : "收起工作台导航"} aria-expanded={!compactNav} onClick={toggleRail} title={compactNav ? "展开导航" : "收起导航"}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button>
             <div className="og-sidebar-context">
               <span>{route.page === "history" ? "历史视图" : "当前任务"}</span>
               <strong>{route.page === "history" ? "全部扫描任务" : scan?.project ?? "等待输入项目"}</strong>
               <small>{route.page === "history" ? "真实接口 · 只读查询" : route.scanId || "尚未创建"}</small>
             </div>
-            {navigation(railCompact)}
-            <footer className="og-sidebar-user"><span className="og-user-avatar" aria-hidden="true">{accountUser?.username.slice(0,1).toUpperCase() ?? 'U'}</span><span className="og-user-name">{accountUser?.username ?? '本地工作台'}</span>{accountUser && <button aria-label="退出登录" title="退出登录" onClick={()=>void logout()} disabled={logoutBusy}>{logoutBusy?'…':'退出'}</button>}{logoutError&&<span className="account-logout-error" role="alert">{logoutError}</span>}</footer>
+            {navigation(compactNav)}
+            <footer className="og-sidebar-user"><span className="og-user-avatar" aria-hidden="true">{accountUser?.username.slice(0,1).toUpperCase() ?? 'U'}</span><span className="og-user-name">{accountUser?.username ?? '本地工作台'}</span>{accountUser && <button className="og-favorite-logout" aria-label="退出登录" title="退出登录" onClick={()=>void logout()} disabled={logoutBusy}><span aria-hidden="true">⇥</span><span>{logoutBusy?'退出中…':'退出'}</span></button>}{logoutError&&<span className="account-logout-error" role="alert">{logoutError}</span>}</footer>
           </aside>
           <div className="og-workspace">
             <header className="og-topbar">

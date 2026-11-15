@@ -16,7 +16,7 @@ type ParticleTextProps = {
   className?: string;
 };
 
-const palette = ["#f8fafc", "#c7d2fe", "#818cf8", "#22d3ee"];
+const palette = ["#134b3a", "#19614b", "#285c4f", "#2f8566"];
 
 export function ParticleText({ text, className = "" }: ParticleTextProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,12 +48,10 @@ export function ParticleText({ text, className = "" }: ParticleTextProps) {
       });
       if (!sampleContext) return;
 
-      const maxSize = Math.min(
-        190,
-        rect.width / Math.max(text.length * 0.62, 1),
-      );
-      const fontSize = Math.max(54, maxSize);
       sampleContext.fillStyle = "#ffffff";
+      sampleContext.font = '800 190px Inter, "Microsoft YaHei", sans-serif';
+      const measuredWidth = sampleContext.measureText(text).width;
+      const fontSize = Math.min(190, (190 * Math.max(1, sample.width - 32)) / Math.max(1, measuredWidth));
       sampleContext.font = `800 ${fontSize}px Inter, "Microsoft YaHei", sans-serif`;
       sampleContext.textAlign = "center";
       sampleContext.textBaseline = "middle";
@@ -119,7 +117,7 @@ export function ParticleText({ text, className = "" }: ParticleTextProps) {
         context.arc(
           particle.x,
           particle.y,
-          rect.width < 640 ? 1.2 : 1.45,
+          1.45,
           0,
           Math.PI * 2,
         );

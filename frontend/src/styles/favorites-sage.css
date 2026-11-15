@@ -1,0 +1,142 @@
+/* Uiverse favorites adapted to the pearl and forest-green OpenGuard surfaces.
+   Keep recognizable component shapes instead of flattening every action. */
+.landing-shell .hero-actions .og-arrow-button,
+.landing-shell .og-brand-story .og-arrow-button {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 14px;
+  min-height: 52px; padding: 4px 5px 4px 21px; border-radius: 999px;
+}
+.landing-shell .hero-actions .og-arrow-button > span,
+.landing-shell .og-brand-story .og-arrow-button > span { margin: 0; }
+.landing-shell .og-arrow-button .og-ui-glyph {
+  width: 42px; height: 42px; flex: none; padding: 11px; border-radius: 50%;
+  background: #124937; color: #fff; transition: transform .22s ease, background .22s ease;
+}
+.landing-shell .og-arrow-button:hover .og-ui-glyph { transform: translateX(3px); background: #0d372a; }
+.landing-shell .hero-actions .primary-button.og-arrow-button { padding-left: 21px; }
+.landing-shell .hero-actions .primary-button.og-arrow-button .og-ui-glyph { background: #0c3b2d; }
+.landing-shell .og-action-play { display: inline-flex; align-items: center; gap: 12px; border-radius: 999px; min-height: 52px; }
+.landing-shell .og-action-play .og-action-icon { width: 36px; height: 36px; flex: 0 0 36px; padding: 9px; border-radius: 50%; box-sizing: border-box; transition: transform .2s ease; }
+.landing-shell .og-action-play .og-action-icon svg { width: 18px; height: 18px; }
+.landing-shell .og-action-play:hover .og-action-icon { transform: scale(1.1); }
+.landing-about .signal-card.og-glass-card { background: linear-gradient(140deg,#ffffffed,#e9f6eedc 45%,#cbe9d5b9); border: 1px solid #b5d4c2; box-shadow: inset 0 2px #fff,0 21px 45px #1b5d3823; }
+.landing-about .signal-card.og-glass-card:hover { box-shadow: inset 0 2px #fff,0 26px 53px #1b5d3833; }
+.landing-about .og-flip-front { background: linear-gradient(155deg,#fff,#ecf6ef); box-shadow: inset 0 2px #fff,0 16px 34px #1e4a3318; }
+.landing-about .og-flip-back { background: linear-gradient(155deg,#e6f3e9,#f9fcfa); box-shadow: inset 0 2px #fff,0 16px 34px #1e4a3318; }
+.landing-about .og-flip-card > button { padding-inline: 0; border: 0; background: transparent; box-shadow: none; }
+.landing-about .og-favorite-story-card { border: 1px solid #94c1a4; background: linear-gradient(126deg,#fefefe 12%,#e8f4eb 55%,#d2ebdb); box-shadow: inset 0 2px #fff,0 23px 55px #1c57372a; transition: transform .28s ease,box-shadow .28s ease; }
+.landing-about .og-favorite-story-card:hover { transform: translateY(-5px); box-shadow: inset 0 2px #fff,0 31px 65px #1c57373a; }
+
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-action-button,
+.og-app.og-ui-refined.og-workspace-light .p2-workbench .og-action-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 11px;
+  min-height: 46px; padding: 8px 16px; border: 1px solid #a6c5b2; border-radius: 12px;
+  background: linear-gradient(145deg,#fff,#f3faf5); color: #164d3a;
+  box-shadow: inset 0 1px #fff,0 5px 15px #20513b16;
+  transition: transform .2s ease,background .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.og-app.og-ui-refined.og-workspace-light .og-action-button .og-action-icon,
+.og-app.og-ui-refined.og-workspace-light .og-action-button .og-action-icon svg {
+  width: 22px; height: 22px; flex: 0 0 22px; padding: 0; border-radius: 0; background: transparent; box-shadow: none; color: inherit;
+}
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-action-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 9px 20px #20513b25; border-color: #6b9e7d; }
+.og-app.og-ui-refined.og-workspace-light .og-action-button:active:not(:disabled) { transform: translateY(1px); }
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-action-primary,
+.og-app.og-ui-refined.og-workspace-light .p2-workbench .og-action-button.p2-primary { background: #19614b; border-color: #19614b; color: #fff; box-shadow: 0 8px 20px #19614b28; }
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-action-primary:hover:not(:disabled),
+.og-app.og-ui-refined.og-workspace-light .p2-workbench .og-action-button.p2-primary:hover:not(:disabled) { background: #134b3a; color: #fff; }
+.og-app.og-ui-refined.og-workspace-light .og-action-send:hover:not(:disabled) .og-action-icon { transform: translate(3px,-3px) rotate(12deg); }
+.og-app.og-ui-refined.og-chat-shell .og-assistant .og-favorite-send { background:#19614b; box-shadow:0 5px 13px #19614b36; transition:transform .2s ease,box-shadow .2s ease; }
+.og-app.og-ui-refined.og-chat-shell .og-assistant .og-favorite-send:disabled { background:#f0f2f3; color:#afb6bd; box-shadow:none; }
+.og-app.og-ui-refined.og-chat-shell .og-assistant .og-favorite-send:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 18px #19614b4d; }
+.og-app.og-ui-refined.og-chat-shell .og-assistant .og-favorite-send:hover:not(:disabled) svg { transform:translate(2px,-2px) rotate(-9deg); }
+.og-app.og-ui-refined.og-chat-shell .og-assistant .og-favorite-send svg { transition:transform .2s ease; }
+.og-app.og-ui-refined.og-workspace-light .og-action-copy { border-radius: 999px; }
+.og-app.og-ui-refined.og-workspace-light .og-action-copy:hover:not(:disabled) .og-action-icon { transform: translateY(-3px) rotate(-7deg); }
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-action-copy,
+.og-app.og-ui-refined.og-workspace-light .p2-workbench .og-action-copy { border-color: #ada3d4; background: linear-gradient(135deg,#fff,#f3effb); color: #5c4f87; }
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-action-remove { border-color: #e6adb0; background: #fff8f8; color: #a23e46; }
+.og-app.og-ui-refined.og-workspace-light .og-action-remove:hover:not(:disabled) .og-action-icon { transform: rotate(-12deg); }
+
+/* nazar-gavrylyk / evil-dragon-24: capsule, separate circular glyph and label. */
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-download-button,
+.og-app.og-ui-refined.og-workspace-light .p2-workbench .og-download-button {
+  display: inline-flex; align-items: center; justify-content: flex-start; gap: 12px;
+  width: fit-content; max-width: 100%; min-height: 52px; padding: 4px 18px 4px 4px;
+  border: 2px solid #7669bb; border-radius: 999px; background: #fff; color: #493b77;
+  box-shadow: inset 0 0 0 1px #a99cd317,0 5px 18px #5a4a9c1b;
+  font-weight: 650; white-space: normal;
+  transition: transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.og-app.og-ui-refined.og-workspace-light:not(.og-chat-shell) .og-download-button:hover:not(:disabled) { transform: translateY(-2px); background: #faf8ff; color: #493b77; border-color: #6756a8; box-shadow: 0 9px 23px #5a4a9c2b; }
+.og-app.og-ui-refined.og-workspace-light .og-download-button .og-ui-glyph,
+.og-app.og-ui-refined.og-workspace-light .p2-workbench .og-download-button .og-ui-glyph {
+  box-sizing: border-box; width: 42px; height: 42px; flex: 0 0 42px; padding: 10px;
+  border-radius: 50%; background: linear-gradient(145deg,#8072c4,#5e50a2); color: #fff;
+  box-shadow: inset 0 1px #ffffff72,0 4px 12px #6153a74f;
+  transition: transform .2s ease,box-shadow .2s ease;
+}
+.og-app.og-ui-refined.og-workspace-light .og-download-button:hover:not(:disabled) .og-ui-glyph { transform: translateY(2px); box-shadow: inset 0 1px #ffffff90,0 7px 17px #6153a75c; }
+.og-app.og-ui-refined.og-workspace-light .og-download-control.error .og-download-button { border-color: #ba676e; }
+.og-app.og-ui-refined.og-workspace-light .og-download-control.busy .og-ui-glyph { animation: og-download-pulse .9s ease-in-out infinite alternate; }
+
+.og-app.og-ui-refined.og-workspace-light .og-v3-scan-source > .og-segmented { padding:4px; border:1px solid #bdd6c7; border-radius:999px; background:#eaf3ed; box-shadow:inset 0 2px 5px #1a513015; }
+.og-app.og-ui-refined.og-workspace-light .og-segmented-slider { border:1px solid #9fc4ad; border-radius:999px; background:linear-gradient(145deg,#fff,#f1f9f3); box-shadow:0 3px 12px #194f3426; }
+.og-app.og-ui-refined.og-workspace-light .og-segmented label > span { border-radius:999px; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field { display:block; position:relative; padding-top:14px; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field > span { position:absolute; left:4px; top:31px; z-index:1; margin:0; color:#5a7062; font-size:13px; pointer-events:none; transform-origin:left top; transition:transform .2s ease,color .2s ease; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field:focus-within > span,
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field:has(input:not(:placeholder-shown)) > span { transform:translateY(-22px) scale(.84); color:#19614b; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field input { height:56px; padding:22px 4px 7px; border:0; border-bottom:2px solid #9ab7a4; border-radius:0; background:transparent; box-shadow:none; font-size:13px; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field input::placeholder { opacity:0; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field:focus-within input::placeholder { opacity:.6; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-floating-field:focus-within input { border-color:#19614b; outline:none; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-drop-zone.og-drop-zone { position:relative; border:2px dashed #9ac4ab; border-radius:18px; background-color:#f7fbf8; box-shadow:inset 0 2px #fff,0 8px 24px #185a3110; transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease; }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-drop-zone:is(:hover,:focus-within,.is-dragging) { border-color:#19614b; box-shadow:inset 0 2px #fff,0 12px 30px #185a3124; transform:translateY(-2px); }
+.og-app.og-ui-refined.og-workspace-light .og-new-scan .og-upload-symbol { width:54px; height:54px; border-radius:15px; background:#e7f3e9; color:#19614b; box-shadow:inset 0 1px #fff,0 5px 16px #1a553123; }
+.og-app.og-ui-refined.og-workspace-light .og-search-control { border-radius:12px; box-shadow:inset 0 1px 3px #164a2314; transition:box-shadow .2s ease; }
+.og-app.og-ui-refined.og-workspace-light .og-search-control:focus-within { box-shadow:inset 0 1px 3px #164a2314,0 0 0 3px #3a9a652e; }
+.og-app.og-ui-refined.og-workspace-light .og-help > button { border-radius:50%; box-shadow:0 3px 8px #24543524,inset 0 1px #fff; }
+.og-app.og-ui-refined.og-workspace-light .og-help [role="tooltip"] { box-shadow:0 12px 26px #24433333; border-color:#b9d4c1; }
+.og-app.og-ui-refined.og-workspace-light .og-choice:has(input:checked) .og-choice-mark path { stroke-dashoffset:0; }
+.og-app.og-ui-refined.og-workspace-light .og-loading-dots-visual i:first-child { background:#19614b; }
+.og-app.og-ui-refined.og-workspace-light .og-loading-dots-visual i:nth-child(2) { background:#8878b4; }
+.og-app.og-ui-refined.og-workspace-light .og-loading-dots-visual i:nth-child(3) { background:#b7925d; }
+.og-app.og-ui-refined.og-workspace-light .og-p2-panel form,
+.og-app.og-ui-refined.og-workspace-light .og-task-edit { border:1px solid #bdd1c2; border-radius:16px; background:linear-gradient(145deg,#fff,#f2f8f3); box-shadow:inset 3px 3px 9px #1e543111,inset -1px -1px #fff; }
+.og-app.og-ui-refined.og-workspace-light .og-p2-panel :is(input:not([type="checkbox"]),textarea,select),
+.og-app.og-ui-refined.og-workspace-light .og-task-edit textarea { box-shadow:inset 2px 2px 5px #1e543113; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-task .og-task-heading { display:flex; align-items:center; gap:12px; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-task .og-task-heading > div { min-width:0; flex:1; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-task-check { display:grid; place-items:center; flex:0 0 23px; width:23px; height:23px; border:2px solid #9ebba8; border-radius:6px; background:#fff; color:#fff; font-size:15px; box-shadow:inset 0 1px #fff; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-task.done .og-favorite-task-check { border-color:#19614b; background:#19614b; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-task.dismissed .og-favorite-task-check { border-color:#b59b77; background:#fff7eb; }
+.og-app.og-ui-refined.og-workspace-light .og-choice.compact .og-choice-mark { width:20px; height:20px; flex-basis:20px; }
+.og-app.og-ui-refined.og-workspace-light .og-sidebar-user .og-favorite-logout { width:30px; min-width:30px; overflow:hidden; padding:3px 7px; gap:8px; white-space:nowrap; color:#8f4448; border:1px solid #e6c8c8; border-radius:999px; background:#fff8f8; transition:width .22s ease; }
+.og-app.og-ui-refined.og-workspace-light .og-sidebar-user .og-favorite-logout:is(:hover,:focus-visible) { width:76px; color:#a73641; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-logout span:first-child { font-size:18px; line-height:1; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-logout span:last-child { font-size:11px; }
+
+.og-app.og-ui-refined.og-workspace-light .og-favorite-navigation { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:0 0 15px; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-navigation > button { display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-width:0; padding:17px 19px; text-align:left; border:1px solid #bfd7c7; border-radius:14px; background:linear-gradient(145deg,#fff,#edf7f0); box-shadow:inset 0 1px #fff,0 5px 17px #175b3212; transition:transform .22s ease,box-shadow .22s ease,opacity .22s ease; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-navigation > button > span { color:#467c5b; font:11px ui-monospace,monospace; letter-spacing:.08em; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-navigation strong { color:#183a2b; font-size:15px; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-navigation small { display:flex; justify-content:space-between; width:100%; color:#4e6756; }
+.og-app.og-ui-refined.og-workspace-light .og-favorite-navigation small span { color:#19614b; font-size:18px; line-height:1; }
+@media (hover:hover) {
+  .og-app.og-ui-refined.og-workspace-light .og-favorite-navigation:has(>button:hover) > button:not(:hover) { opacity:.64; }
+  .og-app.og-ui-refined.og-workspace-light .og-favorite-navigation > button:hover { transform:translateY(-4px); box-shadow:0 14px 28px #175b3229; }
+}
+@media (max-width:760px) {
+  .og-app.og-ui-refined.og-workspace-light .og-favorite-navigation { grid-template-columns:1fr; }
+  .og-app.og-ui-refined.og-workspace-light .og-favorite-navigation > button { min-height:74px; }
+  .og-app.og-ui-refined.og-workspace-light .og-sidebar-user .og-favorite-logout { width:76px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .landing-shell .og-arrow-button .og-ui-glyph,
+  .og-app.og-ui-refined.og-workspace-light .og-favorite-navigation > button,
+  .og-app.og-ui-refined.og-workspace-light .og-action-button,
+  .og-app.og-ui-refined.og-workspace-light .og-download-button { transition:none !important; transform:none !important; }
+  .og-app.og-ui-refined.og-chat-shell .og-assistant .og-favorite-send,
+  .og-app.og-ui-refined.og-chat-shell .og-assistant .og-favorite-send svg { transition:none !important; transform:none !important; }
+  .og-app.og-ui-refined.og-workspace-light .og-favorite-navigation:has(>button:hover) > button:not(:hover) { opacity:1; }
+}

@@ -36,3 +36,40 @@ Core pages reused from team commit 83e8928. Graph pages and React Flow dependenc
 ## 2026-11-14 Gemini UI integration
 
 The user supplied Gemini-generated TSX/CSS, including the inline authentication illustration and CSS SVG decorations. Codex reviewed these source changes and tested the integrated UI; no external artwork was downloaded and no dependency was added in this update. The exact Gemini model/version was not supplied. This entry records provenance, not an independent rights determination. Previously excluded landing video/poster remain excluded.
+
+## 2026-11-15 Emerald evidence window
+
+- Visual reference: https://reactbits.dev/components/glass-surface
+- Usage: glass depth, edge highlights, and a light surface. The three evidence panes, paths, and motion are original React/CSS/SVG code; no React Bits source or external media was copied.
+- Dependencies: none added. The scene is labeled as a concept demonstration and contains no measured scan result.
+
+## 2026-11-16 Uiverse favorites in the pearl and forest-green theme
+
+The user selected 22 favorites for this pass. OpenGuard uses its existing React components and original CSS/SVG adaptations; no Uiverse source code, assets, fonts, or runtime package were copied. Source pages identify the elements as MIT licensed. The mapping records design references and recognizable shapes, not pixel-identical reproduction. Forest green is the primary color; purple remains on copy and download controls. Motion follows reduced-motion preferences.
+
+| Reference | OpenGuard placement |
+| --- | --- |
+| [andrew-manzyk / ancient-turtle-91](https://uiverse.io/andrew-manzyk/ancient-turtle-91) | Drawn-tick selection in shared checkboxes |
+| [SelfMadeSystem / green-bobcat-29](https://uiverse.io/SelfMadeSystem/green-bobcat-29) | Compact P2 selection rows |
+| [Admin12121 / soft-falcon-79](https://uiverse.io/Admin12121/soft-falcon-79) | GitHub/ZIP sliding segmented choice |
+| [liyaxu123 / warm-eel-62](https://uiverse.io/liyaxu123/warm-eel-62) | Repository address floating label |
+| [Lakshay-art / curvy-earwig-22](https://uiverse.io/Lakshay-art/curvy-earwig-22) | Search field focus glow |
+| [cssbuttons-io / massive-mayfly-74](https://uiverse.io/cssbuttons-io/massive-mayfly-74) | Landing scan CTA with circular traveling arrow |
+| [satyamchaudharydev / quick-chicken-50](https://uiverse.io/satyamchaudharydev/quick-chicken-50) | Raised primary action and press states |
+| [nazar-gavrylyk / evil-dragon-24](https://uiverse.io/nazar-gavrylyk/evil-dragon-24) | Outlined report download capsule with purple icon zone |
+| [adamgiebl / smart-moth-68](https://uiverse.io/adamgiebl/smart-moth-68) | Paper-plane send actions in P2 and assistant |
+| [Mohammad-Rahme-576 / hard-starfish-64](https://uiverse.io/Mohammad-Rahme-576/hard-starfish-64) | Purple copy action and contextual hint |
+| [Yaya12085 / yellow-goat-62](https://uiverse.io/Yaya12085/yellow-goat-62) | Dashed ZIP drop zone and hover state |
+| [mobinkakei / grumpy-turtle-41](https://uiverse.io/mobinkakei/grumpy-turtle-41) | Staggered three-dot loading indicator |
+| [vikas7754 / evil-mule-52](https://uiverse.io/vikas7754/evil-mule-52) | Raised help trigger and floating tooltip |
+| [Smit-Prajapati / smart-liger-5](https://uiverse.io/Smit-Prajapati/smart-liger-5) | Layered evidence card on the product introduction page |
+| [ElSombrero2 / tricky-robin-67](https://uiverse.io/ElSombrero2/tricky-robin-67) | Two-sided explanation card with explicit flip control |
+| [barisdogansutcu / average-chipmunk-44](https://uiverse.io/barisdogansutcu/average-chipmunk-44) | Landing demo capsule with circular play area |
+| [Praashoo7 / brave-moose-56](https://uiverse.io/Praashoo7/brave-moose-56) | Layered P2 form and task note surfaces |
+| [vinodjangid07 / smart-emu-83](https://uiverse.io/vinodjangid07/smart-emu-83) | Remove action for unsent ZIP selection |
+| [kamehame-ha / chilly-snake-91](https://uiverse.io/kamehame-ha/chilly-snake-91) | Overview navigation cards with grouped hover |
+| [JkHuger / warm-panther-74](https://uiverse.io/JkHuger/warm-panther-74) | Task-list checkbox shape and completed state |
+| [vinodjangid07 / thin-duck-22](https://uiverse.io/vinodjangid07/thin-duck-22) | Expanding logout icon pill |
+| [Smit-Prajapati / spicy-rat-83](https://uiverse.io/Smit-Prajapati/spicy-rat-83) | Hovering OpenGuard brand story card |
+
+Six other saved items remain outside this product mapping: bookmark, day/night toggle, star rating, Discord, social tooltip, and social-button group. None is presented as a business function.

@@ -239,3 +239,85 @@
 - 风险与未完成：15 项扩展失败和 chunk 警告保留；未执行真实 Qwen、干净安装、跨平台或全无障碍验收；独立人工 PR 审查待完成。
 - 下一步：推送本提交并更新 PR #4 标题/说明，由项目成员审查，不合并 main。本条 COMPLETE 指验收和发布副本准备，远程提交状态以 GitHub 为准。
 - 关联：codex/frontend-ui-v3；https://github.com/mumingce-star/OpenGuard/pull/4。
+
+### [20261115-0126-GPT6Sol-landing-sage-start] START - 首页与工作台配色统一
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 01:26（Asia/Shanghai）。
+- 范围：从 codex/frontend-ui-v3@5656608 创建独立工作树，实现已确认的珍珠白、森林绿首页及绿色粒子字；保持现有前端业务流程。
+- 预计文件：frontend/src/styles/index.css、frontend/src/pages/Landing.tsx、frontend/src/components/ParticleText.tsx，必要时少量首页专属样式；共享日志与进度只追加。
+- 验收：前端构建及相关现有测试、桌面与窄屏可见预览、首页到工作台颜色衔接、减少动画和键盘焦点。估算 6,000—12,000 tokens，精确遥测不可获得。
+- 分支：codex/landing-sage-ui；不覆盖其他工作树未提交修改。
+
+### [20261115-0201-GPT6Sol-landing-sage-partial] PARTIAL - 首页视觉实现与预览完成
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 02:01（Asia/Shanghai）。目标为首页与工作台统一配色并交付可见预览；已完成珍珠白/森林绿首页、绿色粒子字、浅色信息卡片与按钮。
+- 修改：frontend/src/pages/Landing.tsx、frontend/src/components/ParticleText.tsx、frontend/src/main.tsx、新增 frontend/src/styles/landing-sage.css；追加本日志、docs/05-ai-assistance-log.md、新增分支进度文档。未改 API、DTO、Schema 或后端。
+- 验证：pnpm test 187/187；pnpm build TypeScript/Vite 117 modules PASS，保留既有大 chunk 警告；浏览器桌面和 390px 核对首页、证据链、演示入口及工作台衔接，窄屏 scrollWidth 375 <= 390；git diff --check 通过。减少动画沿用现有检测并关闭背景呼吸动画。
+- 预览：本机 4192 新版首页已打开，旧静态入口备份于忽略目录；4193 因浏览器本机端口不可达未作为交付入口。颜色方案基于用户已选的参考图。
+- 风险与下一步：用户视觉签收尚待；真实后端、正式国赛组合候选及材料门禁不由本次静态预览证明。分支 codex/landing-sage-ui 仅本地、未提交/推送/PR/合并；视觉确认后再按团队发布流程处理。精确 token 数不可获得；开工估算 6,000—12,000，本轮实现和预览完成，实际是否在范围内无法核定。
+
+### [20261115-1115-GPT6Sol-particle-edge-start] START - 修复首页粒子字裁边
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 11:15（Asia/Shanghai）。
+- 范围：定位并修复首页 OpenGuard 粒子字首字母左侧被画布裁平的问题；沿用当前独立工作树，不改其他模型文件。预计修改 frontend/src/components/ParticleText.tsx、共享日志和分支进度，必要时更新 AI 辅助记录。
+- 验收：桌面与 390px 预览首尾字母完整、构建通过、相关测试、git diff --check。开工估算 1,500—3,000 tokens；精确遥测不可获得。
+- 分支：codex/landing-sage-ui，本地未推送。
+
+### [20261115-1118-GPT6Sol-particle-edge-partial] PARTIAL - 粒子字裁边修复与预览
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 11:18（Asia/Shanghai）。目标为修复首页首字母左侧被裁平；已将字号从字数估算改为 Canvas 实测宽度并留 16px 左右边距，首尾字母完整。
+- 修改：frontend/src/components/ParticleText.tsx；更新 docs/05-ai-assistance-log.md、docs/coordination/PROJECT_PROGRESS.md 和本日志。已按用户规则追加全局反思记录；无新增第三方资源。
+- 验证：pnpm test 187/187；pnpm build TypeScript/Vite PASS（保留既有大 chunk 警告）；本地浏览器桌面 941px 与手机 390px 均见完整字形，手机 scrollWidth 375 <= 390；git diff --check 通过。
+- 接口/Schema/规则：未变化；未修改后端。已刷新本机 4192 右侧预览。
+- 风险与下一步：视觉签收仍待用户；本地 codex/landing-sage-ui 尚未提交、推送、PR 或合并，后续由 Root Coordinator 依用户确认安排发布；真实后端与竞赛材料门禁不由本次修复证明。精确 token 数不可获得；开工估算 1,500—3,000，实际是否在范围内无法核定。
+
+### [20261115-1143-GPT6Sol-evidence-glass-start] START - 翡翠玻璃证据窗首页
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 11:43（Asia/Shanghai）。
+- 范围：在已获用户批准的 codex/landing-sage-ui 本地分支实现三层玻璃证据窗、12 秒循环、暂停与减少动态模式；保留现有入口。预计 frontend/src/pages/Landing.tsx、新组件、frontend/src/styles/landing-sage.css，更新设计来源、进度和工作日志。
+- 验收：前端构建和默认测试；桌面、当前预览和 390px 浏览器核对；暂停、减少动态与无横向溢出；git diff --check。估算 6,000—10,000 tokens，精确遥测不可获得。
+- 接口/Schema：预计无变化；不触碰其他模型未提交文件。分支本地未推送。
+
+### [20261115-1200-GPT6Sol-evidence-glass-partial] PARTIAL - 翡翠玻璃证据窗实现与本地预览
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 12:00（Asia/Shanghai）。目标为实现用户批准的翡翠玻璃首页动效；三层玻璃、来源/证据/追溯标签、SVG 线索、琥珀待核验分支、12 秒循环、暂停和减少动态静态态已实现。
+- 修改：新增 frontend/src/components/HeroEvidenceScene.tsx；更新 frontend/src/pages/Landing.tsx、frontend/src/styles/landing-sage.css、frontend/THIRD_PARTY_UI.md、docs/05-ai-assistance-log.md、docs/coordination/PROJECT_PROGRESS.md 和本日志。前轮未提交的粒子字修复及浅绿首页保留。
+- 验证：pnpm test 187/187 PASS；pnpm build TypeScript/Vite 118 modules PASS，保留既有大 chunk 警告；本地浏览器 1440px、941px、390px 无横向溢出，首尾字母和按钮可见；连续两个 12 秒循环无明显闪白；暂停/恢复及滚出视野自动暂停通过；git diff --check 与新增文件空白检查通过。减少动态静态态按 CSS 和现有 hook 实现，未做浏览器偏好模拟。
+- 来源/边界：视觉质感参考 React Bits Glass Surface，未复制源码或新增依赖；无 API、DTO、Schema、后端或风险规则变更。浏览器右侧 4192 仅本机静态构建与概念演示。
+- 风险与下一步：用户视觉签收待确认；codex/landing-sage-ui 本地未提交、推送、PR 或合并。真实后端、正式竞赛候选与材料门禁由团队整合线验收。精确 token 数不可获得；开工估算 6,000—10,000，实际是否在范围内无法核定。
+
+### [20261115-1914-GPT6Sol-whole-ui-start] START - 全站视觉与交互升级
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 19:14（Asia/Shanghai）。
+- 范围：按用户已批准的五阶段计划，将首页珍珠白与森林绿设计语言延展到工作台导航、扫描、进度、评估、风险、资源、图谱、历史、助手、报告及通用状态；沿用当前独立分支和已有功能契约。预计修改 frontend/src/App.tsx、frontend/src/pages/ 相关页面及 frontend/src/styles/ 相关样式，并更新进度、AI 辅助记录和本日志。
+- 验收：关键流程桌面、窄预览、平板及手机检查；前端默认测试、构建、git diff --check；记录本地预览与未发布状态。估算 12,000—25,000 tokens，精确遥测不可获得。
+- 接口/Schema：预计无变化；不覆盖其他模型或用户的未提交内容。分支 codex/landing-sage-ui 本地未推送。
+
+### [20261115-2004-GPT6Sol-whole-ui-partial] PARTIAL - 全站视觉升级本地交付
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 20:04（Asia/Shanghai）。目标为按已批准五阶段计划升级首页以外的作品 UI；本地分支已完成共用珍珠白/森林绿样式、228/64/移动抽屉导航、会话内手动偏好、扫描三步、概览状态化下一步、进度响应式阶段、窄屏风险证据优先、资源清单窄屏与报告目录/快照折叠。既有评估、图谱、整改、差异、归档、历史、助手和认证流程保留，未改业务事实与写入契约。
+- 修改：frontend/src/App.tsx、pages/NewScan.tsx、Overview.tsx、Progress.tsx、Report.tsx、styles/workspace-v3.css；更新 docs/05-ai-assistance-log.md、docs/coordination/PROJECT_PROGRESS.md 和本日志。此前未提交首页组件、粒子字修复与视觉来源登记保留，未覆盖。无新增第三方资源或运行依赖。
+- 验证：`pnpm test` 187/187 PASS；`pnpm build` TypeScript/Vite 118 modules PASS，保留既有 500 kB chunk 警告；`git diff --check` PASS。浏览器 1440×900、1280×800、941 宽、768×800、390×844 检查无横向溢出；扫描用途返回保留输入、确认摘要无后端提交；演示扫描到概览、风险证据、资源、报告可进入；图谱、整改、差异、报告归档、历史、项目评估、助手手机视图无横向溢出；投屏隐藏侧栏且正文 16px/标题 28px。右侧 4192 预览已刷新至当前构建。
+- 接口/Schema/规则：均未变化；概览指引只依据现有扫描状态和许可门禁数。响应式与减少动态滚动遵循浏览器偏好；未模拟操作系统减少动态开关。助手真实接口在本地预览返回 HTTP 502，真实后端联调未由本次验证。
+- 风险与下一步：按用户先视觉确认再同步 GitHub 的既有决定，本地 codex/landing-sage-ui 仍未提交、推送、PR 或合并；用户签收视觉后由 Root Coordinator 做待提交文件清单、敏感信息复核并发布任务分支。认证入口、真实后端端到端、跨平台和正式竞赛材料仍待责任人验收。本轮精确 token 数不可获得；开工估算 12,000—25,000，是否在范围内无法核定。
+
+### [20261115-2017-GPT6Sol-intro-page-start] START - 首页首屏与独立介绍页
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 20:17（Asia/Shanghai）。
+- 范围：按用户确认的方案让首页仅保留主视觉首屏；将下方现有介绍整合为独立「了解 OpenGuard」页面并提供清晰入口。预计修改 frontend/src/pages/Landing.tsx、frontend/src/App.tsx、相关样式与路由，并更新进度、AI 记录和本日志。
+- 验收：首页/介绍页桌面与 390px 无裁切，入口往返、演示与工作台入口保持可用；前端构建及必要测试、git diff --check。估算 3,000—6,000 tokens，精确遥测不可获得。
+- 接口/Schema：预计无变化。沿用 codex/landing-sage-ui 本地分支，不覆盖已有未提交首页与工作台修改；GitHub 同步依此前视觉确认约定。
+
+### [20261115-2027-GPT6Sol-intro-page-partial] PARTIAL - 首页首屏与介绍页本地预览
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-15 20:27（Asia/Shanghai）。目标为精简首页并保留完整产品介绍；首页现仅展示原翡翠玻璃首屏、扫描及演示按钮和「了解 OpenGuard」入口，原四段介绍迁至 `/about`。顶部与首屏按钮下方都可到达介绍页，介绍页可返回首页。
+- 修改：frontend/src/pages/Landing.tsx、frontend/src/App.tsx、frontend/src/hooks/useRoute.ts、frontend/src/components/AuthGate.tsx、frontend/src/styles/landing-sage.css；更新 docs/05-ai-assistance-log.md、docs/coordination/PROJECT_PROGRESS.md 和本日志。未修改后端、接口、Schema、业务规则或第三方资源登记；无新增依赖。
+- 验证：`pnpm build` TypeScript/Vite PASS（原有 500 kB chunk 提示仍在）；`pnpm test` 187/187 PASS；`git diff --check` PASS，仅有工作日志 CRLF 转 LF 提示。右侧本地 4193 预览核对首页/介绍页、链接往返；首页 1440px 与 390px、介绍页 390px 均无横向溢出，首页无下方介绍区。扫描、演示与工作台按钮沿用原处理器，本轮未重复执行完整演示流。
+- 决策与风险：账号模式下 `/about` 与首页同为公开入口，但仍依赖现有账号状态读取。分支 `codex/landing-sage-ui` 本地未提交、推送或 PR；按此前用户决定等待视觉确认再同步 GitHub。本轮用户视觉签收、真实后端联调、独立人工审查及正式竞赛材料门禁仍未完成；下一步由 Root Coordinator 在视觉签收后整理、提交并推送任务分支，由前后端及材料负责人完成团队整合验收。
+- token：本次运行精确 token 数不可获得；开工估算 3,000—6,000 tokens，是否落在范围内无法核定。右侧保留本机 4193 动态预览。
+
+### [20261116-0003-GPT6Sol-favorites-start] START - 收藏 UI 浅色适配
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 00:03（Asia/Shanghai）。范围：按用户确认的 22 项 Uiverse 收藏映射，在独立前端分支恢复原款可识别形态、动效及浅色配色，补齐现有页面的合理落点；不改变扫描和报告契约。
+- 预计修改：frontend/src/styles/ 的组件样式、必要的 frontend/src/components/ui.tsx 与相关页面、frontend/THIRD_PARTY_UI.md、docs/05-ai-assistance-log.md、docs/coordination/PROJECT_PROGRESS.md 和本日志。已有未提交首页和工作台修改保留。旧收藏参考见现有独立 UI 工作树 third_party/uiverse-ui-references.md；如需引入上游源码先核对作者与许可。
+- 验收：前端构建、默认测试、git diff --check；桌面/右侧/390px 预览对照按钮、下载、浮动标签、上传、卡片及典型状态。估算 10,000—18,000 tokens，系统不提供精确遥测。分支 codex/landing-sage-ui 本地未推送；按先视觉验收后同步 GitHub 的约定交付本地预览。

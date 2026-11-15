@@ -45,6 +45,7 @@ export function NewScan({
   const [dragging, setDragging] = useState(false);
   const [usage, setUsage] = useState(emptyUsage);
   const [confirmedInput,setConfirmedInput]=useState<ScanInput|null>(null);
+  const [step, setStep] = useState<1|2|3>(1);
   const active=useRef(true),revision=useRef(0),confirmationRef=useRef<ScanInput|null>(null);
   useEffect(()=>{active.current=true;return()=>{active.current=false;};},[]);
   // The current scan HTTP contract has no material-retention option.
@@ -54,6 +55,7 @@ export function NewScan({
     lock = useRef(false),
     requestId = useRef(crypto.randomUUID());
   const notify = useNotice();
+  const scrollBehavior = (): ScrollBehavior => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
   function changed() {
     revision.current++;confirmationRef.current=null;setConfirmedInput(null);
     setError("");
@@ -74,12 +76,19 @@ export function NewScan({
       tab === "github" ? validateGithub(url) : validateZip(file, zipLimit);
     if (problem) {
       setError(problem);
+      if (mode === 'api' && step !== 1 && !confirmedInput) setStep(1);
+      return;
+    }
+    if (mode === 'api' && step === 1) {
+      setStep(2);
+      document.querySelector('.og-new-scan')?.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
       return;
     }
     if(mode==='api'&&!confirmedInput){
       const frozen=Object.freeze({kind:tab,url,file:file??undefined,usage:Object.freeze({...usage}),resolveLocalMaterials:resolveLocal});
       confirmationRef.current=frozen;setConfirmedInput(frozen);
-      if (typeof requestAnimationFrame === "function") requestAnimationFrame(() => document.getElementById("scan-confirmation")?.scrollIntoView({ block: "center", behavior: "smooth" }));
+      setStep(3);
+      if (typeof requestAnimationFrame === "function") requestAnimationFrame(() => document.getElementById("scan-confirmation")?.scrollIntoView({ block: "center", behavior: scrollBehavior() }));
       return;
     }
     if(mode==='api'&&confirmedInput!==confirmationRef.current)return;
@@ -148,8 +157,11 @@ export function NewScan({
           </p>
         </div>
       </header>
+      {mode === 'api' && <ol className="og-scan-stepper" aria-label="扫描设置进度">
+        {(['导入源码', '声明用途', '确认提交'] as const).map((label, index) => <li key={label} className={step === index + 1 ? 'is-current' : step > index + 1 ? 'is-done' : ''} aria-current={step === index + 1 ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span>{label}</li>)}
+      </ol>}
       <form onSubmit={submit} noValidate>
-        <section className="og-panel og-scan-composer" aria-label="扫描输入与用途"><div className="og-v3-scan-source"><h2 className="og-v3-panel-title">1. 扫描来源与快照</h2>
+        <section className="og-panel og-scan-composer" data-step={step} aria-label="扫描输入与用途"><div className="og-v3-scan-source"><h2 className="og-v3-panel-title">1. 扫描来源与快照</h2>
           <SegmentedControl label="扫描输入方式" value={tab} disabled={busy} onChange={value => { setTab(value); setDragging(false); changed(); }} options={[{ value: 'github', label: <><InputIcon kind="repository" /> GitHub 仓库</> }, { value: 'zip', label: <><InputIcon kind="upload" /> 上传 ZIP</> }]} />
           {tab === "github" ? (
             <div className="og-form-section">
@@ -255,7 +267,7 @@ export function NewScan({
             </select>
           </label>
         )}
-        {mode==='api'&&confirmedInput&&<section id="scan-confirmation" className="og-scan-step og-scan-confirmation" aria-label="确认扫描前用途"><header className="og-scan-step-heading"><h2>确认扫描前用途</h2><p>检查输入和用途，确认后才会开始扫描。</p></header><dl className="og-scan-input-summary"><div><dt>扫描输入</dt><dd>{confirmedInput.kind==='github'?confirmedInput.url:confirmedInput.file?.name}</dd></div><div><dt>用途场景</dt><dd>{presets[confirmedInput.usage!.preset]}</dd></div></dl><dl className="og-scan-usage-summary">{Object.entries(usageFields).map(([field,label])=><div key={field}><dt>{label}</dt><dd>{confirmedInput.usage![field as keyof typeof usageFields]===true?'是':confirmedInput.usage![field as keyof typeof usageFields]===false?'否':'暂不确定'}</dd></div>)}</dl><button type="button" disabled={busy} onClick={()=>{confirmationRef.current=null;setConfirmedInput(null);}}>返回检查用途</button>{readOnlyPreview&&<p role="note">只读预览：可检查用途摘要，不能开始扫描。</p>}</section>}
+        {mode==='api'&&confirmedInput&&<section id="scan-confirmation" className="og-scan-step og-scan-confirmation" aria-label="确认扫描前用途"><header className="og-scan-step-heading"><h2>确认扫描前用途</h2><p>检查输入和用途，确认后才会开始扫描。</p></header><dl className="og-scan-input-summary"><div><dt>扫描输入</dt><dd>{confirmedInput.kind==='github'?confirmedInput.url:confirmedInput.file?.name}</dd></div><div><dt>用途场景</dt><dd>{presets[confirmedInput.usage!.preset]}</dd></div></dl><dl className="og-scan-usage-summary">{Object.entries(usageFields).map(([field,label])=><div key={field}><dt>{label}</dt><dd>{confirmedInput.usage![field as keyof typeof usageFields]===true?'是':confirmedInput.usage![field as keyof typeof usageFields]===false?'否':'暂不确定'}</dd></div>)}</dl><button type="button" disabled={busy} onClick={()=>{confirmationRef.current=null;setConfirmedInput(null);setStep(2);}}>返回检查用途</button>{readOnlyPreview&&<p role="note">只读预览：可检查用途摘要，不能开始扫描。</p>}</section>}
         {error && (
           <p id="scan-error" className="og-error" role="alert">
             {error}
@@ -264,6 +276,7 @@ export function NewScan({
         <div className="og-form-footer">
           <p className="og-scan-boundary"><InputIcon kind="info" /><span>扫描现有依赖与明确的许可证声明；未核验内容保留待核验状态。</span></p>
           <div className="og-actions">
+            {mode === 'api' && step === 2 && <button type="button" disabled={busy} onClick={() => setStep(1)}>上一步：导入源码</button>}
             {mode === "mock" && <button type="button" disabled={busy} onClick={demo}>
               载入固定演示
             </button>}
@@ -276,7 +289,7 @@ export function NewScan({
                 ? "提交中，请勿重复点击…"
                 : mode === "mock"
                   ? "校验输入并播放演示"
-                  : confirmedInput ? "开始扫描并评估" : "下一步：确认用途"}
+                  : confirmedInput ? "开始扫描并评估" : step === 1 ? "下一步：声明用途" : "下一步：确认提交"}
             </ActionButton>
           </div>
         </div>
