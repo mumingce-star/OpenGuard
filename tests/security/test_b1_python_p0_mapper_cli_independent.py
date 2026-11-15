@@ -438,10 +438,10 @@ def test_neg_b1_map_015_unclassified_cli_errors_are_one_line_runtime_failure(tmp
     assert (code, stdout, stderr) == (1, "", "scanner_failed:cli_runtime_failed\n")
 
 
-def test_neg_b1_map_016_flag_misuse_and_single_unknown_flag_keep_legacy_bytes(tmp_path: Path) -> None:
+def test_neg_b1_map_016_flag_misuse_reports_invalid_arguments() -> None:
     for args in ([], ["--python-dependencies", "a.zip", "extra"], ["a.zip", "--python-dependencies"], ["--python-dependencies", "a.zip", "--python-dependencies"]):
         assert _invoke(args) == (2, "", "invalid_request:invalid_arguments\n")
-    assert _invoke(["--unknown-flag"]) == (2, "", "invalid_request:input_file_unavailable\n")
+    assert _invoke(["--unknown-flag"]) == (2, "", "invalid_request:invalid_arguments\n")
 
 
 def test_neg_b1_map_017_no_network_process_target_import_or_bypass_open(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

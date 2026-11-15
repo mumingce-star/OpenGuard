@@ -6,10 +6,11 @@ import json
 import os
 import sys
 import tempfile
+from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable, Sequence, TextIO
+from typing import TYPE_CHECKING, BinaryIO, Callable, Iterator, Sequence, TextIO
 
 from app.ingestion.inventory import Inventory
 from app.ingestion.zip_stream import ZipIngestionService
@@ -27,6 +28,7 @@ _VERSION = "1"
 _USAGE_ERROR = IngestionSecurityError("invalid_request", "invalid_arguments")
 _INPUT_ERROR = IngestionSecurityError("invalid_request", "input_file_unavailable")
 _RUNTIME_ERROR = IngestionSecurityError("scanner_failed", "cli_runtime_failed")
+_ZIP_MODES = ("--python-dependencies", "--javascript-dependencies", "--scancode-licenses", "--syft-sbom")
 
 
 @dataclass(frozen=True)
@@ -61,22 +63,28 @@ def inventory_payload(inventory: Inventory) -> dict[str, object]:
     }
 
 
-def run_local_zip(archive_path: Path, workspace_root: Path) -> Inventory:
-    """Ingest one local archive without exposing workspace or parser details."""
-
+@contextmanager
+def _zip_ingestion(
+    archive_path: Path, workspace_root: Path | None,
+) -> Iterator[tuple[BinaryIO, ZipIngestionService]]:
     try:
-        archive_stream = archive_path.open("rb")
+        stream = archive_path.open("rb")
     except OSError as error:
         raise _INPUT_ERROR from error
 
-    service: ZipIngestionService | None = None
-    try:
+    with ExitStack() as stack:
+        stack.enter_context(stream)
+        if workspace_root is None:
+            workspace_root = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="openguard-zip-cli-")))
         service = ZipIngestionService(workspace_root)
-        with archive_stream:
-            return service.ingest(archive_stream)
-    finally:
-        if service is not None:
-            service.close()
+        stack.callback(service.close)
+        yield stream, service
+
+
+def run_local_zip(archive_path: Path, workspace_root: Path | None) -> Inventory:
+    """Ingest one local archive without exposing workspace or parser details."""
+    with _zip_ingestion(archive_path, workspace_root) as (archive_stream, service):
+        return service.ingest(archive_stream)
 
 
 def python_dependency_payload(inventory: Inventory, mapping: PythonP0MappingResult) -> dict[str, object]:
@@ -114,7 +122,7 @@ def python_dependency_payload(inventory: Inventory, mapping: PythonP0MappingResu
 
 def run_local_zip_python_dependencies(
     archive_path: Path,
-    workspace_root: Path,
+    workspace_root: Path | None,
     *,
     clock: Callable[[], datetime],
 ) -> tuple[Inventory, PythonP0MappingResult]:
@@ -123,14 +131,7 @@ def run_local_zip_python_dependencies(
     from app.ingestion import ScanReadLimits
     from app.scanners import map_python_manifest_result, parse_python_manifests
 
-    try:
-        archive_stream = archive_path.open("rb")
-    except OSError as error:
-        raise _INPUT_ERROR from error
-
-    service: ZipIngestionService | None = None
-    try:
-        service = ZipIngestionService(workspace_root)
+    with _zip_ingestion(archive_path, workspace_root) as (archive_stream, service):
 
         def consume(session: ReadOnlyScanSession) -> PythonP0MappingResult | _PythonDependenciesFailure:
             try:
@@ -146,18 +147,14 @@ def run_local_zip_python_dependencies(
             except Exception:
                 return _PythonDependenciesFailure(_RUNTIME_ERROR.code, _RUNTIME_ERROR.reason)
 
-        with archive_stream:
-            result = service.ingest_with_consumer(
-                archive_stream,
-                consume,
-                read_limits=ScanReadLimits(single_file_max_bytes=262_144, total_max_bytes=4_194_304),
-            )
+        result = service.ingest_with_consumer(
+            archive_stream,
+            consume,
+            read_limits=ScanReadLimits(single_file_max_bytes=262_144, total_max_bytes=4_194_304),
+        )
         if isinstance(result.consumer_result, _PythonDependenciesFailure):
             raise IngestionSecurityError(result.consumer_result.code, result.consumer_result.reason)
         return result.inventory, result.consumer_result
-    finally:
-        if service is not None:
-            service.close()
 
 
 def javascript_dependency_payload(inventory: Inventory, mapping: JavascriptP0MappingResult) -> dict[str, object]:
@@ -187,28 +184,19 @@ def scancode_license_payload(inventory: Inventory, result: ScanCodePipelineResul
 
 
 def run_local_zip_scancode_licenses(
-    archive_path: Path, workspace_root: Path, *, executable: str, tool_version: str, clock: Callable[[], datetime]
+    archive_path: Path, workspace_root: Path | None, *, executable: str, tool_version: str, clock: Callable[[], datetime]
 ) -> tuple[Inventory, ScanCodePipelineResult]:
     """Run ScanCode only through the sealed descriptor-backed ZIP tree flow."""
     from app.scanners import scan_sealed_tree
-    try:
-        archive_stream = archive_path.open("rb")
-    except OSError as error:
-        raise _INPUT_ERROR from error
-    service: ZipIngestionService | None = None
-    try:
-        service = ZipIngestionService(workspace_root)
-        with archive_stream:
-            result = service.ingest_with_tree_consumer(
-                archive_stream,
-                lambda tree, inventory: scan_sealed_tree(
-                    tree, inventory, executable=executable, tool_version=tool_version, observed_at=clock()
-                ),
-            )
+
+    with _zip_ingestion(archive_path, workspace_root) as (archive_stream, service):
+        result = service.ingest_with_tree_consumer(
+            archive_stream,
+            lambda tree, inventory: scan_sealed_tree(
+                tree, inventory, executable=executable, tool_version=tool_version, observed_at=clock()
+            ),
+        )
         return result.inventory, result.consumer_result
-    finally:
-        if service is not None:
-            service.close()
 
 
 def syft_sbom_payload(inventory: Inventory, result: SyftPipelineResult) -> dict[str, object]:
@@ -218,34 +206,29 @@ def syft_sbom_payload(inventory: Inventory, result: SyftPipelineResult) -> dict[
             "evidence": [item.model_dump(mode="json") for item in result.mapping.evidence]}
 
 
-def run_local_zip_syft_sbom(archive_path: Path, workspace_root: Path, *, executable: str, tool_version: str, clock: Callable[[], datetime]):
+def run_local_zip_syft_sbom(
+    archive_path: Path, workspace_root: Path | None, *, executable: str, tool_version: str, clock: Callable[[], datetime],
+) -> tuple[Inventory, SyftPipelineResult]:
     from app.scanners import scan_syft_sealed_tree
-    try: archive_stream = archive_path.open("rb")
-    except OSError as error: raise _INPUT_ERROR from error
-    service: ZipIngestionService | None = None
-    try:
-        service = ZipIngestionService(workspace_root)
-        with archive_stream:
-            result = service.ingest_with_tree_consumer(archive_stream, lambda tree, inventory: scan_syft_sealed_tree(tree, inventory, executable=executable, tool_version=tool_version, observed_at=clock()))
+
+    with _zip_ingestion(archive_path, workspace_root) as (archive_stream, service):
+        result = service.ingest_with_tree_consumer(
+            archive_stream,
+            lambda tree, inventory: scan_syft_sealed_tree(
+                tree, inventory, executable=executable, tool_version=tool_version, observed_at=clock()
+            ),
+        )
         return result.inventory, result.consumer_result
-    finally:
-        if service is not None: service.close()
 
 
 def run_local_zip_javascript_dependencies(
-    archive_path: Path, workspace_root: Path, *, clock: Callable[[], datetime]
+    archive_path: Path, workspace_root: Path | None, *, clock: Callable[[], datetime]
 ) -> tuple[Inventory, JavascriptP0MappingResult]:
     """Run JS parsing only as a bounded A2-2 trusted consumer."""
     from app.ingestion import ScanReadLimits
     from app.scanners import map_javascript_manifest_result, parse_javascript_manifests
 
-    try:
-        archive_stream = archive_path.open("rb")
-    except OSError as error:
-        raise _INPUT_ERROR from error
-    service: ZipIngestionService | None = None
-    try:
-        service = ZipIngestionService(workspace_root)
+    with _zip_ingestion(archive_path, workspace_root) as (archive_stream, service):
 
         def consume(session: ReadOnlyScanSession) -> JavascriptP0MappingResult | _JavascriptDependenciesFailure:
             try:
@@ -256,14 +239,10 @@ def run_local_zip_javascript_dependencies(
             except Exception:
                 return _JavascriptDependenciesFailure(_RUNTIME_ERROR.code, _RUNTIME_ERROR.reason)
 
-        with archive_stream:
-            result = service.ingest_with_consumer(archive_stream, consume, read_limits=ScanReadLimits(single_file_max_bytes=2 * 1024 * 1024, total_max_bytes=8 * 1024 * 1024))
+        result = service.ingest_with_consumer(archive_stream, consume, read_limits=ScanReadLimits(single_file_max_bytes=2 * 1024 * 1024, total_max_bytes=8 * 1024 * 1024))
         if isinstance(result.consumer_result, _JavascriptDependenciesFailure):
             raise IngestionSecurityError(result.consumer_result.code, result.consumer_result.reason)
         return result.inventory, result.consumer_result
-    finally:
-        if service is not None:
-            service.close()
 
 
 def _write_error(error: IngestionSecurityError, stream: TextIO) -> None:
@@ -285,37 +264,41 @@ def main(
     if args == ["--help"]:
         output.write("usage: python -m app.cli LOCAL_ZIP\n")
         return 0
-    python_dependencies = len(args) == 2 and args[0] == "--python-dependencies"
-    javascript_dependencies = len(args) == 2 and args[0] == "--javascript-dependencies"
-    scancode_licenses = len(args) == 2 and args[0] == "--scancode-licenses"
-    syft_sbom = len(args) == 2 and args[0] == "--syft-sbom"
-    if not python_dependencies and not javascript_dependencies and not scancode_licenses and not syft_sbom and len(args) != 1:
+    if len(args) == 1 and args[0] and not args[0].startswith("-"):
+        mode = None
+    elif len(args) == 2 and args[0] in _ZIP_MODES and args[1] and not args[1].startswith("-"):
+        mode = args[0]
+    else:
         _write_error(_USAGE_ERROR, errors)
         return 2
 
+    archive = Path(args[-1])
+    now = clock or (lambda: datetime.now(timezone.utc))
     try:
-        with tempfile.TemporaryDirectory(prefix="openguard-zip-cli-") as directory:
-            if python_dependencies:
-                now = clock or (lambda: datetime.now(timezone.utc))
-                inventory, mapping = run_local_zip_python_dependencies(Path(args[1]), Path(directory), clock=now)
-            elif javascript_dependencies:
-                now = clock or (lambda: datetime.now(timezone.utc))
-                inventory, mapping = run_local_zip_javascript_dependencies(Path(args[1]), Path(directory), clock=now)
-            elif scancode_licenses:
-                executable = os.environ.get("OPENGUARD_SCANCODE_BIN")
-                if not executable:
-                    raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
-                now = clock or (lambda: datetime.now(timezone.utc))
-                inventory, mapping = run_local_zip_scancode_licenses(
-                    Path(args[1]), Path(directory), executable=executable, tool_version="32.5.0", clock=now
-                )
-            elif syft_sbom:
-                executable = os.environ.get("OPENGUARD_SYFT_BIN")
-                if not executable: raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
-                now = clock or (lambda: datetime.now(timezone.utc))
-                inventory, mapping = run_local_zip_syft_sbom(Path(args[1]), Path(directory), executable=executable, tool_version="1.51.0", clock=now)
-            else:
-                inventory = run_local_zip(Path(args[0]), Path(directory))
+        if mode == "--python-dependencies":
+            inventory, mapping = run_local_zip_python_dependencies(archive, None, clock=now)
+            payload = python_dependency_payload(inventory, mapping)
+        elif mode == "--javascript-dependencies":
+            inventory, mapping = run_local_zip_javascript_dependencies(archive, None, clock=now)
+            payload = javascript_dependency_payload(inventory, mapping)
+        elif mode == "--scancode-licenses":
+            executable = os.environ.get("OPENGUARD_SCANCODE_BIN")
+            if not executable:
+                raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+            inventory, mapping = run_local_zip_scancode_licenses(
+                archive, None, executable=executable, tool_version="32.5.0", clock=now
+            )
+            payload = scancode_license_payload(inventory, mapping)
+        elif mode == "--syft-sbom":
+            executable = os.environ.get("OPENGUARD_SYFT_BIN")
+            if not executable:
+                raise IngestionSecurityError("scanner_failed", "external_scanner_unavailable")
+            inventory, mapping = run_local_zip_syft_sbom(
+                archive, None, executable=executable, tool_version="1.51.0", clock=now
+            )
+            payload = syft_sbom_payload(inventory, mapping)
+        else:
+            payload = inventory_payload(run_local_zip(archive, None))
     except IngestionSecurityError as error:
         _write_error(error, errors)
         return 1 if error.code != "invalid_request" else 2
@@ -323,12 +306,6 @@ def main(
         _write_error(_RUNTIME_ERROR, errors)
         return 1
 
-    payload = (
-        python_dependency_payload(inventory, mapping) if python_dependencies else
-        javascript_dependency_payload(inventory, mapping) if javascript_dependencies else
-        scancode_license_payload(inventory, mapping) if scancode_licenses else
-        syft_sbom_payload(inventory, mapping) if syft_sbom else inventory_payload(inventory)
-    )
     json.dump(payload, output, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     output.write("\n")
     return 0

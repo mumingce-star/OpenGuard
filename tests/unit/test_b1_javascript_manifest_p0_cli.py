@@ -193,9 +193,8 @@ def test_real_zip_cli_fixed_clock_compatibility_and_cleanup(tmp_path: Path) -> N
     assert json.loads(old.getvalue())["schema"] == "openguard.zip-inventory" and old_errors.getvalue() == ""
 
 
-@pytest.mark.parametrize("arguments", [[], ["--javascript-dependencies"], ["zip", "--javascript-dependencies"], ["--javascript-dependencies", "zip", "extra"]])
+@pytest.mark.parametrize("arguments", [[], ["--javascript-dependencies"], ["zip", "--javascript-dependencies"], ["--javascript-dependencies", "zip", "extra"], ["--unknown"], ["--javascript-dependencies", "--unknown"]])
 def test_js_cli_flag_misuse_is_stable(arguments: list[str]) -> None:
     output, errors = io.StringIO(), io.StringIO()
-    expected = "invalid_request:input_file_unavailable\n" if arguments == ["--javascript-dependencies"] else "invalid_request:invalid_arguments\n"
     assert cli.main(arguments, stdout=output, stderr=errors) == 2
-    assert output.getvalue() == "" and errors.getvalue() == expected
+    assert output.getvalue() == "" and errors.getvalue() == "invalid_request:invalid_arguments\n"
