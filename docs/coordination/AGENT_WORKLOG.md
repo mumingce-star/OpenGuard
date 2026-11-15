@@ -321,3 +321,12 @@
 - 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 00:03（Asia/Shanghai）。范围：按用户确认的 22 项 Uiverse 收藏映射，在独立前端分支恢复原款可识别形态、动效及浅色配色，补齐现有页面的合理落点；不改变扫描和报告契约。
 - 预计修改：frontend/src/styles/ 的组件样式、必要的 frontend/src/components/ui.tsx 与相关页面、frontend/THIRD_PARTY_UI.md、docs/05-ai-assistance-log.md、docs/coordination/PROJECT_PROGRESS.md 和本日志。已有未提交首页和工作台修改保留。旧收藏参考见现有独立 UI 工作树 third_party/uiverse-ui-references.md；如需引入上游源码先核对作者与许可。
 - 验收：前端构建、默认测试、git diff --check；桌面/右侧/390px 预览对照按钮、下载、浮动标签、上传、卡片及典型状态。估算 10,000—18,000 tokens，系统不提供精确遥测。分支 codex/landing-sage-ui 本地未推送；按先视觉验收后同步 GitHub 的约定交付本地预览。
+
+### [20261116-0045-GPT6Sol-favorites-complete] COMPLETE - 收藏 UI 与首页细节
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 00:45（Asia/Shanghai）。目标：在浅色主题恢复用户选定 22 项收藏的可识别形态、动效与业务落点，并复核首页高级感。结果：新增首页/工作台末层样式，恢复按钮、下载胶囊、输入、上传、选择、提示等控件层次；新增概览导航卡、整改任务勾选形态、助手纸飞机发送；玻璃证据窗加入常驻淡色线索刻纹。未复制 Uiverse 上游源码或新增依赖。
+- 修改：frontend/src/styles/favorites-sage.css、landing-sage.css、main.tsx、components/HeroEvidenceScene.tsx、pages/Landing.tsx、Overview.tsx、Remediation.tsx、Assistant.tsx、App.tsx；同分支还收录此前用户授权的首页/工作台调整（AuthGate.tsx、ParticleText.tsx、useRoute.ts、NewScan.tsx、Progress.tsx、Report.tsx、workspace-v3.css）；来源登记 frontend/THIRD_PARTY_UI.md、AI 记录 docs/05-ai-assistance-log.md、进度 docs/coordination/PROJECT_PROGRESS.md 和本日志。未修改后端、接口、Schema 或业务规则。
+- 验证：`pnpm test` 187/187 PASS；`pnpm build` TypeScript/Vite PASS（原有大于 500 kB chunk 提示）；`git diff --check` 和暂存差异检查 PASS；待提交文件清单与敏感信息正则检查 PASS。Chrome 实际 390px 视口核对首页、`/about`、新建扫描、完成后的演示概览均无横向溢出；1280px 完成后的演示概览核对卡片与统计，首页 1440px 截图核对。输入与下载状态沿用既有组件及测试，真实服务下载未在本轮执行。
+- 来源/决策：22 项直接参考与对应页面已登记；主色森林绿、复制和下载保留少量紫色。其余六项收藏与当前业务语义不合，未接入。已把新构建通过本机 4194 预览交付到右侧面板；用户授权本轮继续推进，因此任务分支已提交并推送，未合并 main。
+- 风险与下一步：团队需对原收藏与实际页面做人工视觉签收，并在真实后端同版环境复核下载、表单及项目评估。独立人工代码审查、正式竞赛材料和资格门禁属于团队整合线。下一步前端负责人可根据视觉反馈微调；后端、材料负责人完成同版与材料验收；Root Coordinator 在门禁满足后经 PR 合并。关联分支 `codex/landing-sage-ui`，代码提交 `17018ff`，已推送 GitHub；本条日志及进度补记将再推送到同分支。
+- token：本次运行精确 token 数不可获得；开工估算 10,000—18,000 tokens，是否落在范围内无法核定。范围增加了首页淡色刻纹、真实 390px 浏览器检查和 GitHub 分支同步。
