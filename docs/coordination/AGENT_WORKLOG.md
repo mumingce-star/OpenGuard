@@ -490,3 +490,11 @@
 
 - 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 20:04（Asia/Shanghai）。用户确认的仓库与 `origin` 一致。`git push origin HEAD:refs/heads/codex/landing-sage-ui` 成功，远端由 `15d3a18` 到 `ace78cdf6ca4ba04dfc66417f8b042abe0c0563b`；随后 `git ls-remote` 核对一致。`07b6e3d` 上传 17 个前端、测试、许可、P3 复核与协调文件；`ace78cd` 保留上轮上传受阻记录。本轮新增发布状态补记至 `docs/coordination/PROJECT_PROGRESS.md` 和本日志，待随记录提交同步同一分支。无 API、Schema、后端、规则或依赖变化；未创建 PR、未合并 `main`。P3 同版联验与签认仍未关闭。
 - 验证：上轮 `pnpm test` 187/187、`pnpm build`、首页浏览器专项检查、敏感信息扫描和 diff 检查通过；本轮远端 ref 与本地提交一致，发布记录将再做 diff/敏感信息检查后提交推送。风险：先前记录中的“未上传”反映当时连接受阻状态，本条及进度补记记录恢复后的新状态。下一步由队长/后端/材料/前端关闭 P3 正式门禁；Root Coordinator 在视觉与接口证据齐备后处理 PR。精确 token 数不可获得；开工估算 1,000—2,000，本轮按该范围完成。
+
+### [20261116-2032-GPT6Sol-qwen-diagnosis-start] START - 调查千问无法使用
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 20:32（Asia/Shanghai）。范围：只读核对当前前端预览、Qwen3 接口链路、本机后端与 Ollama；预计只追加本日志。验收：区分页面、代理、后端和模型服务状态；估算 500—1,000 tokens。
+
+### [20261116-2032-GPT6Sol-qwen-diagnosis-complete] COMPLETE - 确认当前预览缺少模型服务
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 20:32（Asia/Shanghai）。当前 `4194` 预览首页 HTTP 200，但 `/api/v1/assistant/conversations` 返回 502；默认代理目标 `127.0.0.1:8000` 不可访问，Ollama `127.0.0.1:11434` 不可访问。本分支 `backend/` 只有 README，前端 `Assistant.tsx` 调用 `/api/v1/assistant`，`vite.config.ts` 代理至 8000。故当前 Qwen3-Local 只有 UI 与接口客户端，缺少运行中的匹配后端和本地模型；没有证据表明模型本身推理报错。未修改业务代码、接口、Schema 或规则，仅追加调查记录。GitHub 状态：本轮调查前分支已上传 `3cee1ed`；本条记录待同步。建议 Terra/后端负责人交付并启动匹配版本 API 与 Ollama 模型，前端再进行真实联调；P3 门禁不变。精确 token 数不可获得；开工估算 500—1,000，本轮按该范围完成。
