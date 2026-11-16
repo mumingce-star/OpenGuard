@@ -345,3 +345,133 @@
 - 决策与风险：沿用既有 React Bits 设计参考和 12 秒概念演示，无新第三方来源。减少动态与离屏暂停逻辑由现有 hook、IntersectionObserver 和定向检查覆盖；浏览器视觉核对使用本机 Chrome，跨平台和真实后端仍未由本轮验证。用户与团队可在 4194 右侧预览审看质感。
 - 下一步：Root Coordinator 完成待提交文件与敏感信息检查后提交并推送 `codex/landing-sage-ui`；团队前端负责人做视觉签收，后端与材料负责人完成整合线验收，主线仍经 PR 合并。关联起点 `14c872f`，本轮提交号待 Git 生成。
 - token：本次运行精确 token 数不可获得；开工估算 6,000—10,000 tokens，是否在范围内无法核定。
+
+### [20261116-1243-GPT6Sol-hero-polish-publish] AMENDMENT - 补记首页精修分支同步
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 12:43（Asia/Shanghai）。关联上条 COMPLETE：源码、定向浏览器回归及文档已提交为 `15d3a18`，经网络连接重置后重试，已成功推送 GitHub `codex/landing-sage-ui`。本条只补充发布状态，不更改先前验收结论；`main` 未合并，视觉签收与真实后端同版验收仍由团队完成。本补记将随任务分支再推送。
+
+### [20261116-1252-GPT6Sol-brand-motion-start] START - 恢复品牌粒子原有动效
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 12:52（Asia/Shanghai）。用户指出品牌字鼠标悬停无反馈，并明确要求恢复原有动效、禁止自行上传团队仓库。
+- 范围：在现有 `codex/landing-sage-ui` 本地分支核对 `15d3a18` 前的粒子实现，恢复原有聚合、鼠标排斥与回弹；预计修改 `frontend/src/components/ParticleText.tsx`、定向冒烟测试、AI 记录、项目进度与本日志。Sol 跨前端职责因用户明确要求直接修复，接口/Schema/规则不变；不覆盖已有未提交日志修订。
+- 验收：浏览器验证鼠标悬停与离开、减少动态模式、首尾不裁边和移动端布局；前端构建、默认测试、`git diff --check`。估算 2,000—4,000 tokens，精确遥测不可获得。仅本地修改与预览，不提交、不推送、不合并。
+
+### [20261116-1300-GPT6Sol-brand-motion-complete] COMPLETE - 原有品牌动效本地恢复
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 13:00（Asia/Shanghai）。原因：上一轮 `ParticleText` 改写删除指针监听，令鼠标悬停无反馈。结果：恢复 `15d3a18` 前的入场聚合、悬停排斥与离开回弹，保留原先的字宽测量；不再宣称品牌字 800ms 后停止绘制。
+- 修改：`frontend/src/components/ParticleText.tsx`、`frontend/tests/hero-motion-smoke.cjs`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志；依全局规则追加 `全局反思日志` 错误改进。开始前已有的未提交日志补记保留。无接口、Schema、规则、依赖或第三方来源变化。
+- 验证：`pnpm build` PASS（既有 500 kB chunk 提示）；`pnpm test` 187/187 PASS；本地 Edge `node tests/hero-motion-smoke.cjs http://127.0.0.1:4194/` PASS，覆盖悬停像素变化、离开回弹、390px 无横向溢出、玻璃暂停与减少动态时品牌字静止；`git diff --check` PASS。现有 4194 预览返回更新构建。
+- 风险与下一步：用户需人工确认原有手感；真实后端同版联调、竞赛材料与资格门禁仍由团队负责。此前提交 `15d3a18` 已在 GitHub `codex/landing-sage-ui`，本次修复只在本地工作区，未提交、推送、创建 PR 或合并；后续提交/上传须用户明确授权。模型责任边界变化仅为用户指示的前端纠错。精确 token 数不可获得；开工估算 2,000—4,000，是否在范围内无法核定。
+
+### [20261116-1318-GPT6Sol-hero-cta-start] START - 首页双按钮交互与并排布局
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 13:18（Asia/Shanghai）。按用户指定的 Uiverse `cssbuttons-io/massive-mayfly-74` 参考，将首页扫描与演示两个按钮缩小并排，箭头悬停从左移至右侧，同时显示森林绿渐变；保持点击行为。
+- 预计修改 `frontend/src/pages/Landing.tsx`、`frontend/src/styles/favorites-sage.css`、`frontend/THIRD_PARTY_UI.md`、AI 记录、项目进度和本日志；Sol 因用户明确要求直接修改前端。现有未提交品牌粒子及日志修改全部保留，不改变接口、Schema、后端或依赖。
+- 验收：构建、默认测试、桌面与 390px/320px 浏览器布局和悬停效果、减少动态、键盘聚焦、`git diff --check`。估算 3,000—5,000 tokens；本地预览交付，不提交、推送或合并，精确 token 遥测不可获得。
+
+### [20261116-1645-GPT6Sol-hero-cta-amendment] AMENDMENT - 用户修正按钮目标
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 16:45（Asia/Shanghai）。用户进一步明确参考交互应为初始“>”、悬停后在原位变成“→”并柔和变色；上一版的整枚箭头快速横移和深绿按钮过于突兀。当前任务据此改为浅色双按钮、局部箭杆生长、轻柔渐变，并保留已完成的并排尺寸与点击行为。此前本地实现未提交或上传，验收增加对图形默认/悬停形态与浅色状态的检查。
+
+### [20261116-1650-GPT6Sol-hero-cta-complete] COMPLETE - 首页浅色双按钮与原位箭头
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 16:50（Asia/Shanghai）。按用户最终纠正的参考效果完成：首页扫描和演示按钮缩小并排，默认显示“>”，悬停或键盘聚焦后局部长出箭杆成为“→”，底色柔和变化为浅薄荷绿；不再让箭头横穿按钮，两个原有点击处理器保持。
+- 修改：`frontend/src/pages/Landing.tsx`、`frontend/src/styles/favorites-sage.css`、`frontend/tests/hero-motion-smoke.cjs`、`frontend/THIRD_PARTY_UI.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志；依全局规则追加 `全局反思日志`。此前未提交的品牌粒子修复与日志保留。Sol 依用户要求直接处理前端；无接口、Schema、后端、规则、依赖或第三方源码引入。
+- 验证：`pnpm build` PASS（既有 500 kB chunk 提示）；`pnpm test` 187/187 PASS；本地 Edge `node tests/hero-motion-smoke.cjs http://127.0.0.1:4194/` PASS，覆盖 320px/390px/1440px 并排与无横向溢出、默认浅色与“>”、悬停和键盘聚焦变箭头及渐变状态，同时保留品牌粒子、玻璃暂停和减少动态检查；`git diff --check` PASS。本机 4194 预览已使用最新构建并在 Codex 右侧重新打开。
+- 已知限制与下一步：视觉手感仍待用户在本地预览签收；真实后端同版联调、正式材料及参赛资格、独立人工审查仍属团队整合门禁。GitHub `codex/landing-sage-ui` 仍是此前的 `15d3a18`；本次全部修改只在本地，未提交、推送、PR 或合并。下一步由用户视觉确认，后续 Git 操作须用户明确授权。精确 token 数不可获得；开工估算 3,000—5,000，用户纠正后范围调整，是否在估算内无法核定。
+
+### [20261116-1651-GPT6Sol-hero-cta-preview-amendment] AMENDMENT - 预览打开状态更正
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 16:51（Asia/Shanghai）。上条“在 Codex 右侧重新打开”表述过度确定；`open_in_codex` 返回 `queued`，不能据此确认面板已经展示。已确认本机 4194 服务正在提供新构建，用户可在现有预览刷新或直接访问该本地地址。其他验收结论不变。
+
+### [20261116-1700-GPT6Sol-uiverse-cta-source-start] START - 按用户提供的原始源码修正首页按钮
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 17:00（Asia/Shanghai）。用户提供 Uiverse 按钮的完整 HTML/CSS，要求直接沿用原动效并只改变颜色。前一版误把效果理解为局部箭杆生长，实际核心是圆形背景 0.45 秒扩展到整个按钮、箭杆出现并右移、文字随背景变色。
+- 范围：在现有 `codex/landing-sage-ui` 本地分支将两枚首页 CTA 改为用户提供的 `learn-more/circle/icon arrow/button-text` 结构及动画，仅适配浅色配色、并排小尺寸和项目选择器；预计修改 `frontend/src/pages/Landing.tsx`、`frontend/src/styles/favorites-sage.css`、定向冒烟测试、第三方来源与许可登记、AI 记录、项目进度和本日志。保留所有已有未提交修改；不动接口、Schema、后端或点击处理器。
+- 验收：对照用户原码检查初始/悬停 CSS 关键状态、0.45 秒缓动、键盘与减少动态、320px/390px/1440px 并排布局；前端构建、默认测试、`git diff --check`。估算 3,000—5,000 tokens，精确遥测不可获得。本次只交付本地预览，绝不自行提交或推送。
+
+### [20261116-1708-GPT6Sol-uiverse-cta-source-complete] COMPLETE - 原版圆形扩展按钮本地交付
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 17:08（Asia/Shanghai）。结果：按用户贴出的 Uiverse HTML/CSS，将首页两枚 CTA 改为 `learn-more > circle > icon arrow` 与 `button-text`，保留原始 0.45 秒 cubic-bezier、圆形背景扩展至全宽、箭杆显现并平移、文字变色；仅调整为浅色森林绿、44px 高和并排自适应宽度。扫描与演示的原 `onEnter`/`onDemo` 处理器保持。此前仅局部长出箭杆的版本被替换。
+- 修改：`frontend/src/pages/Landing.tsx`、`frontend/src/styles/favorites-sage.css`、`frontend/tests/hero-motion-smoke.cjs`、`frontend/vite.config.ts`、新增 `frontend/UIVERSE_CSSBUTTONS_IO_LICENSE.txt`、更新 `frontend/THIRD_PARTY_UI.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 与本日志；依全局规则追加 `全局反思日志`。Sol 因用户直接要求处理前端；无 API、Schema、后端、规则或运行依赖变化。
+- 验证：`pnpm test` 187/187 PASS；`pnpm build` TypeScript/Vite PASS（既有大 chunk 提示）；本地 Edge `node tests/hero-motion-smoke.cjs http://127.0.0.1:4194/` PASS，检查初始浅色 44px 圆形、透明箭杆与“>”、悬停圆形全宽、箭杆显现并平移 16px、文字变色、键盘聚焦、减少动态，以及 320px/390px/1440px 并排无横向溢出；`git diff --check` PASS。构建产物 `third-party-licenses.txt` 包含 cssbuttons-io MIT notice。
+- 已知限制与下一步：用户仍需在本机 4194 预览主观确认色调；真实后端同版、正式材料与参赛资格、独立人工审查按团队整合线验收。原先未提交的品牌粒子修复及文档全部保留；GitHub `codex/landing-sage-ui` 仍停留在此前 `15d3a18`，本轮没有提交、推送、PR 或合并，后续需用户明确授权。精确 token 数不可获得；开工估算 3,000—5,000，是否在范围内无法核定。
+
+### [20261116-1714-GPT6Sol-glass-cta-brand-start] START - 玻璃质感按钮与品牌字裁边
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 17:14（Asia/Shanghai）。用户要求首页两枚按钮保持现有 Uiverse 圆形扩展动效，只增加与证据窗一致的玻璃边缘、高光和投影；另修品牌字部分字母被削问题。
+- 范围：本地 `codex/landing-sage-ui`；预计修改 `frontend/src/styles/favorites-sage.css`、`frontend/src/components/ParticleText.tsx`、必要的定向浏览器冒烟测试、视觉来源/AI 记录、进度与本日志。Sol 因用户明确要求处理前端；不改按钮点击、后端、接口、Schema 或依赖；保留当前所有未提交成果。
+- 验收：浏览器检查品牌字实际像素边界与首尾完整、按钮默认及悬停玻璃层次和原动效、320px/390px/1440px 无溢出；前端构建、默认测试、`git diff --check`。估算 4,000—7,000 tokens，精确遥测不可获得。只更新本地预览，不提交或推送。
+
+### [20261116-1724-GPT6Sol-glass-cta-brand-complete] COMPLETE - 玻璃按钮与品牌字裁边修复
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 17:24（Asia/Shanghai）。结果：首页两枚按钮在原 Uiverse 圆形扩展、箭杆平移和文字变化不变的前提下增加半透明玻璃表面、白色内缘反光、翡翠下缘与柔和阴影，材质呼应既有证据窗。品牌粒子字改用 Canvas 实际字形宽高计算字号和位置，四周留 24px 安全边距覆盖最多 18px 入场散布及粒子半径，修复首尾和上下裁边风险。
+- 修改：`frontend/src/styles/favorites-sage.css`、`frontend/src/components/ParticleText.tsx`、`frontend/tests/hero-motion-smoke.cjs`、`frontend/THIRD_PARTY_UI.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志；依全局规则追加 `全局反思日志`。截图仅在项目 `output/hero-glass-review/`，未入仓库。无后端、API、Schema、规则、依赖或新外部素材变化。
+- 验证：`pnpm test` 187/187 PASS；`pnpm build` TypeScript/Vite PASS（既有大 chunk 警告）；本地 Edge `node tests/hero-motion-smoke.cjs http://127.0.0.1:4194/` PASS，覆盖 320px/390px/1440px 品牌字像素四边留白、按钮并排/圆形扩展/箭头/文字/键盘/减少动态与玻璃场景暂停；实际查看 390px 默认/悬停和 1440px 截图，字形完整，无横向溢出；`git diff --check` PASS。
+- 风险与下一步：用户仍需在右侧本地预览主观确认玻璃强度；真实后端同版、正式参赛材料和资格、独立人工审查仍由团队完成。分支 `codex/landing-sage-ui`，GitHub 仍是既有 `15d3a18`；本轮和此前保留的未提交成果均未提交、推送、PR 或合并，后续 Git 操作需用户明确授权。精确 token 数不可获得；开工估算 4,000—7,000，是否在范围内无法核定。
+
+### [20261116-1830-GPT6Sol-workbench-p3-start] START - 工作台按钮与 P3 交付核对
+
+- 作者：GPT-6 Sol / Root Coordinator；范围：本地工作台关键按钮动效；核对后端 A 与 B 材料两包，尽可能关闭 F-P3 缺项。预计修改前端页面/样式、必要文档与日志；验收：构建、测试、交付哈希/契约核对、git diff --check。估算 8,000—15,000 tokens；保留既有未提交内容，不提交、不推送。
+
+### [20261116-1755-GPT6Sol-start-time-amendment] AMENDMENT - 开工记录时间更正
+
+- 作者：GPT-6 Sol / Root Coordinator；`20261116-1830-GPT6Sol-workbench-p3-start` 的 ID 时间误写为 18:30，实际开工为约 17:50（Asia/Shanghai）；以本条更正，不改写原记录。
+
+### [20261116-1755-GPT6Sol-workbench-p3-partial] PARTIAL - 按钮完成，P3 离线核对完成，正式门禁未关
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 17:55（Asia/Shanghai）。工作台四处主操作接入原 Uiverse 圆形扩展/箭头/浅色玻璃动效，保留提交、禁用、导航行为；后端 A 包的 1,782/1,782 文件与 manifest 相符，B 包四个文件 SHA-256 相符。P3 证据与剩余门禁见 `F_P3_DELIVERY_REVIEW_20261116.md`。
+- 修改：`frontend/src/components/ui.tsx`、`frontend/src/pages/NewScan.tsx`、`Progress.tsx`、`Overview.tsx`、`History.tsx`、`frontend/src/styles/favorites-sage.css`、`frontend/THIRD_PARTY_UI.md`、`docs/05-ai-assistance-log.md`、本日志、`PROJECT_PROGRESS.md` 与新增 P3 复核。既有未提交改动保留。无 API、Schema、后端、依赖变化。
+- 验证：`pnpm test` 187/187 PASS；`pnpm build` TypeScript/Vite PASS，既有大 chunk 警告；A/B 包按交付清单复算通过。本轮沙箱不能连接本机 4194 预览，工作台新增按钮尚缺浏览器视觉与交互签收。
+- 剩余：队长需确定唯一组合 manifest/运行准入，A 需正式 PurposeAdvice/ClaimLink 合同及材料阶段 HTTP 回执，材料负责人和前端/Sol 需同版正反例、浏览器与报告快照签认；因此 P3 正式状态 PARTIAL。分支 `codex/landing-sage-ui`，本轮无提交、推送、PR、合并。下一步前端在确认的候选上联验。精确 token 数不可获得；开工估算 8,000—15,000，无法按遥测判断是否在范围内。
+
+### [20261116-1813-GPT6Sol-button-visual-complete] COMPLETE - 修复工作台按钮样式覆盖并生成对比图
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 18:13（Asia/Shanghai）。用户指出升级不明显；本机 4194 预览实际含 `GlassArrowButton`，但新建扫描按钮禁用时计算样式显示普通白底、无投影。原因是工作台通用按钮规则优先级高于新增玻璃规则。已在 `frontend/src/styles/favorites-sage.css` 加入针对工作台按钮的覆盖规则，保留禁用语义和原 0.45 秒动效。
+- 交付：项目 `output/button-comparison/workbench-button-before-after.png` 对比升级前、升级后默认与悬停；`new-scan-actual-disabled.png` 是当前真实页面禁用态；`capture.cjs` 为本地截图脚本，未入前端仓库。无 API/Schema/后端变更。
+- 验证：`pnpm build` TypeScript/Vite PASS；真实 4194 页面返回 200，Chrome CDP 计算样式显示浅绿渐变、翡翠边框、分层投影，截图确认默认与悬停状态可区分；`git diff --check` PASS。前次 `PARTIAL` 记录中“沙箱不能连接 4194、缺浏览器视觉验收”已由本条更正。P3 同版联调门禁不因 UI 修复而改变。分支 `codex/landing-sage-ui`，未提交或上传。精确 token 数不可获得；本轮预计 3,000—6,000，无法按精确遥测核定。
+
+### [20261116-1833-GPT6Sol-progress-footer-start] START - 进度页底栏与按钮对齐
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 18:33（Asia/Shanghai）。范围：修正 P1 进度页底栏贴边/挤压、共用玻璃按钮的箭头与文字垂直对齐。预计仅改 `frontend/src/styles/favorites-sage.css`、日志/进度；验收当前预览宽度与手机宽度截图、构建、默认测试、`git diff --check`。估算 2,000—4,000 tokens；不提交或推送。
+
+### [20261116-1840-GPT6Sol-progress-footer-complete] COMPLETE - 进度页底栏与玻璃按钮对齐
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 18:40（Asia/Shanghai）。进度页事实卡和日志卡下方新增一致的浅色独立底栏与内边距，桌面同排、窄屏纵排。玻璃按钮文字用 Flex 垂直居中，图标圆形与文字框实际 `cy=370.5625` 一致。截图存于项目 `output/button-comparison/progress-footer-1105.png` 和 `progress-footer-390.png`，本地辅助脚本 `capture.cjs` 更新。
+- 修改：`frontend/src/styles/favorites-sage.css`、`docs/coordination/PROJECT_PROGRESS.md`、`docs/05-ai-assistance-log.md`、本日志。无 API、Schema、规则或依赖变更。
+- 验证：`pnpm build` PASS（既有大 chunk 警告）；`pnpm test` 187/187 PASS；真实 4194 演示任务桌面/390px 截图可读、无横向溢出；`git diff --check` PASS。底栏、按钮均保持原点击行为。分支 `codex/landing-sage-ui`，未提交、推送、PR、合并。P3 正式门禁仍待团队同版联验。精确 token 数不可获得；开工估算 2,000—4,000，无法凭遥测核定实际是否在范围内。
+
+### [20261116-1847-GPT6Sol-mode-glass-start] START - 新建扫描模式切换玻璃质感
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 18:47（Asia/Shanghai）。范围：按用户截图仅升级演示模式/真实接口切换器的浅翡翠玻璃外观，保留状态与操作语义。预计修改 `frontend/src/styles/favorites-sage.css` 和记录；验收真实预览当前宽度/390px 截图、两种状态、构建、`git diff --check`。估算 1,500—3,000 tokens；不提交或推送。
+
+### [20261116-1849-GPT6Sol-mode-glass-complete] COMPLETE - 新建扫描模式切换玻璃质感
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 18:49（Asia/Shanghai）。仅在 `frontend/src/styles/favorites-sage.css` 给新建扫描模式切换器增加浅翡翠半透明表面、白色高光、边缘和柔和阴影；选中项有独立玻璃层次，演示/真实模式原点击与禁用语义未变。`PROJECT_PROGRESS.md` 与 `05-ai-assistance-log.md` 已更新；截图存于项目 `output/button-comparison/mode-glass-api-1020.png`、`mode-glass-demo-1020.png`、`mode-glass-demo-390.png`，辅助脚本同步更新。
+- 验证：`pnpm build` TypeScript/Vite PASS（既有大 chunk 警告）；真实 4194 预览对两种模式的 `aria-pressed` 由 false/true 正确互换，1020px 和 390px 无横向溢出，截图可读。无后端/API/Schema/依赖变化。分支 `codex/landing-sage-ui`，未提交、推送、PR、合并；P3 正式门禁不变。精确 token 数不可获得；估算 1,500—3,000，无法凭遥测核定。
+
+### [20261116-1915-GPT6Sol-resource-export-start] START - 资源清单下载按钮微玻璃设计
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:15（Asia/Shanghai）。用户确认参考图。范围：仅资源清单导出控件，保留下载功能与状态，改为紧凑浅色微玻璃/灰紫图标。预计修改 `Resources.tsx`、`favorites-sage.css`、设计来源及记录；验收构建、真实预览默认/悬停/窄屏、`git diff --check`。估算 2,000—4,000 tokens；不提交或推送。
+
+### [20261116-1922-GPT6Sol-resource-export-complete] COMPLETE - 资源导出微玻璃按钮
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:22（Asia/Shanghai）。资源清单导出按钮改为 44px 珍珠白微玻璃胶囊、灰绿 1px 边、32px 浅灰紫图标和深绿文字；数量 `CSV（7）` 弱化，下载功能及 DownloadControl 状态未改。修改 `frontend/src/pages/Resources.tsx`、`frontend/src/styles/favorites-sage.css`、`frontend/THIRD_PARTY_UI.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志。本地截图：`output/button-comparison/resource-export-desktop.png`、`resource-export-hover.png`、`resource-export-390.png`，辅助脚本 `capture.cjs` 更新。
+- 验证：`pnpm build` TypeScript/Vite PASS（既有大 chunk 警告）；`pnpm test` 187/187 PASS；真实 4194 演示资源页计算样式、文案数量、桌面/悬停/390px 截图均核对，无横向溢出；`git diff --check` PASS。无 API、Schema、后端或依赖变更。4194 本地预览恢复；分支 `codex/landing-sage-ui`，未提交、推送、PR、合并。P3 正式同版门禁不变。精确 token 数不可获得；开工估算 2,000—4,000，无法凭遥测核定实际是否落入区间。
+
+### [20261116-1927-GPT6Sol-report-export-start] START - 报告页导出按钮统一微玻璃
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:27（Asia/Shanghai）。按用户截图，报告页顶部两枚导出/打印按钮沿用资源清单已验证的紧凑微玻璃样式。预计修改 `frontend/src/styles/favorites-sage.css` 与记录；验收构建、真实报告页当前宽度/390px 视觉、`git diff --check`。估算 1,500—3,000 tokens；只在本地，不提交或推送。
+
+### [20261116-1932-GPT6Sol-report-export-complete] COMPLETE - 报告页双导出按钮微玻璃
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:32（Asia/Shanghai）。仅将资源清单现有微玻璃下载规则扩展至报告页顶部导出操作，两枚按钮复用 44px 珍珠白玻璃胶囊、32px 浅灰紫圆盘及深绿文字。修改 `frontend/src/styles/favorites-sage.css`、`frontend/THIRD_PARTY_UI.md`、`docs/05-ai-assistance-log.md`、`docs/coordination/PROJECT_PROGRESS.md` 和本日志；本地截图 `output/button-comparison/report-export-desktop.png`、`report-export-hover.png`、`report-export-390.png`，辅助脚本更新。无业务/API/Schema/依赖变化。
+- 验证：`pnpm build` TypeScript/Vite PASS（既有大 chunk 警告）；真实 4194 演示报告页两枚按钮计算样式、桌面和 390px 视觉核对，均无横向溢出；`git diff --check` PASS。默认测试 187/187 在上轮资源导出改造后已通过，本轮只改 CSS 无需重复。分支 `codex/landing-sage-ui`，未提交、推送、PR、合并；P3 同版门禁不变。精确 token 数不可获得；开工估算 1,500—3,000，无法按遥测核定。
+
+### [20261116-1940-GPT6Sol-team-upload-start] START - 发布当前前端分支至团队仓库
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:40（Asia/Shanghai）。用户明确授权上传已修改内容。范围：核对 `codex/landing-sage-ui` 与远端，复核并提交本工作树内前端代码、测试、许可和协调文档，推送任务分支；不合并 `main`，不纳入本机预览产物。预计修改 `docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`；其余待提交文件按状态清单复核。验收：`pnpm test`、`pnpm build`、`git diff --check`、敏感信息检查、提交文件清单、远端提交核对。估算 4,000—7,000 tokens。
+
+### [20261116-1947-GPT6Sol-log-path-amendment] AMENDMENT - 发布前清理本机路径
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:47（Asia/Shanghai）。本轮上传前敏感信息检查发现本地尚未发布的四条工作记录引用全局反思日志的本机绝对路径；已将四处路径文字统一写为“全局反思日志”，其余历史记录内容和顺序未变。此更正仅为避免把本机目录写入团队仓库。

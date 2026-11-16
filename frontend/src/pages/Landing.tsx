@@ -1,7 +1,7 @@
 import { ParticleText } from "../components/ParticleText";
 import { HeroEvidenceScene } from "../components/HeroEvidenceScene";
 import type { AccountUser } from '../services/auth';
-import { ActionButton, ArrowGlyph, FlipCard } from "../components/ui";
+import { ArrowGlyph, FlipCard } from "../components/ui";
 export function Brand({
   onClick,
   compact = false,
@@ -69,12 +69,14 @@ export function Landing({
           </p>
           <HeroEvidenceScene />
           <div className="hero-actions">
-            <button className="primary-button og-arrow-button" type="button" onClick={onEnter}>
-              <span>开始安全扫描</span><ArrowGlyph />
+            <button className="learn-more hero-cta hero-cta-primary" type="button" onClick={onEnter}>
+              <span className="circle" aria-hidden="true"><span className="icon arrow" /></span>
+              <span className="button-text">开始安全扫描</span>
             </button>
-            {!accountMode&&<ActionButton kind="play" className="secondary-button" onClick={onDemo}>
-              加载演示项目
-            </ActionButton>}
+            {!accountMode&&<button className="learn-more hero-cta hero-cta-secondary" type="button" onClick={onDemo}>
+              <span className="circle" aria-hidden="true"><span className="icon arrow" /></span>
+              <span className="button-text">加载演示项目</span>
+            </button>}
           </div>
           <a className="hero-about-link" href="/about">了解 OpenGuard <span aria-hidden="true">↗</span></a>
         </section>

@@ -1,53 +1,41 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
-type Particle = { x: number; y: number; dx: number; dy: number; color: string };
-const palette = ["#134b3a", "#19614b", "#285c4f", "#2f8566"];
-const duration = 800;
+type Particle = {
+  x: number;
+  y: number;
+  homeX: number;
+  homeY: number;
+  vx: number;
+  vy: number;
+  color: string;
+};
 
-export function ParticleText({ text, className = "" }: { text: string; className?: string }) {
+type ParticleTextProps = {
+  text: string;
+  className?: string;
+};
+
+const palette = ["#134b3a", "#19614b", "#285c4f", "#2f8566"];
+
+export function ParticleText({ text, className = "" }: ParticleTextProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const settled = useRef(false);
-  const previousText = useRef(text);
   const reducedMotion = useReducedMotion();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
-    if (previousText.current !== text) { previousText.current = text; settled.current = false; }
-    if (reducedMotion) settled.current = true;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
 
     let frame = 0;
     let particles: Particle[] = [];
-    let size = { width: 0, height: 0, dpr: 0 };
+    let pointer = { x: -9999, y: -9999, active: false };
     let visible = document.visibilityState === "visible";
-    let inView = true;
-    const started = performance.now();
-
-    const draw = (now: number) => {
-      const progress = settled.current || !visible || !inView
-        ? 1 : Math.min(1, Math.max(0, (now - started) / duration));
-      const remaining = (1 - progress) ** 3;
-      context.clearRect(0, 0, size.width, size.height);
-      for (const particle of particles) {
-        context.beginPath();
-        context.fillStyle = particle.color;
-        context.arc(particle.x + particle.dx * remaining, particle.y + particle.dy * remaining, 1.45, 0, Math.PI * 2);
-        context.fill();
-      }
-      frame = progress < 1 ? requestAnimationFrame(draw) : 0;
-      if (progress === 1) settled.current = true;
-    };
 
     const rebuild = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      if (!rect.width || !rect.height) return;
-      if (size.width === rect.width && size.height === rect.height && size.dpr === dpr) return;
-      if (size.width) settled.current = true;
-      size = { width: rect.width, height: rect.height, dpr };
-      cancelAnimationFrame(frame);
       canvas.width = Math.max(1, Math.round(rect.width * dpr));
       canvas.height = Math.max(1, Math.round(rect.height * dpr));
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -55,61 +43,145 @@ export function ParticleText({ text, className = "" }: { text: string; className
       const sample = document.createElement("canvas");
       sample.width = Math.max(1, Math.floor(rect.width));
       sample.height = Math.max(1, Math.floor(rect.height));
-      const mask = sample.getContext("2d", { willReadFrequently: true });
-      if (!mask) return;
-      mask.fillStyle = "#fff";
-      mask.font = '800 190px Inter, "Microsoft YaHei", sans-serif';
-      const measuredWidth = mask.measureText(text).width;
-      const fontSize = Math.min(190, (190 * Math.max(1, sample.width - 32)) / Math.max(1, measuredWidth));
-      mask.font = `800 ${fontSize}px Inter, "Microsoft YaHei", sans-serif`;
-      mask.textAlign = "center";
-      mask.textBaseline = "middle";
-      mask.fillText(text, rect.width / 2, rect.height / 2);
-      const pixels = mask.getImageData(0, 0, sample.width, sample.height).data;
+      const sampleContext = sample.getContext("2d", {
+        willReadFrequently: true,
+      });
+      if (!sampleContext) return;
+
+      sampleContext.fillStyle = "#ffffff";
+      sampleContext.font = '800 190px Inter, "Microsoft YaHei", sans-serif';
+      const measured = sampleContext.measureText(text);
+      const visualWidth = measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight || measured.width;
+      const visualHeight = measured.actualBoundingBoxAscent + measured.actualBoundingBoxDescent || 190;
+      // Leave room for the 18px entry scatter and the particle radius on every edge.
+      const fontSize = Math.min(
+        190,
+        (190 * Math.max(1, sample.width - 48)) / Math.max(1, visualWidth),
+        (190 * Math.max(1, sample.height - 48)) / Math.max(1, visualHeight),
+      );
+      sampleContext.font = `800 ${fontSize}px Inter, "Microsoft YaHei", sans-serif`;
+      sampleContext.textAlign = "center";
+      sampleContext.textBaseline = "middle";
+      const fitted = sampleContext.measureText(text);
+      sampleContext.fillText(
+        text,
+        sample.width / 2 + (fitted.actualBoundingBoxLeft - fitted.actualBoundingBoxRight) / 2,
+        sample.height / 2 + (fitted.actualBoundingBoxAscent - fitted.actualBoundingBoxDescent) / 2,
+      );
+      const pixels = sampleContext.getImageData(
+        0,
+        0,
+        sample.width,
+        sample.height,
+      ).data;
       const gap = rect.width < 640 ? 5 : 4;
-      const spread = rect.width < 640 ? 3 : 6;
       const next: Particle[] = [];
+
       for (let y = 0; y < sample.height; y += gap) {
         for (let x = 0; x < sample.width; x += gap) {
-          if (pixels[(y * sample.width + x) * 4 + 3] <= 150) continue;
-          const index = Math.floor(x / gap) * 17 + Math.floor(y / gap) * 31;
-          const moving = index % 4 === 0;
-          next.push({ x, y,
-            dx: moving ? (((index * 37) % 101) / 50 - 1) * spread : 0,
-            dy: moving ? (((index * 53) % 97) / 48 - 1) * spread : 0,
-            color: palette[index % palette.length],
-          });
+          if (pixels[(y * sample.width + x) * 4 + 3] > 150) {
+            const seed =
+              (Math.floor(x / gap) * 17 + Math.floor(y / gap) * 31) %
+              palette.length;
+            next.push({
+              x: x + (Math.random() - 0.5) * 36,
+              y: y + (Math.random() - 0.5) * 36,
+              homeX: x,
+              homeY: y,
+              vx: 0,
+              vy: 0,
+              color: palette[seed],
+            });
+          }
         }
       }
       particles = next;
-      draw(performance.now());
     };
 
+    const draw = () => {
+      const rect = canvas.getBoundingClientRect();
+      context.clearRect(0, 0, rect.width, rect.height);
+      for (const particle of particles) {
+        if (reducedMotion) {
+          particle.x = particle.homeX;
+          particle.y = particle.homeY;
+        }
+        if (!reducedMotion && pointer.active) {
+          const dx = particle.x - pointer.x;
+          const dy = particle.y - pointer.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance < 92 && distance > 0) {
+            const force = (1 - distance / 92) * 1.9;
+            particle.vx += (dx / distance) * force;
+            particle.vy += (dy / distance) * force;
+          }
+        }
+        particle.vx +=
+          (particle.homeX - particle.x) * (reducedMotion ? 1 : 0.045);
+        particle.vy +=
+          (particle.homeY - particle.y) * (reducedMotion ? 1 : 0.045);
+        particle.vx *= reducedMotion ? 0 : 0.82;
+        particle.vy *= reducedMotion ? 0 : 0.82;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        context.beginPath();
+        context.fillStyle = particle.color;
+        context.arc(
+          particle.x,
+          particle.y,
+          1.45,
+          0,
+          Math.PI * 2,
+        );
+        context.fill();
+      }
+      if (!reducedMotion && visible) frame = requestAnimationFrame(draw);
+    };
+
+    const move = (event: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        active: true,
+      };
+    };
+    const leave = () => (pointer.active = false);
     const visibility = () => {
       visible = document.visibilityState === "visible";
       cancelAnimationFrame(frame);
-      frame = 0;
-      if (!visible) settled.current = true;
-      else draw(performance.now());
+      if (visible && !reducedMotion) frame = requestAnimationFrame(draw);
     };
-    const viewport = new IntersectionObserver(([entry]) => {
-      inView = entry.isIntersecting;
-      if (!inView) { settled.current = true; cancelAnimationFrame(frame); frame = 0; }
-      else if (!frame) draw(performance.now());
-    }, { threshold: 0.08 });
-    const resize = new ResizeObserver(rebuild);
-    resize.observe(canvas);
-    viewport.observe(canvas);
+
+    const observer = new ResizeObserver(() => {
+      rebuild();
+      cancelAnimationFrame(frame);
+      draw();
+    });
+    observer.observe(canvas);
+    canvas.addEventListener("pointermove", move);
+    canvas.addEventListener("pointerleave", leave);
     document.addEventListener("visibilitychange", visibility);
     rebuild();
+    draw();
 
     return () => {
-      resize.disconnect();
-      viewport.disconnect();
+      observer.disconnect();
+      canvas.removeEventListener("pointermove", move);
+      canvas.removeEventListener("pointerleave", leave);
       document.removeEventListener("visibilitychange", visibility);
       cancelAnimationFrame(frame);
     };
   }, [text, reducedMotion]);
 
-  return <canvas ref={canvasRef} className={`particle-text ${className}`} role="img" aria-label={text}>{text}</canvas>;
+  return (
+    <canvas
+      ref={canvasRef}
+      className={`particle-text ${className}`}
+      role="img"
+      aria-label={text}
+    >
+      {text}
+    </canvas>
+  );
 }

@@ -45,7 +45,7 @@ The user supplied Gemini-generated TSX/CSS, including the inline authentication 
 
 ## 2026-11-16 Uiverse favorites in the pearl and forest-green theme
 
-The user selected 22 favorites for this pass. OpenGuard uses its existing React components and original CSS/SVG adaptations; no Uiverse source code, assets, fonts, or runtime package were copied. Source pages identify the elements as MIT licensed. The mapping records design references and recognizable shapes, not pixel-identical reproduction. Forest green is the primary color; purple remains on copy and download controls. Motion follows reduced-motion preferences.
+The user selected 22 favorites for this pass. OpenGuard uses its existing React components and original CSS/SVG adaptations for the original pass. The later landing CTA revision directly adapts the HTML/CSS supplied by the user from `cssbuttons-io / massive-mayfly-74`; its source and MIT notice are recorded below. No Uiverse assets, fonts, or runtime package were added. Forest green is the primary color; purple remains on copy and download controls. Motion follows reduced-motion preferences.
 
 | Reference | OpenGuard placement |
 | --- | --- |
@@ -54,9 +54,9 @@ The user selected 22 favorites for this pass. OpenGuard uses its existing React 
 | [Admin12121 / soft-falcon-79](https://uiverse.io/Admin12121/soft-falcon-79) | GitHub/ZIP sliding segmented choice |
 | [liyaxu123 / warm-eel-62](https://uiverse.io/liyaxu123/warm-eel-62) | Repository address floating label |
 | [Lakshay-art / curvy-earwig-22](https://uiverse.io/Lakshay-art/curvy-earwig-22) | Search field focus glow |
-| [cssbuttons-io / massive-mayfly-74](https://uiverse.io/cssbuttons-io/massive-mayfly-74) | Landing scan CTA with circular traveling arrow |
+| [cssbuttons-io / massive-mayfly-74](https://uiverse.io/cssbuttons-io/massive-mayfly-74) | Both landing CTAs: user-supplied `learn-more` structure and original expanding-circle/arrow/text transitions, scoped to the homepage and recolored to light sage |
 | [satyamchaudharydev / quick-chicken-50](https://uiverse.io/satyamchaudharydev/quick-chicken-50) | Raised primary action and press states |
-| [nazar-gavrylyk / evil-dragon-24](https://uiverse.io/nazar-gavrylyk/evil-dragon-24) | Outlined report download capsule with purple icon zone |
+| [nazar-gavrylyk / evil-dragon-24](https://uiverse.io/nazar-gavrylyk/evil-dragon-24) | Download capsule with separate circular icon; resource and report header exports share a compact pearl-glass shell and muted lavender icon while preserving the recognizable silhouette |
 | [adamgiebl / smart-moth-68](https://uiverse.io/adamgiebl/smart-moth-68) | Paper-plane send actions in P2 and assistant |
 | [Mohammad-Rahme-576 / hard-starfish-64](https://uiverse.io/Mohammad-Rahme-576/hard-starfish-64) | Purple copy action and contextual hint |
 | [Yaya12085 / yellow-goat-62](https://uiverse.io/Yaya12085/yellow-goat-62) | Dashed ZIP drop zone and hover state |
@@ -77,3 +77,9 @@ Six other saved items remain outside this product mapping: bookmark, day/night t
 ## 2026-11-16 landing motion and glass refinement
 
 The existing particle typography and React Bits Glass Surface design reference remain the only references for this pass. OpenGuard tightened its original Canvas timing and CSS/SVG glass material; no third-party source, asset, or runtime dependency was added.
+
+## Uiverse landing CTA source notice
+
+The homepage CTA structure and animation in `src/pages/Landing.tsx` and `src/styles/favorites-sage.css` adapt the code the user supplied from [cssbuttons-io / massive-mayfly-74](https://uiverse.io/cssbuttons-io/massive-mayfly-74). The same circle, arrow and text transition now appears on four primary workbench actions through `GlassArrowButton` in `src/components/ui.tsx`, with smaller sizing and the same pale glass palette. The OpenGuard version changes the colors, sizes, selectors, labels and click actions. The full MIT notice is in `UIVERSE_CSSBUTTONS_IO_LICENSE.txt` and is included in the built `third-party-licenses.txt`.
+
+The later CTA glass edges, reflection and soft shadow are OpenGuard CSS tuned to match its existing evidence-window scene. They retain the source button's circle expansion, arrow and text transitions. No additional third-party source or runtime asset was added.

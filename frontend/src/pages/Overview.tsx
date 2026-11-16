@@ -1,7 +1,7 @@
 import type { Scan } from "../types/domain";
 import { resourceTypes, handlingLabels } from "../types/domain";
 import { summarize, severityOrder } from "../services/model";
-import { Panel, SeverityBadge, Empty } from "../components/ui";
+import { Panel, SeverityBadge, Empty, GlassArrowButton } from "../components/ui";
 import { OverviewDecision } from "../components/DecisionBrief";
 import { p2WorkbenchEnabled } from "../services/p2";
 import { AutomaticOverview } from "../components/AutomaticProjectAssessment";
@@ -49,7 +49,7 @@ export function Overview({
       ? { title:'在项目评估中核对用途与许可原文', detail:`当前有 ${pendingLicense} 项许可依据待核验，材料缺口与适用边界继续保留。`, page:'assessment', action:'进入评估工作台' }
       : { title:'阅读报告并复核证据边界', detail:'扫描记录已保存；报告按当前快照呈现，许可授权仍需人工核对。', page:'report', action:'查看扫描报告' };
   return <div className="og-overview">
-    <header className="og-overview-heading page-head"><div><h1 id="overview-title">{scan.project} 扫描概览</h1><p>{finishedLabel} · 所有数量来自当前扫描，未知与待核验不默认放行。</p></div><div className="og-actions"><button onClick={()=>go('progress')}>查看扫描阶段</button><button className="og-primary" onClick={()=>go('assessment')}>进入项目评估 →</button></div></header>
+    <header className="og-overview-heading page-head"><div><h1 id="overview-title">{scan.project} 扫描概览</h1><p>{finishedLabel} · 所有数量来自当前扫描，未知与待核验不默认放行。</p></div><div className="og-actions"><button onClick={()=>go('progress')}>查看扫描阶段</button><GlassArrowButton onClick={()=>go('assessment')}>进入项目评估</GlassArrowButton></div></header>
     <section className="og-v3-kpi" aria-label="扫描事实摘要"><div className="og-overview-inventory"><button onClick={()=>go('resources')}><span>识别第三方资源</span><strong>{scan.resources.length}</strong><small>个资源</small></button><span><span>采集溯源证据链</span><strong>{scan.evidence.length}</strong><small>条证据</small></span></div><div><span>许可依据待核验</span><strong>{pendingLicense}</strong><small>按规则门禁原值统计</small></div><div><span>项目用途与材料评估</span><button onClick={()=>go('assessment')}>查看已保存评估 →</button><small>用途与材料结果独立于扫描事实</small></div></section>
     <nav className="og-favorite-navigation" aria-label="概览快捷入口"><button type="button" onClick={()=>go('risks')}><span>01 / 风险</span><strong>查看风险与证据</strong><small>{scan.risks.length} 条发现 <span aria-hidden="true">↗</span></small></button><button type="button" onClick={()=>go('resources')}><span>02 / 资源</span><strong>浏览资源清单</strong><small>{scan.resources.length} 项资源 <span aria-hidden="true">↗</span></small></button><button type="button" onClick={()=>go('report')}><span>03 / 报告</span><strong>阅读扫描报告</strong><small>复核当前快照 <span aria-hidden="true">↗</span></small></button></nav>
     <aside className="og-v3-callout"><div><strong>建议下一步：{next.title}</strong><p>{next.detail}</p></div><button onClick={()=>go(next.page)}>{next.action}</button></aside>

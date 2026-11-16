@@ -55,7 +55,7 @@ export function Resources({
               )
             }
           >
-            导出筛选结果 CSV（{rows.length}）
+            <span className="og-resource-export-label">导出筛选结果 <small>CSV（{rows.length}）</small></span>
           </DownloadControl>
         }
       />
