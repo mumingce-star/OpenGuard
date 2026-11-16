@@ -481,3 +481,12 @@
 - 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:56（Asia/Shanghai）。目标：上传当前前端任务分支的全部项目修改。实际结果：17 个文件已核对并提交为 `07b6e3d5061fa8dea277c91bd0b03c92da3ceabb`，包含首页品牌与按钮动效、工作台按钮与导出样式、P3 两份交付复核、UI 第三方许可、测试与协调记录；本地截图/辅助文件未入仓库。随后两次 `git push origin HEAD:refs/heads/codex/landing-sage-ui` 均因 GitHub HTTPS 连接重置失败，`git ls-remote` 同样失败；GitHub 连接器可读取远端旧 SHA `15d3a18`，但写入 blob 返回 403（集成无权限）；内置浏览器未登录，桌面浏览器控制因 URL 安全校验停止。未推送、未建 PR、未合并 `main`，远端未见本轮提交。
 - 修改/新增：前述 17 文件，以及本轮收工补记 `docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`。命令/验证：`pnpm test` 187/187 PASS、`pnpm build` PASS（既有大 chunk 警告）、`node tests/hero-motion-smoke.cjs http://127.0.0.1:4173/` PASS、`git diff --cached --check` PASS、17 文件敏感信息扫描 0 命中；本机绝对路径四处已在发布前替换为泛称。无新增 API、Schema、后端、运行依赖或规则。P3 正式同版联调与三方签认仍未完成。
 - 下一步：网络/仓库写入通道恢复后，在本分支再次核对远端 SHA 并推送本地提交；由 Root Coordinator 验证远端提交和文件范围，再更新 GitHub 发布状态。当前精确 token 数不可获得；开工估算 4,000—7,000，本轮因推送失败及替代通道排查扩展，未在估算范围内完整完成。
+
+### [20261116-2003-GPT6Sol-team-upload-resume-start] START - 恢复团队仓库上传
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 20:03（Asia/Shanghai）。接续上轮上传受阻任务；用户确认 `https://github.com/mumingce-star/OpenGuard` 为团队仓库。范围：重试 `codex/landing-sage-ui` 推送、核对远端 SHA、更新工作日志与进度表并同步发布记录。预计修改 `docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`；验收远端 ref 与本地 HEAD 一致、无额外待提交文件。估算 1,000—2,000 tokens。
+
+### [20261116-2004-GPT6Sol-team-upload-complete] COMPLETE - 团队仓库任务分支已上传
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 20:04（Asia/Shanghai）。用户确认的仓库与 `origin` 一致。`git push origin HEAD:refs/heads/codex/landing-sage-ui` 成功，远端由 `15d3a18` 到 `ace78cdf6ca4ba04dfc66417f8b042abe0c0563b`；随后 `git ls-remote` 核对一致。`07b6e3d` 上传 17 个前端、测试、许可、P3 复核与协调文件；`ace78cd` 保留上轮上传受阻记录。本轮新增发布状态补记至 `docs/coordination/PROJECT_PROGRESS.md` 和本日志，待随记录提交同步同一分支。无 API、Schema、后端、规则或依赖变化；未创建 PR、未合并 `main`。P3 同版联验与签认仍未关闭。
+- 验证：上轮 `pnpm test` 187/187、`pnpm build`、首页浏览器专项检查、敏感信息扫描和 diff 检查通过；本轮远端 ref 与本地提交一致，发布记录将再做 diff/敏感信息检查后提交推送。风险：先前记录中的“未上传”反映当时连接受阻状态，本条及进度补记记录恢复后的新状态。下一步由队长/后端/材料/前端关闭 P3 正式门禁；Root Coordinator 在视觉与接口证据齐备后处理 PR。精确 token 数不可获得；开工估算 1,000—2,000，本轮按该范围完成。
