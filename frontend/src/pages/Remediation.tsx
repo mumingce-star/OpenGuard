@@ -1,15 +1,16 @@
+import { checkAssessmentVersion, selectedAssessment } from '../services/versionContext';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Scan } from '../types/domain';
-import { listAssessments, type Assessment } from '../services/assessments';
+import { listAssessments, readExactAssessment, type Assessment } from '../services/assessments';
 import { deriveTasks, isVersionConflict, listAllTasks, optimisticTask, patchTask, taskLinks, type RemediationTask, type TaskStatus } from '../services/remediationTasks';
 import { Empty, Header, Panel } from '../components/ui';
 import { EvidenceReader } from '../components/EvidenceReader';
 
 const labels: Record<TaskStatus, string> = { todo: '待处理', in_progress: '处理中', done: '已完成任务', dismissed: '已驳回任务' };
 const statuses: TaskStatus[] = ['todo', 'in_progress', 'done', 'dismissed'];
-type Props = { scan: Scan; query: URLSearchParams; filter: (name: string, value: string) => void; openRisk: (id: string) => void };
+type Props = { scan: Scan; query: URLSearchParams; filter: (name: string, value: string) => void; selectVersion: (id: string, version?: number) => void; openRisk: (id: string) => void };
 
-export function Remediation({ scan, query, filter, openRisk }: Props) {
+export function Remediation({ scan, query, filter, selectVersion, openRisk }: Props) {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [tasks, setTasks] = useState<RemediationTask[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,7 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
   const [selectedEvidence, setSelectedEvidence] = useState<{ taskId: string; id: string } | null>(null);
   const deriveKey = useRef(crypto.randomUUID());
   const requested = query.get('assessment_id');
-  const selected = requested ? assessments.find(item => item.id === requested) : assessments[0];
+  const selected = selectedAssessment(assessments, scan.id, query);
   const selectedId = selected?.id ?? '';
   const selectedStatus = query.get('task_status') ?? 'all';
   const selectedResource = query.get('task_resource') ?? 'all';
@@ -29,10 +30,19 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
   useEffect(() => {
     if (scan.mode !== 'api') { setLoading(false); return; }
     const controller = new AbortController();
-    setLoading(true); setError('');
-    listAssessments(scan.id, controller.signal).then(value => { if (!controller.signal.aborted) setAssessments(value.items.filter(item => item.scan_id === scan.id && item.formal === true && !!item.facts_hash)); }).catch(reason => { if (!controller.signal.aborted) setError((reason as Error).message); }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    setLoading(true); setError(''); setAssessments([]); setTasks([]);
+    listAssessments(scan.id, controller.signal).then(async value => {
+      if (requested && !value.items.some(item => item.id === requested)) value.items.push(await readExactAssessment(scan.id, requested, controller.signal));
+      const formal = value.items.filter(item => item.scan_id === scan.id && item.formal === true && !!item.facts_hash);
+      const exact = requested ? formal.find(item => item.id === requested) : formal[0];
+      if (exact) checkAssessmentVersion(query, exact.version);
+      if (!controller.signal.aborted) {
+        setAssessments(formal);
+        if (exact && (!requested || !query.has('assessment_version'))) selectVersion(exact.id, exact.version);
+      }
+    }).catch(reason => { if (!controller.signal.aborted) setError((reason as Error).message); }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, [scan.id, scan.mode, attempt]);
+  }, [scan.id, scan.mode, attempt, requested, query.get('assessment_version')]);
 
   useEffect(() => {
     if (!selectedId || scan.mode !== 'api') { setTasks([]); return; }
@@ -78,7 +88,7 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
       if (isVersionConflict(reason)) {
         setError('版本冲突：其他操作已更新此任务，已回滚本地显示并重新读取服务器状态。');
         try { await refresh(); } catch (readError) { setError('版本冲突，重新读取服务器状态失败：' + (readError as Error).message); }
-      } else setError('保存失败，已回滚本地显示：' + (reason as Error).message);
+      } else setError('保存结果尚未确认，已撤回本地预览。请先重新读取服务器状态核对，不要直接重复保存：' + (reason as Error).message);
     } finally { setBusy(''); }
   }
   async function derive() {
@@ -94,7 +104,7 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
     <Header eyebrow="P1 / REMEDIATION" title="整改任务工作台" description="任务是独立工作流，不改变 Formal Assessment。done 不等于项目合规；dismissed 不等于义务不适用。" />
     <div className="og-scan-coverage-notice"><strong>优先级：后端未提供</strong><span>冻结 Task 1.0 没有优先级字段；全部任务归入“未提供”组，前端不根据 Finding 严重度或标题猜测。</span></div>
     <Panel title="固定评估版本" caption="刷新只读服务器状态；生成任务需要明确点击，不由 GET 触发。" action={<button type="button" onClick={() => setAttempt(value => value + 1)} disabled={!!busy}>重新读取</button>}>
-      <label className="og-field">Formal Assessment<select value={selected?.id ?? ''} onChange={event => filter('assessment_id', event.target.value)}>{assessments.map(item => <option key={item.id} value={item.id}>v{item.version} · {item.id}</option>)}</select></label>
+      <label className="og-field">Formal Assessment<select value={selected?.id ?? ''} onChange={event => selectVersion(event.target.value, assessments.find(a => a.id === event.target.value)?.version)}>{assessments.map(item => <option key={item.id} value={item.id}>v{item.version} · {item.id}</option>)}</select></label>
       {selected && <p>评估 ID：{selected.id} · 版本 {selected.version} · Formal Assessment 不因任务更新而改变。</p>}
       {!loading && selected && !tasks.length && !error && <div className="og-actions"><span>该评估尚无整改任务。</span><button type="button" disabled={!!busy} onClick={derive}>从该评估显式生成任务</button></div>}
     </Panel>

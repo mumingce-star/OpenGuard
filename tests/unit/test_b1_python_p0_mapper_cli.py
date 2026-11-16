@@ -237,3 +237,22 @@ def test_new_cli_controlled_failure_has_no_traceback_or_path(tmp_path: Path) -> 
     assert cli.main(["--python-dependencies", str(missing)], stdout=output, stderr=errors) == 2
     assert output.getvalue() == "" and errors.getvalue() == "invalid_request:input_file_unavailable\n"
     assert str(missing) not in errors.getvalue() and "Traceback" not in errors.getvalue()
+
+
+def test_cli_does_not_confuse_missing_zip_with_workspace_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    archive = tmp_path / "input.zip"
+    archive.write_bytes(b"workspace allocation fails before reading the archive")
+
+    def unavailable_workspace(*args, **kwargs):
+        raise OSError(str(tmp_path / "private-workspace"))
+
+    monkeypatch.setattr(cli.tempfile, "TemporaryDirectory", unavailable_workspace)
+    for source, expected in (
+        (tmp_path / "missing.zip", (2, "invalid_request:input_file_unavailable\n")),
+        (archive, (1, "scanner_failed:cli_runtime_failed\n")),
+    ):
+        output, errors = io.StringIO(), io.StringIO()
+        assert cli.main(["--python-dependencies", str(source)], stdout=output, stderr=errors) == expected[0]
+        assert (output.getvalue(), errors.getvalue()) == ("", expected[1])

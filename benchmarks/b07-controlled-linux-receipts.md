@@ -6,7 +6,9 @@
 
 环境记录必须包含 Linux kernel 与镜像 digest、CPU 型号/逻辑核数、内存限制/观测峰值，以及 ScanCode、Syft、静态 Detector、规则版本。每次运行明确标记 `cold` 或 `warm`，且五个阶段按固定顺序存在：`unpack`、`scancode`、`syft`、`static_detector`、`rule_consolidation`。失败保留收据、失败分类和发生阶段；不允许删除失败样本改善失败率。
 
-汇总器至少接收两份同环境收据，并输出总耗时、冷/热耗时与每阶段的 p50/p95、阶段计时覆盖率、成功数、失败率和失败分类。输出固定标记 `formal_performance_claimed=false`，因而即使未来的受控 Linux 收据通过校验，也仍需 A 的正式采集方案、原始收据和人工复核才能提出正式性能结论。
+汇总器每次接收至少两份同组收据。组内固定来源 ID、提交、来源摘要、输入摘要、配置摘要、镜像、系统、CPU、内存限制和工具版本。每份收据的 `receipt_id` 和 `run_id` 必须分别唯一。混组或重复收据会中止本次汇总。冷/热状态、观测内存峰值和结果摘要允许随运行变化。
+
+汇总包含总耗时、冷/热耗时与每阶段的 p50/p95、阶段计时覆盖率、成功数、失败率和失败分类。输出固定标记 `formal_performance_claimed=false`。正式性能结论仍需 A 的采集方案、原始收据和人工复核。
 
 ```powershell
 node benchmarks/b07-summarize-receipts.mjs --input controlled-linux-receipts.json --output b07-summary.json

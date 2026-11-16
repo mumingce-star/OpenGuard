@@ -237,8 +237,10 @@ PYTHONPATH=backend python -m app.cli ./demo.zip
 命令不联网、不执行 ZIP 中的代码、不安装其依赖，也没有可以抬高默认安全限额的命令行
 选项。成功时 stdout 仅输出稳定 JSON（`schema`、`version`、`root_digest` 与排序后的
 `entries`）；安全拒绝时 stdout 为空，stderr 仅输出稳定的 `code:reason`，退出码为 1。
-参数或输入文件不可用时同样不回显路径或原始异常，并以退出码 2 失败。临时 workspace
-仅用于本次进程，服务关闭后不会保留任务目录。
+参数缺失、未知选项或多余参数返回 `invalid_request:invalid_arguments`。ZIP 无法打开时返回
+`invalid_request:input_file_unavailable`。两种错误的退出码都是 2。以连字符开头的文件名
+可用 `./-name.zip` 或绝对路径传入。创建临时目录等运行期错误返回
+`scanner_failed:cli_runtime_failed`，退出码为 1。错误输出不回显输入路径或原始异常。
 
 ## A3-1 FastAPI 最小 API
 

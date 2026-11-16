@@ -201,3 +201,39 @@ test('mismatched successful receipt stays unknown and a repeated click cannot PO
   await assert.rejects(pending, /契约/); assert.equal(attempt.state, 'unknown');
   await assert.rejects(attempt.send(), /核对/); assert.equal(calls, 1);
 });
+
+test('reload retains minimal unknown identity without upload body and never auto POSTs', async () => {
+  const session = new Map(), r = runtime({}, session), p = r.load('services/p2Workflow.ts');
+  const input = await p.prepareMaterial(result(), 'cmp_1', ['ev_1'], 'NOTICE.txt', new TextEncoder().encode('private upload text'), 'private description', 'EXCERPT');
+  r.setFetch(async () => { throw new TypeError('response lost'); });
+  const attempt = new p.P2WriteAttempt('materials', input);
+  await assert.rejects(attempt.send());
+  assert.equal(attempt.state, 'unknown');
+  const raw = [...session.values()].join();
+  for (const secret of ['private upload text', 'private description', 'content_base64', 'source_description']) assert.equal(raw.includes(secret), false);
+  const fresh = runtime({}, session), recovery = fresh.load('services/p2Recovery.ts');
+  const marker = recovery.readRecovery('scn_1:asm_1:2');
+  assert.equal(marker.state, 'unknown'); assert.equal(marker.key, input.idempotency_key);
+  const calls = [];
+  fresh.setFetch(async (url, options) => {
+    calls.push(options?.method ?? 'GET');
+    return Response.json(url.includes('/binding') ? binding() : url.includes('/results/') ? result(2) : { binding: binding(), head_result_id: 'p2res_2', head_revision: 2, result_ids: ['p2res_2'], has_more: false });
+  });
+  const checked = await recovery.recoverMarker(marker);
+  assert.equal(checked.saved, null); assert.equal(checked.head.result_id, 'p2res_2');
+  assert.ok(calls.every(method => method === 'GET')); assert.equal(recovery.readRecovery('scn_1:asm_1:2').state, 'unknown');
+});
+test('session storage unavailable stops before POST; saved receipt survives Summary GET failure', async () => {
+  const r = runtime(), p = r.load('services/p2Workflow.ts');
+  let calls = 0; r.setFetch(async () => { calls++; return Response.json({ result: result() }, { status: 201 }); });
+  const original = r.shared.sessionStorage.setItem;
+  r.shared.sessionStorage.setItem = () => { throw new Error('denied'); };
+  const a = new p.P2WriteAttempt('results', p.createFields(binding(), null));
+  await assert.rejects(a.send(), /未发送/); assert.equal(calls, 0);
+  r.shared.sessionStorage.setItem = original;
+  const saved = await a.send();
+  r.setFetch(async () => new Response('', { status: 503 }));
+  await assert.rejects(p.readP2Summary(saved.result));
+  assert.equal(a.state, 'saved'); assert.equal(a.receipt.result.result_id, saved.result.result_id);
+  assert.equal(r.load('services/p2Recovery.ts').readRecovery('scn_1:asm_1:2').saved.id, saved.result.result_id);
+});

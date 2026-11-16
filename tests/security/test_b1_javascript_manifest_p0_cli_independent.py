@@ -370,7 +370,7 @@ def test_pos_b1_js_010_legacy_bytes_exit_codes_python_mode_and_cleanup(tmp_path:
 
     misuse_out, misuse_err = io.StringIO(), io.StringIO()
     assert cli.main(["--javascript-dependencies"], stdout=misuse_out, stderr=misuse_err) == 2
-    assert misuse_out.getvalue() == "" and misuse_err.getvalue() == "invalid_request:input_file_unavailable\n"
+    assert misuse_out.getvalue() == "" and misuse_err.getvalue() == "invalid_request:invalid_arguments\n"
 
 
 def test_neg_b1_js_001_encoding_and_json_failures_are_stable() -> None:

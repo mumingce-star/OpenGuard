@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import ts from "typescript";
 const require = createRequire(import.meta.url);
-export function runtime(env = {}) {
+export function runtime(env = {}, session = new Map()) {
   const cache = new Map(),
     storage = new Map();
   let transport = () => {
@@ -30,6 +30,11 @@ export function runtime(env = {}) {
     setTimeout,
     clearTimeout,
     window: { setTimeout, clearTimeout },
+    sessionStorage: {
+      getItem: key => session.get(key) ?? null,
+      setItem: (key, value) => session.set(key, value),
+      removeItem: key => session.delete(key),
+    },
     localStorage: {
       getItem: (key) => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value),

@@ -11,7 +11,7 @@ from packaging.utils import InvalidName, canonicalize_name
 from app.api.service import ApiError
 from app.assessment.engine import facts_digest
 from app.assessment.store import AssessmentStoreError
-from app.domain.models import ScanStatus
+from app.domain.models import ScanStatus, SourceType
 from app.persistence import ScanRegistryError
 from .history import canonical, identity, public_source, utc
 
@@ -307,7 +307,7 @@ class DiffReader:
         return dict(assessment_id=value.id, version=value.version, scan_id=value.scan_id, facts_hash=value.facts_hash,
                     usage_hash=value.usage_hash, rule_version=value.rule_version, formal=value.formal)
 
-    def compare(self, target_scan_id, base_scan_id, base_assessment_id=None, target_assessment_id=None):
+    def compare(self, target_scan_id, base_scan_id, base_assessment_id=None, target_assessment_id=None, *, confirm_zip_pair=False):
         if not isinstance(base_scan_id, str) or not isinstance(target_scan_id, str) or not base_scan_id or not target_scan_id or base_scan_id == target_scan_id:
             _fail("invalid_argument", 400, "比较参数无效。")
         if (base_assessment_id is None) != (target_assessment_id is None):
@@ -322,8 +322,15 @@ class DiffReader:
             _fail("not_comparable", 409, "扫描状态不可比较。")
         bsrc, bok = public_source(base); tsrc, tok = public_source(target)
         bid, tid = identity(base, bsrc, bok), identity(target, tsrc, tok)
-        if bid["key"] != tid["key"]:
-            _fail("not_comparable", 409, "扫描项目身份不一致，不能比较。")
+        if type(confirm_zip_pair) is not bool:
+            _fail("invalid_argument", 400, "ZIP 配对确认参数无效。")
+        if confirm_zip_pair:
+            if base.project.source_type != SourceType.ZIP or target.project.source_type != SourceType.ZIP:
+                _fail("invalid_argument", 400, "显式配对仅用于两个 ZIP 扫描。")
+            # Pair-specific identity is a user assertion, never a trusted project/source identity.
+            bid["key"] = "user_asserted_zip_pair:" + _token([base.id, target.id])
+        elif bid["key"] != tid["key"]:
+            _fail("not_comparable", 409, "扫描项目身份不一致，不能比较；两个 ZIP 须明确确认配对。")
         bref, tref = self._ref(base_stored), self._ref(target_stored)
         base_rows, target_rows = _resources(base), _resources(target)
         pairs, remaining_base, remaining_target = _match(base_rows, target_rows)
@@ -344,7 +351,7 @@ class DiffReader:
         base_evidence, target_evidence = evidence_indexes
         assessment_diff = self._assessment_diff(base, target, base_assessment_id, target_assessment_id, base_resource_keys, target_resource_keys, base_evidence, target_evidence)
         selected = {"base": assessment_diff["base"], "target": assessment_diff["target"], "requested": [base_assessment_id, target_assessment_id]}
-        parameter_hash = hashlib.sha256(canonical({"algorithm": ALGORITHM, "base": bref, "target": tref, "selection": selected})).hexdigest()
+        parameter_hash = hashlib.sha256(canonical({"algorithm": ALGORITHM, "base": bref, "target": tref, "selection": selected, "confirm_zip_pair": confirm_zip_pair})).hexdigest()
         view_id = "diff_" + parameter_hash[:32]
         resources = []
         for left, right in pairs:
@@ -354,7 +361,7 @@ class DiffReader:
                 resources.append(dict(kind="changed", before=base_rows[left]["ref"], after=target_rows[right]["ref"], field_changes=changes,
                                       evidence_refs=sorted({(x['scan_id'], x['evidence_id']): x for x in evidence}.values(), key=lambda x: (x['scan_id'], x['evidence_id'])), removal_confirmed=None))
         for row in remaining_base:
-            removal = True if base.status is ScanStatus.COMPLETED and target.status is ScanStatus.COMPLETED and not base.errors and not target.errors and row["ref"]["resource_identity_key"] else None
+            removal = True if not confirm_zip_pair and base.status is ScanStatus.COMPLETED and target.status is ScanStatus.COMPLETED and not base.errors and not target.errors and row["ref"]["resource_identity_key"] else None
             identity_key = row["ref"]["resource_identity_key"]
             if not identity_key:
                 kind = "unmatched"
@@ -390,6 +397,8 @@ class DiffReader:
         base_license_verification = _license_rows(base, base_resource_keys, base_rows, base_evidence, verification=True)
         target_license_verification = _license_rows(target, target_resource_keys, target_rows, target_evidence, verification=True)
         gaps = (["base scan partial"] if base.status is ScanStatus.PARTIAL else []) + (["target scan partial"] if target.status is ScanStatus.PARTIAL else [])
+        if confirm_zip_pair:
+            gaps.append("ZIP 同项目关系为用户声明，未核验来源；差异不证明授权或风险消除。")
         gaps += [f"{side} scan reports coverage diagnostics" for side, run in (("base", base), ("target", target)) if run.status is ScanStatus.COMPLETED and run.errors]
         return dict(schema_version="1.0", view_id=view_id, base=bref, target=tref, project_identity_key=bid["key"], resources=resources,
                     license_observation_changes=_fact_changes(base_licenses, target_licenses, category="licenses"),

@@ -1,7 +1,8 @@
+import { checkAssessmentVersion, selectedAssessment } from '../services/versionContext';
 import { useEffect, useRef, useState } from 'react';
 import type { Scan } from '../types/domain';
 import { reportDownloadUrl } from '../services/scans';
-import { listAssessments, type Assessment } from '../services/assessments';
+import { listAssessments, readExactAssessment, type Assessment } from '../services/assessments';
 import { listAllTasks, type RemediationTask } from '../services/remediationTasks';
 import { classifyReportObservations, createReportV2, downloadReportV2, loadReportV2, reportCreateControl, type ReportDocument, type ReportSection } from '../services/reportV2';
 import { createNoticeDraft, type NoticeDraft } from '../services/noticeDrafts';
@@ -49,16 +50,20 @@ export function ReportV2({ scan, query, open }: {
   useEffect(() => {
     if (scan.mode !== 'api') { setAssessments([]); setCreateLoading(false); return; }
     const controller = new AbortController();
-    setCreateLoading(true); setLoadError('');
-    listAssessments(scan.id, controller.signal).then(value => {
+    setCreateLoading(true); setLoadError(''); setAssessments([]); setCreateAssessmentId(''); setReportTasks([]);
+    listAssessments(scan.id, controller.signal).then(async value => {
+      if (assessmentId && !value.items.some(item => item.id === assessmentId)) value.items.push(await readExactAssessment(scan.id, assessmentId, controller.signal));
       if (controller.signal.aborted) return;
       const formal = value.items.filter(item => item.scan_id === scan.id && item.formal === true && !!item.facts_hash);
+      const exact = assessmentId ? formal.find(item => item.id === assessmentId) : formal[0];
+      if (exact) checkAssessmentVersion(query, exact.version);
       setAssessments(formal);
-      setCreateAssessmentId(current => formal.some(item => item.id === current) ? current : formal[0]?.id ?? '');
+      setCreateAssessmentId(exact?.id ?? assessmentId);
+      if (!assessmentId && exact) open(exact.id, '');
     }).catch(error => { if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : 'Formal Assessment 读取失败。'); })
       .finally(() => { if (!controller.signal.aborted) setCreateLoading(false); });
     return () => controller.abort();
-  }, [scan.id, scan.mode]);
+  }, [scan.id, scan.mode, assessmentId, query.get('assessment_version')]);
   useEffect(() => {
     if (scan.mode !== 'api' || !createAssessmentId) { setReportTasks([]); return; }
     const controller = new AbortController();
@@ -80,17 +85,18 @@ export function ReportV2({ scan, query, open }: {
     const controller = new AbortController();
     setState({ kind: 'loading' });
     loadReportV2(scan.id, assessmentId, snapshotId, controller.signal)
-      .then(result => { if (!controller.signal.aborted) setState({ kind: 'ready', ...result }); })
+      .then(result => { checkAssessmentVersion(query, result.document.binding.assessment_ref.version); if (!controller.signal.aborted) setState({ kind: 'ready', ...result }); })
       .catch(error => { if (!controller.signal.aborted) setState({ kind: 'error', message: error instanceof Error ? error.message : '固定报告读取失败。' }); });
     return () => controller.abort();
-  }, [scan.id, scan.mode, assessmentId, snapshotId, reload]);
+  }, [scan.id, scan.mode, assessmentId, snapshotId, reload, query.get('assessment_version')]);
   async function save(format: 'json' | 'html') {
     setDownloading(true);
     try { await downloadReportV2(scan.id, assessmentId, snapshotId, format); }
     finally { setDownloading(false); }
   }
+  const contextReady = !!createAssessmentId && selectedAssessment(assessments, scan.id, query)?.id === createAssessmentId;
   async function create() {
-    if (!createAssessmentId || createLoading || creating || loadError) return;
+    if (!contextReady || createLoading || creating || loadError) return;
     setCreating(true); setCreateError('');
     try {
       const snapshot = await createReportV2(
@@ -106,7 +112,7 @@ export function ReportV2({ scan, query, open }: {
     } finally { setCreating(false); }
   }
   async function createNotice() {
-    if (!createAssessmentId || createLoading || noticeCreating) return;
+    if (!contextReady || createLoading || noticeCreating || loadError) return;
     setNoticeCreating(true); setNoticeError('');
     try {
       const draft = await createNoticeDraft(scan.id, createAssessmentId, noticeKey.current);
@@ -121,18 +127,18 @@ export function ReportV2({ scan, query, open }: {
   const observations = document ? classifyReportObservations(document) : { graph: [], notice: [] };
   const graphSections = new Set(observations.graph);
   const noticeSections = new Set(observations.notice);
-  const createControl = reportCreateControl({ assessmentId: createAssessmentId, createLoading, creating, loadError, createError });
+  const createControl = reportCreateControl({ assessmentId: createAssessmentId, createLoading: createLoading || !contextReady, creating, loadError, createError });
   return <div className="og-v2-page">
     <Header title="Assessment Report V2" description="读取后端已保存的固定版本报告；浏览器不生成、修改或重新判断正式结论。" eyebrow="OPENGUARD / IMMUTABLE REPORT" />
     <details className="og-v2-tools" open={state.kind !== 'ready' || !!createError || !!noticeError || !!loadError}>
     <summary>报告创建与快照切换<span>查看已保存报告时可收起此区</span></summary>
     <Panel title="创建固定版本报告" caption="这是明确的写操作：后端固定当前 Formal Assessment 与所列 Task 版本并保存报告；不会触发扫描、重新评估或 Qwen。">
       {scan.mode !== 'api' ? <p role="status">演示模式不创建正式报告。</p> : <div className="og-v2-create">
-        <label>Formal Assessment<select value={createAssessmentId} disabled={createLoading || creating} onChange={event => setCreateAssessmentId(event.target.value)}><option value="">请选择</option>{assessments.map(item => <option key={item.id} value={item.id}>v{item.version} · {item.id}</option>)}</select></label>
+        <label>Formal Assessment<select value={createAssessmentId} disabled={createLoading || creating} onChange={event => open(event.target.value, '')}><option value="">请选择</option>{assessments.map(item => <option key={item.id} value={item.id}>v{item.version} · {item.id}</option>)}</select></label>
         <p>将固定 {reportTasks.length} 个当前整改任务版本。任务 done 不等于项目合规，dismissed 不等于义务不适用。</p>
         <div className="og-v2-notice-create">
           <p>NOTICE 只有后端返回不可变草稿和 content hash 后才会加入；前端不生成正文、许可证、授权或 Obligation。</p>
-          <button type="button" onClick={createNotice} disabled={!createAssessmentId || createLoading || creating || noticeCreating}>{noticeCreating ? '正在由后端创建草稿…' : '创建并固定 NOTICE 草稿'}</button>
+          <button type="button" onClick={createNotice} disabled={!contextReady || !!loadError || createLoading || creating || noticeCreating}>{noticeCreating ? '正在由后端创建草稿…' : '创建并固定 NOTICE 草稿'}</button>
           {noticeDraft && <div role="status">
             <strong>已固定 {noticeDraft.draft_id}</strong>
             <p>hash {noticeDraft.content_hash} · {noticeDraft.generator_version} · {noticeDraft.entries.length} 项</p>

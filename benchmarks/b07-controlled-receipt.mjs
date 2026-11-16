@@ -4,6 +4,7 @@ export const REQUIRED_STAGES = Object.freeze(['unpack', 'scancode', 'syft', 'sta
 const ERROR_CODES = new Set(['input_validation_failed', 'unpack_failed', 'scancode_unavailable', 'scancode_failed', 'syft_unavailable', 'syft_failed', 'static_detector_failed', 'rule_consolidation_failed', 'artifact_hash_mismatch', 'environment_mismatch', 'resource_limit_exceeded', 'internal_error']);
 const text = (value, max = 256) => typeof value === 'string' && value.length > 0 && value.length <= max;
 const positiveInteger = (value) => Number.isInteger(value) && value > 0;
+const matches = (pattern, value) => typeof value === 'string' && pattern.test(value);
 
 export function validateControlledReceipt(receipt) {
   const errors = [];
@@ -11,11 +12,11 @@ export function validateControlledReceipt(receipt) {
   if (receipt.schema !== 'openguard.controlled-pipeline-receipt/2') errors.push('schema');
   if (receipt.execution_mode !== 'controlled_linux' || receipt.production_scan_started !== false) errors.push('execution_mode');
   if (!['cold', 'warm'].includes(receipt.startup_mode)) errors.push('startup_mode');
-  for (const key of ['receipt_id', 'run_id']) if (!ID.test(receipt[key] ?? '')) errors.push(key);
+  for (const key of ['receipt_id', 'run_id']) if (!matches(ID, receipt[key])) errors.push(key);
   const source = receipt.source;
-  if (!source || typeof source !== 'object' || !ID.test(source.source_id ?? '') || !/^[a-f0-9]{40}$/.test(source.commit ?? '') || !SHA256.test(source.source_sha256 ?? '')) errors.push('source');
+  if (!source || typeof source !== 'object' || !matches(ID, source.source_id) || !matches(/^[a-f0-9]{40}$/, source.commit) || !matches(SHA256, source.source_sha256)) errors.push('source');
   const artifacts = receipt.artifacts;
-  if (!artifacts || typeof artifacts !== 'object' || !SHA256.test(artifacts.input_sha256 ?? '') || !SHA256.test(artifacts.config_sha256 ?? '') || !SHA256.test(artifacts.result_sha256 ?? '')) errors.push('artifacts');
+  if (!artifacts || typeof artifacts !== 'object' || !matches(SHA256, artifacts.input_sha256) || !matches(SHA256, artifacts.config_sha256) || !matches(SHA256, artifacts.result_sha256)) errors.push('artifacts');
   const environment = receipt.environment;
   const os = environment?.os, cpu = environment?.cpu, memory = environment?.memory, tools = environment?.tools;
   if (!environment || typeof environment !== 'object' || Array.isArray(environment)

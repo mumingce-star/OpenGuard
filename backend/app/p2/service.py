@@ -229,7 +229,8 @@ class P2Service:
             if (summary['result_sha256'] != result['result_sha256'] or summary['binding'] != result['binding']
                     or summary['material_ids'] != result['material_ids'] or summary['result_id'] != result_id
                     or summary['answer_ids'] != result['answer_ids'] or summary['result_revision'] != result['revision']
-                    or summary['state'] != result['state']):
+                    or summary['state'] != result['state']
+                    or summary['resource_states'] != {r['subject']['resource_id']: r['state'] for r in result['resources']}):
                 raise P2Error('p2_integrity_error', 503)
             return summary
 

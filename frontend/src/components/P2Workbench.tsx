@@ -1,3 +1,4 @@
+import { clearRecovery, readRecovery, recoverMarker, type RecoveryMarker } from '../services/p2Recovery';
 import { useEffect, useRef, useState } from 'react';
 import type { P2Answer, P2AnswerCode, P2Binding, P2Material, P2Result, P2ResultIndex, P2Summary } from '../types/p2Advice';
 import { readP2Binding, readP2Index, readP2Result, p2StateLabels } from '../services/p2Advice';
@@ -8,7 +9,7 @@ import { ApiError } from '../services/scans';
 import { ActionButton, Checkbox, DownloadControl, LoadingDots, Panel } from './ui';
 import { P2ResultView } from './P2AdvicePanel';
 
-// Unresolved attempts survive SPA navigation in this tab only. Never persist uploaded text or formal state.
+// Full requests survive SPA navigation only; reload uses minimal session markers without body.
 const attempts = new Map<string, P2WriteAttempt>();
 const message = (e: unknown) => e instanceof Error ? e.message : '读取失败，请重试。';
 export function p2ReadErrorText(error: unknown) {
@@ -55,6 +56,11 @@ export function P2ReferenceView({ value, onEvidence }: { value: P2Material | P2A
 export function P2Workbench(props: Props) {
   const { scanId, assessmentId, assessmentVersion, evidenceIds, onEvidence, onSelect, openResources } = props;
   const identity = [scanId, assessmentId, assessmentVersion].join(':');
+  const [recovery, setRecovery] = useState<{ marker: RecoveryMarker | null; error: string }>(() => {
+    try { return { marker: readRecovery(identity), error: '' }; }
+    catch (e) { return { marker: null, error: message(e) }; }
+  });
+  const [recoveryChecked, setRecoveryChecked] = useState(false);
   const [binding, setBinding] = useState<P2Binding | null>(null);
   const [index, setIndex] = useState<P2ResultIndex | null>(null);
   const [result, setResult] = useState<P2Result | null>(null);
@@ -84,14 +90,16 @@ export function P2Workbench(props: Props) {
   const lock = useRef(false);
   const alive = useRef(true);
   useEffect(() => { alive.current = true; return () => { alive.current = false; referenceController.current?.abort(); }; }, []);
-  const unresolved = !!attempt && attempt.state !== 'saved';
+  const unresolved = (!!attempt && attempt.state !== 'saved') || (!attempt && !!recovery.marker && recovery.marker.state !== 'saved') || !!recovery.error;
   useEffect(() => {
     const warn = (e: BeforeUnloadEvent) => { if (unresolved) { e.preventDefault(); e.returnValue = ''; } };
     window.addEventListener('beforeunload', warn); return () => window.removeEventListener('beforeunload', warn);
   }, [unresolved]);
   const query = props.query.toString();
+  const summaryController = useRef<AbortController | null>(null);
   useEffect(() => {
     const controller = new AbortController();
+    summaryController.current?.abort();
     referenceController.current?.abort();
     setLoading(true); setReadError(''); setBinding(null); setIndex(null); setHistory([]); setOffset(0);
     setResult(null); setSummary(null); setSummaryError(''); setReference(null);
@@ -111,7 +119,7 @@ export function P2Workbench(props: Props) {
         catch (e) { if (!controller.signal.aborted) setSummaryError(message(e)); }
       }
     })().catch(e => { if (!controller.signal.aborted) { setReadError(p2ReadErrorText(e)); setLoading(false); } });
-    return () => controller.abort();
+    return () => { controller.abort(); summaryController.current?.abort(); };
   }, [scanId, assessmentId, assessmentVersion, query, reload]);
 
   async function run(action: () => Promise<void>) {
@@ -125,7 +133,10 @@ export function P2Workbench(props: Props) {
     try {
       const saved = await a.send(); attempts.delete(identity);
       if (alive.current) { setWriteMessage('独立结果已保存。正式评估未改变；正在按返回的固定身份读回。'); onSelect(saved.result); setReload(n => n + 1); }
-    } finally { if (alive.current) setAttempt(a); }
+    } finally { if (alive.current) {
+      setAttempt(a);
+      try { setRecovery({ marker: readRecovery(identity), error: '' }); } catch (e) { setRecovery({ marker: null, error: message(e) }); }
+    } }
   }
   async function recover() {
     if (!attempt) return;
@@ -166,8 +177,24 @@ export function P2Workbench(props: Props) {
         <p>父 Assessment 第{result.binding.assessment_version}版 / 独立 Result 第{result.revision}版</p>
         <P2VersionComparison key={result.result_id} current={result} />
         {summary && <P2SummaryView summary={summary} />}
-        {summaryError && <p role="alert">同版摘要未读取成功：{summaryError}。结果仍已保存，不会生成替代报告。</p>}
-        <div className="og-actions"><DownloadControl href={assessmentReportUrl(scanId, assessmentId, 'html')} format="text/html" filename={`${assessmentId}.html`}>下载此父版本原 Formal HTML</DownloadControl><DownloadControl href={assessmentReportUrl(scanId, assessmentId, 'json')} format="application/json" filename={`${assessmentId}.json`}>下载此父版本原 Formal JSON</DownloadControl></div>
+        {summaryError && <div>
+          <p role="alert">同版摘要未读取成功：{summaryError}。结果仍已保存，不会生成替代报告。</p>
+          <button type="button" disabled={busy} onClick={() => void run(async () => {
+            const controller = new AbortController();
+            summaryController.current?.abort();
+            summaryController.current = controller;
+            try {
+              const value = await readP2Summary(result, controller.signal);
+              if (alive.current && !controller.signal.aborted) { setSummary(value); setSummaryError(''); }
+            } catch (e) {
+              if (alive.current && !controller.signal.aborted) setSummaryError(message(e));
+            }
+          })}>仅重试此版摘要读取</button>
+        </div>}
+        <div className="og-actions">
+          <DownloadControl href={assessmentReportUrl(scanId, assessmentId, 'html')} format="text/html" filename={`${assessmentId}.html`}>下载此父版本原 Formal HTML</DownloadControl>
+          <DownloadControl href={assessmentReportUrl(scanId, assessmentId, 'json')} format="application/json" filename={`${assessmentId}.json`}>下载此父版本原 Formal JSON</DownloadControl>
+        </div>
         <p>原报告是否存在由后端响应确认；这里不把 P2 摘要当作旧v6报告。</p>
         <details><summary>读回材料与用户声明</summary>
           {(['materials','answers'] as const).map(kind => (kind === 'materials' ? result.material_ids : result.answer_ids).map(id =>
@@ -217,15 +244,32 @@ export function P2Workbench(props: Props) {
         </form>
       </>}
       <div role="status" aria-live="polite">{busy ? '请求处理中，请勿重复提交。' : writeMessage}</div>
-      {unresolved && <section aria-label="保存恢复">
+      {!!attempt && attempt.state !== 'saved' && <section aria-label="保存恢复">
         <p>请求状态：{attempt.state}；键：{attempt.input.idempotency_key}；父Result：{attempt.input.parent_result_id ?? '无'} / expected_revision={attempt.input.expected_revision}。</p>
-        <p>原请求仅保留在本标签页内存。关闭或刷新前请先处理；不会自动POST或另换请求键。</p>
+        <p>原请求正文仅保留在本标签页内存；刷新后只保留身份和待确认标记，不能重放。不会自动POST或另换请求键。</p>
         <button disabled={busy} onClick={() => void recover()}>只读核对服务器状态</button>
         {attempt.state === 'unknown' && <button disabled={p2ReadOnly || busy || !attempt.recovered} onClick={() => void run(() => send(attempt))}>手动重放原键与原内容</button>}
         {(attempt.state === 'conflict' || attempt.state === 'rejected') && <button disabled={busy || !attempt.recovered} onClick={() => {
-          attempts.delete(identity); setAttempt(null); setWriteMessage('原请求已结束；请确认当前父版本并重新填写，未自动提交。');
+          attempts.delete(identity); clearRecovery(identity); setRecovery({ marker: null, error: '' }); setAttempt(null); setWriteMessage('原请求已结束；请确认当前父版本并重新填写，未自动提交。');
           if (recoveredHead) onSelect(recoveredHead); setReload(n => n + 1);
         }}>确认读取结果并返回修改输入</button>}
+      </section>}
+      {!attempt && (recovery.marker || recovery.error) && <section aria-label="刷新恢复">
+        <h3>本标签页保存恢复</h3>
+        <p>{recovery.error || (recovery.marker?.state === 'saved' ? '上次已取得保存回执，可读取其固定结果。' : '上次提交仍待核对；原正文已丢失，不能重放，也不认定未保存。')}</p>
+        <p>仅保存请求键、父绑定、版本和结果身份；不保存上传正文或回答内容。保留至本标签页会话结束或你确认清理。</p>
+        <button disabled={busy || !recovery.marker} onClick={() => void run(async () => {
+          const read = await recoverMarker(recovery.marker!);
+          if (!alive.current) return;
+          setRecoveredHead(read.head); setRecoveryChecked(true);
+          if (read.saved) onSelect(read.saved);
+          setWriteMessage(read.saved ? '已按原回执读回固定结果。' : '只读核对完成；服务器 head 不代表原请求结果，请人工核对。');
+        })}>按恢复标记只读核对</button>
+        {recoveredHead && <p>服务器 head：{recoveredHead.result_id} / {recoveredHead.revision}；不认领为原请求成功。</p>}
+        <button disabled={busy || !recoveryChecked} onClick={() => {
+          clearRecovery(identity); setRecovery({ marker: null, error: '' }); setRecoveryChecked(false);
+          setWriteMessage('已按你的确认清理本机恢复标记；未修改服务器，也不认定原请求成功或失败。');
+        }}>已人工核对，仅清理本机标记</button>
       </section>}
     </div>
   </Panel>;

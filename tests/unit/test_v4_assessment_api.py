@@ -177,3 +177,23 @@ def test_audit007_get_rejects_cross_bound_payload(harness):
     assert b.id not in response.text
     assert service.store.path.read_bytes() == before
     assert provider.calls == 0
+
+@pytest.mark.parametrize('failure', ['timeout', 'bad_reference'])
+def test_delivery_chat_failure_trace_preserves_formal_and_reports(harness, failure):
+    c,s,p,ids=harness; sid=ids[0]; aid,_=assess(c,sid)
+    before=s.store.get(sid,aid).model_dump_json()
+    report=c.get(f'/api/v1/scans/{sid}/assessments/{aid}/report?format=html').content
+    def broken(payload, timeout):
+        if failure == 'timeout': raise TimeoutError('synthetic timeout')
+        source=json.loads(payload)
+        return json.dumps(dict(assessment_id=source['assessment_id'],state_digest=source['state_digest'],answer='当前证据不足，仍需核对许可原文和具体交付范围。',evidence_ids=['ev_outside_current_scan']))
+    p.generate_project=broken
+    response=c.post(f'/api/v1/scans/{sid}/chat',json=dict(assessment_id=aid,request_id='delivery-'+failure,message='当前结论依据是什么？',generation=0))
+    assert response.status_code==202
+    turn=c.get(f'/api/v1/scans/{sid}/chat').json()['items'][-1]
+    assert turn['status']=='failed' and turn['answer'] is None and turn['evidence_ids']==[]
+    assert turn['elapsed_seconds'] >= 0 and turn['trace']['model_calls']==1
+    assert turn['trace']['assessment_id']==aid and turn['trace']['state_digest']
+    assert turn['trace']['failure_code']==('TimeoutError' if failure=='timeout' else 'project_reference_invalid')
+    assert s.store.get(sid,aid).model_dump_json()==before
+    assert c.get(f'/api/v1/scans/{sid}/assessments/{aid}/report?format=html').content==report

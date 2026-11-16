@@ -1,3 +1,4 @@
+import { saveRecovery, type RecoveryMarker } from './p2Recovery';
 import { ApiError, request } from './scans';
 import { readP2Binding, readP2Index, readP2Result, sameBinding, validateP2Result } from './p2Advice';
 import type { P2Answer, P2AnswerCode, P2AnswerRequest, P2Binding, P2CreateRequest, P2Material, P2MaterialRequest, P2Receipt, P2Result, P2Summary } from '../types/p2Advice';
@@ -138,6 +139,10 @@ export class P2WriteAttempt {
   async send(): Promise<P2Receipt> {
     if (p2ReadOnly) throw new Error('当前前端为只读配置，不会发送P2写入请求。');
     if (this.state !== 'draft' && !(this.state === 'unknown' && this.recovered)) throw new Error('请先核对服务器状态；冲突或拒绝后不可自动重放。');
+    const marker: RecoveryMarker = { version: 1, binding: this.binding, kind: this.kind,
+      key: this.input.idempotency_key, parent: this.input.parent_result_id, expected: this.input.expected_revision,
+      state: 'unknown', recordedAt: new Date().toISOString() };
+    saveRecovery(marker); // Fail before POST when recovery storage is unavailable.
     this.state = 'sending'; this.recovered = false;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 15000);
@@ -172,7 +177,14 @@ export class P2WriteAttempt {
       this.state = error instanceof ApiError && error.status === 409 ? 'conflict' :
         error instanceof ApiError && [403,404,413,422].includes(error.status) ? 'rejected' : 'unknown';
       throw error;
-    } finally { clearTimeout(timer); }
+    } finally {
+      clearTimeout(timer);
+      marker.state = this.state === 'saved' ? 'saved' : this.state === 'conflict' ? 'conflict' : this.state === 'rejected' ? 'rejected' : 'unknown';
+      if (this.receipt) marker.saved = { id: this.receipt.result.result_id, revision: this.receipt.result.revision, hash: this.receipt.result.result_sha256 };
+      // Storage loss after a confirmed response must never downgrade the in-memory receipt.
+      // The initial unknown marker remains the conservative fallback after a reload.
+      try { saveRecovery(marker); } catch { /* Receipt remains available in this tab. */ }
+    }
   }
 }
 

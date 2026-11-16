@@ -117,3 +117,7 @@ Material返回 `material_id, revision=1, subject, evidence_ids, source_sha256, b
 固定对象、直接GET路径、新旧结果/材料/摘要完整ID见机器回执。本机服务已收尾；路径不等于xzb机器上已可访问。需接收方获得兼容提交及自己获准的数据根后另行实际启动，不能使用Owner路径或本文件回执代签。
 
 当前未关闭：可信上游/适用性原件到P2B的正式接纳来源（不能由P0人审flag补出）；新真实正向用途样本；xzb目标机兼容/固定数据授权与运行签收；两条NOTICE既有fixture失败由父提交对照保留。Qwen业务诊断、Python Stage A和Formal新政策未执行。阶段1整包不标PASS，xzb整体阶段2不自动放行；具体模块先行接线需Owner/xzb接受本合同和这些边界。
+
+## 2026-10-22 F03 前端恢复与 Summary 校验
+
+新增同源 sessionStorage 最小恢复标记，按scan/assessment/version隔离；仅保存请求键、父绑定、CAS、状态和已确认Result的ID/revision/hash，不保存上传正文、来源说明或回答内容。寿命为本标签页会话，人工读回确认后可明确清理；浏览器恢复会话可能保留标记。恢复存储不可写时在POST前拒绝。SPA内存原body仍可在Binding/Index/Result核对后由用户手动同键原body重放；reload后body丢失时仅提供GET核对，unknown不因看到head自动成功或失败。已取得回执而Summary失败保留Result，专用按钮只重试Summary GET。后端Summary同时验证全部resource_states精确映射。契约DTO和正式语义未改。

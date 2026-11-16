@@ -521,3 +521,23 @@ def test_missing_source_hash_is_not_replaced_by_evidence_record_hash(setup):
     assert set(resource['evidence_source_hashes']) < set(resource['evidence_ids'])
     assert 'evidence_source_hash_missing' in resource['gaps']
     assert all(a['state'] != 'conditional_candidate' for a in resource['advice'])
+
+@pytest.mark.parametrize('mutation', ['missing', 'extra', 'changed'])
+def test_delivery_summary_checks_every_resource_state(setup, monkeypatch, mutation):
+    c,app,base,body,root=setup; saved=create(setup)
+    original=app.state.p2_service.store.get
+    def altered(db,kind,*args):
+        value=original(db,kind,*args)
+        if kind=='summary':
+            value=deepcopy(value)
+            key=next(iter(value['resource_states']))
+            if mutation=='missing': value['resource_states'].pop(key)
+            elif mutation=='extra': value['resource_states']['cmp_unrelated']='unknown'
+            else: value['resource_states'][key]='partial' if value['resource_states'][key]!='partial' else 'unknown'
+        return value
+    monkeypatch.setattr(app.state.p2_service.store,'get',altered)
+    prior=counts(root)
+    response=c.get(base+'/results/'+saved['result_id']+'/summary',params={'assessment_version':1})
+    assert response.status_code==503
+    assert c.get(base+'/results/'+saved['result_id'],params={'assessment_version':1}).json()==saved
+    assert counts(root)==prior

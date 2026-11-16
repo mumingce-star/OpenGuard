@@ -1,3 +1,4 @@
+import { checkAssessmentVersion, selectedAssessment } from '../services/versionContext';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Scan } from '../types/domain';
 import { ApiError } from '../services/scans';
@@ -186,7 +187,7 @@ export function Assessment({
 }: {
   scan: Scan;
   query: URLSearchParams;
-  selectVersion: (id: string) => void;
+  selectVersion: (id: string, version?: number) => void;
   selectP2Result?: (result: P2Result) => void;
   openResources?: () => void;
   compact?: boolean;
@@ -222,7 +223,7 @@ export function Assessment({
   const chatKey = useRef(crypto.randomUUID());
 
   const requested = query.get('assessment_id');
-  const selected = requested ? items.find(a => a.id === requested) : items[0];
+  const selected = selectedAssessment(items, scan.id, query);
   const pending = job?.status === 'pending' || chat?.items.some(t => t.status === 'pending');
 
   // 本次修复：在组件内部定义发送受阻原因，供按钮和提示区共同使用。
@@ -289,6 +290,11 @@ export function Assessment({
           result.items.push(exact);
         }
         if (controller.signal.aborted || readEpoch.current !== epoch) return;
+        const exact = requested ? result.items.find(item => item.id === requested) : result.items[0];
+        if (exact) {
+          checkAssessmentVersion(query, exact.version);
+          if (!requested || !query.has('assessment_version')) selectVersion(exact.id, exact.version);
+        }
         setItems(result.items);
 
         let history: Chat | null = null;
@@ -335,7 +341,7 @@ export function Assessment({
     };
     // A response belongs to this mounted scan only; App keys this component by scan and mode.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scan.id, scan.mode, compact, revision, job?.request_id, requested]);
+  }, [scan.id, scan.mode, compact, revision, job?.request_id, requested, query.get('assessment_version')]);
 
   async function generate() {
     if (lock.current) return;
@@ -699,7 +705,7 @@ export function Assessment({
               {chatOpen ? '收起项目答疑' : '展开项目答疑'}
             </button>
             {chatOpen && (
-              <Panel title="本地 Qwen3 项目答疑">
+              <Panel title="本地模型证据答疑">
                 <p>只解释当前扫描和所选评估；聊天不会修改正式用途、结论或重新扫描。</p>
                 {chat && (
                   <p>
@@ -723,14 +729,21 @@ export function Assessment({
                         </small>
                         <p><strong>你：</strong>{t.question}</p>
                         <p>
-                          <strong>Qwen3 辅助答复：</strong>
+                          <strong>模型辅助答复：</strong>
                           {t.status === 'pending'
                             ? '正在生成…'
                             : t.status === 'failed'
                               ? '未能生成回答：' + (t.error ?? '请稍后重试')
                               : t.answer ?? '未返回有效回答'}
                         </p>
+                        {t.status === 'failed' && <p>本次未取得可用回答；扫描事实、确定性评估、原始证据及报告仍可查看。</p>}
+                        {t.status === 'succeeded' && !t.evidence_ids.length && <p>此答复未引用具体扫描证据；只能作为范围或缺口说明，不能据此确认授权。</p>}
                         {references(t.evidence_ids)}
+                        <details><summary>本轮问答运行记录</summary>
+                          <p>请求：{t.request_id}；评估：{t.assessment_id}；状态：{t.status}；耗时：{typeof t.elapsed_seconds === 'number' ? t.elapsed_seconds.toFixed(2) + ' 秒' : '未记录'}</p>
+                          <p>模型身份：{t.trace?.model_id ?? '历史记录未提供'}；运行版本：{t.trace?.runtime_version ?? '未记录'}；提示版本：{t.trace?.prompt_version ?? '未记录'}</p>
+                          <p>模型调用尝试：{t.trace?.model_calls ?? '未记录'}；失败标识：{t.trace?.failure_code ?? '无已记录失败'}；输入状态摘要：{t.trace?.state_digest ?? '未记录'}</p>
+                        </details>
                         {t.status === 'succeeded' && t.answer && (
                           <button onClick={() => copyAnswer(t.answer!)}>复制答复</button>
                         )}
@@ -751,7 +764,7 @@ export function Assessment({
 
                 <p role="status">{copyNotice}</p>
                 <div className="og-actions" aria-label="建议问题">
-                  {['当前用途最需要核对哪些证据？', '哪些条件尚未满足？', '我应该先完成哪三项核验？'].map(question => (
+                  {['当前结论的依据是什么？请引用本次扫描证据。', '还缺什么材料，哪些事实尚未确认？', '下一步优先处理哪三项核验，为什么？'].map(question => (
                     <button
                       key={question}
                       disabled={busy || !!pending || !selected}
@@ -784,7 +797,7 @@ export function Assessment({
                     disabled={chatBlockReason !== ''}
                     aria-describedby="og-chat-send-help"
                   >
-                    发送给本地 Qwen3
+                    发送给本地模型
                   </button>
                   <p id="og-chat-send-help" role="status">
                     {chatBlockReason || '可以发送。回答完成前请勿重复提交。'}

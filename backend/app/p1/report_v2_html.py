@@ -12,7 +12,7 @@ import json
 
 from app.assessment.review_groups import review_view
 
-HTML_RENDERER_VERSION = "report-v2-html/1.2"
+HTML_RENDERER_VERSION = "report-v2-html/1.3"
 
 DIMENSIONS = {
     "commercial": "商业使用",
@@ -74,7 +74,7 @@ footer{font-size:13px;color:#526674;padding:4px 8px 24px}
 @media(max-width:720px){body{padding:16px 12px}.grid{grid-template-columns:1fr}
 header,.panel{padding:18px}.task-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print{body{background:white;max-width:none;padding:0}.panel,header{border-radius:0}
-.card{break-inside:avoid}details{break-inside:auto}}
+.card{break-inside:avoid}details{break-inside:auto}h2,h3{break-after:avoid}pre{font-size:10px}header{break-inside:avoid}}
 """
 
 
@@ -253,6 +253,10 @@ def render_report_html(document: dict) -> bytes:
              f'<p>用途：{_esc(USAGES.get(usage, "用途状态未识别"))} · '
              f'扫描：{_esc(SCAN_STATES.get(status, "扫描状态未识别"))} · '
              f'评估版本：{_esc(binding["assessment_ref"]["version"])}</p>',
+             f'<p>扫描 ID：{_esc(binding.get("scan_ref", {}).get("scan_id") or "未记录")} · 快照：{_esc(document["snapshot_id"])}</p>',
+             f'<p>输入 SHA-256：{_esc(binding.get("scan_ref", {}).get("input_hash") or "未记录")}</p>',
+             f'<p>资源记录：{len(scan["components"]) + len(scan["ai_assets"])}；证据：{len(scan["evidence"])}；'
+             f'覆盖限制：{len(assessment.get("coverage_issues", []))} 项。核验事项见下方清单。</p>',
              '<h2>项目整体评价</h2>',
              f'<p>{_esc(assessment["summary"])}</p>',
              '<p class="muted">以上原文来自这份报告绑定的正式评估，不是本页面重新判断。</p>',
