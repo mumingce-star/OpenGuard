@@ -15,21 +15,24 @@ class Metrics:
     false_negative: int
 
     @property
-    def precision(self) -> float:
+    def precision(self) -> float | None:
         denominator = self.true_positive + self.false_positive
-        return self.true_positive / denominator if denominator else 0.0
+        return self.true_positive / denominator if denominator else None
 
     @property
-    def recall(self) -> float:
+    def recall(self) -> float | None:
         denominator = self.true_positive + self.false_negative
-        return self.true_positive / denominator if denominator else 0.0
+        return self.true_positive / denominator if denominator else None
 
     @property
-    def f1(self) -> float:
-        denominator = self.precision + self.recall
-        return 2 * self.precision * self.recall / denominator if denominator else 0.0
+    def f1(self) -> float | None:
+        precision, recall = self.precision, self.recall
+        if precision is None or recall is None:
+            return None
+        denominator = precision + recall
+        return 2 * precision * recall / denominator if denominator else 0.0
 
-    def as_dict(self) -> dict[str, float | int]:
+    def as_dict(self) -> dict[str, float | int | None]:
         return {"true_positive": self.true_positive, "false_positive": self.false_positive,
                 "false_negative": self.false_negative, "precision": self.precision,
                 "recall": self.recall, "f1": self.f1}
