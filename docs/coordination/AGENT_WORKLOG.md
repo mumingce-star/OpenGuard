@@ -475,3 +475,9 @@
 ### [20261116-1947-GPT6Sol-log-path-amendment] AMENDMENT - 发布前清理本机路径
 
 - 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:47（Asia/Shanghai）。本轮上传前敏感信息检查发现本地尚未发布的四条工作记录引用全局反思日志的本机绝对路径；已将四处路径文字统一写为“全局反思日志”，其余历史记录内容和顺序未变。此更正仅为避免把本机目录写入团队仓库。
+
+### [20261116-1956-GPT6Sol-team-upload-partial] PARTIAL - 本地提交已就绪，团队仓库上传受阻
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 19:56（Asia/Shanghai）。目标：上传当前前端任务分支的全部项目修改。实际结果：17 个文件已核对并提交为 `07b6e3d5061fa8dea277c91bd0b03c92da3ceabb`，包含首页品牌与按钮动效、工作台按钮与导出样式、P3 两份交付复核、UI 第三方许可、测试与协调记录；本地截图/辅助文件未入仓库。随后两次 `git push origin HEAD:refs/heads/codex/landing-sage-ui` 均因 GitHub HTTPS 连接重置失败，`git ls-remote` 同样失败；GitHub 连接器可读取远端旧 SHA `15d3a18`，但写入 blob 返回 403（集成无权限）；内置浏览器未登录，桌面浏览器控制因 URL 安全校验停止。未推送、未建 PR、未合并 `main`，远端未见本轮提交。
+- 修改/新增：前述 17 文件，以及本轮收工补记 `docs/coordination/AGENT_WORKLOG.md`、`docs/coordination/PROJECT_PROGRESS.md`。命令/验证：`pnpm test` 187/187 PASS、`pnpm build` PASS（既有大 chunk 警告）、`node tests/hero-motion-smoke.cjs http://127.0.0.1:4173/` PASS、`git diff --cached --check` PASS、17 文件敏感信息扫描 0 命中；本机绝对路径四处已在发布前替换为泛称。无新增 API、Schema、后端、运行依赖或规则。P3 正式同版联调与三方签认仍未完成。
+- 下一步：网络/仓库写入通道恢复后，在本分支再次核对远端 SHA 并推送本地提交；由 Root Coordinator 验证远端提交和文件范围，再更新 GitHub 发布状态。当前精确 token 数不可获得；开工估算 4,000—7,000，本轮因推送失败及替代通道排查扩展，未在估算范围内完整完成。
