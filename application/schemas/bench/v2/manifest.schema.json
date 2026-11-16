@@ -1,0 +1,857 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openguard.dev/schema/bench/v2/manifest.schema.json",
+  "title": "OpenGuard Bench 2.0 Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "identity",
+    "benchmark",
+    "artifacts",
+    "cases",
+    "governance",
+    "amendments",
+    "evaluations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "openguard-bench-manifest/2.0"
+    },
+    "identity": {
+      "$ref": "#/$defs/identity"
+    },
+    "benchmark": {
+      "$ref": "#/$defs/benchmark"
+    },
+    "artifacts": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "cases": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    },
+    "governance": {
+      "$ref": "#/$defs/governance"
+    },
+    "amendments": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "$ref": "#/$defs/amendment"
+      }
+    },
+    "evaluations": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "$ref": "#/$defs/evaluation"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{2,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor_type": {
+      "enum": [
+        "human",
+        "ai"
+      ]
+    },
+    "artifact_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[^\\\\?#\\u0000]+$"
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_id",
+        "revision",
+        "created_at",
+        "parent"
+      ],
+      "properties": {
+        "manifest_id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "parent": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/parent"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "revision": {
+                "const": 1
+              }
+            },
+            "required": [
+              "revision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "parent": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "parent": {
+                "$ref": "#/$defs/parent"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "parent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "manifest_id",
+        "revision"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/artifact_path"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "manifest_id": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "benchmark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "benchmark_id",
+        "title",
+        "task_types",
+        "label_set_version",
+        "case_granularity",
+        "scope",
+        "matching_policy_artifact_id"
+      ],
+      "properties": {
+        "benchmark_id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "task_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "component_detection",
+              "ai_resource_detection",
+              "license_normalization",
+              "risk_detection",
+              "inventory_completeness",
+              "suggestion_grounding"
+            ]
+          }
+        },
+        "label_set_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "case_granularity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "included",
+            "excluded"
+          ],
+          "properties": {
+            "included": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            },
+            "excluded": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            }
+          }
+        },
+        "matching_policy_artifact_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "role",
+        "path",
+        "media_type",
+        "size_bytes",
+        "sha256",
+        "redistribution"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "role": {
+          "enum": [
+            "source_index",
+            "gold",
+            "review",
+            "resolution",
+            "matching_policy",
+            "prediction",
+            "result",
+            "run_config",
+            "amendment",
+            "manifest_parent"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/artifact_path"
+        },
+        "media_type": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]+/[a-z0-9][a-z0-9!#$&^_.+-]+$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 67108864
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "redistribution": {
+          "enum": [
+            "repository_allowed",
+            "reference_only",
+            "restricted_local"
+          ]
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "url",
+            "revision"
+          ],
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "revision": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "redistribution": {
+                "const": "reference_only"
+              }
+            },
+            "required": [
+              "redistribution"
+            ]
+          },
+          "then": {
+            "required": [
+              "source"
+            ]
+          }
+        }
+      ]
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "family_id",
+        "content_sha256",
+        "split",
+        "source_artifact_ids",
+        "gold_artifact_id",
+        "authorization_status",
+        "included"
+      ],
+      "properties": {
+        "case_id": {
+          "$ref": "#/$defs/id"
+        },
+        "family_id": {
+          "$ref": "#/$defs/id"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "split": {
+          "enum": [
+            "train",
+            "dev",
+            "holdout"
+          ]
+        },
+        "source_artifact_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "gold_artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "authorization_status": {
+          "enum": [
+            "verified",
+            "pending",
+            "reference_only",
+            "rejected"
+          ]
+        },
+        "included": {
+          "type": "boolean"
+        },
+        "exclusion_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "included": {
+                "const": false
+              }
+            },
+            "required": [
+              "included"
+            ]
+          },
+          "then": {
+            "required": [
+              "exclusion_reason"
+            ]
+          }
+        }
+      ]
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviews",
+        "exposures",
+        "disputes",
+        "freeze"
+      ],
+      "properties": {
+        "reviews": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/$defs/review"
+          }
+        },
+        "exposures": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/$defs/exposure"
+          }
+        },
+        "disputes": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/$defs/dispute"
+          }
+        },
+        "freeze": {
+          "$ref": "#/$defs/freeze"
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_id",
+        "artifact_id",
+        "reviewer_id",
+        "actor_type",
+        "mode",
+        "ai_output_seen",
+        "system_output_seen",
+        "submitted_at",
+        "case_ids"
+      ],
+      "properties": {
+        "review_id": {
+          "$ref": "#/$defs/id"
+        },
+        "artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "reviewer_id": {
+          "$ref": "#/$defs/id"
+        },
+        "actor_type": {
+          "$ref": "#/$defs/actor_type"
+        },
+        "mode": {
+          "enum": [
+            "ai_assisted_confirmation",
+            "single_human_blinded_relabel",
+            "independent_human_annotation",
+            "human_adjudication",
+            "ai_review"
+          ]
+        },
+        "ai_output_seen": {
+          "type": "boolean"
+        },
+        "system_output_seen": {
+          "type": "boolean"
+        },
+        "submitted_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "case_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "prior_exposure": {
+          "type": "boolean"
+        },
+        "cooldown_started_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "cooldown_ended_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "blinded_packet_artifact_id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "single_human_blinded_relabel"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "prior_exposure",
+              "cooldown_started_at",
+              "cooldown_ended_at",
+              "blinded_packet_artifact_id"
+            ]
+          }
+        }
+      ]
+    },
+    "exposure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "split",
+        "actor",
+        "purpose",
+        "occurred_at",
+        "artifact_id"
+      ],
+      "properties": {
+        "split": {
+          "enum": [
+            "train",
+            "dev",
+            "holdout"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/id"
+        },
+        "purpose": {
+          "enum": [
+            "annotation",
+            "error_analysis",
+            "rule_development",
+            "prompt_development",
+            "model_training",
+            "threshold_tuning",
+            "final_evaluation"
+          ]
+        },
+        "occurred_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "artifact_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "dispute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dispute_id",
+        "case_id",
+        "blocking",
+        "status",
+        "review_ids"
+      ],
+      "properties": {
+        "dispute_id": {
+          "$ref": "#/$defs/id"
+        },
+        "case_id": {
+          "$ref": "#/$defs/id"
+        },
+        "blocking": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "resolved",
+            "disputed",
+            "uncertain"
+          ]
+        },
+        "review_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "resolution_artifact_id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "resolution_artifact_id"
+            ]
+          }
+        }
+      ]
+    },
+    "freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "frozen_at",
+        "artifact_ids",
+        "frozen_by_actor_type"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "draft",
+            "frozen"
+          ]
+        },
+        "frozen_at": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/timestamp"
+            }
+          ]
+        },
+        "artifact_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 4096,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "frozen_by_actor_type": {
+          "$ref": "#/$defs/actor_type"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "frozen"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "frozen_at": {
+                "$ref": "#/$defs/timestamp"
+              },
+              "artifact_ids": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "frozen_at": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "amendment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amendment_id",
+        "target_type",
+        "target_id",
+        "old_sha256",
+        "new_sha256",
+        "reason_code",
+        "description",
+        "proposed_by_actor_type",
+        "approved_by_actor_type",
+        "artifact_id",
+        "amended_at"
+      ],
+      "properties": {
+        "amendment_id": {
+          "$ref": "#/$defs/id"
+        },
+        "target_type": {
+          "enum": [
+            "source",
+            "case",
+            "gold",
+            "matching_policy",
+            "split",
+            "review",
+            "freeze"
+          ]
+        },
+        "target_id": {
+          "$ref": "#/$defs/id"
+        },
+        "old_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "new_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "reason_code": {
+          "enum": [
+            "source_correction",
+            "label_correction",
+            "scope_correction",
+            "evidence_recovery",
+            "policy_change"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "proposed_by_actor_type": {
+          "$ref": "#/$defs/actor_type"
+        },
+        "approved_by_actor_type": {
+          "$ref": "#/$defs/actor_type"
+        },
+        "artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "amended_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluation_id",
+        "benchmark_revision",
+        "target_split",
+        "system_revision",
+        "gold_artifact_id",
+        "matching_policy_artifact_id",
+        "run_config_artifact_id",
+        "prediction_artifact_id",
+        "result_artifact_id",
+        "started_at",
+        "finished_at",
+        "requested_tier"
+      ],
+      "properties": {
+        "evaluation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "benchmark_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "target_split": {
+          "enum": [
+            "train",
+            "dev",
+            "holdout"
+          ]
+        },
+        "system_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "gold_artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "matching_policy_artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "run_config_artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "prediction_artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "result_artifact_id": {
+          "$ref": "#/$defs/id"
+        },
+        "started_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "finished_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "requested_tier": {
+          "enum": [
+            "smoke",
+            "development",
+            "reportable_single_human",
+            "reportable_independent"
+          ]
+        },
+        "declared_metrics": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]{1,63}$"
+          },
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,423 @@
+{
+  "$defs": {
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "scan_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Scan Id",
+          "type": "string"
+        },
+        "assessment_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "assessment_version": {
+          "minimum": 1,
+          "title": "Assessment Version",
+          "type": "integer"
+        },
+        "registry_revision": {
+          "minimum": 1,
+          "title": "Registry Revision",
+          "type": "integer"
+        },
+        "project_revision": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Project Revision"
+        },
+        "facts_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Facts Hash",
+          "type": "string"
+        },
+        "usage_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Usage Hash",
+          "type": "string"
+        },
+        "rule_version": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "assessment_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Assessment Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scan_id",
+        "assessment_id",
+        "assessment_version",
+        "registry_revision",
+        "project_revision",
+        "facts_hash",
+        "usage_hash",
+        "rule_version",
+        "assessment_sha256"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "ResourceAdvice": {
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "state": {
+          "const": "CONDITIONAL_TEXT_BASIS",
+          "default": "CONDITIONAL_TEXT_BASIS",
+          "title": "State",
+          "type": "string"
+        },
+        "recommendation": {
+          "title": "Recommendation",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "material_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Material Ids",
+          "type": "array"
+        },
+        "material_sha256": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "title": "Material Sha256",
+          "type": "array"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "source_urls": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Urls",
+          "type": "array"
+        },
+        "rule_id": {
+          "const": "mit-complete-text/1",
+          "default": "mit-complete-text/1",
+          "title": "Rule Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject",
+        "name",
+        "recommendation",
+        "conditions",
+        "limitations",
+        "material_ids",
+        "material_sha256",
+        "evidence_ids",
+        "source_urls"
+      ],
+      "title": "ResourceAdvice",
+      "type": "object"
+    },
+    "Subject": {
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Resource Id",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Version"
+        }
+      },
+      "required": [
+        "resource_id",
+        "version"
+      ],
+      "title": "Subject",
+      "type": "object"
+    },
+    "UsageAdvice": {
+      "additionalProperties": false,
+      "properties": {
+        "usage": {
+          "enum": [
+            "commercial",
+            "modified",
+            "distributed",
+            "network_service",
+            "training",
+            "redistributed_assets",
+            "source_disclosure"
+          ],
+          "title": "Usage",
+          "type": "string"
+        },
+        "saved_value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Saved Value"
+        },
+        "selection": {
+          "enum": [
+            "SELECTED",
+            "NOT_SELECTED",
+            "UNKNOWN"
+          ],
+          "title": "Selection",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "CONDITIONAL_TEXT_BASIS",
+            "NO_SUPPORTED_BASIS",
+            "NOT_SELECTED",
+            "USAGE_UNDECLARED"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "resources": {
+          "items": {
+            "$ref": "#/$defs/ResourceAdvice"
+          },
+          "title": "Resources",
+          "type": "array"
+        },
+        "uncovered_resource_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Uncovered Resource Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "usage",
+        "saved_value",
+        "selection",
+        "state",
+        "summary",
+        "resources",
+        "uncovered_resource_ids"
+      ],
+      "title": "UsageAdvice",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "openguard-p2-preliminary-advice/1",
+      "default": "openguard-p2-preliminary-advice/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "rule_version": {
+      "const": "mit-complete-text/1",
+      "default": "mit-complete-text/1",
+      "title": "Rule Version",
+      "type": "string"
+    },
+    "recommendation_id": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_.:-]+$",
+      "title": "Recommendation Id",
+      "type": "string"
+    },
+    "result_id": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_.:-]+$",
+      "title": "Result Id",
+      "type": "string"
+    },
+    "result_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Result Sha256",
+      "type": "string"
+    },
+    "binding": {
+      "$ref": "#/$defs/Binding"
+    },
+    "data_scope": {
+      "enum": [
+        "OWNER",
+        "TEST_ONLY"
+      ],
+      "title": "Data Scope",
+      "type": "string"
+    },
+    "source_profile_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Source Profile Sha256"
+    },
+    "source_status": {
+      "enum": [
+        "CHECKED",
+        "NOT_CONFIGURED"
+      ],
+      "title": "Source Status",
+      "type": "string"
+    },
+    "scope": {
+      "const": "RESOURCE_SUBSET",
+      "default": "RESOURCE_SUBSET",
+      "title": "Scope",
+      "type": "string"
+    },
+    "total_resources": {
+      "minimum": 0,
+      "title": "Total Resources",
+      "type": "integer"
+    },
+    "supported_resource_ids": {
+      "items": {
+        "maxLength": 200,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_.:-]+$",
+        "type": "string"
+      },
+      "title": "Supported Resource Ids",
+      "type": "array"
+    },
+    "uncovered_resource_ids": {
+      "items": {
+        "maxLength": 200,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_.:-]+$",
+        "type": "string"
+      },
+      "title": "Uncovered Resource Ids",
+      "type": "array"
+    },
+    "advice": {
+      "items": {
+        "$ref": "#/$defs/UsageAdvice"
+      },
+      "title": "Advice",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "formal_effect": {
+      "const": "none",
+      "default": "none",
+      "title": "Formal Effect",
+      "type": "string"
+    },
+    "model_calls": {
+      "const": 0,
+      "default": 0,
+      "title": "Model Calls",
+      "type": "integer"
+    },
+    "applicability_review": {
+      "const": "NOT_SIGNED",
+      "default": "NOT_SIGNED",
+      "title": "Applicability Review",
+      "type": "string"
+    }
+  },
+  "required": [
+    "recommendation_id",
+    "result_id",
+    "result_sha256",
+    "binding",
+    "data_scope",
+    "source_profile_sha256",
+    "source_status",
+    "total_resources",
+    "supported_resource_ids",
+    "uncovered_resource_ids",
+    "advice",
+    "limitations"
+  ],
+  "title": "PreliminaryAdvice",
+  "type": "object"
+}

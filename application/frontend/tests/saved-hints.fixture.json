@@ -1,0 +1,735 @@
+{
+  "usage": {
+    "preset": "open_source",
+    "commercial": null,
+    "modified": null,
+    "distributed": true,
+    "network_service": null,
+    "training": null,
+    "redistributed_assets": null,
+    "source_disclosure": true,
+    "declared_at": "2026-09-24T02:55:42.270626Z"
+  },
+  "gaps": [
+    {
+      "code": "USAGE_MISSING",
+      "owner": "user",
+      "action": "CONFIRM_USAGE",
+      "title": "用途尚未明确",
+      "resource_ids": [],
+      "affected_dimensions": [
+        "commercial",
+        "modification",
+        "network_service",
+        "ai_assets"
+      ],
+      "evidence_ids": [],
+      "attempts": [],
+      "safe_automation": false,
+      "raw": [
+        {
+          "text": "该用途细节未明确；预设名称不会自动补齐用途前提",
+          "resource_ids": []
+        }
+      ]
+    },
+    {
+      "code": "SCOPE_UNRESOLVED",
+      "owner": "user",
+      "action": "CONFIRM_SCOPE",
+      "title": "实际使用或交付范围待确认",
+      "resource_ids": [
+        "ast_0401bc9c-79b4-5952-b81c-5e767930f282",
+        "ast_07304703-e301-5087-93f4-1d3ff3677763",
+        "ast_0d11e646-6c6d-5d0a-979e-6ce1b31e509d",
+        "ast_21c40311-fc8d-50be-a5fb-f6845b085532",
+        "ast_2408ad4a-b395-5e24-8995-60ddee7a5a49",
+        "ast_2cb9aaa7-bc60-50c1-8d4a-6c3b38ae798d",
+        "ast_3b02c173-000a-5855-b136-ee1e5dc68c8f",
+        "ast_3e2f5206-8f13-5030-a445-6008f9c0912a",
+        "ast_47106f29-fa0e-5554-81a6-bf296c8824b0",
+        "ast_4be18d49-6876-5691-88b1-e0620b0ad2cd",
+        "ast_56cd95d3-b5ec-54db-994a-d9b6d6c6d4c4",
+        "ast_83eb9ec3-1959-55c4-a1f3-6b042fef351d",
+        "ast_ac599c18-79a6-5225-8550-3345fb191eef",
+        "ast_bc80712e-679f-5b40-9b70-27563095ba22",
+        "ast_bddca1d2-5bf4-585e-94f1-5f5a816343df",
+        "ast_c5c5a031-fb4a-5c7d-9221-74e22c9eaa4d",
+        "ast_c608ef43-37c2-51fb-81f2-be0ccb7bcdbf",
+        "ast_c60f603d-3cfa-556f-a697-1a53531f3603",
+        "ast_d1b55ffc-edff-5b47-80e3-60a3c1020037",
+        "ast_d8fd32eb-2238-5e21-a773-8776751b6446",
+        "ast_e04b4f3b-b432-57d0-9b68-b6bfdfea6f62",
+        "ast_e3797863-c272-5d73-b32c-9666a9af0b72",
+        "ast_ed486083-ffcb-5cbd-9fce-1d25dfcc7441",
+        "ast_ed8be940-6081-5fc8-a80d-955f509ed4a7",
+        "ast_eff857a0-0163-55be-94d5-d5658cab8a39",
+        "ast_f1254f39-e968-5c2f-9089-9d4666c79419",
+        "ast_facd55b8-cd12-5d41-ab02-b3e78088f9a4",
+        "cmp_1f0b3c9c-b43d-561c-9628-27f84bf22d9b",
+        "cmp_2eb82b3c-af3a-5e7f-8032-c66ce725a74c",
+        "cmp_2ed19711-8c39-5c72-93f4-557f0f1d0974",
+        "cmp_3af955f0-82c7-548a-a0b1-0e2cf37144a8",
+        "cmp_41e87918-c172-5ab7-9e7f-42ec3b0309e9",
+        "cmp_5528ceab-ea0e-586b-a81b-ca39fc91acfd",
+        "cmp_5bba8c05-0051-5472-8f0f-8619c68de808",
+        "cmp_730819f7-26cd-5b71-a749-95423a1ac0b6",
+        "cmp_7891c2e9-25a8-5672-9251-2f38b930e1c6",
+        "cmp_7d32b85a-a9f1-556e-abdc-e63afb2a64fe",
+        "cmp_7f3e94e4-610b-5d36-9d21-70c2f5d8ab5e",
+        "cmp_81cd2862-7223-598e-9544-1c1dfed666a4",
+        "cmp_ac73e652-f27a-5dba-9224-7a63d6edb285",
+        "cmp_cb69f393-aba4-5d55-8d46-d184d833d0d4",
+        "cmp_f179c2d8-5526-5803-9710-b55c0005cee5",
+        "cmp_ff53f157-52e1-583b-a399-1c7f9b18a97f",
+        "cmp_ff87d18f-4e16-5171-9625-577a33c487a3"
+      ],
+      "affected_dimensions": [
+        "commercial",
+        "modification",
+        "closed_distribution",
+        "redistribution",
+        "network_service"
+      ],
+      "evidence_ids": [
+        "evd_0064fe24-fb26-57aa-8dd1-1f61d7c9732e",
+        "evd_01e5262e-a955-57dd-af85-8881e064d992",
+        "evd_04135c9c-e43b-59a3-a135-06d9c74c9ae7",
+        "evd_05001aa9-f43b-5f50-8986-b16965f12a66",
+        "evd_05027595-d35b-5754-9349-cbc8dcd5c4b3",
+        "evd_10495495-9078-524c-aac1-c1519bd5074a",
+        "evd_139ff3ea-13b2-55c9-9872-528aa2cddce2",
+        "evd_14a38670-becd-5e4c-96c3-556d26dd08ee",
+        "evd_16bd42b8-b2ef-58b2-8f96-00a892913f6e",
+        "evd_18046586-49c3-5fbf-bf69-d834a9887c71",
+        "evd_1c121afa-aabf-5884-bc5f-ba20fe3f1392",
+        "evd_1c773c9c-358f-5c44-b0b1-31678b9eaf71",
+        "evd_1d67358a-0eb4-58eb-854d-cf89bf2a99eb",
+        "evd_1d99c43a-b32f-5401-848b-991345b2697f",
+        "evd_1ea79a03-5408-5968-bfc0-dd73bfde904e",
+        "evd_1fbb08f9-d197-5be6-be13-74cded6c4560",
+        "evd_28fdec1d-4559-5c6c-8798-9577fcacaebe",
+        "evd_2912dd14-9303-5253-a693-d67274e027e8",
+        "evd_2c0f53b9-4676-593b-b7be-8b4d49928234",
+        "evd_3290ef7b-e39d-5f5f-a8ff-273dc4f10093",
+        "evd_35035257-d3c8-5cc8-a547-44bd5d6bef05",
+        "evd_39afd1ea-770f-5606-ba71-3f7b656c983c",
+        "evd_3abbd18c-45fa-5218-8ec7-889239b0c378",
+        "evd_3f12dc9f-b045-5134-aff3-11fcb873c81b",
+        "evd_40b0fed8-28da-549f-9c99-3a489d98af7b",
+        "evd_418f1cef-942f-5021-af62-6fd86b1dac4a",
+        "evd_421b8e9f-4829-5303-915e-94f985a0367d",
+        "evd_45839ce3-fbb2-58a7-b1f7-428979cc14b3",
+        "evd_4a1cace6-ecc9-57a6-b04c-1cb634d8d6a8",
+        "evd_4aafd0be-c5ce-55ec-b7d8-f5ccc86b8dc6",
+        "evd_4b641672-48a3-5f0b-a038-fe99601a63ca",
+        "evd_51001ec0-88d0-5533-8e0b-93ad1aee5e9c",
+        "evd_51610271-f0d3-5d6e-963d-3fb59d15eae4",
+        "evd_5302f790-9220-588e-8dd5-e7274765ef11",
+        "evd_58404a9f-155c-53c6-85e4-8304e7d64c5c",
+        "evd_59e48d00-848f-5d5e-a75a-7048ade85742",
+        "evd_5caa2966-3ef9-5f85-9375-6b39076df774",
+        "evd_642f2414-f9a6-580a-b1a8-b870e0bb6e41",
+        "evd_68a13fd4-d78d-59cd-a0dc-95afd36f474c",
+        "evd_6acc7c7c-90dc-5a53-ac4c-3c0f4cb6ef7c",
+        "evd_6b1dac39-415a-51b2-91e3-fc71a09888c7",
+        "evd_6b9301fa-bfad-5b40-8eeb-dcc847584c41",
+        "evd_6dbb3a5e-9710-5d5c-88d0-eebf82b9fb45",
+        "evd_6f2a4027-cdca-557c-8de5-7cdbe9e00d99",
+        "evd_7cfd8bb8-20fc-5dd7-9126-56e4fdb65654",
+        "evd_837bedd4-9456-5b90-ad7a-110a6176c2b3",
+        "evd_84810e19-6383-54c0-a715-6181c1ff5450",
+        "evd_85937e1c-3401-5851-ae5f-19c30c3b460b",
+        "evd_8681b74f-d19f-59ef-99f5-e61040471f2f",
+        "evd_87657a40-85db-5e67-b1a8-513c88208c1e",
+        "evd_90eaf5b9-79c9-58a7-8801-3dc5a2844ecc",
+        "evd_9963b6d4-4bb2-5982-b28c-55ff2867ed19",
+        "evd_9a731b6f-54ed-56d2-b6eb-438611391c2f",
+        "evd_9efcc0dd-e41e-5874-8cc0-c5967b4c28a7",
+        "evd_a0907f15-d59e-51b1-8dcf-5b36aaf664b2",
+        "evd_a1528a9c-3157-54e9-9f03-56cd945fe2bb",
+        "evd_a62a7460-094a-53b8-8f99-51416963f289",
+        "evd_a91eb90e-54f5-5f23-a90d-f766f124096b",
+        "evd_ac0fcc20-deaf-513d-8195-398109723a05",
+        "evd_aca3ed37-085e-55a7-a2f0-31a2cfafb22c",
+        "evd_ad08695d-2317-5fb1-9248-5a9ddb45fd85",
+        "evd_b1136f91-cb0b-553d-a195-f5e38b40e00a",
+        "evd_bbb7deb3-78b5-53a7-9ff4-778fadfe713f",
+        "evd_c083445b-416b-5031-820a-a1e0fa1b4532",
+        "evd_c1a3dd3f-9088-5ea1-afe6-34e1a6b912dc",
+        "evd_c5a26988-55ac-5044-9213-dfaf83c69f5f",
+        "evd_c5ff9665-4aeb-5623-afeb-bcb1acb1c5bd",
+        "evd_c62a2217-1bba-50bc-b2af-a499d4e59844",
+        "evd_c6ec0c7a-6c86-557d-8707-763ed9bfbfb5",
+        "evd_cc538b40-cc15-5e36-900f-4240c1ee9558",
+        "evd_cdfd2ff1-c073-5086-a586-45799d34d806",
+        "evd_d08156d7-99b1-5daa-bb03-58e56a22a326",
+        "evd_d18a9c5b-2ea2-5340-a22e-20e770f6d587",
+        "evd_d3230151-7427-5dd0-a9c8-18387c75c4f2",
+        "evd_d6502fbb-0541-5d3d-b3cc-ce0972251b68",
+        "evd_d7ae62ef-9e9e-553d-b81d-e07a2713037b",
+        "evd_d80565d1-e4a4-5729-91a3-ad20baba76e8",
+        "evd_dd227e17-c578-5531-ae7c-f027050d75ac",
+        "evd_dd83268f-538f-580f-9573-0efde7368613",
+        "evd_e260b8ef-b7cf-5566-afcb-961b4597cd52",
+        "evd_e34722e5-4726-59c0-a840-0de0146c490a",
+        "evd_e7bd42fb-3846-5008-ab65-b395abab133f",
+        "evd_e81247a7-0bdc-5e59-9a74-7213c91e435b",
+        "evd_ec04bee9-e802-5977-ad2e-702ce828b51b",
+        "evd_edce9758-1c81-54f8-b0cc-29da09b74b2c",
+        "evd_efb777fd-4862-502a-a421-2f18bb7afb63",
+        "evd_f0ecb2de-ccdf-5812-b04b-48f505cb874b"
+      ],
+      "attempts": [],
+      "safe_automation": false,
+      "raw": [
+        {
+          "text": "anthropic（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_0401bc9c-79b4-5952-b81c-5e767930f282"
+          ]
+        },
+        {
+          "text": "google-bert/bert-base-uncased（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_07304703-e301-5087-93f4-1d3ff3677763"
+          ]
+        },
+        {
+          "text": "synthetic/audit003-b（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_0d11e646-6c6d-5d0a-979e-6ce1b31e509d"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-0.6B（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_21c40311-fc8d-50be-a5fb-f6845b085532",
+            "ast_2cb9aaa7-bc60-50c1-8d4a-6c3b38ae798d"
+          ]
+        },
+        {
+          "text": "synthetic/audit003-a（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_2408ad4a-b395-5e24-8995-60ddee7a5a49"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-0.6B（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_21c40311-fc8d-50be-a5fb-f6845b085532",
+            "ast_2cb9aaa7-bc60-50c1-8d4a-6c3b38ae798d"
+          ]
+        },
+        {
+          "text": "example/sample-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_3b02c173-000a-5855-b136-ee1e5dc68c8f"
+          ]
+        },
+        {
+          "text": "example/demo-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_3e2f5206-8f13-5030-a445-6008f9c0912a"
+          ]
+        },
+        {
+          "text": "stanfordnlp/imdb（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_47106f29-fa0e-5554-81a6-bf296c8824b0"
+          ]
+        },
+        {
+          "text": "org/model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_4be18d49-6876-5691-88b1-e0620b0ad2cd"
+          ]
+        },
+        {
+          "text": "intfloat/multilingual-e5-large-instruct（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_56cd95d3-b5ec-54db-994a-d9b6d6c6d4c4"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-4B-Instruct-2507（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_83eb9ec3-1959-55c4-a1f3-6b042fef351d"
+          ]
+        },
+        {
+          "text": "acme/demo-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ac599c18-79a6-5225-8550-3345fb191eef",
+            "ast_c60f603d-3cfa-556f-a697-1a53531f3603"
+          ]
+        },
+        {
+          "text": "google（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_bc80712e-679f-5b40-9b70-27563095ba22"
+          ]
+        },
+        {
+          "text": "synthetic/audit003-shared（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_bddca1d2-5bf4-585e-94f1-5f5a816343df"
+          ]
+        },
+        {
+          "text": "org/resource（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_c5c5a031-fb4a-5c7d-9221-74e22c9eaa4d"
+          ]
+        },
+        {
+          "text": "example/research（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_c608ef43-37c2-51fb-81f2-be0ccb7bcdbf"
+          ]
+        },
+        {
+          "text": "acme/demo-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ac599c18-79a6-5225-8550-3345fb191eef",
+            "ast_c60f603d-3cfa-556f-a697-1a53531f3603"
+          ]
+        },
+        {
+          "text": "smolagents/GAIA-annotated（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_d1b55ffc-edff-5b47-80e3-60a3c1020037"
+          ]
+        },
+        {
+          "text": "acme/demo-dataset（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_d8fd32eb-2238-5e21-a773-8776751b6446"
+          ]
+        },
+        {
+          "text": "smolagents-benchmark/benchmark-v1（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_e04b4f3b-b432-57d0-9b68-b6bfdfea6f62"
+          ]
+        },
+        {
+          "text": "m-ric/agents_medium_benchmark_2（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_e3797863-c272-5d73-b32c-9666a9af0b72"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-Next-80B-A3B-Thinking（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ed486083-ffcb-5cbd-9fce-1d25dfcc7441"
+          ]
+        },
+        {
+          "text": "black-forest-labs/FLUX.1-dev（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ed8be940-6081-5fc8-a80d-955f509ed4a7"
+          ]
+        },
+        {
+          "text": "openai（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_eff857a0-0163-55be-94d5-d5658cab8a39"
+          ]
+        },
+        {
+          "text": "openai-community/gpt2（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_f1254f39-e968-5c2f-9089-9d4666c79419"
+          ]
+        },
+        {
+          "text": "acme/demo（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_facd55b8-cd12-5d41-ab02-b3e78088f9a4"
+          ]
+        },
+        {
+          "text": "@tailwindcss/vite（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_1f0b3c9c-b43d-561c-9628-27f84bf22d9b"
+          ]
+        },
+        {
+          "text": "@types/react-dom（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_2eb82b3c-af3a-5e7f-8032-c66ce725a74c"
+          ]
+        },
+        {
+          "text": "uvicorn（0.52.4）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_2ed19711-8c39-5c72-93f4-557f0f1d0974"
+          ]
+        },
+        {
+          "text": "typescript（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_3af955f0-82c7-548a-a0b1-0e2cf37144a8"
+          ]
+        },
+        {
+          "text": "jsonschema（4.26.0）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_41e87918-c172-5ab7-9e7f-42ec3b0309e9"
+          ]
+        },
+        {
+          "text": "python-multipart（0.0.32）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_5528ceab-ea0e-586b-a81b-ca39fc91acfd"
+          ]
+        },
+        {
+          "text": "react（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_5bba8c05-0051-5472-8f0f-8619c68de808"
+          ]
+        },
+        {
+          "text": "react-dom（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_730819f7-26cd-5b71-a749-95423a1ac0b6"
+          ]
+        },
+        {
+          "text": "@types/react（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_7891c2e9-25a8-5672-9251-2f38b930e1c6"
+          ]
+        },
+        {
+          "text": "is-number（7.0.0）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_7d32b85a-a9f1-556e-abdc-e63afb2a64fe"
+          ]
+        },
+        {
+          "text": "packaging（26.3）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_7f3e94e4-610b-5d36-9d21-70c2f5d8ab5e"
+          ]
+        },
+        {
+          "text": "fastapi（0.141.1）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_81cd2862-7223-598e-9544-1c1dfed666a4"
+          ]
+        },
+        {
+          "text": "vite（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_ac73e652-f27a-5dba-9224-7a63d6edb285"
+          ]
+        },
+        {
+          "text": "pytest（8.4.2）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_cb69f393-aba4-5d55-8d46-d184d833d0d4"
+          ]
+        },
+        {
+          "text": "requests（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_f179c2d8-5526-5803-9710-b55c0005cee5"
+          ]
+        },
+        {
+          "text": "tailwindcss（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_ff53f157-52e1-583b-a399-1c7f9b18a97f"
+          ]
+        },
+        {
+          "text": "httpx2（2.12.0）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "cmp_ff87d18f-4e16-5171-9625-577a33c487a3"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SCOPE_UNRESOLVED",
+      "owner": "user",
+      "action": "CONFIRM_SCOPE",
+      "title": "实际使用或交付范围待确认",
+      "resource_ids": [
+        "ast_0401bc9c-79b4-5952-b81c-5e767930f282",
+        "ast_07304703-e301-5087-93f4-1d3ff3677763",
+        "ast_0d11e646-6c6d-5d0a-979e-6ce1b31e509d",
+        "ast_21c40311-fc8d-50be-a5fb-f6845b085532",
+        "ast_2408ad4a-b395-5e24-8995-60ddee7a5a49",
+        "ast_2cb9aaa7-bc60-50c1-8d4a-6c3b38ae798d",
+        "ast_3b02c173-000a-5855-b136-ee1e5dc68c8f",
+        "ast_3e2f5206-8f13-5030-a445-6008f9c0912a",
+        "ast_47106f29-fa0e-5554-81a6-bf296c8824b0",
+        "ast_4be18d49-6876-5691-88b1-e0620b0ad2cd",
+        "ast_56cd95d3-b5ec-54db-994a-d9b6d6c6d4c4",
+        "ast_83eb9ec3-1959-55c4-a1f3-6b042fef351d",
+        "ast_ac599c18-79a6-5225-8550-3345fb191eef",
+        "ast_bc80712e-679f-5b40-9b70-27563095ba22",
+        "ast_bddca1d2-5bf4-585e-94f1-5f5a816343df",
+        "ast_c5c5a031-fb4a-5c7d-9221-74e22c9eaa4d",
+        "ast_c608ef43-37c2-51fb-81f2-be0ccb7bcdbf",
+        "ast_c60f603d-3cfa-556f-a697-1a53531f3603",
+        "ast_d1b55ffc-edff-5b47-80e3-60a3c1020037",
+        "ast_d8fd32eb-2238-5e21-a773-8776751b6446",
+        "ast_e04b4f3b-b432-57d0-9b68-b6bfdfea6f62",
+        "ast_e3797863-c272-5d73-b32c-9666a9af0b72",
+        "ast_ed486083-ffcb-5cbd-9fce-1d25dfcc7441",
+        "ast_ed8be940-6081-5fc8-a80d-955f509ed4a7",
+        "ast_eff857a0-0163-55be-94d5-d5658cab8a39",
+        "ast_f1254f39-e968-5c2f-9089-9d4666c79419",
+        "ast_facd55b8-cd12-5d41-ab02-b3e78088f9a4"
+      ],
+      "affected_dimensions": [
+        "ai_assets"
+      ],
+      "evidence_ids": [
+        "evd_01e5262e-a955-57dd-af85-8881e064d992",
+        "evd_05001aa9-f43b-5f50-8986-b16965f12a66",
+        "evd_05027595-d35b-5754-9349-cbc8dcd5c4b3",
+        "evd_10495495-9078-524c-aac1-c1519bd5074a",
+        "evd_14a38670-becd-5e4c-96c3-556d26dd08ee",
+        "evd_16bd42b8-b2ef-58b2-8f96-00a892913f6e",
+        "evd_1c773c9c-358f-5c44-b0b1-31678b9eaf71",
+        "evd_1d67358a-0eb4-58eb-854d-cf89bf2a99eb",
+        "evd_1d99c43a-b32f-5401-848b-991345b2697f",
+        "evd_1ea79a03-5408-5968-bfc0-dd73bfde904e",
+        "evd_1fbb08f9-d197-5be6-be13-74cded6c4560",
+        "evd_28fdec1d-4559-5c6c-8798-9577fcacaebe",
+        "evd_2912dd14-9303-5253-a693-d67274e027e8",
+        "evd_2c0f53b9-4676-593b-b7be-8b4d49928234",
+        "evd_3290ef7b-e39d-5f5f-a8ff-273dc4f10093",
+        "evd_35035257-d3c8-5cc8-a547-44bd5d6bef05",
+        "evd_3abbd18c-45fa-5218-8ec7-889239b0c378",
+        "evd_3f12dc9f-b045-5134-aff3-11fcb873c81b",
+        "evd_418f1cef-942f-5021-af62-6fd86b1dac4a",
+        "evd_421b8e9f-4829-5303-915e-94f985a0367d",
+        "evd_4a1cace6-ecc9-57a6-b04c-1cb634d8d6a8",
+        "evd_4aafd0be-c5ce-55ec-b7d8-f5ccc86b8dc6",
+        "evd_4b641672-48a3-5f0b-a038-fe99601a63ca",
+        "evd_51001ec0-88d0-5533-8e0b-93ad1aee5e9c",
+        "evd_5302f790-9220-588e-8dd5-e7274765ef11",
+        "evd_58404a9f-155c-53c6-85e4-8304e7d64c5c",
+        "evd_59e48d00-848f-5d5e-a75a-7048ade85742",
+        "evd_5caa2966-3ef9-5f85-9375-6b39076df774",
+        "evd_642f2414-f9a6-580a-b1a8-b870e0bb6e41",
+        "evd_68a13fd4-d78d-59cd-a0dc-95afd36f474c",
+        "evd_6acc7c7c-90dc-5a53-ac4c-3c0f4cb6ef7c",
+        "evd_6b1dac39-415a-51b2-91e3-fc71a09888c7",
+        "evd_6f2a4027-cdca-557c-8de5-7cdbe9e00d99",
+        "evd_7cfd8bb8-20fc-5dd7-9126-56e4fdb65654",
+        "evd_837bedd4-9456-5b90-ad7a-110a6176c2b3",
+        "evd_84810e19-6383-54c0-a715-6181c1ff5450",
+        "evd_85937e1c-3401-5851-ae5f-19c30c3b460b",
+        "evd_90eaf5b9-79c9-58a7-8801-3dc5a2844ecc",
+        "evd_9963b6d4-4bb2-5982-b28c-55ff2867ed19",
+        "evd_9a731b6f-54ed-56d2-b6eb-438611391c2f",
+        "evd_9efcc0dd-e41e-5874-8cc0-c5967b4c28a7",
+        "evd_a0907f15-d59e-51b1-8dcf-5b36aaf664b2",
+        "evd_a1528a9c-3157-54e9-9f03-56cd945fe2bb",
+        "evd_a91eb90e-54f5-5f23-a90d-f766f124096b",
+        "evd_ac0fcc20-deaf-513d-8195-398109723a05",
+        "evd_aca3ed37-085e-55a7-a2f0-31a2cfafb22c",
+        "evd_ad08695d-2317-5fb1-9248-5a9ddb45fd85",
+        "evd_b1136f91-cb0b-553d-a195-f5e38b40e00a",
+        "evd_bbb7deb3-78b5-53a7-9ff4-778fadfe713f",
+        "evd_c083445b-416b-5031-820a-a1e0fa1b4532",
+        "evd_c1a3dd3f-9088-5ea1-afe6-34e1a6b912dc",
+        "evd_c62a2217-1bba-50bc-b2af-a499d4e59844",
+        "evd_c6ec0c7a-6c86-557d-8707-763ed9bfbfb5",
+        "evd_cc538b40-cc15-5e36-900f-4240c1ee9558",
+        "evd_d08156d7-99b1-5daa-bb03-58e56a22a326",
+        "evd_d18a9c5b-2ea2-5340-a22e-20e770f6d587",
+        "evd_d3230151-7427-5dd0-a9c8-18387c75c4f2",
+        "evd_d6502fbb-0541-5d3d-b3cc-ce0972251b68",
+        "evd_d7ae62ef-9e9e-553d-b81d-e07a2713037b",
+        "evd_d80565d1-e4a4-5729-91a3-ad20baba76e8",
+        "evd_dd227e17-c578-5531-ae7c-f027050d75ac",
+        "evd_dd83268f-538f-580f-9573-0efde7368613",
+        "evd_e260b8ef-b7cf-5566-afcb-961b4597cd52",
+        "evd_e34722e5-4726-59c0-a840-0de0146c490a",
+        "evd_e7bd42fb-3846-5008-ab65-b395abab133f",
+        "evd_e81247a7-0bdc-5e59-9a74-7213c91e435b",
+        "evd_edce9758-1c81-54f8-b0cc-29da09b74b2c",
+        "evd_efb777fd-4862-502a-a421-2f18bb7afb63"
+      ],
+      "attempts": [],
+      "safe_automation": false,
+      "raw": [
+        {
+          "text": "anthropic（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_0401bc9c-79b4-5952-b81c-5e767930f282"
+          ]
+        },
+        {
+          "text": "google-bert/bert-base-uncased（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_07304703-e301-5087-93f4-1d3ff3677763"
+          ]
+        },
+        {
+          "text": "synthetic/audit003-b（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_0d11e646-6c6d-5d0a-979e-6ce1b31e509d"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-0.6B（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_21c40311-fc8d-50be-a5fb-f6845b085532",
+            "ast_2cb9aaa7-bc60-50c1-8d4a-6c3b38ae798d"
+          ]
+        },
+        {
+          "text": "synthetic/audit003-a（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_2408ad4a-b395-5e24-8995-60ddee7a5a49"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-0.6B（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_21c40311-fc8d-50be-a5fb-f6845b085532",
+            "ast_2cb9aaa7-bc60-50c1-8d4a-6c3b38ae798d"
+          ]
+        },
+        {
+          "text": "example/sample-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_3b02c173-000a-5855-b136-ee1e5dc68c8f"
+          ]
+        },
+        {
+          "text": "example/demo-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_3e2f5206-8f13-5030-a445-6008f9c0912a"
+          ]
+        },
+        {
+          "text": "stanfordnlp/imdb（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_47106f29-fa0e-5554-81a6-bf296c8824b0"
+          ]
+        },
+        {
+          "text": "org/model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_4be18d49-6876-5691-88b1-e0620b0ad2cd"
+          ]
+        },
+        {
+          "text": "intfloat/multilingual-e5-large-instruct（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_56cd95d3-b5ec-54db-994a-d9b6d6c6d4c4"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-4B-Instruct-2507（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_83eb9ec3-1959-55c4-a1f3-6b042fef351d"
+          ]
+        },
+        {
+          "text": "acme/demo-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ac599c18-79a6-5225-8550-3345fb191eef",
+            "ast_c60f603d-3cfa-556f-a697-1a53531f3603"
+          ]
+        },
+        {
+          "text": "google（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_bc80712e-679f-5b40-9b70-27563095ba22"
+          ]
+        },
+        {
+          "text": "synthetic/audit003-shared（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_bddca1d2-5bf4-585e-94f1-5f5a816343df"
+          ]
+        },
+        {
+          "text": "org/resource（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_c5c5a031-fb4a-5c7d-9221-74e22c9eaa4d"
+          ]
+        },
+        {
+          "text": "example/research（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_c608ef43-37c2-51fb-81f2-be0ccb7bcdbf"
+          ]
+        },
+        {
+          "text": "acme/demo-model（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ac599c18-79a6-5225-8550-3345fb191eef",
+            "ast_c60f603d-3cfa-556f-a697-1a53531f3603"
+          ]
+        },
+        {
+          "text": "smolagents/GAIA-annotated（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_d1b55ffc-edff-5b47-80e3-60a3c1020037"
+          ]
+        },
+        {
+          "text": "acme/demo-dataset（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_d8fd32eb-2238-5e21-a773-8776751b6446"
+          ]
+        },
+        {
+          "text": "smolagents-benchmark/benchmark-v1（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_e04b4f3b-b432-57d0-9b68-b6bfdfea6f62"
+          ]
+        },
+        {
+          "text": "m-ric/agents_medium_benchmark_2（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_e3797863-c272-5d73-b32c-9666a9af0b72"
+          ]
+        },
+        {
+          "text": "Qwen/Qwen3-Next-80B-A3B-Thinking（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ed486083-ffcb-5cbd-9fce-1d25dfcc7441"
+          ]
+        },
+        {
+          "text": "black-forest-labs/FLUX.1-dev（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_ed8be940-6081-5fc8-a80d-955f509ed4a7"
+          ]
+        },
+        {
+          "text": "openai（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_eff857a0-0163-55be-94d5-d5658cab8a39"
+          ]
+        },
+        {
+          "text": "openai-community/gpt2（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_f1254f39-e968-5c2f-9089-9d4666c79419"
+          ]
+        },
+        {
+          "text": "acme/demo（版本未确定）：项目自身／依赖／开发示例的适用范围尚无已核验证据",
+          "resource_ids": [
+            "ast_facd55b8-cd12-5d41-ab02-b3e78088f9a4"
+          ]
+        }
+      ]
+    }
+  ]
+}

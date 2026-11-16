@@ -1,0 +1,818 @@
+{
+  "schema_version": "openguard.notice-license-facts/2",
+  "package_status": "draft_facts_only",
+  "generated_at": "2026-09-21T15:25:00Z",
+  "source_package": {
+    "path": "tests/fixtures/notice-license-facts-v1/facts.json",
+    "schema_version": "openguard.notice-license-facts/1",
+    "fixed_commit": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+    "source_file_sha256": "df3d51a696c0e4fc2eca591ced45642fbbea09b60656548ecc136720dada0e99",
+    "commit_blob_sha256": "df3d51a696c0e4fc2eca591ced45642fbbea09b60656548ecc136720dada0e99"
+  },
+  "producer": {
+    "name": "openguard-b03-b04-facts",
+    "version": "2.0.0"
+  },
+  "evidence": [
+    {
+      "evidence_id": "ev.root.license",
+      "kind": "repository_file",
+      "locator": "LICENSE",
+      "source_url": null,
+      "source_revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "content_scope": "whole_file",
+      "source_file_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "container_sha256": null,
+      "selected_content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "selected_json_pointer": null,
+      "excerpt": "Apache License Version 2.0, January 2004",
+      "verification": "repository_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.jackson.license",
+      "kind": "archive_entry",
+      "locator": "com.fasterxml.jackson.core:jackson-databind:2.21.5!/META-INF/LICENSE",
+      "source_url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.21.5/jackson-databind-2.21.5.jar",
+      "source_revision": null,
+      "content_scope": "archive_entry",
+      "source_file_sha256": "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0",
+      "container_sha256": "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0",
+      "selected_content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "selected_json_pointer": null,
+      "excerpt": "Apache License Version 2.0, January 2004",
+      "verification": "archive_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.jackson.notice",
+      "kind": "archive_entry",
+      "locator": "com.fasterxml.jackson.core:jackson-databind:2.21.5!/META-INF/NOTICE",
+      "source_url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.21.5/jackson-databind-2.21.5.jar",
+      "source_revision": null,
+      "content_scope": "archive_entry",
+      "source_file_sha256": "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0",
+      "container_sha256": "507418c0fafd38b2b2cfb704521630da613a8e4cc8381195a6f418017883e2c0",
+      "selected_content_sha256": "612b14bc77c944ce229cbba0d14919162cfea8ed802cbf06a8e865e032d03201",
+      "selected_json_pointer": null,
+      "excerpt": "Jackson JSON processor; Copyright 2007-, Tatu Saloranta",
+      "verification": "archive_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.springboot.license",
+      "kind": "archive_entry",
+      "locator": "org.springframework.boot:spring-boot:4.1.1!/META-INF/LICENSE.txt",
+      "source_url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/4.1.1/spring-boot-4.1.1.jar",
+      "source_revision": null,
+      "content_scope": "archive_entry",
+      "source_file_sha256": "0d92b532b1d4020640e72d78c31af175c23db8e0ddd45b81855b7fdf4c9c70f0",
+      "container_sha256": "0d92b532b1d4020640e72d78c31af175c23db8e0ddd45b81855b7fdf4c9c70f0",
+      "selected_content_sha256": "7200000367e0e8b47822d563a5ddd2dd3a97cc05b32bd7dbcc7b4eeb92b76628",
+      "selected_json_pointer": null,
+      "excerpt": "Apache License Version 2.0, January 2004",
+      "verification": "archive_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.springboot.notice",
+      "kind": "archive_entry",
+      "locator": "org.springframework.boot:spring-boot:4.1.1!/META-INF/NOTICE.txt",
+      "source_url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/4.1.1/spring-boot-4.1.1.jar",
+      "source_revision": null,
+      "content_scope": "archive_entry",
+      "source_file_sha256": "0d92b532b1d4020640e72d78c31af175c23db8e0ddd45b81855b7fdf4c9c70f0",
+      "container_sha256": "0d92b532b1d4020640e72d78c31af175c23db8e0ddd45b81855b7fdf4c9c70f0",
+      "selected_content_sha256": "64e8c092d64ccaecac2d81d324c84a4dff29fdc2cb777f3b1abd910ac2e8555d",
+      "selected_json_pointer": null,
+      "excerpt": "Spring Boot 4.1.1; Copyright (c) 2012-2026 VMware, Inc.",
+      "verification": "archive_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.hamcrest.license",
+      "kind": "archive_entry",
+      "locator": "org.hamcrest:hamcrest:3.0!/META-INF/LICENSE",
+      "source_url": "https://repo1.maven.org/maven2/org/hamcrest/hamcrest/3.0/hamcrest-3.0.jar",
+      "source_revision": null,
+      "content_scope": "archive_entry",
+      "source_file_sha256": "5d66b6a4a680755cb6ed7cb104fa7835ef644667586ff0737adeb977c39ecdbc",
+      "container_sha256": "5d66b6a4a680755cb6ed7cb104fa7835ef644667586ff0737adeb977c39ecdbc",
+      "selected_content_sha256": "1710cf0fc79043bb1ea1e6b3af96a3e8def96c4239794a17b0b95966e75929b8",
+      "selected_json_pointer": null,
+      "excerpt": "BSD 3-Clause License; Copyright (c) 2000-2024, www.hamcrest.org",
+      "verification": "archive_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.mockito.license",
+      "kind": "archive_entry",
+      "locator": "org.mockito:mockito-core:5.23.0!/LICENSE",
+      "source_url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/5.23.0/mockito-core-5.23.0.jar",
+      "source_revision": null,
+      "content_scope": "archive_entry",
+      "source_file_sha256": "ae295bebd5d11fab97ab297815dc7617188b86003cbce3dfd5c0d5c3a6cc4a0c",
+      "container_sha256": "ae295bebd5d11fab97ab297815dc7617188b86003cbce3dfd5c0d5c3a6cc4a0c",
+      "selected_content_sha256": "fc37ea05c14706d13ec54d477a5c8c456aec1a5393779c683404b0151d04d7d7",
+      "selected_json_pointer": null,
+      "excerpt": "The MIT License; Copyright (c) 2007 Mockito contributors",
+      "verification": "archive_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.hf.gpt2.license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json#/payload/cardData/license",
+      "source_url": "https://huggingface.co/api/models/openai-community/gpt2",
+      "source_revision": "23fae26485db2fe3449ec8e7cccc3af64a487002",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9",
+      "container_sha256": null,
+      "selected_content_sha256": "6b53974263891131c47ff5af1bca9a352fc18e8ff6483d6d0c34a7eefa923377",
+      "selected_json_pointer": "/payload/cardData/license",
+      "excerpt": "Provider-declared raw value: mit",
+      "verification": "fixture_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.hf.bert.license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json#/payload/cardData/license",
+      "source_url": "https://huggingface.co/api/models/google-bert/bert-base-uncased",
+      "source_revision": "23fae26485db2fe3449ec8e7cccc3af64a487002",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc",
+      "container_sha256": null,
+      "selected_content_sha256": "ce0956e2a0986dae20f5c028b3b4d67f4b8eda4811a48c1a3673913409301023",
+      "selected_json_pointer": "/payload/cardData/license",
+      "excerpt": "Provider-declared raw value: apache-2.0",
+      "verification": "fixture_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "evidence_id": "ev.hf.imdb.license",
+      "kind": "provider_snapshot",
+      "locator": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json#/payload/cardData/license",
+      "source_url": "https://huggingface.co/api/datasets/stanfordnlp/imdb",
+      "source_revision": "23fae26485db2fe3449ec8e7cccc3af64a487002",
+      "content_scope": "json_pointer_value",
+      "source_file_sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766",
+      "container_sha256": null,
+      "selected_content_sha256": "c8c317de489c9971a7dbb62622af5caf41de5c0c20095c1ac0f1ac5fda104d6d",
+      "selected_json_pointer": "/payload/cardData/license",
+      "excerpt": "Provider-declared raw value: [other]",
+      "verification": "fixture_bytes_verified",
+      "captured_at": "2026-09-20T17:06:00.000Z",
+      "producer": {
+        "name": "openguard-b03-b04-facts",
+        "version": "2.0.0"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "fact.root.openguard",
+      "subject": {
+        "category": "root_project",
+        "canonical_id": "openguard",
+        "display_name": "OpenGuard",
+        "version": null,
+        "source_url": "https://github.com/mumingce-star/OpenGuard/blob/e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1/LICENSE",
+        "usage_scope": "project",
+        "source_revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": "Apache License Version 2.0",
+          "observation_kind": "license_text_heading",
+          "evidence_ids": [
+            "ev.root.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "text_observed"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "text_observed",
+          "evidence_ids": [
+            "ev.root.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_ROOT_NOTICE_MISSING",
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_ROOT_COPYRIGHT_SOURCE_MISSING",
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [
+        "GAP_ROOT_NOTICE_MISSING",
+        "GAP_ROOT_COPYRIGHT_SOURCE_MISSING"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "fact_id": "fact.dep.jackson-databind",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5",
+        "display_name": "Jackson Databind",
+        "version": "2.21.5",
+        "source_url": "https://github.com/FasterXML/jackson-databind",
+        "usage_scope": "runtime",
+        "source_revision": "2.21.5"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": "Apache License Version 2.0",
+          "observation_kind": "license_text_heading",
+          "evidence_ids": [
+            "ev.jackson.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "text_observed"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "text_observed",
+          "evidence_ids": [
+            "ev.jackson.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "observed",
+          "evidence_ids": [
+            "ev.jackson.notice"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "observed",
+          "evidence_ids": [
+            "ev.jackson.notice"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [],
+      "review_status": "pending_human_review"
+    },
+    {
+      "fact_id": "fact.dep.springboot",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pkg:maven/org.springframework.boot/spring-boot@4.1.1",
+        "display_name": "Spring Boot",
+        "version": "4.1.1",
+        "source_url": "https://github.com/spring-projects/spring-boot",
+        "usage_scope": "runtime",
+        "source_revision": "4.1.1"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": "Apache License Version 2.0",
+          "observation_kind": "license_text_heading",
+          "evidence_ids": [
+            "ev.springboot.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "text_observed"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "text_observed",
+          "evidence_ids": [
+            "ev.springboot.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "observed",
+          "evidence_ids": [
+            "ev.springboot.notice"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "observed",
+          "evidence_ids": [
+            "ev.springboot.notice"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [],
+      "review_status": "pending_human_review"
+    },
+    {
+      "fact_id": "fact.dep.hamcrest",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pkg:maven/org.hamcrest/hamcrest@3.0",
+        "display_name": "Hamcrest",
+        "version": "3.0",
+        "source_url": "https://github.com/hamcrest/JavaHamcrest",
+        "usage_scope": "test",
+        "source_revision": "3.0"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": "BSD 3-Clause License",
+          "observation_kind": "license_text_heading",
+          "evidence_ids": [
+            "ev.hamcrest.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "text_observed"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "text_observed",
+          "evidence_ids": [
+            "ev.hamcrest.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_NOTICE_FILE_NOT_OBSERVED",
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "observed",
+          "evidence_ids": [
+            "ev.hamcrest.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [
+        "GAP_NOTICE_FILE_NOT_OBSERVED"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "fact_id": "fact.dep.mockito",
+      "subject": {
+        "category": "dependency",
+        "canonical_id": "pkg:maven/org.mockito/mockito-core@5.23.0",
+        "display_name": "Mockito Core",
+        "version": "5.23.0",
+        "source_url": "https://github.com/mockito/mockito",
+        "usage_scope": "test",
+        "source_revision": "5.23.0"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": "The MIT License",
+          "observation_kind": "license_text_heading",
+          "evidence_ids": [
+            "ev.mockito.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "text_observed"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "text_observed",
+          "evidence_ids": [
+            "ev.mockito.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_NOTICE_FILE_NOT_OBSERVED",
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "observed",
+          "evidence_ids": [
+            "ev.mockito.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [
+        "GAP_NOTICE_FILE_NOT_OBSERVED"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "fact_id": "fact.ai.gpt2",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "huggingface:model:openai-community/gpt2",
+        "display_name": "openai-community/gpt2",
+        "version": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+        "source_url": "https://huggingface.co/openai-community/gpt2",
+        "usage_scope": "model",
+        "source_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": "mit",
+          "observation_kind": "provider_declared_raw",
+          "evidence_ids": [
+            "ev.hf.gpt2.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "provider_declared_unverified"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "declared_unverified",
+          "evidence_ids": [
+            "ev.hf.gpt2.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+        "GAP_AI_LICENSE_TEXT_NOT_VERIFIED"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "fact_id": "fact.ai.bert",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "huggingface:model:google-bert/bert-base-uncased",
+        "display_name": "google-bert/bert-base-uncased",
+        "version": "86b5e0934494bd15c9632b12f734a8a67f723594",
+        "source_url": "https://huggingface.co/google-bert/bert-base-uncased",
+        "usage_scope": "model",
+        "source_revision": "86b5e0934494bd15c9632b12f734a8a67f723594"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": "apache-2.0",
+          "observation_kind": "provider_declared_raw",
+          "evidence_ids": [
+            "ev.hf.bert.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "provider_declared_unverified"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "declared_unverified",
+          "evidence_ids": [
+            "ev.hf.bert.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+        "GAP_AI_LICENSE_TEXT_NOT_VERIFIED"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "fact_id": "fact.ai.imdb",
+      "subject": {
+        "category": "ai_resource",
+        "canonical_id": "huggingface:dataset:stanfordnlp/imdb",
+        "display_name": "stanfordnlp/imdb",
+        "version": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31",
+        "source_url": "https://huggingface.co/datasets/stanfordnlp/imdb",
+        "usage_scope": "dataset",
+        "source_revision": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31"
+      },
+      "authorization_status": "pending",
+      "license_observations": [
+        {
+          "raw_value": [
+            "other"
+          ],
+          "observation_kind": "provider_declared_raw",
+          "evidence_ids": [
+            "ev.hf.imdb.license"
+          ],
+          "license_expression_id": null,
+          "observation_strength": "provider_declared_unverified"
+        }
+      ],
+      "relationships": {
+        "license": {
+          "state": "declared_unverified",
+          "evidence_ids": [
+            "ev.hf.imdb.license"
+          ],
+          "gap_code": null,
+          "applicability": "pending_review"
+        },
+        "notice": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_AI_NOTICE_NOT_OBSERVED",
+          "applicability": "pending_review"
+        },
+        "copyright": {
+          "state": "gap",
+          "evidence_ids": [],
+          "gap_code": "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "applicability": "pending_review"
+        }
+      },
+      "gaps": [
+        "GAP_AI_NOTICE_NOT_OBSERVED",
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+        "GAP_AI_LICENSE_UNRESOLVED_OTHER",
+        "GAP_AI_LICENSE_TEXT_NOT_VERIFIED"
+      ],
+      "review_status": "pending_human_review"
+    }
+  ],
+  "report_v2_rows": [
+    {
+      "row_id": "row.v2.root.openguard",
+      "subject_fact_id": "fact.root.openguard",
+      "resource_name_and_type": "OpenGuard / root_project",
+      "version_and_source": "version unknown / https://github.com/mumingce-star/OpenGuard/blob/e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1/LICENSE",
+      "license_or_authorization": "raw license observation: Apache License Version 2.0; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=project; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license; gaps=GAP_ROOT_NOTICE_MISSING,GAP_ROOT_COPYRIGHT_SOURCE_MISSING; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "text_observed"
+      ],
+      "evidence_ids": [
+        "ev.root.license"
+      ],
+      "gap_codes": [
+        "GAP_ROOT_COPYRIGHT_SOURCE_MISSING",
+        "GAP_ROOT_NOTICE_MISSING"
+      ]
+    },
+    {
+      "row_id": "row.v2.dep.jackson-databind",
+      "subject_fact_id": "fact.dep.jackson-databind",
+      "resource_name_and_type": "Jackson Databind / dependency",
+      "version_and_source": "2.21.5 / https://github.com/FasterXML/jackson-databind",
+      "license_or_authorization": "raw license observation: Apache License Version 2.0; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=runtime; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license,notice,copyright; gaps=none; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "text_observed"
+      ],
+      "evidence_ids": [
+        "ev.jackson.license",
+        "ev.jackson.notice"
+      ],
+      "gap_codes": []
+    },
+    {
+      "row_id": "row.v2.dep.springboot",
+      "subject_fact_id": "fact.dep.springboot",
+      "resource_name_and_type": "Spring Boot / dependency",
+      "version_and_source": "4.1.1 / https://github.com/spring-projects/spring-boot",
+      "license_or_authorization": "raw license observation: Apache License Version 2.0; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=runtime; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license,notice,copyright; gaps=none; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "text_observed"
+      ],
+      "evidence_ids": [
+        "ev.springboot.license",
+        "ev.springboot.notice"
+      ],
+      "gap_codes": []
+    },
+    {
+      "row_id": "row.v2.dep.hamcrest",
+      "subject_fact_id": "fact.dep.hamcrest",
+      "resource_name_and_type": "Hamcrest / dependency",
+      "version_and_source": "3.0 / https://github.com/hamcrest/JavaHamcrest",
+      "license_or_authorization": "raw license observation: BSD 3-Clause License; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=test; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license,copyright; gaps=GAP_NOTICE_FILE_NOT_OBSERVED; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "text_observed"
+      ],
+      "evidence_ids": [
+        "ev.hamcrest.license"
+      ],
+      "gap_codes": [
+        "GAP_NOTICE_FILE_NOT_OBSERVED"
+      ]
+    },
+    {
+      "row_id": "row.v2.dep.mockito",
+      "subject_fact_id": "fact.dep.mockito",
+      "resource_name_and_type": "Mockito Core / dependency",
+      "version_and_source": "5.23.0 / https://github.com/mockito/mockito",
+      "license_or_authorization": "raw license observation: The MIT License; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=test; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license,copyright; gaps=GAP_NOTICE_FILE_NOT_OBSERVED; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "text_observed"
+      ],
+      "evidence_ids": [
+        "ev.mockito.license"
+      ],
+      "gap_codes": [
+        "GAP_NOTICE_FILE_NOT_OBSERVED"
+      ]
+    },
+    {
+      "row_id": "row.v2.ai.gpt2",
+      "subject_fact_id": "fact.ai.gpt2",
+      "resource_name_and_type": "openai-community/gpt2 / ai_resource",
+      "version_and_source": "607a30d783dfa663caf39e06633721c8d4cfcd7e / https://huggingface.co/openai-community/gpt2",
+      "license_or_authorization": "raw license observation: mit; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=model; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license; gaps=GAP_AI_NOTICE_NOT_OBSERVED,GAP_AI_COPYRIGHT_NOT_OBSERVED,GAP_AI_LICENSE_TEXT_NOT_VERIFIED; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "provider_declared_unverified"
+      ],
+      "evidence_ids": [
+        "ev.hf.gpt2.license"
+      ],
+      "gap_codes": [
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+        "GAP_AI_LICENSE_TEXT_NOT_VERIFIED",
+        "GAP_AI_NOTICE_NOT_OBSERVED"
+      ]
+    },
+    {
+      "row_id": "row.v2.ai.bert",
+      "subject_fact_id": "fact.ai.bert",
+      "resource_name_and_type": "google-bert/bert-base-uncased / ai_resource",
+      "version_and_source": "86b5e0934494bd15c9632b12f734a8a67f723594 / https://huggingface.co/google-bert/bert-base-uncased",
+      "license_or_authorization": "raw license observation: apache-2.0; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=model; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license; gaps=GAP_AI_NOTICE_NOT_OBSERVED,GAP_AI_COPYRIGHT_NOT_OBSERVED,GAP_AI_LICENSE_TEXT_NOT_VERIFIED; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "provider_declared_unverified"
+      ],
+      "evidence_ids": [
+        "ev.hf.bert.license"
+      ],
+      "gap_codes": [
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+        "GAP_AI_LICENSE_TEXT_NOT_VERIFIED",
+        "GAP_AI_NOTICE_NOT_OBSERVED"
+      ]
+    },
+    {
+      "row_id": "row.v2.ai.imdb",
+      "subject_fact_id": "fact.ai.imdb",
+      "resource_name_and_type": "stanfordnlp/imdb / ai_resource",
+      "version_and_source": "e6281661ce1c48d982bc483cf8a173c1bbeb5d31 / https://huggingface.co/datasets/stanfordnlp/imdb",
+      "license_or_authorization": "raw license observation: other; authorization=pending; formal expression absent",
+      "usage_or_open_mode": "usage_scope=dataset; applicability pending human review",
+      "key_obligations_or_restrictions": "observed=license; gaps=GAP_AI_NOTICE_NOT_OBSERVED,GAP_AI_COPYRIGHT_NOT_OBSERVED,GAP_AI_LICENSE_UNRESOLVED_OTHER,GAP_AI_LICENSE_TEXT_NOT_VERIFIED; no legal conclusion",
+      "team_modifications": "not evidenced by this facts package",
+      "compliance_status": "待核验",
+      "authorization_status": "pending",
+      "license_expression_ids": [],
+      "observation_strengths": [
+        "provider_declared_unverified"
+      ],
+      "evidence_ids": [
+        "ev.hf.imdb.license"
+      ],
+      "gap_codes": [
+        "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+        "GAP_AI_LICENSE_TEXT_NOT_VERIFIED",
+        "GAP_AI_LICENSE_UNRESOLVED_OTHER",
+        "GAP_AI_NOTICE_NOT_OBSERVED"
+      ]
+    }
+  ],
+  "policies": {
+    "license_expression_autofill": false,
+    "authorization_default": "pending",
+    "gap_is_noncompliance": false,
+    "notice_absence_is_violation": false
+  }
+}

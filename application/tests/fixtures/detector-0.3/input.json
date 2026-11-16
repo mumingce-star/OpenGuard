@@ -1,0 +1,1 @@
+{"schema":"openguard.detector-input/1","artifact_id":"input","scope":"offline_non_gold","detector_version":"0.3.0","references":[{"artifact_id":"cases","path":"cases.json","sha256":"b1bd4292cbb7549c7fbbdf313d41ac8736cdb77789c5f0e46e02c4a9a8720c97"},{"artifact_id":"detector","path":"detector.json","sha256":"946e40ffcc7b6b06ac05e862507ffbf68b341dfea04a722957d08f1cdbf502a4"}]}

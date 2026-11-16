@@ -1,0 +1,66 @@
+/* Reference-led scan composer. Scope every rule to this route. */
+.og-app .og-new-scan { width:100%; max-width:1120px; margin:0 auto; }
+.og-app .og-new-scan .og-scan-heading { display:flex; flex-direction:column-reverse; align-items:center; gap:20px; margin:0 0 24px; }
+.og-app .og-new-scan .og-scan-introduction { text-align:center; }
+.og-app .og-new-scan .og-scan-introduction h1 { font-size:32px; margin:0 0 8px; line-height:1.3; }
+.og-app .og-new-scan .og-scan-introduction p { margin:0; color:#a8b9ca; line-height:1.8; }
+.og-app .og-new-scan .og-scan-mode { align-self:flex-end; display:flex; align-items:center; gap:14px; max-width:none; }
+.og-app .og-new-scan .og-mode-switch { padding:3px; border-radius:24px; margin:0; }
+.og-app .og-new-scan .og-mode-switch button { min-height:34px; padding:5px 15px; border-radius:20px; font-size:13px; }
+.og-app .og-new-scan .og-mode-switch button[aria-pressed="true"] { background:#24453f; color:#dcf8ed; border-color:#5d998a; }
+.og-app .og-new-scan .og-mode-note { margin:0; max-width:320px; font-size:13px; line-height:1.6; }
+.og-app .og-new-scan form { display:grid; gap:22px; }
+.og-app .og-new-scan form > .og-panel,
+.og-app .og-new-scan .og-scan-step { width:100%; max-width:800px; margin:0 auto; padding:0; border:1px solid #334b63; border-radius:12px; background:#152231; box-shadow:none; min-width:0; }
+.og-app .og-new-scan .og-panel::before { content:none; }
+.og-app .og-new-scan .og-tabs { margin:0; padding:7px 8px 0; display:grid; grid-template-columns:1fr 1fr; gap:8px; border-bottom:1px solid #344b62; }
+.og-app .og-new-scan .og-tabs button { position:relative; justify-content:center; min-height:50px; padding:12px; border:0; border-radius:7px 7px 0 0; background:transparent; font-size:16px; color:#a9bed2; }
+.og-app .og-new-scan .og-tabs button[aria-pressed="true"] { background:#293d55; color:#eff8ff; box-shadow:none; }
+.og-app .og-new-scan .og-tabs button[aria-pressed="true"]::after { content:""; position:absolute; height:3px; background:#88d3c5; bottom:-1px; left:-8px; right:-8px; }
+.og-app .og-new-scan .og-form-section { padding:24px 26px; }
+.og-app .og-new-scan .og-field { display:grid; align-content:start; gap:9px; margin:0; font-size:14px; min-width:0; }
+.og-app .og-new-scan :is(input:not([type="checkbox"]),select) { width:100%; min-width:0; min-height:44px; border-radius:8px; background:#101d2e; }
+.og-app .og-new-scan .og-form-section > .og-muted { margin:12px 0 0; font-size:13px; line-height:1.7; }
+.og-app .og-new-scan .og-fixed-source { margin:14px 0 0; font-size:13px; color:#a6bcd1; }
+.og-app .og-new-scan .og-fixed-source summary { cursor:pointer; padding:6px 0; }
+.og-app .og-new-scan .og-info { margin:8px 0 0; font-size:13px; overflow-wrap:anywhere; }
+.og-app .og-new-scan .og-drop-zone { padding:22px; min-height:160px; background:#0d192a; }
+.og-app .og-new-scan .og-upload-symbol { width:36px; height:36px; margin-bottom:8px; }
+.og-app .og-new-scan .og-scan-usage-step { margin:0 26px; padding:18px 0; border-top:1px solid #33485e; }
+.og-app .og-new-scan .og-usage { padding:0; border:0; border-radius:0; margin:0; background:none; box-shadow:none; min-width:0; }
+.og-app .og-new-scan .og-usage legend { float:none; width:auto; padding:0; border:0; margin:0 0 14px; color:#b9ccde; font-size:14px; font-weight:500; }
+.og-app .og-new-scan .og-usage > .og-field { max-width:none; width:100%; }
+.og-app .og-new-scan .og-usage > p { margin:10px 0 16px; font-size:13px; line-height:1.8; }
+.og-app .og-new-scan .og-usage details { margin:0; border:1px solid #30465d; border-radius:8px; background:#0c1827; }
+.og-app .og-new-scan .og-usage details summary { padding:12px 15px; line-height:1.6; }
+.og-app .og-new-scan .og-usage details summary span { display:block; padding-left:14px; color:#91a8be; font-size:13px; font-weight:400; }
+.og-app .og-new-scan .og-usage-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 22px; padding:18px; margin:0; }
+.og-app .og-new-scan .og-form-footer { position:sticky; bottom:0; z-index:4; margin:18px 0 0; padding:18px 22px; border:1px solid #30465d; border-radius:10px; background:#101d2ff5; box-shadow:0 -8px 30px #070f1c44; gap:18px; }
+.og-app .og-new-scan .og-scan-boundary { flex:1 1 300px; line-height:1.7; font-size:13px; }
+.og-app .og-new-scan .og-form-footer .og-primary { min-height:46px; padding:12px 24px; background:#88d3c5; color:#112d2c; border:1px solid #88d3c5; box-shadow:none; }
+.og-app .og-new-scan .og-scan-confirmation { padding:24px 26px; scroll-margin:110px; }
+.og-app .og-new-scan .og-scan-step-heading { border-bottom:1px solid #33485e; padding-bottom:16px; margin-bottom:20px; }
+.og-app .og-new-scan .og-scan-step-heading h2 { margin:0; font-size:20px; }
+.og-app .og-new-scan .og-scan-step-heading p { font-size:13px; color:#adc1d3; }
+.og-scan-input-summary,.og-scan-usage-summary { margin:0 0 24px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 24px; }
+.og-scan-input-summary > div:first-child { grid-column:1/-1; }
+.og-scan-input-summary dt,.og-scan-usage-summary dt { color:#a9bbd1; font-size:13px; }
+.og-scan-input-summary dd,.og-scan-usage-summary dd { margin:6px 0 0; overflow-wrap:anywhere; }
+.og-scan-usage-summary > div { border-bottom:1px solid #293e55; padding-bottom:12px; }
+@media(max-width:700px) {
+ .og-app .og-new-scan .og-scan-mode { align-self:stretch; flex-wrap:wrap; }
+ .og-app .og-new-scan .og-mode-note { max-width:none; }
+ .og-app .og-new-scan .og-scan-heading { gap:24px; }
+ .og-app .og-new-scan .og-form-section,.og-app .og-new-scan .og-scan-confirmation { padding:20px; }
+ .og-app .og-new-scan .og-scan-usage-step { margin:0 20px; }
+ .og-app .og-new-scan .og-usage-grid,.og-scan-input-summary,.og-scan-usage-summary { grid-template-columns:minmax(0,1fr); }
+ .og-app .og-new-scan .og-form-footer { position:static; padding:16px; }
+ .og-app .og-new-scan .og-form-footer .og-actions,.og-app .og-new-scan .og-form-footer button { width:100%; margin:0; }
+}
+.og-app .og-new-scan .og-usage-intro { margin:0 0 16px; font-size:13px; color:#9eb3c8; line-height:1.7; }
+/* Keep the primary input and optional disclosure clear at laptop heights. */
+.og-app .og-new-scan .og-usage legend { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.og-app .og-new-scan .og-usage-intro { margin-bottom:10px; }
+.og-app .og-new-scan .og-usage > p { margin:8px 0 12px; }
+.og-app .og-new-scan .og-usage details summary span { display:inline; padding-left:10px; }
+@media(max-height:850px) { .og-app .og-new-scan .og-form-footer { position:static; } }

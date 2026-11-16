@@ -1,0 +1,21 @@
+{
+  "schema_version": "openguard-public-npm-source-profile/1",
+  "data_scope": "TEST_ONLY",
+  "packages": [
+    {
+      "package": "is-number",
+      "version": "7.0.0",
+      "metadata_file": "metadata.json",
+      "metadata_sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25",
+      "tarball_file": "archive.tgz",
+      "tarball_sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+      "license_file": "license.txt",
+      "license_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "member": "package/LICENSE",
+      "metadata_url": "https://registry.npmjs.org/is-number/7.0.0",
+      "tarball_url": "https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz",
+      "fetched_at": "2026-10-11T04:20:02.661901+00:00",
+      "applicability_review": "NOT_SIGNED"
+    }
+  ]
+}

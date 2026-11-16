@@ -1,0 +1,24 @@
+{
+  "schema_version": "openguard.b02-license-notice-candidates/1",
+  "source_facts_schema_version": "openguard.notice-license-facts/2",
+  "source_package_sha256": "9cdcb294c7e46ce57a2e3b4a92e5693439dbc6b82f15e138b61b6cc6df172577",
+  "finding_count": 17,
+  "obligation_count": 0,
+  "finding_codes": {
+    "GAP_AI_COPYRIGHT_NOT_OBSERVED": 3,
+    "GAP_AI_LICENSE_TEXT_NOT_VERIFIED": 3,
+    "GAP_AI_LICENSE_UNRESOLVED_OTHER": 1,
+    "GAP_AI_NOTICE_NOT_OBSERVED": 3,
+    "GAP_NOTICE_FILE_NOT_OBSERVED": 2,
+    "GAP_ROOT_COPYRIGHT_SOURCE_MISSING": 1,
+    "GAP_ROOT_NOTICE_MISSING": 1,
+    "LICENSE_DECLARATION_UNVERIFIED": 3
+  },
+  "semantics": {
+    "authorization_status": "pending",
+    "finding_status": "review_required",
+    "gap_is_violation": false,
+    "license_expression_autofill": false,
+    "provider_declaration_is_verified_license": false
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schema_version": "openguard.p1-report-v2-input/1",
+  "status": "draft_input_only",
+  "binding": {
+    "scan_ref": {
+      "scan_id": "scn-p1-fixed-target-completed",
+      "revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+      "input_hash": "e8e1fabd6f93a3d5ada1609cf57044f0e6245704515456916a5b2e886c5794ad",
+      "inventory_hash": "8d70aa1a3bf6f02b7366d1b2f30ba6f927e2880c83ed77e17fce15a10757f6a2",
+      "status": "completed",
+      "registry_revision": 2
+    },
+    "assessment_ref": {
+      "assessment_id": "asm-p1-fixed-notice-review",
+      "version": 1,
+      "scan_id": "scn-p1-fixed-target-completed",
+      "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+      "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+      "rule_version": "assessment-1.0-facts2:2026.09.2",
+      "formal": true
+    },
+    "task_refs": [
+      {
+        "task_id": "task-p1-review-notice",
+        "version": 1
+      }
+    ]
+  },
+  "resource_profile": {
+    "source": "tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+    "record_pointer": "/records/1",
+    "case_id": "hf-model-bert-base-uncased",
+    "canonical_id": "google-bert/bert-base-uncased",
+    "revision": "86b5e0934494bd15c9632b12f734a8a67f723594",
+    "provider": "huggingface",
+    "visibility": "public",
+    "gated": "ungated",
+    "declared_license_raw": "apache-2.0",
+    "license_expression_id": null,
+    "authorization_status": "pending",
+    "evidence": {
+      "json_pointer": "/payload/cardData/license",
+      "source_file_sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc"
+    }
+  },
+  "notice_license_facts": {
+    "source": "tests/fixtures/notice-license-facts-v1/facts.json",
+    "selected_fact_pointers": [
+      "/facts/0",
+      "/facts/1",
+      "/facts/3",
+      "/facts/4",
+      "/facts/6"
+    ],
+    "selected_evidence_ids": [
+      "ev.root.license",
+      "ev.jackson.license",
+      "ev.jackson.notice",
+      "ev.hamcrest.license",
+      "ev.mockito.license",
+      "ev.hf.bert.license"
+    ],
+    "observed_entries": [
+      {
+        "category": "root_project",
+        "canonical_id": "openguard",
+        "license_raw": "Apache License Version 2.0",
+        "notice_state": "gap",
+        "copyright_state": "gap",
+        "gaps": [
+          "GAP_ROOT_NOTICE_MISSING",
+          "GAP_ROOT_COPYRIGHT_SOURCE_MISSING"
+        ]
+      },
+      {
+        "category": "dependency",
+        "canonical_id": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.5",
+        "license_raw": "Apache License Version 2.0",
+        "notice_state": "observed",
+        "copyright_state": "observed",
+        "gaps": []
+      },
+      {
+        "category": "dependency",
+        "canonical_id": "pkg:maven/org.hamcrest/hamcrest@3.0",
+        "license_raw": "BSD 3-Clause License",
+        "notice_state": "gap",
+        "copyright_state": "observed",
+        "gaps": [
+          "GAP_NOTICE_NOT_PACKAGED"
+        ]
+      },
+      {
+        "category": "dependency",
+        "canonical_id": "pkg:maven/org.mockito/mockito-core@5.23.0",
+        "license_raw": "The MIT License",
+        "notice_state": "gap",
+        "copyright_state": "observed",
+        "gaps": [
+          "GAP_NOTICE_NOT_PACKAGED"
+        ]
+      },
+      {
+        "category": "ai_resource",
+        "canonical_id": "huggingface:model:google-bert/bert-base-uncased",
+        "license_raw": "apache-2.0",
+        "notice_state": "gap",
+        "copyright_state": "gap",
+        "gaps": [
+          "GAP_AI_NOTICE_NOT_OBSERVED",
+          "GAP_AI_COPYRIGHT_NOT_OBSERVED",
+          "GAP_AI_LICENSE_TEXT_NOT_VERIFIED"
+        ]
+      }
+    ]
+  },
+  "policy": {
+    "license_expression_autofill": false,
+    "unknown_items_are_gaps": true,
+    "requires_human_review": true
+  },
+  "expected_consumer_result": {
+    "profile_count": 1,
+    "notice_fact_count": 5,
+    "gap_count": 7,
+    "authorization_statuses": [
+      "pending"
+    ],
+    "report_snapshot_created": false
+  }
+}

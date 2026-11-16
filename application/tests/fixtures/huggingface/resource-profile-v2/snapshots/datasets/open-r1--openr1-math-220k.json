@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"dataset","payload":{"id":"open-r1/OpenR1-Math-220k","sha":"dddddddddddddddddddddddddddddddddddddddd","private":false,"gated":false,"disabled":false,"lastModified":"2026-09-21T08:12:00Z","cardData":{"license":"apache-2.0"}}}

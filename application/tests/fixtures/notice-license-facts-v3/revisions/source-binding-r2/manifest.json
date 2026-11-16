@@ -1,0 +1,120 @@
+{
+  "schema": "openguard.b03-fixed-git-revision/1",
+  "revision_id": "source-binding-r2",
+  "status": "offline_validated_pending_independent_review",
+  "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+  "generated_at": "2026-10-11T11:26:46Z",
+  "producer": {
+    "name": "openguard-b03-b04-inventory-generator",
+    "version": "3.0.1"
+  },
+  "sources": [
+    {
+      "path": "backend/java/pom.xml",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 1983,
+      "sha256": "b84aa40bdeaa80a847a104a4a1501d153d51979c461fc3a10312de4445379077"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 1001,
+      "sha256": "941e9f9135d63c940fd13595ec1f978fbbe9d5ba6e70595f514ce925fcba7aa3"
+    },
+    {
+      "path": "frontend/package.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 651,
+      "sha256": "a8e9bab912ffc5ef1afc2da36db5b0de932ce872e235e02b55dce9ceca65f09a"
+    },
+    {
+      "path": "LICENSE",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 9341,
+      "sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/ai-mo--numinamath-tir.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 626,
+      "sha256": "a1461a4463b7ac7422f3a35876fee59d56be8dc6874506982229709987f600d5"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/huggingfacefw--fineweb.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 620,
+      "sha256": "96bcfcd2135e37ece47e644584e1c9d56193fa7094ac810754735d35d1ee0795"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/nyu-mll--glue.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 606,
+      "sha256": "d641de8a47f936ee57b32ad3ebe042a10724aad21c992a2246a295e5ba8acc06"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/rajpurkar--squad.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 623,
+      "sha256": "f09ed0d1b83646b5d0310d5e11ecd08afa5f94babbce0f9c114ae81a22473648"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/datasets/stanfordnlp--imdb.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 614,
+      "sha256": "3d49996e64d52e01a6085382bb1c706489c3fda0422fcfa4a03658eb502c8766"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/distilbert--distilbert-base-uncased.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 741,
+      "sha256": "e246aae8187cb046ab06dc3d5343c6febadfad80614cf877f46726c8fca54916"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/facebookai--roberta-base.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 702,
+      "sha256": "32278ae9617ce588484ca4ffd7c3c8eb5406036c0c9ee86ac23bacee7744227f"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/google-bert--bert-base-uncased.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 725,
+      "sha256": "dc293e547c6cb125a94305654420a49aa3d930b39bd55309bd8e323b0ce865dc"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/openai-community--gpt2.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 707,
+      "sha256": "2e1ba694ae9f2afb6e46867c73215739dab87bcf0e0d69816d63ecefafd075f9"
+    },
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/snapshots/models/sentence-transformers--all-minilm-l6-v2.json",
+      "source_commit": "9d67b88f39fa4aaa8ab24048aea224204eabd490",
+      "size_bytes": 795,
+      "sha256": "942472a9018c96cba4b29673c5593c815a1d9aafcfcce2ec19b713bbdb566c86"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "facts.json",
+      "size_bytes": 86789,
+      "sha256": "6157b50a2a47955574c404f2302ab7b35a3d2e8e3046aaadcfe26326ce442795",
+      "canonical_package_sha256": "466f8abd7f3b0f2fd7ff1a0f80a8cbd210db6ec80bbb6857046651f2fb67b096"
+    },
+    {
+      "path": "amendment.json",
+      "size_bytes": 5303,
+      "sha256": "0e48d5bd2e063f1cd49426c199a82bbd40d913cf4cb24d9f1a4e2f9b1ef82389"
+    }
+  ],
+  "parent_file_sha256": "4f2a8304ad457dffdc7e4ba276e3602bf93b4f83b1e7e177bbcb84f4a8d841f7",
+  "affected_evidence_count": 8,
+  "independent_review": null,
+  "a_terminal_readback": null
+}

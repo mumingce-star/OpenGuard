@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"model","payload":{"id":"example/unsupported-metadata-fields","sha":"3333333333333333333333333333333333333333","private":false,"gated":false,"disabled":false,"lastModified":"2026-09-21T08:14:00+08:00","pipeline_tag":12,"library_name":""}}

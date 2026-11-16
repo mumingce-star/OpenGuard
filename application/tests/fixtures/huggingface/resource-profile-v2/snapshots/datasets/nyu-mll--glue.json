@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"dataset","payload":{"id":"nyu-mll/glue","sha":"bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c","private":false,"gated":false,"disabled":false,"lastModified":"2026-09-20T10:22:00Z","cardData":{"license":["other"]}}}

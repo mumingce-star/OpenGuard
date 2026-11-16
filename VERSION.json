@@ -1,0 +1,27 @@
+{
+  "version": "aic-semifinal-candidate-20261116",
+  "publication": "NOT_PUBLISHED",
+  "git_checkout": false,
+  "final_commit": null,
+  "recording_status": "PREPARED_NOT_RECORDED",
+  "application_base": "workbench-full-rehearsal-20261116/application",
+  "upload_fix_source": "workbench-upload-selection-fix-20261116/application/frontend",
+  "portable_entry_source": "local delivery with package-relative P4 configuration",
+  "contribution_references": {
+    "xzb_csv": "dae821df76c7ee530d13affc3f2d98f4b0d179ee",
+    "owner_ui": "5656608d9d5dafebc9acdd44fa9fae4cf4acbb41"
+  },
+  "runtime_scope": "TEST_ONLY",
+  "frontend_tests": {
+    "passed": 241,
+    "failed": 0,
+    "skipped": 0
+  },
+  "tsc": "PASS",
+  "vite_build": "PASS_ONE_INVOCATION",
+  "http_core_checks": 36,
+  "qwen_analysis": "SUCCEEDED_ONE_CALL",
+  "backend_312": "HISTORICAL_NOT_RERUN",
+  "chrome_check": "LOGIN_PAGE_ONLY",
+  "source_manifest": "FILE_HASHES.json"
+}

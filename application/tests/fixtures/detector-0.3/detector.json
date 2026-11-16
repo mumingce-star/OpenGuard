@@ -1,0 +1,1 @@
+{"schema":"openguard.detector-artifact/1","artifact_id":"detector","detector":{"name":"static_ai_assets","version":"0.3.0","entrypoint":"app.detectors.static_assets.detect_ai_assets"},"references":[{"artifact_id":"cases","path":"cases.json","sha256":"b1bd4292cbb7549c7fbbdf313d41ac8736cdb77789c5f0e46e02c4a9a8720c97"}],"execution_performed":false}

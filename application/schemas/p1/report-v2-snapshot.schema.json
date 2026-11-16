@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:report-v2-snapshot:1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "binding": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/Binding"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "generator_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:openguard:p1:common:1.0#/$defs/SnapshotSection"
+      }
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "enum": [
+              "html",
+              "json"
+            ]
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "href": {
+            "type": "string",
+            "pattern": "^/api/v1/"
+          }
+        },
+        "required": [
+          "format",
+          "content_hash",
+          "size_bytes",
+          "href"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "schema_version",
+    "snapshot_id",
+    "binding",
+    "created_at",
+    "generator_version",
+    "sections",
+    "content_hash",
+    "artifacts",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

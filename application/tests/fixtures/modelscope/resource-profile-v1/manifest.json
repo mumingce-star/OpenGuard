@@ -1,0 +1,12 @@
+{
+  "schema": "openguard.modelscope-resource-profile-fixtures/1",
+  "fixture_policy": "Offline fixed bytes are provider observations only; they do not establish authorization, rights, license applicability, compliance, or a resolved content revision.",
+  "records": [
+    {
+      "case_id": "ms-dataset-demo",
+      "fixture": "snapshots/datasets/acme--demo-dataset.json",
+      "source_file_sha256": "fb373894f10bcf6c02ac00649a1669eb2c9f95a9dbe354e1a9377174851b173b",
+      "observed": {"canonical_id": "acme/demo-dataset", "declared_license_raw": "CC-BY-4.0", "access_gate": "ungated", "last_modified": "2026-09-29T12:00:00Z"}
+    }
+  ]
+}

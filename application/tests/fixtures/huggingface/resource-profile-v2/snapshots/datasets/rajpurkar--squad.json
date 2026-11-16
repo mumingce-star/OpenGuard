@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"dataset","payload":{"id":"rajpurkar/squad","sha":"7b6d24c440a36b6815f21b70d25016731768db1f","private":false,"gated":false,"disabled":false,"lastModified":"2026-09-20T10:22:00Z","cardData":{"license":"cc-by-sa-4.0"}}}

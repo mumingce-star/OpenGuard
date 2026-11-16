@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0",
+  "id": "asm-p1-fixed-notice-review",
+  "version": 1,
+  "scan_id": "scn-p1-fixed-target-completed",
+  "project_name": "OpenGuard",
+  "revision": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+  "input_hash": "e8e1fabd6f93a3d5ada1609cf57044f0e6245704515456916a5b2e886c5794ad",
+  "facts_hash": "aa47db4015c1dade1138819a21f41aaa7bf8e406bf68f1b55c58096535449cc5",
+  "usage_hash": "6564d2bdc406475e161b3246011007bdfa73b1503b741a5dfab336a23edb5e0a",
+  "cache_key": "8905ce4fdd56d61ca0b125a13f99a1a7b55c7208451c332a792e9f1b12ffcdf2",
+  "generated_at": "2026-09-21T14:30:00Z",
+  "usage": {
+    "preset": "unknown",
+    "commercial": null,
+    "modified": null,
+    "distributed": null,
+    "network_service": null,
+    "training": null,
+    "redistributed_assets": null,
+    "source_disclosure": null,
+    "declared_at": "2026-09-21T14:30:00Z"
+  },
+  "rule_version": "assessment-1.0-facts2:2026.09.2",
+  "model_version": "none",
+  "prompt_version": "assessment-1.0",
+  "formal": true,
+  "scan_status": "completed",
+  "ai_status": "not_requested",
+  "ai_summary": null,
+  "ai_evidence_ids": [],
+  "summary": "观察到根项目 NOTICE 缺口；Apache NOTICE 规则仅形成待人工确认的候选义务，不构成许可证结论。",
+  "dimensions": [
+    {
+      "id": "redistribution",
+      "title": "公开发布与再分发",
+      "status": "unknown",
+      "conclusion": "证据不足，暂无法判断",
+      "conditions": [],
+      "restrictions": [],
+      "unknowns": [
+        "根项目 NOTICE 与版权主体来源缺失",
+        "用途与分发形态未声明"
+      ],
+      "resource_ids": [
+        "cmp-openguard-root",
+        "cmp-jackson-databind"
+      ],
+      "finding_ids": [
+        "finding.root.notice-missing"
+      ],
+      "evidence_ids": [
+        "ev.root.license",
+        "ev.jackson.license",
+        "ev.jackson.notice"
+      ],
+      "strength": "insufficient"
+    }
+  ],
+  "resource_evaluations": [
+    {
+      "resource_id": "cmp-openguard-root",
+      "resource_kind": "component",
+      "name": "OpenGuard",
+      "version": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "scope": "project_code",
+      "scope_evidence_ids": [],
+      "license_expression": null,
+      "license_verified": false,
+      "supported_permission": false,
+      "finding_ids": [
+        "finding.root.notice-missing"
+      ],
+      "evidence_ids": [
+        "ev.root.license"
+      ],
+      "locators": [
+        "LICENSE"
+      ],
+      "conditions": [],
+      "restrictions": {},
+      "gaps": [
+        "GAP_ROOT_NOTICE_MISSING",
+        "GAP_ROOT_COPYRIGHT_SOURCE_MISSING"
+      ],
+      "next_steps": [
+        "人工补齐根项目 NOTICE 与版权来源证据"
+      ]
+    },
+    {
+      "resource_id": "cmp-jackson-databind",
+      "resource_kind": "component",
+      "name": "Jackson Databind",
+      "version": "2.21.5",
+      "scope": "runtime_dependency",
+      "scope_evidence_ids": [],
+      "license_expression": null,
+      "license_verified": false,
+      "supported_permission": false,
+      "finding_ids": [],
+      "evidence_ids": [
+        "ev.jackson.license",
+        "ev.jackson.notice"
+      ],
+      "locators": [
+        "com.fasterxml.jackson.core:jackson-databind:2.21.5!/META-INF/LICENSE",
+        "com.fasterxml.jackson.core:jackson-databind:2.21.5!/META-INF/NOTICE"
+      ],
+      "conditions": [],
+      "restrictions": {},
+      "gaps": [
+        "正式许可证表达式与适用性仍待人工复核"
+      ],
+      "next_steps": [
+        "人工核对分发形态与 NOTICE 处理"
+      ]
+    }
+  ],
+  "obligations": [
+    {
+      "id": "obl-p1-apache-notice-review",
+      "action": "retain_license_and_notice",
+      "requirement": "Review retention of the license and applicable NOTICE content, and document material modifications where required.",
+      "trigger": "Verified Apache-2.0 material is redistributed or modified",
+      "fulfillment": "pending",
+      "resource_ids": [
+        "cmp-jackson-databind"
+      ],
+      "evidence_ids": [
+        "ev.jackson.license",
+        "ev.jackson.notice"
+      ],
+      "rule_id": "LIC-APACHE-2.0-NOTICE",
+      "rule_version": "1.0.0"
+    }
+  ],
+  "coverage_issues": [
+    "GAP_ROOT_NOTICE_MISSING",
+    "GAP_ROOT_COPYRIGHT_SOURCE_MISSING"
+  ],
+  "resource_ids": [
+    "cmp-openguard-root",
+    "cmp-jackson-databind"
+  ],
+  "finding_ids": [
+    "finding.root.notice-missing"
+  ],
+  "evidence_ids": [
+    "ev.root.license",
+    "ev.jackson.license",
+    "ev.jackson.notice"
+  ],
+  "license_ids": [],
+  "remediation_ids": [],
+  "rule_sources": [
+    "rules/license-obligations.yaml#/rules/1"
+  ]
+}

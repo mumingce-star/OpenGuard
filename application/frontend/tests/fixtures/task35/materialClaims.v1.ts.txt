@@ -1,0 +1,72 @@
+import { request } from './scans';
+import type { Assessment } from './assessments';
+import { sameBinding, type Binding, type Result, type Subject, type Use } from './p2';
+
+export type ClaimState='SUPPORT'|'RESTRICTION'|'UNKNOWN'|'COUNTER_EVIDENCE'|'NOT_COVERED';
+export type Clause={clause_id:string;material_id:string;material_sha256:string;kind:string;byte_start:number;byte_end:number;line_start:number;line_end:number;quote:string;quote_sha256:string};
+type EvidenceRef={evidence_id:string;source_sha256:string|null};
+export type MaterialObservation={material_id:string;subject:Subject;source_sha256:string;byte_count:number;filename:string;parse_state:'MATCHED_MIT'|'NOTICE_OBSERVED'|'UNSUPPORTED'|'FAILED';parse_reason:string;binding_state:'BOUND_TO_SAVED_RESULT';adoption_state:'OBSERVATION_ONLY'|'CONDITIONAL_TEXT_BASIS';declared_spdx:string;text_license:'MIT'|'UNKNOWN';license_version:null;version_scope:'RESOURCE_VERSION_NOT_LICENSE_VERSION';role:'root_package'|'dependency'|'unknown';role_state:'observed'|'inferred'|'unknown';role_basis_evidence_ids:string[];source_binding:'PINNED_RELEASE_MATCH'|'NOT_ESTABLISHED';source_profile_sha256:string|null;evidence:EvidenceRef[];clauses:Clause[]};
+export type ClaimLink={claim_id:string;usage:Use;subject:Subject;material_ids:string[];evidence:EvidenceRef[];clause_ids:string[];conditions:string[];counter_evidence:{code:string;material_ids:string[];evidence_ids:string[]}[];state:ClaimState;formal_effect:'none'};
+export type PurposeAdvice={usage:Use;subject:Subject;saved_value:boolean|null;state:ClaimState;reasons:string[];claim_ids:string[];conditions:string[];limitations:string[]};
+export type MaterialClaims={schema_version:'openguard-material-claims/1';rule_version:'mit-bound-claim/1';view_id:string;result_id:string;result_sha256:string;revision:number;previous_result_id:string|null;binding:Binding;data_scope:'OWNER'|'TEST_ONLY';source_status:'CHECKED'|'NOT_CONFIGURED';source_profile_sha256:string|null;materials:MaterialObservation[];claims:ClaimLink[];advice:PurposeAdvice[];formal_effect:'none';applicability_review:'NOT_SIGNED';model_calls:0};
+const obj=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
+const fields=(v:unknown,names:string)=>obj(v)&&Object.keys(v).sort().join(',')===names.split(' ').sort().join(',');
+const text=(v:unknown):v is string=>typeof v==='string'&&v.length>0&&v.length<=65536;
+const hash=(v:unknown):v is string=>typeof v==='string'&&/^[0-9a-f]{64}$/.test(v);
+const id=(v:unknown):v is string=>typeof v==='string'&&/^[A-Za-z0-9_.:-]{1,200}$/.test(v);
+const list=(v:unknown):v is string[]=>Array.isArray(v)&&v.every(text);
+const ids=(v:unknown):v is string[]=>Array.isArray(v)&&v.every(id)&&new Set(v).size===v.length;
+const integer=(v:unknown)=>Number.isSafeInteger(v);
+const uses=['commercial','distributed','modified'];
+const states=['SUPPORT','RESTRICTION','UNKNOWN','COUNTER_EVIDENCE','NOT_COVERED'];
+const sameIds=(a:string[],b:string[])=>a.length===b.length&&new Set(a).size===a.length&&new Set(b).size===b.length&&a.every(x=>b.includes(x));
+const fail=():never=>{throw Error('材料与用途建议未通过当前结果的绑定核对，已停止展示。');};
+
+// Validate DTO structure/references only. Never infer a license grant in the browser.
+export function validateMaterialClaims(v:unknown,result:Result):MaterialClaims {
+ if(!fields(v,'schema_version rule_version view_id result_id result_sha256 revision previous_result_id binding data_scope source_status source_profile_sha256 materials claims advice formal_effect applicability_review model_calls')||!obj(v))return fail();
+ if(v.schema_version!=='openguard-material-claims/1'||v.rule_version!=='mit-bound-claim/1'||!id(v.view_id)||v.result_id!==result.result_id||v.result_sha256!==result.result_sha256||v.revision!==result.revision||v.previous_result_id!==result.previous_result_id||!fields(v.binding,Object.keys(result.binding).join(' '))||!sameBinding(v.binding as Binding,result.binding)||v.data_scope!==result.data_scope||v.formal_effect!=='none'||v.model_calls!==0||v.applicability_review!=='NOT_SIGNED'||!['CHECKED','NOT_CONFIGURED'].includes(v.source_status)||!(v.source_profile_sha256===null||hash(v.source_profile_sha256))||(v.source_status==='CHECKED')!==(v.source_profile_sha256!==null)||!Array.isArray(v.materials)||v.materials.length>20||!Array.isArray(v.claims)||!Array.isArray(v.advice)||v.claims.length!==result.resources.length*3||v.advice.length!==result.resources.length*3)return fail();
+ const rowFor=(s:any)=>fields(s,'resource_id version')?result.resources.find(r=>r.subject.resource_id===s.resource_id&&r.subject.version===s.version):undefined;
+ const evidenceOK=(es:any,row:Result['resources'][number])=>Array.isArray(es)&&new Set(es.map(e=>e?.evidence_id)).size===es.length&&es.every(e=>fields(e,'evidence_id source_sha256')&&id(e.evidence_id)&&row.evidence_ids.includes(e.evidence_id)&&(e.source_sha256===null||hash(e.source_sha256))&&e.source_sha256===(row.evidence_source_hashes[e.evidence_id]??null));
+ const materialMap=new Map<string,MaterialObservation>(),clauseMap=new Map<string,Clause>();
+ for(const m of v.materials){
+  if(!fields(m,'material_id subject source_sha256 byte_count filename parse_state parse_reason binding_state adoption_state declared_spdx text_license license_version version_scope role role_state role_basis_evidence_ids source_binding source_profile_sha256 evidence clauses'))return fail();
+  const row=rowFor(m.subject);
+  if(!row||!id(m.material_id)||materialMap.has(m.material_id)||!row.material_ids.includes(m.material_id)||!hash(m.source_sha256)||!integer(m.byte_count)||m.byte_count<1||m.byte_count>65536||!text(m.filename)||!['MATCHED_MIT','NOTICE_OBSERVED','UNSUPPORTED','FAILED'].includes(m.parse_state)||!text(m.parse_reason)||m.binding_state!=='BOUND_TO_SAVED_RESULT'||!['OBSERVATION_ONLY','CONDITIONAL_TEXT_BASIS'].includes(m.adoption_state)||!text(m.declared_spdx)||!['MIT','UNKNOWN'].includes(m.text_license)||m.license_version!==null||m.version_scope!=='RESOURCE_VERSION_NOT_LICENSE_VERSION'||!['root_package','dependency','unknown'].includes(m.role)||!['observed','inferred','unknown'].includes(m.role_state)||!ids(m.role_basis_evidence_ids)||!m.role_basis_evidence_ids.every((e:string)=>row.evidence_ids.includes(e))||!['PINNED_RELEASE_MATCH','NOT_ESTABLISHED'].includes(m.source_binding)||m.source_profile_sha256!==v.source_profile_sha256||!evidenceOK(m.evidence,row)||!m.evidence.length||!sameIds(m.role_basis_evidence_ids,m.evidence.map((e:EvidenceRef)=>e.evidence_id))||!Array.isArray(m.clauses)||m.clauses.length>5)return fail();
+  if(m.adoption_state==='CONDITIONAL_TEXT_BASIS'&&(m.source_binding!=='PINNED_RELEASE_MATCH'||v.source_status!=='CHECKED'||m.parse_state!=='MATCHED_MIT'))return fail();
+  if(m.parse_state==='MATCHED_MIT'&&(m.text_license!=='MIT'||m.clauses.length!==5))return fail();
+  for(const c of m.clauses){
+   if(!fields(c,'clause_id material_id material_sha256 kind byte_start byte_end line_start line_end quote quote_sha256')||!id(c.clause_id)||clauseMap.has(c.clause_id)||c.material_id!==m.material_id||c.material_sha256!==m.source_sha256||!['license_identifier','copyright','permission','condition','warranty','notice'].includes(c.kind)||!integer(c.byte_start)||!integer(c.byte_end)||c.byte_start<0||c.byte_end<=c.byte_start||c.byte_end>m.byte_count||!integer(c.line_start)||!integer(c.line_end)||c.line_start<1||c.line_end<c.line_start||!text(c.quote)||new TextEncoder().encode(c.quote).length!==c.byte_end-c.byte_start||!hash(c.quote_sha256))return fail();
+   clauseMap.set(c.clause_id,c);
+  }
+  if(m.parse_state==='MATCHED_MIT'&&!sameIds(m.clauses.map((c:Clause)=>c.kind),['license_identifier','copyright','permission','condition','warranty']))return fail();
+  materialMap.set(m.material_id,m);
+ }
+ if(!sameIds([...materialMap.keys()],result.material_ids))return fail();
+ const claimMap=new Map<string,ClaimLink>(),pairs=new Set<string>();
+ for(const c of v.claims){
+  if(!fields(c,'claim_id usage subject material_ids evidence clause_ids conditions counter_evidence state formal_effect'))return fail();
+  const row=rowFor(c.subject),pair=JSON.stringify([row?.subject.resource_id,row?.subject.version,c.usage]);
+  if(!row||!id(c.claim_id)||claimMap.has(c.claim_id)||pairs.has(pair)||!uses.includes(c.usage)||!states.includes(c.state)||c.formal_effect!=='none'||!ids(c.material_ids)||!c.material_ids.every((i:string)=>materialMap.get(i)?.subject.resource_id===row.subject.resource_id)||!sameIds(c.material_ids,row.material_ids)||!evidenceOK(c.evidence,row)||!ids(c.clause_ids)||!c.clause_ids.every((i:string)=>c.material_ids.includes(clauseMap.get(i)?.material_id))||!list(c.conditions)||!Array.isArray(c.counter_evidence))return fail();
+  const expectedClauses=c.material_ids.flatMap((i:string)=>materialMap.get(i)!.clauses.map(x=>x.clause_id));
+  const expectedEvidence=[...new Set(c.material_ids.flatMap((i:string)=>materialMap.get(i)!.evidence.map(x=>x.evidence_id)))];
+  if(!sameIds(c.clause_ids,expectedClauses)||!sameIds(c.evidence.map((e:EvidenceRef)=>e.evidence_id),expectedEvidence))return fail();
+  for(const e of c.counter_evidence)if(!fields(e,'code material_ids evidence_ids')||!['SPDX_TEXT_CONFLICT','BOUND_LICENSE_BYTES_CONFLICT','NOTICE_REQUIRES_REVIEW'].includes(e.code)||!ids(e.material_ids)||!e.material_ids.every((i:string)=>c.material_ids.includes(i))||!ids(e.evidence_ids)||!e.evidence_ids.every((i:string)=>row.evidence_ids.includes(i)))return fail();
+  if(['SUPPORT','RESTRICTION'].includes(c.state)&&(!c.conditions.length||c.counter_evidence.length||!c.material_ids.some((i:string)=>materialMap.get(i)?.adoption_state==='CONDITIONAL_TEXT_BASIS')||!c.clause_ids.some((i:string)=>clauseMap.get(i)?.kind==='permission')||!c.clause_ids.some((i:string)=>clauseMap.get(i)?.kind==='condition')||!c.evidence.length||c.evidence.some((e:EvidenceRef)=>e.source_sha256===null)||v.source_status!=='CHECKED'))return fail();
+  pairs.add(pair);claimMap.set(c.claim_id,c);
+ }
+ const advicePairs=new Set<string>();
+ for(const a of v.advice){
+  if(!fields(a,'usage subject saved_value state reasons claim_ids conditions limitations'))return fail();
+  const row=rowFor(a.subject),pair=JSON.stringify([row?.subject.resource_id,row?.subject.version,a.usage]);
+  if(!row||!uses.includes(a.usage)||advicePairs.has(pair)||a.saved_value!==result.usage[a.usage as Use]||!states.includes(a.state)||!list(a.reasons)||!a.reasons.length||!ids(a.claim_ids)||a.claim_ids.length!==1||!list(a.conditions)||!list(a.limitations)||!a.limitations.length)return fail();
+  const c=claimMap.get(a.claim_ids[0]);
+  if(!c||c.usage!==a.usage||c.subject.resource_id!==row.subject.resource_id||c.state!==a.state||JSON.stringify(c.conditions)!==JSON.stringify(a.conditions)||(a.saved_value===false&&a.state!=='NOT_COVERED')||(a.saved_value===null&&a.state!=='UNKNOWN'&&a.state!=='NOT_COVERED')||(['SUPPORT','RESTRICTION'].includes(a.state)&&a.saved_value!==true))return fail();
+  advicePairs.add(pair);
+ }
+ return v as MaterialClaims;
+}
+export async function readMaterialClaims(a:Assessment,result:Result,signal?:AbortSignal){
+ const url=`/scans/${encodeURIComponent(a.scan_id)}/assessments/${encodeURIComponent(a.id)}/p2/results/${encodeURIComponent(result.result_id)}/material-claims?assessment_version=${a.version}`;
+ return validateMaterialClaims(await request(url,{},signal),result);
+}

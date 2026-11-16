@@ -1,0 +1,46 @@
+{
+  "source": "Actual fixed npm DoH requests 4 and 5 of first job; public DNS request/response bytes only",
+  "retrieved_at": [
+    "2026-10-23T09:40:39.349974Z",
+    "2026-10-23T09:40:39.887754Z"
+  ],
+  "network_during_fixture_copy": 0,
+  "files": [
+    {
+      "path": "npm-1.body",
+      "size": 228,
+      "sha256": "5cceaac21ec9f9f8f026ec46e29fc6b1fddcece56e0b0d949a71a5c536f6a7e6",
+      "actual_acquisition_request_number": 4
+    },
+    {
+      "path": "npm-1.response.wire",
+      "size": 508,
+      "sha256": "04a0e7e92d7958eb49fec63102275df5266ec7213e06c85636c12b5a5fd02442",
+      "actual_acquisition_request_number": 4
+    },
+    {
+      "path": "npm-1.request.wire",
+      "size": 228,
+      "sha256": "1dfd6e70fd05684c469c6f6c826d51e5fa026f89c479fe6fc1b7fbe34f4a61a6",
+      "actual_acquisition_request_number": 4
+    },
+    {
+      "path": "npm-28.body",
+      "size": 372,
+      "sha256": "48e7f61076685a5865e7a767ccee538385cbba99144a51130b9bb2198df3013f",
+      "actual_acquisition_request_number": 5
+    },
+    {
+      "path": "npm-28.response.wire",
+      "size": 652,
+      "sha256": "f8458b10b0383a619754ad8f654878c865ae41213be355a16ad89e37a9c82564",
+      "actual_acquisition_request_number": 5
+    },
+    {
+      "path": "npm-28.request.wire",
+      "size": 228,
+      "sha256": "37b9cdf7e0df080fe8698269927484170039012a706ec99a8ec3f26108a2b0f8",
+      "actual_acquisition_request_number": 5
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"snapshot_schema":"openguard.hf-resource-snapshot/1","provider":"huggingface","resource_kind":"model","source_kind":"synthetic_negative_case","derived_from":"snapshots/models/openai-community--gpt2.json","observed_at":"2026-09-20T10:22:00Z","payload":{"id":"openai-community/gpt2","private":false,"gated":false,"disabled":false}}

@@ -1,0 +1,1 @@
+{"provider":"modelscope","resource_kind":"dataset","source_kind":"offline_provider_snapshot","source_url":"https://modelscope.cn/api/v1/datasets/acme/demo-dataset","observed_at":"2026-09-30T00:00:00Z","payload":{"Code":200,"Success":true,"Data":{"Namespace":"acme","Name":"demo-dataset","License":"CC-BY-4.0","Gated":false,"LastUpdatedTime":"2026-09-29T12:00:00Z"}}}

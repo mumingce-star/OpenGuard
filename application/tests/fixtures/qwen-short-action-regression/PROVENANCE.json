@@ -1,0 +1,27 @@
+{
+  "classification": "ACTUAL_FAILED_OUTPUT09_EXTRACTED_FOR_OFFLINE_REGRESSION_NOT_SYNTHETIC_MODEL_SUCCESS",
+  "origin": {
+    "runtime/p2-ai-model-audit/09-22a5f10b7646-request.json": {
+      "bytes": 15358,
+      "sha256": "79c5151a2765e3da714fde15143da5d539581bc5300c6dc168b01eddc4543cfb"
+    },
+    "runtime/p2-ai-model-audit/09-22a5f10b7646-response.json": {
+      "bytes": 42487,
+      "sha256": "089a9be233ae1ca8687cd613be63495e7816ece99812367c81bfbbdbf6b85fc5"
+    }
+  },
+  "derived": {
+    "actual-output-09.json": {
+      "representation": "exact UTF-8 bytes of saved Ollama response.response string, not outer HTTP body",
+      "bytes": 3320,
+      "sha256": "2dd9414a0749876f45e9188a1f641c5a67a3e9a089806ff4527925d694a1a6ab"
+    },
+    "actual-input-09.json": {
+      "representation": "parsed saved request.prompt JSON, pretty reserialization; not wire bytes",
+      "bytes": 8011,
+      "sha256": "e9525603710c0931024e497b530ccac4a46b934044073a5e29c829e81a09479a"
+    }
+  },
+  "new_real_model_calls": 0,
+  "new_network_http": 0
+}

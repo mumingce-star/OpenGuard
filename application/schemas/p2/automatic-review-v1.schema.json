@@ -1,0 +1,505 @@
+{
+  "$defs": {
+    "AutomaticResource": {
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/Subject"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "license_expression": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "License Expression"
+        },
+        "state": {
+          "enum": [
+            "CONDITIONAL",
+            "NONSTANDARD",
+            "UNAVAILABLE",
+            "OUTSIDE_NPM"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "priority": {
+          "enum": [
+            "routine",
+            "attention",
+            "manual"
+          ],
+          "title": "Priority",
+          "type": "string"
+        },
+        "artifact_binding": {
+          "enum": [
+            "RESOLVED_URL_MATCH",
+            "EXACT_COORDINATE_ONLY",
+            "NOT_ESTABLISHED"
+          ],
+          "title": "Artifact Binding",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_.:-]+$",
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/SourceReference"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/SourceMember"
+          },
+          "title": "Members",
+          "type": "array"
+        },
+        "maintenance_deprecated": {
+          "title": "Maintenance Deprecated",
+          "type": "boolean"
+        },
+        "applicability_review": {
+          "const": "NOT_SIGNED",
+          "title": "Applicability Review",
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject",
+        "name",
+        "license_expression",
+        "state",
+        "priority",
+        "artifact_binding",
+        "conditions",
+        "reasons",
+        "evidence_ids",
+        "source_refs",
+        "members",
+        "maintenance_deprecated",
+        "applicability_review"
+      ],
+      "title": "AutomaticResource",
+      "type": "object"
+    },
+    "AutomaticSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "total_resources": {
+          "minimum": 0,
+          "title": "Total Resources",
+          "type": "integer"
+        },
+        "priority_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "routine",
+              "attention",
+              "manual"
+            ]
+          },
+          "title": "Priority Counts",
+          "type": "object"
+        },
+        "state_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": [
+              "CONDITIONAL",
+              "NONSTANDARD",
+              "UNAVAILABLE",
+              "OUTSIDE_NPM"
+            ]
+          },
+          "title": "State Counts",
+          "type": "object"
+        },
+        "source_packages": {
+          "minimum": 0,
+          "title": "Source Packages",
+          "type": "integer"
+        },
+        "license_materials": {
+          "minimum": 0,
+          "title": "License Materials",
+          "type": "integer"
+        },
+        "license_groups": {
+          "items": {
+            "$ref": "#/$defs/LicenseGroup"
+          },
+          "title": "License Groups",
+          "type": "array"
+        },
+        "maintenance_count": {
+          "minimum": 0,
+          "title": "Maintenance Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "total_resources",
+        "priority_counts",
+        "state_counts",
+        "source_packages",
+        "license_materials",
+        "license_groups",
+        "maintenance_count"
+      ],
+      "title": "AutomaticSummary",
+      "type": "object"
+    },
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "scan_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Scan Id",
+          "type": "string"
+        },
+        "assessment_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "assessment_version": {
+          "minimum": 1,
+          "title": "Assessment Version",
+          "type": "integer"
+        },
+        "registry_revision": {
+          "minimum": 1,
+          "title": "Registry Revision",
+          "type": "integer"
+        },
+        "project_revision": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Project Revision"
+        },
+        "facts_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Facts Hash",
+          "type": "string"
+        },
+        "usage_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Usage Hash",
+          "type": "string"
+        },
+        "rule_version": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "assessment_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Assessment Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scan_id",
+        "assessment_id",
+        "assessment_version",
+        "registry_revision",
+        "project_revision",
+        "facts_hash",
+        "usage_hash",
+        "rule_version",
+        "assessment_sha256"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "LicenseGroup": {
+      "additionalProperties": false,
+      "properties": {
+        "license": {
+          "title": "License",
+          "type": "string"
+        },
+        "count": {
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "license",
+        "count"
+      ],
+      "title": "LicenseGroup",
+      "type": "object"
+    },
+    "SourceMember": {
+      "additionalProperties": false,
+      "properties": {
+        "member": {
+          "title": "Member",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "member",
+        "sha256"
+      ],
+      "title": "SourceMember",
+      "type": "object"
+    },
+    "SourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "metadata",
+            "tarball"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "url",
+        "sha256"
+      ],
+      "title": "SourceReference",
+      "type": "object"
+    },
+    "Subject": {
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:-]+$",
+          "title": "Resource Id",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Version"
+        }
+      },
+      "required": [
+        "resource_id",
+        "version"
+      ],
+      "title": "Subject",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "openguard-auto-review/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "rule_version": {
+      "const": "npm-full-license-review/1",
+      "title": "Rule Version",
+      "type": "string"
+    },
+    "review_id": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_.:-]+$",
+      "title": "Review Id",
+      "type": "string"
+    },
+    "result_id": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_.:-]+$",
+      "title": "Result Id",
+      "type": "string"
+    },
+    "result_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Result Sha256",
+      "type": "string"
+    },
+    "binding": {
+      "$ref": "#/$defs/Binding"
+    },
+    "data_scope": {
+      "enum": [
+        "OWNER",
+        "TEST_ONLY"
+      ],
+      "title": "Data Scope",
+      "type": "string"
+    },
+    "source_profile_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Source Profile Sha256"
+    },
+    "source_status": {
+      "enum": [
+        "CHECKED",
+        "NOT_CONFIGURED"
+      ],
+      "title": "Source Status",
+      "type": "string"
+    },
+    "usage": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "propertyNames": {
+        "enum": [
+          "commercial",
+          "modified",
+          "distributed",
+          "network_service",
+          "training",
+          "redistributed_assets",
+          "source_disclosure"
+        ]
+      },
+      "title": "Usage",
+      "type": "object"
+    },
+    "formal_effect": {
+      "const": "none",
+      "title": "Formal Effect",
+      "type": "string"
+    },
+    "model_calls": {
+      "const": 0,
+      "title": "Model Calls",
+      "type": "integer"
+    },
+    "applicability_review": {
+      "const": "NOT_SIGNED",
+      "title": "Applicability Review",
+      "type": "string"
+    },
+    "resources": {
+      "items": {
+        "$ref": "#/$defs/AutomaticResource"
+      },
+      "title": "Resources",
+      "type": "array"
+    },
+    "summary": {
+      "$ref": "#/$defs/AutomaticSummary"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "rule_version",
+    "review_id",
+    "result_id",
+    "result_sha256",
+    "binding",
+    "data_scope",
+    "source_profile_sha256",
+    "source_status",
+    "usage",
+    "formal_effect",
+    "model_calls",
+    "applicability_review",
+    "resources",
+    "summary",
+    "limitations"
+  ],
+  "title": "AutomaticReview",
+  "type": "object"
+}

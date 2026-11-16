@@ -1,0 +1,145 @@
+{
+  "schema_version": "openguard.p1-integration-fixture-manifest/1",
+  "package_status": "fixed_acceptance_draft_data",
+  "generated_at": "2026-09-21T14:30:00Z",
+  "project": {
+    "canonical_id": "github.com/mumingce-star/OpenGuard",
+    "provider": "github"
+  },
+  "revisions": [
+    {
+      "role": "base_partial",
+      "commit": "23fae26485db2fe3449ec8e7cccc3af64a487002",
+      "scan_id": "scn-p1-fixed-base-partial",
+      "expected_status": "partial"
+    },
+    {
+      "role": "target_completed",
+      "commit": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "scan_id": "scn-p1-fixed-target-completed",
+      "expected_status": "completed"
+    }
+  ],
+  "sources": [
+    {
+      "path": "tests/fixtures/huggingface/resource-profile-v1/manifest.json",
+      "fixed_commit": "23fae26485db2fe3449ec8e7cccc3af64a487002",
+      "sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+      "commit_blob_sha256": "2474035e7182f8140fbe4e71dad1b9035aa598873aa483dab010a7c17dde28b6",
+      "purpose": "Resource Profile facts"
+    },
+    {
+      "path": "tests/fixtures/notice-license-facts-v1/facts.json",
+      "fixed_commit": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "sha256": "df3d51a696c0e4fc2eca591ced45642fbbea09b60656548ecc136720dada0e99",
+      "commit_blob_sha256": "df3d51a696c0e4fc2eca591ced45642fbbea09b60656548ecc136720dada0e99",
+      "purpose": "NOTICE/license relationship facts"
+    },
+    {
+      "path": "rules/license-obligations.yaml",
+      "fixed_commit": "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1",
+      "sha256": "103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "commit_blob_sha256": "b0c5322b7001820b73db48c9779df3177ab2bb0590b223006e16f59ffbfd45e2",
+      "purpose": "Finding/Obligation rule source"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "scans.json",
+      "sha256": "4d4f7ae7128a037471cf1645962f04001402e86ad2434d4fa326c7e05ef28054",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "assessment.json",
+      "sha256": "1495f422b616aeef6948097a80293e2465d9b4ff180266ce77528778fc304f3a",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "remediation-input.json",
+      "sha256": "5a773c91ec7742b5641f0470cbe827e74b2bdf608bbc3016541617808a908c38",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "remediation-task.json",
+      "sha256": "2675f5f911c49990ef091a11efe0afba17ac9e0c008beecdaffd44b23c3cd36d",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "graph-100.json",
+      "sha256": "28119496ace12f8eb3516f16bb4ad95c71e18ed0f1a2c3a068a79aee2fe0a3b6",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "graph-300.json",
+      "sha256": "b3a1d64ee9b014ad81fd9e03ba4a091c28881859e53eff7e65f08613b43ff722",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "graph-500.json",
+      "sha256": "cf19f53137eb3967b89550f06de30a9bfb267b6809e5863cebb524045cd7ba9f",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "history.json",
+      "sha256": "9567587b8a03290e0a3fc033f0920691e0247f35b8f8a3e80e473eab2ba979ba",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    },
+    {
+      "path": "report-v2-input.json",
+      "sha256": "fdd29a93cfae020973aeafd6e9a4a2e8ac9bf0ec51525abc4245f18f95dae516",
+      "source_commits": [
+        "23fae26485db2fe3449ec8e7cccc3af64a487002",
+        "e2d8c016ef5f4cfcddd23abb0205ec41c7cf3db1"
+      ]
+    }
+  ],
+  "expected_results": {
+    "revision_count": 2,
+    "scan_statuses": [
+      "partial",
+      "completed"
+    ],
+    "history_count": 205,
+    "graph_node_counts": [
+      100,
+      300,
+      500
+    ],
+    "assessment_finding_count": 1,
+    "assessment_obligation_count": 1,
+    "remediation_task_count": 1,
+    "report_v2_profile_count": 1,
+    "report_v2_notice_fact_count": 5,
+    "report_v2_snapshot_included": false,
+    "download_api_included": false
+  },
+  "limitations": [
+    "This package contains deterministic facts and draft inputs only; it is not a legal conclusion.",
+    "No final Report V2 snapshot or download API response is included.",
+    "Provider license labels remain raw observations; license_expression_id stays null and authorization stays pending."
+  ]
+}

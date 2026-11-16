@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openguard.invalid/schema/draft/notice-license-facts-v2.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "package_status", "generated_at", "source_package", "producer", "evidence", "facts", "report_v2_rows", "policies"],
+  "properties": {
+    "schema_version": {"const": "openguard.notice-license-facts/2"},
+    "package_status": {"const": "draft_facts_only"},
+    "generated_at": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "source_package": {"$ref": "#/$defs/sourcePackage"},
+    "producer": {"$ref": "#/$defs/producer"},
+    "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+    "facts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fact"}},
+    "report_v2_rows": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/reportRow"}},
+    "policies": {
+      "type": "object", "additionalProperties": false,
+      "required": ["license_expression_autofill", "authorization_default", "gap_is_noncompliance", "notice_absence_is_violation"],
+      "properties": {
+        "license_expression_autofill": {"const": false}, "authorization_default": {"const": "pending"},
+        "gap_is_noncompliance": {"const": false}, "notice_absence_is_violation": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.:-]{2,127}$"},
+    "producer": {
+      "type": "object", "additionalProperties": false, "required": ["name", "version"],
+      "properties": {"name": {"type": "string", "minLength": 1}, "version": {"type": "string", "minLength": 1}}
+    },
+    "sourcePackage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "schema_version", "fixed_commit", "source_file_sha256", "commit_blob_sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1}, "schema_version": {"type": "string", "minLength": 1},
+        "fixed_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "source_file_sha256": {"$ref": "#/$defs/sha"}, "commit_blob_sha256": {"$ref": "#/$defs/sha"}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "kind", "locator", "source_url", "source_revision", "content_scope", "source_file_sha256", "container_sha256", "selected_content_sha256", "selected_json_pointer", "excerpt", "verification", "captured_at", "producer"],
+      "properties": {
+        "evidence_id": {"$ref": "#/$defs/id"}, "kind": {"enum": ["repository_file", "archive_entry", "provider_snapshot"]},
+        "locator": {"type": "string", "minLength": 1}, "source_url": {"type": ["string", "null"], "format": "uri"},
+        "source_revision": {"type": ["string", "null"], "minLength": 1},
+        "content_scope": {"enum": ["whole_file", "archive_entry", "json_pointer_value"]},
+        "source_file_sha256": {"$ref": "#/$defs/sha"}, "container_sha256": {"anyOf": [{"$ref": "#/$defs/sha"}, {"type": "null"}]},
+        "selected_content_sha256": {"$ref": "#/$defs/sha"}, "selected_json_pointer": {"type": ["string", "null"], "pattern": "^/"},
+        "excerpt": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "verification": {"enum": ["repository_bytes_verified", "archive_bytes_verified", "fixture_bytes_verified"]},
+        "captured_at": {"type": "string", "format": "date-time", "pattern": "Z$"}, "producer": {"$ref": "#/$defs/producer"}
+      }
+    },
+    "relationship": {
+      "type": "object", "additionalProperties": false, "required": ["state", "evidence_ids", "gap_code", "applicability"],
+      "properties": {
+        "state": {"enum": ["observed", "gap", "text_observed", "declared_unverified"]},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "gap_code": {"type": ["string", "null"], "pattern": "^[A-Z][A-Z0-9_]{2,63}$"},
+        "applicability": {"const": "pending_review"}
+      }
+    },
+    "fact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fact_id", "subject", "authorization_status", "license_observations", "relationships", "gaps", "review_status"],
+      "properties": {
+        "fact_id": {"$ref": "#/$defs/id"},
+        "subject": {
+          "type": "object", "additionalProperties": false,
+          "required": ["category", "canonical_id", "display_name", "version", "source_url", "usage_scope", "source_revision"],
+          "properties": {
+            "category": {"enum": ["root_project", "dependency", "ai_resource"]}, "canonical_id": {"type": "string", "minLength": 1},
+            "display_name": {"type": "string", "minLength": 1}, "version": {"type": ["string", "null"]},
+            "source_url": {"type": ["string", "null"], "format": "uri"}, "usage_scope": {"enum": ["project", "runtime", "test", "model", "dataset"]},
+            "source_revision": {"type": ["string", "null"], "minLength": 1}
+          }
+        },
+        "authorization_status": {"const": "pending"},
+        "license_observations": {
+          "type": "array", "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["raw_value", "observation_kind", "evidence_ids", "license_expression_id", "observation_strength"],
+            "properties": {
+              "raw_value": {"type": ["string", "array", "null"], "items": {"type": "string"}},
+              "observation_kind": {"enum": ["license_text_heading", "provider_declared_raw", "missing"]},
+              "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+              "license_expression_id": {"type": "null"},
+              "observation_strength": {"enum": ["text_observed", "provider_declared_unverified", "missing"]}
+            }
+          }
+        },
+        "relationships": {
+          "type": "object", "additionalProperties": false, "required": ["license", "notice", "copyright"],
+          "properties": {"license": {"$ref": "#/$defs/relationship"}, "notice": {"$ref": "#/$defs/relationship"}, "copyright": {"$ref": "#/$defs/relationship"}}
+        },
+        "gaps": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$"}},
+        "review_status": {"const": "pending_human_review"}
+      }
+    },
+    "reportRow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["row_id", "subject_fact_id", "resource_name_and_type", "version_and_source", "license_or_authorization", "usage_or_open_mode", "key_obligations_or_restrictions", "team_modifications", "compliance_status", "authorization_status", "license_expression_ids", "observation_strengths", "evidence_ids", "gap_codes"],
+      "properties": {
+        "row_id": {"$ref": "#/$defs/id"}, "subject_fact_id": {"$ref": "#/$defs/id"},
+        "resource_name_and_type": {"type": "string", "minLength": 1}, "version_and_source": {"type": "string", "minLength": 1},
+        "license_or_authorization": {"type": "string", "minLength": 1}, "usage_or_open_mode": {"type": "string", "minLength": 1},
+        "key_obligations_or_restrictions": {"type": "string", "minLength": 1}, "team_modifications": {"type": "string", "minLength": 1},
+        "compliance_status": {"const": "待核验"}, "authorization_status": {"const": "pending"},
+        "license_expression_ids": {"type": "array", "maxItems": 0},
+        "observation_strengths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["text_observed", "provider_declared_unverified", "missing"]}},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "gap_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$"}}
+      }
+    }
+  }
+}

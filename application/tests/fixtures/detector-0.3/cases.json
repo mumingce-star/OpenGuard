@@ -1,0 +1,78 @@
+{
+  "schema": "openguard.detector-fixtures/0.3",
+  "scope": "offline_non_gold",
+  "cases": [
+    {
+      "id": "tp-ast-direct",
+      "split": "train",
+      "family_id": "smolagents-direct",
+      "taxonomy": "TP-AST",
+      "files": {"model.py": "from smolagents import InferenceClientModel\nInferenceClientModel(model_id='org/train-model')\n"},
+      "expected_models": ["huggingface:org/train-model"]
+    },
+    {
+      "id": "tp-ast-structured-config",
+      "split": "dev",
+      "family_id": "smolagents-structured-config",
+      "taxonomy": "TP-CONFIG",
+      "files": {"model.py": "from smolagents import InferenceClientModel\nInferenceClientModel(**{'model_id': 'org/config-model'})\n"},
+      "expected_models": ["huggingface:org/config-model"]
+    },
+    {
+      "id": "tp-url-revision",
+      "split": "dev",
+      "family_id": "hf-url-revision",
+      "taxonomy": "TP-URL",
+      "files": {"README.md": "https://huggingface.co/org/url-model/resolve/main/config.json\n"},
+      "expected_models": ["huggingface:org/url-model"]
+    },
+    {
+      "id": "fn-absent-dynamic-config",
+      "split": "train",
+      "family_id": "dynamic-config",
+      "taxonomy": "FN-ABSENT",
+      "files": {"model.py": "from smolagents import InferenceClientModel\nInferenceClientModel(**config)\n"},
+      "expected_models": []
+    },
+    {
+      "id": "fn-evidence-unsupported-provider",
+      "split": "dev",
+      "family_id": "unsupported-provider",
+      "taxonomy": "FN-EVIDENCE",
+      "files": {"model.py": "client.model(model_id='org/not-yet-supported')\n"},
+      "expected_models": []
+    },
+    {
+      "id": "fp-attribution-documentation-route",
+      "split": "train",
+      "family_id": "hf-documentation-route",
+      "taxonomy": "FP-ATTRIBUTION",
+      "files": {"README.md": "https://huggingface.co/docs/transformers/index\n"},
+      "expected_models": []
+    },
+    {
+      "id": "fp-hallucinated-lookalike-url",
+      "split": "dev",
+      "family_id": "hf-lookalike-url",
+      "taxonomy": "FP-HALLUCINATED",
+      "files": {"README.md": "https://huggingface.co/org/model/tree/main\n"},
+      "expected_models": []
+    },
+    {
+      "id": "fp-overprecision-duplicate-key",
+      "split": "holdout",
+      "family_id": "duplicate-key-config",
+      "taxonomy": "FP-OVERPRECISION",
+      "files": {"model.py": "from smolagents import InferenceClientModel\nInferenceClientModel(**{'model_id': 'org/a', 'model': 'org/b'})\n"},
+      "expected_models": []
+    },
+    {
+      "id": "fp-leakage-guard",
+      "split": "holdout",
+      "family_id": "holdout-url-route",
+      "taxonomy": "FP-LEAKAGE",
+      "files": {"README.md": "https://huggingface.co/holdout/only\n"},
+      "expected_models": ["huggingface:holdout/only"]
+    }
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "schema_version": "openguard-official-sources/1",
+  "binding": {
+    "scan_id": "scn_ce61ca11-d594-49c1-b4ef-764fd651536d",
+    "assessment_id": "asm_4a28e384-3ef8-55b3-9300-94ed123e17da",
+    "assessment_version": 2,
+    "registry_revision": 13,
+    "project_revision": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+    "facts_hash": "7cacc2aaac1cd10c2647413c773b4a3af18128c560ff850ff55cf01e2e1fccaa",
+    "usage_hash": "abdf63d8df5c1c35b5493c9439877e842a8f637a9555981e821d87842cdce1e2",
+    "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+    "assessment_sha256": "a865ed52ed4999f8f95bfc9031d88322cd153fe792fc226de1adde21eb0999b3"
+  },
+  "result_id": "p2res_cc0223c1fa8bebed1af40e3b030bfbdf3445b1bd7f886982a01fcf2a0cedf905",
+  "result_sha256": "08c3d5bbf4c6d99f33d3b958b9a08657acac375f21885445daae25d6f5701906",
+  "fetch": {
+    "commit": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+    "created_at": "2026-10-23T10:01:35.145368+00:00",
+    "error_code": "upstream_404",
+    "http_dispatched": 6,
+    "http_intents": 6,
+    "http_responses": 6,
+    "job_id": "official-581c7c030f46ca01f5ec6b94f25332bf243df14f6d7788df",
+    "retrieval_status": "failed",
+    "scan_id": "scn_ce61ca11-d594-49c1-b4ef-764fd651536d",
+    "state": "partial",
+    "subject": {
+      "resource_id": "cmp_c2316c9a-52e6-515b-a8f3-9dfffa023e62",
+      "version": "14.1.2"
+    },
+    "updated_at": "2026-10-23T10:01:43.178051+00:00"
+  },
+  "candidate": {
+    "adoption_status": "not_adopted",
+    "candidate_id": "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6",
+    "candidate_sha256": "489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6",
+    "commit": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+    "coverage": "partial_git_license_only",
+    "created_at": "2026-10-23T10:01:43.177297+00:00",
+    "formal_effect": "none",
+    "license_text": "Copyright (c) 2011-2026 Charlie Robbins, Marak Squires, Jade Michael Thornton and the Contributors.\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n",
+    "limitations": [
+      "官方端点取回原字节仅是来源观察，尚未正式接纳；采用前不属于已保存Material。",
+      "仅取得固定Git提交根LICENSE；npm 14.1.2元数据端点明确返回404，版本发行信息缺失。不得视为npm发行包LICENSE、来源接纳或实际交付范围已确认。",
+      "采用后仍保持user_supplied_unverified/pending，不自动生成肯定许可结论。"
+    ],
+    "npm_metadata_status": "missing_404",
+    "scan_id": "scn_ce61ca11-d594-49c1-b4ef-764fd651536d",
+    "schema_version": "openguard-official-source-candidate/1",
+    "source_failures": [
+      {
+        "error_code": "upstream_404",
+        "http_status": 404,
+        "kind": "npm_metadata",
+        "request_number": 6,
+        "retrieved_at": "2026-10-23T10:01:43.170841Z",
+        "url": "https://registry.npmjs.org/http-server/14.1.2"
+      }
+    ],
+    "sources": [
+      {
+        "byte_count": 1124,
+        "commit": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+        "content_type": "text/plain",
+        "kind": "git_license",
+        "name": "http-server",
+        "retrieved_at": "2026-10-23T10:01:39.066000Z",
+        "sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6",
+        "source_level": "official_repository_bytes_observed",
+        "url": "https://raw.githubusercontent.com/http-party/http-server/0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b/LICENSE",
+        "verification_state": "pending",
+        "version": "14.1.2"
+      }
+    ],
+    "subject": {
+      "resource_id": "cmp_c2316c9a-52e6-515b-a8f3-9dfffa023e62",
+      "version": "14.1.2"
+    },
+    "verification_state": "pending"
+  },
+  "analysis": {
+    "analysis_id": null,
+    "assessment_id": "asm_4a28e384-3ef8-55b3-9300-94ed123e17da",
+    "assessment_version": 2,
+    "binding": {
+      "assessment_id": "asm_4a28e384-3ef8-55b3-9300-94ed123e17da",
+      "assessment_sha256": "a865ed52ed4999f8f95bfc9031d88322cd153fe792fc226de1adde21eb0999b3",
+      "assessment_version": 2,
+      "facts_hash": "7cacc2aaac1cd10c2647413c773b4a3af18128c560ff850ff55cf01e2e1fccaa",
+      "project_revision": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+      "registry_revision": 13,
+      "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+      "scan_id": "scn_ce61ca11-d594-49c1-b4ef-764fd651536d",
+      "usage_hash": "abdf63d8df5c1c35b5493c9439877e842a8f637a9555981e821d87842cdce1e2"
+    },
+    "created_at": "2026-10-23T10:02:19.358251+00:00",
+    "error_code": null,
+    "mode": "unadopted_preview",
+    "preview_id": "p2preview_54d455982866a98584879291f4e96055359e1309426f8b17236741437c728b03",
+    "result_id": "p2res_cc0223c1fa8bebed1af40e3b030bfbdf3445b1bd7f886982a01fcf2a0cedf905",
+    "result_sha256": "08c3d5bbf4c6d99f33d3b958b9a08657acac375f21885445daae25d6f5701906",
+    "scan_id": "scn_ce61ca11-d594-49c1-b4ef-764fd651536d",
+    "state": "ready",
+    "updated_at": "2026-10-23T10:02:35.898964+00:00",
+    "preview": {
+      "actions": [
+        {
+          "claim_level": "verification_action_only",
+          "source_candidate_ids": [
+            "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6"
+          ],
+          "text": "核对计划公开的修改后源码副本，依据许可条款中‘The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software’明确保留版权与许可声明的位置，记录具体文件清单及待补项。"
+        },
+        {
+          "claim_level": "verification_action_only",
+          "source_candidate_ids": [
+            "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6"
+          ],
+          "text": "检查服务运行是否向用户提供源码或下载件副本，明确服务交付边界，记录实际交付范围，避免将服务运行等同于副本交付。"
+        },
+        {
+          "claim_level": "verification_action_only",
+          "source_candidate_ids": [
+            "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6"
+          ],
+          "text": "对照‘source_disclosure=true’与‘distributed=false’的用途设定，明确计划公开源码与当前不分发/交付是否对应不同阶段，记录各阶段的具体文件集合范围。"
+        },
+        {
+          "claim_level": "verification_action_only",
+          "source_candidate_ids": [
+            "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6"
+          ],
+          "text": "请确认‘usage.distributed’从false变true是否符合实际交付行为，核对是否在服务运行中实际提供可下载的软件副本或源码文件。"
+        }
+      ],
+      "binding": {
+        "assessment_id": "asm_4a28e384-3ef8-55b3-9300-94ed123e17da",
+        "assessment_sha256": "a865ed52ed4999f8f95bfc9031d88322cd153fe792fc226de1adde21eb0999b3",
+        "assessment_version": 2,
+        "facts_hash": "7cacc2aaac1cd10c2647413c773b4a3af18128c560ff850ff55cf01e2e1fccaa",
+        "project_revision": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+        "registry_revision": 13,
+        "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+        "scan_id": "scn_ce61ca11-d594-49c1-b4ef-764fd651536d",
+        "usage_hash": "abdf63d8df5c1c35b5493c9439877e842a8f637a9555981e821d87842cdce1e2"
+      },
+      "candidate_id": "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6",
+      "changes": [
+        {
+          "after": true,
+          "before": false,
+          "explanation": "usage.distributed字段由false变true，表明当前用途已包含向用户分发软件副本的行为，需结合许可条款中‘included in all copies or substantial portions’进行实际交付边界核对。",
+          "field": "usage.distributed"
+        }
+      ],
+      "clauses": [
+        {
+          "category": "permission",
+          "end": 533,
+          "quote": "Permission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:",
+          "source_candidate_id": "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6",
+          "start": 101
+        },
+        {
+          "category": "condition",
+          "end": 661,
+          "quote": "The above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.",
+          "source_candidate_id": "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6",
+          "start": 535
+        },
+        {
+          "category": "disclaimer",
+          "end": 1123,
+          "quote": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+          "source_candidate_id": "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6",
+          "start": 663
+        }
+      ],
+      "coverage": "partial_git_license_only",
+      "created_at": "2026-10-23T10:02:35.897304+00:00",
+      "data_scope": "TEST_ONLY",
+      "error_code": null,
+      "formal_effect": "none",
+      "input_sha256": "b62dfdb07c9a287a01c780feced75bf60c444414f71cc3cf9a6a76ba761d42e4",
+      "limitations": [
+        "这是尚未采用资料的Qwen预览，不代表Material已保存；确认采用后才更新P2 Result。",
+        "官方端点取回原字节仅是来源观察，尚未正式接纳；采用前不属于已保存Material。",
+        "仅取得固定Git提交根LICENSE；npm 14.1.2元数据端点明确返回404，版本发行信息缺失。不得视为npm发行包LICENSE、来源接纳或实际交付范围已确认。",
+        "采用后仍保持user_supplied_unverified/pending，不自动生成肯定许可结论。",
+        "AI只提出待核验行动，不能签发来源、确认许可适用性或义务履行。",
+        "用途为演示用途假设；Git根LICENSE不自动覆盖npm发行包、其他依赖或实际交付范围。",
+        "结果变更由程序计算；Qwen解释不改变已有P2 Result、Advice、Summary或正式规则。",
+        "结构与已知错误模式检查不保证行动完整或语义正确，内容仍需人工复核。"
+      ],
+      "metrics": {
+        "elapsed_ms": 16525,
+        "eval_count": 1018,
+        "prompt_eval_count": 3438,
+        "total_duration": 16515193291
+      },
+      "model": {
+        "digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "name": "qwen3:4b-instruct-2507-q4_K_M",
+        "prompt_version": "p2-bound-material-actions/4",
+        "runtime": "ollama/0.33.3"
+      },
+      "model_calls": 1,
+      "npm_metadata_status": "missing_404",
+      "preview_id": "p2preview_54d455982866a98584879291f4e96055359e1309426f8b17236741437c728b03",
+      "preview_sha256": "54d455982866a98584879291f4e96055359e1309426f8b17236741437c728b03",
+      "previous_result": {
+        "binding": {
+          "assessment_id": "asm_cff8f2b5-1325-5dd1-a831-412e6064f3d0",
+          "assessment_sha256": "171fc981e36fcbc852acfec9607798b76b123c6cd8d700418e1f6d70d765820f",
+          "assessment_version": 1,
+          "facts_hash": "7cacc2aaac1cd10c2647413c773b4a3af18128c560ff850ff55cf01e2e1fccaa",
+          "project_revision": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+          "registry_revision": 13,
+          "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+          "scan_id": "scn_ce61ca11-d594-49c1-b4ef-764fd651536d",
+          "usage_hash": "942fc0540ad8b5b1d8436614ef5f258d7d3d5af140e7485356ab4f41f54ba568"
+        },
+        "result_id": "p2res_904f46439a420e9aa4ce270f66354e68803e6e58b61280c3cfd3e11c5f1849ae",
+        "result_sha256": "14b2cda96ead7b6028adc76e217dab735bc1ed45b9617aa7d972c86e1960fd17",
+        "selection": "MAX_SAVED_LOWER_ASSESSMENT_VERSION_THEN_REVISION_IN_THIS_SCAN_EVENT_LEDGER"
+      },
+      "quote_index_unit": "unicode_code_point",
+      "result_id": "p2res_cc0223c1fa8bebed1af40e3b030bfbdf3445b1bd7f886982a01fcf2a0cedf905",
+      "result_revision": 1,
+      "result_sha256": "08c3d5bbf4c6d99f33d3b958b9a08657acac375f21885445daae25d6f5701906",
+      "schema_version": "openguard-official-source-preview/1",
+      "source_failures": [
+        {
+          "error_code": "upstream_404",
+          "http_status": 404,
+          "kind": "npm_metadata",
+          "request_number": 6,
+          "retrieved_at": "2026-10-23T10:01:43.170841Z",
+          "url": "https://registry.npmjs.org/http-server/14.1.2"
+        }
+      ],
+      "source_refs": [
+        {
+          "candidate_id": "p2src_489080b97d7d831ac42558175974aac82ef4f965f543deb7a5cef8be657fdca6",
+          "source_level": "retrieved_unadopted_candidate",
+          "source_sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6",
+          "subject": {
+            "resource_id": "cmp_c2316c9a-52e6-515b-a8f3-9dfffa023e62",
+            "version": "14.1.2"
+          },
+          "verification_state": "pending"
+        }
+      ],
+      "status": "succeeded",
+      "usage": {
+        "commercial": false,
+        "distributed": true,
+        "modified": true,
+        "network_service": true,
+        "redistributed_assets": false,
+        "source_disclosure": true,
+        "training": false
+      },
+      "usage_assumption": "DEMO_USAGE_ASSUMPTION"
+    }
+  },
+  "adopted_material_ids": []
+}

@@ -1,0 +1,1 @@
+{"provider":"huggingface","resource_kind":"dataset","payload":{"id":"stanfordnlp/imdb","sha":"e6281661ce1c48d982bc483cf8a173c1bbeb5d31","private":false,"gated":false,"disabled":false,"lastModified":"2026-09-20T10:22:00Z","cardData":{"license":["other"]}}}

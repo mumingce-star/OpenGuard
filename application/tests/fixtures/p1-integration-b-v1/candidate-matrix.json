@@ -1,0 +1,49 @@
+{
+  "schema_version": "openguard.b02-candidate-matrix/1",
+  "source_package_sha256": "9cdcb294c7e46ce57a2e3b4a92e5693439dbc6b82f15e138b61b6cc6df172577",
+  "scope": "Fixed v2 facts candidate regression only; not Gold, not FP/FN metrics, and not a formal risk conclusion.",
+  "expected_candidates_by_fact": {
+    "fact.root.openguard": [
+      {"category": "evidence_gap", "code": "GAP_ROOT_NOTICE_MISSING"},
+      {"category": "evidence_gap", "code": "GAP_ROOT_COPYRIGHT_SOURCE_MISSING"}
+    ],
+    "fact.dep.jackson-databind": [],
+    "fact.dep.springboot": [],
+    "fact.dep.hamcrest": [
+      {"category": "evidence_gap", "code": "GAP_NOTICE_FILE_NOT_OBSERVED"}
+    ],
+    "fact.dep.mockito": [
+      {"category": "evidence_gap", "code": "GAP_NOTICE_FILE_NOT_OBSERVED"}
+    ],
+    "fact.ai.gpt2": [
+      {"category": "evidence_gap", "code": "GAP_AI_NOTICE_NOT_OBSERVED"},
+      {"category": "evidence_gap", "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED"},
+      {"category": "evidence_gap", "code": "GAP_AI_LICENSE_TEXT_NOT_VERIFIED"},
+      {"category": "unverified_license_declaration", "code": "LICENSE_DECLARATION_UNVERIFIED"}
+    ],
+    "fact.ai.bert": [
+      {"category": "evidence_gap", "code": "GAP_AI_NOTICE_NOT_OBSERVED"},
+      {"category": "evidence_gap", "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED"},
+      {"category": "evidence_gap", "code": "GAP_AI_LICENSE_TEXT_NOT_VERIFIED"},
+      {"category": "unverified_license_declaration", "code": "LICENSE_DECLARATION_UNVERIFIED"}
+    ],
+    "fact.ai.imdb": [
+      {"category": "evidence_gap", "code": "GAP_AI_NOTICE_NOT_OBSERVED"},
+      {"category": "evidence_gap", "code": "GAP_AI_COPYRIGHT_NOT_OBSERVED"},
+      {"category": "evidence_gap", "code": "GAP_AI_LICENSE_UNRESOLVED_OTHER"},
+      {"category": "evidence_gap", "code": "GAP_AI_LICENSE_TEXT_NOT_VERIFIED"},
+      {"category": "unverified_license_declaration", "code": "LICENSE_DECLARATION_UNVERIFIED"}
+    ]
+  },
+  "false_positive_guards": {
+    "zero_candidate_facts": ["fact.dep.jackson-databind", "fact.dep.springboot"],
+    "notice_gap_is_not_violation": ["GAP_ROOT_NOTICE_MISSING", "GAP_NOTICE_FILE_NOT_OBSERVED", "GAP_AI_NOTICE_NOT_OBSERVED"],
+    "forbidden_candidate_categories": ["formal_risk", "obligation"],
+    "forbidden_confirmed_violation": true
+  },
+  "false_negative_guards": {
+    "all_existing_fact_ids_must_be_mapped": true,
+    "declared_unverified_requires_candidate": "LICENSE_DECLARATION_UNVERIFIED",
+    "fact_gap_requires_evidence_gap_candidate": true
+  }
+}

@@ -1,0 +1,47 @@
+.assessment-tier{background:var(--bg-card,#132132);border:1px solid #344963;border-radius:18px;padding:26px;margin:0 0 28px}.tier-heading{display:flex;justify-content:space-between;align-items:center;gap:24px}.tier-heading h2{font-size:24px!important;margin:0!important}.tier-heading>span{color:#a8b7ca;font-size:14px}.tier-steps{list-style:none;padding:0!important;margin:24px 0!important;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.tier-steps li{border-top:3px solid #3a485c;padding:16px 8px 4px;color:#a8b7ca}.tier-steps li[aria-current=step]{border-color:#7299ff;color:#e8eef8}.tier-steps strong{font-size:20px}.tier-steps strong span{margin-left:8px;font-size:17px}.tier-steps p{margin:8px 0!important}.tier-steps small{font-size:14px}.assessment-tier .tier-boundary,.tier-plans .tier-boundary{font-size:14px;color:#a8b7ca;line-height:1.8}.tier-test{background:#574122;border-left:4px solid #dfb95c;padding:12px;color:#ffe3a0;font-weight:600}.tier-plans{margin:24px 0 32px}.tier-plans .tier-upgrade{background:#3263d9;color:white;padding:12px 20px;min-height:46px;border-radius:9px;border:1px solid #719aff;font-size:16px}.tier-plans button:focus-visible,.tier-plans summary:focus-visible{outline:3px solid #99b8ff;outline-offset:4px}.tier-l2-plan{border-left:3px solid #719aff;padding:16px 24px;background:#111e30;margin:20px 0}.tier-plans h3{font-size:22px!important}.tier-plans h4{font-size:17px!important}.tier-plans details{padding:14px 0}.tier-plans summary{cursor:pointer;font-weight:600;line-height:1.8}.tier-plans summary>span{font-weight:400;color:#adbed4;margin-left:18px}.tier-plans li{margin:9px 0}.tier-plans li>span{display:block;color:#a8b7ca;margin-top:4px}.tier-planned{padding:16px;margin:16px 0;background:#172a40}.tier-planned small{color:#d5b16a}.tier-system{border-top:1px solid #344963;margin-top:16px}.tier-l3{border-top:1px solid #344963}.tier-categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0}.tier-categories>section{border-left:2px solid #596c87;padding:0 16px}.tier-categories h4{display:flex;justify-content:space-between;gap:12px;margin:8px 0}.tier-categories h4 span{color:#d5b16a;white-space:nowrap}.tier-categories p{line-height:1.7;color:#adbed4}.tier-categories ul{max-height:240px;overflow:auto}.tier-l2-plan .ai-loop-controls{margin:16px 0}.tier-l1-intro{color:#a8b7ca;line-height:1.8}@media(max-width:800px){.tier-steps{grid-template-columns:1fr}.tier-categories{grid-template-columns:1fr}.tier-heading{display:block}}
+
+.tier-compact{padding:0!important;border:0!important;background:transparent!important;margin-bottom:18px}.tier-stage-nav{display:flex;gap:10px}.tier-stage-nav button{flex:1;text-align:left;padding:12px 18px}.tier-stage-nav strong,.tier-stage-nav small{display:block}.tier-stage-nav small{margin-top:5px;color:#b5c2d3}.tier-stage-nav button[aria-pressed=true]{border-color:#8b82e8;background:#25253e}.stage-result{border-left:3px solid #9a91ed;padding:18px 24px;background:#132131;border-radius:0 14px 14px 0;margin-bottom:24px}.stage-result header{display:flex;align-items:center;justify-content:space-between;gap:16px}.stage-result h2{margin:0;font-size:24px}.stage-result header span{color:#c1b5f1}.stage-conclusion{font-size:23px;line-height:1.55;color:#f2f5ff;margin:14px 0}.stage-result p{line-height:1.6}.stage-result small{color:#c2b89c}.stage-conditions{border-top:1px solid #354256;padding-top:12px}.stage-conditions summary{cursor:pointer}.ai-review-assisted:not([open]){padding:14px 18px!important;min-height:0!important}.ai-review-assisted>summary{cursor:pointer;font-weight:600}.ai-review-assisted>summary:focus-visible,.tier-stage-nav button:focus-visible{outline:3px solid #b9a9ff;outline-offset:4px}
+
+/* R2: one primary result, quiet records; all selectors remain inside assessment. */
+.compact-result .ai-review{border:0;background:transparent;border-radius:0;padding:0;margin:0 0 12px}
+.compact-result .stage-advice{border:1px solid #35445c;border-radius:14px;background:#132131;padding:22px 24px;margin:12px 0 10px}
+.compact-result .stage-advice h2{font-size:24px;line-height:1.35}
+.compact-result .stage-advice header span{font-size:14px}
+.compact-result .usage-advice-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid #304257}
+.compact-result .usage-advice-row:last-child{border-bottom:0}
+.compact-result .usage-advice-row h3{font-size:16px;line-height:1.65;margin:0;color:#cbd8ee}
+.compact-result .usage-advice-row p{font-size:16px;line-height:1.65;margin:0 0 6px}
+.compact-result .usage-advice-row p:last-child{margin-bottom:0}
+.compact-result .usage-restriction{color:#ffcb9c;font-weight:600}
+.compact-result .usage-local-support{color:#c8dbf1}
+.compact-result .stage-boundary{font-size:14px!important;color:#bcc7d8;margin:12px 0 0!important;line-height:1.6}
+.compact-result .stage-obligation-summary{font-size:14px;border-top:1px solid #304257;padding-top:10px}
+.compact-result .stage-obligation-summary p{font-size:14px;margin:6px 0}
+.compact-result .ai-compact-summary{font-size:14px;color:#b7c5d5;margin:8px 0 14px}
+.compact-result .result-next-actions{display:flex;gap:12px;margin:14px 0 18px;flex-wrap:wrap}
+.compact-result .result-next-actions button{font-size:16px;padding:10px 18px}
+.compact-result .result-next-actions button:first-child{background:#3263d9;color:#fff}
+.compact-result .assessment-full-records,.compact-result .assessment-usage-details{margin:8px 0;font-size:14px}
+.compact-result .assessment-full-records>summary,.compact-result .assessment-usage-details>summary,.compact-result .stage-other-uses>summary{cursor:pointer;line-height:1.65;padding:7px 0;color:#c5d5ec}
+.compact-result .ai-review-assisted:not([open]),.compact-result .ai-review-insufficient:not([open]){padding:8px 0!important;background:transparent;border:0;border-top:1px solid #35445c;border-radius:0;margin:8px 0;min-height:0!important}
+.compact-result .ai-review-provenance{margin:8px 0}
+.compact-result .ai-review-existing{padding-top:10px}
+.compact-result .stage-other-uses{font-size:14px;margin:4px 0 0}
+.compact-result .tier-stage-nav button{padding:9px 14px}
+.compact-result .tier-stage-nav strong{font-size:16px}
+.compact-result .tier-stage-nav small{font-size:14px;margin-top:2px}
+.compact-result .tier-compact{margin-bottom:8px}
+.compact-result summary:focus-visible,.compact-result button:focus-visible{outline:3px solid #b1e6fa;outline-offset:3px}
+.compact-result .stage-l2-work[hidden]{display:none}
+
+/* Keep the fixed desktop header and readonly boundary within the first screen. */
+.compact-result .og-page-header h1{font-size:30px;margin:0 0 8px;line-height:1.3}
+.compact-result .og-page-header p{font-size:16px;margin:0;line-height:1.6}
+.compact-result .og-use-draft{margin:12px 0 6px;padding:8px 12px;font-size:14px;line-height:1.6}
+.compact-result .assessment-usage-details{margin:0 0 8px}
+.compact-result .assessment-usage-details>summary{padding:4px 0}
+.compact-result .stage-advice{padding:18px 22px}
+.compact-result .usage-advice-row{padding:10px 0;grid-template-columns:130px minmax(0,1fr);gap:18px}
+.compact-result .stage-advice .stage-boundary{margin:8px 0 0!important}
+.compact-result .result-next-actions{margin:10px 0 12px}
+.compact-result .ai-compact-summary{margin:6px 0 10px}

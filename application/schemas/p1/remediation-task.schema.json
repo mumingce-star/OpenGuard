@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:remediation-task:1.0",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assessment_ref": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/AssessmentRef"
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "condition",
+            "restriction",
+            "gap",
+            "next_step",
+            "obligation"
+          ]
+        },
+        "source_pointer": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "source_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "source_pointer",
+        "source_hash"
+      ],
+      "additionalProperties": false
+    },
+    "resource_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:openguard:p1:common:1.0#/$defs/EvidenceRef"
+      }
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "todo",
+        "in_progress",
+        "done",
+        "dismissed"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "superseded": {
+      "type": "boolean"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "provenance": {
+      "$ref": "urn:openguard:p1:common:1.0#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "schema_version",
+    "task_id",
+    "scan_id",
+    "assessment_ref",
+    "origin",
+    "resource_ids",
+    "evidence_refs",
+    "title",
+    "status",
+    "note",
+    "version",
+    "superseded",
+    "created_at",
+    "updated_at",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "done",
+              "dismissed"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "note": {
+            "type": "string",
+            "pattern": "\\S",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "note"
+        ]
+      }
+    }
+  ]
+}

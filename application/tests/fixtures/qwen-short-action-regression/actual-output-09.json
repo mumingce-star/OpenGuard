@@ -1,0 +1,45 @@
+{
+  "actions": [
+    {
+      "source_material_ids": [
+        "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb"
+      ],
+      "text": "核对计划公开的修改后源码，依据许可条款确认版权和许可声明是否在所有副本或实质部分中保留，具体包括在源码文件的头部或尾部明确保留以下内容：'Copyright (c) 2011-2026 Charlie Robbins, Marak Squires, Jade Michael Thornton and the Contributors.' 和 'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentationfiles" },
+    {
+      "source_material_ids": [
+        "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb"
+      ],
+      "text": "检查在线服务是否向用户提供源码、下载件或副本，记录实际交付边界，例如服务是否允许用户下载或查看源码文件，以及是否在服务界面展示或提供可访问的源码副本。"
+    },
+    {
+      "source_material_ids": [
+        "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb"
+      ],
+      "text": "明确记录计划公开的源码文件集合与当前不分发、不交付的文件范围是否一致，例如确认修改后源码是否仅包含特定模块或文件，且未包含完整项目结构或第三方依赖，以避免超出许可范围的分发。"
+    },
+    {
+      "source_material_ids": [
+        "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb"
+      ],
+      "text": "保留并记录在服务运行过程中，是否实际向用户展示或提供源码文件副本的证据，例如日志、用户访问记录或服务文档，以明确服务交付边界与许可义务的对应关系。"
+    }
+  ],
+  "change_explanations": [],
+  "clauses": [
+    {
+      "category": "permission",
+      "material_id": "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb",
+      "quote": "Permission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:"
+    },
+    {
+      "category": "condition",
+      "material_id": "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb",
+      "quote": "The above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software."
+    },
+    {
+      "category": "disclaimer",
+      "material_id": "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb",
+      "quote": "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+    }
+  ]
+}

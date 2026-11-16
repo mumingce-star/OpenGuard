@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';import vm from 'node:vm';import ts from 'typescript';import {createRequire} from 'node:module';import {renderToStaticMarkup} from 'react-dom/server';
+import {runtime} from './runtime.mjs';
+const require=createRequire(import.meta.url),load=s=>JSON.parse(fs.readFileSync(new URL('./fixtures/tier-'+s+'.json',import.meta.url),'utf8'));
+const owner=load('owner'),demo=load('test_only');
+const a={scan_id:owner.scan_id,id:owner.assessment_id,version:owner.assessment_version,facts_hash:owner.facts_hash,usage_hash:owner.usage_hash,rule_version:owner.rule_version};
+function html(v=owner,open=true){const m={exports:{}};const src=fs.readFileSync(new URL('../src/components/AssessmentTier.tsx',import.meta.url),'utf8');const js=ts.transpileModule(src,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;vm.runInNewContext(js,{module:m,exports:m.exports,require:n=>n==='react'?{useState:()=>[open,()=>{}]}:n.endsWith('.css')?{}:require(n)});return renderToStaticMarkup(m.exports.AssessmentTier({value:v}))+renderToStaticMarkup(m.exports.TierUpgradePlans({value:v,children:'existing answer controls'}));}
+test('TIER01 exact Owner identity gives L1 not test-derived L2',()=>{const s=runtime().load('services/assessmentTier.ts');assert.equal(s.validateTier(owner,a).current_level,'L1');assert.match(html(),/L1 基础智能评估/);assert.doesNotMatch(html(),/aria-pressed="true"><strong>L2/);});
+test('TIER02 TEST_ONLY view explicitly labeled and separately shows L2',()=>{assert.match(html(demo),/TEST_ONLY.*不是 Owner 真实业务声明/);assert.match(html(demo),/aria-pressed="true"><strong>L2/);});
+test('TIER03 stale assessment facts usage and version rejected',()=>{const s=runtime().load('services/assessmentTier.ts');for(const patch of [{id:'other'},{version:7},{usage_hash:'f'.repeat(64)},{facts_hash:'a'.repeat(64)}])assert.throws(()=>s.validateTier(owner,{...a,...patch}));});
+test('TIER04 tier GET repeats without any write',async()=>{const r=runtime(),s=r.load('services/assessmentTier.ts'),calls=[];r.setFetch(async(u,o)=>{calls.push([u,o.method]);return Response.json(owner);});await s.readAssessmentTier(a);await s.readAssessmentTier(a);assert.ok(calls.every(c=>c[1]==='GET'));assert.match(calls[0][0],/assessment_version=6$/);});
+test('TIER05 failed read never falls back to invented tier',async()=>{const r=runtime(),s=r.load('services/assessmentTier.ts');r.setFetch(async()=>new Response('',{status:503}));await assert.rejects(s.readAssessmentTier(a));});
+test('TIER06 L3 cannot be set while any critical requirement open',()=>{const s=runtime().load('services/assessmentTier.ts');assert.throws(()=>s.validateTier({...owner,current_level:'L3'},a));});
+test('TIER07 altered counts and Formal are rejected',()=>{const s=runtime().load('services/assessmentTier.ts');for(const change of [v=>v.formal_effect='allowed',v=>v.upgrade_plan.upgrade_to_l3.open_requirement_count++,v=>v.upgrade_plan.upgrade_to_l2.route_counts_are_overlapping=false]){const v=structuredClone(owner);change(v);assert.throws(()=>s.validateTier(v,a));}});
+test('TIER08 overlapping 23 routes 14 resources not sum',()=>{const h=html();assert.match(h,/23 项依据不足、14 个资源/);assert.match(h,/不能把各路径数量相加/);});
+test('TIER09 no upgrade POST nor force L3 entry',()=>{const h=html();assert.match(h,/先查看计划，不会直接升级/);assert.match(h,/aria-controls="tier-l2-plan"/);assert.match(h,/aria-expanded="true"/);assert.doesNotMatch(h,/<form|type="submit"/);});
+test('TIER10 local not connected and DNS work belongs to system',()=>{const h=html();assert.match(h,/当前尚未接入自动读取/);assert.match(h,/不转交给你手工搜索/);assert.match(h,/系统负责/);});
+test('TIER11 planned group cannot reuse answers from existing two',()=>{const h=html();assert.match(h,/另外 1 组/);assert.match(h,/覆盖 10 项事项/);assert.match(h,/现有两问的答案不会套用到这里/);});
+test('TIER12 ordinary tier copy excludes internal hashes and codes',()=>{const h=html();assert.doesNotMatch(h,/air_[a-f0-9]|evd_|ressnap_|AR_|[a-f0-9]{64}/);assert.match(h,/Formal Assessment 仍是独立权威对象/);});
+test('TIER13 collapsed plan keeps contents out of first screen',()=>{const h=html(owner,false);assert.match(h,/aria-expanded="false"/);assert.doesNotMatch(h,/existing answer controls/);});
+test('TIER14 L2 requires actually consumed input count',()=>{const s=runtime().load('services/assessmentTier.ts'),v=structuredClone(demo);v.evidence_summary.accepted_human_items=0;assert.throws(()=>s.validateTier(v,a));});
+test('TIER15 new tier cannot replace fixed AI aggregate by arbitrary source',()=>{const s=runtime().load('services/assessmentTier.ts');assert.throws(()=>s.validateTier({...owner,ai_aggregate_id:'latest'},a));});
+
+test('TIER16 Owner exclusion cannot display TEST_ONLY derived summary',()=>{const s=runtime().load('services/assessmentTier.ts');assert.equal(s.tierAllowsDerived(owner,demo.provenance.derived_snapshot_id),false);assert.equal(s.tierAllowsDerived(demo,demo.provenance.derived_snapshot_id),true);assert.equal(s.tierAllowsDerived(demo,'other'),false);});

@@ -1,0 +1,184 @@
+{
+  "binding": {
+    "assessment_id": "asm_0775663d-6cf0-5f4b-9b4f-3faa4c592c0f",
+    "assessment_sha256": "e30f551489a1f9c24fa5764a4ca4fa3f19ec8d32961d7f5d4756e6e3f787fb3f",
+    "assessment_version": 1,
+    "facts_hash": "5f736a8e828f535991597279bb50226b5407b2d25461e744a85de2b88fcdff67",
+    "project_revision": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+    "registry_revision": 13,
+    "rule_version": "assessment-1.0-facts2:2026.09.2:103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3",
+    "scan_id": "scn_c2d781c2-99c0-45e6-9e13-6bc569b1dc26",
+    "usage_hash": "b0606fb6f0c77307b37e2ebb6ecb3891a9e21055056b5c9a1de406f335b2b5d7"
+  },
+  "change_facts": [],
+  "changes": [],
+  "coverage": "partial_git_license_only",
+  "gaps": [
+    "license_text_and_applicability_unverified",
+    "object_scope_unverified",
+    "upstream_source_attestation_missing"
+  ],
+  "materials": [
+    {
+      "byte_count": 1124,
+      "material_id": "p2src_6e71838de99034ae87b756ae86fbe5216904c70fcd3cad340612fea8b5b1b4eb",
+      "quote_candidates": [
+        "Copyright (c) 2011-2026 Charlie Robbins, Marak Squires, Jade Michael Thornton and the Contributors.",
+        "Permission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:",
+        "The above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.",
+        "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      ],
+      "source_level": "retrieved_unadopted_candidate",
+      "source_sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6",
+      "subject": {
+        "resource_id": "cmp_c2316c9a-52e6-515b-a8f3-9dfffa023e62",
+        "version": "14.1.2"
+      },
+      "text": "Copyright (c) 2011-2026 Charlie Robbins, Marak Squires, Jade Michael Thornton and the Contributors.\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n",
+      "verification_state": "pending"
+    }
+  ],
+  "npm_metadata_status": "missing_404",
+  "resource_state": "unknown",
+  "result_id": "p2res_6d8ccddccf828a4eeedbd662fa09b98a09166588e1f52ecd43f1661c2ae73fcf",
+  "result_sha256": "afe7baa3c7f32e08d0545bb505185bb32202272661cf33583b4fa7a6ebe64966",
+  "saved_advice": [
+    {
+      "basis_evidence_ids": [],
+      "conditions": [],
+      "gaps": [
+        "license_text_and_applicability_unverified",
+        "object_scope_unverified",
+        "upstream_source_attestation_missing"
+      ],
+      "rule_ids": [],
+      "saved_value": false,
+      "scope": "RESOURCE",
+      "selection": "NOT_SELECTED",
+      "state": "not_selected",
+      "usage": "commercial"
+    },
+    {
+      "basis_evidence_ids": [],
+      "conditions": [],
+      "gaps": [
+        "license_text_and_applicability_unverified",
+        "object_scope_unverified",
+        "upstream_source_attestation_missing"
+      ],
+      "rule_ids": [],
+      "saved_value": true,
+      "scope": "RESOURCE",
+      "selection": "SELECTED",
+      "state": "unknown",
+      "usage": "modified"
+    },
+    {
+      "basis_evidence_ids": [],
+      "conditions": [],
+      "gaps": [
+        "license_text_and_applicability_unverified",
+        "object_scope_unverified",
+        "upstream_source_attestation_missing"
+      ],
+      "rule_ids": [],
+      "saved_value": false,
+      "scope": "RESOURCE",
+      "selection": "NOT_SELECTED",
+      "state": "not_selected",
+      "usage": "distributed"
+    },
+    {
+      "basis_evidence_ids": [],
+      "conditions": [],
+      "gaps": [
+        "license_text_and_applicability_unverified",
+        "object_scope_unverified",
+        "upstream_source_attestation_missing"
+      ],
+      "rule_ids": [],
+      "saved_value": true,
+      "scope": "RESOURCE",
+      "selection": "SELECTED",
+      "state": "unknown",
+      "usage": "network_service"
+    },
+    {
+      "basis_evidence_ids": [],
+      "conditions": [],
+      "gaps": [
+        "license_text_and_applicability_unverified",
+        "object_scope_unverified",
+        "upstream_source_attestation_missing"
+      ],
+      "rule_ids": [],
+      "saved_value": false,
+      "scope": "RESOURCE",
+      "selection": "NOT_SELECTED",
+      "state": "not_selected",
+      "usage": "training"
+    },
+    {
+      "basis_evidence_ids": [],
+      "conditions": [],
+      "gaps": [
+        "license_text_and_applicability_unverified",
+        "object_scope_unverified",
+        "upstream_source_attestation_missing"
+      ],
+      "rule_ids": [],
+      "saved_value": false,
+      "scope": "RESOURCE",
+      "selection": "NOT_SELECTED",
+      "state": "not_selected",
+      "usage": "redistributed_assets"
+    },
+    {
+      "basis_evidence_ids": [],
+      "conditions": [],
+      "gaps": [
+        "license_text_and_applicability_unverified",
+        "object_scope_unverified",
+        "upstream_source_attestation_missing"
+      ],
+      "rule_ids": [],
+      "saved_value": true,
+      "scope": "RESOURCE",
+      "selection": "SELECTED",
+      "state": "unknown",
+      "usage": "source_disclosure"
+    }
+  ],
+  "schema_version": "openguard-official-source-preview-input/1",
+  "source_candidate_inputs": true,
+  "source_failures": [
+    {
+      "error_code": "upstream_404",
+      "http_status": 404,
+      "kind": "npm_metadata",
+      "request_number": 6,
+      "retrieved_at": "2026-10-23T15:00:37.646335Z",
+      "url": "https://registry.npmjs.org/http-server/14.1.2"
+    }
+  ],
+  "source_limitations": [
+    "官方端点取回原字节仅是来源观察，尚未正式接纳；采用前不属于已保存Material。",
+    "仅取得固定Git提交根LICENSE；npm 14.1.2元数据端点明确返回404，版本发行信息缺失。不得视为npm发行包LICENSE、来源接纳或实际交付范围已确认。",
+    "采用后仍保持user_supplied_unverified/pending，不自动生成肯定许可结论。"
+  ],
+  "source_namespace": "OFFICIAL_RETRIEVED_UNADOPTED_CANDIDATE",
+  "subject": {
+    "resource_id": "cmp_c2316c9a-52e6-515b-a8f3-9dfffa023e62",
+    "version": "14.1.2"
+  },
+  "usage": {
+    "commercial": false,
+    "distributed": false,
+    "modified": true,
+    "network_service": true,
+    "redistributed_assets": false,
+    "source_disclosure": true,
+    "training": false
+  },
+  "usage_assumption": "DEMO_USAGE_ASSUMPTION"
+}

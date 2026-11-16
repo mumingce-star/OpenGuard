@@ -1,0 +1,66 @@
+{
+  "kind": "DERIVED_ZIP_FROM_EXISTING_NPM_RELEASE",
+  "not_official_zip": true,
+  "not_runtime_verified": true,
+  "resource": {
+    "ecosystem": "npm",
+    "name": "is-number",
+    "version": "7.0.0",
+    "declared_spdx": "MIT",
+    "license_numeric_version": null
+  },
+  "originals": {
+    "archive.tgz": {
+      "path": "historical-local-source/archive.tgz",
+      "bytes": 3730,
+      "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e"
+    },
+    "metadata.json": {
+      "path": "historical-local-source/metadata.json",
+      "bytes": 3199,
+      "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25"
+    },
+    "license.txt": {
+      "path": "historical-local-source/license.txt",
+      "bytes": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
+    },
+    "receipts.json": {
+      "path": "historical-local-source/receipts.json",
+      "bytes": 5329,
+      "sha256": "d9a7557ebff5d69d431e4c680877f0880f7223506ac8f860e7b9427b96205e10"
+    }
+  },
+  "members": {
+    "package.json": {
+      "source_member": "package/package.json",
+      "bytes": 1599,
+      "sha256": "51c133f4e41df982aef69027249ff9d7262645029f437d079adc7c83328fb620"
+    },
+    "index.js": {
+      "source_member": "package/index.js",
+      "bytes": 411,
+      "sha256": "04255e482e181687823a95b207802ddd32e746c65dce4c95a5176fc192735960"
+    },
+    "LICENSE": {
+      "source_member": "package/LICENSE",
+      "bytes": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
+    },
+    "README.md": {
+      "source_member": "package/README.md",
+      "bytes": 6514,
+      "sha256": "8e676a0587ba350889df0a5fb883aeab26609ee36432e29441f55af3a0cb16ba"
+    }
+  },
+  "derived_zip": {
+    "bytes": 4172,
+    "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+  },
+  "NOTICE": "NOT_PRESENT_IN_THIS_FOUR_MEMBER_ARCHIVE",
+  "human_applicability_review": "PENDING",
+  "formal_effect": "none",
+  "scan_id": null,
+  "resource_id": null,
+  "evidence_ids": null
+}

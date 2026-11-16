@@ -1,0 +1,155 @@
+import { useEffect, useState } from "react";
+import type { Mode } from "../types/domain";
+import { defaultMode } from "../services/scans";
+export type Page =
+  | "assessment"
+  | "chat"
+  | "assistant"
+  | "history"
+  | "overview"
+  | "new-scan"
+  | "progress"
+  | "risks"
+  | "resources"
+  | "graph"
+  | "remediation"
+  | "diff"
+  | "report"
+  | "report-v2"
+  | "not-found"
+  | "home";
+export function readRoute() {
+  const { pathname, search } = window.location;
+  const query = new URLSearchParams(search);
+  const mode: Mode =
+    query.get("mode") === "api"
+      ? "api"
+      : query.get("mode") === "mock"
+        ? "mock"
+        : defaultMode;
+  if (pathname === "/")
+    return { page: "home" as Page, scanId: "", riskId: "", query, mode };
+  if (pathname === "/app/assistant" || pathname === "/app/assistant/")
+    return { page: "assistant" as Page, scanId: "", riskId: "", query, mode: "api" as Mode };
+  if (pathname === "/app/new-scan")
+    return { page: "new-scan" as Page, scanId: "", riskId: "", query, mode };
+  if (pathname === "/app/history" || pathname === "/app/history/")
+    return { page: "history" as Page, scanId: "", riskId: "", query, mode: "api" as Mode };
+  const m = pathname.match(
+    /^\/app\/scans\/([^/]+)\/(assessment|chat|overview|progress|risks|resources|graph|remediation|diff|report|report-v2)(?:\/([^/]+))?\/?$/,
+  );
+  if (m && (!m[3] || m[2] === "risks")) {
+    try {
+      return {
+        page: m[2] as Page,
+        scanId: decodeURIComponent(m[1]),
+        riskId: m[3] ? decodeURIComponent(m[3]) : "",
+        query,
+        mode,
+      };
+    } catch {
+      /* Invalid URL */
+    }
+  }
+  // Legacy taskless routes never load an arbitrary previous demo.
+  const legacy =
+    /^\/app\/(overview|progress|risk|risks|resources|graph|remediation|diff|report|report-v2)\/?$/.test(
+      pathname,
+    );
+  return {
+    page: legacy ? ("new-scan" as Page) : ("not-found" as Page),
+    scanId: "",
+    riskId: "",
+    query,
+    mode,
+  };
+}
+export function historyPath(query?: URLSearchParams) {
+  const p = new URLSearchParams(query);
+  p.delete("mode");
+  const search = p.toString();
+  return "/app/history" + (search ? "?" + search : "");
+}
+export function scanPath(
+  id: string,
+  page: Page,
+  mode: Mode,
+  query?: URLSearchParams,
+  riskId?: string,
+) {
+  const p = new URLSearchParams(query);
+  p.set("mode", mode);
+  return (
+    "/app/scans/" +
+    encodeURIComponent(id) +
+    "/" +
+    page +
+    (riskId ? "/" + encodeURIComponent(riskId) : "") +
+    "?" +
+    p
+  );
+}
+export function useRoute() {
+  const [route, setRoute] = useState(readRoute);
+  function restoreScroll(fallback: number, instant = false) {
+    const chapter = /^\/app\/scans\/[^/]+\/report\/?$/.test(location.pathname)
+      && /^#report-[0-5]$/.test(location.hash);
+    const landing = location.pathname === "/" && ["#capability", "#workflow"].includes(location.hash);
+    const anchor = chapter || landing ? document.getElementById(location.hash.slice(1)) : null;
+    // Resolve at restoration time: a report chapter may have been clicked
+    // after a route change queued this frame. Never overwrite it with page top.
+    if (anchor) anchor.scrollIntoView({ block: "start", behavior: "instant" });
+    else if (instant) window.scrollTo({ left: 0, top: fallback, behavior: "instant" });
+    else window.scrollTo(0, fallback);
+  }
+  useEffect(() => {
+    window.history.scrollRestoration = "manual";
+    const pop = () => {
+      setRoute(readRoute());
+      requestAnimationFrame(() => {
+        // Fragment navigation fires popstate too. Its target takes precedence
+        // over saved page scroll, which otherwise immediately undoes the jump.
+        restoreScroll(Number(history.state?.scroll ?? 0));
+      });
+    };
+    window.addEventListener("popstate", pop);
+    return () => window.removeEventListener("popstate", pop);
+  }, []);
+  function go(url: string, restore = false) {
+    const previous = readRoute();
+    try {
+      sessionStorage.setItem(
+        "og-scroll:" + location.pathname + location.search,
+        String(window.scrollY),
+      );
+    } catch {
+      /* best effort */
+    }
+    history.replaceState({ ...history.state, scroll: window.scrollY }, "");
+    history.pushState({}, "", url);
+    const next = readRoute();
+    setRoute(next);
+    const changedPage = previous.page !== next.page || previous.scanId !== next.scanId;
+    let y = 0;
+    if (restore && !changedPage)
+      try {
+        y = Number(
+          sessionStorage.getItem(
+            "og-scroll:" + location.pathname + location.search,
+          ) ?? 0,
+        );
+      } catch {
+        /* best effort */
+      }
+    // A new workspace page starts at its heading even when html uses smooth
+    // scrolling; same-page selections and report chapter anchors keep their policy.
+    requestAnimationFrame(() => restoreScroll(y, changedPage));
+  }
+  function filter(name: string, value: string) {
+    const q = new URLSearchParams(location.search);
+    value ? q.set(name, value) : q.delete(name);
+    history.replaceState(history.state, "", location.pathname + "?" + q);
+    setRoute(readRoute());
+  }
+  return { route, go, filter };
+}
