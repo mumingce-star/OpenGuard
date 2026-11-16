@@ -73,3 +73,7 @@ The user selected 22 favorites for this pass. OpenGuard uses its existing React 
 | [Smit-Prajapati / spicy-rat-83](https://uiverse.io/Smit-Prajapati/spicy-rat-83) | Hovering OpenGuard brand story card |
 
 Six other saved items remain outside this product mapping: bookmark, day/night toggle, star rating, Discord, social tooltip, and social-button group. None is presented as a business function.
+
+## 2026-11-16 landing motion and glass refinement
+
+The existing particle typography and React Bits Glass Surface design reference remain the only references for this pass. OpenGuard tightened its original Canvas timing and CSS/SVG glass material; no third-party source, asset, or runtime dependency was added.

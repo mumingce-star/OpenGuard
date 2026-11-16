@@ -26,7 +26,7 @@ export function HeroEvidenceScene() {
 
   const running = !reducedMotion && !paused && visible && inView;
   const tilt = (event: PointerEvent<HTMLElement>) => {
-    if (event.pointerType !== "mouse" || reducedMotion) return;
+    if (event.pointerType !== "mouse" || !running) return;
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty("--glass-tilt-x", `${((0.5 - (event.clientY - rect.top) / rect.height) * 4).toFixed(2)}deg`);
     event.currentTarget.style.setProperty("--glass-tilt-y", `${(((event.clientX - rect.left) / rect.width - 0.5) * 6).toFixed(2)}deg`);
@@ -35,6 +35,7 @@ export function HeroEvidenceScene() {
     sceneRef.current?.style.removeProperty("--glass-tilt-x");
     sceneRef.current?.style.removeProperty("--glass-tilt-y");
   };
+  useEffect(() => { if (reducedMotion) resetTilt(); }, [reducedMotion]);
 
   return (
     <figure
@@ -42,7 +43,7 @@ export function HeroEvidenceScene() {
       className="evidence-scene"
       data-running={running}
       onPointerMove={tilt}
-      onPointerLeave={resetTilt}
+      onPointerLeave={() => { if (running) resetTilt(); }}
       aria-label="溯源概念演示：来源线索穿过三层玻璃，形成证据与追溯连接，其中一条线索仍待核验"
     >
       <div className="evidence-scene-stage" aria-hidden="true">
@@ -50,6 +51,7 @@ export function HeroEvidenceScene() {
         <div className="evidence-scene-shadow" />
         <div className="evidence-pane evidence-pane-source">
           <svg viewBox="0 0 300 170" fill="none" preserveAspectRatio="none">
+            <path className="evidence-refract" d="M20 118 C78 100 88 45 143 63 S229 104 282 36" />
             <path className="evidence-guide" d="M20 118 C78 100 88 45 143 63 S229 104 282 36" />
             <path className="evidence-path evidence-path-source" d="M20 118 C78 100 88 45 143 63 S229 104 282 36" />
             <path className="evidence-path evidence-path-source evidence-path-delayed" d="M19 55 C73 77 95 121 147 108 S227 68 280 124" />
@@ -58,6 +60,7 @@ export function HeroEvidenceScene() {
         </div>
         <div className="evidence-pane evidence-pane-middle">
           <svg viewBox="0 0 300 170" fill="none" preserveAspectRatio="none">
+            <path className="evidence-refract" d="M20 92 C75 86 105 36 151 57 S223 111 280 76" />
             <path className="evidence-guide" d="M20 92 C75 86 105 36 151 57 S223 111 280 76" />
             <path className="evidence-path evidence-path-middle" d="M20 92 C75 86 105 36 151 57 S223 111 280 76" />
             <path className="evidence-path evidence-path-middle evidence-path-delayed" d="M18 127 C83 137 106 105 151 108 S219 50 282 44" />
@@ -66,6 +69,7 @@ export function HeroEvidenceScene() {
         </div>
         <div className="evidence-pane evidence-pane-front">
           <svg viewBox="0 0 300 170" fill="none" preserveAspectRatio="none">
+            <path className="evidence-refract" d="M19 100 C83 100 94 48 148 67 S224 98 281 44" />
             <path className="evidence-guide" d="M19 100 C83 100 94 48 148 67 S224 98 281 44" />
             <path className="evidence-path evidence-path-front" d="M19 100 C83 100 94 48 148 67 S224 98 281 44" />
             <path className="evidence-path evidence-path-front evidence-path-delayed" d="M19 100 C81 93 103 130 151 111 S231 98 281 119" />

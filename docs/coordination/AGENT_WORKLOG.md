@@ -330,3 +330,18 @@
 - 来源/决策：22 项直接参考与对应页面已登记；主色森林绿、复制和下载保留少量紫色。其余六项收藏与当前业务语义不合，未接入。已把新构建通过本机 4194 预览交付到右侧面板；用户授权本轮继续推进，因此任务分支已提交并推送，未合并 main。
 - 风险与下一步：团队需对原收藏与实际页面做人工视觉签收，并在真实后端同版环境复核下载、表单及项目评估。独立人工代码审查、正式竞赛材料和资格门禁属于团队整合线。下一步前端负责人可根据视觉反馈微调；后端、材料负责人完成同版与材料验收；Root Coordinator 在门禁满足后经 PR 合并。关联分支 `codex/landing-sage-ui`，代码提交 `17018ff`，已推送 GitHub；本条日志及进度补记将再推送到同分支。
 - token：本次运行精确 token 数不可获得；开工估算 10,000—18,000 tokens，是否落在范围内无法核定。范围增加了首页淡色刻纹、真实 390px 浏览器检查和 GitHub 分支同步。
+
+### [20261116-0813-GPT6Sol-hero-polish-start] START - 首页粒子与玻璃精修
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 08:13（Asia/Shanghai）。目标：实施用户批准的 800ms 可读粒子聚合与通透翡翠玻璃精修，保留当前首页构图和业务入口。
+- 分支：`codex/landing-sage-ui`，开始时干净，HEAD `14c872f`。预计修改 frontend/src/components/ParticleText.tsx、HeroEvidenceScene.tsx、frontend/src/styles/landing-sage.css，以及 AI 记录、项目进度与本日志；不触碰后端、Schema 或接口。
+- 验收：默认测试、构建、git diff --check；1440px、当前预览宽度、390px 的初帧与 800ms 字形、玻璃两轮循环、暂停、离屏、减少动态与无溢出。估算 6,000—10,000 tokens，精确遥测不可获得。
+
+### [20261116-1231-GPT6Sol-hero-polish-complete] COMPLETE - 首页粒子与玻璃精修
+
+- 作者：GPT-6 Sol / Root Coordinator；时间：2026-11-16 12:31（Asia/Shanghai）。目标：按用户确认的计划提升首页品牌字首帧辨识度与翡翠玻璃通透感。结果：75% 粒子首帧就位，其余在 800ms 时间驱动缓动中归位，稳定后停止 Canvas 动画帧；尺寸变化与后台恢复不重散。三层玻璃中心更通透，边缘增加白色内缘和深绿下缘，刻纹有轻微折射叠影；暂停后指针不再改变倾角，减少动态时倾角归零。
+- 修改：frontend/src/components/ParticleText.tsx、HeroEvidenceScene.tsx、styles/landing-sage.css；新增 frontend/tests/hero-motion-smoke.cjs；更新 frontend/THIRD_PARTY_UI.md、docs/05-ai-assistance-log.md、docs/coordination/PROJECT_PROGRESS.md 和本日志。没有后端、接口、Schema、规则或运行依赖变更。
+- 验证：`pnpm build` TypeScript/Vite PASS（既有大 chunk 警告）；`pnpm test` 187/187 PASS；`node tests/hero-motion-smoke.cjs http://127.0.0.1:4194/` PASS，覆盖稳定后停绘、resize、暂停指针及减少动态切换；`git diff --check` PASS。Chrome 390px 的 200ms/1500ms 画面、941px/1440px 完成态、1440px 第二轮 24s 和 390px 减少动态静态态已人工核对，无横向溢出。截图在项目 `output/hero-polish-review/`，不纳入 Git。
+- 决策与风险：沿用既有 React Bits 设计参考和 12 秒概念演示，无新第三方来源。减少动态与离屏暂停逻辑由现有 hook、IntersectionObserver 和定向检查覆盖；浏览器视觉核对使用本机 Chrome，跨平台和真实后端仍未由本轮验证。用户与团队可在 4194 右侧预览审看质感。
+- 下一步：Root Coordinator 完成待提交文件与敏感信息检查后提交并推送 `codex/landing-sage-ui`；团队前端负责人做视觉签收，后端与材料负责人完成整合线验收，主线仍经 PR 合并。关联起点 `14c872f`，本轮提交号待 Git 生成。
+- token：本次运行精确 token 数不可获得；开工估算 6,000—10,000 tokens，是否在范围内无法核定。
