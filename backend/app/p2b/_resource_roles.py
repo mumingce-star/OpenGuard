@@ -133,7 +133,10 @@ def assess_resource_roles(
             if entry.detected_by == DetectionMethod.MANIFEST_PARSER:
                 path, _, field = entry.locator.partition(":")
                 resources_by_locator.setdefault(entry.locator, set()).add(item.id)
-                if path.rsplit("/", 1)[-1] == "package-lock.json":
+                if entry.producer.name == "openguard.dependency-observations.sbom":
+                    locations[item.id]["declared"].add(_location("sbom", entry))
+                elif (entry.producer.name == "openguard.dependency-observations.lock"
+                      or path.rsplit("/", 1)[-1] == "package-lock.json"):
                     locations[item.id]["declared"].add(_location("lock", entry))
                 else:
                     locations[item.id]["declared"].add(_location("manifest", entry))
