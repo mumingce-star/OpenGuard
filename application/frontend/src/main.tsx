@@ -17,3 +17,6 @@ createRoot(document.getElementById('root')!).render(
     {accountAuthEnabled ? <AuthGate /> : <App />}
   </StrictMode>,
 );
+
+import './styles/landing-sage.css';
+import './styles/recording-glass.css';

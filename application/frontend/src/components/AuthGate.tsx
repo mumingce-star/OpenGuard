@@ -20,10 +20,10 @@ export function AuthGate() {
   const path = window.location.pathname;
   if (!session) return <main className="account-status"><Brand onClick={() => window.location.assign('/')} /><section role={error ? 'alert' : 'status'}><h1>{error ? '暂时无法连接工作台' : '正在确认账号状态'}</h1><p>{error || '确认后即可继续你的扫描与评估。'}</p>{error && <button onClick={() => setAttempt(v => v + 1)}>重新读取</button>}</section></main>;
   if (path === '/login' || path === '/register') return <AuthPage mode={path === '/register' ? 'register' : 'login'} session={session} />;
-  if (path === '/') {
+  if (path === '/' || path === '/about.html') {
     return <Landing onEnter={() => window.location.assign(session.user ? '/app/new-scan?mode=api' : accountLoginUrl())}
       onDemo={() => window.location.assign(session.user ? '/app/new-scan?mode=api' : accountLoginUrl())}
-      accountMode user={session.user} />;
+      accountMode user={session.user} view={path === '/about.html' ? 'about' : 'home'} />;
   }
   if (!session.user) { window.location.replace(accountLoginUrl(path + window.location.search)); return null; }
   if (path.startsWith('/app/') && new URLSearchParams(window.location.search).get('mode') !== 'api') {

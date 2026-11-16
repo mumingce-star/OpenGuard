@@ -1,27 +1,23 @@
 {
-  "version": "aic-semifinal-candidate-20261116",
-  "publication": "NOT_PUBLISHED",
-  "git_checkout": false,
-  "final_commit": null,
-  "recording_status": "PREPARED_NOT_RECORDED",
+  "version": "aic-semifinal-20261117-ui1",
+  "snapshot_origin": "locally integrated application; historical source SHAs are provenance, not the complete release commit",
+  "previous_public_commit": "5a2bc477fef7c91dd614c3d440cab56e914b6a86",
+  "release_tag": "aic-semifinal-20261117-ui1",
+  "release_url": "https://github.com/mumingce-star/OpenGuard/releases/tag/aic-semifinal-20261117-ui1",
   "application_base": "workbench-full-rehearsal-20261116/application",
   "upload_fix_source": "workbench-upload-selection-fix-20261116/application/frontend",
-  "portable_entry_source": "local delivery with package-relative P4 configuration",
-  "contribution_references": {
-    "xzb_csv": "dae821df76c7ee530d13affc3f2d98f4b0d179ee",
-    "owner_ui": "5656608d9d5dafebc9acdd44fa9fae4cf4acbb41"
-  },
+  "ui_source_head": "3cee1edb160360b6dafc673f229bcd933a786887",
+  "ui_implementation_commit": "07b6e3d5061fa8dea277c91bd0b03c92da3ceabb",
+  "ui_contributor": "xzb123-hash",
   "runtime_scope": "TEST_ONLY",
-  "frontend_tests": {
-    "passed": 241,
-    "failed": 0,
-    "skipped": 0
-  },
-  "tsc": "PASS",
-  "vite_build": "PASS_ONE_INVOCATION",
-  "http_core_checks": 36,
-  "qwen_analysis": "SUCCEEDED_ONE_CALL",
-  "backend_312": "HISTORICAL_NOT_RERUN",
-  "chrome_check": "LOGIN_PAGE_ONLY",
-  "source_manifest": "FILE_HASHES.json"
+  "recording_status": "READY_FOR_OWNER_RECORDING_NOT_RECORDED_BY_THIS_TASK",
+  "source_manifest": "FILE_HASHES.json",
+  "validation_reference": "VALIDATION.md",
+  "public_payload_excludes": [
+    "runtime",
+    "node_modules",
+    "model weights",
+    "private validation records",
+    "two obsolete unreferenced web chunks"
+  ]
 }

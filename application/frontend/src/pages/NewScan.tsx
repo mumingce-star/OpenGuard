@@ -11,7 +11,7 @@ import {
 } from "../services/scans";
 import { validateGithub, validateZip } from "../services/model";
 import { scenarios, type Scenario } from "../mocks/data";
-import { ActionButton, SegmentedControl, useNotice } from "../components/ui";
+import { ActionButton, GlassArrowButton, SegmentedControl, useNotice } from "../components/ui";
 import { markNewScanForProgress } from "../services/scanProgressEntry";
 import { accountAuthEnabled } from '../services/auth';
 import { isOpenGuardEvaluationPackage, selectedZipSize, evaluationPackageMessage } from '../services/zipSelection';
@@ -297,8 +297,7 @@ export function NewScan({
             {mode === "mock" && <button type="button" disabled={busy} onClick={demo}>
               载入固定演示
             </button>}
-            <ActionButton
-              className="og-primary"
+            <GlassArrowButton
               disabled={busy||(tab==='zip'?(!file||fileCheck!=='ready'):!url.trim())||(mode==='api'&&!!confirmedInput&&readOnlyPreview)}
               type="submit"
             >
@@ -307,7 +306,7 @@ export function NewScan({
                 : mode === "mock"
                   ? "校验输入并播放演示"
                   : confirmedInput ? "开始扫描并评估" : "下一步：确认用途"}
-            </ActionButton>
+            </GlassArrowButton>
           </div>
         </div>
       </form>

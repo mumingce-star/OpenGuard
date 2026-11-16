@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { Scan } from "../types/domain";
 import { statusLabels } from "../types/domain";
 import { restartDemo, skipDemo, scanPercent } from "../services/scans";
-import { StatusBadge, useNotice } from "../components/ui";
+import { GlassArrowButton, StatusBadge, useNotice } from "../components/ui";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { progressMotionState } from "./progressMotion";
 import { nextIntegerProgress, appendObservation, orderedRecords, progressDuration, scanProgressView, scanElapsedSeconds, createStagePlayback, advanceStagePlayback, stagePlaybackView, stageDisplayMilliseconds, type ProgressRecord } from "./progressModel";
@@ -117,7 +117,7 @@ export function Progress({ scan, reload, onResults, pollingError }: {
         <p className="og-progress-log-source">来自任务接口的时间、状态、真实阶段记录和诊断；“本页观察”仅记录本页收到的变化，并非扫描工具的原始 stdout。</p>
       </section></div>
       <footer className="og-progress-footer"><p>{active ? "可以离开此页，稍后通过同一任务继续查看进度。" : partial ? "部分完成不等于完整扫描；结果与未覆盖原因会一并保留。" : scan.status === "completed" ? "扫描完成表示流程结束，许可证适用性仍以具体证据和评估为准。" : "已保存的记录保持可查，重新查询不会重新提交扫描。"}</p>
-        <div className="og-progress-actions">{scan.mode === "mock" && <><button onClick={() => action(() => restartDemo(scan.id))}>重新开始演示</button>{active && <button onClick={() => action(() => skipDemo(scan.id))}>跳过等待</button>}</>}{!active && <button className="og-primary" onClick={onResults}>{scan.status === "completed" ? "查看扫描结果" : "查看已有结果与错误"}</button>}</div>
+        <div className="og-progress-actions">{scan.mode === "mock" && <><button onClick={() => action(() => restartDemo(scan.id))}>重新开始演示</button>{active && <button onClick={() => action(() => skipDemo(scan.id))}>跳过等待</button>}</>}{!active && <GlassArrowButton onClick={onResults}>{scan.status === "completed" ? "查看扫描结果" : "查看已有结果与错误"}</GlassArrowButton>}</div>
       </footer>
     </section>
   </div>;

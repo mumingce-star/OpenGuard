@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
@@ -12,13 +13,14 @@ const proxy = { '/api': { target: apiProxyTarget, changeOrigin: false } };
 // Preserve complete licenses from the installed, locked browser dependencies.
 function browserLicenses() {
   const reactDomRequire = createRequire(require.resolve('react-dom/package.json'));
-  return ['react', 'react-dom', 'scheduler', 'tailwindcss'].map((name) => {
+  const packages = ['react', 'react-dom', 'scheduler', 'tailwindcss'].map((name) => {
     const resolver = name === 'scheduler' ? reactDomRequire : require;
     const manifest = resolver.resolve(`${name}/package.json`);
     const { version } = JSON.parse(readFileSync(manifest, 'utf8'));
     const license = readFileSync(join(dirname(manifest), 'LICENSE'), 'utf8');
     return `${name}@${version}\nhttps://www.npmjs.com/package/${name}/v/${version}\n\n${license}`;
-  }).join('\n\n---\n\n');
+  });
+  return [...packages, readFileSync(new URL('./UIVERSE_CSSBUTTONS_IO_LICENSE.txt', import.meta.url), 'utf8')].join('\n\n---\n\n');
 }
 export default defineConfig({
   plugins: [tailwindcss(), {
@@ -31,6 +33,7 @@ export default defineConfig({
       return [{ tag: 'link', attrs: { rel: 'license', href: './third-party-licenses.txt' }, injectTo: 'head' }];
     },
   }],
+  build: { rollupOptions: { input: { index: fileURLToPath(new URL('./index.html', import.meta.url)), about: fileURLToPath(new URL('./about.html', import.meta.url)) } } },
   server: { proxy },
   preview: { proxy },
 });

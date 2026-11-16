@@ -302,8 +302,8 @@ export function App({accountUser,onAccountLogout}:{accountUser?:AccountUser;onAc
   }} />;
   return (
     <NoticeContext.Provider value={notify}>
-      {route.page === "home" ? (
-        <Landing onEnter={() => navigate("new-scan")} onDemo={demo} accountMode={accountAuthEnabled} user={accountUser??null} />
+      {route.page === "home" || route.page === "about" ? (
+        <Landing onEnter={() => navigate("new-scan")} onDemo={demo} accountMode={accountAuthEnabled} user={accountUser??null} view={route.page === "about" ? "about" : "home"} />
       ) : (
         <div className={"og-app og-ui-refined og-workspace-light" + (projecting ? " og-projecting" : "") + (railCompact ? " og-workspace-rail-compact" : "") + (chatMode ? " og-chat-shell" : "")}>
           <a className="og-skip" href="#workspace-main">

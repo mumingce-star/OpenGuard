@@ -43,6 +43,13 @@ export function ActionButton({ kind = 'primary', children, className = '', ...pr
   return <button type="button" {...props} className={`og-action-button og-action-${kind} ${className}`}><span className="og-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={paths[kind]} /></svg></span><span>{children}</span>{kind === 'copy' && <span className="og-action-hint" aria-hidden="true">复制到剪贴板</span>}</button>;
 }
 
+export function GlassArrowButton({ children, className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { children: ReactNode }) {
+  return <button type="button" {...props} className={`og-workbench-glass-arrow ${className}`}>
+    <span className="circle" aria-hidden="true"><span className="icon arrow" /></span>
+    <span className="button-text">{children}</span>
+  </button>;
+}
+
 export function HelpTip({ label, children }: { label: string; children: ReactNode }) {
   const id = useId();
   const [open, setOpen] = useState(false);

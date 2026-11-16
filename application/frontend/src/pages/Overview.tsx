@@ -1,7 +1,7 @@
 import type { Scan } from "../types/domain";
 import { resourceTypes, handlingLabels } from "../types/domain";
 import { summarize, severityOrder } from "../services/model";
-import { Panel, SeverityBadge, Empty } from "../components/ui";
+import { Panel, SeverityBadge, Empty, GlassArrowButton } from "../components/ui";
 import { OverviewDecision } from "../components/DecisionBrief";
 import { p2WorkbenchEnabled } from "../services/p2";
 import { AutomaticOverview } from "../components/AutomaticProjectAssessment";
@@ -43,7 +43,7 @@ export function Overview({
     : (["queued", "running"].includes(scan.status) ? "尚未完成扫描" : "完成时间未提供");
   const observed = scan.resources.filter(r => r.license && !/^(unknown|NOASSERTION|none|未知)$/i.test(r.license)).length;
   return <div className="og-overview">
-    <header className="og-overview-heading page-head"><div><h1 id="overview-title">{scan.project} 扫描概览</h1><p>{finishedLabel} · 所有数量来自当前扫描，未知与待核验不默认放行。</p></div><div className="og-actions"><button onClick={()=>go('progress')}>查看扫描阶段</button><button className="og-primary" onClick={()=>go('assessment')}>进入项目评估 →</button></div></header>
+    <header className="og-overview-heading page-head"><div><h1 id="overview-title">{scan.project} 扫描概览</h1><p>{finishedLabel} · 所有数量来自当前扫描，未知与待核验不默认放行。</p></div><div className="og-actions"><button onClick={()=>go('progress')}>查看扫描阶段</button><GlassArrowButton onClick={()=>go('assessment')}>进入项目评估</GlassArrowButton></div></header>
     <section className="og-v3-kpi" aria-label="扫描事实摘要"><div className="og-overview-inventory"><button onClick={()=>go('resources')}><span>识别第三方资源</span><strong>{scan.resources.length}</strong><small>个资源</small></button><span><span>采集溯源证据链</span><strong>{scan.evidence.length}</strong><small>条证据</small></span></div><div><span>许可依据待核验</span><strong>{scan.risks.filter(r=>r.ruleId==='license-evidence-gate' && r.outcome==='review_required').length}</strong><small>按规则门禁原值统计</small></div><div><span>项目用途与材料评估</span><button onClick={()=>go('assessment')}>查看已保存评估 →</button><small>用途与材料结果独立于扫描事实</small></div></section>
     <aside className="og-v3-callout"><div><strong>建议下一步：在「项目评估」核对用途与对应版本的 LICENSE 原文</strong><p>许可证声明仅作为候选线索，材料缺口与适用边界继续保留。</p></div><button onClick={()=>go('assessment')}>进入评估工作台</button></aside>
     {scan.mode==='api'&&p2WorkbenchEnabled&&<details className="og-v3-assessment-summary"><summary>查看项目用途与材料评估摘要</summary><AutomaticOverview scan={scan} go={go}/></details>}

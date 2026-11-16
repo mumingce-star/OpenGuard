@@ -16,7 +16,7 @@ type ParticleTextProps = {
   className?: string;
 };
 
-const palette = ["#f8fafc", "#c7d2fe", "#818cf8", "#22d3ee"];
+const palette = ["#134b3a", "#19614b", "#285c4f", "#2f8566"];
 
 export function ParticleText({ text, className = "" }: ParticleTextProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,16 +48,26 @@ export function ParticleText({ text, className = "" }: ParticleTextProps) {
       });
       if (!sampleContext) return;
 
-      const maxSize = Math.min(
-        190,
-        rect.width / Math.max(text.length * 0.62, 1),
-      );
-      const fontSize = Math.max(54, maxSize);
       sampleContext.fillStyle = "#ffffff";
+      sampleContext.font = '800 190px Inter, "Microsoft YaHei", sans-serif';
+      const measured = sampleContext.measureText(text);
+      const visualWidth = measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight || measured.width;
+      const visualHeight = measured.actualBoundingBoxAscent + measured.actualBoundingBoxDescent || 190;
+      // Leave room for the 18px entry scatter and the particle radius on every edge.
+      const fontSize = Math.min(
+        190,
+        (190 * Math.max(1, sample.width - 48)) / Math.max(1, visualWidth),
+        (190 * Math.max(1, sample.height - 48)) / Math.max(1, visualHeight),
+      );
       sampleContext.font = `800 ${fontSize}px Inter, "Microsoft YaHei", sans-serif`;
       sampleContext.textAlign = "center";
       sampleContext.textBaseline = "middle";
-      sampleContext.fillText(text, rect.width / 2, rect.height / 2);
+      const fitted = sampleContext.measureText(text);
+      sampleContext.fillText(
+        text,
+        sample.width / 2 + (fitted.actualBoundingBoxLeft - fitted.actualBoundingBoxRight) / 2,
+        sample.height / 2 + (fitted.actualBoundingBoxAscent - fitted.actualBoundingBoxDescent) / 2,
+      );
       const pixels = sampleContext.getImageData(
         0,
         0,
@@ -119,7 +129,7 @@ export function ParticleText({ text, className = "" }: ParticleTextProps) {
         context.arc(
           particle.x,
           particle.y,
-          rect.width < 640 ? 1.2 : 1.45,
+          1.45,
           0,
           Math.PI * 2,
         );

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
-import { ArrowGlyph, Empty, Header, SearchGlyph, StatusBadge } from "../components/ui";
+import { ArrowGlyph, Empty, GlassArrowButton, Header, SearchGlyph, StatusBadge } from "../components/ui";
 import { historyPath, scanPath } from "../hooks/useRoute";
 import {
   getHistory,
@@ -331,7 +331,7 @@ export function History({
         >
           <div className="og-actions">
             {activeFilters.length > 0 && <button onClick={() => go(historyPath())}>清除筛选</button>}
-            <button className="og-primary og-arrow-button" onClick={() => go("/app/new-scan?mode=api")}><span>新建扫描</span><ArrowGlyph /></button>
+            <GlassArrowButton onClick={() => go("/app/new-scan?mode=api")}>新建扫描</GlassArrowButton>
           </div>
         </Empty>
       ) : result ? (

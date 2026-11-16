@@ -17,6 +17,7 @@ export type Page =
   | "report"
   | "report-v2"
   | "not-found"
+  | "about"
   | "home";
 export function readRoute() {
   const { pathname, search } = window.location;
@@ -27,6 +28,8 @@ export function readRoute() {
       : query.get("mode") === "mock"
         ? "mock"
         : defaultMode;
+  if (pathname === "/about.html")
+    return { page: "about" as Page, scanId: "", riskId: "", query, mode };
   if (pathname === "/")
     return { page: "home" as Page, scanId: "", riskId: "", query, mode };
   if (pathname === "/app/assistant" || pathname === "/app/assistant/")

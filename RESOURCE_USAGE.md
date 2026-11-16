@@ -10,7 +10,7 @@ OpenGuard团队自主代码采用根LICENSE的Apache-2.0；第三方权利不因
 - http-server固定离线样例：仅供现有启动器兼容入口，保留samples/http-server-LICENSE.txt；不是本轮录制主线，不能混用其资源计数或成绩。
 - Qwen3-4B-Instruct-2507 Q4_K_M：仅提供本机调用代码和获取说明，不分发权重；官方模型页标示Apache-2.0。Ollama运行时独立获取。模型标签/digest及运行时版本须通过本版身份门，不因“同名”而默认可替代。
 - 外部ScanCode/Syft等代码适配存在，但本版启动配置关闭外部扫描器；不附其可执行文件，不声称本轮执行过。
-- 不包含第三方视频、图片或字体文件，不复制旧首页video/poster，不包含私有素材或用户业务数据。保留的首页组件仍引用 `/landing/openguard-hero-bg.mp4` 和 `/landing/openguard-hero-poster.jpg`，这两个文件未获本轮再分发依据、未纳入候选；因此首页背景视频/海报不能按完整媒体效果交付。工作台业务页面不依赖它们，最终视觉范围仍需本轮实际检查。
+- 不包含第三方视频、图片或字体文件。UI1首页使用代码绘制的HeroEvidenceScene，未使用旧HeroBackground媒体；旧视频/海报不分发。新增圆形箭头玻璃按钮的MIT许可与署名保存在application/frontend/UIVERSE_CSSBUTTONS_IO_LICENSE.txt及web/third-party-licenses.txt。没有新增运行依赖。
 
 ## 本次来源
 
@@ -26,3 +26,7 @@ OpenGuard团队自主代码采用根LICENSE的Apache-2.0；第三方权利不因
 - react 19.2.8：MIT，`THIRD_PARTY_LICENSES/react-19.2.8-LICENSE`
 - typescript 5.9.2：Apache-2.0，`THIRD_PARTY_LICENSES/typescript-5.9.2-LICENSE.txt`
 - react-dom 19.2.8：MIT，`THIRD_PARTY_LICENSES/react-dom-19.2.8-LICENSE`
+
+## UI1增量
+
+2026-11-16录制UI来源上限3cee1edb160360b6dafc673f229bcd933a786887，主要视觉提交07b6e3d5061fa8dea277c91bd0b03c92da3ceabb，贡献者xzb123-hash；这些不是整个交付项目的commit。源代码与当前19380工作台相同，公开副本仅整理版本/验证文档，并不附本机为旧打开页面保留的两个未使用历史构建chunk；当前index/about使用的新JS/CSS保持原字节。
