@@ -1,27 +1,71 @@
-# UI1验证范围与限制
+# 国赛 P7 候选验证记录
 
-UI1继承2026-11-16录制界面更新批次。当前交付准备只核对已存在的源码、构建、运行回执与文件Hash，不重新构建、推理或累计测试成绩。
+`aic-national-p3-p7-20261122-candidate` 的受测源父提交为 `1f4dc46aab5c494be71c518fe869787a24f679ba`，`application/` 树为 `784c3618a6795d617a0f33257df58d32c2b18f32`，`web/` 树为 `4546d713ea3b38a4d2d8b3627705ff493175a4e9`。P7 只刷新五份顶层交付文件。外部 `TASK42_RECEIPT.md` 和 `TASK42_FILE_HASHES.json` 绑定本地提交、最终 ZIP SHA-256、P7 新实跑结果和原始证据。
 
-## UI更新批次的既有真实结果
+## P4 至 P6 的有效证据
 
-- 默认前端测试：改动前后均187/187。
-- 上传等输入回归：改动前后均98/98。
-- 账号、材料、导出定向集合：改动前后均115/120；5项task37-real-material-chain历史回执消费测试缺少evidence/real-chain/final下的SCAN_REPORT.json等文件，报ENOENT。失败没有删除、xfail或降级。这是可重复测试的证据依赖缺口，不写成全套通过。
-- TypeScript检查通过；正式配置Vite构建通过，保留既有>500kB chunk提示。当前构建产物main-DwXyyUYG.js、main-Xfp7EqWD.css与录制工作台逐字相同；about.html可直接访问/刷新。
-- 独立真实HTTP自检36项、59请求通过，包含新账号、扫描、用途/材料、Revision、旧Result、CAS、报告及账号隔离。
-- Chrome既有回执：注册/退出/登录，GitHub与ZIP输入切换，固定is-number扫描5资源/7证据，P2生成、投屏、CSV、扫描HTML、固定归档HTML/JSON下载；首页与窄屏、粒子交互、暂停及减少动态效果检查。不是本交付打包步骤重新执行的浏览器测试。
-- 原始回执保存在本机xzb-recording-ui-20261116任务，不打包账号、Cookie、截图或私有运行数据；公开摘要保留于FRONTEND_UPDATE_20261116.md。
+- **TASK38C**，提交 `2e97770f1bd1def2aff18399fb0aef74f25c3ec2`，690/690。确认 B58 集成和五项 pnpm 锁定回归。
+- **TASK39**，提交 `318799e634f766a1eda0ac2ef9a1e43737b9c1c9`，727/727。四条 Apache-2.0/NOTICE 的 ASGI 路径、版本化 v4、B58 角色和 `A-P4-04` 增量影响集通过。无 NOTICE 为条件 `SUPPORT`，未补 NOTICE 为 `UNKNOWN`，错误 NOTICE 为 `COUNTER_EVIDENCE`，精确匹配 NOTICE 后为 `UNKNOWN`，保留 §4(d) 人工核对提示。
+- **TASK40**，提交 `ab2c1256c4a2efb8714cc90b9f39eda0fc5fc224`。既有离线 Vite 构建 5/5 产物、退出码 0，有体积提示。真实 Chrome 20/20，210 条本机应用请求、0 个 4xx/5xx/控制台错误，22 张截图。启动期 7 次后台 CONNECT 被本机代理拒绝，5 次 IPv6 不可达探测发出 0 字节，实际外部 HTTP 为 0。MIT 补材 r1→r2 重算 1/5 个资源及 3/15 条主张，保留 4/5 个资源及 12/15 条主张。历史 r1 原始 DTO 保持，R2 导出绑定实际 Assessment v1、Result r2 和归档。P6 仅新增四个评测文件，P5 后端、前端、web、部署和样例树与 P6/P7 相同。
+- **TASK41**，提交 `1f4dc46aab5c494be71c518fe869787a24f679ba`。进程内真实 ASGI 21 场景、48 条去重主张，41 次场景执行及 535 次交换包含冷态、首次评测和暖态重复。严重安全错误 0/48，十类永久安全负例 10/10。程序、冻结清单和指标报告随 `application/benchmarks/` 交付，原始运行证据留在外部。
+- **TASK42** 的独立解压检查、合规扫描及同树 744 项复验状态由 P7 外部回执逐项核验。包内清单按公开载荷生成，运行状态和证据原件分开保存。
 
-## 与此前公开快照的关系
+## 744 项离线门禁基线
 
-应用后端、部署入口、依赖锁、固定样例及Qwen接线保持原字节；前端为选择性UI增量及对应构建。公开副本整理说明文档并排除两个未使用的旧web chunk，未改业务源码、现有测试断言或当前页面构建。
+| 门禁 | TASK41 证据分母 |
+|---|---:|
+| CORE_P4_PYTEST | 278/278 |
+| TASK39_PYTEST | 21/21 |
+| B58_PYTHON_TESTS | 119/119 |
+| TASK41_PYTEST | 12/12 |
+| CORE_NODE_AND_DTO_TESTS | 288/288 |
+| B58_MJS_TESTS | 25/25（20 + pnpm 5） |
+| TSC | 1/1 |
 
-旧快照的241项定向前端测试、一次Qwen真实成功（约16.13秒）、带AI评估包14成员/13Hash，以及历史P4后端312 PASS均属于此前批次。UI更新批次没有再次调用Qwen，不能冒称新增一次推理验收；后端不变是文件证据，不等于重新运行。
+同一受保护产品与测试树已记录 **744/744 PASS**，0 FAIL、0 ERROR、0 SKIP。上述实测报告和 JUnit 在工作区 `output/competition/task41-p6-benchmark/`。最终解压与复跑日志落在 `output/competition/task42-p7-final-freeze/`。
 
-## 限制
+## P6 评测结果
 
-- 上述5个缺失历史证据的测试仍不具备随包复现条件；普通扫描与包内self-test不依赖它们。
-- 未重跑全部后端、全部输入、外部扫描器或Bench；未验证其他操作系统、全新联网安装或新模型下载。
-- AI回答保留引用、语义及正式Result保护；一次历史成功不保证未来每次生成被接受。
-- 不附模型权重与第三方媒体，不提供公网服务；仅用于可信本机TEST_ONLY复核。
-- 正式视频由Owner录制，尚未作为本次交付核验对象；录制时必须使用UI1对应工作台，不能混用初始Release。
+| 指标 | 开发集 | 独立 holdout |
+|---|---:|---:|
+| 项目 / 场景 / 主张 | 6 / 16 / 36 | 2 / 5 / 12 |
+| 精确标签匹配 | 29/36 | 9/12 |
+| 条件建议精确率 | 7/7（100%） | 0/0（`null`） |
+| 支持范围覆盖 | 7/30 | 0/5 |
+| 全案例分母覆盖 | 7/36 | 0/12 |
+| 发现资源 / Evidence / 摘要验证绑定 / 支持主张 | 124 / 184 / 184 / 7 | 5 / 15 / 15 / 0 |
+
+十条保守漏判是开发 7 条和独立集 3 条。预期为 `SUPPORT`，实际均为 `UNKNOWN`。原始 MIT 格式、Apache 附录占位符等严格模板边界已记入 `application/benchmarks/P6_BENCHMARK_REPORT.md`。holdout 无 `SUPPORT` 输出，因此条件建议精确率无定义。标签为 `SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW`。按 Owner 确认，依赖元数据已有包名引用，已审计范围内无既往命名评测样本，`zero_prior_repo_references=false`。
+
+同输入用途的开发集 15 个配对中，初始全量与补材增量分别重算 119/119 和 15/119，耗时中位数 102.48→13.57 ms，保存的问题对象 238→238，材料/回答动作 0/0→18/1。holdout 4 个配对分别重算 4/4 和 4/4，耗时中位数 97.37→7.79 ms，问题对象 8→8，材料/回答动作 0/0→4/0。初始与增量包含不同操作，记录为配对耗时。问题对象计数没有测量用户工时。
+
+MacBook Pro Mac17,9，Apple M5 Pro，15 逻辑核，24 GB，macOS 27.2.1 arm64，Python 3.12.14。每划分 2 代表场景，冷 1 轮与暖 5 轮均用独立 ASGI 应用实例和临时数据库。各划分冷态 2/2、暖态 10/10，拒绝 0/26 与 0/130，5xx 和超时 0。最近秩分位数如下。冷轮起于新解释器，轮内共享模块导入缓存，系统缓存未清除。
+
+| 接口 p50/p95 ms | 开发冷 n=2 | 开发暖 n=10 | holdout 冷 n=2 | holdout 暖 n=10 |
+|---|---:|---:|---:|---:|
+| 扫描 | 42.37/59.14 | 42.13/52.56 | 37.22/50.70 | 49.66/59.05 |
+| 评估创建 | 28.08/28.68 | 28.33/57.25 | 29.07/43.70 | 27.18/47.42 |
+| 材料上传 | 5.42/7.23 | 6.06/7.24 | 4.31/4.32 | 4.02/4.41 |
+| GET v4 初始 | 4.80/8.86 | 4.19/5.09 | 2.75/3.77 | 2.44/3.93 |
+| GET v4 增量 | 4.58/6.34 | 4.66/6.42 | 2.60/3.45 | 2.83/3.77 |
+| 完整评估包导出 | 7.05/8.47 | 7.03/9.35 | 4.15/4.57 | 4.56/4.84 |
+
+## 固定样例合规例外
+
+Owner 仅批准固定 `samples/http-server.bundle` 内的下列六个台账项，外层包及其他嵌套内容继续适用禁入扫描。Bundle SHA-256 `b4d28764503ce135702d948878d8604495fd0addf38c7a070892e93d038c714b`。两份 PEM 是上游公开单元测试夹具，均非真实私有凭据。另四份为同一 MIT 上游快照公开示例及文档图片，未发现独立排除声明。例外绑定来源、精确相对路径与文件 SHA-256。
+
+| 上游快照 | 包内精确路径 | SHA-256 | 用途 |
+|---|---|---|---|
+| `http-party/http-server@0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b` | `test/fixtures/https/agent2-cert.pem` | `86cb2e5062f9c132ba293ba1900b6499b92970126651ce78132a2f7dec5667de` | 上游公开 TLS 单元测试证书 |
+| `http-party/http-server@0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b` | `test/fixtures/https/agent2-key.pem` | `1e67ba403f19109a90f974c5a2f2e7513dfe07bca6d899374afd651952a010f8` | 上游公开 TLS 单元测试私钥 |
+| `http-party/http-server@0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b` | `public/img/turtle.png` | `acadc81bf0ca74b9731eee589496134e19f55460aa984a0ed50e990a944c5466` | 上游公开演示图片 |
+| `http-party/http-server@0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b` | `screenshots/directory.png` | `4a7b4358768f90d30eca5273cd4c21def025518535eb743164a85d178b63e0a3` | 上游公开文档截图 |
+| `http-party/http-server@0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b` | `screenshots/public.png` | `4c3aa1b068e8ada2975250cb752182032513f9d7bbbd3c6b1f852cc7cb8f196a` | 上游公开文档截图 |
+| `http-party/http-server@0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b` | `screenshots/start.png` | `f2408298ef05e3eb8d60589234576ceabf92ed6d0fab71b5badc90c804ef3ad0` | 上游公开文档截图 |
+
+## 尚未覆盖的范围
+
+- `P2_V11_8_HARNESS=NOT_RUN (HISTORICAL BLOCKED)`。本轮没有把历史裁剪或缺证结论改写为通过。
+- P7 的解压 `check` 核对 CPython、锁定依赖、Git、固定样例和前端入口。Linux、WSL2、首次安装及跨设备完整启动链未实测。
+- 当前固定可选模型身份为 Ollama 0.33.3、`qwen3:4b-instruct-2507-q4_K_M`，manifest digest `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。P7 不复跑 Qwen。历史独立 TEST_ONLY 恢复证据为 `output/competition/qwen3-workbench-recovery-01/evidence/FINAL_RUNTIME_RECEIPT.json`，SHA-256 `a888ac1284d3ecb244a0abb714541b53a95953471d0fe6570b954229262e2893`。
+- G4 最终接纳与可选发布等待 Owner 决策。

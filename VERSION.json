@@ -1,23 +1,57 @@
 {
-  "version": "aic-semifinal-20261117-ui1",
-  "snapshot_origin": "locally integrated application; historical source SHAs are provenance, not the complete release commit",
-  "previous_public_commit": "5a2bc477fef7c91dd614c3d440cab56e914b6a86",
-  "release_tag": "aic-semifinal-20261117-ui1",
-  "release_url": "https://github.com/mumingce-star/OpenGuard/releases/tag/aic-semifinal-20261117-ui1",
-  "application_base": "workbench-full-rehearsal-20261116/application",
-  "upload_fix_source": "workbench-upload-selection-fix-20261116/application/frontend",
-  "ui_source_head": "3cee1edb160360b6dafc673f229bcd933a786887",
-  "ui_implementation_commit": "07b6e3d5061fa8dea277c91bd0b03c92da3ceabb",
-  "ui_contributor": "xzb123-hash",
+  "version": "aic-national-p3-p7-20261122-candidate",
+  "candidate_status": "LOCAL_CANDIDATE_AWAITING_OWNER_ACCEPTANCE",
+  "release_publication": "NOT_AUTHORIZED_AWAITING_OWNER_ACCEPTANCE",
+  "release_tag": null,
+  "release_url": null,
   "runtime_scope": "TEST_ONLY",
-  "recording_status": "READY_FOR_OWNER_RECORDING_NOT_RECORDED_BY_THIS_TASK",
+  "source_branch": "integration/national-p4",
+  "source_parent_commit": "1f4dc46aab5c494be71c518fe869787a24f679ba",
+  "source_commit_chain": [
+    {
+      "commit": "8dfbbde3d4c52c1bbe31d4320fc5333137277208",
+      "scope": "UI1 semifinal recording snapshot"
+    },
+    {
+      "commit": "2e97770f1bd1def2aff18399fb0aef74f25c3ec2",
+      "scope": "TASK38C national baseline and B58"
+    },
+    {
+      "commit": "318799e634f766a1eda0ac2ef9a1e43737b9c1c9",
+      "scope": "TASK39 material-claims/4, Apache-2.0 and NOTICE, roles and incremental impact"
+    },
+    {
+      "commit": "ab2c1256c4a2efb8714cc90b9f39eda0fc5fc224",
+      "scope": "TASK40 P5 frontend and browser acceptance"
+    },
+    {
+      "commit": "1f4dc46aab5c494be71c518fe869787a24f679ba",
+      "scope": "TASK41 P6 benchmark and permanent safety matrix"
+    }
+  ],
+  "code_tree_sha1": {
+    "application": "784c3618a6795d617a0f33257df58d32c2b18f32",
+    "application/backend": "b4e30d05881ac969b89a90e9957238a945e2d985",
+    "application/frontend": "03ef852027763eeea5224c7e82394dd05777eb9d",
+    "web": "4546d713ea3b38a4d2d8b3627705ff493175a4e9",
+    "deployment": "dc7796b697c8e569cfb1545b99f10d05cdeb0cfe",
+    "samples": "a3f2a56f1a529b5eb60eea042e0262e37c978a24"
+  },
+  "model": {
+    "optional": true,
+    "runtime": "Ollama",
+    "runtime_version": "0.33.3",
+    "name": "qwen3:4b-instruct-2507-q4_K_M",
+    "manifest_sha256": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "weights_included": false,
+    "model_calls_during_task42": 0,
+    "historical_evidence": "output/competition/qwen3-workbench-recovery-01/evidence/FINAL_RUNTIME_RECEIPT.json"
+  },
+  "lockfile_sha256": {
+    "deployment/requirements.lock": "15aa7739d2d387e9763975a87e6e20e7b224a242be0a0aeff257c081f8e23ab0",
+    "application/frontend/pnpm-lock.yaml": "357bf1d00f49ffcddcfb13fadf232f79bd864341d210fd8ea324106ee679185f"
+  },
   "source_manifest": "FILE_HASHES.json",
   "validation_reference": "VALIDATION.md",
-  "public_payload_excludes": [
-    "runtime",
-    "node_modules",
-    "model weights",
-    "private validation records",
-    "two obsolete unreferenced web chunks"
-  ]
+  "zip_and_freeze_commit_binding": "External TASK42 receipt and FILE_HASHES evidence bind the final ZIP to the local commit."
 }
