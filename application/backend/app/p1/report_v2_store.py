@@ -18,8 +18,12 @@ import stat
 from urllib.parse import quote
 from uuid import UUID
 
-from .models import P1ReportV2Snapshot
-from .report_v2_integrity import strict_json, validate_document, binding_identity, canonical
+from .models import report_v2_snapshot_adapter
+from .report_v2_integrity import binding_identity, bound_fingerprint, strict_json, validate_document
+
+
+MAX_REPORT_SNAPSHOT_BYTES = 16 * 1024 * 1024
+MAX_REPORT_ARTIFACT_BYTES = 32 * 1024 * 1024
 
 
 class ReportV2StoreError(RuntimeError):
@@ -61,8 +65,8 @@ class ReportV2Store:
         self,
         path: str | Path,
         *,
-        max_snapshot_bytes: int = 16 * 1024 * 1024,
-        max_artifact_bytes: int = 32 * 1024 * 1024,
+        max_snapshot_bytes: int = MAX_REPORT_SNAPSHOT_BYTES,
+        max_artifact_bytes: int = MAX_REPORT_ARTIFACT_BYTES,
         max_database_bytes: int = 256 * 1024 * 1024,
         min_free_bytes: int = 512 * 1024 * 1024,
     ):
@@ -302,7 +306,7 @@ class ReportV2Store:
         """Validate structural and cross-object snapshot invariants."""
 
         try:
-            P1ReportV2Snapshot.model_validate(snapshot)
+            report_v2_snapshot_adapter.validate_python(snapshot)
 
             snapshot_id = snapshot["snapshot_id"]
 
@@ -462,7 +466,10 @@ class ReportV2Store:
                 "invalid_argument"
             ) from error
 
-        if len(payload) > self.max_snapshot_bytes:
+        snapshot_limit = self.max_snapshot_bytes
+        if snapshot['schema_version'] == '1.1':
+            snapshot_limit = min(snapshot_limit, MAX_REPORT_SNAPSHOT_BYTES)
+        if len(payload) > snapshot_limit:
             raise ReportV2StoreError(
                 "storage_capacity_exceeded"
             )
@@ -495,6 +502,11 @@ class ReportV2Store:
                 "invalid_argument"
             )
 
+        artifact_limit = self.max_artifact_bytes
+        if snapshot['schema_version'] == '1.1':
+            artifact_limit = MAX_REPORT_ARTIFACT_BYTES if stored else min(artifact_limit, MAX_REPORT_ARTIFACT_BYTES)
+        elif stored:
+            artifact_limit = max(artifact_limit, MAX_REPORT_ARTIFACT_BYTES)
         result: dict[str, bytes] = {}
 
         for format_name in ("html", "json"):
@@ -512,7 +524,7 @@ class ReportV2Store:
                     "invalid_argument"
                 )
 
-            if len(payload) > (max(32 * 1024 * 1024, self.max_artifact_bytes) if stored else self.max_artifact_bytes):
+            if len(payload) > artifact_limit:
                 raise ReportV2StoreError(
                     "storage_capacity_exceeded"
                 )
@@ -578,10 +590,14 @@ class ReportV2Store:
             return None
         try:
             rid, sid, aid, created_at, payload, digest = row
-            if (rid,sid,aid)!=(snapshot_id,scan_id,assessment_id) or len(payload)>max(16*1024*1024,self.max_snapshot_bytes) or _digest(payload)!=digest:
+            if ((rid, sid, aid) != (snapshot_id, scan_id, assessment_id)
+                    or len(payload) > max(MAX_REPORT_SNAPSHOT_BYTES, self.max_snapshot_bytes)
+                    or _digest(payload) != digest):
                 raise ValueError('snapshot_integrity')
             snapshot = strict_json(payload)
             self._validate_snapshot(snapshot, scan_id, assessment_id)
+            if snapshot['schema_version'] == '1.1' and len(payload) > MAX_REPORT_SNAPSHOT_BYTES:
+                raise ValueError('snapshot_integrity')
             if snapshot['snapshot_id']!=snapshot_id or snapshot['created_at']!=created_at:
                 raise ValueError('snapshot_identity')
             rows=db.execute("SELECT format,payload,payload_hash,size_bytes FROM report_artifacts WHERE snapshot_id=?",(snapshot_id,)).fetchall()
@@ -600,11 +616,13 @@ class ReportV2Store:
         if row is None:return None
         loaded=self._load(db,scan_id,assessment_id,row[1])
         if loaded is None:raise ReportV2StoreError('storage_unavailable')
-        snapshot=loaded[0]
-        # Legacy fingerprints bind the saved source refs, not a fresh upstream read.
-        legacy=_digest(canonical({'schema_version':'1.0',**snapshot['binding']}))
-        if row[0]!=legacy:raise ReportV2StoreError('storage_unavailable')
-        if binding_identity(snapshot['binding'])!=identity:
+        snapshot = loaded[0]
+        # Reconstruct from the stored version and source references, never current facts.
+        version = snapshot['schema_version']
+        fingerprint = bound_fingerprint(snapshot['binding'], version)
+        if row[0] != fingerprint or (version == '1.1' and snapshot['provenance']['parameters_hash'] != fingerprint):
+            raise ReportV2StoreError('storage_unavailable')
+        if binding_identity(snapshot['binding'], schema_version=version) != identity:
             raise ReportV2StoreError('idempotency_conflict')
         return snapshot
 
@@ -664,40 +682,26 @@ class ReportV2Store:
                     existing=self._existing_request(db,scan_id,assessment_id,idempotency_key,request_identity)
                     if existing is not None:return existing
 
-                request = db.execute(
-                    """
-                    SELECT
-                        fingerprint,
-                        snapshot_id
-                    FROM report_requests
-                    WHERE scan_id=?
-                      AND assessment_id=?
-                      AND request_key=?
-                    """,
-                    (
-                        scan_id,
-                        assessment_id,
-                        idempotency_key,
-                    ),
-                ).fetchone()
-
-                if request is not None:
-                    (
-                        stored_fingerprint,
-                        stored_snapshot_id,
-                    ) = request
-
-                    if (
-                        stored_fingerprint
-                        != fingerprint
-                    ):
-                        raise ReportV2StoreError(
-                            "idempotency_conflict"
-                        )
-
-                    loaded=self._load(db,scan_id,assessment_id,stored_snapshot_id)
-                    if loaded is None:raise ReportV2StoreError('storage_unavailable')
-                    return loaded[0]
+                else:
+                    # The historical low-level Store API accepts a supplied fingerprint for 1.0.
+                    if isinstance(snapshot, dict) and snapshot.get('schema_version') == '1.1':
+                        raise ReportV2StoreError('invalid_argument')
+                    request = db.execute(
+                        """
+                        SELECT fingerprint, snapshot_id
+                        FROM report_requests
+                        WHERE scan_id=? AND assessment_id=? AND request_key=?
+                        """,
+                        (scan_id, assessment_id, idempotency_key),
+                    ).fetchone()
+                    if request is not None:
+                        stored_fingerprint, stored_snapshot_id = request
+                        loaded = self._load(db, scan_id, assessment_id, stored_snapshot_id)
+                        if loaded is None:
+                            raise ReportV2StoreError('storage_unavailable')
+                        if loaded[0]['schema_version'] != '1.0' or stored_fingerprint != fingerprint:
+                            raise ReportV2StoreError('idempotency_conflict')
+                        return loaded[0]
 
                 snapshot_payload = (
                     self._snapshot_payload(
@@ -706,6 +710,13 @@ class ReportV2Store:
                         assessment_id,
                     )
                 )
+
+                if snapshot['schema_version'] == '1.1':
+                    expected_fingerprint = bound_fingerprint(snapshot['binding'], '1.1')
+                    if (fingerprint != expected_fingerprint
+                            or snapshot['provenance']['parameters_hash'] != fingerprint
+                            or request_identity != binding_identity(snapshot['binding'], schema_version='1.1')):
+                        raise ReportV2StoreError('invalid_argument')
 
                 artifact_payloads = (
                     self._artifact_payloads(

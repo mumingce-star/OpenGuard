@@ -26,8 +26,15 @@ from app.persistence import (
     ScanRegistryError,
 )
 
-from .report_v2_integrity import explicit_identity
+from .report_v2_integrity import bound_fingerprint, explicit_identity
 from .report_v2_sources import validate_fixed_sources, validate_task
+from .report_v2_dependency_evidence import (
+    MAX_REPORT_DOCUMENT_BYTES,
+    MAX_REPORT_ITEMS,
+    ReportItemCapacityError,
+    base_archive_items,
+    dependency_observation,
+)
 
 from .models import (
     P1AlgorithmRef,
@@ -37,11 +44,15 @@ from .models import (
     P1NoticeRef,
     P1Producer,
     P1ReportArtifact,
-    P1ReportV2Snapshot,
+    P1ReportDependencyEvidenceSection,
     P1ScanRef,
     P1SnapshotSection,
     P1TaskRef,
+    P1VersionedReportV2Snapshot,
+    REPORT_DEPENDENCY_EVIDENCE_SCHEMA,
+    REPORT_DEPENDENCY_EVIDENCE_TITLE,
     ReportV2SchemaVersion,
+    report_v2_snapshot_adapter,
 )
 from .remediation_store import (
     RemediationStoreError,
@@ -131,8 +142,9 @@ class ReportV2Service:
         *,
         graph_reader=None,
         notice_reader=None,
-        max_included_items: int = 20000,
-        max_document_bytes: int = 16 * 1024 * 1024,
+        max_included_items: int = MAX_REPORT_ITEMS,
+        max_document_bytes: int = MAX_REPORT_DOCUMENT_BYTES,
+        enable_v11_writes: bool = False,
     ):
         self.registry = registry
         self.assessment_store = assessment_store
@@ -140,6 +152,9 @@ class ReportV2Service:
         self.report_store = report_store
         self.graph_reader = graph_reader
         self.notice_reader = notice_reader
+        if type(enable_v11_writes) is not bool:
+            raise ValueError("invalid Report V2 write switch")
+        self.enable_v11_writes = enable_v11_writes
         if any(type(v) is not int or v<1 for v in (max_included_items,max_document_bytes)):
             raise ValueError('invalid report generation budget')
         self.max_included_items=max_included_items
@@ -443,6 +458,15 @@ class ReportV2Service:
         content: object,
         snapshot_ref: str,
     ) -> P1SnapshotSection:
+        if schema_version == REPORT_DEPENDENCY_EVIDENCE_SCHEMA:
+            return P1ReportDependencyEvidenceSection(
+                authority="observation",
+                schema_version=REPORT_DEPENDENCY_EVIDENCE_SCHEMA,
+                source_ids=source_ids,
+                content_hash=_digest_value(content),
+                snapshot_ref=snapshot_ref,
+                title=REPORT_DEPENDENCY_EVIDENCE_TITLE,
+            )
         return P1SnapshotSection(
             authority=authority,
             schema_version=schema_version,
@@ -461,7 +485,7 @@ class ReportV2Service:
         task_refs: list[P1TaskRef] | None = None,
         notice_refs: list[P1NoticeRef] | None = None,
         algorithm_refs: list[P1AlgorithmRef] | None = None,
-    ) -> P1ReportV2Snapshot:
+    ) -> P1VersionedReportV2Snapshot:
         if (
             not isinstance(idempotency_key, str)
             or not 1 <= len(idempotency_key) <= 200
@@ -474,9 +498,6 @@ class ReportV2Service:
 
         if schema_version not in ("1.0", "1.1"):
             raise ReportV2ServiceError("invalid_argument", reason="report_schema_version_invalid")
-        if schema_version == "1.1":
-            raise ReportV2ServiceError("not_ready", reason="report_v2_1_1_write_disabled")
-
         task_refs = task_refs or []
         notice_refs = notice_refs or []
         algorithm_refs = algorithm_refs or []
@@ -488,13 +509,15 @@ class ReportV2Service:
             if len({getattr(ref,key) for ref in values})!=len(values):
                 raise ReportV2ServiceError('invalid_argument',reason='duplicate_'+{'task_id':'task_ref','draft_id':'notice_ref','kind':'algorithm_ref'}[key])
             normalized.append([ref.model_dump(mode='json') for ref in values])
-        identity=explicit_identity(scan_id,assessment_id,*normalized)
+        identity = explicit_identity(scan_id, assessment_id, *normalized, schema_version=schema_version)
         try:
             existing=self.report_store.replay(scan_id,assessment_id,idempotency_key,identity)
         except ReportV2StoreError as error:
             raise ReportV2ServiceError('conflict' if error.code=='idempotency_conflict' else 'upstream_unavailable',reason=error.code) from error
         if existing is not None:
-            return P1ReportV2Snapshot.model_validate(existing)
+            return report_v2_snapshot_adapter.validate_python(existing)
+        if schema_version == "1.1" and not self.enable_v11_writes:
+            raise ReportV2ServiceError("not_ready", reason="report_v2_1_1_write_disabled")
 
         # Do not trust client-supplied immutable Notice or observation hashes
         # until those source stores/readers are actually available.
@@ -551,13 +574,17 @@ class ReportV2Service:
             algorithm_refs=fixed_algorithm_refs,
         )
 
-        fingerprint = self._fingerprint(
-            scan_ref,
-            assessment_ref,
-            fixed_task_refs,
-            fixed_notice_refs,
-            fixed_algorithm_refs,
-        )
+        binding_value = binding.model_dump(mode="json")
+        if schema_version == "1.0":
+            fingerprint = self._fingerprint(
+                scan_ref,
+                assessment_ref,
+                fixed_task_refs,
+                fixed_notice_refs,
+                fixed_algorithm_refs,
+            )
+        else:
+            fingerprint = bound_fingerprint(binding_value, schema_version)
 
         snapshot_id = f"rptv2_{uuid4()}"
         created_at = _utc_now()
@@ -630,13 +657,27 @@ class ReportV2Service:
             ))
         for draft in notice_snapshots:
             raw_sections.append(('observation', draft['schema_version'], [draft['draft_id']], draft))
+        if schema_version == "1.1":
+            archive_items = base_archive_items(
+                scan_content, assessment_content, binding_value, task_snapshots,
+                notice_snapshots, [graph_content] if graph_content is not None else [],
+            )
+            try:
+                dependency = dependency_observation(
+                    run, scan_ref, remaining=min(self.max_included_items, MAX_REPORT_ITEMS) - archive_items,
+                )
+            except ReportItemCapacityError as error:
+                raise ReportV2ServiceError(
+                    "upstream_unavailable", reason="report_generation_capacity_exceeded",
+                ) from error
+            raw_sections.append(("observation", REPORT_DEPENDENCY_EVIDENCE_SCHEMA, [scan_id], dependency))
 
         sections: list[P1SnapshotSection] = []
         document_sections: list[dict] = []
 
         for index, (
             authority,
-            schema_version,
+            section_version,
             source_ids,
             content,
         ) in enumerate(raw_sections):
@@ -648,7 +689,7 @@ class ReportV2Service:
 
             section = self._section(
                 authority=authority,
-                schema_version=schema_version,
+                schema_version=section_version,
                 source_ids=source_ids,
                 content=content,
                 snapshot_ref=snapshot_ref,
@@ -678,11 +719,9 @@ class ReportV2Service:
         )
 
         document = {
-            "schema_version": "1.0",
+            "schema_version": schema_version,
             "snapshot_id": snapshot_id,
-            "binding": binding.model_dump(
-                mode="json"
-            ),
+            "binding": binding_value,
             "created_at": created_at,
             "generator_version": REPORT_V2_VERSION,
             "sections": document_sections,
@@ -691,12 +730,15 @@ class ReportV2Service:
             ),
         }
 
+        document_limit = self.max_document_bytes
+        if schema_version == "1.1":
+            document_limit = min(document_limit, MAX_REPORT_DOCUMENT_BYTES)
         encoded_size=0
         encoder=json.JSONEncoder(sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False)
         try:
             for chunk in encoder.iterencode(document):
                 encoded_size+=len(chunk.encode('utf-8'))
-                if encoded_size>self.max_document_bytes:
+                if encoded_size > document_limit:
                     raise ReportV2ServiceError('upstream_unavailable',reason='report_generation_capacity_exceeded')
         except (ValueError,RecursionError,TypeError) as error:
             raise ReportV2ServiceError('upstream_unavailable',reason='report_source_integrity') from error
@@ -731,11 +773,9 @@ class ReportV2Service:
         ]
 
         snapshot_value = {
-            "schema_version": "1.0",
+            "schema_version": schema_version,
             "snapshot_id": snapshot_id,
-            "binding": binding.model_dump(
-                mode="json"
-            ),
+            "binding": binding_value,
             "created_at": created_at,
             "generator_version": REPORT_V2_VERSION,
             "sections": [
@@ -761,7 +801,7 @@ class ReportV2Service:
         )
 
         snapshot = (
-            P1ReportV2Snapshot.model_validate(
+            report_v2_snapshot_adapter.validate_python(
                 snapshot_value
             )
         )
@@ -803,7 +843,7 @@ class ReportV2Service:
                 reason=error.code,
             ) from error
 
-        return P1ReportV2Snapshot.model_validate(
+        return report_v2_snapshot_adapter.validate_python(
             saved
         )
 
@@ -812,7 +852,7 @@ class ReportV2Service:
         scan_id: str,
         assessment_id: str,
         snapshot_id: str,
-    ) -> P1ReportV2Snapshot | None:
+    ) -> P1VersionedReportV2Snapshot | None:
         try:
             value = self.report_store.get(
                 scan_id,
@@ -829,7 +869,7 @@ class ReportV2Service:
         if value is None:
             return None
 
-        return P1ReportV2Snapshot.model_validate(
+        return report_v2_snapshot_adapter.validate_python(
             value
         )
 

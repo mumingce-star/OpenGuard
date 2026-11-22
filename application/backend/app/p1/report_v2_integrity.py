@@ -47,16 +47,28 @@ def strict_json(payload):
         raise ValueError('report_json_invalid') from error
 
 
-def explicit_identity(scan_id,assessment_id,task_refs,notice_refs,algorithm_refs):
-    return {'scan_id':scan_id,'assessment_id':assessment_id,
-            'task_refs':sorted(task_refs,key=lambda x:(x['task_id'],x['version'])),
-            'notice_refs':sorted(notice_refs,key=lambda x:(x['draft_id'],x['content_hash'])),
-            'algorithm_refs':sorted(algorithm_refs,key=lambda x:(x['kind'],x['version'],x['content_hash']))}
+def bound_fingerprint(binding: dict, schema_version: str) -> str:
+    """Bind a scoped request to the saved format and source references."""
+    return hashlib.sha256(canonical({'schema_version': schema_version, **binding})).hexdigest()
 
 
-def binding_identity(binding):
-    return explicit_identity(binding['scan_ref']['scan_id'],binding['assessment_ref']['assessment_id'],
-                             binding['task_refs'],binding['notice_refs'],binding['algorithm_refs'])
+def explicit_identity(scan_id, assessment_id, task_refs, notice_refs, algorithm_refs, *, schema_version='1.0'):
+    return {
+        'schema_version': schema_version,
+        'scan_id': scan_id,
+        'assessment_id': assessment_id,
+        'task_refs': sorted(task_refs, key=lambda ref: (ref['task_id'], ref['version'])),
+        'notice_refs': sorted(notice_refs, key=lambda ref: (ref['draft_id'], ref['content_hash'])),
+        'algorithm_refs': sorted(algorithm_refs, key=lambda ref: (ref['kind'], ref['version'], ref['content_hash'])),
+    }
+
+
+def binding_identity(binding, *, schema_version='1.0'):
+    return explicit_identity(
+        binding['scan_ref']['scan_id'], binding['assessment_ref']['assessment_id'],
+        binding['task_refs'], binding['notice_refs'], binding['algorithm_refs'],
+        schema_version=schema_version,
+    )
 
 
 def validate_document(snapshot,payload):
@@ -90,11 +102,18 @@ def validate_full_sections(snapshot, rows):
         by.setdefault(row['authority'],[]).append(row)
     for authority in ('scan_facts','formal_assessment','workflow','ai_explanation'):
         if len(by.get(authority,[]))!=1:raise ValueError('report_full_sections_missing')
+    def full_dump(parsed, raw):
+        value = parsed.model_dump(mode='json')
+        if canonical(value) != canonical(raw):
+            raise ValueError('report_content_incomplete')
+        return value
+
     def complete(model, raw):
-        parsed=model.model_validate(raw).model_dump(mode='json')
-        if canonical(parsed)!=canonical(raw):raise ValueError('report_content_incomplete')
-        return parsed
-    scan=complete(ScanRun,by['scan_facts'][0]['content'])
+        return full_dump(model.model_validate(raw), raw)
+
+    raw_scan = by['scan_facts'][0]['content']
+    scan_model = ScanRun.model_validate(raw_scan)
+    scan = full_dump(scan_model, raw_scan)
     assessment=complete(Assessment,by['formal_assessment'][0]['content'])
     binding=snapshot['binding']
     if scan['id']!=binding['scan_ref']['scan_id'] or assessment['id']!=binding['assessment_ref']['assessment_id']:
@@ -125,16 +144,14 @@ def validate_full_sections(snapshot, rows):
     expected=dict(assessment_id=assessment['id'],assessment_version=assessment['version'],
         ai_status=assessment['ai_status'],ai_summary=assessment['ai_summary'],ai_evidence_ids=assessment['ai_evidence_ids'])
     if canonical(ai)!=canonical(expected):raise ValueError('report_ai_content_mismatch')
-    observations=by.get('observation',[])
+    observations = by.get('observation', [])
+    dependency = None
     if snapshot['schema_version'] == '1.1':
-        from .report_v2_dependency_evidence import P1ReportDependencyEvidence
-
         dependency_rows = [row for row in observations if row['schema_version'] == REPORT_DEPENDENCY_EVIDENCE_SCHEMA]
         if len(dependency_rows) != 1:
             raise ValueError('report_dependency_evidence_section')
         dependency = dependency_rows[0]
-        content = complete(P1ReportDependencyEvidence, dependency['content'])
-        if dependency['source_ids'] != [scan['id']] or canonical(content['scan_ref']) != canonical(scan_ref):
+        if dependency['source_ids'] != [scan['id']]:
             raise ValueError('report_dependency_evidence_binding')
         observations = [row for row in observations if row is not dependency]
     notices=binding['notice_refs']
@@ -162,3 +179,18 @@ def validate_full_sections(snapshot, rows):
                 or reference['content_hash']!=graph_content_hash(graph) or graph['scan_ref']!=scan_ref
                 or row['source_ids']!=[graph['view_id']] or row['schema_version']!=graph['schema_version']):
             raise ValueError('report_graph_binding')
+
+
+    if dependency is not None:
+        from .models import P1ScanRef
+        from .report_v2_dependency_evidence import MAX_REPORT_ITEMS, base_archive_items, dependency_observation
+
+        included = base_archive_items(
+            scan, assessment, binding, tasks,
+            [row['content'] for row in notice_rows], [row['content'] for row in graph_rows],
+        )
+        expected_dependency = dependency_observation(
+            scan_model, P1ScanRef.model_validate(scan_ref), remaining=MAX_REPORT_ITEMS - included,
+        )
+        if canonical(dependency['content']) != canonical(expected_dependency):
+            raise ValueError('report_dependency_evidence_binding')

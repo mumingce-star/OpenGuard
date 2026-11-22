@@ -338,6 +338,18 @@ def project_dependency_evidence(
     limit: int,
 ) -> tuple[list[DependencyEvidenceItem], int, bool]:
     """Return one stable page, counting all matching recorded components."""
+    return _project_dependency_evidence_v1(run, source=source, after=after, limit=limit)
+
+
+def _project_dependency_evidence_v1(
+    run: ScanRun,
+    *,
+    source: DependencySource | None,
+    after: str | None,
+    limit: int,
+    accept_item: Callable[[DependencyEvidenceItem], None] | None = None,
+) -> tuple[list[DependencyEvidenceItem], int, bool]:
+    # Report V2 dependency evidence /1 replays these v1 semantics from frozen ScanRun facts.
     evidence = {entry.id: entry for entry in run.evidence}
     sources = {key: _source(entry) for key, entry in evidence.items()}
     candidates = []
@@ -412,7 +424,7 @@ def project_dependency_evidence(
         role = "unknown" if related else _role(component, full)
         if role == "unknown" and not related:
             gaps.add("role_evidence_unavailable")
-        items.append(DependencyEvidenceItem(
+        item = DependencyEvidenceItem(
             resource_id=component.id,
             name=component.name,
             version=component.version,
@@ -427,5 +439,8 @@ def project_dependency_evidence(
             conflicts_returned=len(visible_conflicts),
             incomplete=bool(gaps),
             gaps=sorted(gaps),
-        ))
+        )
+        if accept_item is not None:
+            accept_item(item)
+        items.append(item)
     return items, len(candidates), len(candidates) > page_start + len(page)

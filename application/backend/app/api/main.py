@@ -5,6 +5,7 @@ from app.domain.usage import UsageDeclaration
 
 import os
 import json
+import logging
 import stat
 import secrets
 import threading
@@ -54,6 +55,7 @@ from app.reporting import PipelineReportPublisher, ReportArtifactStore
 
 _P1_GRAPH_MAX_NODES = 20_000
 _P1_GRAPH_MAX_EDGES = 60_000
+_REPORT_V2_V11_WRITES_ENV = "OPENGUARD_ENABLE_REPORT_V2_1_1_WRITES"
 
 _ERROR_RESPONSES = {
     404: {"model": ErrorEnvelope},
@@ -800,10 +802,28 @@ def create_app(
     return app
 
 
-def create_default_app(*, git_ingestion_factory=None, data_dir: Path | None = None) -> FastAPI:
+def report_v2_v11_writes_from_environment() -> bool:
+    """Read the process setting when composing the app or its tenant factory."""
+    setting = os.environ.get(_REPORT_V2_V11_WRITES_ENV, "0")
+    if setting not in {"0", "1"}:
+        logging.getLogger(__name__).warning("%s is invalid; new Report V2 1.1 writes are disabled",
+                                           _REPORT_V2_V11_WRITES_ENV)
+    return setting == "1"
+
+
+def create_default_app(
+    *,
+    git_ingestion_factory=None,
+    data_dir: Path | None = None,
+    report_v2_v11_writes: bool | None = None,
+) -> FastAPI:
     # Internal composition only; HTTP requests cannot supply a snapshot or factory.
     if git_ingestion_factory is not None and not callable(git_ingestion_factory):
         raise ValueError("invalid Git ingestion factory")
+    if report_v2_v11_writes is None:
+        report_v2_v11_writes = report_v2_v11_writes_from_environment()
+    elif type(report_v2_v11_writes) is not bool:
+        raise ValueError("invalid Report V2 write configuration")
     profile_metadata_enabled = os.environ.get("OPENGUARD_ENABLE_PROFILE_METADATA", "0")
     if profile_metadata_enabled not in {"0", "1"}:
         raise RuntimeError("invalid OPENGUARD_ENABLE_PROFILE_METADATA")
@@ -914,6 +934,7 @@ def create_default_app(*, git_ingestion_factory=None, data_dir: Path | None = No
             registry, assessment_store, remediation_store, report_v2_store,
             notice_reader=ReportNoticeReader(notice_draft_store),
             graph_reader=ReportGraphReader(max_nodes=_P1_GRAPH_MAX_NODES, max_edges=_P1_GRAPH_MAX_EDGES),
+            enable_v11_writes=report_v2_v11_writes,
         )
         # Startup/GET do not collect, stage or bind. Only future actual work does.
         registry.assessment_observer = assessment_service.on_terminal
@@ -1045,4 +1066,4 @@ def create_default_app(*, git_ingestion_factory=None, data_dir: Path | None = No
     )
 
 
-__all__ = ["create_app", "create_default_app"]
+__all__ = ["create_app", "create_default_app", "report_v2_v11_writes_from_environment"]
