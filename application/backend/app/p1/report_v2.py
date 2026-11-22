@@ -41,6 +41,7 @@ from .models import (
     P1ScanRef,
     P1SnapshotSection,
     P1TaskRef,
+    ReportV2SchemaVersion,
 )
 from .remediation_store import (
     RemediationStoreError,
@@ -456,6 +457,7 @@ class ReportV2Service:
         assessment_id: str,
         *,
         idempotency_key: str,
+        schema_version: ReportV2SchemaVersion = "1.0",
         task_refs: list[P1TaskRef] | None = None,
         notice_refs: list[P1NoticeRef] | None = None,
         algorithm_refs: list[P1AlgorithmRef] | None = None,
@@ -469,6 +471,11 @@ class ReportV2Service:
                 "invalid_argument",
                 reason="idempotency_key_invalid",
             )
+
+        if schema_version not in ("1.0", "1.1"):
+            raise ReportV2ServiceError("invalid_argument", reason="report_schema_version_invalid")
+        if schema_version == "1.1":
+            raise ReportV2ServiceError("not_ready", reason="report_v2_1_1_write_disabled")
 
         task_refs = task_refs or []
         notice_refs = notice_refs or []

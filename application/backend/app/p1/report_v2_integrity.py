@@ -84,7 +84,7 @@ def validate_full_sections(snapshot, rows):
     """Require full versioned model contents, never reconstruct omitted details."""
     from app.domain.models import ScanRun
     from app.assessment.models import Assessment
-    from .models import P1RemediationTask, P1ResourceGraphView
+    from .models import REPORT_DEPENDENCY_EVIDENCE_SCHEMA, P1RemediationTask, P1ResourceGraphView
     by={}
     for row in rows:
         by.setdefault(row['authority'],[]).append(row)
@@ -126,6 +126,17 @@ def validate_full_sections(snapshot, rows):
         ai_status=assessment['ai_status'],ai_summary=assessment['ai_summary'],ai_evidence_ids=assessment['ai_evidence_ids'])
     if canonical(ai)!=canonical(expected):raise ValueError('report_ai_content_mismatch')
     observations=by.get('observation',[])
+    if snapshot['schema_version'] == '1.1':
+        from .report_v2_dependency_evidence import P1ReportDependencyEvidence
+
+        dependency_rows = [row for row in observations if row['schema_version'] == REPORT_DEPENDENCY_EVIDENCE_SCHEMA]
+        if len(dependency_rows) != 1:
+            raise ValueError('report_dependency_evidence_section')
+        dependency = dependency_rows[0]
+        content = complete(P1ReportDependencyEvidence, dependency['content'])
+        if dependency['source_ids'] != [scan['id']] or canonical(content['scan_ref']) != canonical(scan_ref):
+            raise ValueError('report_dependency_evidence_binding')
+        observations = [row for row in observations if row is not dependency]
     notices=binding['notice_refs']
     if len(observations)!=len(binding['algorithm_refs'])+len(notices):raise ValueError('report_observation_missing')
     notice_rows=[row for row in observations if 'draft_id' in row['content']]

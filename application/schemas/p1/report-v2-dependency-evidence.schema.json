@@ -1,0 +1,502 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openguard:p1:report-v2-dependency-evidence:1",
+  "$defs": {
+    "DependencyConflictSide": {
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/DependencyEvidenceRef"
+          },
+          "type": "array",
+          "maxItems": 8
+        },
+        "evidence_total": {
+          "type": "integer"
+        },
+        "evidence_returned": {
+          "type": "integer"
+        },
+        "incomplete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "resource_id",
+        "version",
+        "evidence",
+        "evidence_total",
+        "evidence_returned",
+        "incomplete"
+      ],
+      "type": "object"
+    },
+    "DependencyEvidenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "resource_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ecosystem": {
+          "enum": [
+            "pypi",
+            "npm",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "role_state": {
+          "enum": [
+            "observed",
+            "inferred",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "enum": [
+              "manifest",
+              "lock",
+              "sbom",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/DependencyEvidenceRef"
+          },
+          "type": "array",
+          "maxItems": 50
+        },
+        "evidence_total": {
+          "type": "integer"
+        },
+        "evidence_returned": {
+          "type": "integer"
+        },
+        "conflicts": {
+          "items": {
+            "$ref": "#/$defs/DependencyVersionConflict"
+          },
+          "type": "array",
+          "maxItems": 8
+        },
+        "conflicts_total": {
+          "type": "integer"
+        },
+        "conflicts_returned": {
+          "type": "integer"
+        },
+        "incomplete": {
+          "type": "boolean"
+        },
+        "gaps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "resource_id",
+        "name",
+        "version",
+        "ecosystem",
+        "role_state",
+        "sources",
+        "evidence",
+        "evidence_total",
+        "evidence_returned",
+        "conflicts",
+        "conflicts_total",
+        "conflicts_returned",
+        "incomplete",
+        "gaps"
+      ],
+      "type": "object"
+    },
+    "DependencyEvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "manifest",
+            "lock",
+            "sbom",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "file_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "producer": {
+          "$ref": "#/$defs/ProducerRef"
+        },
+        "verification_status": {
+          "$ref": "#/$defs/VerificationStatus"
+        },
+        "kind": {
+          "$ref": "#/$defs/EvidenceKind"
+        },
+        "start_line": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "end_line": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "evidence_id",
+        "source",
+        "file_path",
+        "locator",
+        "source_sha256",
+        "producer",
+        "verification_status",
+        "kind",
+        "start_line",
+        "end_line"
+      ],
+      "type": "object"
+    },
+    "DependencyVersionConflict": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "const": "lock_version_conflict",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "confirmed",
+            "incomplete",
+            "ambiguous"
+          ],
+          "type": "string"
+        },
+        "declaration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DependencyConflictSide"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lock": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DependencyConflictSide"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gaps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "code",
+        "status",
+        "declaration",
+        "lock",
+        "gaps"
+      ],
+      "type": "object"
+    },
+    "EvidenceKind": {
+      "enum": [
+        "file",
+        "manifest_field",
+        "url",
+        "tool_output",
+        "license_text",
+        "metadata"
+      ],
+      "type": "string"
+    },
+    "HashValue": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "type": "string"
+        },
+        "value": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "type": "object"
+    },
+    "P1ScanRef": {
+      "additionalProperties": false,
+      "properties": {
+        "scan_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "facts_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "input_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "inventory_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "partial"
+          ]
+        },
+        "registry_revision": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "scan_id",
+        "revision",
+        "facts_hash",
+        "input_hash",
+        "inventory_hash",
+        "status",
+        "registry_revision"
+      ],
+      "type": "object"
+    },
+    "ProducerRef": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ProducerType"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": "string"
+        },
+        "config_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HashValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model_id": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prompt_schema_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HashValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "version",
+        "config_digest",
+        "provider",
+        "model_id",
+        "prompt_schema_digest"
+      ],
+      "type": "object"
+    },
+    "ProducerType": {
+      "enum": [
+        "parser",
+        "scanner",
+        "rule_engine",
+        "ai",
+        "human"
+      ],
+      "type": "string"
+    },
+    "VerificationStatus": {
+      "enum": [
+        "verified",
+        "pending",
+        "not_applicable",
+        "rejected"
+      ],
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "openguard-report-v2-dependency-evidence/1",
+      "type": "string"
+    },
+    "scan_ref": {
+      "$ref": "#/$defs/P1ScanRef"
+    },
+    "coverage": {
+      "const": "unknown",
+      "type": "string"
+    },
+    "total": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "returned": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "incomplete": {
+      "type": "boolean"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/DependencyEvidenceItem"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "scan_ref",
+    "coverage",
+    "total",
+    "returned",
+    "incomplete",
+    "items"
+  ],
+  "type": "object"
+}

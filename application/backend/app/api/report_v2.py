@@ -16,7 +16,8 @@ from app.p1.models import (
     P1GraphCapacityErrorEnvelope,
     P1Model,
     P1NoticeRef,
-    P1ReportV2Snapshot,
+    P1VersionedReportV2Snapshot,
+    ReportV2SchemaVersion,
     P1TaskRef,
 )
 from app.p1.report_v2 import ReportV2Service, ReportV2ServiceError
@@ -43,6 +44,7 @@ class ReportTaskRef(P1TaskRef):
 
 
 class ReportV2CreateRequest(P1Model):
+    schema_version: ReportV2SchemaVersion = "1.0"
     idempotency_key: Annotated[str, Field(strict=True, min_length=1, max_length=200)]
     task_refs: list[ReportTaskRef] = Field(default_factory=list)
     notice_refs: list[P1NoticeRef] = Field(default_factory=list)
@@ -90,13 +92,13 @@ def _translate(error: ReportV2ServiceError) -> None:
 def router() -> APIRouter:
     result = APIRouter(prefix=PREFIX, tags=["Report V2"])
 
-    @result.post("", response_model=P1ReportV2Snapshot, responses=ERROR_RESPONSES)
+    @result.post("", response_model=P1VersionedReportV2Snapshot, responses=ERROR_RESPONSES)
     def create_report(
         scan_id: str,
         assessment_id: str,
         payload: ReportV2CreateRequest,
         request: Request,
-    ) -> P1ReportV2Snapshot:
+    ) -> P1VersionedReportV2Snapshot:
         _query(request, set())
         service = _service(request)
         try:
@@ -104,6 +106,7 @@ def router() -> APIRouter:
                 scan_id,
                 assessment_id,
                 idempotency_key=payload.idempotency_key,
+                schema_version=payload.schema_version,
                 task_refs=payload.task_refs,
                 notice_refs=payload.notice_refs,
                 algorithm_refs=payload.algorithm_refs,

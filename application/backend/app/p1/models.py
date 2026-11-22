@@ -1,6 +1,6 @@
 """P1 projection DTOs checked against the frozen JSON Schemas."""
 from typing import Annotated, Literal
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, model_validator
 from app.domain.models import ScanStatus, ScanStage, SourceType, ScanSummary
 
 Text = Annotated[str, Field(min_length=1)]
@@ -389,7 +389,19 @@ class P1ReportArtifact(P1Model):
     href: Annotated[str, Field(pattern=r'^/api/v1/')]
 
 
-class P1ReportV2Snapshot(P1Model):
+ReportV2SchemaVersion = Literal['1.0', '1.1']
+REPORT_DEPENDENCY_EVIDENCE_SCHEMA = 'openguard-report-v2-dependency-evidence/1'
+REPORT_DEPENDENCY_EVIDENCE_TITLE = '依赖证据'
+
+
+class P1ReportDependencyEvidenceSection(P1SnapshotSection):
+    authority: Literal['observation']
+    schema_version: Literal['openguard-report-v2-dependency-evidence/1']
+    source_ids: Annotated[list[Text], Field(min_length=1, max_length=1)]
+    title: Literal['依赖证据']
+
+
+class _P1ReportV2SnapshotBase(P1Model):
     @model_validator(mode='before')
     @classmethod
     def strict_report_boundary(cls, value):
@@ -405,7 +417,7 @@ class P1ReportV2Snapshot(P1Model):
         except (KeyError, TypeError, AttributeError) as error:
             raise ValueError('report_structure_invalid') from error
 
-    schema_version: Literal['1.0']
+    schema_version: ReportV2SchemaVersion
     snapshot_id: Text
     binding: P1Binding
     created_at: Utc
@@ -414,3 +426,31 @@ class P1ReportV2Snapshot(P1Model):
     content_hash: Hash
     artifacts: list[P1ReportArtifact]
     provenance: P1HistoryProvenance
+
+
+
+class P1ReportV2Snapshot(_P1ReportV2SnapshotBase):
+    schema_version: Literal['1.0']
+
+
+class P1ReportV2SnapshotV11(_P1ReportV2SnapshotBase):
+    schema_version: Literal['1.1']
+    sections: list[P1ReportDependencyEvidenceSection | P1SnapshotSection]
+
+    @model_validator(mode='after')
+    def validate_dependency_section(self):
+        dependency_sections = [
+            section for section in self.sections if section.schema_version == REPORT_DEPENDENCY_EVIDENCE_SCHEMA
+        ]
+        if len(dependency_sections) != 1 or not isinstance(dependency_sections[0], P1ReportDependencyEvidenceSection):
+            raise ValueError('report_dependency_evidence_section')
+        if dependency_sections[0].source_ids != [self.binding.scan_ref.scan_id]:
+            raise ValueError('report_dependency_evidence_source')
+        return self
+
+
+P1VersionedReportV2Snapshot = Annotated[
+    P1ReportV2Snapshot | P1ReportV2SnapshotV11,
+    Field(discriminator='schema_version'),
+]
+report_v2_snapshot_adapter = TypeAdapter(P1VersionedReportV2Snapshot)
