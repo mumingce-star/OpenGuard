@@ -28,6 +28,7 @@ from app.p1.models import P1HistoryPage, P1ScanDiffView, P1ResourceGraphView, P1
 from app.p1.graph import GraphReader, GraphCapacityError
 from app.p1.models import P1TaskDeriveRequest, P1TaskPatchRequest, P1TaskCollection, P1TaskPage, P1RemediationTask
 from app.p1.diff import DiffReader
+from app.p1.dependency_evidence import DependencySource
 from app.ai import OllamaProvider
 from app.api.models import (
     ErrorBody,
@@ -41,10 +42,11 @@ from app.api.models import (
     ScanRunStatusView,
     ZipScanCreateFields,
 )
-from app.api.service import APPLICATION_VERSION, ApiError, ScanApiService
+from app.api.service import APPLICATION_VERSION, ApiError, DependencyEvidencePage, ScanApiService
 from app.api.git_scan import GitScanRuntime
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
+from app.local_accounts import ACCOUNT_ID
 from app.persistence import SQLiteScanRunRegistry, ZipDispatchStore
 from app.pipeline.zip_dispatcher import ZipDispatcher
 from app.reporting import PipelineReportPublisher, ReportArtifactStore
@@ -344,6 +346,31 @@ def _router() -> APIRouter:
                 provider=provider,
                 verification_status=verification_status,
             ),
+        )
+
+    @router.get(
+        "/scans/{scan_id}/dependency-evidence", response_model=DependencyEvidencePage,
+        responses={**_ERROR_RESPONSES, 400: {"model": ErrorEnvelope}, 401: {"model": ErrorEnvelope}},
+    )
+    def get_dependency_evidence(
+        scan_id: str, request: Request, response: Response,
+        service: Annotated[ScanApiService, Depends(_service)],
+        source: Annotated[DependencySource | None, Query()] = None,
+        limit: Annotated[int, Query(ge=1, le=100)] = 50,
+        cursor: Annotated[str | None, Query(max_length=2048)] = None,
+    ) -> DependencyEvidencePage:
+        account_id = getattr(request.state, "local_account_id", None)
+        if not isinstance(account_id, str) or not ACCOUNT_ID.fullmatch(account_id):
+            raise ApiError(status_code=401, code="auth_login_required",
+                           message="Sign in to read dependency evidence.", reason="login_required")
+        query = request.query_params
+        if set(query) - {"source", "limit", "cursor"} or len(query.multi_items()) != len(query):
+            raise ApiError(status_code=400, code="dependency_evidence_query_invalid",
+                           message="Use one value for each supported query parameter.", reason="query_invalid")
+        response.headers["Cache-Control"] = "private, no-store"
+        return service.dependency_evidence(
+            scan_id, account_id=account_id, cursor_key=request.app.state.history_cursor_key,
+            source=source, limit=limit, cursor=cursor,
         )
 
     @router.get("/scans/{scan_id}/risks", response_model=RisksResponse, responses=_ERROR_RESPONSES)

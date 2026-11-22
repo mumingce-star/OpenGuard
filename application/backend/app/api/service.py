@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import json
 import platform
 import sys
+from base64 import b64decode, urlsafe_b64encode
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from typing import Literal
 from urllib.parse import unquote, urlsplit
 from uuid import UUID, uuid4
 
@@ -39,7 +42,10 @@ from app.domain.models import (
     ScanSummary,
     SourceType,
 )
-from app.persistence import SQLiteScanRunRegistry, ScanRegistryError
+from app.assessment.engine import canonical_bytes, digest, facts_digest
+from app.p1.dependency_evidence import DependencyEvidenceItem, DependencySource, project_dependency_evidence
+from app.p1.models import P1Model, P1ScanRef
+from app.persistence import SQLiteScanRunRegistry, ScanRegistryError, StoredScanRun
 from app.reporting import ReportArtifactStore, ReportStoreError, StoredReport
 from app.ingestion.url_policy import parse_public_git_url
 from app.security.errors import IngestionSecurityError
@@ -62,6 +68,46 @@ class ApiError(RuntimeError):
 
 def _fail(*, status_code: int, code: str, message: str, reason: str) -> None:
     raise ApiError(status_code=status_code, code=code, message=message, reason=reason) from None
+
+
+class DependencyEvidencePage(P1Model):
+    schema_version: Literal["openguard-dependency-evidence/1"] = "openguard-dependency-evidence/1"
+    scan_ref: P1ScanRef
+    source: DependencySource | None
+    limit: int
+    total: int
+    returned: int
+    next_cursor: str | None
+    coverage: Literal["unknown"] = "unknown"
+    incomplete: bool
+    items: list[DependencyEvidenceItem]
+
+
+def _dependency_cursor(key: bytes, query: str, snapshot: str, after: str) -> str:
+    payload = canonical_bytes({"query": query, "snapshot": snapshot, "after": after})
+    return urlsafe_b64encode(hmac.digest(key, payload, "sha256") + payload).decode("ascii").rstrip("=")
+
+
+def _dependency_cursor_after(token: str, key: bytes, query: str, snapshot: str) -> str:
+    try:
+        signed = b64decode(token + "=" * (-len(token) % 4), altchars=b"-_", validate=True)
+        if urlsafe_b64encode(signed).decode("ascii").rstrip("=") != token:
+            raise ValueError("noncanonical cursor")
+        signature, payload = signed[:32], signed[32:]
+        if not hmac.compare_digest(signature, hmac.digest(key, payload, "sha256")):
+            raise ValueError("invalid signature")
+        value = json.loads(payload)
+        if (type(value) is not dict or set(value) != {"query", "snapshot", "after"}
+                or value["query"] != query or not isinstance(value["after"], str)
+                or not value["after"]):
+            raise ValueError("invalid binding")
+    except ValueError:
+        _fail(status_code=400, code="dependency_evidence_cursor_invalid",
+              message="The cursor does not match this dependency evidence query.", reason="cursor_invalid")
+    if value["snapshot"] != snapshot:
+        _fail(status_code=409, code="dependency_evidence_cursor_stale",
+              message="The scan facts changed. Read the first page again.", reason="cursor_stale")
+    return value["after"]
 
 
 @dataclass(frozen=True)
@@ -350,6 +396,30 @@ class ScanApiService:
                 return evidence
         _fail(status_code=404, code="evidence_not_found", message="Evidence was not found.", reason="not_found")
 
+    def dependency_evidence(
+        self, scan_id: str, *, account_id: str, cursor_key: bytes,
+        source: DependencySource | None, limit: int, cursor: str | None,
+    ) -> DependencyEvidencePage:
+        stored = self._get_stored_run(scan_id)
+        run = stored.run
+        self._require_ready(run)
+        inventory = run.provenance.inventory_digest
+        scan_ref = P1ScanRef(
+            scan_id=run.id, registry_revision=stored.revision, revision=run.project.revision,
+            facts_hash=facts_digest(run), input_hash=run.provenance.input_digest.value,
+            inventory_hash=inventory.value if inventory else None, status=run.status,
+        )
+        key = hmac.digest(cursor_key, b"openguard/dependency-evidence/1\0" + account_id.encode(), "sha256")
+        query = digest({"scan_id": scan_ref.scan_id, "source": source, "limit": limit})
+        snapshot = digest(scan_ref.model_dump(mode="json"))
+        after = _dependency_cursor_after(cursor, key, query, snapshot) if cursor is not None else None
+        items, total, more = project_dependency_evidence(run, source=source, after=after, limit=limit)
+        next_cursor = _dependency_cursor(key, query, snapshot, items[-1].resource_id) if more else None
+        return DependencyEvidencePage(
+            scan_ref=scan_ref, source=source, limit=limit, total=total, returned=len(items), next_cursor=next_cursor,
+            incomplete=run.status is ScanStatus.PARTIAL or any(item.incomplete for item in items), items=items,
+        )
+
     def report(self, scan_id: str, report_format: ReportFormat) -> ReportLink:
         run = self._get_run(scan_id)
         if run.status not in _RESULT_STATUSES:
@@ -406,18 +476,25 @@ class ScanApiService:
                 reason="report_storage_failure",
             )
 
-    def _get_run(self, scan_id: str) -> ScanRun:
+    def _get_stored_run(self, scan_id: str) -> StoredScanRun:
         try:
-            return self._registry.get(scan_id).run
+            return self._registry.get(scan_id)
         except ScanRegistryError as error:
             if error.code in {"registry_not_found", "registry_invalid_argument"}:
                 _fail(status_code=404, code="scan_not_found", message="Scan was not found.", reason="not_found")
             _fail(status_code=500, code="internal_error", message="The scan could not be read.", reason="registry_failure")
 
-    def _ready_run(self, scan_id: str) -> ScanRun:
-        run = self._get_run(scan_id)
+    def _get_run(self, scan_id: str) -> ScanRun:
+        return self._get_stored_run(scan_id).run
+
+    @staticmethod
+    def _require_ready(run: ScanRun) -> None:
         if run.status not in _RESULT_STATUSES:
             _fail(status_code=409, code="scan_not_ready", message="Scan results are not ready.", reason="status_not_ready")
+
+    def _ready_run(self, scan_id: str) -> ScanRun:
+        run = self._get_run(scan_id)
+        self._require_ready(run)
         return run
 
 
