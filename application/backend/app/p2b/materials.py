@@ -11,6 +11,19 @@ _SHA = re.compile(r"^[0-9a-f]{64}$")
 _EXACT_VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$")
 
 
+def _decode_material_text(content: bytes) -> str:
+    """Decode bounded material bytes after the caller checks their size."""
+    try:
+        decoded = content.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise ValueError("material_utf8_required") from exc
+    if "\x00" in decoded:
+        raise ValueError("material_binary_content")
+    if not decoded.strip("\ufeff \t\r\n"):
+        raise ValueError("material_empty_text")
+    return decoded
+
+
 def parse_local_material(content: bytes, metadata: dict[str, Any],
                          *, known_objects: dict[tuple[str, str], str],
                          known_materials: dict[tuple[str, str, str, str], str] | None = None) -> dict[str, Any]:
@@ -44,14 +57,7 @@ def parse_local_material(content: bytes, metadata: dict[str, Any],
     source = metadata.get("source")
     if not isinstance(source, str) or not source.strip() or len(source) > 512:
         raise ValueError("material_source_missing")
-    try:
-        decoded = content.decode("utf-8", errors="strict")
-    except UnicodeDecodeError as exc:
-        raise ValueError("material_utf8_required") from exc
-    if "\x00" in decoded:
-        raise ValueError("material_binary_content")
-    if not decoded.strip("\ufeff \t\r\n"):
-        raise ValueError("material_empty_text")
+    decoded = _decode_material_text(content)
     return {"kind": "openguard.p2b.local-material/0", "scan_id": scan_id, "object_id": object_id,
             "version": version, "filename": filename, "source_claim": source,
             "content_sha256": digest, "byte_count": len(content), "observation": "text_observed",
