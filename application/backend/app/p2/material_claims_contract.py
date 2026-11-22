@@ -1,9 +1,11 @@
 """Versioned material claims view over the frozen P2 Result and Material."""
-from typing import Literal
+from typing import Literal, get_args
 from pydantic import Field, model_validator
 from .contract import DTO, Binding, Subject, SHA, ID, Use
 
 Status = Literal['SUPPORT', 'RESTRICTION', 'UNKNOWN', 'COUNTER_EVIDENCE', 'NOT_COVERED']
+TextLicense = Literal['MIT', 'Apache-2.0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause', 'UNKNOWN']
+MATERIAL_TEXT_LICENSES = tuple(license_id for license_id in get_args(TextLicense) if license_id != 'UNKNOWN')
 SCHEMA_VERSION = 'openguard-material-claims/4'
 RULE_VERSION = 'mit-apache2-bound-claim/4'
 
@@ -47,12 +49,13 @@ class MaterialObservation(DTO):
     source_sha256: SHA
     byte_count: int = Field(ge=1, le=65536)
     filename: str
-    parse_state: Literal['MATCHED_MIT', 'MATCHED_APACHE_2_0', 'NOTICE_OBSERVED', 'UNSUPPORTED', 'FAILED']
+    parse_state: Literal['MATCHED_MIT', 'MATCHED_APACHE_2_0', 'MATCHED_ISC', 'MATCHED_BSD_2_CLAUSE',
+                         'MATCHED_BSD_3_CLAUSE', 'NOTICE_OBSERVED', 'UNSUPPORTED', 'FAILED']
     parse_reason: str
     binding_state: Literal['BOUND_TO_SAVED_RESULT'] = 'BOUND_TO_SAVED_RESULT'
     adoption_state: Literal['OBSERVATION_ONLY', 'CONDITIONAL_TEXT_BASIS']
     declared_spdx: str
-    text_license: Literal['MIT', 'Apache-2.0', 'UNKNOWN']
+    text_license: TextLicense
     license_version: Literal['2.0'] | None
     version_scope: Literal['RESOURCE_VERSION_NOT_LICENSE_VERSION', 'LICENSE_VERSION_AND_RESOURCE_VERSION']
     role: Literal['root_package', 'dependency', 'unknown']

@@ -7,8 +7,23 @@ import { readMaterialClaims, type MaterialClaims, type ClaimState } from '../ser
 
 const labels:Record<ClaimState,string>={SUPPORT:'有条件文本支持',RESTRICTION:'存在尚未满足的条件',UNKNOWN:'依据不足，保持未知',COUNTER_EVIDENCE:'发现相冲突的证据',NOT_COVERED:'本次用途或资源未覆盖'};
 const clauseLabels:Record<string,string>={license_identifier:'许可证标识',copyright:'版权声明',permission:'用途权限段',condition:'条件与义务',warranty:'免责范围',notice:'NOTICE声明'};
-const parseLabels={MATCHED_MIT:'完整 MIT 文本匹配',MATCHED_APACHE_2_0:'完整 Apache-2.0 文本匹配',NOTICE_OBSERVED:'NOTICE 已读取，不能单独授予权利',UNSUPPORTED:'文本或许可证组合尚不支持',FAILED:'解析失败'};
-const reasons:Record<string,string>={USE_NOT_SELECTED:'本次没有选择此用途。',RESOURCE_KIND_NOT_COVERED:'首期规则不覆盖此类资源。',USAGE_UNDECLARED:'尚未明确此用途。',SPDX_TEXT_CONFLICT:'许可证标识与绑定文本冲突。',BOUND_LICENSE_BYTES_CONFLICT:'同一资源绑定了不同许可证材料。',BOUND_NOTICE_BYTES_CONFLICT:'上传的 NOTICE 与固定发行包中的 NOTICE 字节不一致。',NOTICE_REQUIRES_REVIEW:'附加 NOTICE 需要进一步解释。',NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW:'NOTICE 字节与固定发行包一致，仍需人工核对 Apache-2.0 §4(d) 的声明保留义务。',MULTI_LICENSE_NOT_SUPPORTED:'多许可证组合需要单独审核，不能任选一个许可。',MISSING_LICENSE_MATERIAL:'缺少完整许可证材料。',UNSUPPORTED_OR_FAILED_TEXT:'材料未通过当前完整文本规则。',SOURCE_OR_EVIDENCE_BINDING_NOT_ESTABLISHED:'精确版本来源或证据绑定尚不充分。',USER_REPORTS_DELIVERY_OBLIGATION_UNFULFILLED:'用户声明交付义务尚未履行；具体义务对象与范围仍需明确。',SPDX_NORMALIZATION_CONFLICT:'许可表达式与归一化标识冲突。',COUNTER_EVIDENCE_SOURCE_UNKNOWN:'该反证的部分来源尚不足，引用不作补造。',PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT:'完整 MIT 文本与固定发行材料相符，仅为当前资源的有条件建议。',PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT:'完整 Apache-2.0 文本与固定发行材料相符，仅为当前资源的有条件建议。'};
+const parseLabels={
+ MATCHED_MIT:'完整 MIT 文本匹配',
+ MATCHED_APACHE_2_0:'完整 Apache-2.0 文本匹配',
+ MATCHED_ISC:'完整 ISC 文本匹配',
+ MATCHED_BSD_2_CLAUSE:'完整 BSD-2-Clause 文本匹配',
+ MATCHED_BSD_3_CLAUSE:'完整 BSD-3-Clause 文本匹配',
+ NOTICE_OBSERVED:'NOTICE 已读取，不能单独授予权利',
+ UNSUPPORTED:'文本或许可证组合尚不支持',
+ FAILED:'解析失败',
+};
+const reasons:Record<string,string>={USE_NOT_SELECTED:'本次没有选择此用途。',RESOURCE_KIND_NOT_COVERED:'首期规则不覆盖此类资源。',USAGE_UNDECLARED:'尚未明确此用途。',SPDX_TEXT_CONFLICT:'许可证标识与绑定文本冲突。',BOUND_LICENSE_BYTES_CONFLICT:'同一资源绑定了不同许可证材料。',BOUND_NOTICE_BYTES_CONFLICT:'上传的 NOTICE 与固定发行包中的 NOTICE 字节不一致。',NOTICE_REQUIRES_REVIEW:'附加 NOTICE 需要进一步解释。',NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW:'NOTICE 字节与固定发行包一致，仍需人工核对 Apache-2.0 §4(d) 的声明保留义务。',MULTI_LICENSE_NOT_SUPPORTED:'多许可证组合需要单独审核，不能任选一个许可。',MISSING_LICENSE_MATERIAL:'缺少完整许可证材料。',UNSUPPORTED_OR_FAILED_TEXT:'材料未通过当前完整文本规则。',SOURCE_OR_EVIDENCE_BINDING_NOT_ESTABLISHED:'精确版本来源或证据绑定尚不充分。',USER_REPORTS_DELIVERY_OBLIGATION_UNFULFILLED:'用户声明交付义务尚未履行；具体义务对象与范围仍需明确。',SPDX_NORMALIZATION_CONFLICT:'许可表达式与归一化标识冲突。',COUNTER_EVIDENCE_SOURCE_UNKNOWN:'该反证的部分来源尚不足，引用不作补造。',PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT:'完整 MIT 文本与固定发行材料相符，仅为当前资源的有条件建议。',PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT:'完整 Apache-2.0 文本与固定发行材料相符，仅为当前资源的有条件建议。',
+ PINNED_RELEASE_AND_COMPLETE_ISC_CONDITIONAL_TEXT:'完整 ISC 文本与固定发行材料相符，仅为当前资源的有条件建议。',
+ PINNED_RELEASE_AND_COMPLETE_BSD_2_CLAUSE_CONDITIONAL_TEXT:'完整 BSD-2-Clause 文本与固定发行材料相符，仅为当前资源的有条件建议。',
+ PINNED_RELEASE_AND_COMPLETE_BSD_3_CLAUSE_CONDITIONAL_TEXT:'完整 BSD-3-Clause 文本与固定发行材料相符，仅为当前资源的有条件建议。',
+ COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED:'已声明 Copyleft 许可，需人工核对源代码披露义务及其触发条件。',
+ WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED:'已声明弱 Copyleft 许可，需人工核对文件范围、修改与再分发义务。',
+};
 const roleConflictLabels:Record<string,string>={
  dependency_declaration_conflict:'依赖声明不一致',
  lock_version_conflict:'锁文件版本冲突',
@@ -26,6 +41,8 @@ function nextClaimAction(view: MaterialClaims, counts: Record<ClaimState, number
   return '人工核对 NOTICE 的内容及附带义务。';
  }
  if (counts.RESTRICTION) return '核对并处理尚未满足的条件。';
+ if (reasons.has('COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED')) return '人工核对源代码披露义务及其触发条件。';
+ if (reasons.has('WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED')) return '人工核对文件范围及再分发义务。';
  if (reasons.has('MISSING_LICENSE_MATERIAL')) return '在当前可写版本补充缺失资源的完整 LICENSE。';
  if (counts.UNKNOWN) return '补齐对应资源的固定版本或绑定证据。';
  if (counts.SUPPORT) return '核对列明的条件后，可导出本版评估包。';

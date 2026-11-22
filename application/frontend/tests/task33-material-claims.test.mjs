@@ -77,11 +77,11 @@ test('abort while quote hashing rejects late response',async()=>{
 // Transport fixtures below exercise UI isolation, not real backend success.
 const nodes=x=>!x||typeof x!=='object'?[]:Array.isArray(x)?x.flatMap(nodes):[x,...nodes(x.props?.children)];
 const renderedText=x=>x==null||typeof x==='boolean'?'':Array.isArray(x)?x.map(renderedText).join(''):typeof x==='object'?renderedText(x.props?.children):String(x);
-async function panelHarness(previousOutcome='failure',empty=false){
+async function panelHarness(previousOutcome='failure',empty=false,supplied=null){
  const states=[],effects=[];let si=0,ei=0,dirty=true,pending=[],tree;const calls=[];
- const props={assessment:{id:'asm_1',scan_id:'scn_1',version:1},result:result(),resourceName:()=> 'is-number',declarationSnapshot:anchor()};
+ const props={assessment:{id:'asm_1',scan_id:'scn_1',version:1},result:supplied?.r??result(),resourceName:()=> 'is-number',declarationSnapshot:supplied?.a??anchor()};
  const hooks={useState(initial){const i=si++;if(!(i in states))states[i]=typeof initial==='function'?initial():initial;return[states[i],value=>{const next=typeof value==='function'?value(states[i]):value;if(!Object.is(next,states[i])){states[i]=next;dirty=true;}}];},useEffect(fn,deps){const i=ei++,old=effects[i];if(!old||deps.some((x,j)=>!Object.is(x,old.deps[j]))){effects[i]={deps,cleanup:old?.cleanup};pending.push(()=>{old?.cleanup?.();effects[i].cleanup=fn();});}}};
- const display=fixture();
+ const display=supplied?.v??fixture();
  if(empty){props.result.material_ids=[];props.result.resources[0].material_ids=[];display.materials=[];for(const c of display.claims){c.material_ids=[];c.evidence=[];c.clause_ids=[];c.conditions=[];if(c.state==='SUPPORT')c.state='UNKNOWN';}for(const a of display.advice){a.conditions=[];if(a.state==='SUPPORT')a.state='UNKNOWN';a.reasons=['MISSING_LICENSE_MATERIAL'];}}
  const services={readMaterialClaims:async(_a,r)=>{calls.push(r.result_id);if(r.result_id==='p2res_old')throw Error('previous DTO binding conflict');return display;}};
  const source=fs.readFileSync(new URL('../src/components/MaterialClaimsPanel.tsx',import.meta.url),'utf8');
@@ -479,4 +479,130 @@ test('TASK36 nonempty saved compatibility candidate and old preliminary support 
  const combined=renderedText([newTree,savedTree,oldTree]);
  assert.match(combined,/依据不足，保持未知/);assert.match(combined,/已保存的兼容性条件候选/);
  assert.equal(JSON.stringify(f.result),original,'render and selection must not rewrite historical Result');
+});
+
+const task43BsdConditions=[
+ '以源码再分发时保留原版权声明、许可证条件和免责声明。',
+ '以二进制再分发时在随附文档和/或其他分发材料中保留原版权声明、许可证条件和免责声明。',
+];
+const task43Profiles=[
+ {license:'MIT',parse:'MATCHED_MIT',parseReason:'COMPLETE_EXISTING_MIT_PROFILE',reason:'PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT',
+  conditions:['保留版权声明和许可文本'],clauses:['copyright','permission','condition','warranty']},
+ {license:'ISC',parse:'MATCHED_ISC',parseReason:'COMPLETE_ISC_PROFILE',reason:'PINNED_RELEASE_AND_COMPLETE_ISC_CONDITIONAL_TEXT',
+  conditions:['在所有软件副本中保留原版权声明和完整 ISC 许可声明。'],clauses:['copyright','permission','condition','warranty']},
+ {license:'BSD-2-Clause',parse:'MATCHED_BSD_2_CLAUSE',parseReason:'COMPLETE_BSD_2_CLAUSE_PROFILE',
+  reason:'PINNED_RELEASE_AND_COMPLETE_BSD_2_CLAUSE_CONDITIONAL_TEXT',
+  conditions:task43BsdConditions,clauses:['copyright','permission','condition','condition','warranty']},
+ {license:'BSD-3-Clause',parse:'MATCHED_BSD_3_CLAUSE',parseReason:'COMPLETE_BSD_3_CLAUSE_PROFILE',
+  reason:'PINNED_RELEASE_AND_COMPLETE_BSD_3_CLAUSE_CONDITIONAL_TEXT',
+  conditions:[...task43BsdConditions,'未经事先书面许可，不得使用权利人或贡献者的名称背书或推广衍生产品。'],
+  clauses:['copyright','permission','condition','condition','condition','warranty']},
+];
+
+// Synthetic wire fixtures exercise the browser's structural and cryptographic checks.
+// The backend ASGI tests exercise the real upstream bytes and parser.
+function task43LicenseFixture(profile,headed=false){
+ const r=result(),a=anchor(),v=fixture();
+ const material=v.materials[0];
+ const {license,parse,parseReason,reason,conditions}=profile;
+ r.usage.modified=true;
+ for(const entry of [a.resources[0],v.declaration_observations[0]]){
+  Object.assign(entry,{expression:license,normalized_ids:[license]});
+ }
+ const kinds=headed?['license_identifier',...profile.clauses]:profile.clauses;
+ const quotes=kinds.map((kind,i)=>kind==='license_identifier'?license+' License':kind==='copyright'?'Copyright © 2026 合成样例':kind+' fixture '+i);
+ const raw=quotes.join('\r\n'),materialHash=sha(raw);
+ let byteStart=0;
+ const clauses=quotes.map((quote,i)=>{
+  const byteEnd=byteStart+Buffer.byteLength(quote);
+  const clause={clause_id:'p4clause_task43_'+i,material_id:material.material_id,material_sha256:materialHash,
+   kind:kinds[i],byte_start:byteStart,byte_end:byteEnd,line_start:i+1,line_end:i+1,quote,quote_sha256:sha(quote)};
+  byteStart=byteEnd+2;
+  return clause;
+ });
+ Object.assign(material,{parse_state:parse,parse_reason:parseReason,declared_spdx:license,text_license:license,clauses,
+  source_sha256:materialHash,byte_count:Buffer.byteLength(raw)});
+ for(const claim of v.claims)Object.assign(claim,{state:'SUPPORT',conditions,clause_ids:clauses.map(c=>c.clause_id)});
+ for(const advice of v.advice)Object.assign(advice,{state:'SUPPORT',conditions,saved_value:true,reasons:[reason]});
+ return {r,a,v};
+}
+
+for(const profile of task43Profiles){
+ test('TASK43 decodes and renders exact scoped '+profile.license+' clauses',async()=>{
+  const {s}=setup();
+  for(const headed of [false,true]){
+   const {r,a,v}=task43LicenseFixture(profile,headed);
+   const checked=await s.validateMaterialClaims(v,r,a);
+   assert.equal(checked.materials[0].text_license,profile.license);
+   assert.equal(checked.materials[0].clauses.length,profile.clauses.length+Number(headed));
+   assert.deepEqual(checked.advice.map(row=>row.state),['SUPPORT','SUPPORT','SUPPORT']);
+   const ui=await panelHarness('failure',false,{r,a,v:checked});
+   try{
+    assert.ok(ui.text.includes('完整 '+profile.license+' 文本匹配'));
+    assert.ok(ui.text.includes('仅为当前资源的有条件建议'));
+   }finally{ui.dispose();}
+  }
+ });
+}
+
+for(const profile of task43Profiles.slice(1)){
+ test('TASK43 rejects '+profile.license+' missing a required clause in an otherwise bound DTO',async()=>{
+  const {s}=setup(),{r,a,v}=task43LicenseFixture(profile);
+  const removed=v.materials[0].clauses.pop();
+  for(const claim of v.claims)claim.clause_ids=claim.clause_ids.filter(id=>id!==removed.clause_id);
+  await assert.rejects(s.validateMaterialClaims(v,r,a));
+ });
+}
+
+test('TASK43 rejects a matching-profile conflict concealed as positive support',async()=>{
+ const {s}=setup(),{r,a,v}=task43LicenseFixture(task43Profiles[1]);
+ for(const entry of [a.resources[0],v.declaration_observations[0]])Object.assign(entry,{expression:'BSD-3-Clause',normalized_ids:['BSD-3-Clause']});
+ v.materials[0].declared_spdx='BSD-3-Clause';
+ await assert.rejects(s.validateMaterialClaims(v,r,a));
+});
+
+test('TASK43 rejects BSD-3-Clause support without its no-endorsement condition',async()=>{
+ const {s}=setup(),{r,a,v}=task43LicenseFixture(task43Profiles[3]);
+ for(const item of [...v.claims,...v.advice])item.conditions=item.conditions.slice(0,2);
+ await assert.rejects(s.validateMaterialClaims(v,r,a));
+});
+
+function task43CopyleftFixture(license,reason){
+ const r=result(),a=anchor(),v=legacyV3Fixture();
+ r.revision=1;
+ r.previous_result_id=null;
+ r.material_ids=[];
+ r.resources[0].material_ids=[];
+ v.revision=1;
+ v.previous_result_id=null;
+ v.materials=[];
+ for(const entry of [a.resources[0],v.declaration_observations[0]])Object.assign(entry,{expression:license,normalized_ids:[license]});
+ for(const claim of v.claims){
+  Object.assign(claim,{material_ids:[],clause_ids:[],conditions:[],state:r.usage[claim.usage]?'UNKNOWN':'NOT_COVERED'});
+ }
+ for(const advice of v.advice)Object.assign(advice,{state:r.usage[advice.usage]?'UNKNOWN':'NOT_COVERED',
+  conditions:[],reasons:[r.usage[advice.usage]?reason:'USE_NOT_SELECTED']});
+ return {r,a,v:v4Fixture(v,r)};
+}
+
+for(const [license,reason,text] of [
+ ['GPL-3.0-only','COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED','人工核对源代码披露义务'],
+ ['MPL-2.0','WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED','人工核对文件范围'],
+]){
+ test('TASK43 renders anchored '+license+' manual review without upgrading advice',async()=>{
+  const {s}=setup(),{r,a,v}=task43CopyleftFixture(license,reason);
+  const checked=await s.validateMaterialClaims(v,r,a);
+  assert.equal(checked.advice[0].state,'UNKNOWN');
+  const ui=await panelHarness('failure',false,{r,a,v:checked});
+  try{
+   assert.ok(ui.text.includes(text));
+   assert.match(ui.text,/依据不足，保持未知/);
+   assert.doesNotMatch(ui.text,/有条件文本支持/);
+  }finally{ui.dispose();}
+ });
+}
+
+test('TASK43 rejects a strong Copyleft review code attached to a weak Copyleft declaration',async()=>{
+ const {s}=setup(),{r,a,v}=task43CopyleftFixture('MPL-2.0','COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED');
+ await assert.rejects(s.validateMaterialClaims(v,r,a));
 });

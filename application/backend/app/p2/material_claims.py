@@ -6,13 +6,37 @@ from app.p2b._resource_roles import assess_resource_roles
 from app.p2b.candidates import EXACT_VERSION
 from app.p2b.material_claims import parse_claim_material
 from .contract import P2Error, digest, strict_json
-from .material_claims_contract import MaterialClaims, RULE_VERSION, SCHEMA_VERSION
-from .preliminary import load_sources, _project_sources, CONDITIONS, LIMITATIONS
+from .material_claims_contract import MATERIAL_TEXT_LICENSES, MaterialClaims, RULE_VERSION, SCHEMA_VERSION
+from .preliminary import CONDITIONS, LIMITATIONS, load_sources
 
 USES = ('commercial', 'distributed', 'modified')
 APACHE = 'Apache-2.0'
-APACHE_MATCH = 'MATCHED_APACHE_2_0'
-LICENSE_MATCHES = {'MIT': 'MATCHED_MIT', APACHE: APACHE_MATCH}
+LICENSE_MATCHES = {
+    'MIT': 'MATCHED_MIT',
+    APACHE: 'MATCHED_APACHE_2_0',
+    'ISC': 'MATCHED_ISC',
+    'BSD-2-Clause': 'MATCHED_BSD_2_CLAUSE',
+    'BSD-3-Clause': 'MATCHED_BSD_3_CLAUSE',
+}
+LICENSE_SOURCE_FLAGS = {
+    'MIT': 'complete_mit',
+    APACHE: 'complete_apache2',
+    'ISC': 'complete_isc',
+    'BSD-2-Clause': 'complete_bsd2',
+    'BSD-3-Clause': 'complete_bsd3',
+}
+SUPPORT_REASONS = {
+    'MIT': 'PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT',
+    APACHE: 'PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT',
+    'ISC': 'PINNED_RELEASE_AND_COMPLETE_ISC_CONDITIONAL_TEXT',
+    'BSD-2-Clause': 'PINNED_RELEASE_AND_COMPLETE_BSD_2_CLAUSE_CONDITIONAL_TEXT',
+    'BSD-3-Clause': 'PINNED_RELEASE_AND_COMPLETE_BSD_3_CLAUSE_CONDITIONAL_TEXT',
+}
+COPYLEFT = frozenset({
+    'GPL-2.0-only', 'GPL-2.0-or-later', 'GPL-3.0-only', 'GPL-3.0-or-later',
+    'AGPL-3.0-only', 'AGPL-3.0-or-later',
+})
+WEAK_COPYLEFT = frozenset({'LGPL-2.1-only', 'LGPL-2.1-or-later', 'LGPL-3.0-only', 'MPL-2.0'})
 ROLE_CONFLICTS = frozenset({
     'dependency_declaration_conflict', 'lock_version_conflict', 'lock_root_mismatch',
     'contradictory_role_evidence',
@@ -24,6 +48,17 @@ APACHE_CONDITIONS = (
     '分发衍生作品源码时按 Apache-2.0 §4(c) 保留相关原有版权、专利、商标及归属声明。',
 )
 APACHE_MODIFIED = '再分发时按 Apache-2.0 §4(b) 在修改文件上保留显著的变更说明。'
+BSD_2_CONDITIONS = (
+    '以源码再分发时保留原版权声明、许可证条件和免责声明。',
+    '以二进制再分发时在随附文档和/或其他分发材料中保留原版权声明、许可证条件和免责声明。',
+)
+LICENSE_CONDITIONS = {
+    'MIT': CONDITIONS,
+    APACHE: APACHE_CONDITIONS,
+    'ISC': ('在所有软件副本中保留原版权声明和完整 ISC 许可声明。',),
+    'BSD-2-Clause': BSD_2_CONDITIONS,
+    'BSD-3-Clause': (*BSD_2_CONDITIONS, '未经事先书面许可，不得使用权利人或贡献者的名称背书或推广衍生产品。'),
+}
 LIMITS = LIMITATIONS + [
     '资源角色仅可由明确扫描来源推断，不证明安装、交付或许可证适用性已签认。',
     '相同许可字节可能出现在不同版本；MIT正文不能证明资源版本。',
@@ -185,15 +220,9 @@ def project_core(result, resources, materials, source_root, source_sha, declared
             raise P2Error('p2_claim_integrity_error', 503)
     if source_snapshot is None:
         source_snapshot = load_sources(source_root, source_sha, result['data_scope'],
-                                       inspect_notices=True, allowed_licenses=('MIT', APACHE))
+                                       inspect_notices=True, allowed_licenses=MATERIAL_TEXT_LICENSES,
+                                       strict_legacy_mit=False)
     sources, profile_sha = source_snapshot
-    # One validated source snapshot supplies both old ceiling and new NOTICE gate.
-    safe_declared = dict(declared_licenses)
-    for rid, d in declarations.items():
-        if d['expression'] == 'MIT' and d['normalized_ids'] != ['MIT']:
-            safe_declared[rid] = 'CONFLICT_OR_UNSUPPORTED'
-    preliminary = _project_sources(result, resources, materials, safe_declared, sources, profile_sha)
-    ceilings = {(u['usage'], r['subject']['resource_id']): r for u in preliminary['advice'] for r in u['resources']}
     source_views, source_by_resource, releases = [], {}, {}
     for rid, row in rows.items():
         source = _source_for(resources[rid], row['subject'], sources)
@@ -220,7 +249,7 @@ def project_core(result, resources, materials, source_root, source_sha, declared
                 'evidence': [{'evidence_id': e, 'source_sha256': row['evidence_source_hashes'].get(e)} for e in ids],
                 'evidence_status': 'COMPLETE' if complete else 'UNKNOWN'}
         declaration_views.append(view); declaration_by_resource[rid] = view
-    observations, observations_by_resource, apache_matches = [], {}, set()
+    observations, observations_by_resource, exact_material_ids = [], {}, set()
     for m, raw in materials:
         rid = m['subject']['resource_id']; row = rows[rid]
         parsed = parse_claim_material(raw, m['filename']); clauses = []
@@ -234,29 +263,24 @@ def project_core(result, resources, materials, source_root, source_sha, declared
         if not set(role['evidence_ids']) <= (set(row['evidence_ids']) & set(row['evidence_source_hashes'])):
             raise P2Error('p2_claim_integrity_error', 503)
         release = releases.get(rid)
-        if (parsed['parse_state'] == APACHE_MATCH and release and release['complete_apache2']
+        text_license = parsed['text_license']
+        if (text_license in LICENSE_MATCHES and parsed['parse_state'] == LICENSE_MATCHES[text_license]
+                and release and release['declared_license'] == text_license
+                and release[LICENSE_SOURCE_FLAGS[text_license]]
                 and m['completeness'] == 'FULL_TEXT_CLAIMED' and raw == release['bytes']
                 and m['source_sha256'] == release['record'].license_sha256
                 and all(row['evidence_source_hashes'].get(e) for e in m['evidence_ids'])):
-            apache_matches.add(m['material_id'])
-        supported = (parsed['parse_state'] == 'MATCHED_MIT'
-            and bool(m['evidence_ids'])
-            and all(row['evidence_source_hashes'].get(e) for e in m['evidence_ids'])
-            and declaration_by_resource[rid]['evidence_status'] == 'COMPLETE'
-            and declaration_by_resource[rid]['expression'] == 'MIT'
-            and declaration_by_resource[rid]['normalized_ids'] == ['MIT']
-            and source_by_resource.get(rid, {}).get('notice_status') == 'ABSENT_COMPLETE'
-            and any(m['material_id'] in ceilings.get((u, rid), {}).get('material_ids', []) for u in USES))
+            exact_material_ids.add(m['material_id'])
         observation = {'material_id': m['material_id'], 'subject': m['subject'], 'source_sha256': m['source_sha256'],
             'byte_count': m['byte_count'], 'filename': m['filename'], 'parse_state': parsed['parse_state'],
             'parse_reason': parsed['reason'], 'binding_state': 'BOUND_TO_SAVED_RESULT',
-            'adoption_state': 'CONDITIONAL_TEXT_BASIS' if supported else 'OBSERVATION_ONLY',
+            'adoption_state': 'OBSERVATION_ONLY',
             'declared_spdx': declarations.get(rid, {}).get('expression', declared_licenses.get(rid, 'UNOBSERVED')),
             'text_license': parsed['text_license'], 'license_version': parsed['license_version'],
             'version_scope': parsed['version_scope'],
             'role': role['role'], 'role_state': role['state'], 'role_basis_evidence_ids': role['evidence_ids'],
             'role_conflicts': role.get('conflicts', []),
-            'source_binding': 'PINNED_RELEASE_MATCH' if supported else 'NOT_ESTABLISHED', 'source_profile_sha256': profile_sha,
+            'source_binding': 'NOT_ESTABLISHED', 'source_profile_sha256': profile_sha,
             'evidence': [{'evidence_id': e, 'source_sha256': row['evidence_source_hashes'].get(e)} for e in m['evidence_ids']],
             'clauses': clauses}
         observations.append(observation)
@@ -301,45 +325,51 @@ def project_core(result, resources, materials, source_root, source_sha, declared
                 counter('BOUND_NOTICE_BYTES_CONFLICT', mismatched, source_refs=[source_view['source_observation_id']])
             else:
                 notice_matched = True
-        apache_basis = (
-            declared == APACHE and d.get('normalized_ids') == [APACHE]
+        has_exact_basis = (
+            declared in LICENSE_MATCHES and d.get('normalized_ids') == [declared]
             and declaration_by_resource[rid]['evidence_status'] == 'COMPLETE'
             and source_clear and not counters and row['resource_kind'] == 'component'
             and not any('conflict' in gap for gap in row['gaps'])
             and bool(licenses) and all(m['source_sha256'] == releases[rid]['record'].license_sha256 for m in licenses)
-            and any(m['material_id'] in apache_matches for m in licenses)
+            and all(e['source_sha256'] is not None for material in licenses for e in material['evidence'])
+            and any(m['material_id'] in exact_material_ids for m in licenses)
         )
-        apache_uses = {u for u in USES if apache_basis and result['usage'][u] is True
-                       and not (u == 'distributed' and row['user_assertions'].get('DELIVERY_SCOPE_FOR_RESOURCES') == 'NO_EXCLUDE')}
-        if apache_uses:
+        supported_uses = {u for u in USES if has_exact_basis and result['usage'][u] is True
+                          and not (u == 'distributed' and row['user_assertions'].get('DELIVERY_SCOPE_FOR_RESOURCES') == 'NO_EXCLUDE')}
+        if supported_uses:
             for material in licenses:
-                if material['material_id'] in apache_matches:
+                if material['material_id'] in exact_material_ids:
                     material.update(adoption_state='CONDITIONAL_TEXT_BASIS', source_binding='PINNED_RELEASE_MATCH')
         expected_text = {LICENSE_MATCHES[declared]} if declared in LICENSE_MATCHES else set(LICENSE_MATCHES.values())
+        significant_conflict = any(c['code'] != 'NOTICE_REQUIRES_REVIEW' for c in counters)
+        needs_notice_review = bool(notices or (source_view and not source_clear))
+        copyleft_reason = (
+            'COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED' if declared in COPYLEFT else
+            'WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED' if declared in WEAK_COPYLEFT else None
+        )
         for usage in USES:
-            selected = result['usage'][usage]; ceiling = ceilings.get((usage, rid))
-            basis = [m for m in obs if ceiling and m['material_id'] in ceiling['material_ids']]
-            mit_basis = (declaration_by_resource[rid]['evidence_status'] == 'COMPLETE'
-                and declared == 'MIT' and d.get('normalized_ids') == ['MIT']) and source_clear and bool(basis) and all(m['parse_state'] == 'MATCHED_MIT' and m['evidence']
-                and all(e['source_sha256'] is not None for e in m['evidence']) for m in basis)
-            valid_basis = mit_basis or usage in apache_uses
+            selected = result['usage'][usage]
             if selected is False or row['resource_kind'] != 'component':
                 state = 'NOT_COVERED'; reasons = ['USE_NOT_SELECTED' if selected is False else 'RESOURCE_KIND_NOT_COVERED']
             elif selected is None:
                 state = 'UNKNOWN'; reasons = ['USAGE_UNDECLARED']
-            elif any(c['code'] != 'NOTICE_REQUIRES_REVIEW' for c in counters):
+                if copyleft_reason and not significant_conflict:
+                    reasons.append(copyleft_reason)
+            elif significant_conflict:
                 state = 'COUNTER_EVIDENCE'; reasons = sorted({c['code'] for c in counters})
-            elif valid_basis and row['user_assertions'].get('OBLIGATION_FULFILLMENT_IN_DELIVERY') == 'NOT_FULFILLED':
+            elif usage in supported_uses and row['user_assertions'].get('OBLIGATION_FULFILLMENT_IN_DELIVERY') == 'NOT_FULFILLED':
                 state = 'RESTRICTION'; reasons = ['USER_REPORTS_DELIVERY_OBLIGATION_UNFULFILLED']
-            elif valid_basis:
-                state = 'SUPPORT'
-                reasons = ['PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT' if usage in apache_uses
-                           else 'PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT']
+            elif usage in supported_uses:
+                state = 'SUPPORT'; reasons = [SUPPORT_REASONS[declared]]
+            elif copyleft_reason:
+                state = 'UNKNOWN'; reasons = [copyleft_reason]
+                if needs_notice_review:
+                    reasons.append('NOTICE_REQUIRES_REVIEW')
             else:
                 state = 'UNKNOWN'
                 reasons = (['MULTI_LICENSE_NOT_SUPPORTED'] if multi else
                            [NOTICE_MATCHED] if notice_matched else
-                           ['NOTICE_REQUIRES_REVIEW'] if notices or (source_view and not source_clear) else
+                           ['NOTICE_REQUIRES_REVIEW'] if needs_notice_review else
                            ['MISSING_LICENSE_MATERIAL'] if not licenses else
                            ['UNSUPPORTED_OR_FAILED_TEXT'] if any(m['parse_state'] not in expected_text for m in licenses) else
                            ['SOURCE_OR_EVIDENCE_BINDING_NOT_ESTABLISHED'])
@@ -347,8 +377,8 @@ def project_core(result, resources, materials, source_root, source_sha, declared
                 reasons = [*reasons, 'COUNTER_EVIDENCE_SOURCE_UNKNOWN']
             conditions = []
             if state == 'SUPPORT':
-                conditions = list(APACHE_CONDITIONS if usage in apache_uses else CONDITIONS)
-                if usage in apache_uses and result['usage']['modified'] is True:
+                conditions = list(LICENSE_CONDITIONS[declared])
+                if declared == APACHE and result['usage']['modified'] is True:
                     conditions.append(APACHE_MODIFIED)
             elif state == 'RESTRICTION':
                 conditions = ['用户声明交付义务尚未履行；需明确义务对象与范围，不能据此认定某一具体条款被违反']
@@ -366,7 +396,8 @@ def project_core(result, resources, materials, source_root, source_sha, declared
     payload = dict(schema_version=SCHEMA_VERSION, rule_version=RULE_VERSION,
         result_id=result['result_id'], result_sha256=result['result_sha256'],
         revision=result['revision'], previous_result_id=result['previous_result_id'], binding=result['binding'],
-        data_scope=result['data_scope'], source_status=preliminary['source_status'], source_profile_sha256=profile_sha,
+        data_scope=result['data_scope'], source_status='CHECKED' if profile_sha else 'NOT_CONFIGURED',
+        source_profile_sha256=profile_sha,
         materials=observations, declaration_observations=declaration_views, source_observations=source_views,
         claims=claims, advice=advice, formal_effect='none', applicability_review='NOT_SIGNED', model_calls=0)
     # The core fingerprint includes the saved Result hash (and thus the affected
@@ -474,7 +505,8 @@ def project(result, resources, materials, source_root, source_sha, declared_lice
     elif result['revision'] != 1 or result['previous_result_id'] is not None:
         raise P2Error('p2_claim_integrity_error', 503)
     source_snapshot = load_sources(source_root, source_sha, result['data_scope'],
-                                   inspect_notices=True, allowed_licenses=('MIT', APACHE))
+                                   inspect_notices=True, allowed_licenses=MATERIAL_TEXT_LICENSES,
+                                   strict_legacy_mit=False)
     core = project_core(result, resources, materials, source_root, source_sha, declared_licenses,
                         declaration_facts=declaration_facts, role_facts=role_facts, source_snapshot=source_snapshot)
     prior = None if previous_result is None else project_core(

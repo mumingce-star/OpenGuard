@@ -16,6 +16,7 @@ from app.p2b.materials import parse_local_material
 from app.persistence.scan_registry import ScanRegistryError
 from .contract import (ALGORITHM, VERSION, OPTIONS, Answer, Binding, Material, P2Error,
                        Receipt, Result, Summary, canonical, digest, strict_json)
+from .material_claims_contract import MATERIAL_TEXT_LICENSES
 
 
 # Public gap reasons are a closed vocabulary, never arbitrary scanner text.
@@ -121,7 +122,7 @@ class P2Service:
                           and evidence[eid].verification_status.value == 'verified']
         if len({e.content_hash.value for e in reviewed_texts if e.content_hash}) > 1:
             raise P2Error('p2_evidence_conflict', conflict_rule='distinct_verified_license_materials')
-        if (license_ and license_.expression in {'MIT', 'Apache-2.0'}
+        if (license_ and license_.expression in MATERIAL_TEXT_LICENSES
                 and license_.normalized_ids != [license_.expression]):
             raise P2Error('p2_evidence_conflict', conflict_rule='license_normalization_conflict')
         bound = {}
@@ -300,7 +301,7 @@ class P2Service:
                 license_ = licenses.get(resource.license_expression_id)
                 if license_ is None or (license_.expression in {'NOASSERTION', 'NONE'} and not license_.normalized_ids):
                     declared[rid] = 'UNOBSERVED'
-                elif license_.expression in {'MIT', 'Apache-2.0'}:
+                elif license_.expression in MATERIAL_TEXT_LICENSES:
                     declared[rid] = (license_.expression if license_.normalized_ids == [license_.expression]
                                      else 'CONFLICT_OR_UNSUPPORTED')
                 else:

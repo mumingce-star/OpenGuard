@@ -7,7 +7,16 @@ export type ClaimState='SUPPORT'|'RESTRICTION'|'UNKNOWN'|'COUNTER_EVIDENCE'|'NOT
 export type Clause={clause_id:string;material_id:string;material_sha256:string;kind:string;byte_start:number;byte_end:number;line_start:number;line_end:number;quote:string;quote_sha256:string};
 type EvidenceRef={evidence_id:string;source_sha256:string|null};
 export type DeclarationObservation={subject:Subject;expression:string;normalized_ids:string[];declaration_evidence_ids:string[];evidence:EvidenceRef[];evidence_status:'COMPLETE'|'UNKNOWN'};
-export type MaterialObservation={material_id:string;subject:Subject;source_sha256:string;byte_count:number;filename:string;parse_state:'MATCHED_MIT'|'MATCHED_APACHE_2_0'|'NOTICE_OBSERVED'|'UNSUPPORTED'|'FAILED';parse_reason:string;binding_state:'BOUND_TO_SAVED_RESULT';adoption_state:'OBSERVATION_ONLY'|'CONDITIONAL_TEXT_BASIS';declared_spdx:string;text_license:'MIT'|'Apache-2.0'|'UNKNOWN';license_version:'2.0'|null;version_scope:'RESOURCE_VERSION_NOT_LICENSE_VERSION'|'LICENSE_VERSION_AND_RESOURCE_VERSION';role:'root_package'|'dependency'|'unknown';role_state:'observed'|'inferred'|'unknown';role_basis_evidence_ids:string[];role_conflicts:string[];source_binding:'PINNED_RELEASE_MATCH'|'NOT_ESTABLISHED';source_profile_sha256:string|null;evidence:EvidenceRef[];clauses:Clause[]};
+const textLicenseByParseState={
+ MATCHED_MIT:'MIT',
+ MATCHED_APACHE_2_0:'Apache-2.0',
+ MATCHED_ISC:'ISC',
+ MATCHED_BSD_2_CLAUSE:'BSD-2-Clause',
+ MATCHED_BSD_3_CLAUSE:'BSD-3-Clause',
+} as const;
+type MatchedParseState=keyof typeof textLicenseByParseState;
+type MatchedTextLicense=(typeof textLicenseByParseState)[MatchedParseState];
+export type MaterialObservation={material_id:string;subject:Subject;source_sha256:string;byte_count:number;filename:string;parse_state:MatchedParseState|'NOTICE_OBSERVED'|'UNSUPPORTED'|'FAILED';parse_reason:string;binding_state:'BOUND_TO_SAVED_RESULT';adoption_state:'OBSERVATION_ONLY'|'CONDITIONAL_TEXT_BASIS';declared_spdx:string;text_license:MatchedTextLicense|'UNKNOWN';license_version:'2.0'|null;version_scope:'RESOURCE_VERSION_NOT_LICENSE_VERSION'|'LICENSE_VERSION_AND_RESOURCE_VERSION';role:'root_package'|'dependency'|'unknown';role_state:'observed'|'inferred'|'unknown';role_basis_evidence_ids:string[];role_conflicts:string[];source_binding:'PINNED_RELEASE_MATCH'|'NOT_ESTABLISHED';source_profile_sha256:string|null;evidence:EvidenceRef[];clauses:Clause[]};
 export type SourceObservation={source_observation_id:string;subject:Subject;source_profile_sha256:string;archive_sha256:string;notice_status:'ABSENT_COMPLETE'|'PRESENT_UNREVIEWED'|'INCOMPLETE'|'INVALID';reason:string;member_count:number;enumeration_complete:boolean;notices:{path:string;bytes:number;sha256:string|null;inspection_state:'EXTRACTED_UNREVIEWED'|'UNSUPPORTED_FORMAT'|'PARSE_FAILED'|'LIMIT_EXCEEDED'|'INVALID_TYPE'|'READ_FAILED'}[]};
 export type ClaimLink={claim_id:string;usage:Use;subject:Subject;material_ids:string[];evidence:EvidenceRef[];clause_ids:string[];conditions:string[];counter_evidence:{code:string;material_ids:string[];evidence_ids:string[];source_observation_ids:string[];declaration_evidence_ids:string[];evidence_status:'COMPLETE'|'UNKNOWN'}[];state:ClaimState;formal_effect:'none'};
 export type PurposeAdvice={usage:Use;subject:Subject;saved_value:boolean|null;state:ClaimState;reasons:string[];claim_ids:string[];conditions:string[];limitations:string[]};
@@ -24,14 +33,47 @@ const ids=(v:unknown):v is string[]=>Array.isArray(v)&&v.every(id)&&new Set(v).s
 const integer=(v:unknown)=>Number.isSafeInteger(v);
 const uses=['commercial','distributed','modified'];
 const states=['SUPPORT','RESTRICTION','UNKNOWN','COUNTER_EVIDENCE','NOT_COVERED'];
+const parseStates=new Set([...Object.keys(textLicenseByParseState),'NOTICE_OBSERVED','UNSUPPORTED','FAILED']);
+const supportedLicenses=new Set<string>(Object.values(textLicenseByParseState));
 const sameIds=(a:string[],b:string[])=>{
  const set=new Set(b);
  return a.length===b.length&&new Set(a).size===a.length&&set.size===b.length&&a.every(x=>set.has(x));
 };
-const sameList=(a:string[],b:string[])=>a.length===b.length&&a.every((x,i)=>x===b[i]);
-const licensedText=(m:MaterialObservation)=>m.parse_state==='MATCHED_MIT'?'MIT':m.parse_state==='MATCHED_APACHE_2_0'?'Apache-2.0':'UNKNOWN';
+const sameList=(a:readonly string[],b:readonly string[])=>a.length===b.length&&a.every((x,i)=>x===b[i]);
 const single=(d:DeclarationObservation,license:string)=>d.expression===license&&sameList(d.normalized_ids,[license]);
 const roleConflicts=new Set(['dependency_declaration_conflict','lock_version_conflict','lock_root_mismatch','contradictory_role_evidence']);
+const mitClauseKinds=['copyright','permission','condition','warranty'];
+const bsdConditions=[
+ '以源码再分发时保留原版权声明、许可证条件和免责声明。',
+ '以二进制再分发时在随附文档和/或其他分发材料中保留原版权声明、许可证条件和免责声明。',
+];
+const addedTextProfiles={
+ ISC:{
+  clauseKinds:mitClauseKinds,
+  parseReason:'COMPLETE_ISC_PROFILE',
+  supportReason:'PINNED_RELEASE_AND_COMPLETE_ISC_CONDITIONAL_TEXT',
+  conditions:['在所有软件副本中保留原版权声明和完整 ISC 许可声明。'],
+ },
+ 'BSD-2-Clause':{
+  clauseKinds:['copyright','permission','condition','condition','warranty'],
+  parseReason:'COMPLETE_BSD_2_CLAUSE_PROFILE',
+  supportReason:'PINNED_RELEASE_AND_COMPLETE_BSD_2_CLAUSE_CONDITIONAL_TEXT',
+  conditions:bsdConditions,
+ },
+ 'BSD-3-Clause':{
+  clauseKinds:['copyright','permission','condition','condition','condition','warranty'],
+  parseReason:'COMPLETE_BSD_3_CLAUSE_PROFILE',
+  supportReason:'PINNED_RELEASE_AND_COMPLETE_BSD_3_CLAUSE_CONDITIONAL_TEXT',
+  conditions:[...bsdConditions,'未经事先书面许可，不得使用权利人或贡献者的名称背书或推广衍生产品。'],
+ },
+};
+const addedTextProfile=(license:string)=>Object.hasOwn(addedTextProfiles,license)
+ ?addedTextProfiles[license as keyof typeof addedTextProfiles]:undefined;
+const addedSupportReasons=new Set(Object.values(addedTextProfiles).map(profile=>profile.supportReason));
+const copyleftReview='COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED';
+const weakCopyleftReview='WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED';
+const copyleftLicenses=new Set(['GPL-2.0-only','GPL-2.0-or-later','GPL-3.0-only','GPL-3.0-or-later','AGPL-3.0-only','AGPL-3.0-or-later']);
+const weakCopyleftLicenses=new Set(['LGPL-2.1-only','LGPL-2.1-or-later','LGPL-3.0-only','MPL-2.0']);
 const apacheProfile:[kind:string,heading:RegExp][]=[
  ['license_identifier',/^\s*Apache License\s+Version 2\.0, January 2004/],
  ['permission',/^\s*2\. Grant of Copyright License\./],
@@ -141,10 +183,14 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
  for(const m of v.materials){
   if(!fields(m,'material_id subject source_sha256 byte_count filename parse_state parse_reason binding_state adoption_state declared_spdx text_license license_version version_scope role role_state role_basis_evidence_ids role_conflicts source_binding source_profile_sha256 evidence clauses'))return fail();
   const row=rowFor(m.subject);
-  if(!row||!id(m.material_id)||materialMap.has(m.material_id)||!row.material_ids.includes(m.material_id)||!hash(m.source_sha256)||!integer(m.byte_count)||m.byte_count<1||m.byte_count>65536||!text(m.filename)||!/^(?:LICEN[CS]E|NOTICE)(?:\.(?:txt|md|rst))?$/i.test(m.filename)||!['MATCHED_MIT','MATCHED_APACHE_2_0','NOTICE_OBSERVED','UNSUPPORTED','FAILED'].includes(m.parse_state)||!text(m.parse_reason)||m.binding_state!=='BOUND_TO_SAVED_RESULT'||!['OBSERVATION_ONLY','CONDITIONAL_TEXT_BASIS'].includes(m.adoption_state)||!text(m.declared_spdx)||!['root_package','dependency','unknown'].includes(m.role)||!ids(m.role_basis_evidence_ids)||!m.role_basis_evidence_ids.every((e:string)=>row.evidence_ids.includes(e)&&hash(row.evidence_source_hashes[e]))||!ids(m.role_conflicts)||!m.role_conflicts.every((code:string)=>roleConflicts.has(code))||!['PINNED_RELEASE_MATCH','NOT_ESTABLISHED'].includes(m.source_binding)||m.source_profile_sha256!==v.source_profile_sha256||!evidenceOK(m.evidence,row)||!m.evidence.length||!Array.isArray(m.clauses)||m.clauses.length>10)return fail();
+  if(!row||!id(m.material_id)||materialMap.has(m.material_id)||!row.material_ids.includes(m.material_id)||!hash(m.source_sha256)||!integer(m.byte_count)||m.byte_count<1||m.byte_count>65536||!text(m.filename)||!/^(?:LICEN[CS]E|NOTICE)(?:\.(?:txt|md|rst))?$/i.test(m.filename)||!parseStates.has(m.parse_state)||!text(m.parse_reason)||m.binding_state!=='BOUND_TO_SAVED_RESULT'||!['OBSERVATION_ONLY','CONDITIONAL_TEXT_BASIS'].includes(m.adoption_state)||!text(m.declared_spdx)||!['root_package','dependency','unknown'].includes(m.role)||!ids(m.role_basis_evidence_ids)||!m.role_basis_evidence_ids.every((e:string)=>row.evidence_ids.includes(e)&&hash(row.evidence_source_hashes[e]))||!ids(m.role_conflicts)||!m.role_conflicts.every((code:string)=>roleConflicts.has(code))||!['PINNED_RELEASE_MATCH','NOT_ESTABLISHED'].includes(m.source_binding)||m.source_profile_sha256!==v.source_profile_sha256||!evidenceOK(m.evidence,row)||!m.evidence.length||!Array.isArray(m.clauses)||m.clauses.length>10)return fail();
   const resource=row.subject.resource_id,declaration=declarationMap.get(resource)!;
-  const textLicense=licensedText(m as MaterialObservation),apache=textLicense==='Apache-2.0',notice=m.parse_state==='NOTICE_OBSERVED';
+  const textLicense=Object.hasOwn(textLicenseByParseState,m.parse_state)
+   ?textLicenseByParseState[m.parse_state as MatchedParseState]:'UNKNOWN';
+  const apache=textLicense==='Apache-2.0',notice=m.parse_state==='NOTICE_OBSERVED';
+  const addedProfile=addedTextProfile(textLicense);
   if(m.declared_spdx!==declaration.expression||m.text_license!==textLicense
+    ||(addedProfile&&m.parse_reason!==addedProfile.parseReason)
     ||m.license_version!==(apache?'2.0':null)
     ||m.version_scope!==(apache?'LICENSE_VERSION_AND_RESOURCE_VERSION':'RESOURCE_VERSION_NOT_LICENSE_VERSION'))return fail();
   if(m.role==='unknown'?(m.role_state!=='unknown'||m.role_basis_evidence_ids.length!==0)
@@ -160,11 +206,15 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   let lastByte=0,lastLine=1;
   for(const c of m.clauses){
    if(!fields(c,'clause_id material_id material_sha256 kind byte_start byte_end line_start line_end quote quote_sha256')||!id(c.clause_id)||clauseMap.has(c.clause_id)||c.material_id!==m.material_id||c.material_sha256!==m.source_sha256||!['license_identifier','copyright','permission','condition','warranty','notice'].includes(c.kind)||!integer(c.byte_start)||!integer(c.byte_end)||c.byte_start<0||c.byte_end<=c.byte_start||c.byte_end>m.byte_count||!integer(c.line_start)||!integer(c.line_end)||c.line_start<1||c.line_end<c.line_start||!text(c.quote)||new TextEncoder().encode(c.quote).length!==c.byte_end-c.byte_start||!hash(c.quote_sha256))return fail();
-   if((apache||notice)&&(c.byte_start<lastByte||c.line_start<lastLine||c.line_end-c.line_start!==c.quote.slice(0,-1).split('\n').length-1))return fail();
+   if(c.byte_start<lastByte||c.line_start<lastLine||c.line_end-c.line_start!==c.quote.slice(0,-1).split('\n').length-1)return fail();
    lastByte=c.byte_end;lastLine=c.line_end;
    clauseMap.set(c.clause_id,c);
   }
-  if(m.parse_state==='MATCHED_MIT'&&!sameIds(m.clauses.map((c:Clause)=>c.kind),['license_identifier','copyright','permission','condition','warranty']))return fail();
+  const bodyKinds=textLicense==='MIT'?mitClauseKinds:addedProfile?.clauseKinds;
+  if(bodyKinds){
+   const kinds=m.clauses.map((c:Clause)=>c.kind);
+   if(!sameList(kinds,bodyKinds)&&!sameList(kinds,['license_identifier',...bodyKinds]))return fail();
+  }
   if(apache&&(m.clauses.length!==apacheProfile.length||!apacheProfile.every(([kind,heading],i)=>m.clauses[i].kind===kind&&heading.test(m.clauses[i].quote))))return fail();
   if(notice&&(m.clauses.length!==1||m.clauses[0].kind!=='notice'||m.clauses[0].byte_start!==0
     ||m.clauses[0].byte_end!==m.byte_count||m.clauses[0].line_start!==1||m.clauses[0].quote_sha256!==m.source_sha256))return fail();
@@ -183,7 +233,7 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   const multi=[' AND ',' OR ',' WITH '].some(t=>declaration.expression.includes(t));
   const expectedCounters:{code:string;ms:MaterialObservation[];declaration:string[];source:string[];provenance:boolean}[]=[];
   const add=(code:string,ms:MaterialObservation[],ds:string[]=[],source:string[]=[],provenance=true)=>expectedCounters.push({code,ms,declaration:ds,source,provenance});
-  if(['MIT','Apache-2.0'].includes(declaration.expression)&&!single(declaration,declaration.expression))
+  if(supportedLicenses.has(declaration.expression)&&!single(declaration,declaration.expression))
     add('SPDX_NORMALIZATION_CONFLICT',[],declaration.declaration_evidence_ids,[],declaration.evidence_status==='COMPLETE');
   const conflicting=licenses.filter((m:MaterialObservation)=>m.text_license!=='UNKNOWN'&&m.text_license!==declaration.expression);
   if(!['UNOBSERVED','CONFLICT_OR_UNSUPPORTED'].includes(declaration.expression)&&!multi&&conflicting.length)
@@ -215,12 +265,14 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   if(!sameIds(c.clause_ids,expectedClauses)||!sameIds(c.evidence.map((e:EvidenceRef)=>e.evidence_id),expectedEvidence))return fail();
   if(['SUPPORT','RESTRICTION'].includes(c.state)){
    const license=declaration.expression;
-   if(row.resource_kind!=='component'||!['MIT','Apache-2.0'].includes(license)||declaration.evidence_status!=='COMPLETE'||!single(declaration,license)
+   if(row.resource_kind!=='component'||!supportedLicenses.has(license)||declaration.evidence_status!=='COMPLETE'||!single(declaration,license)
      ||!c.conditions.length||c.counter_evidence.length||!licenses.some((m:MaterialObservation)=>m.text_license===license&&m.adoption_state==='CONDITIONAL_TEXT_BASIS')
      ||!c.clause_ids.some((i:string)=>clauseMap.get(i)?.kind==='permission')||!c.clause_ids.some((i:string)=>clauseMap.get(i)?.kind==='condition')
      ||!c.evidence.length||c.evidence.some((e:EvidenceRef)=>e.source_sha256===null)||v.source_status!=='CHECKED'||source?.notice_status!=='ABSENT_COMPLETE')return fail();
    if(c.state==='SUPPORT'&&license==='Apache-2.0'&&(!hasApacheCondition(c.conditions,'a')||!hasApacheCondition(c.conditions,'c')
      ||(result.usage.modified===true&&!hasApacheCondition(c.conditions,'b'))))return fail();
+   const addedProfile=addedTextProfile(license);
+   if(c.state==='SUPPORT'&&addedProfile&&!sameList(c.conditions,addedProfile.conditions))return fail();
   }
   pairs.add(pair);claimMap.set(c.claim_id,c);
  }
@@ -228,14 +280,24 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
  for(const a of v.advice){
   if(!fields(a,'usage subject saved_value state reasons claim_ids conditions limitations'))return fail();
   const row=rowFor(a.subject),pair=JSON.stringify([row?.subject.resource_id,row?.subject.version,a.usage]);
-  if(!row||!uses.includes(a.usage)||advicePairs.has(pair)||a.saved_value!==result.usage[a.usage as Use]||!states.includes(a.state)||!list(a.reasons)||!a.reasons.length||!ids(a.claim_ids)||a.claim_ids.length!==1||!list(a.conditions)||!list(a.limitations)||!a.limitations.length)return fail();
+  const reasons:unknown=a.reasons;
+  if(!row||!uses.includes(a.usage)||advicePairs.has(pair)||a.saved_value!==result.usage[a.usage as Use]||!states.includes(a.state)||!list(reasons)||!reasons.length||!ids(a.claim_ids)||a.claim_ids.length!==1||!list(a.conditions)||!list(a.limitations)||!a.limitations.length)return fail();
   const c=claimMap.get(a.claim_ids[0]);
   if(!c||c.usage!==a.usage||c.subject.resource_id!==row.subject.resource_id||c.state!==a.state||JSON.stringify(c.conditions)!==JSON.stringify(a.conditions)||(a.saved_value===false&&a.state!=='NOT_COVERED')||(a.saved_value===null&&a.state!=='UNKNOWN'&&a.state!=='NOT_COVERED')||(['SUPPORT','RESTRICTION'].includes(a.state)&&a.saved_value!==true))return fail();
+  const license=declarationMap.get(row.subject.resource_id)!.expression;
+  const addedReason=a.state==='SUPPORT'?addedTextProfile(license)?.supportReason:undefined;
+  if(addedReason?!sameList(reasons,[addedReason]):reasons.some(reason=>addedSupportReasons.has(reason)))return fail();
+  const reviewCodes=reasons.filter(reason=>reason===copyleftReview||reason===weakCopyleftReview);
+  if(reviewCodes.length){
+   const required=copyleftLicenses.has(license)?copyleftReview:weakCopyleftLicenses.has(license)?weakCopyleftReview:undefined;
+   if(reviewCodes.length!==1||reviewCodes[0]!==required||a.state!=='UNKNOWN'||row.resource_kind!=='component'
+     ||c.counter_evidence.some(e=>e.code!=='NOTICE_REQUIRES_REVIEW'))return fail();
+  }
   const selected=a.saved_value===true&&row.resource_kind==='component';
   if(selected&&c.counter_evidence.some(e=>e.code==='BOUND_NOTICE_BYTES_CONFLICT')
-   &&(a.state!=='COUNTER_EVIDENCE'||!a.reasons.includes('BOUND_NOTICE_BYTES_CONFLICT')))return fail();
+   &&(a.state!=='COUNTER_EVIDENCE'||!reasons.includes('BOUND_NOTICE_BYTES_CONFLICT')))return fail();
   const matched=selected&&matchedNoticeRows.has(row.subject.resource_id)&&c.counter_evidence.every(e=>e.code==='NOTICE_REQUIRES_REVIEW');
-  if(a.reasons.includes('NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW')!==matched
+  if(reasons.includes('NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW')!==matched
    ||(matched&&(a.state!=='UNKNOWN'||!hasApacheCondition(a.conditions,'d'))))return fail();
   advicePairs.add(pair);
   adviceByClaim.set(c.claim_id,a as PurposeAdvice);

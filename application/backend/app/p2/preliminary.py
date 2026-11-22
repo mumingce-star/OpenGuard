@@ -19,7 +19,8 @@ from typing import Literal
 from urllib.parse import quote, urlsplit
 
 from pydantic import Field, ValidationError
-from app.p2b.material_claims import PERMISSION, CONDITION, WARRANTY, complete_apache2, complete_mit
+from app.p2b.material_claims import (PERMISSION, CONDITION, WARRANTY, complete_apache2, complete_bsd2,
+                                     complete_bsd3, complete_isc, complete_mit)
 
 from .contract import Binding, DTO, ID, SHA, Subject, Use, P2Error, digest, strict_json
 
@@ -269,7 +270,8 @@ def _notice_inventory_expanded(expanded: bytes):
     return result
 
 
-def load_sources(root, expected_sha, data_scope, *, inspect_notices=False, allowed_licenses: tuple[str, ...] = ('MIT',)):
+def load_sources(root, expected_sha, data_scope, *, inspect_notices=False,
+                 allowed_licenses: tuple[str, ...] = ('MIT',), strict_legacy_mit=True):
     if not root and not expected_sha:
         return {}, None
     try:
@@ -328,8 +330,11 @@ def load_sources(root, expected_sha, data_scope, *, inspect_notices=False, allow
                 'record': item,
                 'bytes': license_raw,
                 'declared_license': declared_license,
-                'complete_mit': declared_license == 'MIT' and complete_mit(license_raw),
+                'complete_mit': declared_license == 'MIT' and complete_mit(license_raw, strict_legacy=strict_legacy_mit),
                 'complete_apache2': declared_license == 'Apache-2.0' and complete_apache2(license_raw),
+                'complete_isc': declared_license == 'ISC' and complete_isc(license_raw),
+                'complete_bsd2': declared_license == 'BSD-2-Clause' and complete_bsd2(license_raw),
+                'complete_bsd3': declared_license == 'BSD-3-Clause' and complete_bsd3(license_raw),
             }
             if inspect_notices:
                 sources[identity]['notice_inventory'] = _notice_inventory_expanded(expanded)
