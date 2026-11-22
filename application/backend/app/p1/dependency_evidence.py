@@ -310,18 +310,18 @@ def _conflict(
         declaration = None
         lock = None
         ambiguous = True
-    if declaration is None:
+    declaration_ref = declaration.ref() if declaration is not None else None
+    lock_ref = lock.ref() if lock is not None else None
+    if declaration_ref is None:
         gaps.add("declaration_side_unavailable")
-    if lock is None:
+    if lock_ref is None:
         gaps.add("lock_side_unavailable")
     if ambiguous:
         gaps.add("conflict_ambiguous")
-
-    status: ConflictStatus = "ambiguous" if ambiguous else "incomplete" if gaps else "confirmed"
-    declaration_ref = declaration.ref() if declaration is not None else None
-    lock_ref = lock.ref() if lock is not None else None
     if any(side is not None and side.incomplete for side in (declaration_ref, lock_ref)):
         gaps.add("conflict_side_evidence_limit_exceeded")
+
+    status: ConflictStatus = "ambiguous" if ambiguous else "incomplete" if gaps else "confirmed"
     return DependencyVersionConflict(
         status=status,
         declaration=declaration_ref,

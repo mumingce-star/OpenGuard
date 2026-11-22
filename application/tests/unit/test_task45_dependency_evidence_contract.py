@@ -376,6 +376,90 @@ def test_task45_dependency_evidence_contract_marks_truncated_conflicts_and_side_
     assert (row["conflicts_total"], row["conflicts_returned"]) == (9, 8)
     assert len(row["conflicts"]) == 8
     for conflict in row["conflicts"]:
+        assert conflict["status"] == "incomplete"
+        assert conflict["gaps"] == ["conflict_side_evidence_limit_exceeded"]
         side = conflict["declaration"]
         assert side["resource_id"] == left.id and side["incomplete"]
         assert (side["evidence_total"], side["evidence_returned"], len(side["evidence"])) == (9, 8, 8)
+
+
+@pytest.mark.parametrize(
+    "declaration_count,lock_count,expected_status",
+    [(9, 1, "incomplete"), (1, 9, "incomplete"), (1, 1, "confirmed")],
+    ids=["declaration-truncated", "lock-truncated", "complete-pair"],
+)
+def test_task45_dependency_evidence_contract_final_conflict_status_matches_side_evidence(
+    contract_harness, declaration_count, lock_count, expected_status,
+):
+    declarations = [_evidence(number) for number in range(1, declaration_count + 1)]
+    locks = [_evidence(number, "lock") for number in range(10, 10 + lock_count)]
+    left = _component(1, *declarations)
+    right = _component(2, *locks, version="2.0.0")
+    evidence = [*declarations, *locks]
+    saved = contract_harness.save(1, [left, right], evidence, [_conflict(*evidence)])
+    page = _ok(contract_harness.read(saved))
+    expected_gaps = ["conflict_side_evidence_limit_exceeded"] if expected_status == "incomplete" else []
+    assert {item["resource_id"] for item in page["items"]} == {left.id, right.id}
+    for item in page["items"]:
+        conflict, = item["conflicts"]
+        assert conflict["status"] == expected_status
+        assert conflict["gaps"] == expected_gaps
+        for key, resource, entries in (("declaration", left, declarations), ("lock", right, locks)):
+            side = conflict[key]
+            returned = min(len(entries), 8)
+            assert (side["resource_id"], side["version"]) == (resource.id, resource.version)
+            assert side["evidence_total"] == len(entries)
+            assert side["evidence_returned"] == len(side["evidence"]) == returned
+            assert side["incomplete"] is (returned < len(entries))
+
+
+def test_task45_dependency_evidence_contract_final_conflict_status_both_sides_ambiguous(contract_harness):
+    declarations = [_evidence(1), _evidence(2, version="1.1.0")]
+    locks = [_evidence(3, "lock"), _evidence(4, "lock")]
+    components = [
+        _component(1, declarations[0]),
+        _component(2, declarations[1], version="1.1.0"),
+        _component(3, locks[0], version="2.0.0"),
+        _component(4, locks[1], version="3.0.0"),
+    ]
+    evidence = [*declarations, *locks]
+    saved = contract_harness.save(1, components, evidence, [_conflict(*evidence)])
+    page = _ok(contract_harness.read(saved))
+    assert {item["resource_id"] for item in page["items"]} == {resource.id for resource in components}
+    for item in page["items"]:
+        conflict, = item["conflicts"]
+        assert conflict["status"] == "ambiguous"
+        assert conflict["declaration"] is conflict["lock"] is None
+        assert conflict["gaps"] == [
+            "conflict_ambiguous", "declaration_side_unavailable", "lock_side_unavailable",
+        ]
+
+
+def test_task45_dependency_evidence_contract_final_conflict_status_preserves_combined_gaps(contract_harness):
+    declarations = [_evidence(number) for number in range(1, 10)]
+    locks = [_evidence(10, "lock"), _evidence(11, "lock")]
+    unbound = _evidence(12, "lock")
+    hashless = _evidence(13, "lock", hashed=False)
+    left = _component(1, *declarations)
+    components = [
+        left,
+        _component(2, locks[0], hashless, version="2.0.0"),
+        _component(3, locks[1], version="3.0.0"),
+    ]
+    evidence = [*declarations, *locks, unbound, hashless]
+    saved = contract_harness.save(1, components, evidence, [_conflict(*evidence)])
+    page = _ok(contract_harness.read(saved))
+    item = next(row for row in page["items"] if row["resource_id"] == left.id)
+    conflict, = item["conflicts"]
+    assert conflict["status"] == "ambiguous"
+    assert conflict["lock"] is None
+    declaration = conflict["declaration"]
+    assert declaration["incomplete"] is True
+    assert (declaration["evidence_total"], declaration["evidence_returned"], len(declaration["evidence"])) == (9, 8, 8)
+    assert conflict["gaps"] == [
+        "conflict_ambiguous",
+        "conflict_evidence_incomplete",
+        "conflict_evidence_unbound",
+        "conflict_side_evidence_limit_exceeded",
+        "lock_side_unavailable",
+    ]
