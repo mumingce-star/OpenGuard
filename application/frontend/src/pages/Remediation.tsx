@@ -4,6 +4,7 @@ import { listAssessments, type Assessment } from '../services/assessments';
 import { deriveTasks, isVersionConflict, listAllTasks, optimisticTask, patchTask, taskLinks, type RemediationTask, type TaskStatus } from '../services/remediationTasks';
 import { Empty, Header, Panel } from '../components/ui';
 import { EvidenceReader } from '../components/EvidenceReader';
+import { DependencyEvidencePanel } from '../components/DependencyEvidencePanel';
 
 const labels: Record<TaskStatus, string> = { todo: '待处理', in_progress: '处理中', done: '已完成任务', dismissed: '已驳回任务' };
 const statuses: TaskStatus[] = ['todo', 'in_progress', 'done', 'dismissed'];
@@ -16,6 +17,7 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [taskReadError, setTaskReadError] = useState('');
   const [message, setMessage] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
@@ -36,10 +38,17 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
   }, [scan.id, scan.mode, attempt]);
 
   useEffect(() => {
-    if (!selectedId || scan.mode !== 'api') { setTasks([]); return; }
+    if (!selectedId || scan.mode !== 'api') { setTasks([]); setTaskReadError(''); return; }
     const controller = new AbortController();
-    setLoading(true); setError('');
-    listAllTasks(scan.id, selectedId, controller.signal).then(value => { if (!controller.signal.aborted) { setTasks(value); setDrafts(Object.fromEntries(value.map(task => [task.task_id, task.note]))); } }).catch(reason => { if (!controller.signal.aborted) { setTasks([]); setError((reason as Error).message); } }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    setLoading(true); setError(''); setTaskReadError(''); setTasks([]);
+    listAllTasks(scan.id, selectedId, controller.signal).then(value => {
+      if (controller.signal.aborted) return;
+      setTasks(value);
+      setDrafts(Object.fromEntries(value.map(task => [task.task_id, task.note])));
+    }).catch(reason => {
+      if (controller.signal.aborted) return;
+      setTaskReadError(reason instanceof Error && reason.message ? reason.message : '读取任务列表失败。');
+    }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [scan.id, scan.mode, selectedId, attempt]);
 
@@ -98,16 +107,18 @@ export function Remediation({ scan, query, filter, openRisk }: Props) {
     <Panel title="固定评估版本" caption="刷新只读服务器状态；生成任务需要明确点击，不由 GET 触发。" action={<button type="button" onClick={() => setAttempt(value => value + 1)} disabled={!!busy}>重新读取</button>}>
       <label className="og-field">Formal Assessment<select value={selected?.id ?? ''} onChange={event => filter('assessment_id', event.target.value)}>{assessments.map(item => <option key={item.id} value={item.id}>v{item.version} · {item.id}</option>)}</select></label>
       {selected && <p>评估 ID：{selected.id} · 版本 {selected.version} · Formal Assessment 不因任务更新而改变。</p>}
-      {!loading && selected && !tasks.length && !error && <div className="og-actions"><span>该评估尚无整改任务。</span><button type="button" disabled={readOnly || !!busy} onClick={derive}>从该评估显式生成任务</button></div>}
+      {!loading && selected && !tasks.length && !error && !taskReadError && <div className="og-actions"><span>该评估尚无整改任务。</span><button type="button" disabled={readOnly || !!busy} onClick={derive}>从该评估显式生成任务</button></div>}
     </Panel>
     {message && <p role="status" className="og-success">{message}</p>}
     {error && <div role="alert" className="og-error">{error}<button type="button" onClick={() => setAttempt(value => value + 1)}>重试读取</button></div>}
-    {!loading && !error && selected && tasks.length > 0 && <nav className="og-task-status-nav" aria-label="按任务处理状态筛选">
+    {taskReadError && <div role="alert" className="og-error"><strong>整改任务暂不可用</strong><p>{taskReadError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>重试读取</button></div>}
+    <DependencyEvidencePanel key={scan.id} scan={scan} />
+    {!loading && !error && !taskReadError && selected && tasks.length > 0 && <nav className="og-task-status-nav" aria-label="按任务处理状态筛选">
       {statuses.map(status => <button type="button" key={status} aria-pressed={selectedStatus === status} onClick={() => filter('task_status', selectedStatus === status ? '' : status)}>
         <span>{labels[status]}</span><strong>{tasks.filter(task => task.status === status).length}</strong><small>当前评估的任务</small>
       </button>)}
     </nav>}
-    {loading ? <Empty title="正在读取真实任务…" /> : !selected ? <Empty title="没有可用 Formal Assessment" detail="请先在项目评估页完成正式评估。" /> : tasks.length === 0 ? <Empty title="暂无整改任务" detail="仅显式生成；此页面不会自动创建任务。" /> : <Panel title={`任务 · ${filtered.length} / ${tasks.length}`} caption="优先级未提供 → 状态 → 资源分组。">
+    {loading ? <Empty title="正在读取真实任务…" /> : taskReadError ? null : !selected ? <Empty title="没有可用 Formal Assessment" detail="请先在项目评估页完成正式评估。" /> : tasks.length === 0 ? <Empty title="暂无整改任务" detail="仅显式生成；此页面不会自动创建任务。" /> : <Panel title={`任务 · ${filtered.length} / ${tasks.length}`} caption="优先级未提供 → 状态 → 资源分组。">
       <div className="og-task-filters"><label>状态<select value={selectedStatus} onChange={event => filter('task_status', event.target.value === 'all' ? '' : event.target.value)}><option value="all">全部状态</option>{statuses.map(status => <option key={status} value={status}>{labels[status]}</option>)}</select></label><label>资源<select value={selectedResource} onChange={event => filter('task_resource', event.target.value === 'all' ? '' : event.target.value)}><option value="all">全部资源</option>{resources.map(id => <option key={id} value={id}>{scan.resources.find(item => item.id === id)?.name ?? id}</option>)}<option value="none">未绑定资源</option></select></label></div>
       {!filtered.length ? <Empty title="筛选后没有任务" /> : grouped.map(([key, rows]) => { const [status, resource] = key.split('|') as [TaskStatus, string]; return <section key={key} className="og-task-group"><h3>{labels[status]} · {resource === 'multiple' ? '跨资源任务' : resource === 'none' ? '未绑定资源' : scan.resources.find(item => item.id === resource)?.name ?? resource} <small>{rows.length} 项</small></h3>{rows.map(task => {
         const links = taskLinks(task, selected);

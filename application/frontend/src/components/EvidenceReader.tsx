@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { Scan, EvidenceKind } from "../types/domain";
+import { factVerificationLabels } from "../types/domain";
+import type { DependencyEvidenceRef, DependencySource } from "../services/dependencyEvidence";
 import { safeUrl } from "../services/model";
 import { ActionButton, copyText, Empty, useNotice } from "./ui";
 const labels: Record<EvidenceKind, string> = {
@@ -7,15 +9,59 @@ const labels: Record<EvidenceKind, string> = {
   license: "许可原文",
   rule: "判断依据",
 };
-export function EvidenceReader({
+export const dependencyEvidenceSourceLabels: Record<DependencySource, string> = {
+  manifest: "Manifest",
+  lock: "Lock",
+  sbom: "SBOM",
+  unknown: "来源未定",
+};
+
+type ScanReaderProps = { scan: Scan; ids: string[]; initialId?: string };
+type ReferenceReaderProps = { references: readonly DependencyEvidenceRef[]; initialId?: string };
+
+export function EvidenceReader(props: ScanReaderProps | ReferenceReaderProps) {
+  return "references" in props ? <ReferenceEvidenceReader {...props} /> : <ScanEvidenceReader {...props} />;
+}
+
+function ReferenceEvidenceReader({ references, initialId }: ReferenceReaderProps) {
+  const [selected, setSelected] = useState(initialId ?? "");
+  const notify = useNotice();
+  const evidence = references.find(item => item.evidence_id === selected) ?? references[0];
+  if (!evidence) return <p className="og-muted">本次扫描未提供可展示的证据。</p>;
+  const { file_path: path, locator, source_sha256: sha, evidence_id: id, producer } = evidence;
+  const lines = evidence.start_line === null ? null
+    : evidence.end_line !== null && evidence.end_line !== evidence.start_line
+      ? `第 ${evidence.start_line}–${evidence.end_line} 行` : `第 ${evidence.start_line} 行`;
+  return <div className="og-evidence og-dependency-evidence-reader">
+    {references.length > 1 && <label className="og-field">
+      选择依赖证据
+      <select value={id} onChange={event => setSelected(event.target.value)}>
+        {references.map((entry, index) => <option key={entry.evidence_id} value={entry.evidence_id}>
+          {index + 1}. {entry.file_path ?? entry.evidence_id} · {dependencyEvidenceSourceLabels[entry.source]}
+        </option>)}
+      </select>
+    </label>}
+    <dl className="og-meta og-dependency-evidence-meta">
+      <dt>来源类型</dt><dd>{dependencyEvidenceSourceLabels[evidence.source]}</dd>
+      <dt>核验状态</dt><dd>{factVerificationLabels[evidence.verification_status]}</dd>
+      <dt>原始文件路径</dt><dd>{path === null ? "未提供" : <code>{path}</code>}{lines && <small>{lines}</small>}</dd>
+      {locator !== null && locator !== path && <><dt>记录定位</dt><dd><code>{locator}</code></dd></>}
+      <dt>producer</dt><dd>{producer.name} <small>{producer.version} · {producer.type}</small></dd>
+      <dt>Evidence ID</dt><dd><code>{id}</code></dd>
+      <dt>SHA-256</dt><dd>{sha === null ? "未提供原文件哈希" : <code>{sha}</code>}</dd>
+    </dl>
+    <div className="og-actions">
+      <ActionButton kind="copy" type="button" onClick={() => void copyText(id, notify)}>复制 Evidence ID</ActionButton>
+      {sha !== null && <ActionButton kind="copy" type="button" onClick={() => void copyText(sha, notify)}>复制 SHA-256</ActionButton>}
+    </div>
+  </div>;
+}
+
+function ScanEvidenceReader({
   scan,
   ids,
   initialId,
-}: {
-  scan: Scan;
-  ids: string[];
-  initialId?: string;
-}) {
+}: ScanReaderProps) {
   const initial = scan.evidence.find((e) => e.id === initialId);
   const [kind, setKind] = useState<EvidenceKind>(initial?.kind ?? "code");
   const [selected, setSelected] = useState(initialId ?? "");

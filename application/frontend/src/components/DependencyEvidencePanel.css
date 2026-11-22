@@ -1,0 +1,186 @@
+.og-dependency-evidence {
+  min-width: 0;
+  margin-block: 12px;
+}
+
+.og-dependency-evidence .og-dependency-source-filter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.og-dependency-evidence .og-dependency-source-filter select {
+  min-height: 30px;
+  padding: 4px 8px;
+}
+
+.og-dependency-evidence .og-dependency-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.og-app.og-ui-refined .og-dependency-evidence :is(.og-dependency-row, .og-dependency-head) {
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr) minmax(0, 1.2fr) max-content;
+}
+
+.og-app.og-ui-refined .og-dependency-evidence .og-dependency-row {
+  align-items: center;
+}
+
+.og-app.og-ui-refined .og-dependency-evidence .og-dependency-identity > strong,
+.og-app.og-ui-refined .og-dependency-evidence .og-dependency-identity > small {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.og-app.og-ui-refined .og-dependency-evidence .og-dependency-row > .og-dependency-state {
+  white-space: normal;
+}
+
+.og-dependency-evidence .og-dependency-sources,
+.og-dependency-evidence .og-dependency-warning {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.og-dependency-evidence .og-dependency-sources > span {
+  border: 1px solid var(--og-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  background: var(--ui-panel-soft);
+  color: var(--og-text);
+  font-size: 10px;
+}
+
+.og-dependency-evidence .og-dependency-warning {
+  color: var(--og-warning, #b45309);
+}
+
+.og-dependency-evidence .og-dependency-action {
+  color: var(--og-accent);
+  font-weight: 600;
+}
+
+.og-dependency-evidence :is(.og-dependency-summary, .og-dependency-message, .og-dependency-error) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 18px;
+  font-size: 11px;
+  border-bottom: 1px solid var(--og-border);
+}
+
+.og-dependency-evidence .og-dependency-summary {
+  color: var(--og-muted);
+}
+
+.og-dependency-evidence .og-dependency-error {
+  color: var(--og-warning, #b45309);
+  background: var(--og-warning-soft, #fef9ec);
+}
+
+.og-dependency-evidence .og-dependency-detail {
+  padding: 12px 18px 16px;
+  background: var(--ui-panel-soft);
+  border-bottom: 1px solid var(--og-border);
+}
+
+.og-dependency-evidence .og-dependency-detail :is(h3, h4, h5) {
+  margin: 0 0 4px;
+  font-size: 12px;
+}
+
+.og-dependency-evidence .og-dependency-detail small {
+  color: var(--og-muted);
+  font-weight: 500;
+}
+
+.og-dependency-evidence .og-dependency-evidence-meta {
+  margin-block: 8px;
+  grid-template-columns: minmax(76px, max-content) minmax(0, 1fr);
+}
+
+.og-dependency-evidence .og-dependency-evidence-meta dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.og-dependency-evidence .og-dependency-evidence-meta small {
+  display: inline-block;
+  margin-inline-start: 5px;
+}
+
+.og-dependency-evidence .og-dependency-evidence-reader .og-field select {
+  width: min(100%, 480px);
+}
+
+.og-dependency-evidence .og-dependency-gaps {
+  margin: 5px 0 10px;
+  padding-inline-start: 18px;
+  color: var(--og-warning, #b45309);
+  font-size: 11px;
+}
+
+.og-dependency-evidence .og-dependency-conflicts {
+  margin-top: 14px;
+  padding-top: 9px;
+  border-top: 1px solid var(--og-border);
+}
+
+.og-dependency-evidence .og-dependency-conflict-disclosure summary {
+  cursor: pointer;
+  padding-block: 4px;
+}
+
+.og-dependency-evidence .og-dependency-conflict {
+  border-inline-start: 2px solid var(--og-warning-line, #f6dfa8);
+  padding-inline-start: 10px;
+  margin-top: 8px;
+}
+
+.og-dependency-evidence .og-dependency-conflict p {
+  margin: 0 0 5px;
+  font-size: 11px;
+}
+
+.og-dependency-evidence .og-dependency-conflict-sides {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.og-dependency-evidence .og-dependency-conflict-side {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--og-border);
+  border-radius: 6px;
+}
+
+.og-dependency-evidence .og-v3-panel-foot {
+  justify-content: flex-end;
+}
+
+@media (max-width: 740px) {
+  .og-app.og-ui-refined .og-dependency-evidence .og-dependency-row {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 6px 10px;
+  }
+
+  .og-app.og-ui-refined .og-dependency-evidence .og-dependency-head {
+    display: none;
+  }
+
+  .og-dependency-evidence .og-dependency-conflict-sides {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

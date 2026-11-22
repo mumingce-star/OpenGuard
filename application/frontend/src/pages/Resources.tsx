@@ -16,6 +16,7 @@ import {
   useNotice,
 } from "../components/ui";
 import { EvidenceReader } from "../components/EvidenceReader";
+import { DependencyEvidencePanel } from "../components/DependencyEvidencePanel";
 import { AIResourceCard } from "../components/AIResourceCard";
 import { factVerificationLabels } from "../types/domain";
 export function Resources({
@@ -32,7 +33,11 @@ export function Resources({
   const [selected, setSelected] = useState<string | null>(null),
     notify = useNotice();
   const searchInput = useRef<HTMLInputElement>(null);
-  useEffect(()=>{const focus=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();searchInput.current?.focus();}};window.addEventListener('keydown',focus);return()=>window.removeEventListener('keydown',focus);},[]);
+  useEffect(()=>{const focus=(e:KeyboardEvent)=>{if(searchInput.current&&(e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();searchInput.current.focus();}};window.addEventListener('keydown',focus);return()=>window.removeEventListener('keydown',focus);},[]);
+  const canReadDependencies = scan.mode === "api" && (scan.status === "completed" || scan.status === "partial");
+  const view = query.get("resource_view");
+  const inventoryLink = ["q", "type", "risk", "unknown", "resource_id"].some(key => !!query.get(key));
+  const dependencyView = canReadDependencies && (view === "dependencies" || (view !== "all" && !inventoryLink));
   const rows = filterResources(scan, query),
     resource = scan.resources.find((r) => r.id === (selected ?? query.get("resource_id"))) ?? rows[0];
   const aiRows = rows.filter((item) => item.type === "Model" || item.type === "Dataset");
@@ -42,7 +47,7 @@ export function Resources({
       <Header
         title="第三方资源清单"
         eyebrow={"INVENTORY / " + scan.id}
-        description="模型、数据集与其他第三方资源均只展示扫描事实；未知保持未知，Finding 只是待核查线索。"
+        description={dependencyView ? "查看本次扫描记录的依赖、证据来源与版本冲突。" : "模型、数据集与其他第三方资源均只展示扫描事实；未知保持未知，Finding 只是待核查线索。"}
         action={
           scan.mode === "api" ? (scan.reportFormats?.includes("resource_inventory") ? <ResourceInventoryDownload key={scan.id} scanId={scan.id} /> : <span>资源清单尚未发布</span>) : <DownloadControl
             onDownload={() =>
@@ -58,6 +63,11 @@ export function Resources({
           </DownloadControl>
         }
       />
+      {canReadDependencies && <nav className="og-tabs" aria-label="资源视图">
+        <button type="button" aria-pressed={dependencyView} onClick={() => filter("resource_view", "dependencies")}>依赖证据</button>
+        <button type="button" aria-pressed={!dependencyView} onClick={() => filter("resource_view", "all")}>全部资源</button>
+      </nav>}
+      {dependencyView ? <DependencyEvidencePanel key={scan.id} scan={scan} /> : <>
       <div className="og-filters">
         <label className="og-field og-search-field">
           <span>搜索资源</span>
@@ -178,6 +188,7 @@ export function Resources({
             ))}
           </div></aside>
       )}</div>
+      </>}
     </div>
   );
 }
