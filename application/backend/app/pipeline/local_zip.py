@@ -9,7 +9,8 @@ from typing import BinaryIO, Callable
 
 from app.ai import Provider
 from app.domain.models import HashValue, Project, RunProvenance, ScanRun, SourceType
-from app.ingestion import ZipIngestionService
+from app.ingestion import ReadOnlyScanSession, ZipIngestionService
+from app.notice_source import select_notice_source_candidates
 from app.pipeline.dependency_plan import (
     DependencyConsumerResult,
     DependencyPlanState,
@@ -34,6 +35,7 @@ from app.scanners import (
     parse_javascript_manifests,
     parse_python_manifests,
 )
+from app.scanners.dependency_observation_mapper import collect_dependency_observations
 
 
 class _DigestingReader:
@@ -49,13 +51,25 @@ class _DigestingReader:
         return data
 
 
-def _consume_dependencies(session: object, clock: Callable[[], datetime]) -> DependencyConsumerResult:
+def _budget_after_notice(session: ReadOnlyScanSession) -> int:
+    """Leave the next consumer enough bytes for its existing NOTICE reads."""
+    remaining = session.remaining_read_bytes
+    selected = select_notice_source_candidates(session.inventory)
+    sizes = {entry.relative_path: entry.size_bytes for entry in session.inventory.entries}
+    for candidate in selected.candidates:
+        size = sizes[candidate.locator]
+        if size <= min(remaining, READ_LIMITS.single_file_max_bytes):
+            remaining -= size
+    return remaining
+
+
+def _consume_dependencies(session: ReadOnlyScanSession, clock: Callable[[], datetime]) -> DependencyConsumerResult:
     """Keep the established local-ZIP monkeypatch seam for implementation tests."""
 
     try:
         python_mapping = map_python_manifest_result(
-            parse_python_manifests(session),  # type: ignore[arg-type]
-            root_digest=session.inventory.root_digest,  # type: ignore[attr-defined]
+            parse_python_manifests(session),
+            root_digest=session.inventory.root_digest,
             observed_at=clock(),
         )
         if type(python_mapping) is not PythonP0MappingResult:
@@ -64,8 +78,8 @@ def _consume_dependencies(session: object, clock: Callable[[], datetime]) -> Dep
         python_mapping = None
     try:
         javascript_mapping = map_javascript_manifest_result(
-            parse_javascript_manifests(session),  # type: ignore[arg-type]
-            root_digest=session.inventory.root_digest,  # type: ignore[attr-defined]
+            parse_javascript_manifests(session),
+            root_digest=session.inventory.root_digest,
             observed_at=clock(),
         )
         if type(javascript_mapping) is not JavascriptP0MappingResult:
@@ -75,12 +89,18 @@ def _consume_dependencies(session: object, clock: Callable[[], datetime]) -> Dep
     javascript_mapping, root_licenses = collect_root_package(
         session, javascript_mapping, clock(), total_read_budget=READ_LIMITS.total_max_bytes,
     )
+    manifest_licenses = collect_manifest_licenses(
+        session, javascript_mapping, clock(), total_read_budget=READ_LIMITS.total_max_bytes,
+    )
+    ai_scan = collect_ai_assets(session, clock(), total_read_budget=READ_LIMITS.total_max_bytes)
+    dependency_observations = collect_dependency_observations(
+        session, clock(), remaining_budget=_budget_after_notice(session),
+    )
     return DependencyConsumerResult(
         lanes=(LaneResult("python", python_mapping), LaneResult("javascript", javascript_mapping)),
-        manifest_licenses=root_licenses + collect_manifest_licenses(
-            session, javascript_mapping, clock(), total_read_budget=READ_LIMITS.total_max_bytes,
-        ),
-        ai_scan=collect_ai_assets(session, clock(), total_read_budget=READ_LIMITS.total_max_bytes),
+        manifest_licenses=root_licenses + manifest_licenses,
+        ai_scan=ai_scan,
+        dependency_observations=dependency_observations,
     )
 
 

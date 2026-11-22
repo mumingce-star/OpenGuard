@@ -15,9 +15,28 @@ from app.domain.models import (
     Component, DetectionMethod, Evidence, EvidenceKind, HashValue,
     ProducerRef, ProducerType, VerificationStatus,
 )
-from .dependency_observations import Edge, Gap, read_dependency_observations
+from app.ingestion import ReadOnlyScanSession
+from app.ingestion.inventory import Inventory, InventoryEntry
+from .dependency_observations import MAX_BYTES, Edge, Gap, read_dependency_observations, relative_path
 
 _NAMESPACE = uuid.UUID("1e91b3a5-47bb-45aa-aeb1-b06f837f92ef")
+_FORMATS_BY_NAME = {
+    "uv.lock": "uv",
+    "poetry.lock": "poetry",
+    "pdm.lock": "pdm",
+    "Pipfile.lock": "pipfile",
+    "package-lock.json": "npm-v1",
+    "npm-shrinkwrap.json": "npm-v1",
+    "bom.json": "cyclonedx-json",
+    "bom.xml": "cyclonedx-xml",
+}
+_FORMATS_BY_SUFFIX = (
+    (".cdx.json", "cyclonedx-json"),
+    (".cdx.xml", "cyclonedx-xml"),
+    (".spdx.json", "spdx-json"),
+    (".spdx", "spdx-tag-value"),
+)
+_READ_BATCH_LIMIT = 4096
 
 
 @dataclass(frozen=True)
@@ -27,6 +46,66 @@ class ObservationMapping:
     edges: tuple[Edge, ...]
     gaps: tuple[Gap, ...]
     status: str
+
+
+@dataclass(frozen=True)
+class _SealedDocument:
+    inventory: Inventory
+    raw: bytes
+
+    def read_bytes(self, path: str, *, max_bytes: int) -> bytes:
+        if path != self.inventory.entries[0].relative_path or len(self.raw) > max_bytes:
+            raise ValueError("inventory_entry_invalid")
+        return self.raw
+
+
+def collect_dependency_observations(
+    session: ReadOnlyScanSession,
+    observed_at: datetime,
+    *,
+    remaining_budget: int,
+) -> tuple[ObservationMapping, ...]:
+    """Collect recognized documents using quota left by the primary scan lanes."""
+    available = min(remaining_budget, session.remaining_read_bytes)
+    if available <= 0:
+        return ()
+
+    inventory = session.inventory
+    selected: list[tuple[InventoryEntry, str]] = []
+    for entry in sorted(inventory.entries, key=lambda item: item.relative_path):
+        if not 0 < entry.size_bytes <= min(MAX_BYTES, available):
+            continue
+        name = entry.relative_path.rsplit("/", 1)[-1]
+        format = _FORMATS_BY_NAME.get(name)
+        if format is None:
+            format = next((kind for suffix, kind in _FORMATS_BY_SUFFIX if name.endswith(suffix)), None)
+        if format is None:
+            continue
+        try:
+            relative_path(entry.relative_path)
+        except ValueError:
+            continue
+        selected.append((entry, format))
+        available -= entry.size_bytes
+        if available == 0:
+            break
+
+    mappings = []
+    for start in range(0, len(selected), _READ_BATCH_LIMIT):
+        batch = selected[start:start + _READ_BATCH_LIMIT]
+        # A sealed batch checks the full tree once before and after these reads.
+        paths = tuple(entry.relative_path for entry, _ in batch)
+        raw_by_path = session.read_many_bytes(paths, max_bytes=MAX_BYTES)
+        for entry, format in batch:
+            path = entry.relative_path
+            document = _SealedDocument(Inventory((entry,), inventory.root_digest), raw_by_path[path])
+            try:
+                mapping = map_sealed_dependency_document(document, path, format=format, observed_at=observed_at)
+            except ValueError:
+                # A parser failure spends its reserved bytes and leaves the other documents intact.
+                continue
+            mappings.append(mapping)
+    return tuple(mappings)
 
 
 def map_sealed_dependency_document(session, path: str, *, format: str,

@@ -1,11 +1,14 @@
 """Synthetic parser tests: no target execution, source admission, or POSIX stub."""
 import hashlib
 import json
+from datetime import datetime, timezone
 from types import SimpleNamespace
 
 import pytest
 
+from app.ingestion.inventory import Inventory, InventoryEntry
 from app.scanners import dependency_observations as parser
+from app.security.errors import IngestionSecurityError
 
 
 UV = b'''version = 1
@@ -311,3 +314,155 @@ def test_spdx_json_orphan_conflicting_purl_and_orig_positions():
 def test_spdx_negative_cases(raw, error):
     with pytest.raises(ValueError, match=error):
         parser.parse_spdx_tag_value(raw)
+
+
+class ObservationSession:
+    def __init__(self, documents, *, quota=None):
+        self.documents = documents
+        self.inventory = Inventory(
+            tuple(InventoryEntry(path, len(raw), hashlib.sha256(raw).hexdigest())
+                  for path, raw in documents.items()),
+            "a" * 64,
+        )
+        self.remaining_read_bytes = sum(map(len, documents.values())) if quota is None else quota
+        self.reads = []
+
+    def read_many_bytes(self, paths, *, max_bytes):
+        assert paths and len(set(paths)) == len(paths)
+        documents = {path: self.documents[path] for path in paths}
+        assert all(0 < len(raw) <= max_bytes for raw in documents.values())
+        size = sum(map(len, documents.values()))
+        assert size <= self.remaining_read_bytes
+        self.remaining_read_bytes -= size
+        self.reads.extend(paths)
+        return documents
+
+    def read_bytes(self, path, *, max_bytes):
+        return self.read_many_bytes((path,), max_bytes=max_bytes)[path]
+
+
+def collect_observations(session, *, remaining_budget):
+    from app.scanners.dependency_observation_mapper import collect_dependency_observations
+
+    return collect_dependency_observations(
+        session, datetime(2026, 11, 22, tzinfo=timezone.utc), remaining_budget=remaining_budget,
+    )
+
+
+NPM_V1 = b'{"lockfileVersion":1,"dependencies":{"a":{"version":"1.0.0"}}}'
+POETRY = b'''[[package]]
+name = "a"
+version = "1.0"
+[metadata]
+lock-version = "2.1"
+'''
+PDM = POETRY.replace(b'lock-version = "2.1"', b'lock_version = "4.5"')
+PIPFILE = b'{"_meta":{"pipfile-spec":6},"default":{"a":{"version":"==1.0"}},"develop":{}}'
+CDX_XML = b'''<bom xmlns="http://cyclonedx.org/schema/bom/1.5"><components>
+<component bom-ref="a"><name>a</name><version>1.0</version></component>
+</components></bom>'''
+SPDX_JSON = b'''{"spdxVersion":"SPDX-2.3","packages":[
+{"name":"a","SPDXID":"SPDXRef-A","versionInfo":"1.0"}
+]}'''
+
+
+@pytest.mark.parametrize("path,raw,source_kind", [
+    ("work/uv.lock", UV, "lock"),
+    ("work/poetry.lock", POETRY, "lock"),
+    ("work/pdm.lock", PDM, "lock"),
+    ("work/Pipfile.lock", PIPFILE, "lock"),
+    ("work/package-lock.json", NPM_V1, "lock"),
+    ("work/npm-shrinkwrap.json", NPM_V1, "lock"),
+    ("work/bom.json", bom(), "sbom"),
+    ("work/release.cdx.json", bom(), "sbom"),
+    ("work/bom.xml", CDX_XML, "sbom"),
+    ("work/release.cdx.xml", CDX_XML, "sbom"),
+    ("work/sbom.spdx.json", SPDX_JSON, "sbom"),
+    ("work/sbom.spdx", SPDX, "sbom"),
+])
+def test_collector_routes_supported_documents(path, raw, source_kind):
+    session = ObservationSession({path: raw})
+    (mapping,) = collect_observations(session, remaining_budget=len(raw))
+    assert session.reads == [path]
+    assert mapping.components and mapping.evidence
+    for evidence in mapping.evidence:
+        assert evidence.locator.partition(":")[0] == path
+        assert evidence.producer.name == f"openguard.dependency-observations.{source_kind}"
+        assert evidence.content_hash.value == hashlib.sha256(raw).hexdigest()
+        assert evidence.verification_status.value == "pending"
+
+
+@pytest.mark.parametrize("path", ["package-lock.json", "npm-shrinkwrap.json"])
+@pytest.mark.parametrize("version", [b"2", b"3", b"true"])
+def test_collector_accepts_only_real_npm_lock_v1(path, version):
+    raw = NPM_V1.replace(b'"lockfileVersion":1', b'"lockfileVersion":' + version)
+    session = ObservationSession({path: raw})
+    assert collect_observations(session, remaining_budget=len(raw)) == ()
+
+
+def test_collector_ignores_path_lookalikes_and_unrelated_manifests():
+    session = ObservationSession({
+        "my-bom.json": bom(),
+        "work/release.cdx.json.bak": bom(),
+        "work/release.cdx.xml.bak": CDX_XML,
+        "work/sbom.spdx.json.bak": SPDX_JSON,
+        "work/more.spdx.tmp": SPDX,
+        "work/my-poetry.lock": POETRY,
+        "work/pipfile.lock": PIPFILE,
+        "work/uv.lock.tmp": UV,
+        "work/package.json": NPM_V1,
+        "work/pyproject.toml": UV,
+    })
+    assert collect_observations(session, remaining_budget=session.remaining_read_bytes) == ()
+    assert session.reads == []
+
+
+def test_collector_uses_smaller_residual_and_skips_files_that_do_not_fit():
+    session = ObservationSession({
+        "d/uv.lock": UV,
+        "c/uv.lock": UV,
+        "b/uv.lock": UV + b"\n" * len(UV),
+        "a/uv.lock": UV,
+    }, quota=2 * len(UV))
+    mappings = collect_observations(session, remaining_budget=4 * len(UV))
+    assert session.reads == ["a/uv.lock", "c/uv.lock"]
+    assert [mapping.evidence[0].locator for mapping in mappings] == [
+        "a/uv.lock:/package/0",
+        "c/uv.lock:/package/0",
+    ]
+    assert session.remaining_read_bytes == 0
+    assert collect_observations(session, remaining_budget=len(UV)) == ()
+    assert session.reads == ["a/uv.lock", "c/uv.lock"]
+
+
+def test_collector_bounds_document_size_and_honors_explicit_budget():
+    limit = parser.MAX_BYTES
+    exact_limit = UV + b"\n" * (limit - len(UV))
+    session = ObservationSession({
+        "e/uv.lock": UV,
+        "d/uv.lock": UV,
+        "c/uv.lock": exact_limit,
+        "b/uv.lock": exact_limit + b"\n",
+        "a/uv.lock": b"",
+    })
+    assert len(collect_observations(session, remaining_budget=limit + len(UV))) == 2
+    assert session.reads == ["c/uv.lock", "d/uv.lock"]
+
+
+def test_collector_isolates_malformed_documents_without_refunding_bytes():
+    malformed = b"{"
+    session = ObservationSession({"c/uv.lock": UV, "b/uv.lock": UV, "a/bom.json": malformed})
+    (mapping,) = collect_observations(session, remaining_budget=len(malformed) + len(UV))
+    assert session.reads == ["a/bom.json", "b/uv.lock"]
+    assert all(evidence.locator.startswith("b/uv.lock:/") for evidence in mapping.evidence)
+
+
+def test_collector_preserves_sealed_session_integrity_failures(monkeypatch):
+    session = ObservationSession({"uv.lock": UV})
+
+    def fail_read(*args, **kwargs):
+        raise IngestionSecurityError("scanner_failed", "scan_file_integrity_failed")
+
+    monkeypatch.setattr(session, "read_many_bytes", fail_read)
+    with pytest.raises(IngestionSecurityError, match="scan_file_integrity_failed"):
+        collect_observations(session, remaining_budget=len(UV))

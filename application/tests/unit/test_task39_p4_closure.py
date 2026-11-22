@@ -1,5 +1,6 @@
 """TASK39 isolated API, source-binding and revision regression cases."""
 import base64
+from contextlib import closing
 from copy import deepcopy
 import hashlib
 import io
@@ -15,6 +16,7 @@ import pytest
 from app.domain.usage import UsageDeclaration
 from app.p2b.material_claims import parse_claim_material
 from test_a4_local_zip_pipeline import _queued, _run
+from test_p1_notice_lifecycle_ingestion import env as notice_env
 from test_p2_contract import answer_body, create, material_body, seed, setup as base_setup, variant
 from test_p2_preliminary import MIT, setup
 from test_task33_material_claims import get
@@ -447,9 +449,27 @@ def test_task43_apache_tail_rejects_hybrid_or_freeform_addendum():
     _task43_assert_quotes(tail, parsed['spans'])
 
 
-def _task43_endpoint(base_setup, declared, material, *, archive=None, notice=None, pinned=True):
-    from contextlib import closing
+def _scan_zip_into_assessment(base_setup, zip_path, *, index):
+    root = base_setup[-1]
+    registry, scanned = _run(root, zip_path, _queued(zip_path, index=index))
+    with closing(registry):
+        return _bind_scanned_run(base_setup, scanned.run), scanned.run
+
+
+def _bind_scanned_run(base_setup, run):
     c, app, _, _, root = base_setup
+    usage = UsageDeclaration(commercial=True, distributed=True, modified=True, network_service=False,
+                             training=False, redistributed_assets=False, source_disclosure=False)
+    assessment = seed(app, run, usage)
+    endpoint = f'/api/v1/scans/{assessment.scan_id}/assessments/{assessment.id}/p2'
+    binding = c.get(endpoint + '/binding')
+    assert binding.status_code == 200, binding.text
+    return c, app, endpoint, {'binding': binding.json(), 'expected_revision': 0,
+                             'parent_result_id': None, 'idempotency_key': 'scan-create'}, root
+
+
+def _task43_endpoint(base_setup, declared, material, *, archive=None, notice=None, pinned=True):
+    _, app, _, _, root = base_setup
     if archive is None:
         name, version = NAME, VERSION
         zip_path = root / 'task43-test-only.zip'
@@ -461,17 +481,8 @@ def _task43_endpoint(base_setup, declared, material, *, archive=None, notice=Non
             package = json.loads(z.read('package.json'))
         name, version = package['name'], package['version']
         zip_path = archive
-    registry, scanned = _run(root, zip_path, _queued(zip_path, index=4301))
-    with closing(registry):
-        component = next(entry for entry in scanned.run.components if (entry.name, entry.version) == (name, version))
-        usage = UsageDeclaration(commercial=True, distributed=True, modified=True, network_service=False,
-                                 training=False, redistributed_assets=False, source_disclosure=False)
-        assessment = seed(app, scanned.run, usage)
-    endpoint = f'/api/v1/scans/{assessment.scan_id}/assessments/{assessment.id}/p2'
-    binding = c.get(endpoint + '/binding')
-    assert binding.status_code == 200, binding.text
-    harness = c, app, endpoint, {'binding': binding.json(), 'expected_revision': 0,
-                                  'parent_result_id': None, 'idempotency_key': 'task43-create'}, root
+    harness, run = _scan_zip_into_assessment(base_setup, zip_path, index=4301)
+    component = next(entry for entry in run.components if (entry.name, entry.version) == (name, version))
     if pinned:
         source = root / 'task43-pinned-source'
         service = app.state.p2_service
@@ -518,20 +529,19 @@ def test_task43_cross_license_conflict_fails_closed(base_setup, declared, observ
     *((license_id, 'COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED') for license_id in
       ('GPL-2.0-only', 'GPL-2.0-or-later', 'GPL-3.0-only', 'GPL-3.0-or-later', 'AGPL-3.0-only', 'AGPL-3.0-or-later')),
     *((license_id, 'WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED') for license_id in
-      ('LGPL-2.1-only', 'LGPL-2.1-or-later', 'LGPL-3.0-only', 'MPL-2.0')),
+      ('LGPL-2.1-only', 'LGPL-2.1-or-later', 'LGPL-3.0-only', 'MPL-2.0', 'LGPL-3.0-or-later')),
 ])
 def test_task43_copyleft_reason_and_conflict_precedence(base_setup, declared, expected_reason):
-    harness, old, subject = _task43_endpoint(base_setup, declared, MIT, pinned=False)
+    manifest = _task44_manifest(declared)
+    archive = _task44_zip(base_setup, {'package.json': manifest, 'LICENSE': MIT})
+    harness, run = _scan_zip_into_assessment(base_setup, archive, index=4401)
+    component = next(entry for entry in run.components if (entry.name, entry.version) == (NAME, VERSION))
+    assert not any(error.code == 'rules_stage_not_connected' for error in run.errors)
+    evidence = _assert_scanned_license(run, component, declared, 'package.json:/license', manifest)
+    old = create(harness)
+    subject = next(row['subject'] for row in old['resources'] if row['subject']['resource_id'] == component.id)
     view = get(harness, old)
-    if declared.endswith('-or-later'):
-        # Root scanning does not persist these four identifiers yet. Exercise
-        # the v4 declaration boundary with a separate TEST_ONLY saved input.
-        declaration = next(item for item in view['declaration_observations'] if item['subject'] == subject)
-        assert declaration['expression'] == 'UNOBSERVED' and declaration['evidence_status'] == 'UNKNOWN'
-        harness, old, subject = _task43_saved_copyleft(base_setup, declared)
-        view = get(harness, old)
-        declaration = next(item for item in view['declaration_observations'] if item['subject'] == subject)
-        assert declaration['expression'] == declared and declaration['evidence_status'] == 'COMPLETE'
+    _assert_v4_declaration(view, subject, declared, evidence.id, manifest)
     selected = {use for use in USES if old['usage'][use] is True}
     advice = {item['usage']: item for item in view['advice'] if item['subject'] == subject}
     assert set(advice) == USES and selected
@@ -546,30 +556,278 @@ def test_task43_copyleft_reason_and_conflict_precedence(base_setup, declared, ex
     assert all(conflict[use]['state'] == 'NOT_COVERED' for use in USES - selected)
 
 
-def _task43_saved_copyleft(base_setup, declared):
-    evidence_id = 'evd_' + str(uuid4())
-    resource_ids = []
+def _task44_manifest(declared='MIT', **fields):
+    return json.dumps({'name': NAME, 'version': VERSION, 'license': declared, **fields}).encode()
 
-    def assign_declaration(payload):
-        resource = next(row for row in payload['components'] if row.get('license_expression_id') and row['version'])
-        license_ = next(row for row in payload['licenses'] if row['id'] == resource['license_expression_id'])
-        original_evidence = next(row for row in payload['evidence'] if row['id'] in license_['evidence_ids'])
-        manifest = json.dumps({'name': resource['name'], 'version': resource['version'], 'license': declared},
-                              sort_keys=True).encode()
-        payload['evidence'].append({
-            **original_evidence, 'id': evidence_id, 'kind': 'manifest_field', 'locator': 'package.json:/license',
-            'excerpt': json.dumps(declared), 'content_hash': {'algorithm': 'sha256', 'value': sha(manifest)},
-            'verification_status': 'pending',
-        })
-        license_.update(expression=declared, normalized_ids=[declared], evidence_ids=[evidence_id],
-                        verification_status='pending')
-        resource['evidence_ids'].append(evidence_id)
-        resource_ids.append(resource['id'])
 
-    harness = variant(base_setup, assign_declaration)
-    old = create(harness)
-    subject = next(row['subject'] for row in old['resources'] if row['subject']['resource_id'] in resource_ids)
-    return harness, old, subject
+def _task44_zip(base_setup, files):
+    archive = base_setup[-1] / 'task44-test-only.zip'
+    with zipfile.ZipFile(archive, 'w') as scanned:
+        for path, raw in files.items():
+            scanned.writestr(path, raw)
+    return archive
+
+
+def _assert_scanned_license(run, component, declared, locator, raw):
+    license_ = next((item for item in run.licenses if item.id == component.license_expression_id), None)
+    assert license_ is not None
+    assert license_.expression == declared and license_.normalized_ids == [declared]
+    evidence, = (item for item in run.evidence if item.id in license_.evidence_ids)
+    assert evidence.id in component.evidence_ids
+    assert evidence.locator == locator
+    assert evidence.content_hash.algorithm == 'sha256' and evidence.content_hash.value == sha(raw)
+    assert license_.verification_status.value == evidence.verification_status.value == 'pending'
+    return evidence
+
+
+def _assert_v4_declaration(view, subject, declared, evidence_id, raw):
+    declaration = next(item for item in view['declaration_observations'] if item['subject'] == subject)
+    assert declaration['expression'] == declared and declaration['normalized_ids'] == [declared]
+    assert declaration['evidence_status'] == 'COMPLETE'
+    assert declaration['declaration_evidence_ids'] == [evidence_id]
+    assert declaration['evidence'] == [{'evidence_id': evidence_id, 'source_sha256': sha(raw)}]
+
+
+def _task44_uv(name, version):
+    return (f'version = 1\nrevision = 3\n[[package]]\nname = "{name}"\nversion = "{version}"\n'
+            'source = { registry = "https://pypi.org/simple" }\n').encode()
+
+
+def test_task44_zip_b58_documents_supply_hash_bound_dependency_roles(base_setup):
+    files = {
+        'package.json': _task44_manifest(),
+        'uv.lock': _task44_uv('task44-uv', VERSION),
+        'poetry.lock': b'[metadata]\nlock-version = "2.1"\n[[package]]\nname = "task44-poetry"\nversion = "1.2.3"\n',
+        'bom.json': json.dumps({'bomFormat': 'CycloneDX', 'specVersion': '1.5', 'components': [
+            {'bom-ref': 'cdx', 'name': 'task44-cdx', 'version': VERSION, 'purl': f'pkg:npm/task44-cdx@{VERSION}'},
+        ]}).encode(),
+        'sbom.spdx.json': json.dumps({'spdxVersion': 'SPDX-2.3', 'packages': [
+            {'name': 'task44-spdx', 'SPDXID': 'SPDXRef-Test', 'versionInfo': VERSION, 'externalRefs': [
+                {'referenceCategory': 'PACKAGE-MANAGER', 'referenceType': 'purl',
+                 'referenceLocator': f'pkg:pypi/task44-spdx@{VERSION}'},
+            ]},
+        ]}).encode(),
+        'unsupported.cdx.json': b'{',
+    }
+    harness, run = _scan_zip_into_assessment(base_setup, _task44_zip(base_setup, files), index=4402)
+    assert run.status.value == 'completed'
+    evidence_by_id = {item.id: item for item in run.evidence}
+    components = {item.name: item for item in run.components}
+    assert len(evidence_by_id) == len(run.evidence) and len({item.id for item in run.components}) == len(run.components)
+    result = create(harness)
+    expected = {}
+    for name, path, kind in (
+        ('task44-uv', 'uv.lock', 'lock'), ('task44-poetry', 'poetry.lock', 'lock'),
+        ('task44-cdx', 'bom.json', 'sbom'), ('task44-spdx', 'sbom.spdx.json', 'sbom'),
+    ):
+        component = components[name]
+        assert component.version == VERSION and component.license_expression_id is not None
+        assert next(item.expression for item in run.licenses if item.id == component.license_expression_id) == 'NOASSERTION'
+        evidence, = (evidence_by_id[eid] for eid in component.evidence_ids
+                     if evidence_by_id[eid].producer.name == f'openguard.dependency-observations.{kind}')
+        assert evidence.locator.partition(':')[0] == path
+        assert evidence.content_hash.algorithm == 'sha256' and evidence.content_hash.value == sha(files[path])
+        assert evidence.verification_status.value == 'pending'
+        row = next(item for item in result['resources'] if item['subject']['resource_id'] == component.id)
+        assert row['evidence_source_hashes'][evidence.id] == sha(files[path])
+        result = upload(harness, result, row['subject'], MIT)
+        expected[component.id] = evidence.id
+    view = get(harness, result)
+    assert len(view['materials']) == len(expected)
+    for material in view['materials']:
+        assert material['role'] == 'dependency' and material['role_state'] == 'inferred'
+        assert material['role_conflicts'] == []
+        assert material['role_basis_evidence_ids'] == [expected[material['subject']['resource_id']]]
+    assert not any(item['state'] == 'SUPPORT' for item in view['advice']
+                   if item['subject']['resource_id'] in expected)
+
+
+@pytest.mark.parametrize('lock_directory,locked_version,conflict', [
+    ('sub', '2.3.4', True), ('sub', VERSION, False), ('other', '2.3.4', False),
+], ids=['same-scope-conflict', 'same-scope-match', 'separate-scope'])
+def test_task44_zip_exact_dependency_declaration_and_lock_conflict(base_setup, lock_directory, locked_version, conflict):
+    name = 'task44-versioned'
+    files = {
+        'package.json': _task44_manifest(),
+        'sub/pyproject.toml': f'[project]\nname = "task44-app"\nversion = "1.0.0"\n dependencies = ["{name}=={VERSION}"]\n'.encode(),
+        f'{lock_directory}/uv.lock': _task44_uv(name, locked_version),
+    }
+    harness, run = _scan_zip_into_assessment(base_setup, _task44_zip(base_setup, files), index=4403)
+    evidence_by_id = {item.id: item for item in run.evidence}
+    subjects = [item for item in run.components if item.name == name]
+    assert len({item.id for item in subjects}) == len(subjects) == 2
+    assert sorted(item.version for item in subjects) == sorted((VERSION, locked_version))
+    result = create(harness)
+    role_states, source_evidence = {}, set()
+    for component in subjects:
+        evidence = [evidence_by_id[eid] for eid in component.evidence_ids]
+        lock = any(item.producer.name == 'openguard.dependency-observations.lock' for item in evidence)
+        role_states[component.id] = 'inferred' if lock else 'observed'
+        path = f'{lock_directory}/uv.lock' if lock else 'sub/pyproject.toml'
+        source_evidence.update(item.id for item in evidence if item.content_hash and
+                               item.locator.partition(':')[0] == path and item.content_hash.value == sha(files[path]))
+        row = next(item for item in result['resources'] if item['subject']['resource_id'] == component.id)
+        result = upload(harness, result, row['subject'], MIT)
+    conflicts = [item for item in run.errors if item.code == 'lock_version_conflict']
+    assert len(source_evidence) >= 2
+    if conflict:
+        assert set(eid for error in conflicts for eid in error.evidence_ids) & source_evidence == source_evidence
+    else:
+        assert not conflicts
+    materials = get(harness, result)['materials']
+    assert len(materials) == 2
+    for material in materials:
+        if conflict:
+            assert material['role'] == material['role_state'] == 'unknown'
+            assert material['role_conflicts'] == ['lock_version_conflict']
+            assert material['role_basis_evidence_ids'] == []
+        else:
+            assert material['role'] == 'dependency'
+            assert material['role_state'] == role_states[material['subject']['resource_id']]
+            assert material['role_conflicts'] == []
+            assert set(material['role_basis_evidence_ids']) <= source_evidence
+
+
+@pytest.mark.parametrize('lockfile_version', (2, 3))
+def test_task44_existing_npm_lock_license_binding_reaches_v4(base_setup, lockfile_version):
+    name = 'task44-npm-locked'
+    declared = 'LGPL-3.0-or-later'
+    lock = json.dumps({'lockfileVersion': lockfile_version, 'packages': {
+        f'node_modules/{name}': {'name': name, 'version': VERSION, 'license': 'lgpl 3.0 or later'},
+    }}).encode()
+    archive = _task44_zip(base_setup, {'package.json': _task44_manifest(dependencies={name: VERSION}),
+                                      'package-lock.json': lock})
+    harness, run = _scan_zip_into_assessment(base_setup, archive, index=4404)
+    component, = (item for item in run.components if item.name == name)
+    assert not any(item.producer.name == 'openguard.dependency-observations.lock' for item in run.evidence)
+    evidence = _assert_scanned_license(run, component, declared, f'package-lock.json:/packages/node_modules~1{name}/license', lock)
+    result = create(harness)
+    subject = next(row['subject'] for row in result['resources'] if row['subject']['resource_id'] == component.id)
+    _assert_v4_declaration(get(harness, result), subject, declared, evidence.id, lock)
+    final = get(harness, upload(harness, result, subject, MIT))
+    advice = [item for item in final['advice'] if item['subject'] == subject]
+    assert {item['usage'] for item in advice} == USES
+    assert all(item['state'] == 'COUNTER_EVIDENCE' and 'SPDX_TEXT_CONFLICT' in item['reasons'] for item in advice)
+
+
+def test_task44_npm_v1_zip_keeps_existing_javascript_partial(base_setup):
+    name = 'task44-npm-v1'
+    lock = json.dumps({'lockfileVersion': 1, 'dependencies': {name: {'version': VERSION}}}).encode()
+    archive = _task44_zip(base_setup, {'package.json': _task44_manifest(dependencies={'task44-declared': VERSION}),
+                                      'package-lock.json': lock})
+    harness, run = _scan_zip_into_assessment(base_setup, archive, index=4405)
+    assert run.status.value == 'partial'
+    assert any(item.code == 'javascript_dependency_scan_partial' for item in run.errors)
+    assert any(item.name == 'task44-declared' for item in run.components)
+    component, = (item for item in run.components if item.name == name)
+    assert component.version == VERSION
+    evidence, = (item for item in run.evidence if item.id in component.evidence_ids
+                 and item.producer.name == 'openguard.dependency-observations.lock')
+    assert evidence.locator == f'package-lock.json:/dependencies/{name}'
+    assert evidence.content_hash.value == sha(lock)
+    result = create(harness)
+    subject = next(row['subject'] for row in result['resources'] if row['subject']['resource_id'] == component.id)
+    view = get(harness, upload(harness, result, subject, MIT))
+    material, = view['materials']
+    assert (material['role'], material['role_state']) == ('dependency', 'inferred')
+    assert material['role_basis_evidence_ids'] == [evidence.id]
+
+
+def test_task44_zip_observation_budget_preserves_notice_read(notice_env):
+    from app.ingestion import ScanReadLimits, ZipIngestionService
+    from app.ingestion.notice_ingestion import complete_zip_ingestion
+    from app.pipeline.local_zip import _consume_dependencies
+    from app.scanners.dependency_observations import MAX_BYTES
+    from test_a4_local_zip_pipeline import NOW
+    from test_p1_notice_lifecycle_ingestion import archive, lifecycle
+
+    notice = b'TEST_ONLY retained NOTICE\n' + b'x' * 4096
+    files = {'package.json': _task44_manifest(), 'NOTICE': notice}
+    for name in ('first', 'second'):
+        lock = _task44_uv(name, VERSION) + b'#'
+        files[f'{name}/uv.lock'] = lock.ljust(MAX_BYTES - 256, b'x')
+    zip_path, run = archive(notice_env, files, index=4406)
+    limit = 4 * 1024 * 1024
+    proof = complete_zip_ingestion(ZipIngestionService(notice_env.workspace),
+        archive_path=zip_path, upload_root=notice_env.uploads, scan_id=run.id,
+        expected_input_digest=run.provenance.input_digest.value,
+        dependency_consumer=lambda session: _consume_dependencies(session, lambda: NOW),
+        notice_consumer=lifecycle(notice_env).collect,
+        read_limits=ScanReadLimits(single_file_max_bytes=limit, total_max_bytes=limit))
+    envelope = proof.result.consumer_result
+    mapping, = envelope.dependencies.dependency_observations
+    component, = mapping.components
+    assert component.name == 'first'
+    observed, = envelope.collection.observations
+    assert observed.locator == 'NOTICE' and observed.content.text.encode() == notice
+    assert envelope.collection.coverage.state == 'completed'
+    assert not list(notice_env.workspace.iterdir())
+
+
+def test_task44_offline_fixed_git_snapshot_observes_lock_and_v4_role(base_setup, monkeypatch):
+    import subprocess
+
+    from app.domain.models import ScanRun
+    from app.ingestion import git_stream
+    from app.pipeline.public_git import build_public_git_dependency_plan
+    from test_a4_local_zip_pipeline import NOW
+
+    root = base_setup[-1]
+    repo = root / 'git-fixture'
+    repo.mkdir(mode=0o700)
+    git_env = {'PATH': '/usr/bin:/bin', 'HOME': str(root), 'LC_ALL': 'C', 'GIT_CONFIG_NOSYSTEM': '1',
+               'GIT_CONFIG_GLOBAL': '/dev/null', 'GIT_ALLOW_PROTOCOL': 'file', 'GIT_TERMINAL_PROMPT': '0'}
+
+    def git(*args):
+        return subprocess.run(
+            ['/usr/bin/git', '-c', 'core.hooksPath=/dev/null', '-c', 'user.name=Offline Fixture',
+             '-c', 'user.email=fixture@example.invalid', '-C', str(repo), *args],
+            env=git_env, check=True, capture_output=True, timeout=10,
+        ).stdout
+
+    name = 'task44-git-lock'
+    raw = _task44_uv(name, VERSION)
+    git('init', '--quiet')
+    (repo / 'package.json').write_bytes(_task44_manifest())
+    (repo / 'uv.lock').write_bytes(raw)
+    git('add', 'package.json', 'uv.lock')
+    git('commit', '--quiet', '-m', 'TEST_ONLY fixed Git source')
+    revision = git('rev-parse', 'HEAD').decode().strip()
+    bundle = root / 'task44-test-only.bundle'
+    git('bundle', 'create', str(bundle), 'HEAD')
+    bundle_bytes = bundle.read_bytes()
+    bundle.chmod(0o444)
+
+    source = 'https://github.com/example/task44-test-only'
+    snapshot = git_stream.FixedGitSnapshot(
+        bundle_path=bundle, source_url=source, revision=revision, bundle_sha256=sha(bundle_bytes),
+        bundle_size=len(bundle_bytes), captured_at='2026-11-22T00:00:00+00:00',
+        capture_receipt_sha256=sha(b'TEST_ONLY fixed snapshot provenance'),
+    )
+    monkeypatch.setattr(git_stream, 'TrustedEgressProxy', lambda *args, **kwargs: pytest.fail('Git egress attempted'))
+    workspace = root / 'git-workspaces'
+    workspace.mkdir(mode=0o700)
+    plan = build_public_git_dependency_plan(source, workspace, clock=lambda: NOW,
+        ingestion_factory=lambda directory: git_stream.GitIngestionService(directory, snapshot=snapshot))
+    queued = _queued(bundle, index=4407, source_type='git', source=source).model_dump(mode='json')
+    queued['provenance']['input_digest']['value'] = sha(source.encode())
+    registry, scanned = _run(root, bundle, ScanRun.model_validate(queued), plan=plan)
+    with closing(registry):
+        run = registry.get(scanned.run.id).run
+    assert run.status.value == 'completed' and run.project.revision == revision
+    assert any(item.locator == 'source-snapshot/git' for item in run.evidence)
+    assert not list(workspace.iterdir())
+    component, = (item for item in run.components if (item.name, item.version) == (name, VERSION))
+    evidence, = (item for item in run.evidence if item.id in component.evidence_ids
+                 and item.producer.name == 'openguard.dependency-observations.lock')
+    assert evidence.locator == 'uv.lock:/package/0'
+    assert evidence.content_hash.algorithm == 'sha256' and evidence.content_hash.value == sha(raw)
+    harness = _bind_scanned_run(base_setup, run)
+    result = create(harness)
+    subject = next(row['subject'] for row in result['resources'] if row['subject']['resource_id'] == component.id)
+    material, = get(harness, upload(harness, result, subject, MIT))['materials']
+    assert (material['role'], material['role_state']) == ('dependency', 'inferred')
+    assert material['role_basis_evidence_ids'] == [evidence.id]
 
 
 @pytest.mark.parametrize('mode', ('missing-pin', 'different-bytes', 'notice'))

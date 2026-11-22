@@ -8,6 +8,9 @@ import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
+from urllib.parse import unquote
+
+from packaging.version import InvalidVersion, Version
 
 from app.domain.models import (
     Component,
@@ -37,6 +40,7 @@ from app.scanners import (
     parse_javascript_manifests,
     parse_python_manifests,
 )
+from app.scanners.dependency_observation_mapper import ObservationMapping
 
 
 READ_LIMITS = ScanReadLimits(single_file_max_bytes=4 * 1024 * 1024, total_max_bytes=16 * 1024 * 1024)
@@ -54,6 +58,7 @@ class DependencyConsumerResult:
     lanes: tuple[LaneResult, LaneResult]
     manifest_licenses: tuple[ManifestLicenseBinding, ...] = ()
     ai_scan: AIAssetScan | None = None
+    dependency_observations: tuple[ObservationMapping, ...] = ()
 
 
 @dataclass
@@ -142,6 +147,61 @@ def _producer_key(producer: ProducerRef) -> str:
     return json.dumps(producer.model_dump(mode="json"), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
+def _lock_version_conflicts(components: list[Component], evidence: list[Evidence]) -> list[ScanError]:
+    """Compare unambiguous exact versions within each manifest/lock directory."""
+    by_id = {item.id: item for item in evidence}
+    declared: dict[tuple[str, str, str], dict[str | Version, set[str]]] = {}
+    locked: dict[tuple[str, str, str], dict[str | Version, set[str]]] = {}
+    for component in components:
+        if component.version is None or component.ecosystem == "unknown":
+            continue
+        version: str | Version = component.version
+        if component.ecosystem == "pypi":
+            try:
+                version = Version(version)
+            except InvalidVersion:
+                continue
+        for evidence_id in component.evidence_ids:
+            item = by_id[evidence_id]
+            if item.content_hash is None:
+                continue
+            path, _, locator = item.locator.partition(":")
+            directory, _, filename = path.rpartition("/")
+            producer = item.producer.name
+            if producer == "openguard.dependency-observations.lock":
+                # npm v1 nested instances are not a direct declaration's lock entry.
+                if component.ecosystem == "npm" and locator.count("/") != 2:
+                    continue
+                group = locked
+            elif producer == "openguard-python-manifest-parser" and component.ecosystem == "pypi":
+                directory = unquote(directory)
+                group = declared
+            elif producer == "openguard.javascript-manifest" and filename == "package.json" and component.ecosystem == "npm":
+                # A component version enriched from an older lock is not an exact selector.
+                if item.excerpt not in {json.dumps(version), json.dumps(f"v{version}")}:
+                    continue
+                group = declared
+            else:
+                continue
+            versions = group.setdefault((directory, component.ecosystem, component.name), {})
+            versions.setdefault(version, set()).add(evidence_id)
+
+    errors = []
+    for identity in sorted(declared.keys() & locked.keys()):
+        declarations, locks = declared[identity], locked[identity]
+        if len(declarations) != 1 or len(locks) != 1 or declarations.keys() == locks.keys():
+            continue
+        evidence_ids = sorted(next(iter(declarations.values())) | next(iter(locks.values())))
+        errors.append(ScanError(
+            code="lock_version_conflict",
+            stage=ScanStage.SCAN,
+            message="Declared and locked dependency versions conflict.",
+            recoverable=True,
+            evidence_ids=evidence_ids,
+        ))
+    return errors
+
+
 def _python_partial_messages(mapping: PythonP0MappingResult) -> list[str]:
     """Expose validated parser reasons without declaration text or unsafe paths."""
     messages: list[str] = []
@@ -203,11 +263,16 @@ def build_dependency_plan(
     def scan(run: ScanRun) -> ScanRun:
         if state.consumer_result is None:
             fail("dependency_scan_failed", "Dependency scanning failed.")
-        mappings = [lane.mapping for lane in state.consumer_result.lanes if lane.mapping is not None]
+        lanes = state.consumer_result.lanes
+        observations = state.consumer_result.dependency_observations
+        mappings = [*(lane.mapping for lane in lanes if lane.mapping is not None), *observations]
         if not mappings:
             fail("dependency_scan_failed", "Dependency scanning failed.")
         components = _deduplicate([item for mapping in mappings for item in mapping.components])
         evidence = _deduplicate([item for mapping in mappings for item in mapping.evidence])
+        errors: list[ScanError] = list(state.external.errors) if state.external else []
+        if observations:
+            errors.extend(_lock_version_conflicts(components, evidence))
         ai_scan = state.consumer_result.ai_scan
         assets = list(ai_scan.assets) if ai_scan else []
         if ai_scan:
@@ -220,10 +285,9 @@ def build_dependency_plan(
         if not (components or assets) or not evidence:
             fail("dependency_manifest_not_found", "No dependency manifest was found.")
 
-        errors: list[ScanError] = list(state.external.errors) if state.external else []
         if ai_scan:
             errors.extend(ai_scan.errors)
-        for lane in state.consumer_result.lanes:
+        for lane in lanes:
             mapping = lane.mapping
             title = "Python" if lane.name == "python" else "JavaScript"
             if mapping is None:
@@ -271,7 +335,23 @@ def build_dependency_plan(
         return replace_run(run, components=components, ai_assets=assets, evidence=evidence, errors=errors, summary=summary, provenance=provenance)
 
     def normalize(run: ScanRun) -> ScanRun:
-        normalized = apply_manifest_licenses(run, state.consumer_result.manifest_licenses if state.consumer_result else ())
+        bindings = state.consumer_result.manifest_licenses if state.consumer_result else ()
+        normalized = apply_manifest_licenses(run, bindings)
+        # The v4 declaration requires the saved license's evidence to be linked
+        # from the component too. Root package declarations already link it.
+        lock_declarations = {
+            binding.component_id: binding.evidence.id for binding in bindings
+            if binding.evidence.producer.name == "openguard.npm-lock-license"
+            and binding.license.normalized_ids == [binding.license.expression]
+            and binding.license.expression.endswith("-or-later")
+        }
+        if lock_declarations:
+            components = [
+                item.model_copy(update={"evidence_ids": sorted(set(item.evidence_ids) | {lock_declarations[item.id]})})
+                if item.id in lock_declarations else item
+                for item in normalized.components
+            ]
+            normalized = replace_run(normalized, components=components)
         if state.external is not None:
             normalized = apply_external_licenses(normalized, state.external)
         return apply_ai_asset_licenses(normalized)

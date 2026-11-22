@@ -16,6 +16,7 @@ from app.domain.models import Evidence, LicenseExpression, VerificationStatus
 _NAMESPACE = uuid.UUID("c6bcaa52-7231-5a29-a4c0-3db3ec3f2d8d")
 _ALIASES = {
     "agpl 3.0": "AGPL-3.0-only", "agpl-3.0-only": "AGPL-3.0-only",
+    "agpl 3.0 or later": "AGPL-3.0-or-later", "agpl-3.0-or-later": "AGPL-3.0-or-later",
     "apache 2.0": "Apache-2.0", "apache-2.0": "Apache-2.0", "apache license 2.0": "Apache-2.0",
     "bsd 2 clause": "BSD-2-Clause", "bsd-2-clause": "BSD-2-Clause",
     "bsd 3 clause": "BSD-3-Clause", "bsd-3-clause": "BSD-3-Clause",
@@ -25,13 +26,19 @@ _ALIASES = {
     "cddl 1.0": "CDDL-1.0", "cddl-1.0": "CDDL-1.0",
     "epl 2.0": "EPL-2.0", "epl-2.0": "EPL-2.0",
     "gpl 2.0": "GPL-2.0-only", "gpl-2.0-only": "GPL-2.0-only",
+    "gpl 2.0 or later": "GPL-2.0-or-later", "gpl-2.0-or-later": "GPL-2.0-or-later",
     "gpl 3.0": "GPL-3.0-only", "gpl-3.0-only": "GPL-3.0-only",
+    "gpl 3.0 or later": "GPL-3.0-or-later", "gpl-3.0-or-later": "GPL-3.0-or-later",
     "lgpl 2.1": "LGPL-2.1-only", "lgpl-2.1-only": "LGPL-2.1-only",
+    "lgpl 2.1 or later": "LGPL-2.1-or-later", "lgpl-2.1-or-later": "LGPL-2.1-or-later",
     "lgpl 3.0": "LGPL-3.0-only", "lgpl-3.0-only": "LGPL-3.0-only",
+    "lgpl 3.0 or later": "LGPL-3.0-or-later", "lgpl-3.0-or-later": "LGPL-3.0-or-later",
     "isc": "ISC", "mit": "MIT", "mpl 2.0": "MPL-2.0", "mpl-2.0": "MPL-2.0",
     "unlicense": "Unlicense",
 }
 _TOKEN = re.compile(r"\s+")
+# The OR inside an explicit "or later" alias is part of the license name.
+_OPERATOR = re.compile(r"\s+(AND|OR(?!\s+later(?:\s|$)))\s+", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -51,7 +58,7 @@ def _canonical_token(value: str) -> str:
 def parse_license_expression(text: str) -> ParsedLicenseExpression:
     """Parse aliases and flat AND/OR expressions without guessing unsupported syntax."""
 
-    parts = re.split(r"\s+(AND|OR)\s+", text.strip(), flags=re.IGNORECASE)
+    parts = _OPERATOR.split(text.strip())
     normalized: list[str] = []
     expression: list[str] = []
     operators: list[str] = []
