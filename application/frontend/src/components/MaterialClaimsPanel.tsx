@@ -7,8 +7,14 @@ import { readMaterialClaims, type MaterialClaims, type ClaimState } from '../ser
 
 const labels:Record<ClaimState,string>={SUPPORT:'有条件文本支持',RESTRICTION:'存在尚未满足的条件',UNKNOWN:'依据不足，保持未知',COUNTER_EVIDENCE:'发现相冲突的证据',NOT_COVERED:'本次用途或资源未覆盖'};
 const clauseLabels:Record<string,string>={license_identifier:'许可证标识',copyright:'版权声明',permission:'用途权限段',condition:'条件与义务',warranty:'免责范围',notice:'NOTICE声明'};
-const parseLabels={MATCHED_MIT:'完整MIT文本匹配',NOTICE_OBSERVED:'声明已读取，不能单独授予权利',UNSUPPORTED:'文本或许可证组合尚不支持',FAILED:'解析失败'};
-const reasons:Record<string,string>={USE_NOT_SELECTED:'本次没有选择此用途。',RESOURCE_KIND_NOT_COVERED:'首期规则不覆盖此类资源。',USAGE_UNDECLARED:'尚未明确此用途。',SPDX_TEXT_CONFLICT:'许可证标识与绑定文本冲突。',BOUND_LICENSE_BYTES_CONFLICT:'同一资源绑定了不同许可证材料。',NOTICE_REQUIRES_REVIEW:'附加NOTICE需要进一步解释。',MULTI_LICENSE_NOT_SUPPORTED:'多许可证组合需要单独审核，不能任选一个许可。',MISSING_LICENSE_MATERIAL:'缺少完整许可证材料。',UNSUPPORTED_OR_FAILED_TEXT:'材料未通过当前完整文本规则。',SOURCE_OR_EVIDENCE_BINDING_NOT_ESTABLISHED:'精确版本来源或证据绑定尚不充分。',USER_REPORTS_DELIVERY_OBLIGATION_UNFULFILLED:'用户声明交付义务尚未履行；具体义务对象与范围仍需明确。',SPDX_NORMALIZATION_CONFLICT:'MIT表达式与归一化标识冲突。',COUNTER_EVIDENCE_SOURCE_UNKNOWN:'该反证的部分来源尚不足，引用不作补造。',PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT:'完整文本与固定发行材料相符，仅为当前资源的有条件建议。'};
+const parseLabels={MATCHED_MIT:'完整 MIT 文本匹配',MATCHED_APACHE_2_0:'完整 Apache-2.0 文本匹配',NOTICE_OBSERVED:'声明已读取，不能单独授予权利',UNSUPPORTED:'文本或许可证组合尚不支持',FAILED:'解析失败'};
+const reasons:Record<string,string>={USE_NOT_SELECTED:'本次没有选择此用途。',RESOURCE_KIND_NOT_COVERED:'首期规则不覆盖此类资源。',USAGE_UNDECLARED:'尚未明确此用途。',SPDX_TEXT_CONFLICT:'许可证标识与绑定文本冲突。',BOUND_LICENSE_BYTES_CONFLICT:'同一资源绑定了不同许可证材料。',BOUND_NOTICE_BYTES_CONFLICT:'上传的 NOTICE 与固定发行包中的 NOTICE 字节不一致。',NOTICE_REQUIRES_REVIEW:'附加 NOTICE 需要进一步解释。',NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW:'NOTICE 字节与固定发行包一致，仍需人工核对 Apache-2.0 §4(d) 的声明保留义务。',MULTI_LICENSE_NOT_SUPPORTED:'多许可证组合需要单独审核，不能任选一个许可。',MISSING_LICENSE_MATERIAL:'缺少完整许可证材料。',UNSUPPORTED_OR_FAILED_TEXT:'材料未通过当前完整文本规则。',SOURCE_OR_EVIDENCE_BINDING_NOT_ESTABLISHED:'精确版本来源或证据绑定尚不充分。',USER_REPORTS_DELIVERY_OBLIGATION_UNFULFILLED:'用户声明交付义务尚未履行；具体义务对象与范围仍需明确。',SPDX_NORMALIZATION_CONFLICT:'许可表达式与归一化标识冲突。',COUNTER_EVIDENCE_SOURCE_UNKNOWN:'该反证的部分来源尚不足，引用不作补造。',PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT:'完整 MIT 文本与固定发行材料相符，仅为当前资源的有条件建议。',PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT:'完整 Apache-2.0 文本与固定发行材料相符，仅为当前资源的有条件建议。'};
+const roleConflictLabels:Record<string,string>={
+ dependency_declaration_conflict:'依赖声明不一致',
+ lock_version_conflict:'锁文件版本冲突',
+ lock_root_mismatch:'锁文件与根清单不一致',
+ contradictory_role_evidence:'角色证据相互矛盾',
+};
 
 export function MaterialClaimsPanel({assessment,result,resourceName,declarationSnapshot}:{assessment:Assessment;result:Result;declarationSnapshot:DeclarationSnapshot|null|undefined;resourceName:(id:string)=>string}){
  const key=JSON.stringify([assessment.scan_id,assessment.id,assessment.version,result.result_id,result.result_sha256,result.binding,declarationSnapshot]);
@@ -42,7 +48,7 @@ export function MaterialClaimsPanel({assessment,result,resourceName,declarationS
  const old=previousState?.status==='ready'?previousState.previous:null;
  const currentError=error?.key===key?error.message:'';
  return <section className="p2-main-card" aria-label="材料与用途证据链" data-material-claims style={{overflowWrap:'anywhere'}}>
-  <div className="p2-step">材料与用途 · r{result.revision}</div><h2>材料与用途证据链</h2>
+  <div className="p2-step">材料与用途 · r{result.revision} · v4</div><h2>材料与用途证据链</h2>
   <p>商业使用、分发和内部修改分别判断；未提到的依赖和用途不会自动获得支持。条款匹配不代表许可适用性或实际履行已经签认。</p>
   {loading&&<p role="status">正在读取本版材料、解析状态和证据链…</p>}
   {currentError&&<p role="alert">{currentError} 已保存结果保持不变。</p>}
@@ -50,6 +56,15 @@ export function MaterialClaimsPanel({assessment,result,resourceName,declarationS
   {view&&<>
    <p>上传与绑定：本版保存 {view.materials.length} 份材料。解析状态及采用范围如下；未上传不等于已经解析成功。</p>
    {!view.materials.length&&<p>请通过“补充 LICENSE / NOTICE”面板上传材料并选择准确资源和证据。上传成功将保存新版本，本版不被覆盖。</p>}
+   {view.incremental_impact.mode==='INCREMENTAL_DERIVED'&&<details>
+    <summary>增量重研判 · r{view.incremental_impact.previous_revision} → r{view.revision}</summary>
+    <p>重算 {view.incremental_impact.affected_resource_ids.length} 个资源、{view.incremental_impact.recomputed_claim_ids.length} 条主张。保留 {view.incremental_impact.unchanged_resource_ids.length} 个资源、{view.incremental_impact.reused_claim_ids.length} 条主张，语义核对通过。</p>
+    {!!view.incremental_impact.changed_claims.length&&<ul>{view.incremental_impact.changed_claims.map(delta=><li key={delta.current_claim_id}>
+     <strong>{resourceName(delta.subject.resource_id)} · {usageFields[delta.usage]}：</strong>{labels[delta.previous_state]} → {labels[delta.current_state]}
+     <p>{delta.current_reasons.map(reason=>reasons[reason]??'该项依据仍需审核。').join(' ')}</p>
+     <p>触发材料：{delta.trigger_material_ids.join('、')||'无'} · 触发回答：{delta.trigger_answer_ids.join('、')||'无'}</p>
+    </li>)}</ul>}
+   </details>}
    {view.advice.map(a=>{
     const link=view.claims.find(c=>c.claim_id===a.claim_ids[0]);
     return <article className="p2-version-advice" key={`${a.subject.resource_id}:${a.usage}`}>
@@ -81,8 +96,9 @@ export function MaterialClaimsPanel({assessment,result,resourceName,declarationS
    {view.materials.map(m=><details className="p2-detail" key={m.material_id}>
     <summary>{m.filename} · {resourceName(m.subject.resource_id)} @ {m.subject.version} · {parseLabels[m.parse_state]}</summary>
     <p>已上传并绑定本版；{m.adoption_state==='CONDITIONAL_TEXT_BASIS'?'进入有条件文本建议':'仅保存为材料观察，未进入有条件支持'}。</p>
-    <p>声明标识：{m.declared_spdx}；文本识别：{m.text_license}。MIT正文没有数字版本；此处显示的版本是资源版本。</p>
+    <p>声明标识：{m.declared_spdx}；文本识别：{m.text_license}。{m.license_version===null?'上方为资源版本。':`许可证版本 ${m.license_version}，资源版本 ${m.subject.version??'未知'}。`}</p>
     <p>资源角色：{m.role==='root_package'?'项目根包':m.role==='dependency'?'依赖':'未知'}（{m.role_state==='observed'?'直接观察':m.role_state==='inferred'?'依据扫描信息推断':'缺少角色证据'}），不表示已经交付。</p>
+    {!!m.role_conflicts.length&&<p>角色证据冲突：{m.role_conflicts.map(code=>roleConflictLabels[code]??code).join('、')}</p>}
     <p>材料绑定Evidence：{m.evidence.map(e=>e.evidence_id).join('、')}；角色推断依据：{m.role_basis_evidence_ids.join('、')||'缺少可核对依据，保持未知'}。</p>
     <p>SHA256：<code>{m.source_sha256}</code> · {m.byte_count} 字节</p>
     {m.clauses.map(c=><div key={c.clause_id}>

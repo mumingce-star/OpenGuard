@@ -143,12 +143,19 @@ def test_task37_real_pipeline_api_capture(tmp_path,monkeypatch,case,expected):
         path=base+'/results/'+new['result_id']+'/material-claims'+version_query
         response,view=call('GET',path);assert response.status_code==200,view
         dump(out/'MATERIAL_CLAIMS.json',view)
-        assert view['schema_version']=='openguard-material-claims/3'
+        assert view['schema_version']=='openguard-material-claims/4'
         exact=[a for a in view['advice'] if a['subject']==row['subject']]
         assert len(exact)==3 and all(a['state']==expected for a in exact),exact
         assert counts(tmp_path)==before and database_state(tmp_path)==before_state
         response,saved=call('GET',base+'/results/'+old['result_id']+version_query);assert saved==old
         response,oldview=call('GET',base+'/results/'+old['result_id']+'/material-claims'+version_query);assert response.status_code==200 and oldview['materials']==[]
+        assert oldview['incremental_impact']['mode'] == 'INITIAL_RESULT'
+        impact = view['incremental_impact']
+        assert impact['previous_revision'] == 1 and impact['previous_view_id'] == oldview['view_id']
+        assert impact['affected_resource_ids'] == new['recomputed_resource_ids']
+        assert impact['unchanged_resource_ids'] == new['reused_resource_ids']
+        assert impact['added_material_ids'] == new['material_ids']
+        assert impact['unchanged_claims_verified'] is True
         dump(out/'MATERIAL_CLAIMS_BEFORE.json',oldview)
         response,error=call('GET',base+'/results/p2res_missing/material-claims'+version_query);assert response.status_code in (404,422)
         nextbody={**body,'parent_result_id':new['result_id'],'expected_revision':new['revision'],'idempotency_key':'task37-bad-resource','subject':{'resource_id':'cmp_'+str(uuid4()),'version':'7.0.0'}}
@@ -175,10 +182,21 @@ def test_task37_real_pipeline_api_capture(tmp_path,monkeypatch,case,expected):
             assert counts(tmp_path)==after_foreign and database_state(tmp_path)==foreign_state
             nextbody.update(filename='LICENCE',idempotency_key='task37-other-license')
             response,third=call('POST',base+'/materials',nextbody);assert response.status_code==201,third
+            third_state = database_state(tmp_path)
             response,conflict=call('GET',base+'/results/'+third['result']['result_id']+'/material-claims'+version_query)
             assert response.status_code==200 and all(a['state']=='COUNTER_EVIDENCE' for a in conflict['advice'] if a['subject']==row['subject'])
+            impact = conflict['incremental_impact']
+            assert conflict['revision'] == 3 and impact['previous_revision'] == 2
+            assert impact['previous_result_id'] == new['result_id'] and impact['previous_view_id'] == view['view_id']
+            assert impact['added_material_ids'] == [third['material']['material_id']]
+            assert len(impact['changed_claims']) == 3
+            assert all(delta['previous_state'] == 'SUPPORT' and delta['current_state'] == 'COUNTER_EVIDENCE'
+                       and delta['trigger_material_ids'] == impact['added_material_ids'] for delta in impact['changed_claims'])
             dump(out/'CONFLICT_RESULT.json',third['result']);dump(out/'CONFLICT_CLAIMS.json',conflict)
             response,still=call('GET',path);assert still==view
+            response,still_old=call('GET',base+'/results/'+old['result_id']+'/material-claims'+version_query)
+            assert response.status_code == 200 and still_old == oldview
+            assert database_state(tmp_path) == third_state
         with tarfile.open(fileobj=io.BytesIO((FIXTURE/'archive.tgz').read_bytes()),mode='r:gz') as t:
             members=[{'path':m.name,'bytes':m.size,'sha256':SHA(t.extractfile(m).read())} for m in t.getmembers()]
         assert len(members)==4

@@ -19,7 +19,7 @@ from typing import Literal
 from urllib.parse import quote, urlsplit
 
 from pydantic import Field, ValidationError
-from app.p2b.material_claims import PERMISSION, CONDITION, WARRANTY, complete_mit
+from app.p2b.material_claims import PERMISSION, CONDITION, WARRANTY, complete_apache2, complete_mit
 
 from .contract import Binding, DTO, ID, SHA, Subject, Use, P2Error, digest, strict_json
 
@@ -163,7 +163,7 @@ def _package_files_expanded(expanded: bytes, license_member: str):
     return found
 
 
-# Strict source-member inspection is opt-in for material-claims/3 only.
+# Strict source-member inspection is opt-in for material claims.
 # Normal legacy advice semantics stay unchanged; corrupt compression fails the source gate.
 _NOTICE_LIMIT = 65536
 _NOTICE_COUNT = 20
@@ -269,7 +269,7 @@ def _notice_inventory_expanded(expanded: bytes):
     return result
 
 
-def load_sources(root, expected_sha, data_scope, *, inspect_notices=False):
+def load_sources(root, expected_sha, data_scope, *, inspect_notices=False, allowed_licenses: tuple[str, ...] = ('MIT',)):
     if not root and not expected_sha:
         return {}, None
     try:
@@ -300,7 +300,10 @@ def load_sources(root, expected_sha, data_scope, *, inspect_notices=False):
             if (_sha(metadata_raw), _sha(tar_raw), _sha(license_raw)) != (item.metadata_sha256, item.tarball_sha256, item.license_sha256):
                 raise ValueError('source_file_hash')
             metadata = strict_json(metadata_raw)
-            if not isinstance(metadata, dict) or (metadata.get('name'), metadata.get('version'), metadata.get('license')) != (item.package, item.version, 'MIT'):
+            if not isinstance(metadata, dict) or (metadata.get('name'), metadata.get('version')) != identity:
+                raise ValueError('metadata_identity')
+            declared_license = metadata.get('license')
+            if declared_license not in allowed_licenses:
                 raise ValueError('metadata_identity')
             dist = metadata.get('dist')
             if not isinstance(dist, dict) or dist.get('tarball') != item.tarball_url:
@@ -317,9 +320,17 @@ def load_sources(root, expected_sha, data_scope, *, inspect_notices=False):
             expanded = _bounded_gzip_bytes(tar_raw)
             members = _package_files_expanded(expanded, item.member)
             package = strict_json(members['package/package.json'])
-            if not isinstance(package, dict) or (package.get('name'), package.get('version'), package.get('license')) != (item.package, item.version, 'MIT') or members[item.member] != license_raw:
+            if (not isinstance(package, dict)
+                    or (package.get('name'), package.get('version'), package.get('license')) != (*identity, declared_license)
+                    or members[item.member] != license_raw):
                 raise ValueError('package_identity')
-            sources[identity] = {'record': item, 'bytes': license_raw, 'complete_mit': complete_mit(license_raw)}
+            sources[identity] = {
+                'record': item,
+                'bytes': license_raw,
+                'declared_license': declared_license,
+                'complete_mit': declared_license == 'MIT' and complete_mit(license_raw),
+                'complete_apache2': declared_license == 'Apache-2.0' and complete_apache2(license_raw),
+            }
             if inspect_notices:
                 sources[identity]['notice_inventory'] = _notice_inventory_expanded(expanded)
         return sources, expected_sha

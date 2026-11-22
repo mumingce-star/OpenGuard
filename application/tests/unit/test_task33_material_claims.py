@@ -11,7 +11,7 @@ import pytest
 from test_p2_contract import setup as base_setup, create, material_body, variant, seed
 from test_p2_preliminary import setup, admit, MIT
 from app.p2.contract import P2Error
-from app.p2.material_claims import project
+from app.p2.material_claims import project_core as project
 from app.p2b.material_claims import parse_claim_material
 
 FIXTURE = Path(__file__).resolve().parents[1] / 'fixtures/task33/is-number-7.0.0'
@@ -463,8 +463,8 @@ def test_task34_role_requires_matching_scan_origin_not_upload_selection(setup):
 def test_task35_declaration_complete_identity_and_claim_closure(setup):
     old, result, _, _, _ = admit(setup)
     view = get(setup, result)
-    assert view['schema_version'] == 'openguard-material-claims/3'
-    assert view['rule_version'] == 'mit-bound-claim/3'
+    assert view['schema_version'] == 'openguard-material-claims/4'
+    assert view['rule_version'] == 'mit-apache2-bound-claim/4'
     facts = declaration_facts(setup, result)
     assert len(view['declaration_observations']) == len(result['resources'])
     for d in view['declaration_observations']:

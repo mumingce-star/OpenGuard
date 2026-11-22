@@ -1,12 +1,12 @@
-"""Bounded text observations for the first material/claim slice.
+"""Bounded MIT, Apache-2.0 and NOTICE text observations.
 
-No network, model, storage, source trust or legal applicability decision here.
-The complete MIT matcher is relocated verbatim from p2.preliminary (legacy API
-re-exports it). Permission/condition/warranty text is the existing local rule,
-not a newly downloaded SPDX canonical corpus.
+The legacy preliminary route re-exports the MIT matcher. Apache-2.0 uses
+the canonical repository LICENSE, with quotes mapped to uploaded bytes.
 """
 from __future__ import annotations
+from functools import lru_cache
 import hashlib
+from pathlib import Path
 import re
 
 PERMISSION = ('Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:')
@@ -28,6 +28,38 @@ def complete_mit(raw: bytes) -> bool:
     return [' '.join(p.split()) for p in paragraphs[2:]] == [PERMISSION, CONDITION, WARRANTY]
 
 
+_APACHE2_LICENSE = Path(__file__).resolve().parents[4] / 'LICENSE'
+_APACHE2_PROFILE_SHA256 = '283ea6cc2997a1a70da0049e09adf9317bb60ca1b51279b65196b83a69e1996b'
+_APACHE2_TERMS = 'TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION'
+_APACHE2_ADDITIONAL_TERMS = 'You may add Your own copyright statement to Your modifications and'
+_APACHE2_ANCHORS = re.compile(
+    rf'^[ \t]*({_APACHE2_TERMS}|[23478]\.|\([a-d]\)|{_APACHE2_ADDITIONAL_TERMS})(?=[ \t]|\r?$)',
+    re.MULTILINE,
+)
+
+
+def _normalized_apache2(raw: bytes) -> str:
+    return raw.decode('utf-8', errors='strict').replace('\r\n', '\n').strip()
+
+
+@lru_cache(maxsize=1)
+def _canonical_apache2() -> str:
+    canonical = _normalized_apache2(_APACHE2_LICENSE.read_bytes())
+    if hashlib.sha256(canonical.encode('utf-8')).hexdigest() != _APACHE2_PROFILE_SHA256:
+        raise ValueError('canonical_apache2_profile_mismatch')
+    return canonical
+
+
+def complete_apache2(raw: bytes) -> bool:
+    """Match the full canonical license including the appendix."""
+    if not isinstance(raw, bytes) or not 0 < len(raw) <= 65536:
+        return False
+    try:
+        text = _normalized_apache2(raw)
+        return '\x00' not in text and text == _canonical_apache2()
+    except (OSError, ValueError):
+        return False
+
 
 def _span(raw: bytes, text: str, start: int, end: int, kind: str) -> dict:
     begin = len(text[:start].encode('utf-8'))
@@ -39,10 +71,27 @@ def _span(raw: bytes, text: str, start: int, end: int, kind: str) -> dict:
             'quote': quote, 'quote_sha256': hashlib.sha256(raw[begin:finish]).hexdigest()}
 
 
+def _apache2_spans(raw: bytes, text: str) -> list[dict]:
+    anchors = {match[1]: match.start() for match in _APACHE2_ANCHORS.finditer(text)}
+    identifier_start = len(text) - len(text.lstrip())
+    ranges = [
+        ('license_identifier', identifier_start, anchors[_APACHE2_TERMS]),
+        ('permission', anchors['2.'], anchors['3.']),
+        ('permission', anchors['3.'], anchors['4.']),
+        ('condition', anchors['(a)'], anchors['(b)']),
+        ('condition', anchors['(b)'], anchors['(c)']),
+        ('condition', anchors['(c)'], anchors['(d)']),
+        ('condition', anchors['(d)'], anchors[_APACHE2_ADDITIONAL_TERMS]),
+        ('warranty', anchors['7.'], anchors['8.']),
+    ]
+    return [_span(raw, text, begin, len(text[:end].rstrip()), kind) for kind, begin, end in ranges]
+
+
 def parse_claim_material(raw: bytes, filename: str) -> dict:
-    """Text profile only. Even MATCHED_MIT never establishes source/usage trust."""
+    """Report the matched text profile and exact quote spans."""
     base = {'parse_state': 'FAILED', 'text_license': 'UNKNOWN',
-            'license_version': None, 'reason': 'INVALID_INPUT', 'spans': []}
+            'license_version': None, 'version_scope': 'RESOURCE_VERSION_NOT_LICENSE_VERSION',
+            'reason': 'INVALID_INPUT', 'spans': []}
     if not isinstance(raw, bytes) or not 0 < len(raw) <= 65536:
         return {**base, 'reason': 'MATERIAL_SIZE_LIMIT'}
     if not isinstance(filename, str) or not re.fullmatch(r'(?:LICENSE|LICENCE|NOTICE)(?:\.(?:txt|md|rst))?', filename, re.I):
@@ -57,6 +106,10 @@ def parse_claim_material(raw: bytes, filename: str) -> dict:
         return {**base, 'parse_state': 'NOTICE_OBSERVED', 'reason': 'NOTICE_NOT_A_GRANT',
                 'spans': [_span(raw, text, 0, len(text), 'notice')]}
     if not complete_mit(raw):
+        if complete_apache2(raw):
+            return {**base, 'parse_state': 'MATCHED_APACHE_2_0', 'text_license': 'Apache-2.0',
+                    'license_version': '2.0', 'version_scope': 'LICENSE_VERSION_AND_RESOURCE_VERSION',
+                    'reason': 'COMPLETE_CANONICAL_APACHE_2_0_PROFILE', 'spans': _apache2_spans(raw, text)}
         return {**base, 'parse_state': 'UNSUPPORTED', 'reason': 'FULL_TEXT_PROFILE_NOT_MATCHED'}
     groups = []
     pos, begin = 0, None

@@ -588,6 +588,12 @@ def test_published_schema_matches_product_dtos_and_exact_routes(setup):
                 ref = method['responses']['409']['content']['application/json']['schema']['$ref']
                 assert openapi['components']['schemas'][ref.rsplit('/', 1)[-1]]['title'] == 'ErrorEnvelope'
                 assert 'p2' in ref  # FastAPI qualifies collision with the original P0 ErrorEnvelope
+    material_claims = paths[prefix + '/results/{result_id}/material-claims']['get']
+    response = material_claims['responses']['200']['content']['application/json']['schema']
+    schema = openapi['components']['schemas'][response['$ref'].rsplit('/', 1)[-1]]
+    assert schema['properties']['schema_version']['const'] == 'openguard-material-claims/4'
+    assert schema['properties']['rule_version']['const'] == 'mit-apache2-bound-claim/4'
+    assert 'incremental_impact' in schema['required']
 
 
 def test_missing_source_hash_is_not_replaced_by_evidence_record_hash(setup):

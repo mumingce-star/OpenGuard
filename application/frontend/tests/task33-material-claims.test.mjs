@@ -10,14 +10,15 @@ const sha=text=>createHash('sha256').update(text,'utf8').digest('hex');
 const h='a'.repeat(64), b='b'.repeat(64);
 const subject={resource_id:'cmp_1',version:'7.0.0'};
 const binding={scan_id:'scn_1',assessment_id:'asm_1',assessment_version:1,registry_revision:3,project_revision:'fixed',facts_hash:h,usage_hash:b,rule_version:'r1',assessment_sha256:h};
-const result=()=>({result_id:'p2res_1',result_sha256:h,revision:2,previous_result_id:'p2res_old',binding,data_scope:'TEST_ONLY',material_ids:['p2mat_1'],usage:{commercial:true,distributed:true,modified:false},resources:[{subject,resource_kind:'component',material_ids:['p2mat_1'],evidence_ids:['evd_1'],evidence_source_hashes:{evd_1:h}}]});
+const result=()=>({result_id:'p2res_1',result_sha256:h,revision:2,previous_result_id:'p2res_old',binding,data_scope:'TEST_ONLY',material_ids:['p2mat_1'],answer_ids:[],recomputed_resource_ids:[subject.resource_id],reused_resource_ids:[],usage:{commercial:true,distributed:true,modified:false},resources:[{subject,resource_kind:'component',material_ids:['p2mat_1'],answer_ids:[],evidence_ids:['evd_1'],evidence_source_hashes:{evd_1:h}}]});
 const evidence=[{evidence_id:'evd_1',source_sha256:h}];
-function fixture(){
+function legacyV3Fixture(){
  const clauses=['license_identifier','copyright','permission','condition','warranty'].map((kind,i)=>({clause_id:'p4clause_'+i,material_id:'p2mat_1',material_sha256:h,kind,byte_start:i,byte_end:i+1,line_start:1,line_end:1,quote:'x',quote_sha256:sha('x')}));
  const materials=[{material_id:'p2mat_1',subject,source_sha256:h,byte_count:5,filename:'LICENSE',parse_state:'MATCHED_MIT',parse_reason:'COMPLETE_EXISTING_MIT_PROFILE',binding_state:'BOUND_TO_SAVED_RESULT',adoption_state:'CONDITIONAL_TEXT_BASIS',declared_spdx:'MIT',text_license:'MIT',license_version:null,version_scope:'RESOURCE_VERSION_NOT_LICENSE_VERSION',role:'unknown',role_state:'unknown',role_basis_evidence_ids:[],source_binding:'PINNED_RELEASE_MATCH',source_profile_sha256:b,evidence,clauses}];
  const claims=['commercial','distributed','modified'].map((usage,i)=>({claim_id:'p4claim_'+i,usage,subject,material_ids:['p2mat_1'],evidence,clause_ids:clauses.map(c=>c.clause_id),conditions:i===2?[]:['preserve notice'],counter_evidence:[],state:i===2?'NOT_COVERED':'SUPPORT',formal_effect:'none'}));
  return {schema_version:'openguard-material-claims/3',rule_version:'mit-bound-claim/3',view_id:'p4view_1',result_id:'p2res_1',result_sha256:h,revision:2,previous_result_id:'p2res_old',binding,data_scope:'TEST_ONLY',source_status:'CHECKED',source_profile_sha256:b,materials,declaration_observations:[{subject,expression:'MIT',normalized_ids:['MIT'],declaration_evidence_ids:['evd_1'],evidence,evidence_status:'COMPLETE'}],source_observations:[{source_observation_id:'p4source_1',subject,source_profile_sha256:b,archive_sha256:h,notice_status:'ABSENT_COMPLETE',reason:'COMPLETE_SUPPORTED_ARCHIVE_NO_NOTICE',member_count:4,enumeration_complete:true,notices:[]}],claims,advice:claims.map(c=>({usage:c.usage,subject,saved_value:c.usage!=='modified',state:c.state,reasons:['TEXT_BASIS'],claim_ids:[c.claim_id],conditions:c.conditions,limitations:['not a legal determination']})),formal_effect:'none',applicability_review:'NOT_SIGNED',model_calls:0};
 }
+function fixture(){return v4Fixture(legacyV3Fixture(),result());}
 function anchor(){return {scan_id:binding.scan_id,project_revision:binding.project_revision,resources:[{
  resource_id:subject.resource_id,version:subject.version,resource_evidence_ids:['evd_1'],license_expression_id:'lic_1',
  expression:'MIT',normalized_ids:['MIT'],declaration_evidence_ids:['evd_1'],evidence:structuredClone(evidence)}]};}
@@ -152,14 +153,172 @@ for(const missing of ['absent','foreign','hashless'])test('unknown declaration '
 });
 test('missing independent report fails closed even when DTO internally agrees',async()=>{const {rt}=setup(),raw=rt.load('services/materialClaims.ts');await assert.rejects(raw.validateMaterialClaims(fixture(),result(),null));});
 for(const [key,value] of [['scan_id','scn_other'],['project_revision','changed']])test('independent anchor '+key+' bound to result',async()=>{const {s}=setup(),a=anchor();a[key]=value;await assert.rejects(s.validateMaterialClaims(fixture(),result(),a));});
-for(const version of [1,2])test('frozen decoder v'+version+' rejects a v3 response',async()=>{
- const source=fs.readFileSync(new URL('./fixtures/task35/materialClaims.v'+version+'.ts.txt',import.meta.url),'utf8');
+function frozenDecoder(version){
+ const directory=version===3?'task39':'task35';
+ const source=fs.readFileSync(new URL('./fixtures/'+directory+'/materialClaims.v'+version+'.ts.txt',import.meta.url),'utf8');
  const js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
  const m={exports:{}};vm.runInNewContext(js,{module:m,exports:m.exports,TextEncoder,TextDecoder,structuredClone,crypto:webcrypto,
  require:name=>name==='./scans'?{request:()=>{throw Error('unexpected transport');}}:name==='./p2'?{sameBinding:(a,b)=>JSON.stringify(a)===JSON.stringify(b)}:(()=>{throw Error('unexpected import');})()});
- await assert.rejects(async()=>m.exports.validateMaterialClaims(fixture(),result()));
+ return m.exports.validateMaterialClaims;
+}
+for(const version of [1,2])test('frozen decoder v'+version+' rejects v3 and v4 responses',async()=>{
+ const frozen=frozenDecoder(version);
+ await assert.rejects(async()=>frozen(legacyV3Fixture(),result(),anchor()));
+ await assert.rejects(async()=>frozen(fixture(),result(),anchor()));
 });
-for(const version of [1,2])test('v3 decoder rejects old response version '+version,async()=>{const {s}=setup(),v=fixture();v.schema_version='openguard-material-claims/'+version;v.rule_version='mit-bound-claim/'+version;await assert.rejects(s.validateMaterialClaims(v,result()));});
+for(const version of [1,2])test('v4 decoder rejects old response version '+version,async()=>{
+ const {s}=setup(),v=fixture(),legacy=legacyV3Fixture();
+ v.schema_version=legacy.schema_version='openguard-material-claims/'+version;
+ v.rule_version=legacy.rule_version='mit-bound-claim/'+version;
+ await assert.rejects(frozenDecoder(3)(legacy,result(),anchor()));
+ await assert.rejects(s.validateMaterialClaims(v,result()));
+});
+
+function v4Fixture(legacy,r){
+ const v=structuredClone(legacy),initial=r.revision===1;
+ v.schema_version='openguard-material-claims/4';
+ v.rule_version='mit-apache2-bound-claim/4';
+ for(const m of v.materials)m.role_conflicts=[];
+ v.incremental_impact={mode:initial?'INITIAL_RESULT':'INCREMENTAL_DERIVED',
+  previous_result_id:r.previous_result_id,previous_revision:initial?null:r.revision-1,previous_view_id:initial?null:'p4view_old',
+  affected_resource_ids:[...r.recomputed_resource_ids],unchanged_resource_ids:[...r.reused_resource_ids],
+  recomputed_claim_ids:v.claims.filter(c=>r.recomputed_resource_ids.includes(c.subject.resource_id)).map(c=>c.claim_id),
+  reused_claim_ids:v.claims.filter(c=>r.reused_resource_ids.includes(c.subject.resource_id)).map(c=>c.claim_id),
+  added_material_ids:initial?[]:[...r.material_ids],added_answer_ids:initial?[]:[...r.answer_ids],changed_claims:[],unchanged_claims_verified:true};
+ return v;
+}
+test('TASK39 active client accepts v4 while frozen v3 still rejects v4',async()=>{
+ const {s}=setup(),r=result();
+ const legacy=legacyV3Fixture(),modern=v4Fixture(legacy,r),frozen=frozenDecoder(3);
+ assert.equal((await frozen(legacy,r,anchor())).schema_version,'openguard-material-claims/3');
+ await assert.rejects(frozen(modern,r,anchor()));
+ assert.equal((await s.validateMaterialClaims(modern,r)).schema_version,'openguard-material-claims/4');
+ await assert.rejects(s.validateMaterialClaims(legacy,r));
+});
+
+// Synthetic decoder DTOs. The backend ASGI gate separately proves full Apache source binding.
+function apacheFixture(noticeScenario='absent'){
+ const r=result(),v=fixture(),a=anchor(),material=v.materials[0];
+ r.usage.modified=true;
+ for(const d of [v.declaration_observations[0],a.resources[0]])Object.assign(d,{expression:'Apache-2.0',normalized_ids:['Apache-2.0']});
+ const quotes=[
+  ['license_identifier','Apache License\r\nVersion 2.0, January 2004'],
+  ['permission','   2. Grant of Copyright License.'],
+  ['permission','   3. Grant of Patent License.'],
+  ['condition','      (a) Synthetic license copy condition.'],
+  ['condition','      (b) Synthetic modification notice condition.'],
+  ['condition','      (c) Synthetic source notice condition.'],
+  ['condition','      (d) Synthetic NOTICE condition.'],
+  ['warranty','   7. Disclaimer of Warranty.'],
+ ];
+ const raw=quotes.map(([,quote])=>quote).join('\r\n');
+ const sourceSha=sha(raw);
+ let byte=0,line=1;
+ const clauses=quotes.map(([kind,quote],i)=>{
+  const bytes=Buffer.byteLength(quote),lines=quote.split('\n').length;
+  const clause={clause_id:'p4apache_'+i,material_id:material.material_id,material_sha256:sourceSha,kind,
+   byte_start:byte,byte_end:byte+bytes,line_start:line,line_end:line+lines-1,quote,quote_sha256:sha(quote)};
+  byte+=bytes+2;line+=lines;return clause;
+ });
+ Object.assign(material,{source_sha256:sourceSha,byte_count:Buffer.byteLength(raw),parse_state:'MATCHED_APACHE_2_0',
+  parse_reason:'COMPLETE_APACHE_2_0_PROFILE',declared_spdx:'Apache-2.0',text_license:'Apache-2.0',
+  license_version:'2.0',version_scope:'LICENSE_VERSION_AND_RESOURCE_VERSION',clauses});
+ const archiveNotice='\uFEFFSynthetic NOTICE\r\n许可声明';
+ const source=v.source_observations[0];
+ const counters=[];
+ const counter=(code,material_ids=[],source_observation_ids=[])=>({
+  code,material_ids,source_observation_ids,evidence_ids:material_ids.length?['evd_1']:[],
+  declaration_evidence_ids:[],evidence_status:'COMPLETE',
+ });
+ if(['unuploaded','mismatch','matched'].includes(noticeScenario)){
+  source.notice_status='PRESENT_UNREVIEWED';source.reason='NOTICE_NOT_INTERPRETED';
+  source.notices=[{path:'package/NOTICE',bytes:Buffer.byteLength(archiveNotice),sha256:sha(archiveNotice),inspection_state:'EXTRACTED_UNREVIEWED'}];
+  counters.push(counter('NOTICE_REQUIRES_REVIEW',[],[source.source_observation_id]));
+ }
+ if(['mismatch','matched','extra'].includes(noticeScenario)){
+  const notice=noticeScenario==='matched'?archiveNotice:'Synthetic unbound upload';
+  const id='p2mat_notice',hash=sha(notice),bytes=Buffer.byteLength(notice);
+  r.material_ids.push(id);r.resources[0].material_ids.push(id);
+  v.materials.push({...material,material_id:id,filename:'NOTICE',source_sha256:hash,byte_count:bytes,
+   license_version:null,version_scope:'RESOURCE_VERSION_NOT_LICENSE_VERSION',
+   text_license:'UNKNOWN',parse_state:'NOTICE_OBSERVED',parse_reason:'NOTICE_NOT_A_GRANT',
+   adoption_state:'OBSERVATION_ONLY',source_binding:'NOT_ESTABLISHED',
+   clauses:[{clause_id:'p4notice',material_id:id,material_sha256:hash,kind:'notice',byte_start:0,byte_end:bytes,
+    quote:notice,quote_sha256:hash,line_start:1,line_end:notice.split('\n').length}]});
+  counters.push(counter('NOTICE_REQUIRES_REVIEW',[id]));
+  if(noticeScenario==='mismatch')counters.push(counter('BOUND_NOTICE_BYTES_CONFLICT',[id],[source.source_observation_id]));
+ }
+ const state=noticeScenario==='absent'?'SUPPORT':noticeScenario==='mismatch'?'COUNTER_EVIDENCE':'UNKNOWN';
+ const reason={absent:'PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT',
+  mismatch:'BOUND_NOTICE_BYTES_CONFLICT',matched:'NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW'}[noticeScenario]??'NOTICE_REQUIRES_REVIEW';
+ const conditions=state==='SUPPORT'?['§4(a) 附许可证','§4(b) 说明改动','§4(c) 保留声明']
+  :noticeScenario==='matched'?['§4(d) 人工核对 NOTICE']: [];
+ if(state!=='SUPPORT')Object.assign(material,{adoption_state:'OBSERVATION_ONLY',source_binding:'NOT_ESTABLISHED'});
+ for(const c of v.claims)Object.assign(c,{material_ids:[...r.material_ids],
+  clause_ids:v.materials.flatMap(m=>m.clauses.map(clause=>clause.clause_id)),conditions,counter_evidence:counters,state});
+ for(const d of v.advice)Object.assign(d,{saved_value:true,state,reasons:[reason],conditions});
+ v.incremental_impact.added_material_ids=[...r.material_ids];
+ return {v,r,a};
+}
+for(const [scenario,state] of [['absent','SUPPORT'],['unuploaded','UNKNOWN'],['mismatch','COUNTER_EVIDENCE'],['matched','UNKNOWN'],['extra','UNKNOWN']]){
+ test('TASK39 validates Apache NOTICE scenario '+scenario,async()=>{
+  const {s}=setup(),{v,r,a}=apacheFixture(scenario);
+  const checked=await s.validateMaterialClaims(v,r,a);
+  assert.equal(checked.materials[0].license_version,'2.0');
+  assert.equal(checked.materials[0].clauses.length,8);
+  assert.ok(checked.advice.every(x=>x.state===state));
+  if(scenario==='matched'){
+   assert.equal(checked.materials[1].source_sha256,checked.source_observations[0].notices[0].sha256);
+   assert.ok(checked.advice[0].reasons.includes('NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW'));
+  }
+ });
+}
+for(const [label,scenario,mutate] of [
+ ['Apache version','absent',v=>v.materials[0].license_version=null],
+ ['Apache clause order','absent',v=>v.materials[0].clauses.reverse()],
+ ['Apache quote bytes','absent',v=>v.materials[0].clauses[1].quote=v.materials[0].clauses[1].quote.replace('Copyright','CopyriGht')],
+ ['Apache modification condition','absent',v=>{for(const item of [...v.claims,...v.advice])item.conditions=item.conditions.filter(c=>!c.includes('§4(b)'));}],
+ ['matched NOTICE promotion','matched',v=>{v.claims[0].state=v.advice[0].state='SUPPORT';}],
+ ['matched NOTICE reason','matched',v=>{v.advice[0].reasons=['NOTICE_REQUIRES_REVIEW'];}],
+ ['archive NOTICE hash changed','matched',v=>v.source_observations[0].notices[0].sha256=b],
+ ['missing NOTICE mismatch counter','mismatch',v=>v.claims[0].counter_evidence=v.claims[0].counter_evidence.filter(c=>c.code!=='BOUND_NOTICE_BYTES_CONFLICT')],
+])test('TASK39 rejects '+label,async()=>{
+ const {s}=setup(),{v,r,a}=apacheFixture(scenario);mutate(v);
+ await assert.rejects(s.validateMaterialClaims(v,r,a));
+});
+
+test('TASK39 dependency roles require validated evidence and conflicts stay unknown',async()=>{
+ const {s}=setup(),{v,r,a}=apacheFixture();
+ const m=v.materials[0];
+ Object.assign(m,{role:'dependency',role_state:'inferred',role_basis_evidence_ids:['evd_1']});
+ assert.equal((await s.validateMaterialClaims(v,r,a)).materials[0].role,'dependency');
+ m.role_conflicts=['lock_version_conflict'];
+ await assert.rejects(s.validateMaterialClaims(v,r,a));
+ Object.assign(m,{role:'unknown',role_state:'unknown',role_basis_evidence_ids:[]});
+ assert.deepEqual((await s.validateMaterialClaims(v,r,a)).materials[0].role_conflicts,['lock_version_conflict']);
+});
+
+test('TASK39 verifies impact partitions, current claim and resource-scoped triggers',async()=>{
+ const {s}=setup(),{v,r,a}=apacheFixture();
+ r.answer_ids=['p2ans_1'];r.resources[0].answer_ids=['p2ans_1'];
+ const impact=v.incremental_impact;
+ impact.added_answer_ids=['p2ans_1'];
+ impact.changed_claims=[{subject,usage:'commercial',previous_claim_id:'p4claim_prior',current_claim_id:v.claims[0].claim_id,
+  previous_state:'UNKNOWN',current_state:'SUPPORT',previous_reasons:['MISSING_LICENSE_MATERIAL'],current_reasons:[...v.advice[0].reasons],
+  trigger_material_ids:['p2mat_1'],trigger_answer_ids:['p2ans_1']}];
+ const checked=await s.validateMaterialClaims(v,r,a);
+ assert.deepEqual(checked.incremental_impact.changed_claims[0].trigger_answer_ids,['p2ans_1']);
+ for(const mutate of [
+  i=>i.affected_resource_ids.push('cmp_foreign'),i=>i.reused_claim_ids.push(v.claims[0].claim_id),
+  i=>i.previous_revision=99,i=>i.previous_result_id='p2res_foreign',i=>i.unchanged_claims_verified=false,
+  i=>i.changed_claims[0].current_state='UNKNOWN',i=>i.changed_claims[0].trigger_material_ids=[],
+  i=>i.changed_claims[0].trigger_answer_ids=['p2ans_foreign'],i=>i.changed_claims[0].current_reasons=['FOREIGN_REASON'],
+  i=>{i.added_material_ids=[];i.added_answer_ids=[];i.changed_claims=[];},
+ ]){
+  const bad=structuredClone(v);mutate(bad.incremental_impact);
+  await assert.rejects(s.validateMaterialClaims(bad,r,a));
+ }
+});
 
 test('scan report adapter preserves declaration mapping and ignores unrelated README',()=>{
  const {rt}=setup(),s=rt.load('services/scans.ts');
@@ -258,7 +417,7 @@ function task36NamedComponent(source, name, dependencies){
  }});
  return m.exports.render;
 }
-test('TASK36 nonempty saved compatibility candidate and old preliminary support coexist with actual v3 UNKNOWN panel',async()=>{
+test('TASK36 nonempty saved compatibility candidate and old preliminary support coexist with actual v4 UNKNOWN panel',async()=>{
  const {rt,s}=setup(),p2=rt.load('services/p2.ts');
  const f=rt.load('../tests/bound-advice-maincard-corrected-fixture/fixture.ts').makeFixture();
  const original=JSON.stringify(f.result),names={commercial:'商业使用',distributed:'分发',modified:'修改'};
@@ -291,7 +450,7 @@ test('TASK36 nonempty saved compatibility candidate and old preliminary support 
    binding:f.binding,data_scope:'TEST_ONLY',source_status:'NOT_CONFIGURED',source_profile_sha256:null,materials:[],source_observations:[],declaration_observations:decl,claims,
    advice:claims.map(c=>({usage:c.usage,subject:c.subject,saved_value:f.result.usage[c.usage],state:c.state,reasons:['MISSING_LICENSE_MATERIAL'],claim_ids:[c.claim_id],conditions:[],limitations:['SYNTHETIC_TEST_ONLY: material source closure is unavailable']})),
    formal_effect:'none',applicability_review:'NOT_SIGNED',model_calls:0};
- const checked=await s.validateMaterialClaims(dto,f.result,declarationSnapshot);
+ const checked=await s.validateMaterialClaims(v4Fixture(dto,f.result),f.result,declarationSnapshot);
  assert.equal(checked.advice.find(a=>a.subject.resource_id===selected.rows[0].subject.resource_id&&a.usage==='commercial').state,'UNKNOWN');
  // Ready state represents the validated DTO above; effects/transport cannot execute.
  const key=JSON.stringify([f.assessment.scan_id,f.assessment.id,f.assessment.version,f.result.result_id,f.result.result_sha256,f.result.binding,declarationSnapshot]);

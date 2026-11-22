@@ -121,7 +121,8 @@ class P2Service:
                           and evidence[eid].verification_status.value == 'verified']
         if len({e.content_hash.value for e in reviewed_texts if e.content_hash}) > 1:
             raise P2Error('p2_evidence_conflict', conflict_rule='distinct_verified_license_materials')
-        if license_ and license_.expression == 'MIT' and license_.normalized_ids != ['MIT']:
+        if (license_ and license_.expression in {'MIT', 'Apache-2.0'}
+                and license_.normalized_ids != [license_.expression]):
             raise P2Error('p2_evidence_conflict', conflict_rule='license_normalization_conflict')
         bound = {}
         for eid in ids:
@@ -264,31 +265,46 @@ class P2Service:
             return project(result, resources, materials, self.public_source_root, self.public_source_profile_sha256, declared)
 
     def material_claims(self, sid, aid, identity, version):
-        from .material_claims import project, evidence_context
+        from .material_claims import evidence_context, project
         with self.store.connection() as db:
             result = self._read_result(db, sid, aid, identity, version)
             run, _, binding, resources = self.context(sid, aid)
             if binding != result['binding']:
                 raise P2Error('p2_parent_binding_conflict')
-            materials = []
-            for mid in result['material_ids']:
-                material = Material.model_validate(self.store.get(db, 'material', mid, sid, aid)).model_dump(mode='json')
-                row = next((r for r in result['resources'] if r['subject'] == material['subject']), None)
-                if (material['binding'] != binding or material['data_scope'] != result['data_scope']
-                        or row is None or mid not in row['material_ids']
-                        or not set(material['evidence_ids']) <= set(row['evidence_ids'])):
-                    raise P2Error('p2_integrity_error', 503)
-                materials.append((material, self.store.material_bytes(db, material)))
+            current_subjects = {row['subject']['resource_id']: row['subject']['version'] for row in result['resources']}
+            if current_subjects != {rid: resource.version for rid, resource in resources.items()}:
+                raise P2Error('p2_claim_integrity_error', 503)
+            checked_materials = {}
+
+            def materials_for(saved):
+                rows = {row['subject']['resource_id']: row for row in saved['resources']}
+                materials = []
+                for mid in saved['material_ids']:
+                    if mid not in checked_materials:
+                        record = self.store.get(db, 'material', mid, sid, aid)
+                        material = Material.model_validate(record).model_dump(mode='json')
+                        checked_materials[mid] = (material, self.store.material_bytes(db, material))
+                    material, raw = checked_materials[mid]
+                    row = rows.get(material['subject']['resource_id'])
+                    if (material['binding'] != binding or material['data_scope'] != saved['data_scope']
+                            or row is None or material['subject'] != row['subject'] or mid not in row['material_ids']
+                            or not set(material['evidence_ids']) <= set(row['evidence_ids'])):
+                        raise P2Error('p2_integrity_error', 503)
+                    materials.append((material, raw))
+                return materials
+
+            materials = materials_for(result)
             licenses = {l.id: l for l in run.licenses}
             declared = {}
             for rid, resource in resources.items():
                 license_ = licenses.get(resource.license_expression_id)
                 if license_ is None or (license_.expression in {'NOASSERTION', 'NONE'} and not license_.normalized_ids):
                     declared[rid] = 'UNOBSERVED'
-                elif license_.expression == 'MIT' and license_.normalized_ids == ['MIT']:
-                    declared[rid] = 'MIT'
+                elif license_.expression in {'MIT', 'Apache-2.0'}:
+                    declared[rid] = (license_.expression if license_.normalized_ids == [license_.expression]
+                                     else 'CONFLICT_OR_UNSUPPORTED')
                 else:
-                    declared[rid] = 'CONFLICT_OR_UNSUPPORTED' if license_.expression == 'MIT' else license_.expression
+                    declared[rid] = license_.expression
                 # Do not let the new view bypass existing conflicting-Evidence gates.
                 bound_ids = set(self._evidence(run, resource)[2]) if run.evidence else set()
                 texts = [e for e in run.evidence if e.id in bound_ids
@@ -296,8 +312,38 @@ class P2Service:
                 if len({e.content_hash.value for e in texts if e.content_hash}) > 1:
                     raise P2Error('p2_evidence_conflict', conflict_rule='distinct_verified_license_materials')
             declarations, roles = evidence_context(run, resources, result)
+            previous = None
+            prior_materials, prior_declarations, prior_roles = [], {}, {}
+            if result['revision'] > 1:
+                previous_id = result['previous_result_id']
+                if not previous_id:
+                    raise P2Error('p2_claim_integrity_error', 503)
+                try:
+                    previous = self._read_result(db, sid, aid, previous_id, version)
+                except P2Error as exc:
+                    raise P2Error('p2_claim_integrity_error', 503) from exc
+                if (previous['binding'] != binding or previous['revision'] != result['revision'] - 1
+                        or {r['subject']['resource_id'] for r in previous['resources']} != set(resources)):
+                    raise P2Error('p2_claim_integrity_error', 503)
+                try:
+                    prior_materials = materials_for(previous)
+                    for answer_id in set(result['answer_ids']) - set(previous['answer_ids']):
+                        answer = Answer.model_validate(self.store.get(db, 'answer', answer_id, sid, aid)).model_dump(mode='json')
+                        rows = [row for row in result['resources'] if answer_id in row['answer_ids']]
+                        attached = {row['subject']['resource_id']: row['subject'] for row in rows}
+                        answered = {subject['resource_id']: subject for subject in answer['subjects']}
+                        if (answer['binding'] != binding or answer['data_scope'] != result['data_scope']
+                                or answer['revision'] != result['revision'] or not rows
+                                or len(answered) != len(answer['subjects']) or attached != answered
+                                or any(row['user_assertions'].get(answer['question_code']) != answer['answer_code'] for row in rows)):
+                            raise P2Error('p2_claim_integrity_error', 503)
+                except (P2Error, ValueError) as exc:
+                    raise P2Error('p2_claim_integrity_error', 503) from exc
+                prior_declarations, prior_roles = evidence_context(run, resources, previous)
             return project(result, resources, materials, self.public_source_root, self.public_source_profile_sha256, declared,
-                           declaration_facts=declarations, role_facts=roles)
+                           declaration_facts=declarations, role_facts=roles, previous_result=previous,
+                           previous_materials=prior_materials, previous_declaration_facts=prior_declarations,
+                           previous_role_facts=prior_roles)
 
     def automatic_review(self, sid, aid, identity, version):
         """Read pinned release materials without fetching or changing any saved result."""
