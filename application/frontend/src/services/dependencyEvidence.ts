@@ -9,6 +9,7 @@ const conflictStatuses = ['confirmed', 'incomplete', 'ambiguous'] as const;
 const ecosystems = ['pypi', 'npm', 'unknown'] as const;
 const terminalStatuses = ['completed', 'partial'] as const;
 const schema = 'openguard-dependency-evidence/1';
+export const REPORT_DEPENDENCY_EVIDENCE_SCHEMA = 'openguard-report-v2-dependency-evidence/1';
 
 export type DependencySource = typeof sources[number];
 export type DependencyEvidenceScanRef = {
@@ -86,6 +87,15 @@ export type DependencyEvidencePage = {
   items: DependencyEvidenceItem[];
 };
 export type DependencyEvidenceFeed = Omit<DependencyEvidencePage, 'returned'> & { seenCursors: string[] };
+export type ReportDependencyEvidence = {
+  schema_version: typeof REPORT_DEPENDENCY_EVIDENCE_SCHEMA;
+  scan_ref: DependencyEvidenceScanRef;
+  coverage: 'unknown';
+  total: number;
+  returned: number;
+  incomplete: boolean;
+  items: DependencyEvidenceItem[];
+};
 type PageOptions = { source?: DependencySource | null; limit?: number; cursor?: string | null };
 
 const scanRefKeys = ['scan_id', 'revision', 'facts_hash', 'input_hash', 'inventory_hash', 'status', 'registry_revision'] as const;
@@ -135,7 +145,7 @@ function validateHashValue(value: unknown): void {
   const source = fields(value, ['algorithm', 'value']);
   assertDto(source.algorithm === 'sha256' && isHash(source.value));
 }
-function scanRef(value: unknown, scanId: string): DependencyEvidenceScanRef {
+export function validateDependencyEvidenceScanRef(value: unknown, scanId: string): DependencyEvidenceScanRef {
   const ref = fields(value, scanRefKeys);
   assertDto(validId(ref.scan_id, 'scn_') && ref.scan_id === scanId &&
     (ref.revision === null || (typeof ref.revision === 'string' && ref.revision.length > 0)) &&
@@ -266,12 +276,25 @@ function validateBindings(items: readonly DependencyEvidenceItem[]): void {
   }
 }
 
+export function validateReportDependencyEvidence(raw: unknown, boundScan: DependencyEvidenceScanRef): ReportDependencyEvidence {
+  const report = fields(raw, ['schema_version', 'scan_ref', 'coverage', 'total', 'returned', 'incomplete', 'items']);
+  const ref = validateDependencyEvidenceScanRef(report.scan_ref, boundScan.scan_id);
+  assertDto(report.schema_version === REPORT_DEPENDENCY_EVIDENCE_SCHEMA && report.coverage === 'unknown' &&
+    scanRefKeys.every(key => ref[key] === boundScan[key]) && count(report.total) && report.total <= 20_000);
+  const items = array(report.items, report.total, dependencyItem);
+  assertDto(report.returned === items.length && report.total === items.length &&
+    items.every((item, index) => index === 0 || items[index - 1].resource_id < item.resource_id) &&
+    report.incomplete === (ref.status === 'partial' || items.some(item => item.incomplete)));
+  validateBindings(items);
+  return report as ReportDependencyEvidence;
+}
+
 export function validateDependencyEvidencePage(raw: unknown, scanId: string, options: PageOptions = {}): DependencyEvidencePage {
   const page = fields(raw, [
     'schema_version', 'scan_ref', 'source', 'limit', 'total', 'returned',
     'next_cursor', 'coverage', 'incomplete', 'items',
   ]);
-  const ref = scanRef(page.scan_ref, scanId);
+  const ref = validateDependencyEvidenceScanRef(page.scan_ref, scanId);
   const limit = options.limit ?? 50, source = options.source ?? null;
   assertDto(page.schema_version === schema && page.coverage === 'unknown' &&
     count(limit, 1) && limit <= 100 && page.limit === limit &&

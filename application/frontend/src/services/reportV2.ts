@@ -2,11 +2,20 @@ import { ApiError, request } from './scans';
 import type { NoticeRef } from './noticeDrafts';
 import { listAssessments, validateAssessment, type Assessment } from './assessments';
 import { accountRequestOptions, handleAccountResponse } from './auth';
+import {
+  REPORT_DEPENDENCY_EVIDENCE_SCHEMA, validateDependencyEvidenceScanRef, validateReportDependencyEvidence,
+  type ReportDependencyEvidence,
+} from './dependencyEvidence';
 
 type Row = Record<string, unknown>;
 const row = (value: unknown): value is Row => !!value && typeof value === 'object' && !Array.isArray(value);
 const nonempty = (value: unknown): value is string => typeof value === 'string' && value.length > 0;
 const rows = (value: unknown): value is Row[] => Array.isArray(value) && value.every(row);
+const hash = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
+const sectionAuthorities = ['scan_facts', 'formal_assessment', 'workflow', 'observation', 'ai_explanation'] as const;
+const dependencyTitle = '依赖证据';
+export type ReportV2Version = '1.0' | '1.1';
+const reportVersion = (value: unknown): value is ReportV2Version => value === '1.0' || value === '1.1';
 
 export async function loadReportAssessmentChoices(scanId: string, requestedId: string, signal?: AbortSignal) {
   const listed = await listAssessments(scanId, signal);
@@ -62,14 +71,14 @@ export function reportSnapshotQuery(currentScanId: string, targetScanId: string,
 }
 
 export type ReportSection = {
-  authority: 'scan_facts' | 'formal_assessment' | 'workflow' | 'observation' | 'ai_explanation';
+  authority: typeof sectionAuthorities[number];
   schema_version: string;
   source_ids: string[];
   content_hash: string;
   content: unknown;
 };
 export type ReportDocument = {
-  schema_version: '1.0';
+  schema_version: ReportV2Version;
   snapshot_id: string;
   binding: {
     scan_ref: { scan_id: string; status: string; revision: string | null };
@@ -86,14 +95,19 @@ export type ReportDocument = {
 export type ReportObservationGroups = {
   graph: ReportSection[];
   notice: ReportSection[];
+  dependency: (ReportSection & { content: ReportDependencyEvidence }) | null;
 };
 
 export function classifyReportObservations(document: ReportDocument): ReportObservationGroups {
   const graphRefs = (document.binding.algorithm_refs ?? []).filter(ref => ref.kind === 'graph');
   const noticeRefs = new Map(document.binding.notice_refs.map(ref => [ref.draft_id, ref.content_hash]));
-  const groups: ReportObservationGroups = { graph: [], notice: [] };
+  const groups: ReportObservationGroups = { graph: [], notice: [], dependency: null };
   for (const section of document.sections) {
     if (section.authority !== 'observation' || !row(section.content)) continue;
+    if (section.schema_version === REPORT_DEPENDENCY_EVIDENCE_SCHEMA && document.schema_version === '1.1') {
+      groups.dependency = section as ReportObservationGroups['dependency'];
+      continue;
+    }
     const content = section.content;
     const provenance = row(content.provenance) ? content.provenance : null;
     if (nonempty(content.view_id) && section.source_ids.includes(content.view_id) && provenance &&
@@ -123,7 +137,7 @@ export function reportCreateControl(input: {
 }
 
 export type ReportSnapshot = {
-  schema_version: '1.0';
+  schema_version: ReportV2Version;
   snapshot_id: string;
   binding: {
     scan_ref: { scan_id: string };
@@ -136,14 +150,53 @@ export type ReportSnapshot = {
   content_hash: string;
 };
 
+function reportSnapshotPath(scanId: string, assessmentId: string, snapshotId: string) {
+  return `/scans/${encodeURIComponent(scanId)}/assessments/${encodeURIComponent(assessmentId)}/report-v2/${encodeURIComponent(snapshotId)}`;
+}
+
+function dependencySection(sections: unknown, version: ReportV2Version, scanId: string, path: string, document: boolean) {
+  const isDependency = (section: Row) => section.schema_version === REPORT_DEPENDENCY_EVIDENCE_SCHEMA ||
+    section.title === dependencyTitle || (row(section.content) && section.content.schema_version === REPORT_DEPENDENCY_EVIDENCE_SCHEMA);
+  if (version === '1.0') {
+    if (rows(sections) && sections.some(isDependency)) throw new Error('report_unexpected_dependency_section');
+    return;
+  }
+  if (!rows(sections) || !sections.every((section, index) =>
+    sectionAuthorities.some(authority => authority === section.authority) &&
+    nonempty(section.schema_version) && Array.isArray(section.source_ids) && section.source_ids.every(nonempty) &&
+    hash(section.content_hash) && section.snapshot_ref === `${path}?format=json#/sections/${index}/content` &&
+    Object.keys(section).length === 5 + Number(document) + Number(isDependency(section)) &&
+    ('content' in section) === document)) throw new Error('report_section_descriptor_invalid');
+  for (const authority of sectionAuthorities) {
+    if (authority !== 'observation' && sections.filter(section => section.authority === authority).length !== 1)
+      throw new Error('report_section_descriptor_invalid');
+  }
+  const matches = sections.filter(isDependency);
+  const section = matches[0];
+  if (matches.length !== 1 || section.authority !== 'observation' ||
+    section.schema_version !== REPORT_DEPENDENCY_EVIDENCE_SCHEMA || section.title !== dependencyTitle ||
+    !Array.isArray(section.source_ids) || section.source_ids.length !== 1 || section.source_ids[0] !== scanId)
+    throw new Error('report_dependency_section_invalid');
+  return section;
+}
+
+function validateReportBindingV11(scan: unknown, assessment: Row, scanId: string) {
+  const boundScan = validateDependencyEvidenceScanRef(scan, scanId);
+  if (assessment.scan_id !== scanId || assessment.formal !== true || assessment.facts_hash !== boundScan.facts_hash ||
+    !hash(assessment.usage_hash) || !nonempty(assessment.rule_version) ||
+    !Number.isSafeInteger(assessment.version) || Number(assessment.version) < 1)
+    throw new Error('report_assessment_binding_invalid');
+  return boundScan;
+}
+
 export function validateReportSnapshot(value: unknown, scanId: string, assessmentId: string): ReportSnapshot {
   const invalid = () => { throw new Error('Report V2 创建响应不符合接口契约，未作为正式快照打开。'); };
-  if (!row(value) || value.schema_version !== '1.0' || !nonempty(value.snapshot_id) ||
+  if (!row(value) || !reportVersion(value.schema_version) || !nonempty(value.snapshot_id) ||
       !row(value.binding) || !row(value.binding.scan_ref) || !row(value.binding.assessment_ref) ||
       value.binding.scan_ref.scan_id !== scanId || value.binding.assessment_ref.assessment_id !== assessmentId ||
       !Number.isInteger(value.binding.assessment_ref.version) || !Array.isArray(value.binding.task_refs) ||
       !Array.isArray(value.binding.notice_refs) || !Array.isArray(value.binding.algorithm_refs) ||
-      !Array.isArray(value.artifacts) || !nonempty(value.content_hash) || !/^[a-f0-9]{64}$/.test(value.content_hash)) return invalid();
+      !Array.isArray(value.artifacts) || !hash(value.content_hash)) return invalid();
   if (!value.binding.task_refs.every(ref => row(ref) && nonempty(ref.task_id) && Number.isInteger(ref.version) && Number(ref.version) >= 1)) return invalid();
   if (!value.binding.notice_refs.every(ref => row(ref) && nonempty(ref.draft_id) && nonempty(ref.content_hash) && /^[a-f0-9]{64}$/.test(ref.content_hash))) return invalid();
   const artifacts = value.artifacts;
@@ -152,6 +205,17 @@ export function validateReportSnapshot(value: unknown, scanId: string, assessmen
         nonempty(item.content_hash) && /^[a-f0-9]{64}$/.test(item.content_hash) &&
         Number.isInteger(item.size_bytes) && Number(item.size_bytes) > 0 && nonempty(item.href) &&
         item.href.startsWith(`/api/v1/scans/${encodeURIComponent(scanId)}/assessments/${encodeURIComponent(assessmentId)}/report-v2/`))) return invalid();
+  const path = '/api/v1' + reportSnapshotPath(scanId, assessmentId, value.snapshot_id);
+  try {
+    dependencySection(value.sections, value.schema_version, scanId, path, false);
+    if (value.schema_version === '1.1') {
+      validateReportBindingV11(value.binding.scan_ref, value.binding.assessment_ref, scanId);
+      if (!nonempty(value.created_at) || !Number.isFinite(Date.parse(value.created_at)) ||
+        !nonempty(value.generator_version) || !row(value.provenance) ||
+        !artifacts.every(item => item.href === `${path}?format=${item.format}`))
+        throw new Error('report_snapshot_metadata_invalid');
+    }
+  } catch { return invalid(); }
   return value as ReportSnapshot;
 }
 
@@ -161,8 +225,10 @@ export async function createReportV2(
   idempotencyKey: string,
   taskRefs: { task_id: string; version: number }[],
   noticeRefs: NoticeRef[] = [],
+  version?: ReportV2Version,
 ): Promise<ReportSnapshot> {
-  if (!idempotencyKey.trim() || new Set(taskRefs.map(ref => ref.task_id)).size !== taskRefs.length ||
+  if ((version !== undefined && !reportVersion(version)) ||
+      !idempotencyKey.trim() || new Set(taskRefs.map(ref => ref.task_id)).size !== taskRefs.length ||
       taskRefs.some(ref => !ref.task_id || !Number.isInteger(ref.version) || ref.version < 1) ||
       new Set(noticeRefs.map(ref => ref.draft_id)).size !== noticeRefs.length ||
       noticeRefs.some(ref => !ref.draft_id || !/^[a-f0-9]{64}$/.test(ref.content_hash)))
@@ -173,38 +239,42 @@ export async function createReportV2(
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idempotency_key: idempotencyKey, task_refs: taskRefs, notice_refs: noticeRefs, algorithm_refs: [] }),
+        body: JSON.stringify({ idempotency_key: idempotencyKey, task_refs: taskRefs, notice_refs: noticeRefs, algorithm_refs: [],
+          ...(version === undefined ? {} : { schema_version: version }) }),
       },
     );
-    return validateReportSnapshot(raw, scanId, assessmentId);
+    const snapshot = validateReportSnapshot(raw, scanId, assessmentId);
+    if (snapshot.schema_version !== (version ?? '1.0')) throw new Error('Report V2 返回的归档格式与所选版本不一致。');
+    return snapshot;
   } catch (error) {
     if (error instanceof ApiError && error.status === 404 && error.reason === 'notice_draft_not_found')
       throw new ApiError(error.status, '引用的 NOTICE 草稿不存在；请核对固定的 draft_id 与当前扫描、评估，不会自动生成替代草稿。', error.code, error.reason);
+    if (error instanceof ApiError && error.status === 409 && error.reason === 'report_v2_1_1_write_disabled')
+      throw new ApiError(error.status, '当前服务暂未开放新建含依赖证据的报告。已有归档仍可读取。', error.code, error.reason);
     throw error;
   }
 }
 
 export function reportV2Url(scanId: string, assessmentId: string, snapshotId: string, format: 'json' | 'html') {
   const base = (import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '');
-  return `${base}/scans/${encodeURIComponent(scanId)}/assessments/${encodeURIComponent(assessmentId)}/report-v2/${encodeURIComponent(snapshotId)}?format=${format}`;
+  return `${base}${reportSnapshotPath(scanId, assessmentId, snapshotId)}?format=${format}`;
 }
 
 export function validateReportDocument(value: unknown, scanId: string, assessmentId: string, snapshotId: string): ReportDocument {
   const invalid = () => { throw new Error('Report V2 快照不符合接口契约，未展示为正式报告。'); };
-  if (!row(value) || value.schema_version !== '1.0' || value.snapshot_id !== snapshotId ||
+  if (!row(value) || !reportVersion(value.schema_version) || value.snapshot_id !== snapshotId ||
       !row(value.binding) || !row(value.binding.scan_ref) || !row(value.binding.assessment_ref) ||
       value.binding.scan_ref.scan_id !== scanId || value.binding.assessment_ref.assessment_id !== assessmentId ||
       !nonempty(value.binding.scan_ref.status) || !(value.binding.scan_ref.revision === null || nonempty(value.binding.scan_ref.revision)) ||
       !Number.isInteger(value.binding.assessment_ref.version) ||
       !Array.isArray(value.binding.notice_refs) || !nonempty(value.created_at) || !Number.isFinite(Date.parse(value.created_at)) ||
       !nonempty(value.generator_version) || !rows(value.sections) || !row(value.provenance)) return invalid();
-  const allowed = new Set(['scan_facts', 'formal_assessment', 'workflow', 'observation', 'ai_explanation']);
   if (!value.binding.notice_refs.every(ref => row(ref) && nonempty(ref.draft_id) && nonempty(ref.content_hash) && /^[a-f0-9]{64}$/.test(ref.content_hash))) return invalid();
   if ('algorithm_refs' in value.binding && (!Array.isArray(value.binding.algorithm_refs) ||
       !value.binding.algorithm_refs.every(ref => row(ref) && nonempty(ref.kind) && nonempty(ref.version) &&
         nonempty(ref.content_hash) && /^[a-f0-9]{64}$/.test(ref.content_hash)))) return invalid();
   const sections = value.sections;
-  if (!sections.every(section => allowed.has(String(section.authority)) && nonempty(section.schema_version) &&
+  if (!sections.every(section => sectionAuthorities.some(authority => authority === section.authority) && nonempty(section.schema_version) &&
       Array.isArray(section.source_ids) && section.source_ids.every(nonempty) &&
       typeof section.content_hash === 'string' && /^[a-f0-9]{64}$/.test(section.content_hash) && 'content' in section)) return invalid();
   for (const authority of ['scan_facts', 'formal_assessment', 'workflow', 'ai_explanation']) {
@@ -212,6 +282,17 @@ export function validateReportDocument(value: unknown, scanId: string, assessmen
   }
   const formal = sections.find(section => section.authority === 'formal_assessment')?.content;
   if (!row(formal) || formal.formal !== true || formal.id !== assessmentId || formal.scan_id !== scanId) return invalid();
+  try {
+    const dependency = dependencySection(sections, value.schema_version, scanId,
+      '/api/v1' + reportSnapshotPath(scanId, assessmentId, snapshotId), true);
+    if (dependency) {
+      const bound = validateReportBindingV11(value.binding.scan_ref, value.binding.assessment_ref, scanId);
+      const facts = sections.find(section => section.authority === 'scan_facts')?.content;
+      if (formal.facts_hash !== bound.facts_hash || formal.version !== value.binding.assessment_ref.version ||
+        !row(facts) || facts.id !== scanId || facts.status !== bound.status) return invalid();
+      validateReportDependencyEvidence(dependency.content, bound);
+    }
+  } catch { return invalid(); }
   return value as ReportDocument;
 }
 

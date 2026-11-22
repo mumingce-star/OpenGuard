@@ -3,7 +3,7 @@ import type { Scan } from '../types/domain';
 import { reportDownloadUrl } from '../services/scans';
 import { type Assessment } from '../services/assessments';
 import { listAllTasks, type RemediationTask } from '../services/remediationTasks';
-import { classifyReportObservations, createReportV2, downloadReportV2, loadReportV2, loadReportAssessmentChoices, reportCreateControl, reportP2ContextUrl, readReportReferences, rememberReportReference, type ReportReference, type ReportDocument, type ReportSection } from '../services/reportV2';
+import { classifyReportObservations, createReportV2, downloadReportV2, loadReportV2, loadReportAssessmentChoices, reportCreateControl, reportP2ContextUrl, readReportReferences, rememberReportReference, type ReportReference, type ReportDocument, type ReportSection, type ReportV2Version } from '../services/reportV2';
 import { createNoticeDraft, type NoticeDraft } from '../services/noticeDrafts';
 import { ActionButton, DownloadControl, DownloadGlyph, Header, HelpTip, LoadingDots, Panel, useNotice } from '../components/ui';
 
@@ -14,7 +14,8 @@ const names: Record<string, string> = {
   ai_explanation: 'AI 建议 · 非正式结论',
 };
 
-function sectionName(section: ReportSection, graph: Set<ReportSection>, notice: Set<ReportSection>) {
+function sectionName(section: ReportSection, graph: Set<ReportSection>, notice: Set<ReportSection>, dependency: ReportSection | null) {
+  if (section === dependency) return '依赖证据';
   if (graph.has(section)) return '图谱观察摘要';
   if (notice.has(section)) return 'NOTICE 草稿观察';
   return names[section.authority] ?? section.authority;
@@ -35,6 +36,7 @@ export function ReportV2({ scan, query, open }: {
   const [downloading, setDownloading] = useState<'json' | 'html' | null>(null);
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [createAssessmentId, setCreateAssessmentId] = useState('');
+  const [reportVersion, setReportVersion] = useState<ReportV2Version>('1.0');
   const [reportTasks, setReportTasks] = useState<RemediationTask[]>([]);
   const [assessmentLoading, setAssessmentLoading] = useState(scan.mode === 'api');
   const [taskLoading, setTaskLoading] = useState(false);
@@ -47,7 +49,7 @@ export function ReportV2({ scan, query, open }: {
   const createLoading = assessmentLoading || taskLoading;
   const loadError = assessmentError || taskError;
   const [createError, setCreateError] = useState('');
-  const createKey = useRef(crypto.randomUUID());
+  const createKeys = useRef<Partial<Record<ReportV2Version, string>>>({});
   const noticeKey = useRef(crypto.randomUUID());
   const [reload, setReload] = useState(0);
   const [recent, setRecent] = useState<ReportReference[]>([]);
@@ -93,7 +95,7 @@ export function ReportV2({ scan, query, open }: {
     return () => controller.abort();
   }, [scan.id, scan.mode, createAssessmentId]);
   useEffect(() => {
-    createKey.current = crypto.randomUUID();
+    createKeys.current = {};
     noticeKey.current = crypto.randomUUID();
     setNoticeDraft(null); setNoticeError(''); setCreateError('');
   }, [createAssessmentId, reportTasks.map(task => `${task.task_id}:${task.version}`).join('|')]);
@@ -120,13 +122,16 @@ export function ReportV2({ scan, query, open }: {
   async function create() {
     if (!createAssessmentId || createLoading || creating || loadError) return;
     setCreating(true); setCreateError('');
+    const key = createKeys.current[reportVersion] ?? crypto.randomUUID();
+    createKeys.current[reportVersion] = key;
     try {
       const snapshot = await createReportV2(
         scan.id,
         createAssessmentId,
-        createKey.current,
+        key,
         reportTasks.map(task => ({ task_id: task.task_id, version: task.version })),
         noticeDraft ? [{ draft_id: noticeDraft.draft_id, content_hash: noticeDraft.content_hash }] : [],
+        reportVersion === '1.1' ? reportVersion : undefined,
       );
       open(createAssessmentId, snapshot.snapshot_id);
     } catch (error) {
@@ -138,7 +143,7 @@ export function ReportV2({ scan, query, open }: {
     setNoticeCreating(true); setNoticeError('');
     try {
       const draft = await createNoticeDraft(scan.id, createAssessmentId, noticeKey.current);
-      setNoticeDraft(draft); createKey.current = crypto.randomUUID(); noticeKey.current = crypto.randomUUID();
+      setNoticeDraft(draft); createKeys.current = {}; noticeKey.current = crypto.randomUUID();
     } catch (error) { setNoticeError(error instanceof Error ? error.message : 'NOTICE 草稿创建失败。'); }
     finally { setNoticeCreating(false); }
   }
@@ -148,7 +153,8 @@ export function ReportV2({ scan, query, open }: {
     state.document.binding.assessment_ref.assessment_id === assessmentId ? state.document : undefined;
   const sections = document?.sections ?? [];
   const has = (authority: string) => sections.some(section => section.authority === authority);
-  const observations = document ? classifyReportObservations(document) : { graph: [], notice: [] };
+  const observations = document ? classifyReportObservations(document) : { graph: [], notice: [], dependency: null };
+  const dependency = observations.dependency?.content;
   const graphSections = new Set(observations.graph);
   const noticeSections = new Set(observations.notice);
   const createControl = reportCreateControl({ assessmentId: createAssessmentId, createLoading, creating, loadError, createError });
@@ -182,7 +188,8 @@ export function ReportV2({ scan, query, open }: {
     {state.kind === 'idle' && <div className="og-archive-empty"><h2>从已有报告开始</h2><p>有归档链接时直接打开即可；第一次使用可点击「保存当前评估的新归档」。打开页面本身不会创建报告。</p></div>}
     {state.kind === 'loading' && <Panel title="正在读取报告原件"><LoadingDots label="正在读取固定版本报告" detail="按固定版本读取，旧报告内容保持不变。" /></Panel>}
     {state.kind === 'error' && <Panel title="这份归档暂时无法读取"><p role="alert">{state.message}</p><button onClick={() => setReload(value => value + 1)}>重试读取</button><p>请确认当前服务和报告链接；不会用其他版本代替。</p></Panel>}
-    {state.kind === 'ready' && document && state.html && <Panel title={`已保存报告 · Assessment 评估第 ${document.binding.assessment_ref.version} 版`} caption={`保存于 ${new Date(document.created_at).toLocaleString('zh-CN')}。下方是后端保存的原始报告，后续补充信息不会改变这份内容。`}>
+    {state.kind === 'ready' && document && state.html && <Panel title={`已保存报告 · Assessment 评估第 ${document.binding.assessment_ref.version} 版`} caption={`报告格式 ${document.schema_version} · 保存于 ${new Date(document.created_at).toLocaleString('zh-CN')}。下方是后端保存的原始报告，后续补充信息不会改变这份内容。`}>
+      {dependency && <p>依赖证据 · 已归档 {dependency.returned} 项。{dependency.incomplete ? '归档证据存在缺口，详见报告。' : '依赖覆盖范围未确认。'}</p>}
       <div className="og-archive-downloads"><DownloadControl key={`${previewKey}:html`} disabled={!!downloading} onDownload={() => save('html')}>下载 HTML 报告</DownloadControl><button className="og-download-button" disabled={loadedPreview !== previewKey} onClick={printPreview}><DownloadGlyph /><span>打印 / 保存 PDF</span></button><DownloadControl key={`${previewKey}:json`} disabled={!!downloading} onDownload={() => save('json')}>下载 JSON 数据</DownloadControl></div>
       <iframe className="og-archive-preview" ref={frame} title="Report V2 后端原始 HTML 正文" srcDoc={state.html} sandbox="allow-same-origin allow-modals" onLoad={() => setLoadedPreview(previewKey)} />
       <details className="og-archive-advanced"><summary>高级信息：来源、版本与报告内容范围</summary><p>固定来源 <HelpTip label="来源 Hash 说明">Hash 来自后端固定快照；前端不会猜测或重新生成正式来源 Hash。</HelpTip></p>
@@ -190,7 +197,7 @@ export function ReportV2({ scan, query, open }: {
         <p>{has('formal_assessment') ? '正式评估来自归档绑定的同一对象与版本。' : '正式评估章节缺失。'} {has('ai_explanation') ? 'AI 章节仅保留历史状态与说明，不改变正式结论。' : '此归档没有 AI 说明。'}</p>
         <p>处理记录仅表示当时的完成进度；不能单凭已完成状态判断项目合规。</p>
         <p>{observations.graph.length ? '包含已绑定的图谱观察。' : '未包含已绑定的图谱观察。'} {document.binding.notice_refs.length ? '包含后端固定的 NOTICE 草稿引用；草稿不等于授权证明。' : '未附 NOTICE 草稿；不表示没有相关声明义务。'}</p>
-        <ul>{sections.map((section, index) => <li key={index}><strong>{sectionName(section, graphSections, noticeSections)}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul>
+        <ul>{sections.map((section, index) => <li key={index}><strong>{sectionName(section, graphSections, noticeSections, observations.dependency)}</strong> · {section.schema_version} · 来源 {section.source_ids.join('、') || '未获取'} · hash {section.content_hash}</li>)}</ul>
         <details><summary>查看原始来源字段</summary><pre>{JSON.stringify(document.provenance, null, 2)}</pre></details>
       </details>
     </Panel>}
@@ -206,6 +213,10 @@ export function ReportV2({ scan, query, open }: {
     <Panel title="创建固定版本报告" caption="保存一份当前评估和处理进度的副本，便于交付、复查或对比。只在你点击保存按钮后创建。">
       {scan.mode !== 'api' ? <p role="status">演示模式不创建正式报告。</p> : <div className="og-v2-create">
         <label>选择要保存的评估版本<select value={createAssessmentId} disabled={createLoading || creating} onChange={event => { const next = event.target.value; if (next === createAssessmentId) return; setTaskLoading(!!next); setCreateAssessmentId(next); }}><option value="">请选择</option>{assessments.map(item => <option key={item.id} value={item.id}>评估第 {item.version} 版</option>)}</select></label>
+        <label>报告格式<select name="report-schema-version" value={reportVersion} disabled={creating} onChange={event => {
+          const next = event.target.value;
+          if ((next === '1.0' || next === '1.1') && next !== reportVersion) { setReportVersion(next); setCreateError(''); }
+        }}><option value="1.0">标准归档（1.0）</option><option value="1.1">包含依赖证据（1.1）</option></select></label>
         <p>一并保存 {reportTasks.length} 项当前处理记录。保存报告不会重新扫描或改变评估，也不会合并独立的 P2 Result 与材料摘要。</p>
         <details className="og-v2-notice-create"><summary>高级选项：附加 NOTICE 声明草稿</summary>
           <p>NOTICE 只有后端返回不可变草稿和 content hash 后才会加入；前端不生成正文、许可证、授权或 Obligation。</p>
@@ -231,7 +242,7 @@ export function ReportV2({ scan, query, open }: {
         <ActionButton type="button" onClick={create} disabled={createControl.disabled} aria-busy={creating}>{createControl.label}</ActionButton>
         {createLoading && <LoadingDots label="正在读取评估与处理记录…" />}
         {loadError && <p role="alert" className="og-error">{loadError}</p>}
-        {createError && <div role="alert" className="og-error"><p>{createError}</p><p>不会自动再次提交；手动重试会沿用同一请求标识、Assessment、Task 与 NOTICE 引用，避免产生第二份报告。</p></div>}
+        {createError && <div role="alert" className="og-error"><p>{createError}</p><p>手动重试当前格式会沿用同一请求标识、Assessment、Task 与 NOTICE 引用。</p></div>}
       </div>}
     </Panel>
     </details>

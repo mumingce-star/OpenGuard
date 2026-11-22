@@ -66,6 +66,142 @@ function snapshot() {
   };
 }
 
+const archiveScanId = 'scn_00000000-0000-0000-0000-000000000001';
+const dependencySchema = 'openguard-report-v2-dependency-evidence/1';
+const archivePath = (assessmentId = 'asm_1') => `/api/v1/scans/${archiveScanId}/assessments/${assessmentId}/report-v2/rptv2_1`;
+const archiveHtml = '<!doctype html><html><head><meta name="openguard-html-renderer" content="1.2"></head><body>固定依赖证据</body></html>';
+
+function dependencyFixture(assessmentId = 'asm_1') {
+  const document = fixture('partial');
+  const scanRef = {
+    scan_id: archiveScanId, revision: null, status: 'partial', registry_revision: 3,
+    facts_hash: hash, input_hash: 'b'.repeat(64), inventory_hash: null,
+  };
+  const assessmentRef = {
+    assessment_id: assessmentId, version: 2, scan_id: archiveScanId, facts_hash: hash,
+    usage_hash: 'c'.repeat(64), rule_version: 'rule-1', formal: true,
+  };
+  const dependency = (number, source, role, file) => ({
+    resource_id: `cmp_${String(number).padStart(26, '0')}`, name: `saved-package-${number}`, version: '1.0.0',
+    ecosystem: 'pypi', role_state: role, sources: [source], evidence_total: 1, evidence_returned: 1,
+    evidence: [{
+      evidence_id: `evd_${String(number).padStart(26, '0')}`, source, file_path: file, locator: file + ':/package/0',
+      source_sha256: 'd'.repeat(64), producer: { type: 'parser', name: 'scanner', version: '1.0',
+        config_digest: null, provider: null, model_id: null, prompt_schema_digest: null },
+      verification_status: 'pending', kind: 'manifest_field', start_line: null, end_line: null,
+    }],
+    conflicts: [], conflicts_total: 0, conflicts_returned: 0, gaps: [], incomplete: false,
+  });
+  const lock = dependency(2, 'lock', 'unknown', 'project/uv.lock');
+  lock.gaps = ['declaration_side_unavailable'];
+  lock.incomplete = true;
+  lock.conflicts_total = lock.conflicts_returned = 1;
+  lock.conflicts.push({
+    code: 'lock_version_conflict', status: 'incomplete', declaration: null,
+    lock: { resource_id: lock.resource_id, version: lock.version, evidence: lock.evidence,
+      evidence_total: 1, evidence_returned: 1, incomplete: false },
+    gaps: lock.gaps,
+  });
+  const section = {
+    schema_version: dependencySchema, authority: 'observation', source_ids: [archiveScanId], title: '依赖证据',
+    content_hash: 'e'.repeat(64), content: {
+      schema_version: dependencySchema, scan_ref: { ...scanRef }, coverage: 'unknown',
+      total: 3, returned: 3, incomplete: true,
+      items: [dependency(1, 'manifest', 'observed', 'project/pyproject.toml'), lock,
+        dependency(3, 'sbom', 'inferred', 'project/bom.json')],
+    },
+  };
+  document.schema_version = '1.1';
+  document.binding = { scan_ref: scanRef, assessment_ref: assessmentRef, task_refs: [], notice_refs: [], algorithm_refs: [] };
+  document.sections[0].content.id = archiveScanId;
+  document.sections[1].content = { ...document.sections[1].content, id: assessmentId, scan_id: archiveScanId, facts_hash: hash, version: 2 };
+  document.sections.push(section);
+  document.sections.forEach((entry, index) => { entry.snapshot_ref = `${archivePath(assessmentId)}?format=json#/sections/${index}/content`; });
+  return document;
+}
+
+function dependencySnapshot() {
+  const { sections, ...document } = dependencyFixture();
+  return { ...document, content_hash: hash,
+    sections: sections.map(({ content, ...descriptor }) => descriptor),
+    artifacts: snapshot().artifacts.map(artifact => ({ ...artifact, href: `${archivePath()}?format=${artifact.format}` })),
+  };
+}
+
+test('1.1 reads one dedicated archived observation and preserves evidence scope, roles and gaps', () => {
+  const service = runtime().load('services/reportV2.ts');
+  const document = dependencyFixture();
+  const validated = service.validateReportDocument(document, archiveScanId, 'asm_1', 'rptv2_1');
+  const observations = service.classifyReportObservations(validated);
+  assert.deepEqual([observations.graph.length, observations.notice.length], [0, 0]);
+  const archived = observations.dependency.content;
+  assert.equal(archived.scan_ref.registry_revision, 3);
+  assert.equal(archived.coverage, 'unknown');
+  assert.equal(archived.incomplete, true);
+  assert.deepEqual(archived.items.map(item => item.role_state), ['observed', 'unknown', 'inferred']);
+  assert.deepEqual(archived.items.map(item => item.sources[0]), ['manifest', 'lock', 'sbom']);
+  assert.equal(archived.items[0].evidence[0].verification_status, 'pending');
+  assert.equal(archived.items[0].evidence[0].file_path, 'project/pyproject.toml');
+  assert.equal(archived.items[0].evidence[0].source_sha256, 'd'.repeat(64));
+  assert.equal(archived.items[1].conflicts[0].declaration, null);
+  assert.deepEqual(archived.items[1].conflicts[0].gaps, ['declaration_side_unavailable']);
+  assert.equal(service.classifyReportObservations(fixture()).dependency, null);
+});
+
+test('archive decoder rejects absent, masquerading, duplicate or foreign 1.1 evidence and malformed rows', () => {
+  const service = runtime().load('services/reportV2.ts');
+  const invalid = [
+    document => { document.schema_version = '1.0'; },
+    document => { document.schema_version = '1.2'; },
+    document => { document.sections.length -= 1; },
+    (document, section) => { document.sections.push({ ...section, snapshot_ref: `${archivePath()}?format=json#/sections/5/content` }); },
+    (_, section) => { section.title = '其他观测'; },
+    (_, section) => { section.authority = 'workflow'; },
+    (_, section) => { section.source_ids = ['unrelated']; },
+    (_, section) => { section.snapshot_ref = archivePath() + '?format=json#/sections/3/content'; },
+    (_, section) => { section.content.scan_ref.registry_revision += 1; },
+    (_, section) => { section.content.scan_ref.facts_hash = 'f'.repeat(64); },
+    (_, section) => { section.content.total += 1; },
+    (_, section) => { section.content.next_cursor = null; },
+    (_, section) => { section.content.incomplete = false; },
+    (_, section) => { section.content.items[1].conflicts[0].status = 'confirmed'; },
+    (document) => { document.binding.assessment_ref.formal = false; },
+    (document) => { document.sections[0].content.status = 'completed'; },
+  ];
+  for (const mutate of invalid) {
+    const document = dependencyFixture();
+    mutate(document, document.sections.at(-1));
+    assert.throws(() => service.validateReportDocument(document, archiveScanId, 'asm_1', 'rptv2_1'), /契约/);
+  }
+});
+
+test('1.1 creation checks snapshot dependency metadata and matches the explicitly requested version', async () => {
+  const r = runtime(), service = r.load('services/reportV2.ts'), bodies = [];
+  r.setFetch(async (_url, init) => {
+    bodies.push(JSON.parse(init.body));
+    return Response.json(dependencySnapshot());
+  });
+  const created = await service.createReportV2(archiveScanId, 'asm_1', 'key-v11', [], [], '1.1');
+  assert.equal(created.schema_version, '1.1');
+  assert.deepEqual(bodies, [{ idempotency_key: 'key-v11', task_refs: [], notice_refs: [], algorithm_refs: [], schema_version: '1.1' }]);
+  await assert.rejects(service.createReportV2(archiveScanId, 'asm_1', 'default', []), /归档格式与所选版本不一致/);
+  assert.equal(Object.hasOwn(bodies[1], 'schema_version'), false);
+  for (const mutate of [
+    snapshot => { snapshot.sections.pop(); },
+    snapshot => { snapshot.sections.at(-1).content = {}; },
+    snapshot => { snapshot.sections.at(-1).title = '其他观测'; },
+    snapshot => { snapshot.sections.at(-1).source_ids = ['unrelated']; },
+    snapshot => { snapshot.artifacts[0].href = snapshot.artifacts[0].href.replace('rptv2_1', 'other'); },
+  ]) {
+    const snapshot = dependencySnapshot();
+    mutate(snapshot);
+    assert.throws(() => service.validateReportSnapshot(snapshot, archiveScanId, 'asm_1'), /契约/);
+  }
+  r.setFetch(async () => Response.json(snapshot()));
+  await assert.rejects(service.createReportV2('scn_1', 'asm_1', 'explicit-v11', [], [], '1.1'), /归档格式与所选版本不一致/);
+  assert.equal((await service.createReportV2('scn_1', 'asm_1', 'explicit-v10', [], [], '1.0')).schema_version, '1.0');
+});
+
 test('TEST_ONLY BOUND draft POST/GET feeds exact Report refs and reload uses JSON/HTML GET only', async () => {
   const r = runtime(), notices = r.load('services/noticeDrafts.ts'), reports = r.load('services/reportV2.ts');
   const draft = {
@@ -282,7 +418,7 @@ test('fixed report iframe permits print modals while keeping script and navigati
   assert.ok(!sandbox.some(value => value.startsWith('allow-top-navigation')));
 });
 
-async function reportPageHarness(exactResponse) {
+async function reportPageHarness(exactResponse, { scanId = 'scn_1', snapshotId = '', createResponse } = {}) {
   const fs = await import('node:fs'), vm = await import('node:vm'), { default: ts } = await import('typescript');
   const r = runtime(), states = [], refs = [], effects = [], calls = [], opened = [];
   let si = 0, ri = 0, ei = 0, dirty = true, tree, pending = [];
@@ -297,10 +433,10 @@ async function reportPageHarness(exactResponse) {
   };
   r.setFetch(async (url, init) => {
     calls.push({ url, method: init.method ?? 'GET', body: init.body && JSON.parse(init.body) });
-    if (url.endsWith('/assessments')) return Response.json({ items: [formalAssessment('latest', 22)] });
+    if (url.endsWith('/assessments')) return Response.json({ items: [{ ...formalAssessment('latest', 22), scan_id: scanId }] });
     if (url.includes('/remediation-tasks')) return Response.json({ schema_version: '1.0', items: [], next_cursor: null });
-    if (init.method === 'POST') return Response.json({ ...snapshot(), binding: { ...snapshot().binding, assessment_ref: { assessment_id: 'asm_old', version: 1 } }, artifacts: snapshot().artifacts.map(item => ({ ...item, href: item.href.replace('/asm_1/', '/asm_old/') })) });
-    return exactResponse();
+    if (init.method === 'POST') return createResponse ? createResponse() : Response.json({ ...snapshot(), binding: { ...snapshot().binding, assessment_ref: { assessment_id: 'asm_old', version: 1 } }, artifacts: snapshot().artifacts.map(item => ({ ...item, href: item.href.replace('/asm_1/', '/asm_old/') })) });
+    return exactResponse(url);
   });
   const m = { exports: {} };
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL('../src/pages/ReportV2.tsx', import.meta.url), 'utf8'), {
@@ -309,14 +445,18 @@ async function reportPageHarness(exactResponse) {
     : name === 'react/jsx-runtime' ? { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) }
     : name.endsWith('/components/ui') ? { Header: 'Header', Panel: 'Panel', ActionButton: 'button', useNotice: () => () => {} }
     : r.load(name.replace(/^\.\.\//, '') + '.ts') });
-  const props = { scan: { id: 'scn_1', mode: 'api' }, query: new URLSearchParams('assessment_id=asm_old'), open: (...ids) => opened.push(ids) };
+  const query = new URLSearchParams('assessment_id=asm_old');
+  if (snapshotId) query.set('snapshot_id', snapshotId);
+  const props = { scan: { id: scanId, mode: 'api' }, query, open: (...ids) => opened.push(ids) };
   async function settle() { for (let i = 0; i < 30; i++) { if (dirty) { dirty = false; si = ri = ei = 0; pending = []; tree = m.exports.ReportV2(props); for (const effect of pending) effect(); }
     await new Promise(resolve => setImmediate(resolve)); if (!dirty) return; } throw Error('component did not settle'); }
   await settle();
   return { calls, opened, settle, get tree() { return tree; }, get text() { return text(tree); },
-    get createButton() { return nodes(tree).find(n => n.type === 'button' && text(n).includes('创建并打开固定报告')); },
+    get createButton() { return nodes(tree).find(n => n.type === 'button' && /创建并打开固定报告|重试创建/.test(text(n))); },
     get selection() { return nodes(tree).find(n => n.type === 'select')?.props.value; },
     selectAssessment(value) { nodes(tree).find(n => n.type === 'select').props.onChange({ target: { value } }); },
+    get versionSelector() { return nodes(tree).find(n => n.type === 'select' && n.props.name === 'report-schema-version'); },
+    get iframe() { return nodes(tree).find(n => n.type === 'iframe'); },
     dispose() { effects.forEach(effect => effect.cleanup?.()); } };
 }
 
@@ -356,6 +496,55 @@ test('actual ReportV2 page creates against the exact old assessment and only exp
     assert.equal(posts.length, 1);
     assert.equal(posts[0].url, '/api/v1/scans/scn_1/assessments/asm_old/report-v2');
     assert.equal(h.opened[0][0], 'asm_old');
+  } finally { h.dispose(); }
+});
+
+test('page 1.1 opt-in keeps separate retry keys and does not fall back if new writes are disabled', async () => {
+  const h = await reportPageHarness(() => Response.json(formalAssessment()), { createResponse: () => Response.json({
+    error: { code: 'not_ready', message: 'blocked in this test', details: { reason: 'report_v2_1_1_write_disabled' } },
+  }, { status: 409 }) });
+  const posts = () => h.calls.filter(call => call.method === 'POST').map(call => call.body);
+  async function select(value) {
+    h.versionSelector.props.onChange({ target: { value } });
+    await h.settle();
+  }
+  try {
+    assert.equal(h.versionSelector.props.value, '1.0');
+    await h.createButton.props.onClick();
+    await h.settle();
+    assert.equal(Object.hasOwn(posts()[0], 'schema_version'), false);
+    await select('1.1');
+    assert.equal(posts().length, 1);
+    await h.createButton.props.onClick();
+    await h.settle();
+    assert.equal(posts().length, 2);
+    assert.equal(posts()[1].schema_version, '1.1');
+    assert.notEqual(posts()[0].idempotency_key, posts()[1].idempotency_key);
+    assert.match(h.text, /暂未开放新建含依赖证据/);
+    assert.deepEqual(h.opened, []);
+    await h.createButton.props.onClick();
+    await h.settle();
+    assert.deepEqual(posts()[2], posts()[1]);
+    await select('1.0');
+    await h.createButton.props.onClick();
+    assert.deepEqual(posts()[3], posts()[0]);
+    assert.equal(posts().length, 4);
+  } finally { h.dispose(); }
+});
+
+test('page reads a saved 1.1 report with server HTML and preserves the archived evidence summary', async () => {
+  const h = await reportPageHarness(url => {
+    if (url.endsWith('format=json')) return Response.json(dependencyFixture('asm_old'));
+    if (url.endsWith('format=html')) return new Response(archiveHtml, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+    return Response.json({ ...formalAssessment(), scan_id: archiveScanId });
+  }, { scanId: archiveScanId, snapshotId: 'rptv2_1' });
+  try {
+    assert.equal(h.iframe.props.srcDoc, archiveHtml);
+    assert.match(h.text, /依赖证据 · 已归档 3 项。归档证据存在缺口/);
+    assert.deepEqual(h.calls.filter(call => call.url.includes('/report-v2/')).map(call => [call.method, call.url]), [
+      ['GET', archivePath('asm_old') + '?format=json'], ['GET', archivePath('asm_old') + '?format=html'],
+    ]);
+    assert.ok(h.calls.every(call => call.method === 'GET'));
   } finally { h.dispose(); }
 });
 
