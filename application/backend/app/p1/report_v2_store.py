@@ -19,7 +19,14 @@ from urllib.parse import quote
 from uuid import UUID
 
 from .models import report_v2_snapshot_adapter
-from .report_v2_integrity import binding_identity, bound_fingerprint, strict_json, validate_document
+from .report_v2_dependency_evidence import MAX_REPORT_DOCUMENT_BYTES
+from .report_v2_integrity import (
+    binding_identity,
+    bound_fingerprint,
+    strict_json,
+    validate_document,
+    validate_html_appendix,
+)
 
 
 MAX_REPORT_SNAPSHOT_BYTES = 16 * 1024 * 1024
@@ -503,7 +510,8 @@ class ReportV2Store:
             )
 
         artifact_limit = self.max_artifact_bytes
-        if snapshot['schema_version'] == '1.1':
+        is_v11 = snapshot['schema_version'] == '1.1'
+        if is_v11:
             artifact_limit = MAX_REPORT_ARTIFACT_BYTES if stored else min(artifact_limit, MAX_REPORT_ARTIFACT_BYTES)
         elif stored:
             artifact_limit = max(artifact_limit, MAX_REPORT_ARTIFACT_BYTES)
@@ -524,7 +532,8 @@ class ReportV2Store:
                     "invalid_argument"
                 )
 
-            if len(payload) > artifact_limit:
+            if (len(payload) > artifact_limit
+                    or (is_v11 and format_name == 'json' and len(payload) > MAX_REPORT_DOCUMENT_BYTES)):
                 raise ReportV2StoreError(
                     "storage_capacity_exceeded"
                 )
@@ -548,6 +557,8 @@ class ReportV2Store:
 
         try:
             validate_document(snapshot, result['json'])
+            if is_v11:
+                validate_html_appendix(result['html'], result['json'])
         except (ValueError, KeyError, TypeError, RecursionError) as error:
             raise ReportV2StoreError('invalid_argument') from error
         return result

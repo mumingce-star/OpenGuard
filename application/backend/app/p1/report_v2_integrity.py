@@ -1,5 +1,6 @@
-"""A06-only immutable document validation; never reads live sources."""
+"""Immutable Report V2 validation; never reads live sources."""
 from datetime import datetime
+from html.parser import HTMLParser
 import hashlib
 import json
 import re
@@ -30,7 +31,7 @@ def strict_snapshot(value):
     return value
 
 
-def strict_json(payload):
+def strict_json(payload, *, require_canonical=False):
     def pairs(items):
         result={}
         for key,val in items:
@@ -41,7 +42,9 @@ def strict_json(payload):
     try:
         value=json.loads(payload.decode('utf-8'),object_pairs_hook=pairs,parse_constant=constant)
         # Reject overflow floats (e.g. 1e999) as well as named NaN/Infinity.
-        canonical(value)
+        canonical_payload = canonical(value)
+        if require_canonical and canonical_payload != payload:
+            raise ValueError('report_document_not_canonical')
         return value
     except (RecursionError,UnicodeError,OverflowError) as error:
         raise ValueError('report_json_invalid') from error
@@ -72,7 +75,7 @@ def binding_identity(binding, *, schema_version='1.0'):
 
 
 def validate_document(snapshot,payload):
-    document=strict_json(payload)
+    document = strict_json(payload, require_canonical=snapshot['schema_version'] == '1.1')
     common={k:v for k,v in snapshot.items() if k not in {'content_hash','artifacts','sections'}}
     if not isinstance(document,dict) or set(document)!=set(common)|{'sections'}:
         raise ValueError('report_document_structure')
@@ -90,6 +93,59 @@ def validate_document(snapshot,payload):
     validate_full_sections(snapshot,rows)
     for item in snapshot['artifacts']:
         if item['href']!=base+'?format='+item['format']:raise ValueError('report_artifact_scope')
+
+
+class _ReportAppendix(HTMLParser):
+    """Read the one archived, text-only report document appendix."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.found = False
+        self.open = False
+        self.parts: list[str] = []
+
+    def handle_starttag(self, tag, attrs):
+        self._reject_nested_markup()
+        ids = [value for name, value in attrs if name == 'id']
+        if 'report-document' in ids:
+            if tag != 'pre' or self.found or len(ids) != 1:
+                raise ValueError('report_html_appendix_invalid')
+            self.found = True
+            self.open = True
+
+    def handle_endtag(self, tag):
+        if self.open:
+            if tag != 'pre':
+                raise ValueError('report_html_appendix_invalid')
+            self.open = False
+
+    def handle_data(self, data):
+        if self.open:
+            self.parts.append(data)
+
+    def _reject_nested_markup(self, *_args):
+        if self.open:
+            raise ValueError('report_html_appendix_invalid')
+
+    handle_comment = _reject_nested_markup
+    handle_decl = _reject_nested_markup
+    handle_pi = _reject_nested_markup
+    unknown_decl = _reject_nested_markup
+
+
+def validate_html_appendix(html_payload: bytes, json_payload: bytes) -> None:
+    """Compare the escaped HTML appendix with the already validated canonical JSON."""
+    parser = _ReportAppendix()
+    try:
+        parser.feed(html_payload.decode('utf-8'))
+        parser.close()
+    except (AssertionError, UnicodeError) as error:
+        raise ValueError('report_html_appendix_invalid') from error
+    if not parser.found or parser.open:
+        raise ValueError('report_html_appendix_invalid')
+    appendix = strict_json(''.join(parser.parts).encode('utf-8'))
+    if canonical(appendix) != json_payload:
+        raise ValueError('report_html_appendix_mismatch')
 
 
 def validate_full_sections(snapshot, rows):

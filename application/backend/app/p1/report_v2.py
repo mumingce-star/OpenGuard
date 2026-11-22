@@ -127,9 +127,12 @@ def _render_json(document: dict) -> bytes:
 
 def _render_html(document: dict) -> bytes:
     """Present the same fixed document; never mutate facts or regenerate AI."""
-    from .report_v2_html import render_report_html
+    from .report_v2_html import ReportHTMLCapacityError, render_report_html
 
-    return render_report_html(document)
+    try:
+        return render_report_html(document)
+    except ReportHTMLCapacityError as error:
+        raise ReportV2ServiceError("upstream_unavailable", reason="storage_capacity_exceeded") from error
 
 
 class ReportV2Service:

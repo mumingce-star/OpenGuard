@@ -7,12 +7,21 @@ is retained, escaped, in a closed appendix. Escaping is not secret redaction.
 from __future__ import annotations
 
 from collections import Counter
+from collections.abc import Iterable, Iterator
 import html
+from itertools import chain
 import json
 
 from app.assessment.review_groups import review_view
 
+from .models import REPORT_DEPENDENCY_EVIDENCE_SCHEMA
+from .report_v2_store import MAX_REPORT_ARTIFACT_BYTES
+
 HTML_RENDERER_VERSION = "report-v2-html/1.2"
+
+
+class ReportHTMLCapacityError(ValueError):
+    """The escaped HTML attachment exceeds its stored byte limit."""
 
 DIMENSIONS = {
     "commercial": "商业使用",
@@ -225,6 +234,95 @@ def _notice_summary(document: dict) -> str:
     return ''.join(parts)
 
 
+DEPENDENCY_SOURCES = {"manifest": "Manifest", "lock": "Lock", "sbom": "SBOM", "unknown": "未知"}
+
+
+def _dependency_fields(fields: Iterable[tuple[str, object]]) -> str:
+    return "<dl>" + "".join(
+        f"<dt>{label}</dt><dd><code>{_esc(value if value is not None else '未记录')}</code></dd>"
+        for label, value in fields
+    ) + "</dl>"
+
+
+def _dependency_refs(refs: list[dict]) -> Iterator[str]:
+    if not refs:
+        yield "<p>本处未记录可展示的证据。</p>"
+        return
+    yield "<ul>"
+    for ref in refs:
+        producer = ref["producer"]
+        yield "<li>" + _dependency_fields((
+            ("Evidence ID", ref["evidence_id"]),
+            ("来源", DEPENDENCY_SOURCES[ref["source"]]),
+            ("原始文件", ref["file_path"]),
+            ("原始 SHA-256", ref["source_sha256"]),
+            ("Producer", f'{producer["name"]} {producer["version"]} ({producer["type"]})'),
+            ("原始核验状态", ref["verification_status"]),
+        )) + "</li>"
+    yield "</ul>"
+
+
+def _dependency_conflict(conflict: dict) -> Iterator[str]:
+    yield f'<details class="notice"><summary>版本冲突 · {_esc(conflict["status"])}</summary>'
+    if conflict["gaps"]:
+        yield "<p>缺口</p>" + _items(conflict["gaps"])
+    for key, label in (("declaration", "声明侧"), ("lock", "锁文件侧")):
+        yield f"<h3>{label}</h3>"
+        side = conflict[key]
+        if side is None:
+            yield "<p>此侧缺少可定位的证据。</p>"
+        else:
+            yield _dependency_fields((("版本", side["version"]), ("资源 ID", side["resource_id"])))
+            availability = "不完整" if side["incomplete"] else "已列出记录"
+            yield f'<p>{availability} · 证据 {side["evidence_returned"]}/{side["evidence_total"]}</p>'
+            yield from _dependency_refs(side["evidence"])
+    yield "</details>"
+
+
+def _dependency_evidence_parts(document: dict) -> Iterator[str]:
+    sections = [
+        section["content"] for section in document["sections"]
+        if section["authority"] == "observation" and section["schema_version"] == REPORT_DEPENDENCY_EVIDENCE_SCHEMA
+    ]
+    if len(sections) != 1:
+        raise ValueError("report_html_dependency_evidence_invalid")
+    section = sections[0]
+    yield '<section class="panel" id="report-dependency-evidence"><h2>依赖证据</h2>'
+    yield f'<p>同一扫描的 {section["total"]} 条依赖资源 · 扫描覆盖范围未知</p>'
+    if section["incomplete"]:
+        yield '<p class="notice">此处证据不完整。原有缺口及各项返回数量均保留。</p>'
+    if not section["items"]:
+        yield "<p>本次扫描未记录可归档的依赖资源。</p>"
+    for item in section["items"]:
+        sources = " / ".join(DEPENDENCY_SOURCES[source] for source in item["sources"])
+        version = item["version"] if item["version"] is not None else "版本未记录"
+        yield (
+            f'<details><summary>{_esc(item["name"])} · {_esc(version)} · {_esc(sources)} · '
+            f'{_esc(item["role_state"])}</summary>'
+        )
+        yield _dependency_fields((("资源 ID", item["resource_id"]), ("生态", item["ecosystem"])))
+        if item["gaps"]:
+            yield "<p>证据缺口</p>" + _items(item["gaps"])
+        yield f'<p>证据 {item["evidence_returned"]}/{item["evidence_total"]}</p>'
+        yield from _dependency_refs(item["evidence"])
+        if item["conflicts_total"]:
+            yield f'<p>版本冲突 {item["conflicts_returned"]}/{item["conflicts_total"]}</p>'
+        for conflict in item["conflicts"]:
+            yield from _dependency_conflict(conflict)
+        yield "</details>"
+    yield "</section>"
+
+
+def _bounded_html(parts: Iterable[str]) -> bytes:
+    output = bytearray()
+    for part in parts:
+        chunk = part.encode("utf-8")
+        if len(output) + len(chunk) > MAX_REPORT_ARTIFACT_BYTES:
+            raise ReportHTMLCapacityError("report_html_capacity_exceeded")
+        output.extend(chunk)
+    return bytes(output)
+
+
 def render_report_html(document: dict) -> bytes:
     """Render a saved-content document without modifying it or opening sources."""
     assessment = _one_content(document, "formal_assessment")
@@ -233,8 +331,9 @@ def render_report_html(document: dict) -> bytes:
     ai = _one_content(document, "ai_explanation")
     if assessment.get("formal") is not True:
         raise ValueError("report_html_assessment_not_formal")
-    # Validate that the complete appendix is serializable before rendering.
-    raw = json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False)
+    versioned = document.get("schema_version") == "1.1"
+    # Keep the original 1.0 rendering path. New reports bound the escaped appendix as it is emitted.
+    raw = None if versioned else json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False)
     view = review_view(assessment)
     binding = document["binding"]
     usage = assessment.get("usage", {}).get("preset", "unknown")
@@ -292,11 +391,18 @@ def render_report_html(document: dict) -> bytes:
     parts.append('<section class="panel"><h2>本次扫描记录概览</h2>'
                  f'<div class="task-grid">{stats}</div><p class="muted">'
                  '规则发现记录不全是违规；AI 资产零记录也不证明不存在 AI 资产。</p></section>')
-    parts.append('<section class="panel"><h2>完整依据与版本信息</h2>'
-                 '<p>资源明细、证据、原始字段、链接和哈希在下方保留；默认折叠，不删除。'
-                 '折叠不是脱敏，分享报告前仍需检查原始证据。</p>'
-                 '<details id="report-full-document"><summary>展开完整固定快照与技术依据</summary>'
-                 f'<pre id="report-document">{_esc(raw)}</pre></details></section>')
-    parts.append('<footer>这是一份历史固定版本报告，不是实时页面。'
-                 '后续任务或评估变化不会修改本报告；需要新内容时请显式生成新报告。</footer></body></html>')
+    appendix_start = ('<section class="panel"><h2>完整依据与版本信息</h2>'
+                      '<p>资源明细、证据、原始字段、链接和哈希在下方保留；默认折叠，不删除。'
+                      '折叠不是脱敏，分享报告前仍需检查原始证据。</p>'
+                      '<details id="report-full-document"><summary>展开完整固定快照与技术依据</summary>'
+                      '<pre id="report-document">')
+    appendix_end = ('</pre></details></section><footer>这是一份历史固定版本报告，不是实时页面。'
+                    '后续任务或评估变化不会修改本报告；需要新内容时请显式生成新报告。</footer></body></html>')
+    if versioned:
+        encoder = json.JSONEncoder(ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False)
+        appendix = (_esc(part) for part in encoder.iterencode(document))
+        return _bounded_html(chain(
+            parts, _dependency_evidence_parts(document), (appendix_start,), appendix, (appendix_end,),
+        ))
+    parts.extend((appendix_start, _esc(raw), appendix_end))
     return "".join(parts).encode("utf-8")
