@@ -428,7 +428,7 @@ test('TASK36 nonempty saved compatibility candidate and old preliminary support 
  const savedRender=task36NamedComponent(source,'SavedAdviceMainCard',{selectBoundSavedAdvice:p2.selectBoundSavedAdvice,usageFields:names,gapLabel:p2.gapLabel});
  const savedTree=savedRender(f),savedText=renderedText(savedTree);
  assert.match(savedText,/已保存的兼容性条件候选/);
- assert.match(savedText,/不是新版 v3 材料来源闭包结论/);
+ assert.match(savedText,/不是新版 v4 材料来源闭包结论/);
  assert.match(savedText,/不能覆盖新版 UNKNOWN、COUNTER_EVIDENCE 或 NOTICE 阻塞/);
  assert.match(savedText,/不表示已获许可/);
  for(const row of selected.rows){

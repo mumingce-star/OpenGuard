@@ -53,21 +53,24 @@ export function P2Workbench({assessment:a,scan,readOnly=false}:{assessment:Asses
  const [officialBusy,setOfficialBusy]=useState(false),[automaticAnalysisId,setAutomaticAnalysisId]=useState<string|null>(null);
  useEffect(()=>{setOfficialBusy(false);setAutomaticAnalysisId(null);},[a.scan_id,a.id,a.version,result?.result_id]);
  const [preliminary,setPreliminary]=useState<PreliminaryAdvice|null>(null),[preliminaryError,setPreliminaryError]=useState(''),[preliminaryLoading,setPreliminaryLoading]=useState(false);
+ const [preliminaryRequestedScope,setPreliminaryRequestedScope]=useState<string|null>(null);
+ const materialScope=materialScopeFor(a,binding,result);
  useEffect(()=>{
-  // Saved Result state may still belong to the previous Assessment until its
-  // fixed read settles. Never dispatch a derived GET across that parent boundary.
+  // The MIT-only compatibility route is independent of the v4 material view.
+  // Get it only after the user opens the disclosure for this exact Result.
   const belongsToAssessment=!!result&&result.binding.scan_id===a.scan_id&&result.binding.assessment_id===a.id&&result.binding.assessment_version===a.version;
-  const c=new AbortController();setPreliminary(null);setPreliminaryError('');setPreliminaryLoading(belongsToAssessment);
-  if(result&&belongsToAssessment)void readPreliminaryAdvice(a,result,c.signal).then(v=>{if(!c.signal.aborted)setPreliminary(v);}).catch(e=>{if(!c.signal.aborted)setPreliminaryError(e instanceof Error?e.message:'初评读取失败。');}).finally(()=>{if(!c.signal.aborted)setPreliminaryLoading(false);});
+  const requested=belongsToAssessment&&preliminaryRequestedScope===materialScope;
+  const c=new AbortController();setPreliminary(null);setPreliminaryError('');setPreliminaryLoading(requested);
+  if(result&&requested)void readPreliminaryAdvice(a,result,c.signal).then(v=>{if(!c.signal.aborted)setPreliminary(v);}).catch(e=>{if(!c.signal.aborted)setPreliminaryError(e instanceof Error?e.message:'初评读取失败。');}).finally(()=>{if(!c.signal.aborted)setPreliminaryLoading(false);});
   return()=>c.abort();
- },[a.scan_id,a.id,a.version,result?.result_id]);
+ },[a.scan_id,a.id,a.version,result?.result_id,materialScope,preliminaryRequestedScope]);
  const [errorStatus,setErrorStatus]=useState<number|null>(null),[downloadBusy,setDownloadBusy]=useState(false);
  const alive=useRef(true),lock=useRef(false);
  useEffect(()=>{const warn=(e:BeforeUnloadEvent)=>{if(pending){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn);},[pending]);
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  const currentHead=!!result&&index?.head_result_id===result.result_id;
+ const writesBlocked=readOnly||!!result&&!currentHead;
  const editable=!usagePending&&!readOnly&&!busy&&!officialBusy&&!loading&&!!binding&&currentHead&&!pending;
- const materialScope=materialScopeFor(a,binding,result);
  // GET cancellation owns only inspection state; it never cancels a sent POST or clears its receipt.
  // Commit-time epochs also reject A→B→A late reads; abandoned renders do not revoke authority.
  useLayoutEffect(()=>{
@@ -105,7 +108,7 @@ export function P2Workbench({assessment:a,scan,readOnly=false}:{assessment:Asses
   return()=>c.abort();
  },[a.id,a.version,reload]);
  async function submit(p:PendingWrite,materialContext?:string){
-  if(readOnly||lock.current||!binding)return;lock.current=true;setBusy(true);setError('');setErrorStatus(null);setNotice('');setPending(p);
+  if(writesBlocked||lock.current||!binding)return;lock.current=true;setBusy(true);setError('');setErrorStatus(null);setNotice('');setPending(p);
   // A sent request is still consumed by the original Service. A different
   // target must not receive its UI success/Result; readonly alone is no rollback.
   const onMaterialTarget=(scope=materialContext)=>!scope||(materialAuthority.current.mounted&&materialAuthority.current.scope===scope);
@@ -121,7 +124,8 @@ export function P2Workbench({assessment:a,scan,readOnly=false}:{assessment:Asses
   }catch(e){if(alive.current&&onMaterialTarget())showError(e,true);else detachMaterialPending();}finally{lock.current=false;if(alive.current)setBusy(false);}
  }
  function write(operation:PendingWrite['operation'],extra:Record<string,unknown>={},materialPermit?:MaterialWritePermit){
-  if(!binding||pending||busy||officialBusy||usagePending||readOnly)return false;
+  if(!binding||pending||busy||officialBusy||usagePending||loading||writesBlocked)return false;
+  if(operation==='results'?!!result:!currentHead)return false;
   // No await between this one-shot check, fixed CAS/key preparation and POST.
   if(operation==='materials'&&(lock.current||!materialPermit?.consume()))return false;
   void submit(prepareWrite(operation,binding,result,crypto.randomUUID(),extra),operation==='materials'?materialScope:undefined);return true;
@@ -145,7 +149,7 @@ export function P2Workbench({assessment:a,scan,readOnly=false}:{assessment:Asses
  const uniqueGaps=[...new Set((result?.resources??[]).flatMap(r=>r.gaps))];
  const displayedMaterial=inspectedMaterial&&inspectedMaterial.scope===materialScope&&inspectedMaterial.epoch===materialReadAuthority.current.epoch?inspectedMaterial.value
   :lastMaterial&&lastMaterialResultId===result?.result_id&&result.material_ids.includes(lastMaterial.material_id)?lastMaterial:null;
- return <section className="p2-workbench" aria-label="用途与材料工作台">
+ return <section className="p2-workbench" aria-label="用途与材料工作台" data-p5-write-mode={readOnly?'read-only':result&&!currentHead?'historical':'current'}>
   <div className="p2-identity-bar">
   <div className="p2-context"><span className="p2-context-label">已保存评估</span><span>用途版本 {a.version}{result?` · 材料结果 r${result.revision}`:''}</span>{result?.data_scope==='TEST_ONLY'&&<span>隔离验收数据</span>}</div>
   {result&&<nav className="p2-primary-next" aria-label="继续完善当前评估"><a href="#p2-optional-supplement" onClick={()=>{setSupplementOpen(true);setTab('answer');}}>修改用途并更新评估</a><a href="#p2-optional-supplement" onClick={()=>{setSupplementOpen(true);setTab('material');}}>补充 LICENSE / NOTICE</a><span>保存会形成新版本，旧版保持可读。</span></nav>}
@@ -153,7 +157,7 @@ export function P2Workbench({assessment:a,scan,readOnly=false}:{assessment:Asses
   {loading&&<LoadingDots label="正在读取当前对象的已保存结果…" />}
   {error&&<div className="p2-message p2-error" role="alert"><p>{error}</p><button disabled={busy||loading} onClick={()=>void refreshHead()}>读取当前版本</button></div>}
   {notice&&<p className="p2-message p2-success" role="status">{notice}</p>}
-  {pending&&<div className="p2-message p2-pending"><strong>保留待确认的原请求</strong><p>请求键和请求内容均未改变。先读取结果；不确定是否送达时，可显式重发同一请求。不会自动重试。</p><div className="p2-actions"><button disabled={busy||loading} onClick={()=>void refreshHead()}>核对服务器已保存结果</button><button disabled={busy||loading||readOnly||!canReplayWrite(a)} onClick={()=>void submit(pending)}>使用原请求再次确认</button><button disabled={busy||loading||!canClearWrite(a)} onClick={()=>{clearPendingWrite(a);setPending(null);setError('');setNotice('已结束该请求的本地待确认状态；服务器旧结果保持不变。新操作将使用当前版本。');}}>结束待确认，准备新操作</button></div></div>}
+  {pending&&<div className="p2-message p2-pending"><strong>保留待确认的原请求</strong><p>请求键和请求内容均未改变。先读取结果；不确定是否送达时，可显式重发同一请求。不会自动重试。</p><div className="p2-actions"><button disabled={busy||loading} onClick={()=>void refreshHead()}>核对服务器已保存结果</button><button disabled={busy||loading||writesBlocked||!canReplayWrite(a)} onClick={()=>void submit(pending)}>使用原请求再次确认</button><button disabled={busy||loading||!canClearWrite(a)} onClick={()=>{clearPendingWrite(a);setPending(null);setError('');setNotice('已结束该请求的本地待确认状态；服务器旧结果保持不变。新操作将使用当前版本。');}}>结束待确认，准备新操作</button></div></div>}
   {!result&&!loading&&!error&&<div className="p2-main-card"><div className="p2-step">01 / 已完成扫描与正式评估</div><h2>从资源清单，进入用途与材料核对</h2><p>为当前评估生成独立结果，按资源查看用途依据、待确认范围和材料缺口。</p><p className="p2-muted">本次结果由确定性规则计算，保留来源证据；不调用 Qwen，也不会改变正式评估。</p><ActionButton className="p2-primary" aria-busy={busy} disabled={!binding||busy||readOnly||!!pending} onClick={()=>write('results')}>{busy?'正在保存…':'生成本次用途核对结果'}</ActionButton></div>}
   {result&&<>
 
@@ -167,14 +171,14 @@ export function P2Workbench({assessment:a,scan,readOnly=false}:{assessment:Asses
     <section className="p2-v3-claim" id="p2-claim" tabIndex={-1} aria-label="材料与用途证据链"><div className="p2-v3-claim-body">
      <MaterialClaimsPanel key={materialScope} assessment={a} result={result} resourceName={resourceName} declarationSnapshot={scan.declarationSnapshot}/>
     </div></section>
-    <aside className="p2-v3-binding"><header><h2>增量追踪与材料绑定</h2><span>用途 v{a.version} · 结果 r{result.revision}</span></header><div className="p2-v3-timeline"><article><strong>Revision r{result.revision} · 当前固定结果</strong><p>{result.recomputed_resource_ids.length} 个资源重算；{result.reused_resource_ids.length} 个资源复用，不全局覆盖。</p></article>{result.previous_result_id&&<article><strong>Revision r{result.revision-1} · 上版快照</strong><a href={resultPageUrl(a,result.previous_result_id)}>读取前版不可变结果 →</a></article>}</div><section id="p2-material-bind" tabIndex={-1}><h3>补充精确版本的原文材料</h3><p className="p2-muted">UTF-8 LICENSE / NOTICE，单份最多 64 KiB；仍需明确选择资源与关联证据。</p><MaterialForm key={result.result_id} result={result} scan={scan} disabled={!editable} acquirePermit={acquireMaterialPermit} onSubmit={(extra,permit)=>write('materials',extra,permit)}/></section></aside>
+    <aside className="p2-v3-binding"><header><h2>增量追踪与材料绑定</h2><span>用途 v{a.version} · 结果 r{result.revision}</span></header><div className="p2-v3-timeline"><article><strong>Revision r{result.revision} · 当前固定结果</strong><p>{result.recomputed_resource_ids.length} 个资源重算；{result.reused_resource_ids.length} 个资源复用，不全局覆盖。</p></article>{result.previous_result_id&&<article><strong>Revision r{result.revision-1} · 上版快照</strong><a href={resultPageUrl(a,result.previous_result_id)}>读取前版不可变结果 →</a></article>}</div><section id="p2-material-bind" tabIndex={-1}><h3>补充精确版本的原文材料</h3><p className="p2-muted">支持完整 MIT 与 Apache-2.0 文本。NOTICE 需人工核对。原文件限 UTF-8、单份最多 64 KiB，请明确选择资源与关联证据。</p><MaterialForm key={result.result_id} result={result} scan={scan} disabled={!editable} acquirePermit={acquireMaterialPermit} onSubmit={(extra,permit)=>write('materials',extra,permit)}/></section></aside>
    </div>
    <SavedAdviceMainCard assessment={a} binding={binding} result={result} scan={scan}/>
-   {p2AiEnabled&&(!officialSourcesEnabled||result.material_ids.length>0)&&<P2AiAnalysis assessment={a} result={result} scan={scan} readOnly={readOnly} automatic={officialSourcesEnabled} automaticAnalysisId={automaticAnalysisId} disabled={loading||busy||officialBusy||!!pending||usagePending} onAddMaterial={()=>{setSupplementOpen(true);setTab('material');document.getElementById('p2-optional-supplement')?.scrollIntoView({behavior:'smooth',block:'start'});}}/>}
+   {p2AiEnabled&&(!officialSourcesEnabled||result.material_ids.length>0)&&<P2AiAnalysis assessment={a} result={result} scan={scan} readOnly={writesBlocked} automatic={officialSourcesEnabled} automaticAnalysisId={automaticAnalysisId} disabled={loading||busy||officialBusy||!!pending||usagePending} onAddMaterial={()=>{setSupplementOpen(true);setTab('material');document.getElementById('p2-optional-supplement')?.scrollIntoView({behavior:'smooth',block:'start'});}}/>}
    <div id="p2-sources" tabIndex={-1} className="p2-source-section">{officialSourcesEnabled&&<div className="p2-official-column"><OfficialSources assessment={a} result={result} readOnly={readOnly} disabled={loading||busy||!!pending||usagePending||!currentHead} onAdoptingChange={setOfficialBusy} onReadSavedResult={()=>void refreshHead()} onAnalysisSaved={setAutomaticAnalysisId} onAdopt={receipt=>{setOfficialBusy(false);setResult(receipt.result);pin(receipt.result);setLastMaterial(receipt.material);setLastMaterialResultId(receipt.result.result_id);setNotice('已明确采用 LICENSE，保存新的待核验材料与结果；旧结果保持不变。辅助分析以实际保存状态为准。');setIndex(i=>({head_result_id:receipt.result.result_id,head_revision:receipt.result.revision,result_ids:[receipt.result.result_id,...(i?.result_ids??[]).filter(x=>x!==receipt.result.result_id)],has_more:i?.has_more??false}));}}/></div>}</div>
    {!currentHead&&<p className="p2-message p2-pending">正在查看不可变历史结果 r{result.revision}。写入仅允许当前版本。<button disabled={loading||busy} onClick={()=>void refreshHead()}>查看当前结果 r{index?.head_revision}</button></p>}
    {preliminaryError&&<p className="p2-message p2-error" role="alert">已有材料初评暂未读回：{preliminaryError} 已保存结果仍可查看。</p>}
-   <details className="p2-detail p2-prior-evidence"><summary aria-label="兼容性初评与历史判断依据">查看已有材料初评与判断依据</summary>
+   <details key={materialScope} className="p2-detail p2-prior-evidence" onToggle={event=>{if(event.currentTarget.open)setPreliminaryRequestedScope(materialScope);}}><summary aria-label="兼容性初评与历史判断依据">查看已有材料初评与判断依据</summary>
     <div className="p2-main-card p2-advice-main"><div className="p2-step">兼容性初评 · 不替代新版证据链</div>
      <h2>{preliminary?.supported_resource_ids.length?`${preliminary.supported_resource_ids.length} 个资源具有旧规则条件初评`:preliminaryLoading?'正在核对材料支持的用途范围':'先确定有依据的范围，再推进项目使用'}</h2>
      <p>{preliminary?.supported_resource_ids.length?'旧初评记录了完整许可文本与发行版本的对应；尚未完整检查发行包内未上传的NOTICE，不能据此认定可分发。':observedResources.length?'已保存的材料正在按对象、版本与完整条款核对。':'当前结果保留所有资源的证据；补入完整许可材料后，可形成相应资源的条件初评。'}</p>
@@ -192,7 +196,7 @@ export function P2Workbench({assessment:a,scan,readOnly=false}:{assessment:Asses
     {<>
      <p className="p2-optional-intro">可跳过；可直接阅读已有扫描与评估结果，补充项目实际情况可提高针对性。</p>
      <div className="p2-optional-actions" aria-label="选择可选补充内容"><button className={tab==='answer'?'is-active':''} aria-pressed={tab==='answer'} onClick={()=>setTab('answer')}>补充项目用途</button><button className={tab==='material'?'is-active':''} aria-pressed={tab==='material'} onClick={()=>setTab('material')}>补充 LICENSE / NOTICE</button><button className="p2-return-result" onClick={()=>{setSupplementOpen(false);setTab('result');}}>返回评估结果</button></div>
-   <div hidden={tab!=='answer'}><ProjectUsageEditor assessment={a} readOnly={readOnly} disabled={busy||officialBusy||loading||!!pending} onPendingChange={setUsagePending}/><details className="project-usage-advanced"><summary>高级补充：逐资源交付与声明履行（可选）</summary><section className="p2-main-card"><div className="p2-step">高级补充 · 资源级声明</div><h2>需要精确到个别组件时再填写</h2><p>系统已按当前资源整理为 {result.questions.length} 个问题。每次回答明确覆盖对象；未选中的对象继续未知。</p>{result.questions.length?result.questions.map(q=><AnswerForm key={result.result_id+q.question_id} question={q} result={result} disabled={!editable} resourceName={resourceName} onSubmit={extra=>write('answers',extra)}/>):<p>当前结果没有待回答问题，仍可补充与资源绑定的材料。</p>}</section></details></div>
+   <div hidden={tab!=='answer'}><ProjectUsageEditor assessment={a} readOnly={writesBlocked} disabled={busy||officialBusy||loading||!!pending} onPendingChange={setUsagePending}/><details className="project-usage-advanced"><summary>高级补充：逐资源交付与声明履行（可选）</summary><section className="p2-main-card"><div className="p2-step">高级补充 · 资源级声明</div><h2>需要精确到个别组件时再填写</h2><p>系统已按当前资源整理为 {result.questions.length} 个问题。每次回答明确覆盖对象；未选中的对象继续未知。</p>{result.questions.length?result.questions.map(q=><AnswerForm key={result.result_id+q.question_id} question={q} result={result} disabled={!editable} resourceName={resourceName} onSubmit={extra=>write('answers',extra)}/>):<p>当前结果没有待回答问题，仍可补充与资源绑定的材料。</p>}</section></details></div>
    {tab==='material'&&<section className="p2-main-card"><h2>把材料绑定到准确资源与版本</h2><a href="#p2-material-bind" onClick={e=>navigateAssessmentSection(e,'p2-material-bind')}>前往原文材料表单 →</a></section>}
     </>}
    </details>
@@ -238,7 +242,7 @@ function MaterialForm({result,scan,disabled,acquirePermit,onSubmit}:{result:Resu
    form.setAttribute('aria-busy','false');if(form.isConnected)setReading(false);
   }
  }
- return <form className="p2-material-form" onSubmit={e=>void submit(e)}><fieldset disabled={disabled||reading}><label>目标资源与精确版本<select required value={resourceId} onChange={e=>{setResourceId(e.target.value);setEvidenceIds([]);setError('');}}><option value="">请选择材料所属资源</option>{result.resources.map(r=><option key={r.subject.resource_id} value={r.subject.resource_id} disabled={!eligible(r)}>{scan.resources.find(x=>x.id===r.subject.resource_id)?.name??r.subject.resource_id} @ {r.subject.version??'版本未确定'}{!eligible(r)?'（需先确认精确版本与证据）':''}</option>)}</select></label>{row&&<fieldset><legend>明确关联当前资源证据</legend><div className="p2-subjects">{row.evidence_ids.map(id=><Checkbox compact key={id} checked={evidenceIds.includes(id)} disabled={!evidenceIds.includes(id)&&evidenceIds.length>=100} onChange={e=>setEvidenceIds(v=>e.target.checked?[...v,id]:v.filter(x=>x!==id))}><span>{scan.evidence.find(e=>e.id===id)?.label??'已绑定证据'}<small>{scan.evidence.find(e=>e.id===id)?.path??id}</small></span></Checkbox>)}</div></fieldset>}<label>LICENSE / NOTICE 原文件<input type="file" accept=".txt,.md,.rst,text/plain" onChange={e=>{setFile(e.target.files?.[0]??null);setError('');}}/></label>{file&&<p>{file.name} · {file.size.toLocaleString()} 字节（提交前计算原字节 SHA256，不截断）</p>}<label>来源说明<input required maxLength={512} value={description} onChange={e=>setDescription(e.target.value)} placeholder="例如：官方发行包 package/LICENSE；请填写实际来源"/></label><label>材料完整性<select value={completeness} onChange={e=>setCompleteness(e.target.value as typeof completeness)}><option value="FULL_TEXT_CLAIMED">我提交的是完整原文（仍待独立审核）</option><option value="EXCERPT">仅提交片段（保留完整性缺口）</option></select></label><ActionButton kind="send" className="p2-primary" type="submit" aria-busy={reading} disabled={!row||!eligible(row)||!file||!description.trim()||!evidenceIds.length}>{reading?'正在核对文件…':'绑定材料并生成新版本'}</ActionButton></fieldset>{error&&<p className="p2-error" role="alert">{error}</p>}<p className="p2-muted">根目录的 LICENSE 不自动覆盖所有依赖。材料只绑定所选资源及该精确版本。</p></form>;
+ return <form className="p2-material-form" aria-label="补充 LICENSE 或 NOTICE 原文" data-p5-upload-form="" onSubmit={e=>void submit(e)}><fieldset disabled={disabled||reading}><label>目标资源与精确版本<select required value={resourceId} onChange={e=>{setResourceId(e.target.value);setEvidenceIds([]);setError('');}}><option value="">请选择材料所属资源</option>{result.resources.map(r=><option key={r.subject.resource_id} value={r.subject.resource_id} disabled={!eligible(r)}>{scan.resources.find(x=>x.id===r.subject.resource_id)?.name??r.subject.resource_id} @ {r.subject.version??'版本未确定'}{!eligible(r)?'（需先确认精确版本与证据）':''}</option>)}</select></label>{row&&<fieldset><legend>明确关联当前资源证据</legend><div className="p2-subjects">{row.evidence_ids.map(id=><Checkbox compact key={id} checked={evidenceIds.includes(id)} disabled={!evidenceIds.includes(id)&&evidenceIds.length>=100} onChange={e=>setEvidenceIds(v=>e.target.checked?[...v,id]:v.filter(x=>x!==id))}><span>{scan.evidence.find(e=>e.id===id)?.label??'已绑定证据'}<small>{scan.evidence.find(e=>e.id===id)?.path??id}</small></span></Checkbox>)}</div></fieldset>}<label>LICENSE / NOTICE 原文件<input type="file" accept=".txt,.md,.rst,text/plain" onChange={e=>{setFile(e.target.files?.[0]??null);setError('');}}/></label>{file&&<p>{file.name} · {file.size.toLocaleString()} 字节（提交前计算原字节 SHA256，不截断）</p>}<label>来源说明<input required maxLength={512} value={description} onChange={e=>setDescription(e.target.value)} placeholder="例如：官方发行包 package/LICENSE；请填写实际来源"/></label><label>材料完整性<select value={completeness} onChange={e=>setCompleteness(e.target.value as typeof completeness)}><option value="FULL_TEXT_CLAIMED">我提交的是完整原文（仍待独立审核）</option><option value="EXCERPT">仅提交片段（保留完整性缺口）</option></select></label><ActionButton kind="send" className="p2-primary" type="submit" aria-busy={reading} disabled={!row||!eligible(row)||!file||!description.trim()||!evidenceIds.length}>{reading?'正在核对文件…':'绑定材料并生成新版本'}</ActionButton></fieldset>{error&&<p className="p2-error" role="alert">{error}</p>}<p className="p2-muted">根目录的 LICENSE 不自动覆盖所有依赖。材料只绑定所选资源及该精确版本。</p></form>;
 }
 
 
@@ -255,12 +259,12 @@ function SavedAdviceMainCard({assessment,binding,result,scan}:{assessment:Assess
  };
  return <section id="p2-actions" tabIndex={-1} className="p2-main-card" data-bound-advice-maincard="" data-result-id={result.result_id} data-result-revision={result.revision} aria-label="已保存的兼容性条件候选">
   <div className="p2-step">历史保存结果 · 兼容性候选</div><h2>已保存的兼容性条件候选</h2>
-  <p className="p2-advice-intro">以下内容来自当前查看的历史 Result，不是新版 v3 材料来源闭包结论；保留原有条件及缺口，不表示已获许可。</p>
+  <p className="p2-advice-intro">以下内容来自当前查看的历史 Result，不是新版 v4 材料来源闭包结论；保留原有条件及缺口，不表示已获许可。</p>
   <p className="p2-scope-note" data-saved-candidate-boundary>历史兼容性条件候选不能覆盖新版 UNKNOWN、COUNTER_EVIDENCE 或 NOTICE 阻塞；新旧状态不一致时，不能据此放行用途。请分别核对两种结果的来源与适用范围。</p>
   <details className="p2-inline-boundary"><summary>本版建议的依据与边界</summary><p>仅展示本版结果中已保存且能对应资源、用途和直接依据的条件；关联未核清时说明具体缺口，不新增许可判断。来源真实性、实际适用范围与义务履行仍须核对。</p></details>
   {result.data_scope==='TEST_ONLY'&&<p className="p2-muted">隔离验证数据，不代表真实业务建议。</p>}
   {rows.map(row=><article key={row.subject.resource_id+':'+row.usage} data-bound-advice-resource={row.subject.resource_id}>
-   <h3>{row.name} @ {row.subject.version} · {usageFields[row.usage]}</h3><p data-saved-candidate-scope>已保存的兼容性条件候选 · 仅来自历史 Result 的此资源版本与用途，不是 v3 来源闭包结论，也不代表已获许可。</p>
+   <h3>{row.name} @ {row.subject.version} · {usageFields[row.usage]}</h3><p data-saved-candidate-scope>已保存的兼容性条件候选 · 仅来自历史 Result 的此资源版本与用途，不是 v4 来源闭包结论，也不代表已获许可。</p>
    <ul>{row.conditions.map((condition,i)=><li key={i}>{condition}</li>)}</ul>
    {(row.advice_gaps.length>0||row.resource_gaps.length>0)&&<div><strong>仍需核对</strong><ul>{[...row.advice_gaps,...row.resource_gaps].map((gap,i)=><li key={i}>{gapLabel(gap)}</li>)}</ul></div>}
    <details><summary>本条保存身份与依据</summary><pre>{JSON.stringify({result_id:result.result_id,revision:result.revision,result_sha256:result.result_sha256,subject:row.subject,usage:row.usage,basis_evidence_ids:row.basis_evidence_ids,rule_ids:row.rule_ids},null,2)}</pre></details>

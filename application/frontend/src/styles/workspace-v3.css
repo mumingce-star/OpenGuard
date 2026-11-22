@@ -224,6 +224,16 @@
   & .p2-v3-claim-body > header { display:flex; justify-content:space-between; gap:10px; align-items:center; }
   & .p2-v3-claim h2 { font-size:15px; margin:0; }
   & .p2-v3-claim-body > header span { color:var(--accent); background:var(--sage-soft); padding:2px 8px; border:1px solid var(--sage-line); border-radius:5px; font-size:11px; }
+  & .p5-claims-overview { display:grid; gap:8px; padding:12px; border:1px solid var(--sage-line); border-radius:8px; background:var(--sage-soft); }
+  & .p5-claims-overview header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:6px; }
+  & .p5-claims-overview :is(h3,p,dl,dd) { margin:0; }
+  & .p5-claim-state-counts { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,6.25rem),1fr)); gap:6px; }
+  & .p5-claim-state-counts > div { padding:5px 7px; border:1px solid var(--border); border-radius:5px; background:#fff; }
+  & .p5-claim-state-counts dt { color:var(--muted); font-size:11px; }
+  & .p5-claim-state-counts dd { font-size:16px; font-weight:700; font-variant-numeric:tabular-nums; }
+  & .p5-material-chain { display:flex; flex-wrap:wrap; gap:5px; margin-block-start:7px; }
+  & .p5-material-chain > span { padding:3px 6px; border:1px solid var(--border); border-radius:4px; font-size:11px; font-weight:500; }
+  & .p2-workbench :is(summary, input[type=file]):focus-visible { outline-offset:2px; }
   & .p2-v3-object-select { display:flex; align-items:center; gap:12px; color:var(--muted); font-size:11px; }
   & .p2-v3-object-select select { flex:1; padding:6px 10px; font-size:12px; }
   & .p2-v3-claim-link { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding:12px 0; border-block:1px solid var(--border-soft); }
