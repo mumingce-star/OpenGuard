@@ -1,0 +1,2018 @@
+{
+  "annotation_status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW",
+  "cases": [
+    {
+      "expected_reasons": [
+        "MISSING_LICENSE_MATERIAL"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "No LICENSE supplied to this saved result.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--missing-license--commercial",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--missing-license",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "MISSING_LICENSE_MATERIAL"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "No LICENSE supplied to this saved result.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--missing-license--distributed",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--missing-license",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "MISSING_LICENSE_MATERIAL"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "No LICENSE supplied to this saved result.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--missing-license--modified",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--missing-license",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--matched-mit--commercial",
+      "project_id": "is-number",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "is-number--matched-mit",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--matched-mit--distributed",
+      "project_id": "is-number",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "is-number--matched-mit",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--matched-mit--modified",
+      "project_id": "is-number",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "is-number--matched-mit",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "USER_REPORTS_DELIVERY_OBLIGATION_UNFULFILLED"
+      ],
+      "expected_state": "RESTRICTION",
+      "ground_truth": {
+        "rationale": "The user expressly reports that a delivery obligation has not been fulfilled; take only the user assertion.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--reported-unfulfilled--distributed",
+      "project_id": "is-number",
+      "required_condition_fragments": [
+        "用户声明交付义务尚未履行"
+      ],
+      "scenario_id": "is-number--reported-unfulfilled",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "SPDX_TEXT_CONFLICT"
+      ],
+      "expected_state": "COUNTER_EVIDENCE",
+      "ground_truth": {
+        "rationale": "The authentic package declaration says MIT while the uploaded test material is Apache-2.0.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--spdx-vs-apache-text--commercial",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--spdx-vs-apache-text",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "SPDX_TEXT_CONFLICT"
+      ],
+      "expected_state": "COUNTER_EVIDENCE",
+      "ground_truth": {
+        "rationale": "The authentic package declaration says MIT while the uploaded test material is Apache-2.0.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--spdx-vs-apache-text--modified",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--spdx-vs-apache-text",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "BOUND_LICENSE_BYTES_CONFLICT"
+      ],
+      "expected_state": "COUNTER_EVIDENCE",
+      "ground_truth": {
+        "rationale": "The saved exact subject has two license materials with deliberately different bytes.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--different-license-bytes--commercial",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--different-license-bytes",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "BOUND_LICENSE_BYTES_CONFLICT"
+      ],
+      "expected_state": "COUNTER_EVIDENCE",
+      "ground_truth": {
+        "rationale": "The saved exact subject has two license materials with deliberately different bytes.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--different-license-bytes--distributed",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--different-license-bytes",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "BOUND_LICENSE_BYTES_CONFLICT"
+      ],
+      "expected_state": "COUNTER_EVIDENCE",
+      "ground_truth": {
+        "rationale": "The saved exact subject has two license materials with deliberately different bytes.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--different-license-bytes--modified",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--different-license-bytes",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "USAGE_UNDECLARED"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The intended commercial use is not declared.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--usage-selection-boundary--commercial",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--usage-selection-boundary",
+      "support_scope_applicable": false,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "USE_NOT_SELECTED"
+      ],
+      "expected_state": "NOT_COVERED",
+      "ground_truth": {
+        "rationale": "The intended distribution field is explicitly false.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--usage-selection-boundary--distributed",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--usage-selection-boundary",
+      "support_scope_applicable": false,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--usage-selection-boundary--modified",
+      "project_id": "is-number",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "is-number--usage-selection-boundary",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "SOURCE_OR_EVIDENCE_BINDING_NOT_ESTABLISHED"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The exact full LICENSE has been supplied without a configured source pin.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--source-not-configured--commercial",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--source-not-configured",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "SOURCE_OR_EVIDENCE_BINDING_NOT_ESTABLISHED"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The exact full LICENSE has been supplied without a configured source pin.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "is-number--source-not-configured--distributed",
+      "project_id": "is-number",
+      "required_condition_fragments": [],
+      "scenario_id": "is-number--source-not-configured",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "http-server--authentic-mit--commercial",
+      "project_id": "http-server",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "http-server--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "http-server--authentic-mit--distributed",
+      "project_id": "http-server",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "http-server--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "http-server--authentic-mit--modified",
+      "project_id": "http-server",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "http-server--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "gen-mapping--authentic-mit--commercial",
+      "project_id": "gen-mapping",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "gen-mapping--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "gen-mapping--authentic-mit--distributed",
+      "project_id": "gen-mapping",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "gen-mapping--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "gen-mapping--authentic-mit--modified",
+      "project_id": "gen-mapping",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "gen-mapping--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete Apache-2.0 grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--authentic-apache-appendix--modified",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [
+        "§4(a)",
+        "§4(b)",
+        "§4(c)"
+      ],
+      "scenario_id": "detect-libc--authentic-apache-appendix",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete Apache-2.0 grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--canonical-no-notice--commercial",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [
+        "§4(a)",
+        "§4(b)",
+        "§4(c)"
+      ],
+      "scenario_id": "detect-libc--canonical-no-notice",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete Apache-2.0 grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--canonical-no-notice--distributed",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [
+        "§4(a)",
+        "§4(b)",
+        "§4(c)"
+      ],
+      "scenario_id": "detect-libc--canonical-no-notice",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_APACHE_2_0_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete Apache-2.0 grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--canonical-no-notice--modified",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [
+        "§4(a)",
+        "§4(b)",
+        "§4(c)"
+      ],
+      "scenario_id": "detect-libc--canonical-no-notice",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "NOTICE_REQUIRES_REVIEW"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The controlled archive contains NOTICE, and the saved result has no bound NOTICE material.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--known-notice-not-uploaded--distributed",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [],
+      "scenario_id": "detect-libc--known-notice-not-uploaded",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The supplied controlled NOTICE exactly matches the archived bytes, requiring human §4(d) review.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--exact-notice-human-review--commercial",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [
+        "§4(d)",
+        "人工核对"
+      ],
+      "scenario_id": "detect-libc--exact-notice-human-review",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The supplied controlled NOTICE exactly matches the archived bytes, requiring human §4(d) review.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--exact-notice-human-review--distributed",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [
+        "§4(d)",
+        "人工核对"
+      ],
+      "scenario_id": "detect-libc--exact-notice-human-review",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "BOUND_NOTICE_BYTES_CONFLICT"
+      ],
+      "expected_state": "COUNTER_EVIDENCE",
+      "ground_truth": {
+        "rationale": "The supplied alternate attribution bytes differ from the authentic controlled NOTICE in the pinned archive.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--different-notice-bytes--distributed",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [],
+      "scenario_id": "detect-libc--different-notice-bytes",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "BOUND_NOTICE_BYTES_CONFLICT"
+      ],
+      "expected_state": "COUNTER_EVIDENCE",
+      "ground_truth": {
+        "rationale": "The supplied alternate attribution bytes differ from the authentic controlled NOTICE in the pinned archive.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "detect-libc--different-notice-bytes--modified",
+      "project_id": "detect-libc",
+      "required_condition_fragments": [],
+      "scenario_id": "detect-libc--different-notice-bytes",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The original ISC material is outside the supported automatic MIT/Apache-2.0 scope.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "graceful-fs--outside-supported-license--commercial",
+      "project_id": "graceful-fs",
+      "required_condition_fragments": [],
+      "scenario_id": "graceful-fs--outside-supported-license",
+      "support_scope_applicable": false,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The original ISC material is outside the supported automatic MIT/Apache-2.0 scope.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "graceful-fs--outside-supported-license--distributed",
+      "project_id": "graceful-fs",
+      "required_condition_fragments": [],
+      "scenario_id": "graceful-fs--outside-supported-license",
+      "support_scope_applicable": false,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The original BSD-3-Clause material is outside the supported automatic MIT/Apache-2.0 scope.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "source-map-js--outside-supported-license--commercial",
+      "project_id": "source-map-js",
+      "required_condition_fragments": [],
+      "scenario_id": "source-map-js--outside-supported-license",
+      "support_scope_applicable": false,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The original BSD-3-Clause material is outside the supported automatic MIT/Apache-2.0 scope.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "source-map-js--outside-supported-license--distributed",
+      "project_id": "source-map-js",
+      "required_condition_fragments": [],
+      "scenario_id": "source-map-js--outside-supported-license",
+      "support_scope_applicable": false,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "MISSING_LICENSE_MATERIAL"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "No LICENSE supplied to this saved result.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "nanoid--missing-license--commercial",
+      "project_id": "nanoid",
+      "required_condition_fragments": [],
+      "scenario_id": "nanoid--missing-license",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "MISSING_LICENSE_MATERIAL"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "No LICENSE supplied to this saved result.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "nanoid--missing-license--distributed",
+      "project_id": "nanoid",
+      "required_condition_fragments": [],
+      "scenario_id": "nanoid--missing-license",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "nanoid--authentic-mit--commercial",
+      "project_id": "nanoid",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "nanoid--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "nanoid--authentic-mit--distributed",
+      "project_id": "nanoid",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "nanoid--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [
+        "PINNED_RELEASE_AND_COMPLETE_MIT_CONDITIONAL_TEXT"
+      ],
+      "expected_state": "SUPPORT",
+      "ground_truth": {
+        "rationale": "The selected usage has a complete MIT grant and conditions in the exact bound local package material; result may give scoped conditional text guidance. Text formatting tolerance is judged by the grant text; actual obligations remain unreviewed.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "nanoid--authentic-mit--modified",
+      "project_id": "nanoid",
+      "required_condition_fragments": [
+        "保留原版权声明",
+        "完整 MIT 许可声明",
+        "精确资源版本"
+      ],
+      "scenario_id": "nanoid--authentic-mit",
+      "support_scope_applicable": true,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "USAGE_UNDECLARED"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "Commercial use is not declared.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "nanoid--usage-selection-boundary--commercial",
+      "project_id": "nanoid",
+      "required_condition_fragments": [],
+      "scenario_id": "nanoid--usage-selection-boundary",
+      "support_scope_applicable": false,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "USE_NOT_SELECTED"
+      ],
+      "expected_state": "NOT_COVERED",
+      "ground_truth": {
+        "rationale": "Distribution is explicitly not selected.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "nanoid--usage-selection-boundary--distributed",
+      "project_id": "nanoid",
+      "required_condition_fragments": [],
+      "scenario_id": "nanoid--usage-selection-boundary",
+      "support_scope_applicable": false,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The original ISC text is outside automatic MIT/Apache-2.0 text scope.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "picocolors--outside-supported-license--commercial",
+      "project_id": "picocolors",
+      "required_condition_fragments": [],
+      "scenario_id": "picocolors--outside-supported-license",
+      "support_scope_applicable": false,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The original ISC text is outside automatic MIT/Apache-2.0 text scope.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "picocolors--outside-supported-license--distributed",
+      "project_id": "picocolors",
+      "required_condition_fragments": [],
+      "scenario_id": "picocolors--outside-supported-license",
+      "support_scope_applicable": false,
+      "usage": "distributed"
+    },
+    {
+      "expected_reasons": [],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "The original ISC text is outside automatic MIT/Apache-2.0 text scope.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "picocolors--outside-supported-license--modified",
+      "project_id": "picocolors",
+      "required_condition_fragments": [],
+      "scenario_id": "picocolors--outside-supported-license",
+      "support_scope_applicable": false,
+      "usage": "modified"
+    },
+    {
+      "expected_reasons": [
+        "USAGE_UNDECLARED"
+      ],
+      "expected_state": "UNKNOWN",
+      "ground_truth": {
+        "rationale": "Commercial use is not declared for this ISC package.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "picocolors--usage-selection-boundary--commercial",
+      "project_id": "picocolors",
+      "required_condition_fragments": [],
+      "scenario_id": "picocolors--usage-selection-boundary",
+      "support_scope_applicable": false,
+      "usage": "commercial"
+    },
+    {
+      "expected_reasons": [
+        "USE_NOT_SELECTED"
+      ],
+      "expected_state": "NOT_COVERED",
+      "ground_truth": {
+        "rationale": "Distribution is explicitly not selected for this ISC package.",
+        "status": "SINGLE_ANNOTATOR_FROZEN_PENDING_SECOND_HUMAN_REVIEW"
+      },
+      "id": "picocolors--usage-selection-boundary--distributed",
+      "project_id": "picocolors",
+      "required_condition_fragments": [],
+      "scenario_id": "picocolors--usage-selection-boundary",
+      "support_scope_applicable": false,
+      "usage": "distributed"
+    }
+  ],
+  "data_scope": "TEST_ONLY",
+  "deduplication_key": [
+    "project_id",
+    "scenario_id",
+    "usage"
+  ],
+  "fixture_reproduction": {
+    "generator": "output/competition/task41-p6-benchmark/tmp-data/prepare_p6_fixtures.py",
+    "scope_boundary": "Only is-number uses a preserved original npm release capture. The other locally derived transport records have synthetic URL-shaped identities required in TEST_ONLY, with exact local bytes and no registry issuance claim.",
+    "tar": "sorted regular USTAR files under package/; fixed numeric metadata; gzip mtime=0, no gzip filename",
+    "zip": "sorted regular payload members; ZIP_STORED and fixed UTC-equivalent metadata"
+  },
+  "fixtures": {
+    "fixtures/p6/controls/alternate/LICENSE": {
+      "bytes": 1111,
+      "sha256": "bd594b86cfb229fbe5a917c0f67bf11b6e843e647ce4ab39b116b1df09abfaa2"
+    },
+    "fixtures/p6/controls/alternate/NOTICE": {
+      "bytes": 72,
+      "sha256": "9baceab3355f690c7ed37fbf1ff6e3de2fe73e63faef385999ed3cb3ece7b37f"
+    },
+    "fixtures/p6/controls/canonical-apache/LICENSE": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "fixtures/p6/detect-libc/authentic/scan.zip": {
+      "bytes": 27261,
+      "sha256": "30132009eee925e52da35d5823ada7c221fa9ee36fd647e1a4fb8cb069dec54b"
+    },
+    "fixtures/p6/detect-libc/authentic/source/archive.tgz": {
+      "bytes": 7771,
+      "sha256": "4cf794e74268ec0b7bf42dcf294b376df447986eb4b9e54ca6cec152aefb3372"
+    },
+    "fixtures/p6/detect-libc/authentic/source/license.txt": {
+      "bytes": 11357,
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    "fixtures/p6/detect-libc/authentic/source/metadata.json": {
+      "bytes": 348,
+      "sha256": "6dcaafe7901045d04f9de15420e9c5522867abc82267da15e68f9841577713e2"
+    },
+    "fixtures/p6/detect-libc/authentic/source/profile.json": {
+      "bytes": 854,
+      "sha256": "f011f83f1b89da2f27219d6d1f9463027a1c5de68ec1ce0cff42bd25fd249d72"
+    },
+    "fixtures/p6/detect-libc/authentic/upload/LICENSE": {
+      "bytes": 11357,
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    "fixtures/p6/detect-libc/canonical-no-notice/scan.zip": {
+      "bytes": 27261,
+      "sha256": "fda36d39a6dfa9713ad0d8c3267eb7136e5beae684a53565d00c090ed0302776"
+    },
+    "fixtures/p6/detect-libc/canonical-no-notice/source/archive.tgz": {
+      "bytes": 7772,
+      "sha256": "c8d64e13dce8018b4f07cfa33fe33c50aa5d3451689016bbf69dde09837d3a8f"
+    },
+    "fixtures/p6/detect-libc/canonical-no-notice/source/license.txt": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "fixtures/p6/detect-libc/canonical-no-notice/source/metadata.json": {
+      "bytes": 348,
+      "sha256": "123d45b5084bff02b6ab0f6bd49e3c7d709a7f7b5f4ff930377743cab103418a"
+    },
+    "fixtures/p6/detect-libc/canonical-no-notice/source/profile.json": {
+      "bytes": 854,
+      "sha256": "5dde86e60ff44d99dda4c277db504aeabc6ab24967db802fbd9898eab4801284"
+    },
+    "fixtures/p6/detect-libc/canonical-no-notice/upload/LICENSE": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "fixtures/p6/detect-libc/canonical-with-notice/scan.zip": {
+      "bytes": 27422,
+      "sha256": "4b2c37158dc7464504f53280900cfd9711d92bc20cb63d5dfe792bf02b46025a"
+    },
+    "fixtures/p6/detect-libc/canonical-with-notice/source/archive.tgz": {
+      "bytes": 7832,
+      "sha256": "5b1ba1e338e9ca5e09d6d0967d60883bad512778cb87fc53ea6af0b406889976"
+    },
+    "fixtures/p6/detect-libc/canonical-with-notice/source/license.txt": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "fixtures/p6/detect-libc/canonical-with-notice/source/metadata.json": {
+      "bytes": 348,
+      "sha256": "a68c18cf7ae8fe05c24275d5851395a90c539856d383e6cd01e070e09ae90fdf"
+    },
+    "fixtures/p6/detect-libc/canonical-with-notice/source/profile.json": {
+      "bytes": 854,
+      "sha256": "1f84a87325a690ed46a014b29e006e2fd7a70ecd5a541dd96dff157bbea9fc3e"
+    },
+    "fixtures/p6/detect-libc/canonical-with-notice/upload/LICENSE": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "fixtures/p6/detect-libc/canonical-with-notice/upload/NOTICE": {
+      "bytes": 73,
+      "sha256": "c5f1e1114db634bb2489575427293cc5e89be3e1b83610083f7546bb1e869431"
+    },
+    "fixtures/p6/gen-mapping/authentic/scan.zip": {
+      "bytes": 82784,
+      "sha256": "c51446558109491362e30fc6f41bbc3bb31b11dac6d1cc38a75cb2ca817e3931"
+    },
+    "fixtures/p6/gen-mapping/authentic/source/archive.tgz": {
+      "bytes": 15829,
+      "sha256": "dfd7ec2532921252e1b4bd763ef6e36521dca93aa11e07f7688c77b1dcb20074"
+    },
+    "fixtures/p6/gen-mapping/authentic/source/license.txt": {
+      "bytes": 1080,
+      "sha256": "e58e4f6d4f57ab1e4a503a523d1c4e34ed03eee292a0237a898ac158c1b7bc69"
+    },
+    "fixtures/p6/gen-mapping/authentic/source/metadata.json": {
+      "bytes": 365,
+      "sha256": "84018c3c79c887549c3447a250ae595a2c7348c59681a2daa03ba9656446cbe8"
+    },
+    "fixtures/p6/gen-mapping/authentic/source/profile.json": {
+      "bytes": 890,
+      "sha256": "0617e5b808ac607fe2a89d7a51056d83cd8f9e83096848d64527cf79f95481c0"
+    },
+    "fixtures/p6/gen-mapping/authentic/upload/LICENSE": {
+      "bytes": 1080,
+      "sha256": "e58e4f6d4f57ab1e4a503a523d1c4e34ed03eee292a0237a898ac158c1b7bc69"
+    },
+    "fixtures/p6/graceful-fs/authentic/scan.zip": {
+      "bytes": 33247,
+      "sha256": "1d76943efe11bd966c46a5af3944fda781cfd919d5c272f91f1a4e89bf390978"
+    },
+    "fixtures/p6/graceful-fs/authentic/upload/LICENSE": {
+      "bytes": 791,
+      "sha256": "f65c5d9f22a317b2a10803bd1868461ce6499c2ed7217bc80c0cc772a748789c"
+    },
+    "fixtures/p6/http-server/bundle-tree/scan.zip": {
+      "bytes": 1049634,
+      "sha256": "a859cd7086fe5b6299fd59bac3ca2e055cb4bdc3fe40a214e4b4c2247b21c54a"
+    },
+    "fixtures/p6/http-server/bundle-tree/source/archive.tgz": {
+      "bytes": 445665,
+      "sha256": "cc8d71914ca95823bb2374436796a6b7d089b41e2f95d03936ac3c168abd2470"
+    },
+    "fixtures/p6/http-server/bundle-tree/source/license.txt": {
+      "bytes": 1124,
+      "sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6"
+    },
+    "fixtures/p6/http-server/bundle-tree/source/metadata.json": {
+      "bytes": 343,
+      "sha256": "800ae688903ae56f212359fed178a6453fd2a28c2b32edbba1f77ea66922cbad"
+    },
+    "fixtures/p6/http-server/bundle-tree/source/profile.json": {
+      "bytes": 857,
+      "sha256": "5c88302d76146cde5817c8ba0d2cb932d4130d206290db1d147b341bb4035795"
+    },
+    "fixtures/p6/http-server/bundle-tree/upload/LICENSE": {
+      "bytes": 1124,
+      "sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6"
+    },
+    "fixtures/p6/is-number/issued-release/scan.zip": {
+      "bytes": 4172,
+      "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+    },
+    "fixtures/p6/is-number/issued-release/source/archive.tgz": {
+      "bytes": 3730,
+      "sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e"
+    },
+    "fixtures/p6/is-number/issued-release/source/license.txt": {
+      "bytes": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
+    },
+    "fixtures/p6/is-number/issued-release/source/metadata.json": {
+      "bytes": 3199,
+      "sha256": "42288c4971286c252ea16450b0777e67a710a698446faa99e2d8d2344a087c25"
+    },
+    "fixtures/p6/is-number/issued-release/source/profile.json": {
+      "bytes": 858,
+      "sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308"
+    },
+    "fixtures/p6/is-number/issued-release/upload/LICENSE": {
+      "bytes": 1091,
+      "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
+    },
+    "fixtures/p6/nanoid/authentic/scan.zip": {
+      "bytes": 27924,
+      "sha256": "f5b5bfcdee285fa279ca7b76653914dd26b8009e351b729a6ae72ec068b8012b"
+    },
+    "fixtures/p6/nanoid/authentic/source/archive.tgz": {
+      "bytes": 5706,
+      "sha256": "342ed47961d84542114e6b3e0209909ad2367a7df0870e921a8adc82f1e22fca"
+    },
+    "fixtures/p6/nanoid/authentic/source/license.txt": {
+      "bytes": 1095,
+      "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
+    },
+    "fixtures/p6/nanoid/authentic/source/metadata.json": {
+      "bytes": 328,
+      "sha256": "f9ff5c84a79b76bcc18a8b2a2cf44e2329cbe0d71c4bb693a55734ac3a8222ef"
+    },
+    "fixtures/p6/nanoid/authentic/source/profile.json": {
+      "bytes": 837,
+      "sha256": "176e482902b62f7e449f366b1c71c3b10f5d233876cd984f43cfa0439b037886"
+    },
+    "fixtures/p6/nanoid/authentic/upload/LICENSE": {
+      "bytes": 1095,
+      "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
+    },
+    "fixtures/p6/picocolors/authentic/scan.zip": {
+      "bytes": 7101,
+      "sha256": "d036d5f9c3e9e7602bf6e38177c3c63cc1187be75d97daa3b97c792165ef2a48"
+    },
+    "fixtures/p6/picocolors/authentic/upload/LICENSE": {
+      "bytes": 787,
+      "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750"
+    },
+    "fixtures/p6/source-map-js/authentic/scan.zip": {
+      "bytes": 141896,
+      "sha256": "0f3b02627456760b58c5899bfac68e5eff9b36d9e4e0b44e1d7ed4acb73f0e2c"
+    },
+    "fixtures/p6/source-map-js/authentic/upload/LICENSE": {
+      "bytes": 1526,
+      "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+    }
+  },
+  "holdout_audit": {
+    "metadata_exception_confirmed": true,
+    "path": "logs/holdout-exposure-audit.log",
+    "scope": "5 national parent trees, 18 tracked worktrees, shared source history, tracked benchmark artifacts, TASK40 evidence",
+    "sha256": "37872697587904786955b98bdc3ca7257388d908b8d62f11b0472a8a8f2f96b1",
+    "zero_prior_evaluation_sample_references_in_audited_scope": true,
+    "zero_prior_repo_references": false
+  },
+  "label_policy": "Conditional SUPPORT denotes semantic sufficiency of full scoped license terms in the fixture; canonical formatting variations can yield safe conservative misses. In-scope denominator keeps otherwise eligible MIT/Apache-2.0 selected claims including missing/conflicting evidence and pending obligations. Unselected, undeclared and unsupported-license cases remain in all-claims accounting.",
+  "parent_commit": "ab2c1256c4a2efb8714cc90b9f39eda0fc5fc224",
+  "performance_scenarios": [
+    "is-number--matched-mit",
+    "detect-libc--canonical-no-notice",
+    "nanoid--authentic-mit",
+    "picocolors--outside-supported-license"
+  ],
+  "projects": [
+    {
+      "declared_license": "MIT",
+      "exposed_in_dev": true,
+      "exposure_history": {
+        "basis": "Tracked TASK33/TASK37 cases and TASK40 seven-step real-zip path.",
+        "has_prior_sample_uses": true,
+        "zero_prior_repo_references": false
+      },
+      "id": "is-number",
+      "name": "is-number",
+      "source": {
+        "archive_path": "application/tests/fixtures/task33/is-number-7.0.0/archive.tgz",
+        "archive_sha256": "7b75c1057198cf97696909a9bee176c9c5e9bcb5b03bf3ecef2f484defadd51e",
+        "kind": "REPOSITORY_PINNED_NPM_RELEASE_CAPTURE_AND_DERIVED_ZIP",
+        "license_sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+        "scan_zip_path": "samples/is-number-7.0.0-derived.zip",
+        "scan_zip_sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      },
+      "split": "development",
+      "variants": [
+        {
+          "id": "issued-release",
+          "material": {
+            "path": "fixtures/p6/is-number/issued-release/upload/LICENSE",
+            "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
+          },
+          "notice": null,
+          "provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+          "source": {
+            "profile_sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308",
+            "provenance": "PREEXISTING_PINNED_NPM_RELEASE_CAPTURE",
+            "root": "fixtures/p6/is-number/issued-release/source"
+          },
+          "zip": {
+            "path": "fixtures/p6/is-number/issued-release/scan.zip",
+            "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+          }
+        }
+      ],
+      "version": "7.0.0"
+    },
+    {
+      "declared_license": "MIT",
+      "exposed_in_dev": true,
+      "exposure_history": {
+        "basis": "Tracked official-http-server fixture, fixed Git source tests and P5 source selector.",
+        "has_prior_sample_uses": true,
+        "zero_prior_repo_references": false
+      },
+      "id": "http-server",
+      "name": "http-server",
+      "source": {
+        "commit": "0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b",
+        "kind": "REPOSITORY_FIXED_GIT_BUNDLE",
+        "license_sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6",
+        "path": "samples/http-server.bundle",
+        "sha256": "b4d28764503ce135702d948878d8604495fd0addf38c7a070892e93d038c714b"
+      },
+      "split": "development",
+      "variants": [
+        {
+          "id": "bundle-tree",
+          "material": {
+            "path": "fixtures/p6/http-server/bundle-tree/upload/LICENSE",
+            "sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6"
+          },
+          "notice": null,
+          "provenance": "Deterministic ZIP and transport from fixed git archive, authentic package and LICENSE bytes.",
+          "source": {
+            "profile_sha256": "5c88302d76146cde5817c8ba0d2cb932d4130d206290db1d147b341bb4035795",
+            "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+            "root": "fixtures/p6/http-server/bundle-tree/source"
+          },
+          "zip": {
+            "path": "fixtures/p6/http-server/bundle-tree/scan.zip",
+            "sha256": "a859cd7086fe5b6299fd59bac3ca2e055cb4bdc3fe40a214e4b4c2247b21c54a"
+          }
+        }
+      ],
+      "version": "14.1.2"
+    },
+    {
+      "declared_license": "MIT",
+      "exposed_in_dev": true,
+      "exposure_history": {
+        "basis": "Development assignment known before freeze; current national name references are dependency metadata.",
+        "has_prior_sample_uses": false,
+        "zero_prior_repo_references": false
+      },
+      "id": "gen-mapping",
+      "name": "@jridgewell/gen-mapping",
+      "source": {
+        "kind": "SAME_LOCK_LOCAL_PNPM_PACKAGE_FILES",
+        "license_sha256": "e58e4f6d4f57ab1e4a503a523d1c4e34ed03eee292a0237a898ac158c1b7bc69",
+        "manifests_and_lock_owner": "application/frontend/pnpm-lock.yaml",
+        "package_json_sha256": "6841fac6da8fda27314a8cdb753f20dd8805d9eaee92c33da0cf956813fafe55",
+        "package_tree_sha256": "69334d5712dd7f6a2a6f69ca39578c3c169ef31690b023903f95915b3908085d",
+        "path_relative_to_workspace": "output/competition/aic-semifinal-delivery-20261116/OpenGuard/application/frontend/node_modules/.pnpm/@jridgewell+gen-mapping@0.3.5/node_modules/@jridgewell/gen-mapping",
+        "repository_metadata_value": "https://github.com/jridgewell/gen-mapping"
+      },
+      "split": "development",
+      "variants": [
+        {
+          "id": "authentic",
+          "material": {
+            "path": "fixtures/p6/gen-mapping/authentic/upload/LICENSE",
+            "sha256": "e58e4f6d4f57ab1e4a503a523d1c4e34ed03eee292a0237a898ac158c1b7bc69"
+          },
+          "notice": null,
+          "provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+          "source": {
+            "profile_sha256": "0617e5b808ac607fe2a89d7a51056d83cd8f9e83096848d64527cf79f95481c0",
+            "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+            "root": "fixtures/p6/gen-mapping/authentic/source"
+          },
+          "zip": {
+            "path": "fixtures/p6/gen-mapping/authentic/scan.zip",
+            "sha256": "c51446558109491362e30fc6f41bbc3bb31b11dac6d1cc38a75cb2ca817e3931"
+          }
+        }
+      ],
+      "version": "0.3.5"
+    },
+    {
+      "declared_license": "Apache-2.0",
+      "exposed_in_dev": true,
+      "exposure_history": {
+        "basis": "Development assignment known before freeze; current national name references are dependency metadata.",
+        "has_prior_sample_uses": false,
+        "zero_prior_repo_references": false
+      },
+      "id": "detect-libc",
+      "name": "detect-libc",
+      "source": {
+        "kind": "SAME_LOCK_LOCAL_PNPM_PACKAGE_FILES",
+        "license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+        "manifests_and_lock_owner": "application/frontend/pnpm-lock.yaml",
+        "package_json_sha256": "ee88e5b954fdf3a8480b1d01ef767d68d8ca2c6da269f58c5cf1c5550e9aa2a7",
+        "package_tree_sha256": "08eb63ccbc00162dbc6e70f46826bef9fc9e246bc69067f37e6d557081f09177",
+        "path_relative_to_workspace": "output/competition/aic-semifinal-delivery-20261116/OpenGuard/application/frontend/node_modules/.pnpm/detect-libc@2.1.2/node_modules/detect-libc",
+        "repository_metadata_value": "git://github.com/lovell/detect-libc.git"
+      },
+      "split": "development",
+      "variants": [
+        {
+          "id": "authentic",
+          "material": {
+            "path": "fixtures/p6/detect-libc/authentic/upload/LICENSE",
+            "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+          },
+          "notice": null,
+          "provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+          "source": {
+            "profile_sha256": "f011f83f1b89da2f27219d6d1f9463027a1c5de68ec1ce0cff42bd25fd249d72",
+            "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+            "root": "fixtures/p6/detect-libc/authentic/source"
+          },
+          "zip": {
+            "path": "fixtures/p6/detect-libc/authentic/scan.zip",
+            "sha256": "30132009eee925e52da35d5823ada7c221fa9ee36fd647e1a4fb8cb069dec54b"
+          }
+        },
+        {
+          "id": "canonical-no-notice",
+          "material": {
+            "path": "fixtures/p6/detect-libc/canonical-no-notice/upload/LICENSE",
+            "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+          },
+          "notice": null,
+          "provenance": "TEST_ONLY controlled variant of authentic installed files; replaced only LICENSE with repository canonical Apache-2.0.",
+          "source": {
+            "profile_sha256": "5dde86e60ff44d99dda4c277db504aeabc6ab24967db802fbd9898eab4801284",
+            "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+            "root": "fixtures/p6/detect-libc/canonical-no-notice/source"
+          },
+          "zip": {
+            "path": "fixtures/p6/detect-libc/canonical-no-notice/scan.zip",
+            "sha256": "fda36d39a6dfa9713ad0d8c3267eb7136e5beae684a53565d00c090ed0302776"
+          }
+        },
+        {
+          "id": "canonical-with-notice",
+          "material": {
+            "path": "fixtures/p6/detect-libc/canonical-with-notice/upload/LICENSE",
+            "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+          },
+          "notice": {
+            "path": "fixtures/p6/detect-libc/canonical-with-notice/upload/NOTICE",
+            "sha256": "c5f1e1114db634bb2489575427293cc5e89be3e1b83610083f7546bb1e869431"
+          },
+          "provenance": "Same control with separately disclosed synthetic TEST_ONLY NOTICE bytes.",
+          "source": {
+            "profile_sha256": "1f84a87325a690ed46a014b29e006e2fd7a70ecd5a541dd96dff157bbea9fc3e",
+            "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+            "root": "fixtures/p6/detect-libc/canonical-with-notice/source"
+          },
+          "zip": {
+            "path": "fixtures/p6/detect-libc/canonical-with-notice/scan.zip",
+            "sha256": "4b2c37158dc7464504f53280900cfd9711d92bc20cb63d5dfe792bf02b46025a"
+          }
+        }
+      ],
+      "version": "2.1.2"
+    },
+    {
+      "declared_license": "ISC",
+      "exposed_in_dev": true,
+      "exposure_history": {
+        "basis": "Development assignment known before freeze; current national name references are dependency metadata.",
+        "has_prior_sample_uses": false,
+        "zero_prior_repo_references": false
+      },
+      "id": "graceful-fs",
+      "name": "graceful-fs",
+      "source": {
+        "kind": "SAME_LOCK_LOCAL_PNPM_PACKAGE_FILES",
+        "license_sha256": "f65c5d9f22a317b2a10803bd1868461ce6499c2ed7217bc80c0cc772a748789c",
+        "manifests_and_lock_owner": "application/frontend/pnpm-lock.yaml",
+        "package_json_sha256": "5747d4ba6b17165c6ecac30ab3a331715f41c7ad546e1f1574dab1bdcb116181",
+        "package_tree_sha256": "78db56c9ca3ad9851a4e61ba1533ae9d90bef94f2dafe95db397e449de4a879c",
+        "path_relative_to_workspace": "output/competition/aic-semifinal-delivery-20261116/OpenGuard/application/frontend/node_modules/.pnpm/graceful-fs@4.2.11/node_modules/graceful-fs",
+        "repository_metadata_value": "https://github.com/isaacs/node-graceful-fs"
+      },
+      "split": "development",
+      "variants": [
+        {
+          "id": "authentic",
+          "material": {
+            "path": "fixtures/p6/graceful-fs/authentic/upload/LICENSE",
+            "sha256": "f65c5d9f22a317b2a10803bd1868461ce6499c2ed7217bc80c0cc772a748789c"
+          },
+          "notice": null,
+          "provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+          "source": null,
+          "zip": {
+            "path": "fixtures/p6/graceful-fs/authentic/scan.zip",
+            "sha256": "1d76943efe11bd966c46a5af3944fda781cfd919d5c272f91f1a4e89bf390978"
+          }
+        }
+      ],
+      "version": "4.2.11"
+    },
+    {
+      "declared_license": "BSD-3-Clause",
+      "exposed_in_dev": true,
+      "exposure_history": {
+        "basis": "Development assignment known before freeze; current national name references are dependency metadata.",
+        "has_prior_sample_uses": false,
+        "zero_prior_repo_references": false
+      },
+      "id": "source-map-js",
+      "name": "source-map-js",
+      "source": {
+        "kind": "SAME_LOCK_LOCAL_PNPM_PACKAGE_FILES",
+        "license_sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd",
+        "manifests_and_lock_owner": "application/frontend/pnpm-lock.yaml",
+        "package_json_sha256": "58f8e94a461a5e461e0cb2bb2be681cbd89b9181989fd26fceb858e67711469a",
+        "package_tree_sha256": "ad6d0b815d3aa13505382a7e2444df829661920fbb383485c3a0a1f9bd126cc2",
+        "path_relative_to_workspace": "output/competition/aic-semifinal-delivery-20261116/OpenGuard/application/frontend/node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js",
+        "repository_metadata_value": "7rulnik/source-map-js"
+      },
+      "split": "development",
+      "variants": [
+        {
+          "id": "authentic",
+          "material": {
+            "path": "fixtures/p6/source-map-js/authentic/upload/LICENSE",
+            "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+          },
+          "notice": null,
+          "provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+          "source": null,
+          "zip": {
+            "path": "fixtures/p6/source-map-js/authentic/scan.zip",
+            "sha256": "0f3b02627456760b58c5899bfac68e5eff9b36d9e4e0b44e1d7ed4acb73f0e2c"
+          }
+        }
+      ],
+      "version": "1.2.1"
+    },
+    {
+      "declared_license": "MIT",
+      "exposed_in_dev": false,
+      "exposure_history": {
+        "basis": "Audited prior national and shared histories and benchmark sources; lock or attribution only.",
+        "has_prior_sample_uses": false,
+        "zero_prior_repo_references": false
+      },
+      "id": "nanoid",
+      "name": "nanoid",
+      "source": {
+        "kind": "SAME_LOCK_LOCAL_PNPM_PACKAGE_FILES",
+        "license_sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987",
+        "manifests_and_lock_owner": "application/frontend/pnpm-lock.yaml",
+        "package_json_sha256": "18673eb0d7ed43dd871d59dc22a5670303f5d4eb9b17783b1f698f5840ce1fff",
+        "package_tree_sha256": "314b3ba37c2f1cade2b3dff52f50af6a23b4110d642844f986fefb36670e7993",
+        "path_relative_to_workspace": "output/competition/aic-semifinal-delivery-20261116/OpenGuard/application/frontend/node_modules/.pnpm/nanoid@3.3.18/node_modules/nanoid",
+        "repository_metadata_value": "ai/nanoid"
+      },
+      "split": "independent_holdout",
+      "variants": [
+        {
+          "id": "authentic",
+          "material": {
+            "path": "fixtures/p6/nanoid/authentic/upload/LICENSE",
+            "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987"
+          },
+          "notice": null,
+          "provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+          "source": {
+            "profile_sha256": "176e482902b62f7e449f366b1c71c3b10f5d233876cd984f43cfa0439b037886",
+            "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+            "root": "fixtures/p6/nanoid/authentic/source"
+          },
+          "zip": {
+            "path": "fixtures/p6/nanoid/authentic/scan.zip",
+            "sha256": "f5b5bfcdee285fa279ca7b76653914dd26b8009e351b729a6ae72ec068b8012b"
+          }
+        }
+      ],
+      "version": "3.3.18"
+    },
+    {
+      "declared_license": "ISC",
+      "exposed_in_dev": false,
+      "exposure_history": {
+        "basis": "Audited prior national and shared histories and benchmark sources; lock or attribution only.",
+        "has_prior_sample_uses": false,
+        "zero_prior_repo_references": false
+      },
+      "id": "picocolors",
+      "name": "picocolors",
+      "source": {
+        "kind": "SAME_LOCK_LOCAL_PNPM_PACKAGE_FILES",
+        "license_sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750",
+        "manifests_and_lock_owner": "application/frontend/pnpm-lock.yaml",
+        "package_json_sha256": "ef2ac226c4811d312e12c64214c453878653e834482125ae475f27cea60de737",
+        "package_tree_sha256": "bb36f78ea9f131823f631f6178c803e3e22013f658f528ce43b40728981239f7",
+        "path_relative_to_workspace": "output/competition/aic-semifinal-delivery-20261116/OpenGuard/application/frontend/node_modules/.pnpm/picocolors@1.1.1/node_modules/picocolors",
+        "repository_metadata_value": "alexeyraspopov/picocolors"
+      },
+      "split": "independent_holdout",
+      "variants": [
+        {
+          "id": "authentic",
+          "material": {
+            "path": "fixtures/p6/picocolors/authentic/upload/LICENSE",
+            "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750"
+          },
+          "notice": null,
+          "provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+          "source": null,
+          "zip": {
+            "path": "fixtures/p6/picocolors/authentic/scan.zip",
+            "sha256": "d036d5f9c3e9e7602bf6e38177c3c63cc1187be75d97daa3b97c792165ef2a48"
+          }
+        }
+      ],
+      "version": "1.1.1"
+    }
+  ],
+  "scenarios": [
+    {
+      "actions": [],
+      "id": "is-number--missing-license",
+      "project_id": "is-number",
+      "source": {
+        "profile_sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308",
+        "provenance": "PREEXISTING_PINNED_NPM_RELEASE_CAPTURE",
+        "root": "fixtures/p6/is-number/issued-release/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "issued-release",
+      "variant_provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+      "zip": {
+        "path": "fixtures/p6/is-number/issued-release/scan.zip",
+        "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/is-number/issued-release/upload/LICENSE",
+          "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+          "type": "material"
+        }
+      ],
+      "id": "is-number--matched-mit",
+      "project_id": "is-number",
+      "source": {
+        "profile_sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308",
+        "provenance": "PREEXISTING_PINNED_NPM_RELEASE_CAPTURE",
+        "root": "fixtures/p6/is-number/issued-release/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "issued-release",
+      "variant_provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+      "zip": {
+        "path": "fixtures/p6/is-number/issued-release/scan.zip",
+        "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/is-number/issued-release/upload/LICENSE",
+          "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+          "type": "material"
+        },
+        {
+          "answer_code": "NOT_FULFILLED",
+          "type": "answer"
+        }
+      ],
+      "id": "is-number--reported-unfulfilled",
+      "project_id": "is-number",
+      "source": {
+        "profile_sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308",
+        "provenance": "PREEXISTING_PINNED_NPM_RELEASE_CAPTURE",
+        "root": "fixtures/p6/is-number/issued-release/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "issued-release",
+      "variant_provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+      "zip": {
+        "path": "fixtures/p6/is-number/issued-release/scan.zip",
+        "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/controls/canonical-apache/LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "type": "material"
+        }
+      ],
+      "id": "is-number--spdx-vs-apache-text",
+      "project_id": "is-number",
+      "source": {
+        "profile_sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308",
+        "provenance": "PREEXISTING_PINNED_NPM_RELEASE_CAPTURE",
+        "root": "fixtures/p6/is-number/issued-release/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "issued-release",
+      "variant_provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+      "zip": {
+        "path": "fixtures/p6/is-number/issued-release/scan.zip",
+        "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/is-number/issued-release/upload/LICENSE",
+          "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+          "type": "material"
+        },
+        {
+          "filename": "LICENCE",
+          "path": "fixtures/p6/controls/alternate/LICENSE",
+          "sha256": "bd594b86cfb229fbe5a917c0f67bf11b6e843e647ce4ab39b116b1df09abfaa2",
+          "type": "material"
+        }
+      ],
+      "id": "is-number--different-license-bytes",
+      "project_id": "is-number",
+      "source": {
+        "profile_sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308",
+        "provenance": "PREEXISTING_PINNED_NPM_RELEASE_CAPTURE",
+        "root": "fixtures/p6/is-number/issued-release/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "issued-release",
+      "variant_provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+      "zip": {
+        "path": "fixtures/p6/is-number/issued-release/scan.zip",
+        "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/is-number/issued-release/upload/LICENSE",
+          "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+          "type": "material"
+        }
+      ],
+      "id": "is-number--usage-selection-boundary",
+      "project_id": "is-number",
+      "source": {
+        "profile_sha256": "1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308",
+        "provenance": "PREEXISTING_PINNED_NPM_RELEASE_CAPTURE",
+        "root": "fixtures/p6/is-number/issued-release/source"
+      },
+      "usage": {
+        "commercial": null,
+        "distributed": false,
+        "modified": true
+      },
+      "variant_id": "issued-release",
+      "variant_provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+      "zip": {
+        "path": "fixtures/p6/is-number/issued-release/scan.zip",
+        "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/is-number/issued-release/upload/LICENSE",
+          "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+          "type": "material"
+        }
+      ],
+      "id": "is-number--source-not-configured",
+      "project_id": "is-number",
+      "source": null,
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "issued-release",
+      "variant_provenance": "Existing derived ZIP and previously recorded original official tar, metadata and license bytes.",
+      "zip": {
+        "path": "fixtures/p6/is-number/issued-release/scan.zip",
+        "sha256": "a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/http-server/bundle-tree/upload/LICENSE",
+          "sha256": "accfc4d5a588384b29c4817392854afb8f319b4568359ca8d063df8a9bc396b6",
+          "type": "material"
+        }
+      ],
+      "id": "http-server--authentic-mit",
+      "project_id": "http-server",
+      "source": {
+        "profile_sha256": "5c88302d76146cde5817c8ba0d2cb932d4130d206290db1d147b341bb4035795",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/http-server/bundle-tree/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "bundle-tree",
+      "variant_provenance": "Deterministic ZIP and transport from fixed git archive, authentic package and LICENSE bytes.",
+      "zip": {
+        "path": "fixtures/p6/http-server/bundle-tree/scan.zip",
+        "sha256": "a859cd7086fe5b6299fd59bac3ca2e055cb4bdc3fe40a214e4b4c2247b21c54a"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/gen-mapping/authentic/upload/LICENSE",
+          "sha256": "e58e4f6d4f57ab1e4a503a523d1c4e34ed03eee292a0237a898ac158c1b7bc69",
+          "type": "material"
+        }
+      ],
+      "id": "gen-mapping--authentic-mit",
+      "project_id": "gen-mapping",
+      "source": {
+        "profile_sha256": "0617e5b808ac607fe2a89d7a51056d83cd8f9e83096848d64527cf79f95481c0",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/gen-mapping/authentic/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/gen-mapping/authentic/scan.zip",
+        "sha256": "c51446558109491362e30fc6f41bbc3bb31b11dac6d1cc38a75cb2ca817e3931"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/detect-libc/authentic/upload/LICENSE",
+          "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+          "type": "material"
+        }
+      ],
+      "id": "detect-libc--authentic-apache-appendix",
+      "project_id": "detect-libc",
+      "source": {
+        "profile_sha256": "f011f83f1b89da2f27219d6d1f9463027a1c5de68ec1ce0cff42bd25fd249d72",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/detect-libc/authentic/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/detect-libc/authentic/scan.zip",
+        "sha256": "30132009eee925e52da35d5823ada7c221fa9ee36fd647e1a4fb8cb069dec54b"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/detect-libc/canonical-no-notice/upload/LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "type": "material"
+        }
+      ],
+      "id": "detect-libc--canonical-no-notice",
+      "project_id": "detect-libc",
+      "source": {
+        "profile_sha256": "5dde86e60ff44d99dda4c277db504aeabc6ab24967db802fbd9898eab4801284",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/detect-libc/canonical-no-notice/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "canonical-no-notice",
+      "variant_provenance": "TEST_ONLY controlled variant of authentic installed files; replaced only LICENSE with repository canonical Apache-2.0.",
+      "zip": {
+        "path": "fixtures/p6/detect-libc/canonical-no-notice/scan.zip",
+        "sha256": "fda36d39a6dfa9713ad0d8c3267eb7136e5beae684a53565d00c090ed0302776"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/detect-libc/canonical-with-notice/upload/LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "type": "material"
+        }
+      ],
+      "id": "detect-libc--known-notice-not-uploaded",
+      "project_id": "detect-libc",
+      "source": {
+        "profile_sha256": "1f84a87325a690ed46a014b29e006e2fd7a70ecd5a541dd96dff157bbea9fc3e",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/detect-libc/canonical-with-notice/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "canonical-with-notice",
+      "variant_provenance": "Same control with separately disclosed synthetic TEST_ONLY NOTICE bytes.",
+      "zip": {
+        "path": "fixtures/p6/detect-libc/canonical-with-notice/scan.zip",
+        "sha256": "4b2c37158dc7464504f53280900cfd9711d92bc20cb63d5dfe792bf02b46025a"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/detect-libc/canonical-with-notice/upload/LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "type": "material"
+        },
+        {
+          "filename": "NOTICE",
+          "path": "fixtures/p6/detect-libc/canonical-with-notice/upload/NOTICE",
+          "sha256": "c5f1e1114db634bb2489575427293cc5e89be3e1b83610083f7546bb1e869431",
+          "type": "material"
+        }
+      ],
+      "id": "detect-libc--exact-notice-human-review",
+      "project_id": "detect-libc",
+      "source": {
+        "profile_sha256": "1f84a87325a690ed46a014b29e006e2fd7a70ecd5a541dd96dff157bbea9fc3e",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/detect-libc/canonical-with-notice/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "canonical-with-notice",
+      "variant_provenance": "Same control with separately disclosed synthetic TEST_ONLY NOTICE bytes.",
+      "zip": {
+        "path": "fixtures/p6/detect-libc/canonical-with-notice/scan.zip",
+        "sha256": "4b2c37158dc7464504f53280900cfd9711d92bc20cb63d5dfe792bf02b46025a"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/detect-libc/canonical-with-notice/upload/LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "type": "material"
+        },
+        {
+          "filename": "NOTICE",
+          "path": "fixtures/p6/controls/alternate/NOTICE",
+          "sha256": "9baceab3355f690c7ed37fbf1ff6e3de2fe73e63faef385999ed3cb3ece7b37f",
+          "type": "material"
+        }
+      ],
+      "id": "detect-libc--different-notice-bytes",
+      "project_id": "detect-libc",
+      "source": {
+        "profile_sha256": "1f84a87325a690ed46a014b29e006e2fd7a70ecd5a541dd96dff157bbea9fc3e",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/detect-libc/canonical-with-notice/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "canonical-with-notice",
+      "variant_provenance": "Same control with separately disclosed synthetic TEST_ONLY NOTICE bytes.",
+      "zip": {
+        "path": "fixtures/p6/detect-libc/canonical-with-notice/scan.zip",
+        "sha256": "4b2c37158dc7464504f53280900cfd9711d92bc20cb63d5dfe792bf02b46025a"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/graceful-fs/authentic/upload/LICENSE",
+          "sha256": "f65c5d9f22a317b2a10803bd1868461ce6499c2ed7217bc80c0cc772a748789c",
+          "type": "material"
+        }
+      ],
+      "id": "graceful-fs--outside-supported-license",
+      "project_id": "graceful-fs",
+      "source": null,
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/graceful-fs/authentic/scan.zip",
+        "sha256": "1d76943efe11bd966c46a5af3944fda781cfd919d5c272f91f1a4e89bf390978"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/source-map-js/authentic/upload/LICENSE",
+          "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd",
+          "type": "material"
+        }
+      ],
+      "id": "source-map-js--outside-supported-license",
+      "project_id": "source-map-js",
+      "source": null,
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/source-map-js/authentic/scan.zip",
+        "sha256": "0f3b02627456760b58c5899bfac68e5eff9b36d9e4e0b44e1d7ed4acb73f0e2c"
+      }
+    },
+    {
+      "actions": [],
+      "id": "nanoid--missing-license",
+      "project_id": "nanoid",
+      "source": {
+        "profile_sha256": "176e482902b62f7e449f366b1c71c3b10f5d233876cd984f43cfa0439b037886",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/nanoid/authentic/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/nanoid/authentic/scan.zip",
+        "sha256": "f5b5bfcdee285fa279ca7b76653914dd26b8009e351b729a6ae72ec068b8012b"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/nanoid/authentic/upload/LICENSE",
+          "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987",
+          "type": "material"
+        }
+      ],
+      "id": "nanoid--authentic-mit",
+      "project_id": "nanoid",
+      "source": {
+        "profile_sha256": "176e482902b62f7e449f366b1c71c3b10f5d233876cd984f43cfa0439b037886",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/nanoid/authentic/source"
+      },
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/nanoid/authentic/scan.zip",
+        "sha256": "f5b5bfcdee285fa279ca7b76653914dd26b8009e351b729a6ae72ec068b8012b"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/nanoid/authentic/upload/LICENSE",
+          "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987",
+          "type": "material"
+        }
+      ],
+      "id": "nanoid--usage-selection-boundary",
+      "project_id": "nanoid",
+      "source": {
+        "profile_sha256": "176e482902b62f7e449f366b1c71c3b10f5d233876cd984f43cfa0439b037886",
+        "provenance": "TEST_ONLY_LOCAL_RECONSTITUTION_NO_REGISTRY_FETCH_NOT_ORIGINAL_RELEASE_TARBALL",
+        "root": "fixtures/p6/nanoid/authentic/source"
+      },
+      "usage": {
+        "commercial": null,
+        "distributed": false,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/nanoid/authentic/scan.zip",
+        "sha256": "f5b5bfcdee285fa279ca7b76653914dd26b8009e351b729a6ae72ec068b8012b"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/picocolors/authentic/upload/LICENSE",
+          "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750",
+          "type": "material"
+        }
+      ],
+      "id": "picocolors--outside-supported-license",
+      "project_id": "picocolors",
+      "source": null,
+      "usage": {
+        "commercial": true,
+        "distributed": true,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/picocolors/authentic/scan.zip",
+        "sha256": "d036d5f9c3e9e7602bf6e38177c3c63cc1187be75d97daa3b97c792165ef2a48"
+      }
+    },
+    {
+      "actions": [
+        {
+          "filename": "LICENSE",
+          "path": "fixtures/p6/picocolors/authentic/upload/LICENSE",
+          "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750",
+          "type": "material"
+        }
+      ],
+      "id": "picocolors--usage-selection-boundary",
+      "project_id": "picocolors",
+      "source": null,
+      "usage": {
+        "commercial": null,
+        "distributed": false,
+        "modified": true
+      },
+      "variant_id": "authentic",
+      "variant_provenance": "Full locally installed package files and unaltered upstream LICENSE; never fetched.",
+      "zip": {
+        "path": "fixtures/p6/picocolors/authentic/scan.zip",
+        "sha256": "d036d5f9c3e9e7602bf6e38177c3c63cc1187be75d97daa3b97c792165ef2a48"
+      }
+    }
+  ],
+  "schema_version": "openguard-p6-benchmark/1",
+  "scored_case_counts": {
+    "development": 36,
+    "independent_holdout": 12
+  }
+}
