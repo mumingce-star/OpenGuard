@@ -9,6 +9,7 @@ import base64, io, json, re, secrets, sys, time
 
 ROOT=Path(__file__).resolve().parents[1]
 BASE=sys.argv[1].rstrip('/')
+MATERIAL_CLAIMS_SCHEMA = 'openguard-material-claims/4'
 from urllib.parse import urlsplit
 u=urlsplit(BASE)
 assert u.scheme=='http' and u.hostname=='127.0.0.1' and u.port and not u.path and not u.username and not u.password, 'Local test URL required'
@@ -108,20 +109,63 @@ components=run['components'];target=[x for x in components if x['name']=='is-num
 check('exact_scanned_resource_found',len(target)==1)
 component=target[0];rid=component['id'];row=next(x for x in rows if x['subject']['resource_id']==rid)
 check('same_scan_evidence_relation',bool(row['evidence_ids']) and set(row['evidence_ids']).issubset(set(a2['evidence_ids'])))
-claims_before,_,_=client.get(pfx(a2['id'])+'/results/'+r2before['result_id']+'/material-claims?assessment_version=2')
-root_before=[x for x in claims_before['advice'] if x['subject']==row['subject']]
-check('v3_root_initial_unknown',len(root_before)==3 and all(x['state']=='UNKNOWN' for x in root_before))
+initial_claims_path = pfx(a2['id']) + '/results/' + r2before['result_id'] + '/material-claims?assessment_version=2'
+claims_before, claims_before_raw, _ = client.get(initial_claims_path)
+root_before = [item for item in claims_before['advice'] if item['subject'] == row['subject']]
+check(
+    'v4_root_initial_unknown',
+    claims_before['schema_version'] == MATERIAL_CLAIMS_SCHEMA
+    and claims_before['result_id'] == r2before['result_id']
+    and claims_before['revision'] == 1
+    and claims_before['binding'] == b2
+    and claims_before['incremental_impact']['mode'] == 'INITIAL_RESULT'
+    and claims_before['materials'] == []
+    and len(root_before) == 3
+    and all(item['state'] == 'UNKNOWN' for item in root_before),
+)
 license_raw=(ROOT/'samples/is-number-LICENSE.txt').read_bytes()
 body={'binding':b2,'expected_revision':1,'parent_result_id':r2before['result_id'],'idempotency_key':'package_material_'+secrets.token_hex(8),'subject':row['subject'],'evidence_ids':row['evidence_ids'],'filename':'LICENSE','content_base64':base64.b64encode(license_raw).decode(),'source_sha256':sha256(license_raw).hexdigest(),'source_description':'is-number 7.0.0 release LICENSE from the packaged fixed npm source record. TEST_ONLY SYNTHETIC_USAGE; not publisher certification or legal sign-off.','completeness':'FULL_TEXT_CLAIMED'}
 receipt,_,_=client.post(pfx(a2['id'])+'/materials',body,expect=(201,));material=receipt['material'];r2=receipt['result']
 check('material_201_pending_unverified',material['verification_state']=='pending' and material['source_level']=='user_supplied_unverified' and material['source_sha256']==sha256(license_raw).hexdigest())
 check('material_result_r1_to_r2',r2['revision']==2 and r2['previous_result_id']==r2before['result_id'] and r2['binding']==b2 and r2['model_calls']==0)
 check('target_only_recomputed_peers_reused',r2['recomputed_resource_ids']==[rid] and len(r2['reused_resource_ids'])==len(rows)-1 and all(x==next(y for y in r2['resources'] if y['subject']==x['subject']) for x in rows if x['subject']['resource_id']!=rid))
-claims_after,_,_=client.get(pfx(a2['id'])+'/results/'+r2['result_id']+'/material-claims?assessment_version=2')
-root_after=[x for x in claims_after['advice'] if x['subject']==row['subject']]
-check('v3_root_conditional_support',claims_after['schema_version']=='openguard-material-claims/3' and len(root_after)==3 and all(x['state']=='SUPPORT' for x in root_after))
-claims_old,_,_=client.get(pfx(a2['id'])+'/results/'+r2before['result_id']+'/material-claims?assessment_version=2')
-check('old_material_claims_immutable',claims_old==claims_before)
+claims_after, _, _ = client.get(pfx(a2['id']) + '/results/' + r2['result_id'] + '/material-claims?assessment_version=2')
+root_after = [item for item in claims_after['advice'] if item['subject'] == row['subject']]
+check(
+    'v4_root_conditional_support',
+    claims_after['schema_version'] == MATERIAL_CLAIMS_SCHEMA
+    and claims_after['result_id'] == r2['result_id']
+    and claims_after['result_sha256'] == r2['result_sha256']
+    and claims_after['revision'] == 2
+    and claims_after['binding'] == b2
+    and len(root_after) == 3
+    and all(item['state'] == 'SUPPORT' and item['conditions'] for item in root_after),
+)
+impact = claims_after['incremental_impact']
+changed_claims = impact['changed_claims']
+check(
+    'v4_incremental_impact',
+    impact['mode'] == 'INCREMENTAL_DERIVED'
+    and impact['previous_result_id'] == r2before['result_id']
+    and impact['previous_revision'] == 1
+    and impact['previous_view_id'] == claims_before['view_id']
+    and impact['affected_resource_ids'] == [rid]
+    and impact['unchanged_resource_ids'] == r2['reused_resource_ids']
+    and impact['added_material_ids'] == [material['material_id']]
+    and impact['added_answer_ids'] == []
+    and impact['unchanged_claims_verified'] is True
+    and len(changed_claims) == 3
+    and {item['usage'] for item in changed_claims} == {item['usage'] for item in root_after}
+    and all(
+        item['subject'] == row['subject']
+        and item['previous_state'] == 'UNKNOWN'
+        and item['current_state'] == 'SUPPORT'
+        and item['trigger_material_ids'] == [material['material_id']]
+        for item in changed_claims
+    ),
+)
+claims_old, claims_old_raw, _ = client.get(initial_claims_path)
+check('old_material_claims_immutable', claims_old == claims_before and claims_old_raw == claims_before_raw)
 repeat,_,_=client.post(pfx(a2['id'])+'/materials',body,expect=(201,));check('same_key_same_body_idempotent',repeat==receipt)
 client.post(pfx(a2['id'])+'/materials',{**body,'source_description':body['source_description']+' changed'},expect=(409,));check('same_key_different_body_conflict',True)
 client.post(pfx(a2['id'])+'/materials',{**body,'idempotency_key':'package_cas_'+secrets.token_hex(8)},expect=(409,));check('stale_cas_conflict',True)

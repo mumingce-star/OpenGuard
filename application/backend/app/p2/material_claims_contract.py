@@ -1,11 +1,16 @@
 """Versioned material claims view over the frozen P2 Result and Material."""
-from typing import Literal, get_args
+from typing import Literal
 from pydantic import Field, model_validator
 from .contract import DTO, Binding, Subject, SHA, ID, Use
 
 Status = Literal['SUPPORT', 'RESTRICTION', 'UNKNOWN', 'COUNTER_EVIDENCE', 'NOT_COVERED']
-TextLicense = Literal['MIT', 'Apache-2.0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause', 'UNKNOWN']
-MATERIAL_TEXT_LICENSES = tuple(license_id for license_id in get_args(TextLicense) if license_id != 'UNKNOWN')
+# This tuple authorizes use of exact-release materials for conditional support.
+MATERIAL_TEXT_LICENSES = ('MIT', 'Apache-2.0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause')
+COPYLEFT_TEXT_LICENSES = ('MPL-2.0', 'GPL-2.0', 'GPL-3.0', 'LGPL-2.1', 'LGPL-3.0', 'AGPL-3.0')
+TextLicense = Literal[
+    'MIT', 'Apache-2.0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause',
+    'MPL-2.0', 'GPL-2.0', 'GPL-3.0', 'LGPL-2.1', 'LGPL-3.0', 'AGPL-3.0', 'UNKNOWN',
+]
 SCHEMA_VERSION = 'openguard-material-claims/4'
 RULE_VERSION = 'mit-apache2-bound-claim/4'
 
@@ -50,7 +55,9 @@ class MaterialObservation(DTO):
     byte_count: int = Field(ge=1, le=65536)
     filename: str
     parse_state: Literal['MATCHED_MIT', 'MATCHED_APACHE_2_0', 'MATCHED_ISC', 'MATCHED_BSD_2_CLAUSE',
-                         'MATCHED_BSD_3_CLAUSE', 'NOTICE_OBSERVED', 'UNSUPPORTED', 'FAILED']
+                         'MATCHED_BSD_3_CLAUSE', 'MATCHED_MPL_2_0', 'MATCHED_GPL_2_0', 'MATCHED_GPL_3_0',
+                         'MATCHED_LGPL_2_1', 'MATCHED_LGPL_3_0', 'MATCHED_AGPL_3_0',
+                         'NOTICE_OBSERVED', 'UNSUPPORTED', 'FAILED']
     parse_reason: str
     binding_state: Literal['BOUND_TO_SAVED_RESULT'] = 'BOUND_TO_SAVED_RESULT'
     adoption_state: Literal['OBSERVATION_ONLY', 'CONDITIONAL_TEXT_BASIS']
@@ -67,6 +74,12 @@ class MaterialObservation(DTO):
     evidence: list[EvidenceRef]
     clauses: list[Clause] = Field(max_length=10)
 
+    @model_validator(mode='after')
+    def copyleft_observation(self):
+        if (self.text_license in COPYLEFT_TEXT_LICENSES
+                and (self.adoption_state != 'OBSERVATION_ONLY' or self.source_binding != 'NOT_ESTABLISHED')):
+            raise ValueError('copyleft_observation_only')
+        return self
 
 class SourceMember(DTO):
     path: str = Field(min_length=1, max_length=4096)

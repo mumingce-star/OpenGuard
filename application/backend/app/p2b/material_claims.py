@@ -1,4 +1,4 @@
-"""Bounded permissive license and NOTICE text observations.
+"""Bounded license and NOTICE text observations.
 
 The legacy preliminary route re-exports the original strict MIT matcher.
 Normalized matches still map every quote to the uploaded bytes.
@@ -308,6 +308,52 @@ def _apache2_spans(raw: bytes, text: str) -> list[dict]:
     return [_span(raw, text, begin, len(text[:end].rstrip()), kind) for kind, begin, end in ranges]
 
 
+_COPYLEFT_TOKENS = re.compile(r'[^ \t\r\n\f]+')
+_COPYLEFT_CLAUSES = ('license_identifier', 'permission', 'condition', 'warranty')
+
+# SHA-256 of the entire document after folding ASCII whitespace. The verbatim
+# inputs, source references and raw digests are in task49-copyleft-licenses.json.
+# The ranges are half-open token ranges in that complete, immutable document.
+_COPYLEFT_DOCUMENTS = {
+    'e8ba82e63ba908724aaee6043943c5a2629b9ebf1af581ea0eea19a713123685': (
+        'MPL-2.0', (0, 5), (465, 547), (837, 1309), (1665, 1811),  # title, §2.1, §3, §6
+    ),
+    '04747bc19d9eb83b5ba43a81275faed327e38230c2fbc5439496736b3d260d2f': (
+        'GPL-2.0', (0, 8), (487, 751), (751, 1167), (2287, 2491),  # title, §§0–1, §2, §§11–12
+    ),
+    '0366f6619935ba5e41cf905e400e53d1a491751f103d3739d9e0aec22e171d92': (
+        'GPL-3.0', (0, 9), (1245, 1459), (1683, 1993), (4942, 5033),  # title, §2, §5, §15
+    ),
+    '749f03a5886beb4d1be889d90679193dc78b32d1530daff64b8296ab5f41e930': (
+        'LGPL-2.1', (0, 9), (999, 1375), (1375, 1805), (3826, 4030),  # title, §§0–1, §2, §§15–16
+    ),
+    '7b3ee35820a089523b4d31482806e1a0c3db035f7ab1856d167d61d89876b480': (
+        'LGPL-3.0', (0, 10), (286, 319), (555, 916),  # title, §1, §4
+        # The standalone text incorporates GPL-3.0, which contains the warranty.
+    ),
+    '2cd0fb7883a3b3553dedbb0bad171646d46f51e2642951aae7c59cb5cec86c46': (
+        'AGPL-3.0', (0, 10), (1112, 1326), (4511, 4698), (4907, 4998),  # title, §2, §13, §15
+    ),
+}
+
+
+def _copyleft_observation(raw: bytes, text: str) -> dict | None:
+    tokens = list(_COPYLEFT_TOKENS.finditer(text))
+    canonical = ' '.join(token[0] for token in tokens)
+    profile = _COPYLEFT_DOCUMENTS.get(hashlib.sha256(canonical.encode('utf-8')).hexdigest())
+    if profile is None:
+        return None
+    family, *ranges = profile
+    marker = family.replace('-', '_').replace('.', '_')
+    return {
+        'parse_state': f'MATCHED_{marker}',
+        'text_license': family,
+        'reason': f'COMPLETE_CANONICAL_{marker}_PROFILE',
+        'spans': [_span(raw, text, tokens[begin].start(), tokens[end - 1].end(), kind)
+                  for kind, (begin, end) in zip(_COPYLEFT_CLAUSES, ranges)],
+    }
+
+
 def parse_claim_material(raw: bytes, filename: str) -> dict:
     """Report the matched text profile and exact quote spans."""
     base = {'parse_state': 'FAILED', 'text_license': 'UNKNOWN',
@@ -328,7 +374,12 @@ def parse_claim_material(raw: bytes, filename: str) -> dict:
                 'spans': [_span(raw, text, 0, len(text), 'notice')]}
     unsupported = {**base, 'parse_state': 'UNSUPPORTED', 'reason': 'FULL_TEXT_PROFILE_NOT_MATCHED'}
     if _LICENSE_CONTROLS.search(text):
-        return unsupported
+        # Verbatim paginated GNU copies use form feeds. Accept those only after
+        # verifying an entire Copyleft document, with other controls rejected.
+        if _LICENSE_CONTROLS.search(text.replace('\f', '')):
+            return unsupported
+        observation = _copyleft_observation(raw, text)
+        return {**base, **observation} if observation is not None else unsupported
     if _apache2_matches(text):
         return {**base, 'parse_state': 'MATCHED_APACHE_2_0', 'text_license': 'Apache-2.0',
                 'license_version': '2.0', 'version_scope': 'LICENSE_VERSION_AND_RESOURCE_VERSION',
@@ -344,4 +395,7 @@ def parse_claim_material(raw: bytes, filename: str) -> dict:
         if matches:
             return {**base, 'parse_state': state, 'text_license': license_id, 'reason': reason,
                     'spans': [_span(raw, text, start, end, kind) for kind, start, end in matches]}
+    observation = _copyleft_observation(raw, text)
+    if observation is not None:
+        return {**base, **observation}
     return unsupported

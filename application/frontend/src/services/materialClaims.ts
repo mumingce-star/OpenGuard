@@ -7,13 +7,22 @@ export type ClaimState='SUPPORT'|'RESTRICTION'|'UNKNOWN'|'COUNTER_EVIDENCE'|'NOT
 export type Clause={clause_id:string;material_id:string;material_sha256:string;kind:string;byte_start:number;byte_end:number;line_start:number;line_end:number;quote:string;quote_sha256:string};
 type EvidenceRef={evidence_id:string;source_sha256:string|null};
 export type DeclarationObservation={subject:Subject;expression:string;normalized_ids:string[];declaration_evidence_ids:string[];evidence:EvidenceRef[];evidence_status:'COMPLETE'|'UNKNOWN'};
-const textLicenseByParseState={
+const permissiveTextLicenseByParseState={
  MATCHED_MIT:'MIT',
  MATCHED_APACHE_2_0:'Apache-2.0',
  MATCHED_ISC:'ISC',
  MATCHED_BSD_2_CLAUSE:'BSD-2-Clause',
  MATCHED_BSD_3_CLAUSE:'BSD-3-Clause',
 } as const;
+const copyleftTextLicenseByParseState={
+ MATCHED_MPL_2_0:'MPL-2.0',
+ MATCHED_GPL_2_0:'GPL-2.0',
+ MATCHED_GPL_3_0:'GPL-3.0',
+ MATCHED_LGPL_2_1:'LGPL-2.1',
+ MATCHED_LGPL_3_0:'LGPL-3.0',
+ MATCHED_AGPL_3_0:'AGPL-3.0',
+} as const;
+const textLicenseByParseState={...permissiveTextLicenseByParseState,...copyleftTextLicenseByParseState};
 type MatchedParseState=keyof typeof textLicenseByParseState;
 type MatchedTextLicense=(typeof textLicenseByParseState)[MatchedParseState];
 export type MaterialObservation={material_id:string;subject:Subject;source_sha256:string;byte_count:number;filename:string;parse_state:MatchedParseState|'NOTICE_OBSERVED'|'UNSUPPORTED'|'FAILED';parse_reason:string;binding_state:'BOUND_TO_SAVED_RESULT';adoption_state:'OBSERVATION_ONLY'|'CONDITIONAL_TEXT_BASIS';declared_spdx:string;text_license:MatchedTextLicense|'UNKNOWN';license_version:'2.0'|null;version_scope:'RESOURCE_VERSION_NOT_LICENSE_VERSION'|'LICENSE_VERSION_AND_RESOURCE_VERSION';role:'root_package'|'dependency'|'unknown';role_state:'observed'|'inferred'|'unknown';role_basis_evidence_ids:string[];role_conflicts:string[];source_binding:'PINNED_RELEASE_MATCH'|'NOT_ESTABLISHED';source_profile_sha256:string|null;evidence:EvidenceRef[];clauses:Clause[]};
@@ -34,7 +43,19 @@ const integer=(v:unknown)=>Number.isSafeInteger(v);
 const uses=['commercial','distributed','modified'];
 const states=['SUPPORT','RESTRICTION','UNKNOWN','COUNTER_EVIDENCE','NOT_COVERED'];
 const parseStates=new Set([...Object.keys(textLicenseByParseState),'NOTICE_OBSERVED','UNSUPPORTED','FAILED']);
-const supportedLicenses=new Set<string>(Object.values(textLicenseByParseState));
+const permissiveTextLicenses=new Set<string>(Object.values(permissiveTextLicenseByParseState));
+const copyleftTextLicenses=new Set<string>(Object.values(copyleftTextLicenseByParseState));
+const copyleftFamilyByDeclaration={
+ 'MPL-2.0':'MPL-2.0',
+ 'GPL-2.0-only':'GPL-2.0','GPL-2.0-or-later':'GPL-2.0',
+ 'GPL-3.0-only':'GPL-3.0','GPL-3.0-or-later':'GPL-3.0',
+ 'LGPL-2.1-only':'LGPL-2.1','LGPL-2.1-or-later':'LGPL-2.1',
+ 'LGPL-3.0-only':'LGPL-3.0','LGPL-3.0-or-later':'LGPL-3.0',
+ 'AGPL-3.0-only':'AGPL-3.0','AGPL-3.0-or-later':'AGPL-3.0',
+} as const;
+const sameTextFamily=(declared:string,observed:MatchedTextLicense)=>Object.hasOwn(copyleftFamilyByDeclaration,declared)
+ ?copyleftFamilyByDeclaration[declared as keyof typeof copyleftFamilyByDeclaration]===observed
+ :declared===observed;
 const sameIds=(a:string[],b:string[])=>{
  const set=new Set(b);
  return a.length===b.length&&new Set(a).size===a.length&&set.size===b.length&&a.every(x=>set.has(x));
@@ -43,6 +64,7 @@ const sameList=(a:readonly string[],b:readonly string[])=>a.length===b.length&&a
 const single=(d:DeclarationObservation,license:string)=>d.expression===license&&sameList(d.normalized_ids,[license]);
 const roleConflicts=new Set(['dependency_declaration_conflict','lock_version_conflict','lock_root_mismatch','contradictory_role_evidence']);
 const mitClauseKinds=['copyright','permission','condition','warranty'];
+const copyleftClauseKinds=['license_identifier','permission','condition','warranty'];
 const bsdConditions=[
  '以源码再分发时保留原版权声明、许可证条件和免责声明。',
  '以二进制再分发时在随附文档和/或其他分发材料中保留原版权声明、许可证条件和免责声明。',
@@ -73,7 +95,7 @@ const addedSupportReasons=new Set(Object.values(addedTextProfiles).map(profile=>
 const copyleftReview='COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED';
 const weakCopyleftReview='WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED';
 const copyleftLicenses=new Set(['GPL-2.0-only','GPL-2.0-or-later','GPL-3.0-only','GPL-3.0-or-later','AGPL-3.0-only','AGPL-3.0-or-later']);
-const weakCopyleftLicenses=new Set(['LGPL-2.1-only','LGPL-2.1-or-later','LGPL-3.0-only','MPL-2.0']);
+const weakCopyleftLicenses=new Set(['LGPL-2.1-only','LGPL-2.1-or-later','LGPL-3.0-only','LGPL-3.0-or-later','MPL-2.0']);
 const apacheProfile:[kind:string,heading:RegExp][]=[
  ['license_identifier',/^\s*Apache License\s+Version 2\.0, January 2004/],
  ['permission',/^\s*2\. Grant of Copyright License\./],
@@ -188,9 +210,11 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   const textLicense=Object.hasOwn(textLicenseByParseState,m.parse_state)
    ?textLicenseByParseState[m.parse_state as MatchedParseState]:'UNKNOWN';
   const apache=textLicense==='Apache-2.0',notice=m.parse_state==='NOTICE_OBSERVED';
+  const copyleft=copyleftTextLicenses.has(textLicense);
   const addedProfile=addedTextProfile(textLicense);
   if(m.declared_spdx!==declaration.expression||m.text_license!==textLicense
     ||(addedProfile&&m.parse_reason!==addedProfile.parseReason)
+    ||(copyleft&&m.parse_reason!=='COMPLETE_CANONICAL_'+m.parse_state.slice('MATCHED_'.length)+'_PROFILE')
     ||m.license_version!==(apache?'2.0':null)
     ||m.version_scope!==(apache?'LICENSE_VERSION_AND_RESOURCE_VERSION':'RESOURCE_VERSION_NOT_LICENSE_VERSION'))return fail();
   if(m.role==='unknown'?(m.role_state!=='unknown'||m.role_basis_evidence_ids.length!==0)
@@ -199,7 +223,8 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   const roleSignature=JSON.stringify([m.role,m.role_state,m.role_basis_evidence_ids,m.role_conflicts]);
   if(rolesByResource.has(resource)&&rolesByResource.get(resource)!==roleSignature)return fail();
   rolesByResource.set(resource,roleSignature);
-  if(m.adoption_state==='CONDITIONAL_TEXT_BASIS'&&(declaration.evidence_status!=='COMPLETE'||textLicense==='UNKNOWN'||!single(declaration,textLicense)
+  if(copyleft&&(m.adoption_state!=='OBSERVATION_ONLY'||m.source_binding!=='NOT_ESTABLISHED'))return fail();
+  if(m.adoption_state==='CONDITIONAL_TEXT_BASIS'&&(declaration.evidence_status!=='COMPLETE'||!permissiveTextLicenses.has(textLicense)||!single(declaration,textLicense)
     ||m.source_binding!=='PINNED_RELEASE_MATCH'||v.source_status!=='CHECKED'||sourceRows.get(resource)?.notice_status!=='ABSENT_COMPLETE'))return fail();
   if((textLicense!=='UNKNOWN'&&!/^LICEN[CS]E(?:\.|$)/i.test(m.filename))||(notice&&!/^NOTICE(?:\.|$)/i.test(m.filename)))return fail();
   if(textLicense==='UNKNOWN'&&!notice&&m.clauses.length)return fail();
@@ -214,6 +239,10 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   if(bodyKinds){
    const kinds=m.clauses.map((c:Clause)=>c.kind);
    if(!sameList(kinds,bodyKinds)&&!sameList(kinds,['license_identifier',...bodyKinds]))return fail();
+  }
+  if(copyleft){
+   const kinds=textLicense==='LGPL-3.0'?copyleftClauseKinds.slice(0,-1):copyleftClauseKinds;
+   if(!sameList(m.clauses.map((c:Clause)=>c.kind),kinds))return fail();
   }
   if(apache&&(m.clauses.length!==apacheProfile.length||!apacheProfile.every(([kind,heading],i)=>m.clauses[i].kind===kind&&heading.test(m.clauses[i].quote))))return fail();
   if(notice&&(m.clauses.length!==1||m.clauses[0].kind!=='notice'||m.clauses[0].byte_start!==0
@@ -233,9 +262,9 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   const multi=[' AND ',' OR ',' WITH '].some(t=>declaration.expression.includes(t));
   const expectedCounters:{code:string;ms:MaterialObservation[];declaration:string[];source:string[];provenance:boolean}[]=[];
   const add=(code:string,ms:MaterialObservation[],ds:string[]=[],source:string[]=[],provenance=true)=>expectedCounters.push({code,ms,declaration:ds,source,provenance});
-  if(supportedLicenses.has(declaration.expression)&&!single(declaration,declaration.expression))
+  if(permissiveTextLicenses.has(declaration.expression)&&!single(declaration,declaration.expression))
     add('SPDX_NORMALIZATION_CONFLICT',[],declaration.declaration_evidence_ids,[],declaration.evidence_status==='COMPLETE');
-  const conflicting=licenses.filter((m:MaterialObservation)=>m.text_license!=='UNKNOWN'&&m.text_license!==declaration.expression);
+  const conflicting=licenses.filter((m:MaterialObservation)=>m.text_license!=='UNKNOWN'&&!sameTextFamily(declaration.expression,m.text_license));
   if(!['UNOBSERVED','CONFLICT_OR_UNSUPPORTED'].includes(declaration.expression)&&!multi&&conflicting.length)
     add('SPDX_TEXT_CONFLICT',conflicting,declaration.declaration_evidence_ids,[],declaration.evidence_status==='COMPLETE');
   if(new Set(licenses.map((m:MaterialObservation)=>m.source_sha256)).size>1)add('BOUND_LICENSE_BYTES_CONFLICT',licenses);
@@ -265,7 +294,7 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
   if(!sameIds(c.clause_ids,expectedClauses)||!sameIds(c.evidence.map((e:EvidenceRef)=>e.evidence_id),expectedEvidence))return fail();
   if(['SUPPORT','RESTRICTION'].includes(c.state)){
    const license=declaration.expression;
-   if(row.resource_kind!=='component'||!supportedLicenses.has(license)||declaration.evidence_status!=='COMPLETE'||!single(declaration,license)
+   if(row.resource_kind!=='component'||!permissiveTextLicenses.has(license)||declaration.evidence_status!=='COMPLETE'||!single(declaration,license)
      ||!c.conditions.length||c.counter_evidence.length||!licenses.some((m:MaterialObservation)=>m.text_license===license&&m.adoption_state==='CONDITIONAL_TEXT_BASIS')
      ||!c.clause_ids.some((i:string)=>clauseMap.get(i)?.kind==='permission')||!c.clause_ids.some((i:string)=>clauseMap.get(i)?.kind==='condition')
      ||!c.evidence.length||c.evidence.some((e:EvidenceRef)=>e.source_sha256===null)||v.source_status!=='CHECKED'||source?.notice_status!=='ABSENT_COMPLETE')return fail();
@@ -294,8 +323,10 @@ export async function validateMaterialClaims(v:unknown,result:Result,anchor:Decl
      ||c.counter_evidence.some(e=>e.code!=='NOTICE_REQUIRES_REVIEW'))return fail();
   }
   const selected=a.saved_value===true&&row.resource_kind==='component';
-  if(selected&&c.counter_evidence.some(e=>e.code==='BOUND_NOTICE_BYTES_CONFLICT')
-   &&(a.state!=='COUNTER_EVIDENCE'||!reasons.includes('BOUND_NOTICE_BYTES_CONFLICT')))return fail();
+  const requiredCounters=c.counter_evidence.filter(e=>e.code==='BOUND_NOTICE_BYTES_CONFLICT'
+    ||(e.code==='SPDX_TEXT_CONFLICT'&&e.material_ids.some(id=>
+      copyleftTextLicenses.has(materialMap.get(id)!.text_license))));
+  if(selected&&requiredCounters.some(e=>a.state!=='COUNTER_EVIDENCE'||!reasons.includes(e.code)))return fail();
   const matched=selected&&matchedNoticeRows.has(row.subject.resource_id)&&c.counter_evidence.every(e=>e.code==='NOTICE_REQUIRES_REVIEW');
   if(reasons.includes('NOTICE_MATCHED_REQUIRES_HUMAN_OBLIGATION_REVIEW')!==matched
    ||(matched&&(a.state!=='UNKNOWN'||!hasApacheCondition(a.conditions,'d'))))return fail();

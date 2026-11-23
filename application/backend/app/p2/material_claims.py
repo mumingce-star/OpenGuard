@@ -2,11 +2,13 @@
 from __future__ import annotations
 import hashlib
 from urllib.parse import quote
+from packaging.utils import InvalidName, canonicalize_name
+from packaging.version import Version
 from app.p2b._resource_roles import assess_resource_roles
 from app.p2b.candidates import EXACT_VERSION
 from app.p2b.material_claims import parse_claim_material
 from .contract import P2Error, digest, strict_json
-from .material_claims_contract import MATERIAL_TEXT_LICENSES, MaterialClaims, RULE_VERSION, SCHEMA_VERSION
+from .material_claims_contract import COPYLEFT_TEXT_LICENSES, MATERIAL_TEXT_LICENSES, MaterialClaims, RULE_VERSION, SCHEMA_VERSION
 from .preliminary import CONDITIONS, LIMITATIONS, load_sources
 
 USES = ('commercial', 'distributed', 'modified')
@@ -37,6 +39,15 @@ COPYLEFT = frozenset({
     'AGPL-3.0-only', 'AGPL-3.0-or-later',
 })
 WEAK_COPYLEFT = frozenset({'LGPL-2.1-only', 'LGPL-2.1-or-later', 'LGPL-3.0-only', 'LGPL-3.0-or-later', 'MPL-2.0'})
+_COPYLEFT_DECLARATION_FAMILIES = {
+    'MPL-2.0': 'MPL-2.0',
+    **{f'{family}-{qualifier}': family for family in COPYLEFT_TEXT_LICENSES if family != 'MPL-2.0'
+       for qualifier in ('only', 'or-later')},
+}
+_ROOT_MANIFESTS = {
+    'npm': {'package.json:'},
+    'pypi': {'pyproject.toml:/project', 'pyproject.toml:/tool/poetry'},
+}
 ROLE_CONFLICTS = frozenset({
     'dependency_declaration_conflict', 'lock_version_conflict', 'lock_root_mismatch',
     'contradictory_role_evidence',
@@ -134,6 +145,49 @@ def _dependency_role(resource, refs, diagnostics):
             'evidence_ids': sorted({e.evidence_id for e in declared.evidence if e.present})}
 
 
+def root_package_evidence_ids(resource, evidence_by_id) -> list[str]:
+    """Find a hash-bound name and version written by one root manifest."""
+    kind = getattr(resource, 'component_type', None)
+    if getattr(kind, 'value', kind) != 'application':
+        return []
+    ecosystem = resource.ecosystem
+    locations = _ROOT_MANIFESTS.get(ecosystem)
+    if locations is None:
+        return []
+    if ecosystem == 'pypi':
+        try:
+            normalized_name = canonicalize_name(resource.name, validate=True)
+        except InvalidName:
+            return []
+        if not resource.version or resource.purl != f'pkg:pypi/{normalized_name}@{resource.version}':
+            return []
+    matches, identities = {}, set()
+    for evidence_id in resource.evidence_ids:
+        evidence = evidence_by_id.get(evidence_id)
+        if (evidence is None or evidence.content_hash is None or evidence.content_hash.algorithm != 'sha256'
+                or evidence.kind.value != 'manifest_field' or evidence.producer.type.value != 'parser'
+                or evidence.producer.name != 'openguard.root-package-manifest' or evidence.producer.version != '1'):
+            continue
+        location, _, field = evidence.locator.rpartition('/')
+        if location not in locations or field not in {'name', 'version'}:
+            continue
+        try:
+            value = strict_json(evidence.excerpt or '')
+            if ecosystem == 'pypi' and field == 'version':
+                if not isinstance(value, str) or len(value) > 200 or value != value.strip():
+                    return []
+                value = str(Version(value))
+        except ValueError:
+            return []
+        if value != getattr(resource, field):
+            return []
+        matches.setdefault(field, []).append(evidence_id)
+        identities.add((location, evidence.content_hash.value))
+    if set(matches) == {'name', 'version'} and len(identities) == 1:
+        return sorted(evidence_id for ids in matches.values() for evidence_id in ids)
+    return []
+
+
 def evidence_context(run, resources, result):
     """Extract declaration provenance and narrowly supported role inference.
 
@@ -169,24 +223,10 @@ def evidence_context(run, resources, result):
             refs = tuple(evidence[eid] for eid in resource.evidence_ids if valid(eid))
             roles[rid] = _dependency_role(resource, refs, diagnostics)
             continue
-        matches, hashes, bad = {}, set(), False
-        for eid in resource.evidence_ids:
-            e = evidence.get(eid)
-            if (not valid(eid) or e.kind.value != 'manifest_field' or e.producer.type.value != 'parser'
-                    or e.producer.name != 'openguard.root-package-manifest' or e.producer.version != '1'):
-                continue
-            field = {'package.json:/name': 'name', 'package.json:/version': 'version'}.get(e.locator)
-            if field is None:
-                continue
-            try:
-                if strict_json(e.excerpt or '') != getattr(resource, field):
-                    bad = True; continue
-            except ValueError:
-                bad = True; continue
-            matches.setdefault(field, []).append(eid); hashes.add(e.content_hash.value)
-        if not bad and set(matches) == {'name', 'version'} and len(hashes) == 1:
+        ids = root_package_evidence_ids(resource, {eid: evidence[eid] for eid in resource.evidence_ids if valid(eid)})
+        if ids:
             roles[rid] = {'role': 'root_package', 'state': 'inferred',
-                          'evidence_ids': sorted(eid for ids in matches.values() for eid in ids)}
+                          'evidence_ids': ids}
     return declarations, roles
 
 
@@ -307,7 +347,10 @@ def project_core(result, resources, materials, source_root, source_sha, declared
         multi = any(token in declared for token in (' AND ', ' OR ', ' WITH '))
         if d.get('expression') in LICENSE_MATCHES and d.get('normalized_ids') != [d['expression']]:
             counter('SPDX_NORMALIZATION_CONFLICT', [], extra_ids=declaration_ids, provenance=d.get('complete', False))
-        conflicting = [m for m in licenses if m['text_license'] in LICENSE_MATCHES and m['text_license'] != declared]
+        declared_family = _COPYLEFT_DECLARATION_FAMILIES.get(declared, declared)
+        conflicting = [m for m in licenses if (m['text_license'] in LICENSE_MATCHES
+                                                or m['text_license'] in COPYLEFT_TEXT_LICENSES)
+                       and m['text_license'] != declared_family]
         if conflicting and not multi and declared not in {'UNOBSERVED', 'CONFLICT_OR_UNSUPPORTED'}:
             counter('SPDX_TEXT_CONFLICT', conflicting, extra_ids=declaration_ids, provenance=d.get('complete', False))
         if len({m['source_sha256'] for m in licenses}) > 1:

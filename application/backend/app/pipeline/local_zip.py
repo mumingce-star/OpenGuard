@@ -26,7 +26,7 @@ from app.pipeline.external_scans import collect_external_scans
 from app.pipeline.worker import PipelineError, PipelinePlan
 from app.work_progress import observe as observe_work_progress
 from app.pipeline.manifest_licenses import collect_manifest_licenses
-from app.pipeline.root_package import collect_root_package
+from app.pipeline.root_package import collect_python_root_package, collect_root_package
 from app.scanners import (
     JavascriptP0MappingResult,
     PythonP0MappingResult,
@@ -93,12 +93,17 @@ def _consume_dependencies(session: ReadOnlyScanSession, clock: Callable[[], date
         session, javascript_mapping, clock(), total_read_budget=READ_LIMITS.total_max_bytes,
     )
     ai_scan = collect_ai_assets(session, clock(), total_read_budget=READ_LIMITS.total_max_bytes)
-    dependency_observations = collect_dependency_observations(
-        session, clock(), remaining_budget=_budget_after_notice(session),
+    dependency_budget = _budget_after_notice(session)
+    notice_reserve = session.remaining_read_bytes - dependency_budget
+    dependency_observations = collect_dependency_observations(session, clock(), remaining_budget=dependency_budget)
+    # Root enrichment is additional to the established scans. Leave all earlier
+    # reads and the later NOTICE consumer at their original priority.
+    python_mapping, python_root_licenses = collect_python_root_package(
+        session, python_mapping, clock(), total_read_budget=session.remaining_read_bytes - notice_reserve,
     )
     return DependencyConsumerResult(
         lanes=(LaneResult("python", python_mapping), LaneResult("javascript", javascript_mapping)),
-        manifest_licenses=root_licenses + manifest_licenses,
+        manifest_licenses=root_licenses + manifest_licenses + python_root_licenses,
         ai_scan=ai_scan,
         dependency_observations=dependency_observations,
     )

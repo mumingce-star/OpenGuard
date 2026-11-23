@@ -606,3 +606,98 @@ test('TASK43 rejects a strong Copyleft review code attached to a weak Copyleft d
  const {s}=setup(),{r,a,v}=task43CopyleftFixture('MPL-2.0','COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED');
  await assert.rejects(s.validateMaterialClaims(v,r,a));
 });
+
+const task49CopyleftProfiles = [
+ {license:'MPL-2.0',spdx:['MPL-2.0'],weak:true},
+ {license:'GPL-2.0',spdx:['GPL-2.0-only','GPL-2.0-or-later']},
+ {license:'GPL-3.0',spdx:['GPL-3.0-only','GPL-3.0-or-later']},
+ {license:'LGPL-2.1',spdx:['LGPL-2.1-only','LGPL-2.1-or-later'],weak:true},
+ {license:'LGPL-3.0',spdx:['LGPL-3.0-only','LGPL-3.0-or-later'],weak:true,noWarranty:true},
+ {license:'AGPL-3.0',spdx:['AGPL-3.0-only','AGPL-3.0-or-later']},
+];
+
+function task49CopyleftObservation(profile, declared=profile.spdx[0]){
+ const {license,weak,noWarranty}=profile;
+ const code=license.replace(/[.-]/g,'_');
+ const reason=weak?'WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED':'COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED';
+ const {r,a,v}=task43LicenseFixture({
+  license,parse:'MATCHED_'+code,parseReason:'COMPLETE_CANONICAL_'+code+'_PROFILE',
+  clauses:noWarranty?['permission','condition']:['permission','condition','warranty'], conditions:[],reason,
+ },true);
+ for(const row of [a.resources[0],v.declaration_observations[0]]){
+  Object.assign(row,{expression:declared,normalized_ids:[declared]});
+ }
+ Object.assign(v,{source_status:'NOT_CONFIGURED',source_profile_sha256:null,source_observations:[]});
+ Object.assign(v.materials[0],{declared_spdx:declared,adoption_state:'OBSERVATION_ONLY',
+  source_binding:'NOT_ESTABLISHED',source_profile_sha256:null});
+ const counter=profile.spdx.includes(declared)?[]:[{
+  code:'SPDX_TEXT_CONFLICT',material_ids:['p2mat_1'],evidence_ids:['evd_1'],
+  declaration_evidence_ids:['evd_1'],source_observation_ids:[],evidence_status:'COMPLETE',
+ }];
+ const state=counter.length?'COUNTER_EVIDENCE':'UNKNOWN';
+ for(const claim of v.claims)Object.assign(claim,{state,counter_evidence:structuredClone(counter)});
+ for(const advice of v.advice)Object.assign(advice,{state,reasons:[counter.length?counter[0].code:reason]});
+ return {r,a,v};
+}
+
+for(const profile of task49CopyleftProfiles){
+ test('TASK49 decodes same-family Copyleft as observation for '+profile.license,async()=>{
+  const {s}=setup();
+  for(const declared of profile.spdx){
+   const {r,a,v}=task49CopyleftObservation(profile,declared);
+   const checked=await s.validateMaterialClaims(v,r,a);
+   assert.equal(checked.materials[0].text_license,profile.license);
+   assert.deepEqual(checked.claims.map(row=>row.state),['UNKNOWN','UNKNOWN','UNKNOWN']);
+   assert.ok(checked.claims.every(row=>row.counter_evidence.length===0));
+   assert.equal(checked.materials[0].adoption_state,'OBSERVATION_ONLY');
+   assert.ok(checked.advice.every(row=>row.reasons[0]===(profile.weak
+    ?'WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED':'COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED')));
+   const ui=await panelHarness('failure',false,{r,a,v:checked});
+   try{
+    assert.ok(ui.text.includes('完整 '+profile.license+' 文本匹配'));
+    assert.doesNotMatch(ui.text,/有条件文本支持/);
+   }finally{ui.dispose();}
+  }
+ });
+}
+
+for(const [profile,declared] of [
+ [task49CopyleftProfiles[0],'MIT'],
+ [task49CopyleftProfiles[2],'Apache-2.0'],
+ [task49CopyleftProfiles[0],'GPL-3.0-only'],
+]){
+ test('TASK49 reconstructs '+declared+' versus '+profile.license+' as exact text conflict',async()=>{
+  const {s}=setup(),{r,a,v}=task49CopyleftObservation(profile,declared);
+  const checked=await s.validateMaterialClaims(v,r,a);
+  assert.ok(checked.claims.every(row=>row.state==='COUNTER_EVIDENCE'
+   &&row.counter_evidence[0].code==='SPDX_TEXT_CONFLICT'));
+  const concealed=structuredClone(v);
+  concealed.claims[0].counter_evidence=[];
+  await assert.rejects(s.validateMaterialClaims(concealed,r,a));
+ });
+}
+
+test('TASK49 rejects forged pinned adoption or SUPPORT on recognized Copyleft',async()=>{
+ const {s}=setup(),{r,a,v}=task49CopyleftObservation(task49CopyleftProfiles[0]);
+ await s.validateMaterialClaims(v,r,a);
+ const forged=structuredClone(v);
+ const source=structuredClone(fixture().source_observations[0]);
+ Object.assign(forged,{source_status:'CHECKED',source_profile_sha256:b,source_observations:[source]});
+ Object.assign(forged.materials[0],{source_profile_sha256:b,source_binding:'PINNED_RELEASE_MATCH',
+  adoption_state:'CONDITIONAL_TEXT_BASIS'});
+ for(const entry of [...forged.claims,...forged.advice])Object.assign(entry,{state:'SUPPORT',conditions:['forged']});
+ await assert.rejects(s.validateMaterialClaims(forged,r,a));
+ forged.materials[0].adoption_state='OBSERVATION_ONLY';
+ await assert.rejects(s.validateMaterialClaims(forged,r,a));
+});
+
+test('TASK49 rejects missing or mislabeled Copyleft clauses and wrong parse pairing',async()=>{
+ const {s}=setup(),{r,a,v}=task49CopyleftObservation(task49CopyleftProfiles[2]);
+ await s.validateMaterialClaims(v,r,a);
+ const removed=v.materials[0].clauses.pop();
+ for(const claim of v.claims)claim.clause_ids=claim.clause_ids.filter(id=>id!==removed.clause_id);
+ await assert.rejects(s.validateMaterialClaims(v,r,a));
+ const other=task49CopyleftObservation(task49CopyleftProfiles[2]);
+ other.v.materials[0].text_license='GPL-2.0';
+ await assert.rejects(s.validateMaterialClaims(other.v,other.r,other.a));
+});

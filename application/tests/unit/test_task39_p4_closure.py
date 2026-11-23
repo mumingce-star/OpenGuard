@@ -842,3 +842,155 @@ def test_task43_bsd_notice_and_release_pin_are_required(base_setup, mode):
     assert len(advice) == 3 and all(item['state'] == 'UNKNOWN' for item in advice)
     if mode == 'notice':
         assert all('NOTICE_REQUIRES_REVIEW' in item['reasons'] for item in advice)
+
+
+_TASK49_COPYLEFT_CORPUS = Path(__file__).resolve().parents[1] / 'fixtures/task49-copyleft-licenses.json'
+_TASK49_COPYLEFT_FAMILIES = ('MPL-2.0', 'GPL-2.0', 'GPL-3.0', 'LGPL-2.1', 'LGPL-3.0', 'AGPL-3.0')
+_TASK49_PERMISSION_CLAUSE = {
+    'MPL-2.0': '2.1. Grants',
+    'GPL-2.0': '0. This License applies',
+    'GPL-3.0': '2. Basic Permissions.',
+    'LGPL-2.1': '0. This License Agreement applies',
+    'LGPL-3.0': '1. Exception to Section 3 of the GNU GPL.',
+    'AGPL-3.0': '2. Basic Permissions.',
+}
+_TASK49_CONDITION_CLAUSE = {
+    'MPL-2.0': '3. Responsibilities',
+    'GPL-2.0': '2. You may modify your copy',
+    'GPL-3.0': '5. Conveying Modified Source Versions.',
+    'LGPL-2.1': '2. You may modify your copy',
+    'LGPL-3.0': '4. Combined Works.',
+    'AGPL-3.0': '13. Remote Network Interaction',
+}
+_TASK49_WARRANTY_CLAUSE = {
+    'MPL-2.0': '6. Disclaimer of Warranty',
+    'GPL-2.0': 'NO WARRANTY',
+    'GPL-3.0': '15. Disclaimer of Warranty.',
+    'LGPL-2.1': 'NO WARRANTY',
+    'AGPL-3.0': '15. Disclaimer of Warranty.',
+}
+
+
+def _task49_original(family):
+    item = json.loads(_TASK49_COPYLEFT_CORPUS.read_text(encoding='utf-8'))['licenses'][family]
+    raw = item['text'].encode('utf-8')
+    assert len(raw) == item['bytes'] and sha(raw) == item['sha256']
+    if family == 'MPL-2.0':
+        assert len(raw) == 15648
+        assert sha(raw) == '5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e'
+    return raw
+
+
+def _task49_assert_matched_text(parsed, family, spans='spans'):
+    token = family.replace('-', '_').replace('.', '_')
+    assert (parsed['text_license'], parsed['parse_state']) == (family, 'MATCHED_' + token)
+    assert parsed['license_version'] is None
+    assert parsed['version_scope'] == 'RESOURCE_VERSION_NOT_LICENSE_VERSION'
+    assert parsed['parse_reason' if spans == 'clauses' else 'reason'] == f'COMPLETE_CANONICAL_{token}_PROFILE'
+    expected = ['license_identifier', 'permission', 'condition']
+    if family in _TASK49_WARRANTY_CLAUSE:
+        expected.append('warranty')
+    assert [span['kind'] for span in parsed[spans]] == expected
+    items = {span['kind']: ' '.join(span['quote'].split()) for span in parsed[spans]}
+    assert items['permission'].startswith(_TASK49_PERMISSION_CLAUSE[family])
+    assert items['condition'].startswith(_TASK49_CONDITION_CLAUSE[family])
+    if family in _TASK49_WARRANTY_CLAUSE:
+        assert items['warranty'].startswith(_TASK49_WARRANTY_CLAUSE[family])
+
+
+@pytest.mark.parametrize('family', _TASK49_COPYLEFT_FAMILIES)
+def test_task49_complete_copyleft_licenses_have_exact_spans(family):
+    original = _task49_original(family)
+    windows = b' \t\r\n' + original.replace(b'\n', b'\r\n') + b'\r\n\t'
+    rewrapped = b' \r\n'.join(original.split())
+    for raw in (original, windows, rewrapped):
+        parsed = parse_claim_material(raw, 'LICENSE')
+        _task49_assert_matched_text(parsed, family)
+        _task43_assert_quotes(raw, parsed['spans'])
+        assert all(left['byte_end'] <= right['byte_start']
+                   for left, right in zip(parsed['spans'], parsed['spans'][1:]))
+
+
+@pytest.mark.parametrize('family', _TASK49_COPYLEFT_FAMILIES)
+def test_task49_copyleft_rejects_truncated_tampered_and_spliced_text(family):
+    original = _task49_original(family)
+    words = original.split()
+    middle = len(words) // 2
+    alternate = _task49_original('GPL-2.0' if family != 'GPL-2.0' else 'MPL-2.0')
+    mutated = [
+        original.split(b'\n', 2)[0], original[:len(original) // 2],
+        b' '.join(words[:middle] + words[middle + 1:]),
+        b' '.join(words[:middle] + [b'tampered'] + words[middle + 1:]),
+        original + b'\n' + alternate,
+        original[:original.find(b'\n')] + b'\n' + alternate,
+    ]
+    for raw in mutated:
+        parsed = parse_claim_material(raw, 'LICENSE')
+        assert (parsed['parse_state'], parsed['text_license'], parsed['spans']) == ('UNSUPPORTED', 'UNKNOWN', [])
+
+
+@pytest.mark.parametrize('declared,observed', [
+    ('MIT', 'MPL-2.0'), ('Apache-2.0', 'GPL-3.0'), ('GPL-3.0-only', 'MPL-2.0'),
+])
+def test_task49_copyleft_cross_family_asgi_is_exact_counter_evidence(base_setup, declared, observed):
+    raw = _task49_original(observed)
+    harness, old, subject = _task43_endpoint(base_setup, declared, raw, pinned=False)
+    before = get(harness, old)
+    result = upload(harness, old, subject, raw)
+    view = get(harness, result)
+    material, = view['materials']
+    _task49_assert_matched_text(material, observed, spans='clauses')
+    _task43_assert_quotes(raw, material['clauses'])
+    assert material['adoption_state'] == 'OBSERVATION_ONLY' and material['source_binding'] == 'NOT_ESTABLISHED'
+    items = [item for item in view['advice'] if item['subject'] == subject]
+    assert {item['usage'] for item in items} == USES
+    assert all(item['state'] == 'COUNTER_EVIDENCE' and 'SPDX_TEXT_CONFLICT' in item['reasons'] for item in items)
+    claims = [item for item in view['claims'] if item['subject'] == subject]
+    for claim in claims:
+        counter, = [item for item in claim['counter_evidence'] if item['code'] == 'SPDX_TEXT_CONFLICT']
+        assert counter['material_ids'] == [material['material_id']] and counter['evidence_status'] == 'COMPLETE'
+    assert_impact(old, before, result, view)
+    assert get(harness, old) == before
+
+
+@pytest.mark.parametrize('declared,family', [
+    ('MPL-2.0', 'MPL-2.0'),
+    *((f'{family}-{variant}', family)
+      for family in _TASK49_COPYLEFT_FAMILIES if family != 'MPL-2.0'
+      for variant in ('only', 'or-later')),
+])
+def test_task49_copyleft_same_family_asgi_never_grants_support(base_setup, declared, family):
+    raw = _task49_original(family)
+    harness, old, subject = _task43_endpoint(base_setup, declared, raw, pinned=False)
+    before = get(harness, old)
+    result = upload(harness, old, subject, raw)
+    view = get(harness, result)
+    material, = view['materials']
+    _task49_assert_matched_text(material, family, spans='clauses')
+    _task43_assert_quotes(raw, material['clauses'])
+    assert material['adoption_state'] == 'OBSERVATION_ONLY' and material['source_binding'] == 'NOT_ESTABLISHED'
+    reason = ('WEAK_COPYLEFT_FILE_SCOPE_REVIEW_REQUIRED'
+              if family == 'MPL-2.0' or family.startswith('LGPL-')
+              else 'COPYLEFT_SOURCE_DISCLOSURE_REVIEW_REQUIRED')
+    items = [item for item in view['advice'] if item['subject'] == subject]
+    assert {item['usage'] for item in items} == USES
+    assert all(item['state'] == 'UNKNOWN' and item['reasons'] == [reason] for item in items)
+    claims = [item for item in view['claims'] if item['subject'] == subject]
+    assert all(not claim['counter_evidence'] and not claim['conditions'] for claim in claims)
+    assert_impact(old, before, result, view)
+    assert get(harness, old) == before
+
+
+@pytest.mark.parametrize('family', _TASK49_COPYLEFT_FAMILIES)
+def test_task49_copyleft_source_admission_stays_permissive_only(tmp_path, family):
+    from app.p2.contract import P2Error
+    from app.p2.material_claims_contract import MATERIAL_TEXT_LICENSES
+    from app.p2.preliminary import load_sources
+
+    assert MATERIAL_TEXT_LICENSES == ('MIT', 'Apache-2.0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause')
+    raw = _task49_original(family)
+    directory = tmp_path / 'source'
+    profile_sha = pinned_source(directory, family, raw, None)
+    with pytest.raises(P2Error) as raised:
+        load_sources(directory, profile_sha, 'TEST_ONLY', inspect_notices=True, allowed_licenses=MATERIAL_TEXT_LICENSES)
+    assert raised.value.code == 'p2_public_source_invalid'

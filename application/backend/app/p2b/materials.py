@@ -5,10 +5,25 @@ import hashlib
 import re
 from typing import Any
 
+from packaging.version import InvalidVersion, Version
+
 MAX_MATERIAL_BYTES = 64 * 1024
 _NAME = re.compile(r"^(?:LICENSE|LICENCE|NOTICE)(?:\.(?:txt|md|rst))?$", re.I)
 _SHA = re.compile(r"^[0-9a-f]{64}$")
 _EXACT_VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$")
+
+
+def is_exact_material_version(version: object, *, allow_pep440: bool = False) -> bool:
+    if not isinstance(version, str):
+        return False
+    if not allow_pep440:
+        return bool(_EXACT_VERSION.fullmatch(version))
+    if not 1 <= len(version) <= 200:
+        return False
+    try:
+        return str(Version(version)) == version
+    except InvalidVersion:
+        return False
 
 
 def _decode_material_text(content: bytes) -> str:
@@ -26,7 +41,8 @@ def _decode_material_text(content: bytes) -> str:
 
 def parse_local_material(content: bytes, metadata: dict[str, Any],
                          *, known_objects: dict[tuple[str, str], str],
-                         known_materials: dict[tuple[str, str, str, str], str] | None = None) -> dict[str, Any]:
+                         known_materials: dict[tuple[str, str, str, str], str] | None = None,
+                         allow_pep440: bool = False) -> dict[str, Any]:
     """Accept only object/version-bound bytes; provenance remains a user claim."""
     if not isinstance(metadata, dict) or not isinstance(known_objects, dict):
         raise ValueError("invalid_material_metadata")
@@ -42,7 +58,7 @@ def parse_local_material(content: bytes, metadata: dict[str, Any],
         raise ValueError("unknown_object")
     if version != known_objects[(scan_id, object_id)]:
         raise ValueError("wrong_object_version")
-    if not isinstance(version, str) or not _EXACT_VERSION.fullmatch(version):
+    if not is_exact_material_version(version, allow_pep440=allow_pep440):
         raise ValueError("material_version_not_exact")
     digest = hashlib.sha256(content).hexdigest()
     expected = metadata.get("sha256")
