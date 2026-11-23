@@ -1,15 +1,29 @@
-# 资源、模型与第三方归属
+# OpenGuard v2.0.0 资源与第三方归属
 
-本文件适用于 OpenGuard 国赛本地候选 `aic-national-p3-p7-20261122-candidate`。受测产品与测试冻结于 `1f4dc46aab5c494be71c518fe869787a24f679ba`。版本链、产品树和依赖锁摘要以 `VERSION.json` 为准，包内文件摘要以 `FILE_HASHES.json` 为准。远程发布等待 Owner 接纳和单独授权。
+本里程碑的产品与测试树继承自 `a9081dfbf900b7a901120e611603fed5f441fbd9`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
 
-## 自有代码及第三方闭包
+## 自有代码及第三方组件
 
-OpenGuard 自有代码采用根 `LICENSE` 的 Apache-2.0。第三方组件按其各自许可归属。历史 UI 贡献和许可参考见 `application/frontend/THIRD_PARTY_UI.md`，前序录制改动见 `FRONTEND_UPDATE_20261116.md`。该文件仅记录历史状态。现用首页由代码绘制，旧版视频、海报及独立字体文件未随包分发。
+- OpenGuard 自有代码采用 [Apache-2.0](LICENSE)。历史 UI 贡献和许可说明见 [THIRD_PARTY_UI.md](application/frontend/THIRD_PARTY_UI.md)。现用首页由代码绘制。旧界面视频、海报和独立字体文件不在本包。
+- 后端使用 [27 项精确依赖](deployment/requirements.lock)，含 FastAPI、Starlette、Pydantic、Uvicorn、httpx2 与测试工具。包内提供锁文件，Python 解释器、虚拟环境、wheelhouse 及操作系统工具由使用者准备。本次离线复验复用固定 CPython 3.12 venv。
+- 预构建页面包含 React `19.2.8`、ReactDOM `19.2.8`、scheduler `0.27.0`（MIT）及 Tailwind CSS `4.3.3`（MIT）。圆形玻璃按钮改编自 cssbuttons-io / massive-mayfly-74（MIT）。署名及许可证见 [web/third-party-licenses.txt](web/third-party-licenses.txt)、[THIRD_PARTY_LICENSES/](THIRD_PARTY_LICENSES/) 和 [按钮许可](application/frontend/UIVERSE_CSSBUTTONS_IO_LICENSE.txt)。
+- 前端完整版本见 [pnpm-lock.yaml](application/frontend/pnpm-lock.yaml)。Vite `8.2.2`（MIT）、TypeScript `5.9.2`（Apache-2.0）用于构建或类型检查，所附上游许可证位于 `THIRD_PARTY_LICENSES/`。运行包包含预构建页面。Node `v24.22.3`、同锁依赖缓存和用于 pnpm 锁测试的 `yaml@2.9.0` 只作为包外离线复验输入。
+- 外部 ScanCode 与 Syft 适配代码保留，交付启动配置关闭外部扫描器，这些工具未随包分发。P6 基准样本来源及许可声明见 [冻结清单](application/benchmarks/p6_benchmark_manifest.json)。
 
-- 后端依赖锁在 `deployment/requirements.lock`，共 27 个精确版本，包含 FastAPI、Starlette、Pydantic、Uvicorn、httpx2 及其依赖和测试工具。P7 使用既有 Python 3.12 venv 只读核对安装元数据与许可证记录。此 ZIP 提供依赖声明，Python 包、轮子、虚拟环境和操作系统工具由接收者另行取得。
-- 预构建页面内含 React 19.2.8、ReactDOM 19.2.8、scheduler 0.27.0 的 MIT 运行时代码，以及 Tailwind CSS 4.3.3 的样式。随附 `web/third-party-licenses.txt` 和 `THIRD_PARTY_LICENSES/`。圆形玻璃按钮改编自 cssbuttons-io / massive-mayfly-74（MIT），署名位于 `application/frontend/UIVERSE_CSSBUTTONS_IO_LICENSE.txt` 和同一 Web 许可证清单。
-- 前端完整依赖版本见 `application/frontend/pnpm-lock.yaml`。Vite 8.2.2（MIT）与 TypeScript 5.9.2（Apache-2.0）用于构建或检查，随附上游许可记录，ZIP 未附开发工具目录或 Native 二进制。固定 Node v24.22.3 及 `yaml@2.9.0` 为本轮离线检查环境，YAML 仅用于 pnpm 锁测试，两者都在 ZIP 外。
-- 外部 ScanCode 和 Syft 适配代码保留。冻结启动配置关闭外部扫描器，ZIP 未附相应工具。P6 Benchmark 的本地只读素材来源和许可声明固定在 `application/benchmarks/p6_benchmark_manifest.json`，评测过程的复建第三方包和隔离数据位于包外证据目录。
+## Web 产物清单
+
+以下 8 份 `web/` 产物来自冻结产品树。逐文件 SHA-256 见 [FILE_HASHES.json](FILE_HASHES.json)。
+
+| 包内路径 | 字节 |
+| --- | ---: |
+| `web/index.html` | 898 |
+| `web/about.html` | 898 |
+| `web/third-party-licenses.txt` | 5,794 |
+| `web/assets/main-BTTBgYYx.js` | 290,212 |
+| `web/assets/main-DfOMEasE.css` | 433,430 |
+| `web/assets/p2-workbench-BpK-WfaC.css` | 50,269 |
+| `web/assets/p2-workbench-CoR0fGwX.js` | 267,877 |
+| `web/assets/react-runtime-YahHAMAi.js` | 189,620 |
 
 ## 内置离线样例
 
@@ -31,6 +45,6 @@ Owner 仅批准下表六项继续作为上述固定上游 bundle 的嵌套内容
 
 ## 固定可选模型与数据边界
 
-固定可选模型为 Ollama `0.33.3` 与 `qwen3:4b-instruct-2507-q4_K_M`。模型 manifest digest 为 `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`，模型权重不入包，运行时另行取得。模型身份与冻结启动器常量对照。P7 的 `MODEL_CALLS=0`，未进行模型身份查询或推理。普通扫描与评估使用本机作业链，默认关闭自动 Qwen。
+固定可选模型为 Ollama `0.33.3` 与 `qwen3:4b-instruct-2507-q4_K_M`。manifest digest 为 `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`，权重不入包。用户可在本机自备该身份的模型，相关生成请求须明确发起。普通扫描与评估使用本机作业链，交付启动配置关闭自动模型调用。本轮复验零模型调用。
 
-公开包只包含冻结的普通文件。Git 管理目录、依赖目录、个人运行数据、账号数据库、私有日志、模型权重及旧界面媒体排除。少量测试源码中的密钥格式和合成路径用于验证拒收，归属由各测试文档说明。P5 浏览器截图、P6 原始 ASGI 交换及本轮测试数据留在独立证据目录。
+ZIP 仅包含清单绑定的跟踪文件与清单本身。Git 管理目录、依赖缓存、个人运行数据、账号数据库、私有日志、模型权重及旧界面媒体均排除。测试源码里的合成路径和密钥格式只用于验证拒收。Chrome 截图、评测原始交换、测试记录和临时数据均位于包外。

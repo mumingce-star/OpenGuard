@@ -1,40 +1,84 @@
 {
-  "version": "aic-national-p3-p7-20261122-candidate",
-  "candidate_status": "LOCAL_CANDIDATE_AWAITING_OWNER_ACCEPTANCE",
-  "release_publication": "NOT_AUTHORIZED_AWAITING_OWNER_ACCEPTANCE",
+  "version": "2.0.0",
+  "release_channel": "local-verified-milestone",
+  "release_publication": "PENDING_LOCAL_REVIEW_BEFORE_PUSH",
   "release_tag": null,
   "release_url": null,
   "runtime_scope": "TEST_ONLY",
-  "source_branch": "integration/national-p4",
-  "source_parent_commit": "1f4dc46aab5c494be71c518fe869787a24f679ba",
+  "source_branch": "feat/national-v2-enhancements",
+  "source_parent_commit": "a9081dfbf900b7a901120e611603fed5f441fbd9",
   "source_commit_chain": [
     {
       "commit": "8dfbbde3d4c52c1bbe31d4320fc5333137277208",
-      "scope": "UI1 semifinal recording snapshot"
+      "scope": "Historical UI1 baseline"
     },
     {
       "commit": "2e97770f1bd1def2aff18399fb0aef74f25c3ec2",
-      "scope": "TASK38C national baseline and B58"
+      "scope": "B58 offline observation modules"
     },
     {
       "commit": "318799e634f766a1eda0ac2ef9a1e43737b9c1c9",
-      "scope": "TASK39 material-claims/4, Apache-2.0 and NOTICE, roles and incremental impact"
+      "scope": "Material claims v4, Apache-2.0, NOTICE and incremental impact"
     },
     {
       "commit": "ab2c1256c4a2efb8714cc90b9f39eda0fc5fc224",
-      "scope": "TASK40 P5 frontend and browser acceptance"
+      "scope": "Workbench experience and isolated browser acceptance"
     },
     {
       "commit": "1f4dc46aab5c494be71c518fe869787a24f679ba",
-      "scope": "TASK41 P6 benchmark and permanent safety matrix"
+      "scope": "P6 offline benchmark and permanent safety tests"
+    },
+    {
+      "commit": "1248096dbc0c658ef205a0cec9ce4a21e5ca81c4",
+      "scope": "Historical P7 package baseline"
+    },
+    {
+      "commit": "678858311c745dbf4bd9ed19db50febbc4151839",
+      "scope": "Full-text license coverage and Copyleft safeguards"
+    },
+    {
+      "commit": "fea02045c0b8ce6385e6f07ea198acccac875d34",
+      "scope": "SPDX or-later and B58 scan pipeline integration"
+    },
+    {
+      "commit": "73c22d60db26bc11b7b4b2c2800e14a9b4a3c622",
+      "scope": "Read-only scan dependency evidence projection"
+    },
+    {
+      "commit": "08d787dc58c392ce2487c3e5bb757103a66a1992",
+      "scope": "Conflict status and evidence completeness"
+    },
+    {
+      "commit": "78180234d92b19a5b1beb59e178343aeee9ab4a9",
+      "scope": "Workbench dependency evidence"
+    },
+    {
+      "commit": "4aed00e21fd7dfbcccc8ba4a22096ba513960d3c",
+      "scope": "Report V2 legacy bytes and 1.1 schema"
+    },
+    {
+      "commit": "ec3d351cb4ead129f1a9b91c55f6039fc483bcd5",
+      "scope": "Assessment-bound 1.1 report archiving"
+    },
+    {
+      "commit": "b5d5dfb7a9ea873d8332f5b8012041760320fdf5",
+      "scope": "Bounded HTML/JSON artifacts and integrity"
+    },
+    {
+      "commit": "cb2b70bcf17294bf672fe47988782db8b686dcec",
+      "scope": "Workbench support for both Report V2 versions"
+    },
+    {
+      "commit": "a9081dfbf900b7a901120e611603fed5f441fbd9",
+      "scope": "Unified offline web build and local archive access"
     }
   ],
   "code_tree_sha1": {
-    "application": "784c3618a6795d617a0f33257df58d32c2b18f32",
-    "application/backend": "b4e30d05881ac969b89a90e9957238a945e2d985",
-    "application/frontend": "03ef852027763eeea5224c7e82394dd05777eb9d",
-    "web": "4546d713ea3b38a4d2d8b3627705ff493175a4e9",
-    "deployment": "dc7796b697c8e569cfb1545b99f10d05cdeb0cfe",
+    "application": "ae095e4a333f951dcf421e3fe825a7f42a93a61d",
+    "application/backend": "e17f13b5ae8b8bc1ca031cb7f3ab443deb3a6fb9",
+    "application/frontend": "5c3bf551c416ab3667d84d2ac64351b5b7d12675",
+    "web": "d451474942a450421c56a7941a40e1653505163f",
+    "deployment": "05528367e60bbf4caa954475e0f63b92b632971c",
     "samples": "a3f2a56f1a529b5eb60eea042e0262e37c978a24"
   },
   "model": {
@@ -44,8 +88,7 @@
     "name": "qwen3:4b-instruct-2507-q4_K_M",
     "manifest_sha256": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
     "weights_included": false,
-    "model_calls_during_task42": 0,
-    "historical_evidence": "output/competition/qwen3-workbench-recovery-01/evidence/FINAL_RUNTIME_RECEIPT.json"
+    "model_calls_during_task48": 0
   },
   "lockfile_sha256": {
     "deployment/requirements.lock": "15aa7739d2d387e9763975a87e6e20e7b224a242be0a0aeff257c081f8e23ab0",
@@ -53,5 +96,5 @@
   },
   "source_manifest": "FILE_HASHES.json",
   "validation_reference": "VALIDATION.md",
-  "zip_and_freeze_commit_binding": "External TASK42 receipt and FILE_HASHES evidence bind the final ZIP to the local commit."
+  "zip_and_freeze_commit_binding": "The external TASK48 receipt binds the exact ZIP bytes to the local milestone commit and the packaged file manifest."
 }

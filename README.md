@@ -1,17 +1,19 @@
-# OpenGuard · AIC AI+开源国赛 P3–P7 候选
+# OpenGuard v2.0.0
 
-OpenGuard 帮助开发团队从本机项目中发现开源资源，将用途、许可材料、证据和风险关联起来，并导出可按版本复核的评估包。候选版本为 `aic-national-p3-p7-20261122-candidate`，等待 Owner 接纳。国赛 Release 和远程 tag 尚未创建。文件身份见 `FILE_HASHES.json`，提交链见 `VERSION.json`，验证范围见 `VALIDATION.md`。
+OpenGuard 是面向开发团队的本地优先开源合规与证据溯源工作台。它从项目输入中发现资源和依赖，关联许可证、声明用途和原文证据，并将研判及报告固定为可复核的版本。
 
-## 研判能力
+本包提供本机 `TEST_ONLY` 运行环境。版本和产品树见 [VERSION.json](VERSION.json)，文件校验见 [FILE_HASHES.json](FILE_HASHES.json)，实测范围见 [VALIDATION.md](VALIDATION.md)。这是本地里程碑，远程发布状态以 `VERSION.json` 为准。
 
-- **用途与原文材料**。v4 按商业使用、分发和修改等已声明用途计算五态主张。完整 MIT 或受支持的 Apache-2.0 原文需匹配精确资源版本与固定来源，才能生成附条件的文本支持。Apache-2.0 展示 §4(a)–(c) 相关条件，若有 NOTICE 则按 §4(d) 保留人工核对。精确匹配 NOTICE 后状态仍为 `UNKNOWN`。
-- **依赖与资源角色**。B58 离线识别支持范围内的清单、锁文件及依赖来源，包括 npm/pnpm/Yarn 等已覆盖输入，并保留声明、推断及冲突证据。角色与路径提示不自动删除实际使用资源。
-- **增量研判与版本固定**。`A-P4-04` 在补充材料或回答后输出影响集、重算和保留资源及主张，固定旧版本和使用过的依据。P5 工作台呈现研判概览与「上传、解析、绑定、采用、触发增量」五段材料状态。当前与历史 Result 各自保留，历史版本只读。
-- **审查与导出**。正式 Assessment 与材料 Result 分别保存。报告归档、预览及完整评估包可绑定指定 Assessment 和 Result，并使用摘要核对归档原字节。P6 基准评测与安全回归的执行条件及实际分母见 `VALIDATION.md`。
+## 核心能力
 
-## 安装和本机运行
+- **许可材料与条款定位。** `material-claims/4` 识别受支持的 MIT、Apache-2.0、ISC、BSD-2-Clause 和 BSD-3-Clause 完整文本，定位条款的原始字节区间、行号与摘要。条件 `SUPPORT` 需有明确用途、精确资源版本、完整来源与材料绑定等依据。Apache-2.0 存在 NOTICE 时，保留 §4(d) 人工核对，精确匹配 NOTICE 后仍为 `UNKNOWN`。
+- **Copyleft 与冲突。** 强、弱 Copyleft 声明给出范围复核提示。已识别的原文与单项 SPDX 声明不一致时，呈现 `SPDX_TEXT_CONFLICT` 及对应证据。MPL-2.0、GPL 系列当前可作为声明进入风险提示，其原文全文识别列入路线图。
+- **依赖与版本证据。** B58 离线观察受支持的清单、锁文件及 SBOM，保留定位、摘要和来源。`GET /api/v1/scans/{scan_id}/dependency-evidence` 与工作台展示精确版本缺口和双侧版本冲突证据。范围声明、推断和已绑定版本分别显示。
+- **增量研判与固定归档。** 补材或回答后生成影响集与新版 Result，历史 Result 可按原 ID 只读复核。Report V2 1.0 和 1.1 绑定正式 Assessment 并提供不可变 HTML/JSON 快照，1.1 归档包含依赖证据。评估包保留相关版本与摘要。
 
-解压到新的用户可写目录，进入含 `openguard.py` 的 `OpenGuard/`。需要 CPython 3.12（含 venv/pip）、Git 和现代浏览器。目标为 macOS/Linux，Windows 使用 WSL2 Linux 用户目录。已验收的平台和操作仅以 `VALIDATION.md` 为准。
+## 快速启动
+
+将 ZIP 解压到新的用户可写目录，进入 `OpenGuard/`。需要 CPython 3.12（含 venv/pip）、Git 和现代浏览器。启动器面向 macOS 和 Linux，Windows 使用 WSL2 的 Linux 用户目录。跨平台实测范围见 [VALIDATION.md](VALIDATION.md)。
 
 ```sh
 python3.12 verify_package.py
@@ -20,29 +22,27 @@ python3.12 openguard.py check
 python3.12 openguard.py start
 ```
 
-`setup` 在本包 `runtime/venv` 准备 `deployment/requirements.lock` 的 27 项固定依赖，默认需要访问 PyPI。包内未附 wheelhouse。已有适配当前平台及 CPython 3.12 的完整离线 wheelhouse 时，将 setup 命令替换为 `python3.12 openguard.py setup --offline-wheelhouse /path/to/wheelhouse`。若已有满足同一锁文件的 Python 3.12 venv，可用其解释器直接执行 `openguard.py check`。P7 解压检查使用既有环境，不进行首次安装验收。
+`verify_package.py` 核对清单中 879 份文件的字节数和 SHA-256。`setup` 默认从 PyPI 安装 [27 项固定依赖](deployment/requirements.lock)。已有匹配平台及 CPython 3.12 的完整 wheelhouse 时，可用 `python3.12 openguard.py setup --offline-wheelhouse /path/to/wheelhouse` 离线安装。包内未附 wheelhouse。若已具备满足同一锁文件的 venv，可跳过 `setup`，用其解释器直接运行 `check` 与 `start`。
 
-打开终端显示的本机 `READY http://127.0.0.1:端口/`，在新的 TEST_ONLY 运行目录自行注册。可用 `--port` 指定空闲端口。按 Ctrl+C 结束本次服务。预构建页面在 `web/`，运行时无需 Vite 或 Node。账号、会话、扫描和报告写入新包的私有 `runtime/`，应与旧目录分开。
+也可使用 `sh ./start.sh`，或在 macOS 运行 `./启动OpenGuard.command`。打开终端显示的 `READY http://127.0.0.1:端口/`，在本包中注册本机账号。用 `--port` 指定空闲端口，按 Ctrl+C 停止服务。预构建页面位于 `web/`，普通运行无需 Node 或 Vite。账号、扫描和报告写入当前包私有的 `runtime/`。
 
-## 固定演示路径
+### 从扫描到报告
 
-1. 新建扫描并上传 `samples/is-number-7.0.0-derived.zip`。它是上游 npm 包派生的四文件 ZIP，4172 字节，SHA-256 `a70563664327b7dc5ad8ee99136c508534e2cef3aeb690beb13b13ed710bca06`。
-2. 选择商业使用、分发和修改三项演示用途。用途记录是操作人输入，给审查结论提供上下文。
-3. 打开项目评估并查看 v4 初判概览，定位 `is-number@7.0.0`。补充 `samples/is-number-LICENSE.txt`，选择准确版本与来源，保留材料待复核边界。
-4. 对比 r1 和 r2 的状态与影响集。上一版通过其原 ID 读取，新的材料与影响范围留在新版本。
-5. 保存 Assessment 报告并预览归档，再导出当前 Result 的完整评估包。复核导出中的版本绑定与 SHA-256。评估导出包用于审查，应上传原始项目 ZIP 执行扫描。
+1. 上传待审查项目的 ZIP。可用 `samples/is-number-7.0.0-derived.zip` 熟悉流程，并声明商业使用、分发或修改等实际用途。
+2. 核对资源、依赖证据和 v4 概览。为样例补充 `samples/is-number-LICENSE.txt`，关联准确对象、版本和来源，再查看 r1 至 r2 的影响集。
+3. 保存正式 Assessment 和报告快照，再下载 HTML 或 JSON。交接材料和版本依据时，可导出当前 Result 的完整评估包。
 
-`samples/http-server.bundle` 是启动器同时校验的固定兼容样例。其精确上游来源和本轮批准登记的内层测试夹具见 `RESOURCE_USAGE.md`。Apache 实验对照夹具与 P5/P6 测试运行数据单独保存在验收证据目录。
+`samples/http-server.bundle` 是固定本地 Git 样例。启动器核对其摘要，并使用该固定离线来源。样例和第三方归属见 [RESOURCE_USAGE.md](RESOURCE_USAGE.md)。
 
 ## 可选本地模型
 
-固定身份为 Ollama `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M`，模型 manifest digest `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。本包不含权重或模型服务。已在本机单独准备模型时，可运行 `python3.12 openguard.py model-check` 检查版本与标签。历史恢复结果及本轮零模型调用范围见 `VALIDATION.md`。
+扫描、材料提交、版本复核和报告导出均可独立运行。包内未附模型权重或模型服务。已自行配置 Ollama `0.33.3` 与 `qwen3:4b-instruct-2507-q4_K_M` 时，可用 `python3.12 openguard.py model-check` 核对本机身份。评估 AI 或助手由用户明确发起，生成结果与正式 Result 分开保存。交付启动配置关闭自动外部来源获取、外部扫描器和自动模型调用。
 
-确认模型身份后，用户可在评估 AI 或项目智询中明确发起分析。模型结果辅助阅读，并与正式 Result 分开存储。扫描、材料、版本比较和导出可独立运行。网络来源自动获取、外部扫描器和自动 Qwen 在交付启动配置中关闭。
+## 使用边界与路线图
 
-## 使用边界
+依赖发现、材料完整性、文本支持、条款适用和实际履约分别呈现。`UNKNOWN` 表示当前证据或规则不足，带条件的 `SUPPORT` 仍需按实际分发范围核对。历史归档用于复核当时证据，更新用途或材料后应审查新版结果。
 
-- 发现证据、材料完整度、文本支持、条款适用和实际履约分开展示。带条件的 `SUPPORT` 需要按实际交付核对，`UNKNOWN` 或 `pending` 表示证据不足或待审。
-- 409 时重新读取当前 Result 并重新核对操作；保留固定历史版本，避免自动重放旧请求。
-- 文件或固定依赖校验失败时先核对 ZIP、包内清单与版本。范围外材料和不支持的许可证保留原证据及待审状态。
-- 本候选用于可信本机 TEST_ONLY 演示与复核。单平台结果、有限样本和模型历史记录各有独立验证边界。产品及第三方使用范围见 `LICENSE`、`RESOURCE_USAGE.md`。
+- **v2.1** 将支持 Python `pyproject.toml` 根包直扫。新增 MPL-2.0 / GPL 系列全文识别与精确 `SPDX_TEXT_CONFLICT` 反证，Copyleft 仍保持非 `SUPPORT`。
+- **后续版本**将本地 Qwen3 的受控结构化输出接入 v4 增量研判与解释，改进 Docker 及 Linux/macOS 安装启动流程，并扩大 Go、Rust、Java 等生态覆盖。
+
+OpenGuard 自有代码采用 [Apache-2.0](LICENSE)。第三方组件按各自许可归属，见 [RESOURCE_USAGE.md](RESOURCE_USAGE.md)。
