@@ -199,6 +199,12 @@ class BoundQwen:
     def generate(self, payload):
         self.last_metrics = {}; self.model_calls = 0
         plan_mode = payload.get('analysis_protocol') == 'openguard-qwen-action-plan/2'
+        v4_plan_mode = payload.get('analysis_protocol') == 'openguard-qwen-v4-plan/3'
+        if v4_plan_mode:
+            if os.environ.get('OPENGUARD_P2_AI_V4_PLAN', '0') != '1':
+                raise BudgetError('p2_ai_protocol_disabled')
+            from app.p2.v4_action_plan import plan_prompt as v4_prompt, plan_schema as v4_schema
+            system_prompt, schema = v4_prompt(payload), v4_schema(payload)
         if plan_mode:
             if os.environ.get('OPENGUARD_P2_ACTION_PLAN', '0') != '1':
                 raise BudgetError('p2_ai_protocol_disabled')  # no budget or transport intent
@@ -265,7 +271,7 @@ class BoundQwen:
             if plan_mode:
                 from app.p2.action_plan import plan_prompt, plan_schema
                 system_prompt, schema = plan_prompt(payload), plan_schema(payload)
-            else:
+            elif not v4_plan_mode:
                 system_prompt, schema = prompt_for(payload), output_schema(payload['materials'], payload['changes'])
             body = {'model': MODEL_NAME, 'system': system_prompt, 'prompt': prompt, 'stream': False,
                     'format': schema,
@@ -284,6 +290,13 @@ class BoundQwen:
             self.model_calls = 1  # generation attempt; a transport failure is not successful inference
             try:
                 generated = self.transport._request_json('/api/generate', deadline=deadline, body=body, limit=98304)
+            except OllamaTransportError as exc:
+                cause = exc.__context__
+                if v4_plan_mode and (isinstance(cause, TimeoutError)
+                                     or isinstance(getattr(cause, 'reason', None), TimeoutError)
+                                     or self.transport._now() >= deadline):
+                    raise TimeoutError('p2_ai_model_timeout') from None
+                raise
             finally:
                 self.transport._opener = original_opener
             (audit / (stem + '-response.json')).write_text(json.dumps(generated, ensure_ascii=False, indent=2))

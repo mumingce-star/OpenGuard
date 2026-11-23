@@ -126,3 +126,136 @@ def validate_saved_plan(value, payload):
     stored = value.get('validation_details', {})
     if any(stored.get(k) != v for k, v in details.items()):
         raise ValueError('saved plan validation conflict')
+
+
+def _v4_metrics(provider):
+    values = getattr(provider, 'last_metrics', {})
+    return {key: values[key] for key in ('prompt_eval_count', 'eval_count', 'total_duration')
+            if key in values and type(values[key]) is int and values[key] >= 0}
+
+
+def run_v4_plan(provider, payload, *, audit_root, max_model_calls=2):
+    from .v4_action_plan import ANALYSIS_PROTOCOL, PROMPT_VERSION, plan_prompt, validate_plan
+
+    if type(max_model_calls) is not int or max_model_calls not in {1, 2}:
+        raise ValueError('invalid explicit v4 plan call limit')
+    context = payload['context']
+    required = sorted(row['action_kind'] for row in context['action_catalog'] if row['required'])
+    plan, attempts = None, []
+    clauses, actions, changes = [], [], []
+    issues = []
+    request = payload
+    error = None
+    if len(required) > 4:
+        error = 'p2_ai_v4_required_action_overflow'
+    elif not context['action_catalog']:
+        error = 'p2_ai_v4_no_actions'
+    elif len(canonical(payload)) > 24000:
+        error = 'p2_ai_input_too_large'
+    if error is not None:
+        issues.append({'code': error, 'recoverable': False, 'path': 'context'})
+    else:
+        for number in range(1, max_model_calls + 1):
+            identity = 'plan-v4-' + uuid4().hex
+            started = time.monotonic()
+            attempt = {'number': number, 'audit_id': identity, 'state': 'intent',
+                       'input_sha256': digest(request), 'prompt_version': PROMPT_VERSION,
+                       'prompt_sha256': hashlib.sha256(plan_prompt(request).encode()).hexdigest(),
+                       'raw_output_sha256': None, 'model_calls': 0, 'metrics': {}}
+            try:
+                _artifact(audit_root, identity, 'intent', {'attempt': attempt, 'request': request})
+            except (OSError, ValueError):
+                error = 'p2_ai_audit_unavailable'
+                issues.append({'code': error, 'recoverable': False, 'path': 'audit'})
+                break
+
+            raw = None
+            correction = False
+            try:
+                raw = provider.generate(request)
+                if not isinstance(raw, str) or len(raw.encode('utf-8')) > 98304:
+                    raise ValueError('invalid structured response')
+                attempt['raw_output_sha256'] = hashlib.sha256(raw.encode()).hexdigest()
+                parsed = strict_json(raw)
+                clauses, actions, changes = validate_plan(raw, request)
+                plan, error = parsed, None
+                attempt['state'] = 'succeeded'
+            except PlanSemanticError as exc:
+                error = exc.code
+                issues.append({'code': exc.code, 'path': exc.path, 'recoverable': exc.recoverable is True})
+                attempt['state'] = 'semantic_rejected'
+                correction = (number == 1 and max_model_calls == 2 and exc.recoverable is True
+                              and attempt['raw_output_sha256'] is not None)
+            except BudgetError as exc:
+                allowed = {'p2_ai_busy','p2_ai_budget_invalid','p2_ai_budget_exhausted',
+                           'p2_ai_rate_limited','p2_ai_input_too_large','p2_ai_protocol_disabled'}
+                error = str(exc) if str(exc) in allowed else 'p2_ai_unavailable'
+                attempt['state'] = 'budget_refused'
+                issues.append({'code': error, 'recoverable': False, 'path': 'budget'})
+            except (ValueError, TypeError, KeyError):
+                error = 'p2_ai_v4_invalid_output'
+                attempt['state'] = 'malformed_or_invalid_output'
+                issues.append({'code': error, 'recoverable': False, 'path': 'response'})
+            except Exception as exc:
+                error = 'p2_ai_model_timeout' if isinstance(exc, TimeoutError) else 'p2_ai_model_unavailable'
+                attempt['state'] = 'transport_or_runtime_failure'
+                issues.append({'code': error, 'recoverable': False, 'path': 'transport'})
+
+            calls = getattr(provider, 'model_calls', 0)
+            attempt['model_calls'] = 1 if type(calls) is int and calls == 1 else 0
+            attempt['metrics'] = {'elapsed_ms': round((time.monotonic()-started)*1000), **_v4_metrics(provider)}
+            try:
+                _artifact(audit_root, identity, 'result',
+                          {**attempt, 'raw_output': raw if isinstance(raw, str) and attempt['raw_output_sha256'] else None,
+                           'error_code': error})
+            except (OSError, ValueError):
+                plan, correction, error = None, False, 'p2_ai_audit_unavailable'
+                attempt['state'] = 'audit_failed'
+                issues.append({'code': error, 'recoverable': False, 'path': 'audit'})
+            attempts.append(attempt)
+            if error is None or not correction:
+                break
+            request = {**payload, 'plan_feedback': {'code': error, 'required_action_kinds': required,
+                                                   'parent_output_sha256': attempt['raw_output_sha256']}}
+            if len(canonical(request)) > 24000:
+                error = 'p2_ai_input_too_large'
+                issues.append({'code': error, 'recoverable': False, 'path': 'context'})
+                break
+
+    succeeded = plan is not None and error is None
+    details = {'protocol': ANALYSIS_PROTOCOL, 'status': 'validated' if succeeded else 'failed',
+               'human_review_required': True, 'issues': issues, 'corrective_attempt_used': len(attempts) == 2,
+               'attempt_count': len(attempts), 'model_call_limit': max_model_calls}
+    return {'analysis_protocol': ANALYSIS_PROTOCOL, 'prompt_version': PROMPT_VERSION,
+            'context': context, 'context_sha256': payload['context_sha256'],
+            'material_claims_view_id': context['material_claims_view_id'],
+            'plan_input_sha256': digest(payload), 'display_origin': 'PROGRAM_RENDERED_FROM_QWEN_STRUCTURED_SELECTION',
+            'selection_sha256': digest(plan) if succeeded else None, 'plan': plan if succeeded else None,
+            'status': 'succeeded' if succeeded else 'failed', 'error_code': error,
+            'validation_details': details, 'attempts': attempts,
+            'clauses': clauses if succeeded else [], 'actions': actions if succeeded else [],
+            'changes': changes if succeeded else [], 'model_calls': sum(row['model_calls'] for row in attempts)}
+
+
+def validate_saved_v4_plan(value, payload):
+    from .v4_action_plan import ANALYSIS_PROTOCOL, PROMPT_VERSION, validate_plan
+
+    context = payload['context']
+    if (value['analysis_protocol'] != ANALYSIS_PROTOCOL or value['context'] != context
+            or value['context_sha256'] != payload['context_sha256']
+            or value['material_claims_view_id'] != context['material_claims_view_id']
+            or value['plan_input_sha256'] != digest(payload) or value['input_sha256'] != digest(payload)
+            or value['display_origin'] != 'PROGRAM_RENDERED_FROM_QWEN_STRUCTURED_SELECTION'
+            or value['formal_effect'] != 'none'
+            or value['prompt_version'] != PROMPT_VERSION or value['model']['prompt_version'] != PROMPT_VERSION):
+        raise ValueError('saved v4 plan input identity conflict')
+    if value['status'] == 'failed':
+        if (value['plan'] is not None or value['selection_sha256'] is not None
+                or any(value[key] for key in ('clauses','actions','changes'))):
+            raise ValueError('failed v4 plan unexpectedly contains a selection')
+        return
+    if value['status'] != 'succeeded' or value['selection_sha256'] != digest(value['plan']):
+        raise ValueError('saved v4 selection identity conflict')
+    clauses, actions, changes = validate_plan(canonical(value['plan']).decode(), payload)
+    if (value['clauses'], value['actions'], value['changes']) != (clauses, actions, changes):
+        raise ValueError('saved v4 rendered output conflict')

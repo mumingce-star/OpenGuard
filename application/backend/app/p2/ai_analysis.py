@@ -14,21 +14,25 @@ import stat
 import time
 
 from pydantic import Field, model_validator
-from .contract import Binding, DTO, ID, SHA, Material, P2Error, canonical, digest, strict_json
+from .contract import Binding, DTO, ID, SHA, Material, P2Error, Subject, canonical, digest, strict_json
 from .store import P2Store
 from app.ai.p2_analysis import BoundQwen, BudgetError, material_quote_candidates
+from app.domain.models import Component
 
 
 class AnalysisRequest(DTO):
     binding: Binding
     result_id: ID
     result_sha256: SHA
-    material_ids: list[ID] = Field(min_length=1, max_length=4)
+    material_ids: list[ID] = Field(max_length=4)
     idempotency_key: str = Field(min_length=8, max_length=128, pattern=r'^[A-Za-z0-9_.:-]+$')
     previous_result_id: ID | None = None
+    subject: Subject | None = None
 
     @model_validator(mode='after')
     def unique(self):
+        if self.subject is None and not self.material_ids:
+            raise ValueError('materials required for legacy analysis')
         if len(self.material_ids) != len(set(self.material_ids)):
             raise ValueError('duplicate material')
         return self
@@ -201,10 +205,11 @@ def validate_output(raw, payload):
 
 
 class P2AnalysisService:
-    def __init__(self, p2, store, provider, *, public_sample_only=True):
+    def __init__(self, p2, store, provider, *, public_sample_only=True, v4_plan_enabled=False):
         self.p2, self.store, self.provider = p2, store, provider
         # Only explicit synthetic test dependency injection may opt out; not an HTTP field.
         self.public_sample_only = public_sample_only
+        self.v4_plan_enabled = v4_plan_enabled
 
     def _result(self, sid, aid, rid, version):
         result = self.p2.read(sid, aid, rid, version)
@@ -216,7 +221,10 @@ class P2AnalysisService:
         self._result(sid, aid, rid, version)
         with self.store.connection() as db:
             rows = db.execute('SELECT id FROM ai_objects WHERE scan_id=? AND assessment_id=? AND result_id=? ORDER BY rowid', (sid, aid, rid)).fetchall()
-        return {'result_id': rid, 'analysis_ids': [r[0] for r in rows]}
+        index = {'result_id': rid, 'analysis_ids': [r[0] for r in rows]}
+        if self.v4_plan_enabled and getattr(self.p2, 'official_sources', None) is None:
+            index['v4_plan_enabled'] = True
+        return index
 
     def read(self, sid, aid, identity, rid, version):
         result = self._result(sid, aid, rid, version)
@@ -231,7 +239,23 @@ class P2AnalysisService:
         if digest(check) != expected or stored_id != 'p2ai_' + expected or value['binding'] != result['binding'] or value['result_sha256'] != result['result_sha256']:
             raise P2Error('p2_ai_integrity_error', 503)
         try:
-            if value.get('analysis_protocol') == 'openguard-qwen-action-plan/2':
+            if value.get('analysis_protocol') == 'openguard-qwen-v4-plan/3':
+                from .action_plan_runner import validate_saved_v4_plan
+                subject = value['context']['subject']
+                body = AnalysisRequest(binding=value['binding'], result_id=rid, result_sha256=value['result_sha256'],
+                    material_ids=[m['material_id'] for m in value['source_refs']], idempotency_key=value['idempotency_key'],
+                    previous_result_id=value['previous_result_id'],
+                    subject={'resource_id': subject['resource_id'], 'version': subject['version']})
+                try:
+                    _, previous, payload, refs = self._v4_input(sid, aid, body)
+                except P2Error:
+                    raise ValueError('saved v4 context no longer matches') from None
+                if (value['source_refs'] != refs
+                        or value['previous_result_id'] != (previous['result_id'] if previous else None)
+                        or value['previous_result_sha256'] != (previous['result_sha256'] if previous else None)):
+                    raise ValueError('saved v4 result or source reference conflict')
+                validate_saved_v4_plan(value, payload)
+            elif value.get('analysis_protocol') == 'openguard-qwen-action-plan/2':
                 from .action_plan_runner import validate_saved_plan
                 body = AnalysisRequest(binding=value['binding'], result_id=rid, result_sha256=value['result_sha256'],
                     material_ids=[m['material_id'] for m in value['source_refs']],
@@ -241,10 +265,58 @@ class P2AnalysisService:
                     payload['retrieval_source_context'] = value['retrieval_source_context']
                 validate_saved_plan(value, payload)
             else:
+                if any(key in value for key in ('context_sha256', 'material_claims_view_id', 'selection_sha256')):
+                    raise ValueError('unexpected v4 plan fields in legacy analysis')
                 validate_saved_semantics(value, result['usage'])
         except (ValueError, TypeError, KeyError):
             raise P2Error('p2_ai_saved_output_rejected', 409) from None
         return value
+
+    def _v4_input(self, sid, aid, body):
+        from .v4_action_plan import ANALYSIS_PROTOCOL, build_context
+
+        version = body.binding.assessment_version
+        result = self._result(sid, aid, body.result_id, version)
+        if result['binding'] != body.binding.model_dump() or result['result_sha256'] != body.result_sha256:
+            raise P2Error('p2_ai_binding_conflict', 409)
+        subject = body.subject.model_dump(mode='json')
+        run, _, binding, resources = self.p2.context(sid, aid)
+        resource = resources.get(subject['resource_id'])
+        row = next((r for r in result['resources'] if r['subject'] == subject), None)
+        if binding != result['binding']:
+            raise P2Error('p2_ai_binding_conflict', 409)
+        if (not isinstance(resource, Component) or resource.ecosystem not in {'npm', 'pypi'}
+                or resource.version != subject['version'] or row is None):
+            raise P2Error('p2_ai_subject_binding_conflict', 409)
+        parent = result['previous_result_id']
+        if body.previous_result_id is not None and body.previous_result_id != parent:
+            raise P2Error('p2_ai_previous_result_conflict', 409)
+        previous = self._result(sid, aid, parent, version) if parent is not None else None
+        if previous is not None and (previous['binding'] != binding or previous['revision'] != result['revision'] - 1):
+            raise P2Error('p2_ai_previous_result_conflict', 409)
+
+        refs = []
+        with self.p2.store.connection() as db:
+            for mid in sorted(body.material_ids):
+                if mid not in result['material_ids']:
+                    raise P2Error('p2_ai_material_not_in_result', 409)
+                if mid not in row['material_ids']:
+                    raise P2Error('p2_ai_material_binding_conflict', 409)
+                material = Material.model_validate(self.p2.store.get(db, 'material', mid, sid, aid)).model_dump(mode='json')
+                if (material['binding'] != binding or material['subject'] != subject
+                        or material['data_scope'] != 'TEST_ONLY'
+                        or not set(material['evidence_ids']) <= set(row['evidence_ids'])):
+                    raise P2Error('p2_ai_material_binding_conflict', 409)
+                refs.append({key: material[key] for key in ('material_id','subject','source_sha256',
+                                                           'byte_count','source_level','verification_state')})
+        # This projection checks source bytes, parent revision and the assessment binding.
+        view = self.p2.material_claims(sid, aid, result['result_id'], version)
+        try:
+            context = build_context(run, view, resource, body.material_ids, usage=result['usage'])
+        except (ValueError, TypeError, KeyError):
+            raise P2Error('p2_ai_v4_context_invalid', 409) from None
+        return result, previous, {'analysis_protocol': ANALYSIS_PROTOCOL, 'context': context,
+                                  'context_sha256': digest(context)}, refs
 
     def _input(self, sid, aid, body):
         result = self._result(sid, aid, body.result_id, body.binding.assessment_version)
@@ -332,7 +404,13 @@ class P2AnalysisService:
             raise P2Error('p2_read_only', 403)
         if sid != body.binding.scan_id or aid != body.binding.assessment_id:
             raise P2Error('p2_ai_binding_conflict', 409)
-        fingerprint = digest(body.model_dump(mode='json') if source_context is None else {'request': body.model_dump(mode='json'), 'source_context': source_context})
+        v4 = body.subject is not None
+        if v4 and (not self.v4_plan_enabled or source_context is not None):
+            raise P2Error('p2_ai_protocol_disabled', 403)
+        # Legacy reservations must retain their original fingerprint, including
+        # the previous_result_id null value and the absence of the new selector.
+        request = body.model_dump(mode='json', exclude=None if v4 else {'subject'})
+        fingerprint = digest(request if source_context is None else {'request': request, 'source_context': source_context})
         # Check completed/ambiguous reservations first; never regenerate the same request.
         with self.store.connection() as db:
             old = db.execute('SELECT fingerprint,analysis_id FROM ai_requests WHERE scan_id=? AND assessment_id=? AND key=?', (sid, aid, body.idempotency_key)).fetchone()
@@ -342,7 +420,11 @@ class P2AnalysisService:
             if old[1] is None:
                 raise P2Error('p2_ai_outcome_unknown', 409)
             return self.read(sid, aid, old[1], body.result_id, body.binding.assessment_version)
-        result, previous, payload = self._input(sid, aid, body)
+        if v4:
+            result, previous, payload, refs = self._v4_input(sid, aid, body)
+        else:
+            result, previous, payload = self._input(sid, aid, body)
+            refs = [{k: v for k, v in m.items() if k not in {'text','quote_candidates'}} for m in payload['materials']]
         context = self._source_context(source_context, result, payload) if source_context is not None else None
         if context is not None:
             payload['retrieval_source_context'] = context
@@ -358,9 +440,10 @@ class P2AnalysisService:
         protocol_fields = {}
         model_calls = None
         try:
-            from .action_plan_runner import enabled, run_plan
-            if enabled():
-                planned = run_plan(self.provider, payload, audit_root=self.store.path.parent/'action-plan-attempts')
+            from .action_plan_runner import enabled, run_plan, run_v4_plan
+            if v4 or enabled():
+                runner = run_v4_plan if v4 else run_plan
+                planned = runner(self.provider, payload, audit_root=self.store.path.parent/'action-plan-attempts')
                 status, error = planned['status'], planned['error_code']
                 clauses, actions, changes = planned['clauses'], planned['actions'], planned['changes']
                 model_calls = planned['model_calls']
@@ -375,7 +458,7 @@ class P2AnalysisService:
             error = 'p2_ai_output_rejected'
         except Exception:
             error = 'p2_ai_model_unavailable'
-        metrics = getattr(self.provider, 'last_metrics', {})
+        metrics = getattr(self.provider, 'last_metrics', {}) if not v4 or model_calls != 0 else {}
         metrics = {k: (metrics.get(k) if type(metrics.get(k)) is int and metrics[k] >= 0 else None)
                    for k in ('prompt_eval_count', 'eval_count', 'total_duration')}
         value = {'schema_version': 'openguard-p2-ai-analysis/1', 'status': status, 'error_code': error,
@@ -387,13 +470,16 @@ class P2AnalysisService:
                  'previous_result_sha256': previous['result_sha256'] if previous else None,
                  'model_calls': model_calls if model_calls is not None else getattr(self.provider, 'model_calls', 0),
                  'metrics': {'elapsed_ms': round((time.monotonic()-started)*1000), **{k: metrics.get(k) for k in ('prompt_eval_count', 'eval_count', 'total_duration')}},
-                 'quote_index_unit': 'unicode_code_point', 'source_refs': [{k: v for k, v in m.items() if k not in {'text', 'quote_candidates'}} for m in payload['materials']],
+                 'quote_index_unit': 'utf8_byte' if v4 else 'unicode_code_point', 'source_refs': refs,
                  'clauses': clauses, 'actions': actions, 'changes': changes, 'limitations': list(LIMITATIONS),
                  'formal_effect': 'none', 'usage_assumption': 'DEMO_USAGE_ASSUMPTION'}
         if context is not None:
             value['retrieval_source_context'] = context
             value['limitations'].extend(context['limitations'])
         value.update(protocol_fields)
+        if v4:
+            from .v4_action_plan import PROMPT_VERSION
+            value['model']['prompt_version'] = PROMPT_VERSION
         sha = digest(value); value.update(analysis_id='p2ai_' + sha, analysis_sha256=sha)
         raw = canonical(value)
         with self.store.connection(write=True) as db:
@@ -402,9 +488,12 @@ class P2AnalysisService:
         return value
 
 
-def configured_service(p2, budget_path, *, max_generations=20, intent_ceiling=None, continuous=False, public_sample_only=True):
+def configured_service(p2, budget_path, *, max_generations=20, intent_ceiling=None, continuous=False,
+                       public_sample_only=True, v4_plan_enabled=False):
     if p2.data_scope != 'TEST_ONLY' or not budget_path:
         raise RuntimeError('P2 AI requires isolated TEST_ONLY storage and a task budget path')
     store = AnalysisStore(p2.store.path.with_name('p2-ai.db')); store.initialize()
     options = {'continuous': True} if continuous else {}
-    return P2AnalysisService(p2, store, BoundQwen(budget_path, max_generations=max_generations, intent_ceiling=intent_ceiling, **options), public_sample_only=public_sample_only)
+    return P2AnalysisService(p2, store, BoundQwen(budget_path, max_generations=max_generations,
+                                                intent_ceiling=intent_ceiling, **options),
+                             public_sample_only=public_sample_only, v4_plan_enabled=v4_plan_enabled)

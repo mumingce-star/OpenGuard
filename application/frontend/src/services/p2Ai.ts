@@ -2,6 +2,10 @@ import type { Assessment } from './assessments';
 import { accountRequestOptions, handleAccountResponse } from './auth';
 import { ApiError } from './scans';
 import { sameBinding, validateBinding, type Binding, type Result, type Subject } from './p2';
+import type { Scan } from '../types/domain';
+import { validateV4Plan, v4AnalysisProtocol, verifyV4PlanAnchor, verifyV4PlanHashes, type V4PlanEnvelope } from './p2AiV4';
+
+export { v4AnalysisProtocol } from './p2AiV4';
 
 export const p2AiEnabled=import.meta.env.VITE_P2_AI_ANALYSIS==='1';
 
@@ -11,18 +15,22 @@ export type BoundPlanEnvelope = {analysis_protocol?:'openguard-qwen-action-plan/
 
 /** Independent, immutable model explanation. Never a P2 Result or permission decision. */
 export type AiSourceRef = { material_id:string; subject:Subject; source_sha256:string; byte_count:number; source_level:'user_supplied_unverified'; verification_state:'pending' };
-export type P2AiAnalysis = BoundPlanEnvelope & {
+type AiAnalysisFields = {
  schema_version:'openguard-p2-ai-analysis/1'; analysis_id:string; analysis_sha256:string;
  status:'succeeded'|'failed'; error_code:string|null; result_id:string; result_revision:number; result_sha256:string; binding:Binding;
  previous_result_id:string|null; previous_result_sha256:string|null; idempotency_key:string;
  model:{name:string;digest:string;runtime:string;prompt_version:string}; input_sha256:string; created_at:string; model_calls:number;
  metrics:{elapsed_ms:number;prompt_eval_count:number|null;eval_count:number|null;total_duration:number|null};
- source_refs:AiSourceRef[]; clauses:{material_id:string;quote:string;start:number;end:number;category:'permission'|'condition'|'disclaimer'|'other';quote_id?:string}[];
- actions:({text:string;source_material_ids:string[];claim_level:'verification_action_only'} & Partial<BoundAction>)[];
- changes:{field:string;before:unknown;after:unknown;explanation:string}[]; limitations:string[];
- formal_effect:'none';usage_assumption:'DEMO_USAGE_ASSUMPTION';data_scope:'TEST_ONLY';quote_index_unit:'unicode_code_point';
+ source_refs:AiSourceRef[];limitations:string[];
+ formal_effect:'none';usage_assumption:'DEMO_USAGE_ASSUMPTION';data_scope:'TEST_ONLY';
 };
-export type AiRequest = {binding:Binding;result_id:string;result_sha256:string;material_ids:string[];idempotency_key:string;previous_result_id:string|null};
+export type LegacyP2AiAnalysis = BoundPlanEnvelope & AiAnalysisFields & {
+ clauses:{material_id:string;quote:string;start:number;end:number;category:'permission'|'condition'|'disclaimer'|'other';quote_id?:string}[];
+ actions:({text:string;source_material_ids:string[];claim_level:'verification_action_only'} & Partial<BoundAction>)[];
+ changes:{field:string;before:unknown;after:unknown;explanation:string}[];quote_index_unit:'unicode_code_point';
+};
+export type P2AiAnalysis = LegacyP2AiAnalysis | (AiAnalysisFields & V4PlanEnvelope & {quote_index_unit:'utf8_byte'});
+export type AiRequest = {binding:Binding;result_id:string;result_sha256:string;material_ids:string[];idempotency_key:string;previous_result_id:string|null;subject?:Subject};
 export type AiPending = {body:AiRequest;serialized:string;state:'sent'|'unknown'};
 const pending = new Map<string,AiPending>();
 const scope=(r:Result)=>JSON.stringify([r.binding,r.result_id,r.revision,r.result_sha256]);
@@ -151,14 +159,16 @@ export async function verifyBoundPlanHashes(value:BoundPlanEnvelope){
 export function validateAiAnalysis(v:unknown,a:Assessment,r:Result,expectedId?:string):P2AiAnalysis{
  current(a,r);
  const structured=obj(v)&&v.analysis_protocol==='openguard-qwen-action-plan/2';
+ const v4=obj(v)&&v.analysis_protocol===v4AnalysisProtocol;
  if(!obj(v)||v.schema_version!=='openguard-p2-ai-analysis/1'||!id(v.analysis_id)||(expectedId!==undefined&&v.analysis_id!==expectedId)||!sha(v.analysis_sha256)
+  ||(!v4&&!structured&&(v.analysis_protocol!==undefined||'context' in v||'context_sha256' in v||'material_claims_view_id' in v))
   ||!['succeeded','failed'].includes(v.status)||v.result_id!==r.result_id||v.result_revision!==r.revision||v.result_sha256!==r.result_sha256
   ||!sameBinding(validateBinding(v.binding,a),r.binding)||!id(v.idempotency_key)||!sha(v.input_sha256)
-  ||typeof v.created_at!=='string'||!Number.isFinite(Date.parse(v.created_at))||!(structured?[0,1,2]:[0,1]).includes(v.model_calls)
+  ||typeof v.created_at!=='string'||!Number.isFinite(Date.parse(v.created_at))||!((structured||v4)?[0,1,2]:[0,1]).includes(v.model_calls)
   ||!obj(v.model)||!['name','runtime','prompt_version'].every(k=>typeof v.model[k]==='string'&&v.model[k].length>0)||!sha(v.model.digest)
   ||!obj(v.metrics)||!number(v.metrics.elapsed_ms)||!['prompt_eval_count','eval_count','total_duration'].every(k=>v.metrics[k]===null||number(v.metrics[k]))
-  ||!Array.isArray(v.source_refs)||v.source_refs.length<1||v.source_refs.length>4||!Array.isArray(v.clauses)||!Array.isArray(v.actions)||!Array.isArray(v.changes)||!texts(v.limitations)
-  ||v.formal_effect!=='none'||v.data_scope!=='TEST_ONLY'||v.usage_assumption!=='DEMO_USAGE_ASSUMPTION'||v.quote_index_unit!=='unicode_code_point')return fail();
+  ||!Array.isArray(v.source_refs)||(!v4&&v.source_refs.length<1)||v.source_refs.length>4||!Array.isArray(v.clauses)||!Array.isArray(v.actions)||!Array.isArray(v.changes)||!texts(v.limitations)
+  ||v.formal_effect!=='none'||v.data_scope!=='TEST_ONLY'||v.usage_assumption!=='DEMO_USAGE_ASSUMPTION'||v.quote_index_unit!==(v4?'utf8_byte':'unicode_code_point'))return fail();
  if(v.previous_result_id!==null&&(v.previous_result_id!==r.previous_result_id||!sha(v.previous_result_sha256)))return fail();
  if(v.previous_result_id===null&&(v.previous_result_sha256!==null||v.changes.length>0))return fail();
  const materials=new Map<string,AiSourceRef>();
@@ -171,8 +181,9 @@ export function validateAiAnalysis(v:unknown,a:Assessment,r:Result,expectedId?:s
   materials.set(s.material_id,s as AiSourceRef);
  }
  if(v.status==='succeeded'){
-  if(v.error_code!==null||!(structured?[1,2]:[1]).includes(v.model_calls)||!v.actions.length||!v.clauses.length)return fail();
+  if(v.error_code!==null||!((structured||v4)?[1,2]:[1]).includes(v.model_calls)||!v.actions.length||(!v4&&!v.clauses.length))return fail();
  }else if(typeof v.error_code!=='string'||!v.error_code||v.clauses.length||v.actions.length||v.changes.length)return fail();
+ if(v4){validateV4Plan(v,r);return structuredClone(v) as P2AiAnalysis;}
  for(const c of v.clauses){if(!obj(c)||!materials.has(c.material_id)||typeof c.quote!=='string'||!c.quote
   ||!Number.isInteger(c.start)||c.start<0||!Number.isInteger(c.end)||c.end<=c.start||c.end-c.start!==[...c.quote].length
   ||!['permission','condition','disclaimer','other'].includes(c.category))return fail();}
@@ -201,37 +212,68 @@ async function transport(path:string,method:'GET'|'POST',body?:string,signal?:Ab
   return value;
  }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
 }
-export async function readAiIndex(a:Assessment,r:Result,signal?:AbortSignal):Promise<string[]>{
+export async function readAiIndex(a:Assessment,r:Result,signal?:AbortSignal,onV4Enabled?:(enabled:boolean)=>void):Promise<string[]>{
  current(a,r);const q=new URLSearchParams({assessment_version:String(a.version),result_id:r.result_id});
  const v=await transport(prefix(a)+'?'+q,'GET',undefined,signal);
- if(!obj(v)||v.result_id!==r.result_id||!ids(v.analysis_ids))return fail();return v.analysis_ids;
+ if(!obj(v)||v.result_id!==r.result_id||!ids(v.analysis_ids)||('v4_plan_enabled' in v&&v.v4_plan_enabled!==true))return fail();
+ onV4Enabled?.(v.v4_plan_enabled===true);
+ return v.analysis_ids;
 }
 export function aiAnalysisUrl(a:Assessment,r:Result,analysisId:string){
  if(!id(analysisId))return fail();const q=new URLSearchParams({assessment_version:String(a.version),result_id:r.result_id});
  return base+prefix(a)+'/'+encodeURIComponent(analysisId)+'?'+q;
 }
-export async function readAiAnalysis(a:Assessment,r:Result,analysisId:string,signal?:AbortSignal){
+async function verifyAnalysis(value:P2AiAnalysis,a:Assessment,r:Result,scan?:Scan,signal?:AbortSignal){
+ if(value.analysis_protocol===v4AnalysisProtocol){
+  await verifyV4PlanHashes(value);
+  await verifyV4PlanAnchor(value,a,r,scan,signal);
+ }else await verifyBoundPlanHashes(value);
+ if(signal?.aborted)throw new DOMException('Aborted','AbortError');
+}
+function matchesRequestSubject(value:P2AiAnalysis,body:AiRequest){
+ return value.analysis_protocol===v4AnalysisProtocol
+  ?body.subject!==undefined&&sameSubject(body.subject,value.context.subject):body.subject===undefined;
+}
+export async function readAiAnalysis(a:Assessment,r:Result,analysisId:string,signal?:AbortSignal,scan?:Scan){
  const url=aiAnalysisUrl(a,r,analysisId);const value=validateAiAnalysis(await transport(url.slice(base.length),'GET',undefined,signal),a,r,analysisId);
- await verifyBoundPlanHashes(value);
- const old=pending.get(scope(r));if(old&&old.body.idempotency_key===value.idempotency_key)pending.delete(scope(r));return value;
+ await verifyAnalysis(value,a,r,scan,signal);
+ const old=pending.get(scope(r));
+ if(old&&old.body.idempotency_key===value.idempotency_key){
+  if(!matchesRequestSubject(value,old.body))return fail();
+  pending.delete(scope(r));
+ }
+ return value;
 }
 export function pendingAiAnalysis(r:Result){return pending.get(scope(r))??null;}
-export function prepareAiAnalysis(a:Assessment,r:Result,materialIds:string[],comparePrevious:boolean):AiRequest{
- current(a,r);if(!ids(materialIds)||!materialIds.length||materialIds.length>4||!materialIds.every(x=>r.material_ids.includes(x)))return fail();
- return {binding:{...r.binding},result_id:r.result_id,result_sha256:r.result_sha256,material_ids:[...materialIds],idempotency_key:crypto.randomUUID(),previous_result_id:comparePrevious?r.previous_result_id:null};
+function validSelection(r:Result,materialIds:unknown,subject?:Subject){
+ if(!ids(materialIds)||materialIds.length>4||!materialIds.every(x=>r.material_ids.includes(x)))return false;
+ if(subject===undefined)return materialIds.length>0;
+ if(!obj(subject)||Object.keys(subject).sort().join(',')!=='resource_id,version'||!id(subject.resource_id)
+  ||!(subject.version===null||typeof subject.version==='string'))return false;
+ const row=r.resources.find(entry=>sameSubject(entry.subject,subject));
+ return row?.resource_kind==='component'&&materialIds.every(x=>row.material_ids.includes(x));
 }
-export async function submitAiAnalysis(a:Assessment,r:Result,body:AiRequest,permit:()=>boolean):Promise<P2AiAnalysis>{
+export function prepareAiAnalysis(a:Assessment,r:Result,materialIds:string[],comparePrevious:boolean,subject?:Subject):AiRequest{
+ current(a,r);if(!validSelection(r,materialIds,subject))return fail();
+ return {binding:{...r.binding},result_id:r.result_id,result_sha256:r.result_sha256,material_ids:[...materialIds],
+  idempotency_key:crypto.randomUUID(),previous_result_id:subject||comparePrevious?r.previous_result_id:null,
+  ...(subject===undefined?{}:{subject:{...subject}})};
+}
+export async function submitAiAnalysis(a:Assessment,r:Result,body:AiRequest,permit:()=>boolean,scan?:Scan):Promise<P2AiAnalysis>{
  current(a,r);if(pending.has(scope(r)))throw Error('此版本已有结果待确认的模型请求，请先读取保存记录，不自动重复调用。');
  if(!permit())throw Error('当前对象或写入许可已变化，未发送模型请求。');
  if(!sameBinding(body.binding,r.binding)||body.result_id!==r.result_id||body.result_sha256!==r.result_sha256||!id(body.idempotency_key)
-  ||!ids(body.material_ids)||!body.material_ids.length||body.material_ids.length>4||!body.material_ids.every(x=>r.material_ids.includes(x))
-  ||body.previous_result_id!==null&&body.previous_result_id!==r.previous_result_id)return fail();
+  ||!validSelection(r,body.material_ids,body.subject)||body.previous_result_id!==null&&body.previous_result_id!==r.previous_result_id)return fail();
+ if(body.subject!==undefined&&(body.previous_result_id!==r.previous_result_id||scan?.id!==a.scan_id
+   ||!scan.declarationSnapshot||!scan.resources.some(resource=>resource.id===body.subject?.resource_id
+    &&resource.version===body.subject.version&&['npm','pypi'].includes(resource.ecosystem??''))))return fail();
  const row:AiPending={body,serialized:JSON.stringify(body),state:'sent'};pending.set(scope(r),row);let dispatched=false;
  try{
   const value=validateAiAnalysis(await transport(prefix(a),'POST',row.serialized,undefined,permit,()=>{dispatched=true;}),a,r);
-  await verifyBoundPlanHashes(value);
+  await verifyAnalysis(value,a,r,scan);
   if(value.idempotency_key!==body.idempotency_key||value.previous_result_id!==body.previous_result_id
-   ||value.source_refs.length!==body.material_ids.length||!value.source_refs.every(x=>body.material_ids.includes(x.material_id)))return fail();
+   ||!matchesRequestSubject(value,body)||value.source_refs.length!==body.material_ids.length
+   ||!value.source_refs.every(x=>body.material_ids.includes(x.material_id)))return fail();
   pending.delete(scope(r));return value;
  }catch(e){
   // A sent unknown outcome is never replayed or silently assigned a new key.

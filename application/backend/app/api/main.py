@@ -824,6 +824,9 @@ def create_default_app(
         report_v2_v11_writes = report_v2_v11_writes_from_environment()
     elif type(report_v2_v11_writes) is not bool:
         raise ValueError("invalid Report V2 write configuration")
+    v4_ai_plan = os.environ.get("OPENGUARD_P2_AI_V4_PLAN", "0")
+    if v4_ai_plan not in {"0", "1"}:
+        raise RuntimeError("invalid OPENGUARD_P2_AI_V4_PLAN")
     profile_metadata_enabled = os.environ.get("OPENGUARD_ENABLE_PROFILE_METADATA", "0")
     if profile_metadata_enabled not in {"0", "1"}:
         raise RuntimeError("invalid OPENGUARD_ENABLE_PROFILE_METADATA")
@@ -1024,7 +1027,8 @@ def create_default_app(
                 usage_options['public_sample_only'] = False
             p2_service.ai_analysis = configured_service(p2_service, os.environ.get('OPENGUARD_P2_AI_BUDGET_PATH'),
                 max_generations=int(os.environ.get('OPENGUARD_P2_AI_MAX_GENERATIONS', '20')),
-                intent_ceiling=None if intent_ceiling is None else int(intent_ceiling), **usage_options)
+                intent_ceiling=None if intent_ceiling is None else int(intent_ceiling),
+                v4_plan_enabled=v4_ai_plan == '1', **usage_options)
     from app.api.official_runtime import configure_official_sources
     configure_official_sources(p2_service, assessment_service, registry, data_dir)
     if p2_service is not None:

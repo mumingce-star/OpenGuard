@@ -213,6 +213,7 @@ def configure_runtime(model_origin):
         'OPENGUARD_P2_AI_USAGE_MODE':'continuous','OPENGUARD_P2_AI_INPUT_SCOPE':'bound_materials',
         'OPENGUARD_P2_AI_BUDGET_PATH':str(RUNTIME/'p2-ai-continuous.json'),
         'OPENGUARD_P2_ACTION_PLAN':'0',
+        'OPENGUARD_P2_AI_V4_PLAN':'1',
         'OPENGUARD_P2_PUBLIC_SOURCE_ROOT':str(APPLICATION/'tests/fixtures/task33/is-number-7.0.0'),
         'OPENGUARD_P2_PUBLIC_SOURCE_PROFILE_SHA256':'1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308',
         'OPENGUARD_OFFICIAL_SOURCE_AUTO':'0','OPENGUARD_OFFICIAL_JOBS_ENABLED':'0',
