@@ -33,7 +33,22 @@ export default defineConfig({
       return [{ tag: 'link', attrs: { rel: 'license', href: './third-party-licenses.txt' }, injectTo: 'head' }];
     },
   }],
-  build: { rollupOptions: { input: { index: fileURLToPath(new URL('./index.html', import.meta.url)), about: fileURLToPath(new URL('./about.html', import.meta.url)) } } },
+  build: {
+    rolldownOptions: {
+      input: {
+        index: fileURLToPath(new URL('./index.html', import.meta.url)),
+        about: fileURLToPath(new URL('./about.html', import.meta.url)),
+      },
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'react-runtime', test: /[\\/]node_modules[\\/](?:react(?:-dom)?|scheduler)[\\/]/, priority: 20 },
+            { name: 'p2-workbench', test: /[\\/]src[\\/]components[\\/]P2Workbench\.tsx$/, priority: 10 },
+          ],
+        },
+      },
+    },
+  },
   server: { proxy },
   preview: { proxy },
 });
