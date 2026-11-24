@@ -13,6 +13,7 @@ import time
 from types import SimpleNamespace
 
 import pytest
+from starlette.testclient import TestClient
 
 from deployment import launcher
 
@@ -25,7 +26,7 @@ FLAGS = ("OPENGUARD_CONTAINER_MODE", "OPENGUARD_OLLAMA_DOCKER_HOST")
 
 @pytest.fixture(autouse=True)
 def default_environment(monkeypatch):
-    for key in (*FLAGS, "OPENGUARD_PYTHON"):
+    for key in (*FLAGS, "OPENGUARD_PYTHON", "OPENGUARD_PUBLIC_PORT"):
         monkeypatch.delenv(key, raising=False)
 
 
@@ -312,3 +313,118 @@ def test_sigterm_preserves_isolated_data_and_exits_zero(tmp_path):
             if server.poll() is None:
                 server.kill()
                 server.wait(timeout=5)
+
+
+@pytest.mark.parametrize(("container", "raw_port"), [
+    ("0", "18000"),
+    ("1", "0"),
+    ("1", "65536"),
+    ("1", "-1"),
+    ("1", "abc"),
+    ("1", "18000 "),
+    ("1", "１８０００"),
+    ("1", "١٨٠٠٠"),
+    ("1", "+18000"),
+    pytest.param("1", "9" * 5000, id="oversized-ascii-port"),
+])
+def test_public_port_rejects_non_container_or_invalid_value(monkeypatch, capsys, container, raw_port):
+    monkeypatch.setenv("OPENGUARD_CONTAINER_MODE", container)
+    monkeypatch.setenv("OPENGUARD_PUBLIC_PORT", raw_port)
+    monkeypatch.setattr(launcher, "check", lambda: pytest.fail("invalid public port reached check"))
+    assert launcher.main(["check"]) == 2
+    assert "OPENGUARD_PUBLIC_PORT" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(("container", "raw_port", "expected"), [
+    ("0", None, None), ("0", "", None), ("1", None, None), ("1", "", None),
+    ("1", "1", 1), ("1", "65535", 65535), ("1", "018000", 18000),
+])
+def test_public_port_accepts_only_the_declared_optional_container_value(monkeypatch, container, raw_port, expected):
+    monkeypatch.setenv("OPENGUARD_CONTAINER_MODE", container)
+    if raw_port is not None:
+        monkeypatch.setenv("OPENGUARD_PUBLIC_PORT", raw_port)
+    assert launcher.deployment_settings().public_port == expected
+
+
+@pytest.fixture
+def public_port_gateway_root(monkeypatch, tmp_path):
+    for relative in ("samples/http-server.bundle", "samples/http-server-LICENSE.txt", "web/index.html"):
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / relative, destination)
+    monkeypatch.setattr(os, "environ", os.environ.copy())
+    monkeypatch.setattr(sys, "path", list(sys.path))
+    monkeypatch.setattr(launcher, "ROOT", tmp_path)
+    monkeypatch.setattr(launcher, "RUNTIME", tmp_path / "runtime")
+    return tmp_path
+
+
+@pytest.mark.parametrize(("authority", "status"), [
+    ("127.0.0.1:18000", 200),
+    ("localhost:18000", 200),
+    ("127.0.0.1:8000", 200),
+    ("localhost:8000", 200),
+    ("127.0.0.1:19999", 403),
+    ("evil.example:18000", 403),
+])
+def test_public_port_gateway_accepts_only_declared_loopback_hosts(
+    monkeypatch, public_port_gateway_root, authority, status,
+):
+    monkeypatch.setenv("OPENGUARD_CONTAINER_MODE", "1")
+    monkeypatch.setenv("OPENGUARD_PUBLIC_PORT", "18000")
+    gateway = launcher.create_gateway(8000)
+    with TestClient(gateway, base_url="http://127.0.0.1:8000") as client:
+        for path in ("/healthz", "/"):
+            response = client.get(path, headers={"Host": authority})
+            assert response.status_code == status
+            if status == 403:
+                assert response.json()["error"]["code"] == "auth_host_rejected"
+            elif path == "/healthz":
+                assert response.json()["status"] == "ok"
+            else:
+                assert response.content == (public_port_gateway_root / "web/index.html").read_bytes()
+
+
+@pytest.mark.parametrize("raw_port", [None, "", "8000"])
+def test_public_port_equal_or_absent_keeps_only_internal_origins(monkeypatch, public_port_gateway_root, raw_port):
+    monkeypatch.setenv("OPENGUARD_CONTAINER_MODE", "1")
+    if raw_port is not None:
+        monkeypatch.setenv("OPENGUARD_PUBLIC_PORT", raw_port)
+    gateway = launcher.create_gateway(8000)
+    expected = ("http://127.0.0.1:8000", "http://localhost:8000")
+    assert os.environ["OPENGUARD_WEB_ORIGINS"].split(",") == list(expected)
+    assert gateway.origins == frozenset(expected)
+
+
+@pytest.mark.parametrize("address", ["127.0.0.1", "localhost"])
+def test_public_port_post_registration_requires_declared_origin_and_real_csrf(
+    monkeypatch, public_port_gateway_root, address,
+):
+    origin = f"http://{address}:18000"
+    monkeypatch.setenv("OPENGUARD_CONTAINER_MODE", "1")
+    monkeypatch.setenv("OPENGUARD_PUBLIC_PORT", "18000")
+    gateway = launcher.create_gateway(8000)
+    with TestClient(gateway, base_url=origin) as client:
+        session = client.get("/api/v1/auth/session")
+        assert session.status_code == 200
+        csrf = session.json()["csrf_token"]
+        body = {"username": "task52b_synthetic", "password": "SyntheticTest52b!"}
+        path = "/api/v1/auth/register"
+        for proposed_origin in (None, f"http://{address}:19999", "http://evil.example:18000"):
+            headers = {"X-CSRF-Token": csrf}
+            if proposed_origin is not None:
+                headers["Origin"] = proposed_origin
+            denied = client.post(path, headers=headers, json=body)
+            assert denied.status_code == 403
+            assert denied.json()["error"]["code"] == "auth_origin_rejected"
+        for invalid_csrf in ({}, {"X-CSRF-Token": "invalid"}):
+            denied = client.post(path, headers={"Origin": origin, **invalid_csrf}, json=body)
+            assert denied.status_code == 403
+            assert denied.json()["error"]["code"] == "auth_csrf_rejected"
+        registered = client.post(path, headers={"Origin": origin, "X-CSRF-Token": csrf}, json=body)
+        assert registered.status_code == 201
+        assert registered.json()["user"]["username"] == body["username"]
+    assert os.environ["OPENGUARD_PUBLIC_PORT"] == "18000"
+    assert os.environ["OPENGUARD_WEB_ORIGINS"].split(",") == [
+        "http://127.0.0.1:8000", "http://localhost:8000", "http://127.0.0.1:18000", "http://localhost:18000",
+    ]

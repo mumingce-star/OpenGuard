@@ -33,6 +33,7 @@ python3.12 openguard.py start
 ### Docker（v2.3 开发分支）
 
 在源码根目录运行 `docker compose up --build`，通过 `http://127.0.0.1:8000/` 访问。容器以专用非 root 用户运行，账号、扫描和报告保存在 `openguard_runtime` 命名卷，Python 依赖位于镜像内的 `/opt/openguard-venv`。`docker compose stop` 停止服务并保留数据卷。首次构建需要镜像仓库、系统软件源和 Python 包索引。
+如需其他宿主机回环端口，可设置 `OPENGUARD_HOST_PORT`，Compose 会将同一端口传给容器内的 `OPENGUARD_PUBLIC_PORT`。
 
 需要在容器内使用宿主机 Ollama 时，显式选择固定主机端点。宿主机的 Ollama 必须能够从 Docker 主机网关访问。
 

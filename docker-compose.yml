@@ -2,11 +2,12 @@ services:
   openguard:
     build: .
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:${OPENGUARD_HOST_PORT:-8000}:8000"
     volumes:
       - openguard_runtime:/app/runtime
     environment:
       OPENGUARD_CONTAINER_MODE: "1"
+      OPENGUARD_PUBLIC_PORT: "${OPENGUARD_HOST_PORT:-8000}"
       OPENGUARD_OLLAMA_DOCKER_HOST: "${OPENGUARD_OLLAMA_DOCKER_HOST:-0}"
     command:
       - /opt/openguard-venv/bin/python

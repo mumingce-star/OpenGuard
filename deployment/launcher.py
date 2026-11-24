@@ -49,6 +49,7 @@ REVISION = '0d3b7bb5b6e8a59fd450ae2dca65870009cfcd8b'
 class DeploymentSettings:
     container_mode: bool
     ollama_docker_host: bool
+    public_port: int | None = None
 
 
 def deployment_settings():
@@ -60,7 +61,18 @@ def deployment_settings():
         raise RuntimeError('OPENGUARD_OLLAMA_DOCKER_HOST 只允许 0 或 1。')
     if container == '0' and docker_host == '1':
         raise RuntimeError('仅在容器模式下可启用 OPENGUARD_OLLAMA_DOCKER_HOST。')
-    return DeploymentSettings(container == '1', docker_host == '1')
+    raw_public_port = os.environ.get('OPENGUARD_PUBLIC_PORT', '')
+    public_port = None
+    if raw_public_port:
+        if container != '1':
+            raise RuntimeError('仅在容器模式下可设置 OPENGUARD_PUBLIC_PORT。')
+        if not (raw_public_port.isascii() and raw_public_port.isdecimal()):
+            raise RuntimeError('OPENGUARD_PUBLIC_PORT 必须为 1–65535 的 ASCII 十进制端口。')
+        digits = raw_public_port.lstrip('0')
+        public_port = int(digits) if 0 < len(digits) <= 5 else 0
+        if not 1 <= public_port <= 65535:
+            raise RuntimeError('OPENGUARD_PUBLIC_PORT 必须为 1–65535 的 ASCII 十进制端口。')
+    return DeploymentSettings(container == '1', docker_host == '1', public_port)
 
 
 def validate_listener(host):
@@ -288,6 +300,8 @@ def configure_runtime(model_origin):
         'OPENGUARD_P2_PUBLIC_SOURCE_PROFILE_SHA256':'1a097309a5f9f5e9a5e50bdf6e6f0cced30449753e41108f8dfd207c36dfb308',
         'OPENGUARD_OFFICIAL_SOURCE_AUTO':'0','OPENGUARD_OFFICIAL_JOBS_ENABLED':'0',
     })
+    if settings.public_port is not None:
+        os.environ['OPENGUARD_PUBLIC_PORT'] = str(settings.public_port)
     samples=sample_report()
     if not all(x['match'] for x in samples):raise RuntimeError('固定样例完整性检查失败')
     sample = ROOT / 'samples/http-server.bundle'
@@ -365,6 +379,9 @@ def create_gateway(port,model_origin=LOCAL_MODEL_ORIGIN):
             headers['Content-Security-Policy']="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
         return await Response(target.read_bytes(),media_type=mimetypes.guess_type(target.name)[0] or 'application/octet-stream',headers=headers)(scope,receive,send)
     origins=(f'http://127.0.0.1:{port}',f'http://localhost:{port}')
+    public_port = deployment_settings().public_port
+    if public_port is not None and public_port != port:
+        origins += (f'http://127.0.0.1:{public_port}', f'http://localhost:{public_port}')
     os.environ['OPENGUARD_WEB_ORIGINS']=','.join(origins)
     return LocalAccountGateway(root=RUNTIME/'account-data',origins=origins,
         cookie_name='og_session_'+hashlib.sha256(str(ROOT).encode()).hexdigest()[:12],

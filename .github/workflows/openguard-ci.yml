@@ -129,7 +129,7 @@ jobs:
         shell: bash
         run: |
           container=$(docker run --detach --init --security-opt no-new-privileges \
-            --publish 127.0.0.1:18000:8000 openguard:ci)
+            -e OPENGUARD_PUBLIC_PORT=18000 --publish 127.0.0.1:18000:8000 openguard:ci)
           trap 'docker logs "$container"; docker rm -f "$container" >/dev/null' EXIT
           health_file="$RUNNER_TEMP/openguard-health.json"
           ready=0
@@ -147,5 +147,7 @@ jobs:
           status=$(curl --noproxy '*' --silent --show-error --max-time 5 \
             --output /dev/null --write-out '%{http_code}' http://127.0.0.1:18000/)
           test "$status" = 200
+          status=$(curl --noproxy '*' --silent --max-time 5 -H 'Host: evil.example:18000' --output /dev/null --write-out '%{http_code}' http://127.0.0.1:18000/healthz)
+          test "$status" = 403
           docker stop --time 15 "$container"
           test "$(docker inspect --format '{{.State.ExitCode}}' "$container")" = 0
