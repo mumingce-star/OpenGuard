@@ -59,7 +59,8 @@ jobs:
             tests/unit/test_p2_contract.py tests/unit/test_p2_preliminary.py \
             tests/unit/test_p2b_candidates.py tests/unit/test_task33_material_claims.py \
             tests/unit/test_task37_real_material_chain.py tests/unit/test_task50_*.py \
-            tests/unit/test_task52_container_and_cross_platform.py
+            tests/unit/test_task52_container_and_cross_platform.py \
+            tests/unit/test_task54_*.py
       - name: Run the real isolated host self-test
         run: python -B openguard.py self-test
 
@@ -97,7 +98,8 @@ jobs:
           pnpm test
           node --test tests/landing-anchor.test.mjs tests/task33-material-claims.test.mjs \
             tests/task37-real-material-chain.test.mjs tests/task40-p5-experience.test.mjs \
-            tests/task50*.test.mjs
+            tests/task50*.test.mjs \
+            tests/task54-multi-ecosystems.test.mjs
       - name: Scanner and deployment configuration tests
         working-directory: application
         run: |
