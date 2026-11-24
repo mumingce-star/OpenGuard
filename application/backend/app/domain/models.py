@@ -305,13 +305,16 @@ class Evidence(P0Model):
         return self
 
 
+Ecosystem = Literal["pypi", "npm", "golang", "cargo", "maven", "unknown"]
+
+
 class Component(P0Model):
     ID_PREFIX: ClassVar[str] = "cmp"
 
     id: str
     name: str = Field(min_length=1, max_length=200)
     version: str | None = Field(default=None, max_length=200)
-    ecosystem: Literal["pypi", "npm", "unknown"]
+    ecosystem: Ecosystem
     component_type: ComponentType = ComponentType.LIBRARY
     purl: str | None = None
     source_url: str | None = None

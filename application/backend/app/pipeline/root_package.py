@@ -1,4 +1,4 @@
-"""Observe scanned npm and Python root packages apart from their dependencies.
+"""Observe scanned root packages apart from their dependencies.
 
 The existing dependency mapper intentionally maps dependency declarations only.
 This pipeline adapter adds a separate application identity from a complete,
@@ -21,6 +21,7 @@ from app.ingestion import ReadOnlyScanSession
 from app.licenses import normalize_license
 from app.pipeline.manifest_licenses import ManifestLicenseBinding, _bounded, _pairs
 from app.scanners import JavascriptP0MappingResult, PythonP0MappingResult
+from app.scanners.dependency_observation_mapper import ObservationMapping
 from app.scanners.javascript_manifest import _exact, _name
 
 _NAMESPACE = uuid.UUID('781ec5cd-295c-4fcf-891c-13bbb606cffb')
@@ -191,3 +192,44 @@ def collect_python_root_package(session: ReadOnlyScanSession, python_mapping: Py
         detected_by=['manifest_parser'], confidence=1.0)
     return replace(python_mapping, components=tuple(sorted([*python_mapping.components, root], key=lambda c: c.id)),
                    evidence=tuple(sorted([*python_mapping.evidence, *evidence], key=lambda e: e.id))), bindings
+
+
+_OBSERVED_ROOTS = {"Cargo.toml": "cargo", "pom.xml": "maven"}
+
+
+def add_observed_root(mapping: ObservationMapping, *, root_digest: str, observed_at: datetime):
+    """Attach a root from the same sealed manifest read as its dependencies."""
+    metadata = mapping.root
+    ecosystem = _OBSERVED_ROOTS.get(mapping.source_path)
+    if metadata is None or ecosystem is None:
+        return mapping, ()
+
+    def identity(prefix, *parts):
+        material = json.dumps([root_digest, mapping.source_path, mapping.source_sha256, *parts],
+                              ensure_ascii=False, separators=(',', ':'), sort_keys=True)
+        return prefix + str(uuid.uuid5(_NAMESPACE, material))
+
+    def field(locator, value):
+        return Evidence(
+            id=identity('evd_', locator, value), kind='manifest_field',
+            locator=f'{mapping.source_path}:{locator}', excerpt=json.dumps(value, ensure_ascii=False),
+            content_hash=HashValue(algorithm='sha256', value=mapping.source_sha256),
+            detected_by='manifest_parser', producer=_PRODUCER, observed_at=observed_at,
+            verification_status='pending',
+        )
+
+    evidence = [field(locator, value) for locator, value in metadata.fields]
+    root_id = identity('cmp_', metadata.name, metadata.version, 'root-application')
+    bindings = ()
+    if metadata.license is not None:
+        locator, text = metadata.license
+        if _single_standard_license(text, evidence[:1]):
+            license_evidence = field(locator, text)
+            evidence.append(license_evidence)
+            bindings = (ManifestLicenseBinding(root_id, normalize_license(text, [license_evidence]), license_evidence),)
+    root = Component(
+        id=root_id, name=metadata.name, version=metadata.version, ecosystem=ecosystem,
+        component_type='application', purl=metadata.purl, evidence_ids=sorted(item.id for item in evidence),
+        detected_by=['manifest_parser'], confidence=1.0,
+    )
+    return replace(mapping, components=(*mapping.components, root), evidence=(*mapping.evidence, *evidence)), bindings

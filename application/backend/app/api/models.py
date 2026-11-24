@@ -9,6 +9,7 @@ from pydantic import Field, field_validator
 from app.domain.usage import UsageDeclaration
 
 from app.domain.models import (
+    Ecosystem,
     AIAsset,
     Component,
     Evidence,
@@ -89,7 +90,7 @@ class ResourceView(P0Model):
 
 class ResourceFilters(P0Model):
     kind: Literal["component", "ai_asset"] | None = None
-    ecosystem: Literal["pypi", "npm", "unknown"] | None = None
+    ecosystem: Ecosystem | None = None
     provider: str | None = Field(default=None, min_length=1, max_length=200)
     verification_status: VerificationStatus | None = None
 

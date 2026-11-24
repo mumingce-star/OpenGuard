@@ -163,7 +163,7 @@ def _selection_priority(entry: GitTreeEntry) -> tuple[int, int, bytes]:
         priority = 0
     elif name in {"pyproject.toml", "package.json", "setup.py", "setup.cfg", "cargo.toml", "go.mod", "pom.xml"} or name.startswith("requirements"):
         priority = 1
-    elif name in {"uv.lock", "poetry.lock", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "cargo.lock", "go.sum"}:
+    elif name in {"uv.lock", "poetry.lock", "package-lock.json", "yarn.lock", "pnpm-lock.yaml", "cargo.lock", "go.sum", "gradle.lockfile"}:
         priority = 2
     elif name.startswith("readme"):
         priority = 3

@@ -42,7 +42,8 @@ def _decode_material_text(content: bytes) -> str:
 def parse_local_material(content: bytes, metadata: dict[str, Any],
                          *, known_objects: dict[tuple[str, str], str],
                          known_materials: dict[tuple[str, str, str, str], str] | None = None,
-                         allow_pep440: bool = False) -> dict[str, Any]:
+                         allow_pep440: bool = False,
+                         manifest_bound_version: str | None = None) -> dict[str, Any]:
     """Accept only object/version-bound bytes; provenance remains a user claim."""
     if not isinstance(metadata, dict) or not isinstance(known_objects, dict):
         raise ValueError("invalid_material_metadata")
@@ -58,7 +59,9 @@ def parse_local_material(content: bytes, metadata: dict[str, Any],
         raise ValueError("unknown_object")
     if version != known_objects[(scan_id, object_id)]:
         raise ValueError("wrong_object_version")
-    if not is_exact_material_version(version, allow_pep440=allow_pep440):
+    # The caller may supply an exact version already proved by sealed root fields.
+    if not (is_exact_material_version(version, allow_pep440=allow_pep440)
+            or isinstance(manifest_bound_version, str) and version == manifest_bound_version):
         raise ValueError("material_version_not_exact")
     digest = hashlib.sha256(content).hexdigest()
     expected = metadata.get("sha256")

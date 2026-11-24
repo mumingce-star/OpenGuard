@@ -13,6 +13,7 @@ from app.assessment.engine import facts_digest
 from app.assessment.store import AssessmentStoreError
 from app.domain.models import ScanStatus
 from app.persistence import ScanRegistryError
+from app.scanners.ecosystem_coordinates import MULTI_ECOSYSTEMS, coordinate_key, exact_purl, valid_name
 from .history import canonical, identity, public_source, utc
 
 ALGORITHM = "scan-diff/1.0"
@@ -52,12 +53,21 @@ def _package_name(ecosystem, name):
     if ecosystem == "npm":
         name = name.casefold()
         return name if re.fullmatch(r"(?:@[a-z0-9._-]+/)?[a-z0-9][a-z0-9._-]*", name) else None
+    if ecosystem in MULTI_ECOSYSTEMS:
+        return name if valid_name(ecosystem, name) else None
     return name
 
 
 def _purl_keys(value):
     if not isinstance(value, str) or re.search(r"%(?![0-9A-Fa-f]{2})", value):
         return None, None
+    if value.partition("/")[0].lower().removeprefix("pkg:") in MULTI_ECOSYSTEMS:
+        coordinate = exact_purl(value)
+        if coordinate is None:
+            return None, None
+        ecosystem, name, version = coordinate
+        key = coordinate_key(ecosystem, name)
+        return key, f"{key}@{quote(version, safe='')}"
     main, _, subpath = value.partition("#")
     matched = _PURL.fullmatch(main)
     if not matched:
@@ -103,7 +113,8 @@ def _resource(run, kind, item):
         ecosystem = str(item.ecosystem)
         name = _package_name(ecosystem, item.name)
         if identity_key is None and ecosystem != "unknown" and name:
-            identity_key = f"pkg:{ecosystem}/{quote(name, safe='/-_.~')}"
+            identity_key = (coordinate_key(ecosystem, name) if ecosystem in MULTI_ECOSYSTEMS
+                            else f"pkg:{ecosystem}/{quote(name, safe='/-_.~')}")
             instance_key = identity_key + "@" + quote(item.version, safe=".-_~") if item.version else None
         values = {"name": item.name, "version": item.version, "ecosystem": item.ecosystem,
                   "component_type": item.component_type, "purl": item.purl,

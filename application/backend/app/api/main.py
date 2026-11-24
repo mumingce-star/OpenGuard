@@ -46,7 +46,7 @@ from app.api.models import (
 from app.api.service import APPLICATION_VERSION, ApiError, DependencyEvidencePage, ScanApiService
 from app.api.git_scan import GitScanRuntime
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
-from app.domain.models import Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
+from app.domain.models import Ecosystem, Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
 from app.local_accounts import ACCOUNT_ID
 from app.persistence import SQLiteScanRunRegistry, ZipDispatchStore
 from app.pipeline.zip_dispatcher import ZipDispatcher
@@ -336,7 +336,7 @@ def _router() -> APIRouter:
         scan_id: str,
         service: Annotated[ScanApiService, Depends(_service)],
         kind: Annotated[Literal["component", "ai_asset"] | None, Query()] = None,
-        ecosystem: Annotated[Literal["pypi", "npm", "unknown"] | None, Query()] = None,
+        ecosystem: Annotated[Ecosystem | None, Query()] = None,
         provider: Annotated[str | None, Query(min_length=1, max_length=200)] = None,
         verification_status: Annotated[VerificationStatus | None, Query()] = None,
     ) -> ResourcesResponse:

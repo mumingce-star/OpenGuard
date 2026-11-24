@@ -25,7 +25,7 @@ _COVERAGE_ERROR_CODES = frozenset({
     'rules_stage_not_connected', 'git_scan_coverage_partial',
     'dependency_scan_failed', 'dependency_manifest_not_found',
     'python_dependency_scan_failed', 'python_dependency_scan_partial',
-    'javascript_dependency_scan_failed', 'javascript_dependency_scan_partial',
+    'javascript_dependency_scan_failed', 'javascript_dependency_scan_partial', 'multi_ecosystem_scan_partial',
     'ai_asset_scan_incomplete', 'external_scan_incomplete', 'scan_incomplete',
     'scanner_timeout', 'scanner_failed', 'zip_ingestion_failed',
     'input_digest_mismatch', 'pipeline_stage_failed', 'report_publish_failed',
@@ -42,6 +42,13 @@ def _is_python_root(resource, evidence):
         return False
     from .material_claims import root_package_evidence_ids
     return bool(root_package_evidence_ids(resource, evidence))
+
+
+def _manifest_bound_version(resource, evidence):
+    if not isinstance(resource, Component) or resource.ecosystem not in {'cargo', 'maven'}:
+        return None
+    from .material_claims import root_package_evidence_ids
+    return resource.version if root_package_evidence_ids(resource, evidence) else None
 
 
 class P2Service:
@@ -149,14 +156,17 @@ class P2Service:
             gaps.append("evidence_source_hash_missing")
         suggestions = []
         legacy_exact = bool(resource.version and EXACT_VERSION.fullmatch(resource.version))
-        if not legacy_exact and not (_is_python_root(resource, evidence)
-                                     and is_exact_material_version(resource.version, allow_pep440=True)):
+        bound = _manifest_bound_version(resource, evidence)
+        if not legacy_exact and bound is None and not (
+            _is_python_root(resource, evidence) and is_exact_material_version(resource.version, allow_pep440=True)
+        ):
             gaps.append("exact_version_missing")
         if scope not in {"runtime_dependency", "project_code"} or kind == "ai_asset":
             gaps.append("object_scope_unverified" if kind == "component" else "ai_asset_independent_license_required")
         # Recognition of an exact Python root version does not expand the
         # existing SemVer-only L1 candidate evaluator.
-        if legacy_exact and gaps == ["upstream_source_attestation_missing"]:
+        if (legacy_exact and getattr(resource, 'ecosystem', None) not in {'cargo', 'maven', 'golang'}
+                and gaps == ["upstream_source_attestation_missing"]):
             snapshot = {"scan_id": run.id, "status": run.status.value,
                         "coverage_gaps": sorted({e.code for e in run.errors}),
                         "objects": [{"id": resource.id, "scan_id": run.id, "kind": kind,
@@ -499,10 +509,12 @@ class P2Service:
                     raise P2Error('p2_material_base64_invalid', 422) from exc
                 history = {(sid, m['subject']['resource_id'], m['subject']['version'], m['filename'].upper()): m['source_sha256'] for m in materials}
                 try:
+                    evidence = {entry.id: entry for entry in run.evidence}
                     parse_local_material(raw, {"scan_id": sid, "object_id": resource.id, "version": resource.version,
                                                "filename": body.filename, "sha256": body.source_sha256, "source": body.source_description},
                                          known_objects={(sid, resource.id): resource.version}, known_materials=history,
-                                         allow_pep440=_is_python_root(resource, {entry.id: entry for entry in run.evidence}))
+                                         allow_pep440=_is_python_root(resource, evidence),
+                                         manifest_bound_version=_manifest_bound_version(resource, evidence))
                 except ValueError as exc:
                     code = str(exc)
                     raise P2Error('p2_' + code, 413 if code == 'material_size_limit' else 409 if code in {'duplicate_material', 'material_identity_conflict'} else 422) from exc

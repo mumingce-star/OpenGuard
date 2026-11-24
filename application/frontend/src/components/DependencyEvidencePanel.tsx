@@ -103,7 +103,9 @@ function DependencyEvidenceRow({ item, expanded, onToggle }: {
       aria-expanded={expanded}
       aria-controls={expanded ? detailId : undefined}
       onClick={onToggle}>
-      <span className="og-dependency-identity"><strong>{item.name}</strong><small>{item.version ?? "版本未提供"}</small></span>
+      <span className="og-dependency-identity"><strong>{item.name}</strong>
+        <small>{item.version ?? "版本未提供"}{item.ecosystem !== "unknown" && " · " + item.ecosystem}</small>
+      </span>
       <span className="og-dependency-sources">
         {item.sources.length ? item.sources.map(source => <span key={source}>{dependencyEvidenceSourceLabels[source]}</span>) : <span>来源未定</span>}
       </span>

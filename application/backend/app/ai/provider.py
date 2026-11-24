@@ -413,6 +413,9 @@ def _resource_batches(run: ScanRun, eligible: list[RiskFinding], provider: _Prov
             elif kind == "npm":
                 lookup = (f"【事实导航】按原声明查包 {resource.name} 的注册表及版本 {version}，"
                           "核对该版本元数据中的 repository/license 字段，再定位源码许可文件；未提供可靠入口时明确记录缺失。")
+            elif kind in {"golang", "cargo", "maven"}:
+                lookup = (f"【事实导航】回到 {location} 核对 {resource.name} 的声明、版本 {version} 和原文；"
+                          "交叉核对锁文件与上游发行记录，未取得可信出处时记录缺失。")
             elif kind == "api":
                 lookup = (f"【事实导航】先在 {location} 区分 {resource.name} 的示例、兼容接口和实际调用；"
                           "查已确认服务提供方的使用条款，另查 SDK 许可证，不能互相代替；提供方入口未核验时记录缺失。")

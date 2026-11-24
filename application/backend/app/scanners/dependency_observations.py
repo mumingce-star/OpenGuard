@@ -16,6 +16,8 @@ from urllib.parse import quote, unquote, urlsplit
 
 from packaging.version import InvalidVersion, Version
 
+from .ecosystem_coordinates import MULTI_ECOSYSTEMS, coordinate_key, exact_purl, sbom_name
+
 MAX_BYTES = 2 * 1024 * 1024
 MAX_NODES = 4096
 MAX_EDGES = 16384
@@ -36,6 +38,7 @@ class Node:
     purl: str | None
     locator: str
     source_kind: str
+    excerpt: str | None = None
 
 
 @dataclass(frozen=True, order=True)
@@ -43,6 +46,15 @@ class Edge:
     parent: str
     child: str
     locator: str
+
+
+@dataclass(frozen=True)
+class RootObservation:
+    name: str
+    version: str
+    purl: str
+    fields: tuple[tuple[str, str | dict[str, str]], ...]
+    license: tuple[str, str] | None = None
 
 
 @dataclass(frozen=True)
@@ -54,6 +66,7 @@ class DependencyObservations:
     edges: tuple[Edge, ...]
     gaps: tuple[Gap, ...]
     semantics: str = "parsed_observation_not_installation_or_authorization"
+    root: RootObservation | None = None
 
     @property
     def status(self) -> str:
@@ -257,8 +270,22 @@ def _cyclonedx(data, path, digest, format):
         if not _text(version):
             version = None
             gaps.append(Gap("version_missing", loc + "/version"))
+        name = item["name"]
         purl = item.get("purl")
-        if purl is not None:
+        if isinstance(purl, str) and purl.partition("/")[0].removeprefix("pkg:") in MULTI_ECOSYSTEMS:
+            coordinate = exact_purl(purl)
+            if coordinate is None:
+                gaps.append(Gap("purl_unsupported", loc + "/purl"))
+                purl = None
+            else:
+                ecosystem, canonical_name, pversion = coordinate
+                if sbom_name(ecosystem, name, item.get("group")) != canonical_name or pversion != version:
+                    gaps.append(Gap("purl_identity_conflict", loc + "/purl"))
+                    purl = None
+                else:
+                    name = canonical_name
+                    purl = f"{coordinate_key(ecosystem, name)}@{quote(version, safe='')}"
+        elif purl is not None:
             # Deliberately narrow identity validation; do not normalize unsupported
             # qualifiers, subpaths or percent-encoded delimiters into false matches.
             if not _text(purl) or not re.fullmatch(r"pkg:(npm|pypi)/[^?#\s]+@[^@/?#\s]+", purl):
@@ -275,7 +302,7 @@ def _cyclonedx(data, path, digest, format):
             gaps.append(Gap("nested_components_unsupported", loc + "/components"))
         if item.get("evidence") or item.get("properties"):
             gaps.append(Gap("component_locations_not_verified", loc))
-        nodes.append(Node(ref, item["name"], version, purl, loc, "sbom"))
+        nodes.append(Node(ref, name, version, purl, loc, "sbom"))
     seen = set()
     for i, item in enumerate(dependencies):
         loc = f"{path}:/dependencies/{i}"
@@ -619,6 +646,15 @@ def read_dependency_observations(session, path: str, *, format: str) -> Dependen
                "spdx-json": parse_spdx_json, "spdx-tag-value": parse_spdx_tag_value, "npm-v1": parse_npm_lock_v1}
     for kind in ("poetry", "pdm", "pipfile"):
         readers[kind] = lambda raw, path, kind=kind: parse_python_lock(raw, format=kind, path=path)
+    if format in {"go-mod", "go-sum"}:
+        from .go_dependencies import parse_go_mod, parse_go_sum
+        readers.update({"go-mod": parse_go_mod, "go-sum": parse_go_sum})
+    elif format in {"cargo-toml", "cargo-lock"}:
+        from .cargo_dependencies import parse_cargo_lock, parse_cargo_toml
+        readers.update({"cargo-toml": parse_cargo_toml, "cargo-lock": parse_cargo_lock})
+    elif format in {"maven-pom", "gradle-lock"}:
+        from .maven_dependencies import parse_gradle_lock, parse_pom
+        readers.update({"maven-pom": parse_pom, "gradle-lock": parse_gradle_lock})
     if format not in readers:
         raise ValueError("unsupported_format")
     entries = [entry for entry in session.inventory.entries if entry.relative_path == path]

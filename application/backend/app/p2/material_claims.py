@@ -7,6 +7,7 @@ from packaging.version import Version
 from app.p2b._resource_roles import assess_resource_roles
 from app.p2b.candidates import EXACT_VERSION
 from app.p2b.material_claims import parse_claim_material
+from app.scanners.ecosystem_coordinates import exact_purl
 from .contract import P2Error, digest, strict_json
 from .material_claims_contract import COPYLEFT_TEXT_LICENSES, MATERIAL_TEXT_LICENSES, MaterialClaims, RULE_VERSION, SCHEMA_VERSION
 from .preliminary import CONDITIONS, LIMITATIONS, load_sources
@@ -47,6 +48,8 @@ _COPYLEFT_DECLARATION_FAMILIES = {
 _ROOT_MANIFESTS = {
     'npm': {'package.json:'},
     'pypi': {'pyproject.toml:/project', 'pyproject.toml:/tool/poetry'},
+    'cargo': {'Cargo.toml:/package'},
+    'maven': {'pom.xml:/project'},
 }
 ROLE_CONFLICTS = frozenset({
     'dependency_declaration_conflict', 'lock_version_conflict', 'lock_root_mismatch',
@@ -161,6 +164,12 @@ def root_package_evidence_ids(resource, evidence_by_id) -> list[str]:
             return []
         if not resource.version or resource.purl != f'pkg:pypi/{normalized_name}@{resource.version}':
             return []
+    if ecosystem in {'cargo', 'maven'} and exact_purl(resource.purl) != (ecosystem, resource.name, resource.version):
+        return []
+    fields = {'name': resource.name, 'version': resource.version}
+    if ecosystem == 'maven':
+        group, _, artifact = resource.name.partition(':')
+        fields = {'groupId': group, 'artifactId': artifact, 'version': resource.version}
     matches, identities = {}, set()
     for evidence_id in resource.evidence_ids:
         evidence = evidence_by_id.get(evidence_id)
@@ -169,7 +178,7 @@ def root_package_evidence_ids(resource, evidence_by_id) -> list[str]:
                 or evidence.producer.name != 'openguard.root-package-manifest' or evidence.producer.version != '1'):
             continue
         location, _, field = evidence.locator.rpartition('/')
-        if location not in locations or field not in {'name', 'version'}:
+        if location not in locations or field not in fields:
             continue
         try:
             value = strict_json(evidence.excerpt or '')
@@ -179,11 +188,15 @@ def root_package_evidence_ids(resource, evidence_by_id) -> list[str]:
                 value = str(Version(value))
         except ValueError:
             return []
-        if value != getattr(resource, field):
+        if ecosystem == 'maven' and type(value) is dict:
+            if (set(value) != {'raw', 'value'} or type(value['raw']) is not str or '${' not in value['raw']):
+                return []
+            value = value['value']
+        if value != fields[field]:
             return []
         matches.setdefault(field, []).append(evidence_id)
         identities.add((location, evidence.content_hash.value))
-    if set(matches) == {'name', 'version'} and len(identities) == 1:
+    if set(matches) == set(fields) and len(identities) == 1:
         return sorted(evidence_id for ids in matches.values() for evidence_id in ids)
     return []
 

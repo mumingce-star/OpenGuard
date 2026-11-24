@@ -41,6 +41,9 @@ from app.scanners import (
     parse_python_manifests,
 )
 from app.scanners.dependency_observation_mapper import ObservationMapping
+from app.scanners.ecosystem_coordinates import (
+    LOCK_FORMATS, LOCK_PRODUCER, MANIFEST_FORMATS, MANIFEST_PRODUCER, MULTI_ECOSYSTEMS, observation_version,
+)
 
 
 READ_LIMITS = ScanReadLimits(single_file_max_bytes=4 * 1024 * 1024, total_max_bytes=16 * 1024 * 1024)
@@ -168,7 +171,16 @@ def _lock_version_conflicts(components: list[Component], evidence: list[Evidence
             path, _, locator = item.locator.partition(":")
             directory, _, filename = path.rpartition("/")
             producer = item.producer.name
-            if producer == "openguard.dependency-observations.lock":
+            if component.ecosystem in MULTI_ECOSYSTEMS:
+                sources = {MANIFEST_PRODUCER: ("manifest", declared), LOCK_PRODUCER: ("lock", locked)}
+                if producer not in sources:
+                    continue
+                source, group = sources[producer]
+                exact = observation_version(component.ecosystem, component.version, filename, source, item.excerpt)
+                if exact is None:
+                    continue
+                version = exact
+            elif producer == "openguard.dependency-observations.lock":
                 # npm v1 nested instances are not a direct declaration's lock entry.
                 if component.ecosystem == "npm" and locator.count("/") != 2:
                     continue
@@ -273,6 +285,21 @@ def build_dependency_plan(
         errors: list[ScanError] = list(state.external.errors) if state.external else []
         if observations:
             errors.extend(_lock_version_conflicts(components, evidence))
+        new_gaps = {}
+        for mapping in observations:
+            if mapping.format not in MANIFEST_FORMATS | LOCK_FORMATS:
+                continue
+            references = {item.locator: item.id for item in mapping.evidence}
+            for gap in mapping.gaps:
+                if re.fullmatch(r"[a-z][a-z0-9_]{0,63}", gap.code) and (gap.code in new_gaps or len(new_gaps) < 64):
+                    ids = new_gaps.setdefault(gap.code, set())
+                    evidence_id = references.get(gap.locator) or references.get(mapping.source_path)
+                    if evidence_id and len(ids) < 16:
+                        ids.add(evidence_id)
+        errors.extend(ScanError(
+            code="multi_ecosystem_scan_partial", stage=ScanStage.SCAN, recoverable=True,
+            message=f"Offline dependency observation is incomplete: {code}.", evidence_ids=sorted(ids),
+        ) for code, ids in sorted(new_gaps.items()))
         ai_scan = state.consumer_result.ai_scan
         assets = list(ai_scan.assets) if ai_scan else []
         if ai_scan:
@@ -282,7 +309,7 @@ def build_dependency_plan(
             evidence = _deduplicate(evidence + state.external.evidence)
         components.sort(key=lambda item: (item.ecosystem.encode(), item.name.encode(), (item.version or "").encode(), item.id))
         evidence.sort(key=lambda item: (item.locator.encode(), item.id))
-        if not (components or assets) or not evidence:
+        if not (components or assets or new_gaps) or not evidence:
             fail("dependency_manifest_not_found", "No dependency manifest was found.")
 
         if ai_scan:

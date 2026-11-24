@@ -17,6 +17,7 @@ from app.domain.models import (
     Component,
     ComponentType,
     DetectionMethod,
+    Ecosystem,
     Evidence,
     EvidenceKind,
     P0Model,
@@ -28,6 +29,9 @@ from app.domain.models import (
 )
 from app.p2b._resource_roles import RoleEvidence, _finding
 from app.scanners.dependency_observations import relative_path
+from app.scanners.ecosystem_coordinates import (
+    MANIFEST_FILENAMES, MANIFEST_PRODUCER, MULTI_ECOSYSTEMS, observation_version,
+)
 from app.scanners.javascript_manifest import _exact as exact_npm_version
 from app.scanners.python_p0_mapper import _GROUP_LOCATOR, _OPTIONAL_LOCATOR, _REQ_LOCATOR
 from app.security.archive_path import normalize_member_path
@@ -85,7 +89,7 @@ class DependencyEvidenceItem(P0Model):
     resource_id: str
     name: str
     version: str | None
-    ecosystem: Literal["pypi", "npm", "unknown"]
+    ecosystem: Ecosystem
     role_state: RoleState
     sources: list[DependencySource]
     evidence: list[DependencyEvidenceRef]
@@ -108,7 +112,7 @@ def _source(entry: Evidence) -> DependencySource:
         return "unknown"
     if name in {_B58_LOCK, _NPM_LOCK_LICENSE}:
         return "lock"
-    if name == _PYTHON:
+    if name in {_PYTHON, MANIFEST_PRODUCER}:
         return "manifest"
     if name == _JAVASCRIPT:
         path, separator, _ = entry.locator.rpartition(":/")
@@ -159,6 +163,8 @@ def _file_location(entry: Evidence, source: DependencySource) -> tuple[str | Non
         if not separator or not field:
             return None, ""
         return _safe_path(path, native=True), f"/{field}"
+    if entry.producer.name == MANIFEST_PRODUCER and path.rsplit("/", 1)[-1] not in MANIFEST_FILENAMES.values():
+        return None, ""
     if separator and field.startswith("/") and len(field) > 1:
         return _safe_path(path), field
     return None, ""
@@ -235,6 +241,9 @@ def _exact_version(component: Component, fact: _Fact) -> str | Version | None:
             return Version(component.version)
         except InvalidVersion:
             return None
+    if component.ecosystem in MULTI_ECOSYSTEMS and producer in {MANIFEST_PRODUCER, _B58_LOCK}:
+        return observation_version(component.ecosystem, component.version, fact.path.rsplit("/", 1)[-1],
+                                   fact.source, fact.entry.excerpt)
     if component.ecosystem != "npm" or exact_npm_version(component.version) != component.version:
         return None
     if fact.source == "manifest" and producer == _JAVASCRIPT:

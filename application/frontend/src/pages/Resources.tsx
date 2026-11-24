@@ -157,6 +157,10 @@ export function Resources({
             <dd className="og-wrap-id">{resource.id}</dd>
             <dt>类型</dt>
             <dd>{resource.type === "Model" ? "模型" : resource.type === "Dataset" ? "数据集" : resource.type}</dd>
+            {resource.ecosystem && resource.ecosystem !== "unknown" && <>
+              <dt>生态</dt>
+              <dd>{resource.ecosystem}</dd>
+            </>}
             <dt>provider</dt>
             <dd>{resource.provider ?? "未获取"}</dd>
             <dt>版本</dt>

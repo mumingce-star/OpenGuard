@@ -394,10 +394,9 @@ def map_scancode_output(
 def _ecosystem_from_purl(purl: str | None) -> str:
     if not purl:
         return "unknown"
-    if purl.startswith("pkg:pypi/"):
-        return "pypi"
-    if purl.startswith("pkg:npm/"):
-        return "npm"
+    for ecosystem in ("pypi", "npm", "golang", "cargo", "maven"):
+        if purl.startswith(f"pkg:{ecosystem}/"):
+            return ecosystem
     return "unknown"
 
 

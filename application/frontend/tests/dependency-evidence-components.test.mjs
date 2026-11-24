@@ -170,7 +170,11 @@ test("conflict sides and gaps preserve incomplete and ambiguous states", () => {
 
 test("resource row presents inferred evidence, partial scan, and cursor continuation", () => {
   const item = dependency();
-  const feed = { items: [item], total: 2, incomplete: true, next_cursor: "signed-cursor" };
+  const ecosystems = ["golang", "cargo", "maven"];
+  const added = ecosystems.map(ecosystem => dependency({
+    resource_id: "cmp_test_" + ecosystem, ecosystem, name: "dep-" + ecosystem,
+  }));
+  const feed = { items: [item, ...added], total: 5, incomplete: true, next_cursor: "signed-cursor" };
   const { DependencyEvidencePanel } = components(["", { feed, loading: false, error: null }, null]);
   const html = renderToStaticMarkup(React.createElement(DependencyEvidencePanel, {
     scan: { id: "scn_test_only", mode: "api", status: "partial", revision: null, finishedAt: null },
@@ -179,6 +183,9 @@ test("resource row presents inferred evidence, partial scan, and cursor continua
   assert.match(html, /扫描部分完成/);
   assert.match(html, /example-dependency/);
   assert.match(html, /1\.2\.3/);
+  for (const ecosystem of ecosystems) {
+    assert.match(html, new RegExp("<strong>dep-" + ecosystem + "</strong><small>1\\.2\\.3 · " + ecosystem + "</small>"));
+  }
   assert.match(html, /推断发现/);
   assert.match(html, /待核验/);
   assert.match(html, /查看证据详情/);
