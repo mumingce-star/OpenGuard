@@ -1,6 +1,6 @@
-# OpenGuard v2.3.0 资源与第三方归属
+# OpenGuard v2.4.0 资源与第三方归属
 
-本里程碑的产品与测试树继承自 `82446e1153941ea159489225fc6f5bdadbe1d8d7`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
+本里程碑的产品与测试树继承自 `b0842bc8a37fe48f69029262e19e43df2fcd2519`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
 
 ## 自有代码及第三方组件
 
@@ -16,17 +16,17 @@
 
 ## Web 产物清单
 
-以下 8 份预构建文件来自冻结产品树，共 1,258,482 字节。TASK50 的同锁离线 Vite 构建已逐字节核对。
+以下 8 份预构建文件来自冻结产品树，共 1,258,703 字节。TASK54 的同锁离线 Vite 构建已逐字节核对。
 
 | 包内路径 | 字节 | SHA-256 |
 | --- | ---: | --- |
-| `web/index.html` | 898 | `414e203d10674effb4206067d84e2ef423012d396e9a0a3792bd4dda69d205ba` |
-| `web/about.html` | 898 | `414e203d10674effb4206067d84e2ef423012d396e9a0a3792bd4dda69d205ba` |
+| `web/index.html` | 898 | `e4c7f9c9198ce74ec597afce4e52bbeca1c1fa67f13b27e1b3895d98bc283a45` |
+| `web/about.html` | 898 | `e4c7f9c9198ce74ec597afce4e52bbeca1c1fa67f13b27e1b3895d98bc283a45` |
 | `web/third-party-licenses.txt` | 5,794 | `6bace3f1e7ccee1144b6a3ff4a8ac947c5a9afb00f1419b2f406843a21139d53` |
-| `web/assets/main-BZ-xXWuK.js` | 290,212 | `51b4696724b079e4564ed9b5d6724200e7ffae7d36931d5fb25aa7411d7f4427` |
+| `web/assets/main-Fhw4By9g.js` | 290,408 | `1bd6d1d19315ee8512ee981de4394abc7be67cbdab5a0bf30338d0eca95ad113` |
 | `web/assets/main-DfOMEasE.css` | 433,430 | `6a7dadd641e679bf97e591f55fc7df841a978c195fa74e43e73ba8d8e36cf7fd` |
 | `web/assets/p2-workbench-BpK-WfaC.css` | 50,269 | `52f626427defd032001820ea6a4b656cd2d263f713e75a45b9e02ffb8154edb2` |
-| `web/assets/p2-workbench-CutsuiLO.js` | 287,361 | `529388b96fe35c2539cdd5b4c074f0a1776afbef95a4b0fe836cf094043f507a` |
+| `web/assets/p2-workbench-BtGfqYV0.js` | 287,386 | `a3101a87c93c7ba82665eac24f9f83f8d36062a880acc4872d455f99c2721324` |
 | `web/assets/react-runtime-YahHAMAi.js` | 189,620 | `c5f08825cdca736a015fe6303f97a64ec1e4511a38b5f2f6f589ecb35e815c65` |
 
 ## 冻结锁文件、许可规则及基准

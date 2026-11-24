@@ -1,12 +1,12 @@
 {
-  "version": "2.3.0",
+  "version": "2.4.0",
   "release_channel": "local-verified-milestone",
   "release_publication": "PENDING_LOCAL_REVIEW_BEFORE_PUSH",
   "release_tag": null,
   "release_url": null,
   "runtime_scope": "TEST_ONLY",
-  "source_branch": "feat/v2.3-docker-cross-platform",
-  "source_parent_commit": "82446e1153941ea159489225fc6f5bdadbe1d8d7",
+  "source_branch": "feat/v2.4-multi-ecosystem",
+  "source_parent_commit": "b0842bc8a37fe48f69029262e19e43df2fcd2519",
   "source_commit_chain": [
     {
       "commit": "8dfbbde3d4c52c1bbe31d4320fc5333137277208",
@@ -95,13 +95,25 @@
     {
       "commit": "82446e1153941ea159489225fc6f5bdadbe1d8d7",
       "scope": "TASK52B explicit loopback host port for the container gateway"
+    },
+    {
+      "commit": "3e5fcf85785bb03e96df03fd6b5164336c0f68c7",
+      "scope": "v2.3.0 milestone metadata"
+    },
+    {
+      "commit": "3a5c1671b11b1ce1c9efb32aa42db18c5da8763c",
+      "scope": "TASK54 Go/Rust/Java offline scanning, PURL/SBOM and Report V2 1.1"
+    },
+    {
+      "commit": "b0842bc8a37fe48f69029262e19e43df2fcd2519",
+      "scope": "TASK54B CI wiring for multi-ecosystem Python and Node tests"
     }
   ],
   "code_tree_sha1": {
-    "application": "a3fe0ca9e77052f07b5b11b85085c3ed011a16c4",
-    "application/backend": "144e64536879a049164f85a89915588911b89eb5",
-    "application/frontend": "8c4e6f0b4f7676f47165431da52ccdba31af3690",
-    "web": "b50b25d57ad53fecbd47233096d2068c21525101",
+    "application": "5e78580f98ff0f156ddfd82d78727e8dcec66ea4",
+    "application/backend": "b20ee8a9e168ba0d0e76d2c59de7d24614345775",
+    "application/frontend": "f2f9067af2eeb273d8b61b84fcc967d111b813f8",
+    "web": "dd9c493741c58283e502a8f56197e775e0db2486",
     "deployment": "d78e0f815b692b0773a461c21cbe73750135ef4e",
     "samples": "a3f2a56f1a529b5eb60eea042e0262e37c978a24"
   },
@@ -112,7 +124,7 @@
     "name": "qwen3:4b-instruct-2507-q4_K_M",
     "manifest_sha256": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
     "weights_included": false,
-    "model_calls_during_task53": 0
+    "model_calls_during_task55": 0
   },
   "lockfile_sha256": {
     "deployment/requirements.lock": "15aa7739d2d387e9763975a87e6e20e7b224a242be0a0aeff257c081f8e23ab0",
@@ -120,13 +132,13 @@
   },
   "source_manifest": "FILE_HASHES.json",
   "validation_reference": "VALIDATION.md",
-  "zip_and_freeze_commit_binding": "The external TASK53 receipt binds the exact ZIP bytes to the local milestone commit and the packaged file manifest.",
+  "zip_and_freeze_commit_binding": "The external TASK55 receipt binds the exact ZIP bytes to the local milestone commit and the packaged file manifest.",
   "official_ci": {
     "provider": "GitHub Actions",
     "workflow": "OpenGuard CI",
-    "run_id": 45338507883,
-    "run_url": "https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883",
-    "head_sha": "82446e1153941ea159489225fc6f5bdadbe1d8d7",
+    "run_id": 45349197062,
+    "run_url": "https://github.com/mumingce-star/OpenGuard/actions/runs/45349197062",
+    "head_sha": "b0842bc8a37fe48f69029262e19e43df2fcd2519",
     "conclusion": "SUCCESS",
     "jobs_passed": 4,
     "jobs_total": 4

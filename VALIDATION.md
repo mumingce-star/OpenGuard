@@ -1,8 +1,48 @@
-# OpenGuard v2.3.0 验证记录
+# OpenGuard v2.4.0 验证记录
 
-产品与测试基线为 `82446e1153941ea159489225fc6f5bdadbe1d8d7`。里程碑只刷新五份顶层元数据、文档和文件清单。提交链和受保护树摘要见 [VERSION.json](VERSION.json)。
+产品与测试基线为 `b0842bc8a37fe48f69029262e19e43df2fcd2519`。里程碑只刷新五份顶层元数据、文档和文件清单。提交链和受保护树摘要见 [VERSION.json](VERSION.json)。
 
-## v2.3.0 产品基线的本机实测
+## TASK54 多生态本机实测
+
+产品提交为 `3a5c1671b11b1ce1c9efb32aa42db18c5da8763c`，父提交为 v2.3.0。真实五生态 ZIP 走通 ASGI、资源 API、依赖证据、正式 Assessment 与 Report V2 1.1 HTML/JSON。专项覆盖三组同目录唯一精确冲突、Go 历史多版本和 Cargo 范围的拒绝误报，以及 Cargo/Maven 根包的保守 `UNKNOWN` 和 Copyleft `SPDX_TEXT_CONFLICT`。相关验收产生 0 条 `SUPPORT`，v4 AI 的适用范围仍为 npm/PyPI。
+
+| 门禁 | 通过／总数 |
+| --- | ---: |
+| 九组离线回归 | 1062/1062 |
+| TASK52/52B Python 专项 | 70/70 |
+| Node 部署配置 | 4/4 |
+| 原生隔离 `openguard.py self-test` | 37/37 |
+| 旧版 AI 补充契约 | 154/154 |
+| 新增 Python 多生态专项，其中真实端到端 5 项 | 90/90 |
+| 新增前端 Node 解码 | 4/4 |
+| **合计** | **1421/1421** |
+
+最终门禁失败、错误、跳过、IP/DNS 拒绝及模型调用均为 0。自检退出 0，62 次 HTTP 交互使用同一个临时回环端口，隔离服务已退出。前端类型检查与离线 Vite 单独验证，核对 8 份 `web/` 产物共 1,258,703 字节，超过 500 kB 的 chunk 告警为 0。包外 `output/releases/v2.4-task54/TASK54_RECEIPT.md` 的 SHA-256 为 `3421db7909bb3e32aa1c95668147d56fa11ee1fcfc9def1f9c6d3a84038afc1c`。同目录的 `logs/task54-vite-web-parity.json` SHA-256 为 `28ac6a3fc7e2bc5d4a58408656ecb9128874bccda68c7fbca655bf800837f315`。逐文件摘要见 [RESOURCE_USAGE.md](RESOURCE_USAGE.md)。
+
+## TASK54B CI 接入的本机复验
+
+提交 `b0842bc8a37fe48f69029262e19e43df2fcd2519` 将新增 Python 和前端 Node 测试加入官方工作流。隔离副本使用工作流原命令与环境复验 Python 484/484。仅追加 JUnit 报告器的独立复跑同为 484/484，单独留证。固定 Node 前端 `pnpm test` 离线等价命令 206/206，新增 Node 多生态测试 4/4、Node 部署配置 4/4。包外 `output/releases/v2.4-task54b/TASK54B_RECEIPT.md` 的 SHA-256 为 `47cd81aa69543b02a88b3495fb7ea2161854afecf8e2f34eedc77afbf001715b`。
+
+## 官方托管 OpenGuard CI
+
+Run `45349197062` 的 `head_sha` 为 `b0842bc8a37fe48f69029262e19e43df2fcd2519`，状态 `completed / success`，四个作业实例全部通过。本轮离线引用 Antigravity 既有核对记录。 [Run 45349197062](https://github.com/mumingce-star/OpenGuard/actions/runs/45349197062)
+
+| 实例 | 结论 | 证据 |
+| --- | --- | --- |
+| `cross-platform-python-and-selftest`，`ubuntu-latest` | 通过 | 运行总览及矩阵结论，现有记录未单列 Job ID |
+| `cross-platform-python-and-selftest`，`macos-latest` | 通过 | [Job 138291097439](https://github.com/mumingce-star/OpenGuard/actions/runs/45349197062/job/138291097439) |
+| `frontend-node-and-build` | 通过 | [Job 138291098070](https://github.com/mumingce-star/OpenGuard/actions/runs/45349197062/job/138291098070) |
+| `docker-build-and-smoke` | 通过 | [Job 138291097841](https://github.com/mumingce-star/OpenGuard/actions/runs/45349197062/job/138291097841) |
+
+工作流覆盖 Linux 和 macOS 的锁定 Python 环境与隔离自检、前端测试与 Vite，以及托管 Ubuntu 的 Docker 构建和容器冒烟。
+
+## TASK55 洁净解压复验
+
+五项冷验的范围为 902 份清单核对、`openguard.py check`、903 个外层成员及嵌套归档安全扫描、同字节隔离副本的原生回环自检，以及原解压树的离线门禁。现场测试口径为九组回归 1062、TASK52/52B Python 70、Node 部署配置 4、新增 Python 多生态 90、新增前端 Node 4 和原生自检 37，共 1267 项。旧版 AI 154 项沿用 TASK54 记录，单独归档。
+
+最终 ZIP 身份、本轮各项实跑结论与门禁后 Git blob/模式及清单核验由包外的 `output/releases/v2.4.0/TASK55_RECEIPT.md` 绑定。TASK55 全程离线，托管 CI、Docker、Vite、Chrome 和 Ollama 不在现场复跑范围内。
+
+## v2.3.0 历史产品基线的本机实测
 
 | 门禁 | 通过／总数 |
 | --- | ---: |
@@ -16,9 +56,9 @@
 
 TASK52B 原始回执位于包外的 `output/releases/v2.3-task52b/TASK52B_RECEIPT.md`，SHA-256 为 `ea8ac3051a2db8a67c112ff53c96f3525cff33d3bc9c56dc63ca57d20459bb51`。同目录下 `logs/task52b-gate-summary-01.json` 的 SHA-256 为 `d89a297fe0dcb8e7e4aa94fe02c385a850ee3d2dfd0b2809903278cea6273bb4`。
 
-## 官方托管 OpenGuard CI
+## v2.3.0 历史托管 OpenGuard CI
 
-第二次运行的 `head_sha` 为 `82446e1153941ea159489225fc6f5bdadbe1d8d7`，`completed / success`，四个作业实例全部通过。本轮里程碑离线引用 Antigravity 已核对的官方运行记录及固定工作流断言。 [Run 45338507883](https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883)
+第二次运行的 `head_sha` 为 `82446e1153941ea159489225fc6f5bdadbe1d8d7`，`completed / success`，四个作业实例全部通过。TASK53 引用了 Antigravity 已核对的官方运行记录及固定工作流断言。 [Run 45338507883](https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883)
 
 | 实例 | 结论 | 证据 |
 | --- | --- | --- |
@@ -33,7 +73,7 @@ Docker 在 GitHub Actions 的 Ubuntu Runner 真实构建。成功步骤覆盖非
 
 ## TASK53 洁净解压复验
 
-冷验对 893 个解压文件执行 892 份清单核对、启动检查及外层与嵌套归档扫描。原生回环自检使用同一解压树的隔离副本，1136 项离线测试从原解压树执行。最终 ZIP 身份、1173 项实跑结果及门禁后 Git blob 与清单校验由包外的 `output/releases/v2.3.0/TASK53_RECEIPT.md` 绑定。本节列明本轮复验范围，前两节记录冻结产品基线的已完成验收。
+TASK53 对 893 个解压文件执行 892 份清单核对、启动检查及外层与嵌套归档扫描。原生回环自检使用同一解压树的隔离副本，1136 项离线测试从原解压树执行。最终 ZIP 身份、1173/1173 实跑结果及门禁后 Git blob 与清单校验见包外 `output/releases/v2.3.0/TASK53_RECEIPT.md`。
 
 ## TASK50 历史冻结产品树实测
 
@@ -54,7 +94,7 @@ Docker 在 GitHub Actions 的 Ubuntu Runner 真实构建。成功步骤覆盖非
 
 原生隔离 `openguard.py self-test` 通过 37/37，退出码为 0，63 次 HTTP 交换均使用同一个临时回环端口，模型调用为 0，服务已退出。自检按 `openguard-material-claims/4` 契约检验补材前的 `UNKNOWN`、补材后的条件 `SUPPORT`、r1→r2 的影响集、历史 Result 的原字节以及评估包下载。v2.0.0 的 `/3` 断言已在当前产品树改为 v4 契约检查。
 
-离线 Vite 构建及成品核验为 1/1。8 份 `web/` 产物共 1,258,482 字节，构建产物与冻结树逐字节一致。最大 JS 为 290,212 字节，超过 500 kB 的 chunk 告警为 0。逐文件摘要见 [RESOURCE_USAGE.md](RESOURCE_USAGE.md)。
+离线 Vite 构建及成品核验为 1/1。历史 8 份 `web/` 产物共 1,258,482 字节，构建产物与当时的冻结树逐字节一致。最大 JS 为 290,212 字节，超过 500 kB 的 chunk 告警为 0。
 
 TASK50 总验收为 1100/1100，即九组门禁 1062 项、原生自检 37 项和离线 Vite 1 项。包外原始回执位于 `output/releases/v2.2-task50/TASK50_RECEIPT.md`，SHA-256 为 `cc9545e893dd57dbedbe3f444437bcbd2527becba4a8e506bd1243d64d11f458`。同目录的 `logs/gate-02-results.json` 和 `junit/gate-02/` 记录逐组结果。
 
@@ -125,6 +165,6 @@ Owner 仅批准固定 `samples/http-server.bundle` 内的下列六个台账项�
 ## 尚未覆盖的范围
 
 - 本机 Ollama 的 `openguard-action-plan/3` 真机推理为 `NOT_RUN (LOCAL_OLLAMA_STOPPED)`。TASK50 的协议、失败隔离及纠偏门禁均使用确定性替身。
-- TASK53 洁净解压复用同锁 CPython 3.12 venv。本机 Docker daemon 不可用，真实容器验证来自上述 GitHub Actions Ubuntu Runner。原生跨平台验证覆盖托管 Linux 和 macOS，WSL2 首次安装未单独验证。
+- TASK55 洁净解压复用同锁 CPython 3.12 venv。容器与原生跨平台实测沿用上述 GitHub Actions 证据。WSL2 首次安装未单独验证。
 - 可选模型为 Ollama `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M`，manifest digest `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。历史 TEST_ONLY 模型证据见 `output/competition/qwen3-workbench-recovery-01/evidence/FINAL_RUNTIME_RECEIPT.json`，SHA-256 `a888ac1284d3ecb244a0abb714541b53a95953471d0fe6570b954229262e2893`。
-- `P2_V11_8_HARNESS=NOT_RUN (HISTORICAL BLOCKED)` 为独立的历史验收记录。TASK53 未复跑 Chrome 或在本机重新构建 Vite。
+- `P2_V11_8_HARNESS=NOT_RUN (HISTORICAL BLOCKED)` 为独立的历史验收记录。TASK55 沿用历史浏览器和本机 Vite 记录。
