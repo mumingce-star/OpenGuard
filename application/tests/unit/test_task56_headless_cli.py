@@ -3,14 +3,18 @@
 from base64 import b64encode
 import builtins
 from hashlib import sha256
+from importlib.metadata import distribution
 import json
 import os
 from pathlib import Path
 import shutil
 import socket
+import stat
 import subprocess
 import sys
+import sysconfig
 from types import SimpleNamespace
+import venv
 from zipfile import ZipFile
 
 import pytest
@@ -56,7 +60,7 @@ def _project(path, *, license_id="MIT"):
     return path
 
 
-def _run(package, scratch, *arguments, suppress_bytecode=True):
+def _run(package, scratch, *arguments, suppress_bytecode=True, python=sys.executable):
     isolated_tmp = scratch / "command-tmp"
     isolated_tmp.mkdir(exist_ok=True)
     runtime = package / "runtime"
@@ -64,12 +68,15 @@ def _run(package, scratch, *arguments, suppress_bytecode=True):
     environment = {
         key: value for key, value in os.environ.items()
         if not key.startswith("OPENGUARD_")
-        and key not in {"PYTHONPATH", "PYTHONDONTWRITEBYTECODE", "PYTHONPYCACHEPREFIX"}
+        and key not in {
+            "_OPENGUARD_SCAN_REEXEC", "PYTHONHOME", "PYTHONPATH",
+            "PYTHONDONTWRITEBYTECODE", "PYTHONPYCACHEPREFIX",
+        }
     }
     environment.update(
         TMPDIR=str(isolated_tmp), TMP=str(isolated_tmp), TEMP=str(isolated_tmp), PYTHONNOUSERSITE="1",
     )
-    command = [sys.executable]
+    command = [str(python)]
     if suppress_bytecode:
         command.append("-B")
     result = subprocess.run(
@@ -83,6 +90,70 @@ def _run(package, scratch, *arguments, suppress_bytecode=True):
         assert str(scratch.resolve()) not in stream
         assert str(package) not in stream
     return result
+
+
+def _cli_venv(path, *, locked=False, startup_log=None):
+    venv.EnvBuilder(with_pip=False, symlinks=True).create(path)
+    path.chmod(0o700)
+    (path / "bin").chmod(0o700)
+    (path / "pyvenv.cfg").chmod(0o600)
+    prefix = str(path)
+    packages = Path(sysconfig.get_path("purelib", "venv", vars={"base": prefix, "platbase": prefix}))
+    assert packages.is_dir()
+    if locked:
+        for name, version in launcher.pins().items():
+            installed = distribution(name)
+            assert installed.version == version and installed.files is not None
+            for member in installed.files:
+                # Copy importable wheel contents, not console scripts or caches.
+                if not member.is_absolute() and not {"..", "__pycache__"}.intersection(member.parts):
+                    destination = packages / member
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(installed.locate_file(member), destination)
+    if startup_log is not None:
+        # The interpreter may visit the venv site directory twice at startup.
+        # Write one record per process image, disjoint from the runtime tree.
+        observation = (
+            "import json, os, sys\n"
+            "if not getattr(sys, '_task56b_startup_recorded', False):\n"
+            "    sys._task56b_startup_recorded = True\n"
+            f"    with open({str(startup_log)!r}, 'a', encoding='utf-8') as log:\n"
+            "        log.write(json.dumps([os.getpid(), sys.prefix, "
+            "os.getenv('_OPENGUARD_SCAN_REEXEC'), sys.flags.dont_write_bytecode, "
+            "os.getenv('PYTHONDONTWRITEBYTECODE'), sys.orig_argv]) + '\\n')\n"
+        )
+        (packages / "task56b-startup.pth").write_text(f"import sys; exec({observation!r})\n", encoding="utf-8")
+    return path / "bin/python"
+
+
+def _runtime_snapshot(runtime):
+    snapshot = {}
+    for path in [runtime, *runtime.rglob("*")]:
+        status = path.lstat()
+        if path.is_symlink():
+            content = os.readlink(path)
+        elif path.is_file():
+            with path.open("rb") as stream:
+                content = sha256(stream.read()).hexdigest()
+        else:
+            assert path.is_dir()
+            content = None
+        snapshot[path.relative_to(runtime)] = (status.st_mode, status.st_mtime_ns, status.st_ctime_ns, content)
+    return snapshot
+
+
+def _assert_locked_python_required(result):
+    assert result.returncode == 2 and not result.stdout
+    assert result.stderr.startswith("ERROR: scan_requires_locked_python.")
+    assert "openguard.py setup" in result.stderr
+
+
+def _assert_scan_reexec(startup_log, external, runtime, package, arguments):
+    initial, resumed = [json.loads(record) for record in startup_log.read_text(encoding="utf-8").splitlines()]
+    pid = initial[0]
+    command = [str(package / "openguard.py"), "scan", *arguments]
+    assert initial == [pid, str(external.parent.parent), None, 0, None, [str(external), *command]]
+    assert resumed == [pid, str(runtime.parent.parent), "1", 1, "1", [str(runtime), "-B", *command]]
 
 
 def _json_report(result, *, exit_code=0):
@@ -314,6 +385,86 @@ def test_output_never_overwrites_or_follows_symlinks(package, tmp_path, existing
     assert sentinel.read_text(encoding="utf-8") == "TEST_ONLY original bytes"
     if existing == "symlink":
         assert output.is_symlink()
+
+
+def test_package_venv_runs_directly_without_writing_runtime(package, tmp_path):
+    isolated = shutil.copytree(package, tmp_path / "installed-package")
+    runtime = isolated / "runtime"
+    runtime.mkdir(mode=0o700)
+    python = _cli_venv(runtime / "venv", locked=True)
+    before = _runtime_snapshot(runtime)
+    report = _json_report(_run(isolated, tmp_path, SAMPLE, "--format", "json",
+                               suppress_bytecode=False, python=python))
+    assert any(component["name"] == "is-number" for component in report["components"])
+    assert _runtime_snapshot(runtime) == before
+    assert not list(runtime.rglob("*.pyc"))
+
+
+def test_package_venv_reexec_forwards_original_arguments_without_writing_runtime(package, tmp_path):
+    isolated = shutil.copytree(package, tmp_path / "installed-package")
+    runtime = isolated / "runtime"
+    runtime.mkdir(mode=0o700)
+    startup_log = tmp_path / "interpreter-starts.jsonl"
+    external = _cli_venv(tmp_path / "empty", startup_log=startup_log)
+    python = _cli_venv(runtime / "venv", locked=True, startup_log=startup_log)
+    arguments = [SAMPLE, "--format", "json", "--usage=commercial", "--fail-on", "partial"]
+    before = _runtime_snapshot(runtime)
+    report = _json_report(_run(isolated, tmp_path, *arguments, suppress_bytecode=False, python=external))
+    assert any(component["name"] == "is-number" for component in report["components"])
+    assert report["scan"]["usage"] == {"commercial": True, "distributed": False, "modified": False}
+    assert report["policy"] == {"fail_on": ["partial"], "triggered": [], "exit_code": 0}
+    _assert_scan_reexec(startup_log, external, python, isolated, arguments)
+    assert _runtime_snapshot(runtime) == before
+    assert not list(runtime.rglob("*.pyc"))
+
+
+def test_package_venv_absent_does_not_create_runtime(package, tmp_path):
+    external = _cli_venv(tmp_path / "empty")
+    result = _run(package, tmp_path, SAMPLE, "--format", "json", suppress_bytecode=False, python=external)
+    _assert_locked_python_required(result)
+    assert not (package / "runtime").exists()
+
+
+def test_package_venv_missing_locks_fails_after_one_reexec(package, tmp_path):
+    isolated = shutil.copytree(package, tmp_path / "installed-package")
+    runtime = isolated / "runtime"
+    runtime.mkdir(mode=0o700)
+    startup_log = tmp_path / "interpreter-starts.jsonl"
+    external = _cli_venv(tmp_path / "empty", startup_log=startup_log)
+    python = _cli_venv(runtime / "venv", startup_log=startup_log)
+    arguments = [SAMPLE, "--format", "json"]
+    before = _runtime_snapshot(runtime)
+    result = _run(isolated, tmp_path, *arguments, suppress_bytecode=False, python=external)
+    _assert_locked_python_required(result)
+    _assert_scan_reexec(startup_log, external, python, isolated, arguments)
+
+    startup_log.unlink()
+    direct = _run(isolated, tmp_path, *arguments, suppress_bytecode=False, python=python)
+    _assert_locked_python_required(direct)
+    (one_start,) = startup_log.read_text(encoding="utf-8").splitlines()
+    assert json.loads(one_start)[1:5] == [str(runtime / "venv"), None, 0, None]
+    assert _runtime_snapshot(runtime) == before
+    assert not list(runtime.rglob("*.pyc"))
+
+
+@pytest.mark.parametrize("relative", ["runtime", "runtime/venv", "runtime/venv/bin", "runtime/venv/pyvenv.cfg"])
+@pytest.mark.parametrize("defect", ["symlink", "group-writable"])
+def test_package_venv_reexec_refuses_unsafe_structure(package, tmp_path, relative, defect):
+    isolated = shutil.copytree(package, tmp_path / "installed-package")
+    (isolated / "runtime").mkdir(mode=0o700)
+    external = _cli_venv(tmp_path / "empty")
+    startup_log = tmp_path / "candidate-starts.jsonl"
+    _cli_venv(isolated / "runtime/venv", startup_log=startup_log)
+    member = isolated / relative
+    if defect == "symlink":
+        backing = tmp_path / "alias-target"
+        member.rename(backing)
+        member.symlink_to(backing, target_is_directory=backing.is_dir())
+    else:
+        member.chmod(member.stat().st_mode | stat.S_IWGRP)
+    result = _run(isolated, tmp_path, SAMPLE, "--format", "json", suppress_bytecode=False, python=external)
+    _assert_locked_python_required(result)
+    assert not startup_log.exists(), "An unsafe interpreter was started"
 
 
 def test_package_runtime_is_blocked_for_input_and_output(package, tmp_path):

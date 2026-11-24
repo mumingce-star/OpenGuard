@@ -530,7 +530,41 @@ def _scan_output(path, text):
         os.close(parent)
 
 
-def _run_headless_scan(args):
+def _scan_python_ready():
+    try:
+        return all(importlib.metadata.version(name) == version for name, version in pins().items())
+    except (ImportError, ValueError, OSError):
+        return False
+
+
+def _reexec_scan_with_runtime(raw_scan_args):
+    if os.environ.get("_OPENGUARD_SCAN_REEXEC") == "1":
+        return
+
+    venv_dir = RUNTIME / "venv"
+    bin_dir = venv_dir / "bin"
+    for directory in (RUNTIME, venv_dir, bin_dir):
+        info = directory.lstat()
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.geteuid() or info.st_mode & 0o022:
+            return
+    # Compare the venv or executable parent, since bin/python commonly
+    # resolves to the base interpreter and aliases may name the same venv.
+    if Path(sys.prefix).samefile(venv_dir) or Path(sys.executable).parent.samefile(bin_dir):
+        return
+    config = (venv_dir / "pyvenv.cfg").lstat()
+    if not stat.S_ISREG(config.st_mode) or config.st_mode & 0o022:
+        return
+    candidate = bin_dir / "python"
+    mode = candidate.resolve(strict=True).stat().st_mode
+    if not stat.S_ISREG(mode) or mode & 0o022 or not os.access(candidate, os.X_OK):
+        return
+
+    reexec_env = {**os.environ, "_OPENGUARD_SCAN_REEXEC": "1", "PYTHONDONTWRITEBYTECODE": "1"}
+    executable = str(candidate)
+    os.execve(executable, [executable, "-B", str(ROOT / "openguard.py"), "scan", *raw_scan_args], reexec_env)
+
+
+def _run_headless_scan(args, raw_scan_args):
     try:
         uses = ("commercial", "distributed", "modified")
         selected = _scan_selection(args.usage, set(uses))
@@ -542,17 +576,18 @@ def _run_headless_scan(args):
         print("ERROR: invalid_scan_arguments_or_platform. Use CPython 3.12 on macOS or Linux.", file=sys.stderr)
         return 2
 
-    interpreter_paths = (sys.executable, sys.prefix, *sys.path)
-    if any(_scan_runtime_path(path) for path in interpreter_paths if path):
-        print("ERROR: scan_requires_external_locked_python", file=sys.stderr)
+    if not _scan_python_ready():
+        try:
+            _reexec_scan_with_runtime(raw_scan_args)
+        except (OSError, RuntimeError):
+            # Missing entries, invalid links and exec failures use the same
+            # path-free guidance. Never create or repair the candidate here.
+            pass
+        print("ERROR: scan_requires_locked_python. Run openguard.py setup or use a CPython 3.12 "
+              "environment with deployment/requirements.lock.", file=sys.stderr)
         return 2
+
     _install_headless_scan_guard()
-    try:
-        if any(importlib.metadata.version(name) != version for name, version in pins().items()):
-            raise ImportError
-    except (ImportError, ValueError, OSError):
-        print("ERROR: scan_requires_locked_python. Use an external CPython 3.12 environment with requirements.lock.", file=sys.stderr)
-        return 2
     try:
         use_package_backend()
         from app.headless_scan import HeadlessScanError, scan_target
@@ -611,7 +646,7 @@ def main(argv=None):
     scan.add_argument('--fail-on', default='')
     args=parser.parse_args(arguments)
     if args.command == 'scan':
-        return _run_headless_scan(args)
+        return _run_headless_scan(args, arguments[1:])
     try:
         deployment_settings()
         if args.command=='setup':return setup(args.offline_wheelhouse)
