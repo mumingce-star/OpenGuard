@@ -147,5 +147,9 @@ def configured_service(data_dir,p2=None):
     lock=os.environ.get('OPENGUARD_ASSISTANT_LOCK_PATH')
     if not lock:raise RuntimeError('Assistant requires explicit TASK-wide model lock')
     store=AssistantStore(data_dir/'assistant.db');store.initialize()
-    provider=StreamingQwen(os.environ.get('OPENGUARD_ASSISTANT_ORIGIN','http://127.0.0.1:11434'))
+    docker_host = (
+        os.environ.get('OPENGUARD_CONTAINER_MODE') == os.environ.get('OPENGUARD_OLLAMA_DOCKER_HOST') == '1'
+    )
+    provider=StreamingQwen(os.environ.get('OPENGUARD_ASSISTANT_ORIGIN','http://127.0.0.1:11434'),
+                          docker_host=docker_host)
     return AssistantService(store,provider,ModelCoordinator(lock),getattr(p2,'project_chat',None))

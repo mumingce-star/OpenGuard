@@ -1,0 +1,151 @@
+name: OpenGuard CI
+
+on:
+  push:
+    branches:
+      - "feat/**"
+      - "release/**"
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONNOUSERSITE: "1"
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+
+jobs:
+  cross-platform-python-and-selftest:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install the locked Python dependencies
+        run: |
+          python -m venv "$RUNNER_TEMP/openguard-venv"
+          "$RUNNER_TEMP/openguard-venv/bin/python" -m pip install \
+            --disable-pip-version-check --only-binary=:all: -r deployment/requirements.lock
+          printf '%s\n' "$RUNNER_TEMP/openguard-venv/bin" >> "$GITHUB_PATH"
+      - name: Check the host launcher
+        run: |
+          sh -n start.sh
+          python -B openguard.py check
+      - name: Run the core Python gates
+        working-directory: application
+        env:
+          PYTHONPATH: backend:.:..
+          TASK37_CAPTURE_TAG: github-ci
+          GIT_ALLOW_PROTOCOL: file
+          OPENGUARD_P2_DATA_SCOPE: TEST_ONLY
+          OPENGUARD_ENABLE_AI: "0"
+          OPENGUARD_ENABLE_P2_AI: "0"
+          OPENGUARD_ENABLE_ASSISTANT: "0"
+          OPENGUARD_ENABLE_PUBLIC_GIT: "0"
+          OPENGUARD_ENABLE_EXTERNAL_SCANNERS: "0"
+        run: |
+          python -B -m pytest -q -p no:cacheprovider \
+            tests/unit/test_p2_contract.py tests/unit/test_p2_preliminary.py \
+            tests/unit/test_p2b_candidates.py tests/unit/test_task33_material_claims.py \
+            tests/unit/test_task37_real_material_chain.py tests/unit/test_task50_*.py \
+            tests/unit/test_task52_container_and_cross_platform.py
+      - name: Run the real isolated host self-test
+        run: python -B openguard.py self-test
+
+  frontend-node-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TASK37_CAPTURE_TAG: github-ci
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Generate real ASGI evidence for the frontend tests
+        env:
+          PYTHONPATH: application/backend:application
+          GIT_ALLOW_PROTOCOL: file
+        run: |
+          python -m pip install --disable-pip-version-check --only-binary=:all: -r deployment/requirements.lock
+          python -B -m pytest -q -p no:cacheprovider application/tests/unit/test_task37_real_material_chain.py
+      - name: Set up pnpm and install the frozen frontend dependencies
+        working-directory: application/frontend
+        run: |
+          npm install --global --ignore-scripts pnpm@10.20.0
+          pnpm install --frozen-lockfile
+      - name: TypeScript and frontend Node tests
+        working-directory: application/frontend
+        run: |
+          pnpm exec tsc --noEmit --pretty false
+          pnpm test
+          node --test tests/landing-anchor.test.mjs tests/task33-material-claims.test.mjs \
+            tests/task37-real-material-chain.test.mjs tests/task40-p5-experience.test.mjs \
+            tests/task50*.test.mjs
+      - name: Scanner and deployment configuration tests
+        working-directory: application
+        run: |
+          npm install --prefix "$RUNNER_TEMP/openguard-yaml" --no-save --ignore-scripts yaml@2.9.0
+          OPENGUARD_TEST_YAML_PACKAGE_JSON="$RUNNER_TEMP/openguard-yaml/node_modules/yaml/package.json" \
+            node --test tests/javascript_imports.test.mjs tests/yarn_classic_lock.test.mjs \
+              tests/pnpm_lock.test.mjs tests/unit/task52-deployment-config.test.mjs
+      - name: Vite production build
+        working-directory: application/frontend
+        run: pnpm exec vite build
+
+  docker-build-and-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Build the container
+        run: docker build -t openguard:ci .
+      - name: Run container checks without external networking
+        run: |
+          test "$(docker run --rm --network none --security-opt no-new-privileges openguard:ci id -u)" = 10001
+          docker run --rm --network none --security-opt no-new-privileges openguard:ci \
+            /opt/openguard-venv/bin/python -B openguard.py check
+          docker run --rm --network none --security-opt no-new-privileges openguard:ci \
+            /opt/openguard-venv/bin/python -B openguard.py self-test
+      - name: Check the mapped HTTP endpoints and graceful stop
+        shell: bash
+        run: |
+          container=$(docker run --detach --init --security-opt no-new-privileges \
+            --publish 127.0.0.1:18000:8000 openguard:ci)
+          trap 'docker logs "$container"; docker rm -f "$container" >/dev/null' EXIT
+          health_file="$RUNNER_TEMP/openguard-health.json"
+          ready=0
+          for attempt in {1..30}; do
+            if status=$(curl --noproxy '*' --silent --fail --max-time 2 \
+              --output "$health_file" --write-out '%{http_code}' http://127.0.0.1:18000/healthz) \
+              && test "$status" = 200 \
+              && python3 -c 'import json, sys; assert json.load(sys.stdin)["status"] == "ok"' < "$health_file"; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = 1
+          status=$(curl --noproxy '*' --silent --show-error --max-time 5 \
+            --output /dev/null --write-out '%{http_code}' http://127.0.0.1:18000/)
+          test "$status" = 200
+          docker stop --time 15 "$container"
+          test "$(docker inspect --format '{{.State.ExitCode}}' "$container")" = 0

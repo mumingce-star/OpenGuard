@@ -30,6 +30,20 @@ python3.12 openguard.py start
 
 也可使用 `sh ./start.sh`，或在 macOS 运行 `./启动OpenGuard.command`。打开终端显示的 `READY http://127.0.0.1:端口/`，在本包中注册本机账号。用 `--port` 指定空闲端口，按 Ctrl+C 停止服务。预构建页面位于 `web/`，普通运行无需 Node 或 Vite。账号、扫描和报告写入当前包私有的 `runtime/`。
 
+### Docker（v2.3 开发分支）
+
+在源码根目录运行 `docker compose up --build`，通过 `http://127.0.0.1:8000/` 访问。容器以专用非 root 用户运行，账号、扫描和报告保存在 `openguard_runtime` 命名卷，Python 依赖位于镜像内的 `/opt/openguard-venv`。`docker compose stop` 停止服务并保留数据卷。首次构建需要镜像仓库、系统软件源和 Python 包索引。
+
+需要在容器内使用宿主机 Ollama 时，显式选择固定主机端点。宿主机的 Ollama 必须能够从 Docker 主机网关访问。
+
+```sh
+OPENGUARD_OLLAMA_DOCKER_HOST=1 \
+OPENGUARD_MODEL_ORIGIN=http://host.docker.internal:11434 \
+docker compose up --build
+```
+
+使用容器模式与上述明示端点时，Assistant 和 P2 AI 仍由用户发起。直接在宿主机运行 `start.sh` 时，服务监听和模型连接分别限定为 `127.0.0.1` 和 `http://127.0.0.1:11434`。发布包的版本和校验清单在里程碑打包时刷新。
+
 ### 从扫描到报告
 
 1. 上传待审查项目的 ZIP。可用 `samples/is-number-7.0.0-derived.zip` 熟悉流程，并声明商业使用、分发或修改等实际用途。

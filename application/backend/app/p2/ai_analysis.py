@@ -494,6 +494,8 @@ def configured_service(p2, budget_path, *, max_generations=20, intent_ceiling=No
         raise RuntimeError('P2 AI requires isolated TEST_ONLY storage and a task budget path')
     store = AnalysisStore(p2.store.path.with_name('p2-ai.db')); store.initialize()
     options = {'continuous': True} if continuous else {}
+    if os.environ.get('OPENGUARD_CONTAINER_MODE') == os.environ.get('OPENGUARD_OLLAMA_DOCKER_HOST') == '1':
+        options.update(origin='http://host.docker.internal:11434', docker_host=True)
     return P2AnalysisService(p2, store, BoundQwen(budget_path, max_generations=max_generations,
                                                 intent_ceiling=intent_ceiling, **options),
                              public_sample_only=public_sample_only, v4_plan_enabled=v4_plan_enabled)

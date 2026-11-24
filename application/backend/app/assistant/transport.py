@@ -68,8 +68,8 @@ class ModelCoordinator:
         finally:_MODEL_SLOT.release()
 
 class StreamingQwen:
-    def __init__(self,origin='http://127.0.0.1:11434',*,connection_factory=http.client.HTTPConnection):
-        origin=OllamaProvider(origin)._origin # existing literal-loopback origin validation; never consult proxies.
+    def __init__(self,origin='http://127.0.0.1:11434',*,docker_host=False,connection_factory=http.client.HTTPConnection):
+        origin=OllamaProvider(origin,docker_host=docker_host)._origin
         parsed=urlsplit(origin);self.host,self.port=parsed.hostname,parsed.port;self.factory=connection_factory
     def _request(self,path,control,deadline,*,body=None):
         control.check();remaining=deadline-time.monotonic()

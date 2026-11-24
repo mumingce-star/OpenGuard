@@ -1,0 +1,30 @@
+services:
+  openguard:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - openguard_runtime:/app/runtime
+    environment:
+      OPENGUARD_CONTAINER_MODE: "1"
+      OPENGUARD_OLLAMA_DOCKER_HOST: "${OPENGUARD_OLLAMA_DOCKER_HOST:-0}"
+    command:
+      - /opt/openguard-venv/bin/python
+      - -B
+      - openguard.py
+      - serve
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --model-origin
+      - "${OPENGUARD_MODEL_ORIGIN:-http://127.0.0.1:11434}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    init: true
+    security_opt:
+      - "no-new-privileges:true"
+    restart: unless-stopped
+
+volumes:
+  openguard_runtime:

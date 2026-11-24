@@ -158,7 +158,8 @@ def output_schema(materials, changes):
 
 class BoundQwen:
     """No retries after generation intent. Runtime/model are checked by existing transport."""
-    def __init__(self, budget_path, *, origin='http://127.0.0.1:11434', max_generations=20, intent_ceiling=None, continuous=False):
+    def __init__(self, budget_path, *, origin='http://127.0.0.1:11434', docker_host=False,
+                 max_generations=20, intent_ceiling=None, continuous=False):
         if type(continuous) is not bool or (continuous and intent_ceiling is not None):
             raise ValueError('invalid continuous generation policy')
         if type(max_generations) is not int or not 1 <= max_generations <= 20:
@@ -169,7 +170,7 @@ class BoundQwen:
         self.intent_ceiling = max_generations if intent_ceiling is None else intent_ceiling
         self.continuous = continuous
         self.path = Path(budget_path).absolute()
-        self.transport = OllamaProvider(origin)
+        self.transport = OllamaProvider(origin, docker_host=docker_host)
         protocol_version = PROMPT_VERSION
         if os.environ.get('OPENGUARD_P2_ACTION_PLAN', '0') == '1':
             from app.p2.action_plan import PROMPT_VERSION as PLAN_PROMPT_VERSION
