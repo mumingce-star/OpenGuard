@@ -1,0 +1,315 @@
+"""Deterministic views over the evidence of one completed local scan."""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from hashlib import sha256
+from html import escape
+import json
+import re
+from urllib.parse import quote, unquote
+
+from app.domain.models import (
+    ComponentType, EvidenceKind, ScanRun, ScanStatus, _contains_absolute_path_fragment,
+)
+from app.p1.dependency_evidence import project_dependency_evidence
+from app.p2.material_claims import COPYLEFT, LICENSE_MATCHES, WEAK_COPYLEFT, _COPYLEFT_DECLARATION_FAMILIES
+from app.p2b.material_claims import parse_claim_material
+from app.security.archive_path import normalize_member_path
+from app.security.errors import IngestionSecurityError
+from app.security.limits import ZipSafetyLimits
+
+SCHEMA_VERSION = "openguard-cli-scan/1"
+ROOT_LICENSE_LIMIT = 65536
+ROOT_LICENSE_NAMES = frozenset({"license", "license.txt", "license.md", "copying", "copying.txt"})
+_ECOSYSTEMS = ("npm", "pypi", "golang", "cargo", "maven", "unknown")
+_LIMITS = ZipSafetyLimits()
+_SENSITIVE = re.compile(r"(?i)(?:(?:api[_-]?key|secret|token|password)\s*[=:]|bearer\s+\S+)")
+_FAMILIES = _COPYLEFT_DECLARATION_FAMILIES
+_SEVERITIES = {
+    **{_FAMILIES[identifier]: "strong" for identifier in COPYLEFT},
+    **{_FAMILIES[identifier]: "weak" for identifier in WEAK_COPYLEFT},
+}
+
+
+def _safe_text(value: str | None, fallback: str | None = None) -> str | None:
+    if not isinstance(value, str) or not value:
+        return fallback
+    decoded = unquote(value)
+    for actual in (value, decoded):
+        if (not actual.isprintable() or "\\" in actual or "://" in actual or "//" in actual
+                or actual.startswith("~") or _contains_absolute_path_fragment(actual)
+                or _SENSITIVE.search(actual)):
+            return fallback
+    return value
+
+
+def _safe_path(path: str | None) -> str | None:
+    if _safe_text(path) is None:
+        return None
+    try:
+        result = normalize_member_path(path, is_directory=False, limits=_LIMITS)
+    except (IngestionSecurityError, ValueError):
+        return None
+    return path if result.relative_path == path else None
+
+
+def _safe_locator(path: str | None, locator: str | None) -> str | None:
+    if path is None or locator is None:
+        return None
+    for prefix in (path, quote(path, safe="/-._~")):
+        if locator == prefix:
+            return locator
+        if locator.startswith(prefix + ":") and _safe_text(locator[len(prefix) + 1:].removeprefix("/")):
+            return locator
+    return None
+
+
+def _evidence(evidence_id: str, path: str | None, locator: str | None, digest: str | None) -> dict:
+    safe_path = _safe_path(path)
+    return {
+        "evidence_id": evidence_id,
+        "file_path": safe_path,
+        "locator": _safe_locator(safe_path, locator),
+        "source_sha256": digest if safe_path is not None else None,
+    }
+
+
+def _projected_evidence(ref) -> dict:
+    return _evidence(ref.evidence_id, ref.file_path, ref.locator, ref.source_sha256)
+
+
+def _side(side) -> dict | None:
+    if side is None:
+        return None
+    return {
+        "resource_id": side.resource_id,
+        "version": _safe_text(side.version),
+        "evidence": [_projected_evidence(ref) for ref in side.evidence],
+    }
+
+
+def _json_key(value: dict) -> str:
+    return json.dumps(value, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
+
+
+def _declaration(license_) -> str | None:
+    if license_ is None or license_.expression in {"NONE", "NOASSERTION"}:
+        return None
+    return _safe_text(license_.expression)
+
+
+def _copyleft(identifier: str | None) -> str | None:
+    return _SEVERITIES.get(_FAMILIES.get(identifier, identifier))
+
+
+def _root_license_observations(license_files, roots, licenses):
+    checks, findings = [], []
+    for name, raw in sorted(license_files.items()):
+        if name.casefold() not in ROOT_LICENSE_NAMES or not 0 < len(raw) <= ROOT_LICENSE_LIMIT:
+            continue
+        # Preserve COPYING as the observed path and use the existing parser's
+        # equivalent LICENSE filename profile for this approved basename.
+        profile = "LICENSE" if name.casefold().startswith("copying") else name
+        matched = parse_claim_material(raw, profile)["text_license"]
+        digest = sha256(raw).hexdigest()
+        family = matched if matched in _SEVERITIES else None
+        if family is not None:
+            findings.append({"source": "root_license_text", "file_path": name,
+                             "license_id": matched, "severity": _SEVERITIES[family]})
+        for root in roots or [None]:
+            license_ = licenses.get(root.license_expression_id) if root is not None else None
+            declared = _declaration(license_)
+            single = declared is not None and license_.normalized_ids == [declared]
+            conflict = (single and (matched in LICENSE_MATCHES or family is not None)
+                        and matched != _FAMILIES.get(declared, declared))
+            root_id = root.id if root is not None else None
+            checks.append({
+                "file_path": name, "sha256": digest, "text_license": matched, "copyleft_family": family,
+                "root_package_id": root_id, "declared_license": declared,
+                "spdx_text_conflict": conflict, "support_state": "UNKNOWN",
+            })
+            if conflict:
+                identifiers = (item for item in (matched, declared) if _copyleft(item))
+                strongest = min(identifiers, key=lambda item: _copyleft(item) != "strong", default=None)
+                if strongest is not None:
+                    findings.append({"source": "spdx_text_conflict", "file_path": name, "resource_id": root_id,
+                                     "license_id": strongest, "severity": _copyleft(strongest)})
+    return checks, findings
+
+
+def build_report(
+    run: ScanRun,
+    *,
+    input_kind: str,
+    input_name: str,
+    input_sha256: str,
+    excluded_dirs: list[str],
+    usage: Mapping[str, bool],
+    license_files: Mapping[str, bytes],
+    fail_on: tuple[str, ...],
+    skipped_entries: int = 0,
+) -> dict:
+    """Project the saved dependency facts and apply the caller's exit policy."""
+    if run.status not in {ScanStatus.COMPLETED, ScanStatus.PARTIAL} or run.project.root_digest is None:
+        raise ValueError("scan_report_unavailable")
+    dependencies, _, _ = project_dependency_evidence(run, source=None, after=None, limit=len(run.components))
+    by_component = {item.resource_id: item for item in dependencies}
+    by_evidence = {item.id: item for item in run.evidence}
+    licenses = {item.id: item for item in run.licenses}
+    components, root_packages, roots, findings = [], [], [], []
+    counts = dict.fromkeys(_ECOSYSTEMS, 0)
+    for component in sorted(run.components, key=lambda item: (item.ecosystem, item.name, item.version or "", item.id)):
+        counts[component.ecosystem] += 1
+        license_ = licenses.get(component.license_expression_id)
+        row = {
+            "id": component.id,
+            "name": _safe_text(component.name, "[redacted]"),
+            "version": _safe_text(component.version),
+            "ecosystem": component.ecosystem,
+            "purl": _safe_text(component.purl),
+            "declared_license": _declaration(license_),
+        }
+        if component.component_type is ComponentType.APPLICATION:
+            roots.append(component)
+            root_packages.append({**row, "evidence_ids": list(component.evidence_ids)})
+            evidence = []
+            for identifier in component.evidence_ids:
+                item = by_evidence[identifier]
+                path = (item.locator.split(":", 1)[0]
+                        if item.kind in {EvidenceKind.FILE, EvidenceKind.MANIFEST_FIELD} else None)
+                digest = item.content_hash.value if item.content_hash and item.content_hash.algorithm == "sha256" else None
+                evidence.append(_evidence(identifier, path, item.locator, digest))
+            sources = ["manifest"]
+        else:
+            dependency = by_component[component.id]
+            evidence = [_projected_evidence(ref) for ref in dependency.evidence]
+            sources = dependency.sources
+        components.append({**row, "component_type": component.component_type.value,
+                           "sources": sources, "evidence": evidence})
+        if license_ is not None:
+            for identifier in sorted(set(license_.normalized_ids)):
+                severity = _copyleft(identifier)
+                if severity is not None:
+                    findings.append({"source": "declared_license", "resource_id": component.id,
+                                     "license_id": identifier, "severity": severity})
+
+    projected_conflicts = {}
+    for item in dependencies:
+        for conflict in item.conflicts:
+            record = {"ecosystem": item.ecosystem, "name": _safe_text(item.name, "[redacted]"),
+                      "status": conflict.status, "declaration": _side(conflict.declaration), "lock": _side(conflict.lock)}
+            projected_conflicts[_json_key(record)] = record
+    conflicts = [projected_conflicts[key] for key in sorted(projected_conflicts)]
+    root_checks, root_findings = _root_license_observations(license_files, roots, licenses)
+    findings.extend(root_findings)
+    diagnostics = [
+        {"code": _safe_text(error.code, "scan_diagnostic"), "stage": error.stage.value,
+         "message": _safe_text(error.message, "Diagnostic text withheld."), "evidence_ids": list(error.evidence_ids)}
+        for error in run.errors
+    ]
+    if skipped_entries:
+        diagnostics.append({"code": "directory_entries_skipped", "stage": "ingestion",
+                            "message": f"Skipped {skipped_entries} unsafe directory entries.", "evidence_ids": []})
+    conflict_count = sum(item["status"] == "confirmed" for item in conflicts)
+    partial = run.status == ScanStatus.PARTIAL or bool(skipped_entries)
+    matches = {"conflict": conflict_count > 0, "copyleft": bool(findings), "partial": partial}
+    triggered = [rule for rule in sorted(set(fail_on)) if matches[rule]]
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "input": {"kind": input_kind, "name": _safe_text(input_name, "[redacted]"), "sha256": input_sha256,
+                  "root_digest": run.project.root_digest.value,
+                  "excluded_dirs": sorted({name for name in excluded_dirs if _safe_path(name) is not None})},
+        "scan": {"status": "partial" if partial else "completed", "usage": dict(usage),
+                 "component_count": len(components), "root_package_count": len(root_packages),
+                 "ecosystem_counts": counts, "conflict_count": conflict_count,
+                 "copyleft_count": len(findings), "gap_count": len(diagnostics)},
+        "root_packages": root_packages,
+        "components": components,
+        "conflicts": conflicts,
+        "root_license_checks": root_checks,
+        "copyleft_findings": sorted(findings, key=_json_key),
+        "diagnostics": sorted(diagnostics, key=_json_key),
+        "policy": {"fail_on": sorted(set(fail_on)), "triggered": triggered, "exit_code": int(bool(triggered))},
+    }
+
+
+def _summary(document: dict) -> list[tuple[str, object]]:
+    scan, policy, source = document["scan"], document["policy"], document["input"]
+    return [
+        ("Input", f"{source['name']} ({source['kind']})"),
+        ("Status", scan["status"]),
+        ("Components", scan["component_count"]),
+        ("Root packages", scan["root_package_count"]),
+        ("Ecosystems", ", ".join(f"{name}={count}" for name, count in scan["ecosystem_counts"].items())),
+        ("Usage", ", ".join(name for name, active in scan["usage"].items() if active) or "none"),
+        ("Confirmed version conflicts", scan["conflict_count"]),
+        ("Copyleft findings", scan["copyleft_count"]),
+        ("Diagnostics", scan["gap_count"]),
+        ("Fail-on policies", ", ".join(policy["fail_on"]) or "none"),
+        ("Triggered policies", ", ".join(policy["triggered"]) or "none"),
+        ("Exit code", policy["exit_code"]),
+    ]
+
+
+def _sections(document: dict) -> list[tuple[str, tuple[str, ...], list[tuple]]]:
+    return [
+        ("Root packages", ("Name", "Version", "Ecosystem", "SPDX"), [
+            (row["name"], row["version"], row["ecosystem"], row["declared_license"])
+            for row in document["root_packages"]
+        ]),
+        ("Root license evidence", ("File", "SHA-256", "Text profile", "Declared SPDX", "Conflict", "Support"), [
+            (row["file_path"], row["sha256"], row["text_license"], row["declared_license"],
+             "SPDX_TEXT_CONFLICT" if row["spdx_text_conflict"] else "—", row["support_state"])
+            for row in document["root_license_checks"]
+        ]),
+        ("Version conflicts", ("Ecosystem", "Name", "Status", "Declaration", "Lock"), [
+            (row["ecosystem"], row["name"], row["status"], (row["declaration"] or {}).get("version"),
+             (row["lock"] or {}).get("version"))
+            for row in document["conflicts"]
+        ]),
+        ("Copyleft findings", ("Source", "SPDX", "Severity"), [
+            (row["source"], row["license_id"], row["severity"]) for row in document["copyleft_findings"]
+        ]),
+        ("Diagnostics", ("Code", "Stage", "Message"), [
+            (row["code"], row["stage"], row["message"]) for row in document["diagnostics"]
+        ]),
+    ]
+
+
+def _display(value) -> str:
+    return "—" if value is None else str(value)
+
+
+_MD_PUNCTUATION = str.maketrans({value: f"&#{ord(value)};" for value in "\\|`[]*_~!@"})
+
+
+def _table(headings, rows) -> list[str]:
+    result = [
+        "| " + " | ".join(headings) + " |",
+        "| " + " | ".join("---" for _ in headings) + " |",
+    ]
+    result.extend("| " + " | ".join(escape(_display(cell)).translate(_MD_PUNCTUATION) for cell in row) + " |" for row in rows)
+    return result
+
+
+def render_report(document: dict, format: str) -> str:
+    if format == "json":
+        return json.dumps(document, ensure_ascii=False, indent=2) + "\n"
+    summary = _summary(document)
+    sections = _sections(document)
+    if format == "markdown":
+        lines = ["# OpenGuard scan", "", *_table(("Field", "Value"), summary)]
+        for title, headings, rows in sections:
+            lines.extend(("", f"## {title}", "", *(_table(headings, rows) if rows else ["None observed."])))
+    elif format == "text":
+        lines = ["OpenGuard scan", *(f"{label}: {value}" for label, value in summary)]
+        for title, headings, rows in sections:
+            lines.extend(("", title))
+            lines.extend("  " + " | ".join(f"{label}: {_display(value)}" for label, value in zip(headings, row))
+                         for row in rows)
+            if not rows:
+                lines.append("  None observed.")
+    else:
+        raise ValueError("scan_report_format_invalid")
+    return "\n".join(lines) + "\n"

@@ -20,13 +20,14 @@ import stat
 import subprocess
 import sys
 import time
+from unicodedata import normalize
 from urllib.parse import urlsplit
 import venv
 
 ROOT = Path(__file__).resolve().parents[1]
 APPLICATION = ROOT / 'application'
 RUNTIME = ROOT / 'runtime'
-if os.environ.get('OPENGUARD_PACKAGE_SELFTEST_ROOT'):
+if sys.argv[1:2] != ['scan'] and os.environ.get('OPENGUARD_PACKAGE_SELFTEST_ROOT'):
     _test_root = Path(os.environ['OPENGUARD_PACKAGE_SELFTEST_ROOT'])
     if not _test_root.is_absolute() or not _test_root.resolve().is_relative_to(RUNTIME / 'self-tests'):
         raise RuntimeError('Self-test storage must be inside this package runtime/self-tests')
@@ -444,8 +445,151 @@ def build_frontend():
     subprocess.run([node,str(front/'node_modules/vite/bin/vite.js'),'build','--outDir',str(ROOT/'web'),'--emptyOutDir'],cwd=front,env=env,check=True)
 
 
+class _ScanArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        # argparse can quote user input, including an absolute path.
+        self.exit(2, "ERROR: invalid_scan_arguments\n")
+
+
+def _scan_selection(raw, allowed):
+    if not raw:
+        return ()
+    values = {value.strip() for value in raw.split(",")}
+    if not values <= allowed:
+        raise ValueError("invalid_scan_selection")
+    return tuple(sorted(values))
+
+
+def _install_headless_scan_guard():
+    blocked = {
+        "socket.bind", "socket.connect", "socket.connect_ex", "socket.sendto", "socket.sendmsg",
+        "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyname_ex",
+        "socket.gethostbyaddr", "socket.getnameinfo", "socket.listen", "socket.accept",
+        "socket.sendfile", "subprocess.Popen", "os.system", "os.exec", "os.posix_spawn",
+        "os.fork", "os.forkpty", "os.spawn", "pty.spawn",
+    }
+
+    def audit(event, arguments):
+        # Async internals may create an unnamed AF_UNIX socketpair; no
+        # addressable sockets, name resolution or subprocesses are needed.
+        if event in blocked or (event == "socket.__new__" and arguments[1] != socket.AF_UNIX):
+            raise PermissionError("headless_scan_network_or_process_denied")
+
+    sys.addaudithook(audit)
+
+
+def _scan_runtime_path(path):
+    target = Path(os.path.abspath(path))
+    runtime = ROOT / "runtime"
+    if platform.system() != "Darwin":
+        return target.is_relative_to(runtime)
+    # macOS commonly resolves differently cased or canonically equivalent
+    # names to the same directory. Reject those runtime aliases before I/O.
+    key = lambda parts: tuple(normalize("NFC", part).casefold() for part in parts)
+    parts = key(target.parts)
+    if parts[:4] == ("/", "system", "volumes", "data"):
+        parts = ("/", *parts[4:])
+    return parts[:len(runtime.parts)] == key(runtime.parts)
+
+
+def _scan_output(path, text):
+    destination = Path(os.path.abspath(path))
+    if platform.system() == "Darwin" and destination.parts[1:2] in {("tmp",), ("var",)}:
+        destination = Path("/private") / destination.relative_to("/")
+    if destination == Path("/") or _scan_runtime_path(destination):
+        raise ValueError("scan_output_path_rejected")
+    package = ROOT.stat()
+    identity = (package.st_dev, package.st_ino)
+
+    def reject_runtime_member(directory, name):
+        if normalize("NFC", name).casefold() == "runtime":
+            owner = os.fstat(directory)
+            if (owner.st_dev, owner.st_ino) == identity:
+                raise ValueError("scan_output_path_rejected")
+
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    parent = os.open("/", flags)
+    try:
+        for part in destination.parent.parts[1:]:
+            reject_runtime_member(parent, part)
+            child = os.open(part, flags, dir_fd=parent)
+            os.close(parent)
+            parent = child
+        reject_runtime_member(parent, destination.name)
+        name = ".openguard-" + os.urandom(12).hex() + ".tmp"
+        handle = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=parent)
+        try:
+            with os.fdopen(handle, "w", encoding="utf-8", newline="\n") as output:
+                output.write(text)
+            # Publish atomically and exclusively; an existing file or symlink
+            # cannot be replaced, including one created during the scan.
+            os.link(name, destination.name, src_dir_fd=parent, dst_dir_fd=parent, follow_symlinks=False)
+        finally:
+            os.unlink(name, dir_fd=parent)
+    finally:
+        os.close(parent)
+
+
+def _run_headless_scan(args):
+    try:
+        uses = ("commercial", "distributed", "modified")
+        selected = _scan_selection(args.usage, set(uses))
+        usage = dict.fromkeys(uses, False)
+        usage.update(dict.fromkeys(selected, True))
+        fail_on = _scan_selection(args.fail_on, {"conflict", "copyleft", "partial"})
+        require_platform()
+    except (ValueError, RuntimeError):
+        print("ERROR: invalid_scan_arguments_or_platform. Use CPython 3.12 on macOS or Linux.", file=sys.stderr)
+        return 2
+
+    interpreter_paths = (sys.executable, sys.prefix, *sys.path)
+    if any(_scan_runtime_path(path) for path in interpreter_paths if path):
+        print("ERROR: scan_requires_external_locked_python", file=sys.stderr)
+        return 2
+    _install_headless_scan_guard()
+    try:
+        if any(importlib.metadata.version(name) != version for name, version in pins().items()):
+            raise ImportError
+    except (ImportError, ValueError, OSError):
+        print("ERROR: scan_requires_locked_python. Use an external CPython 3.12 environment with requirements.lock.", file=sys.stderr)
+        return 2
+    try:
+        use_package_backend()
+        from app.headless_scan import HeadlessScanError, scan_target
+        from app.headless_scan_report import build_report, render_report
+    except (ImportError, RuntimeError, ValueError, OSError):
+        print("ERROR: headless_scan_backend_unavailable", file=sys.stderr)
+        return 2
+    try:
+        case = scan_target(Path(args.target), usage=usage, package_root=ROOT)
+        document = build_report(
+            case.run, input_kind=case.kind, input_name=case.name, input_sha256=case.sha256,
+            excluded_dirs=case.excluded_dirs, usage=usage, license_files=case.license_files,
+            fail_on=fail_on, skipped_entries=case.skipped_entries,
+        )
+        text = render_report(document, args.format)
+        if args.output is None:
+            sys.stdout.write(text)
+        else:
+            _scan_output(args.output, text)
+        return document["policy"]["exit_code"]
+    except HeadlessScanError as error:
+        code = error.code
+        if not (code and len(code) <= 100 and code.isascii() and code.replace("_", "").isalnum()):
+            code = "headless_scan_failed"
+    except FileExistsError:
+        code = "scan_output_exists"
+    except Exception:
+        # Do not copy filesystem or parser exception messages to stderr.
+        code = "headless_scan_failed"
+    print("ERROR: " + code, file=sys.stderr)
+    return 2
+
+
 def main(argv=None):
-    parser=argparse.ArgumentParser(description='OpenGuard包内独立TEST_ONLY部署，不接入旧业务数据。')
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    parser_class = _ScanArgumentParser if arguments[:1] == ['scan'] else argparse.ArgumentParser
+    parser = parser_class(description='OpenGuard包内独立TEST_ONLY部署，不接入旧业务数据。')
     sub=parser.add_subparsers(dest='command',required=True)
     setup_parser=sub.add_parser('setup',help='创建包内私有venv并安装固定依赖')
     setup_parser.add_argument('--offline-wheelhouse')
@@ -459,7 +603,15 @@ def main(argv=None):
         start.add_argument('--model-origin',default=LOCAL_MODEL_ORIGIN)
     sub.add_parser('build',help='开发可选：用已有锁定前端依赖重建web/')
     sub.add_parser('self-test',help='新建隔离TEST_ONLY数据，实际验证扫描、用途、材料和导出；不调用模型')
-    args=parser.parse_args(argv)
+    scan = sub.add_parser('scan', help='离线扫描本地项目目录或 ZIP')
+    scan.add_argument('target')
+    scan.add_argument('--format', choices=('text', 'json', 'markdown'), default='text')
+    scan.add_argument('--output')
+    scan.add_argument('--usage', default='')
+    scan.add_argument('--fail-on', default='')
+    args=parser.parse_args(arguments)
+    if args.command == 'scan':
+        return _run_headless_scan(args)
     try:
         deployment_settings()
         if args.command=='setup':return setup(args.offline_wheelhouse)
