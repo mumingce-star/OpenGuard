@@ -1,6 +1,6 @@
-# OpenGuard v2.0.0 资源与第三方归属
+# OpenGuard v2.2.0 资源与第三方归属
 
-本里程碑的产品与测试树继承自 `a9081dfbf900b7a901120e611603fed5f441fbd9`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
+本里程碑的产品与测试树继承自 `2a07d7bbe43b39cb4b8f211895f1fc5a54a77893`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
 
 ## 自有代码及第三方组件
 
@@ -12,18 +12,40 @@
 
 ## Web 产物清单
 
-以下 8 份 `web/` 产物来自冻结产品树。逐文件 SHA-256 见 [FILE_HASHES.json](FILE_HASHES.json)。
+以下 8 份预构建文件来自冻结产品树，共 1,258,482 字节。TASK50 的同锁离线 Vite 构建已逐字节核对。
 
-| 包内路径 | 字节 |
-| --- | ---: |
-| `web/index.html` | 898 |
-| `web/about.html` | 898 |
-| `web/third-party-licenses.txt` | 5,794 |
-| `web/assets/main-BTTBgYYx.js` | 290,212 |
-| `web/assets/main-DfOMEasE.css` | 433,430 |
-| `web/assets/p2-workbench-BpK-WfaC.css` | 50,269 |
-| `web/assets/p2-workbench-CoR0fGwX.js` | 267,877 |
-| `web/assets/react-runtime-YahHAMAi.js` | 189,620 |
+| 包内路径 | 字节 | SHA-256 |
+| --- | ---: | --- |
+| `web/index.html` | 898 | `414e203d10674effb4206067d84e2ef423012d396e9a0a3792bd4dda69d205ba` |
+| `web/about.html` | 898 | `414e203d10674effb4206067d84e2ef423012d396e9a0a3792bd4dda69d205ba` |
+| `web/third-party-licenses.txt` | 5,794 | `6bace3f1e7ccee1144b6a3ff4a8ac947c5a9afb00f1419b2f406843a21139d53` |
+| `web/assets/main-BZ-xXWuK.js` | 290,212 | `51b4696724b079e4564ed9b5d6724200e7ffae7d36931d5fb25aa7411d7f4427` |
+| `web/assets/main-DfOMEasE.css` | 433,430 | `6a7dadd641e679bf97e591f55fc7df841a978c195fa74e43e73ba8d8e36cf7fd` |
+| `web/assets/p2-workbench-BpK-WfaC.css` | 50,269 | `52f626427defd032001820ea6a4b656cd2d263f713e75a45b9e02ffb8154edb2` |
+| `web/assets/p2-workbench-CutsuiLO.js` | 287,361 | `529388b96fe35c2539cdd5b4c074f0a1776afbef95a4b0fe836cf094043f507a` |
+| `web/assets/react-runtime-YahHAMAi.js` | 189,620 | `c5f08825cdca736a015fe6303f97a64ec1e4511a38b5f2f6f589ecb35e815c65` |
+
+## 冻结锁文件、许可规则及基准
+
+| 包内路径 | SHA-256 |
+| --- | --- |
+| `application/frontend/pnpm-lock.yaml` | `357bf1d00f49ffcddcfb13fadf232f79bd864341d210fd8ea324106ee679185f` |
+| `deployment/requirements.lock` | `15aa7739d2d387e9763975a87e6e20e7b224a242be0a0aeff257c081f8e23ab0` |
+| `application/rules/license-obligations.yaml` | `103461f4d3a1d09482b6deeb0cf76b8f689243a0935ce8b3d604c908edb782c3` |
+| `application/benchmarks/p6_benchmark_manifest.json` | `622389e049a110e3235b7080582f9a770cdbcaf0ca5d339899003336af2a489e` |
+
+## Copyleft 全文测试夹具
+
+TASK49 离线识别测试夹具仅收录下列六份逐字许可证原文及其元数据。MPL 原件取自固定的 `lightningcss@1.32.0` 发行物，GNU 原文取自本机第三方许可副本。运行时识别使用原文指纹和条款定位规则。夹具 SHA-256 为 `4d7030e0fb19c5d580acf821f8e9ee85e207987cd4871f4c04747d01bf08ba80`。 [task49-copyleft-licenses.json](application/tests/fixtures/task49-copyleft-licenses.json)
+
+| 许可证族 | 原文副本 | 字节 | 原文 SHA-256 |
+| --- | --- | ---: | --- |
+| MPL-2.0 | `lightningcss@1.32.0/LICENSE` | 15,648 | `5eba353fe5076ac3432177f8ab1cf75e3afcd0584251e37c3bfead5f447d040e` |
+| GPL-2.0 | `frei0r/COPYING.GPL-2.0` | 18,002 | `231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c` |
+| GPL-3.0 | `frei0r/COPYING.GPL-3.0` | 35,147 | `8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903` |
+| LGPL-2.1 | `frei0r/COPYING.LGPL-2.1` | 26,521 | `592987e8510228d546540b84a22444bde98e48d03078d3b2eefcd889bec5ce8c` |
+| LGPL-3.0 | `frei0r/COPYING.LGPL-3.0` | 7,651 | `da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768` |
+| AGPL-3.0 | `synthsod/LICENSE` | 34,523 | `8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef` |
 
 ## 内置离线样例
 
@@ -45,6 +67,6 @@ Owner 仅批准下表六项继续作为上述固定上游 bundle 的嵌套内容
 
 ## 固定可选模型与数据边界
 
-固定可选模型为 Ollama `0.33.3` 与 `qwen3:4b-instruct-2507-q4_K_M`。manifest digest 为 `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`，权重不入包。用户可在本机自备该身份的模型，相关生成请求须明确发起。普通扫描与评估使用本机作业链，交付启动配置关闭自动模型调用。本轮复验零模型调用。
+固定可选模型为 Ollama `0.33.3` 与 `qwen3:4b-instruct-2507-q4_K_M`。manifest digest 为 `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`，权重不入包。用户可在本机自备该身份的模型，相关生成请求须明确发起。普通扫描与评估使用本机作业链。TASK50 的结构化输出门禁使用确定性替身，本机 Ollama 真机推理为 `NOT_RUN (LOCAL_OLLAMA_STOPPED)`。
 
 ZIP 仅包含清单绑定的跟踪文件与清单本身。Git 管理目录、依赖缓存、个人运行数据、账号数据库、私有日志、模型权重及旧界面媒体均排除。测试源码里的合成路径和密钥格式只用于验证拒收。Chrome 截图、评测原始交换、测试记录和临时数据均位于包外。

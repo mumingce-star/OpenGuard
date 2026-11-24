@@ -1,12 +1,12 @@
 {
-  "version": "2.0.0",
+  "version": "2.2.0",
   "release_channel": "local-verified-milestone",
   "release_publication": "PENDING_LOCAL_REVIEW_BEFORE_PUSH",
   "release_tag": null,
   "release_url": null,
   "runtime_scope": "TEST_ONLY",
-  "source_branch": "feat/national-v2-enhancements",
-  "source_parent_commit": "a9081dfbf900b7a901120e611603fed5f441fbd9",
+  "source_branch": "feat/v2.2-qwen3-v4-collab",
+  "source_parent_commit": "2a07d7bbe43b39cb4b8f211895f1fc5a54a77893",
   "source_commit_chain": [
     {
       "commit": "8dfbbde3d4c52c1bbe31d4320fc5333137277208",
@@ -71,14 +71,26 @@
     {
       "commit": "a9081dfbf900b7a901120e611603fed5f441fbd9",
       "scope": "Unified offline web build and local archive access"
+    },
+    {
+      "commit": "737fd903e07bc90d45ba97916f383edae6021565",
+      "scope": "v2.0.0 open-source milestone metadata"
+    },
+    {
+      "commit": "9d8da6fc597cc5cf352fe2e86a809c833926734e",
+      "scope": "TASK49 Python root metadata, six Copyleft families and v4 self-test"
+    },
+    {
+      "commit": "2a07d7bbe43b39cb4b8f211895f1fc5a54a77893",
+      "scope": "TASK50 evidence-bound Qwen3 action-plan/3 and B58 dependency conflicts"
     }
   ],
   "code_tree_sha1": {
-    "application": "ae095e4a333f951dcf421e3fe825a7f42a93a61d",
-    "application/backend": "e17f13b5ae8b8bc1ca031cb7f3ab443deb3a6fb9",
-    "application/frontend": "5c3bf551c416ab3667d84d2ac64351b5b7d12675",
-    "web": "d451474942a450421c56a7941a40e1653505163f",
-    "deployment": "05528367e60bbf4caa954475e0f63b92b632971c",
+    "application": "2a2133145a486a74d63d38cce74ffbc83242797e",
+    "application/backend": "25466a929fd40461224c63d504311a541c3841b0",
+    "application/frontend": "8c4e6f0b4f7676f47165431da52ccdba31af3690",
+    "web": "b50b25d57ad53fecbd47233096d2068c21525101",
+    "deployment": "cfbaaf7138f6c94ca9d3a15f1531b7685df54a52",
     "samples": "a3f2a56f1a529b5eb60eea042e0262e37c978a24"
   },
   "model": {
@@ -88,7 +100,7 @@
     "name": "qwen3:4b-instruct-2507-q4_K_M",
     "manifest_sha256": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
     "weights_included": false,
-    "model_calls_during_task48": 0
+    "model_calls_during_task51": 0
   },
   "lockfile_sha256": {
     "deployment/requirements.lock": "15aa7739d2d387e9763975a87e6e20e7b224a242be0a0aeff257c081f8e23ab0",
@@ -96,5 +108,5 @@
   },
   "source_manifest": "FILE_HASHES.json",
   "validation_reference": "VALIDATION.md",
-  "zip_and_freeze_commit_binding": "The external TASK48 receipt binds the exact ZIP bytes to the local milestone commit and the packaged file manifest."
+  "zip_and_freeze_commit_binding": "The external TASK51 receipt binds the exact ZIP bytes to the local milestone commit and the packaged file manifest."
 }
