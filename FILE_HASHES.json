@@ -1,14 +1,14 @@
 {
   "algorithm": "sha256",
-  "scope": "OpenGuard v2.4.0 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
+  "scope": "OpenGuard v2.5.0 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
   "files": {
     ".dockerignore": {
       "bytes": 1206,
       "sha256": "0c84a4cca7d8a78d228b10086b13f56493bcea748102df4f1850684c6abcac1a"
     },
     ".github/workflows/openguard-ci.yml": {
-      "bytes": 6379,
-      "sha256": "93c70fa03c6483220d1baaa43c58ccb24ce257169d22a148dba8c92fc7504b38"
+      "bytes": 7294,
+      "sha256": "2677c68b665ca00e2719bfab5090e4d1aff6831f46e97630dd99981093a239a6"
     },
     ".gitignore": {
       "bytes": 99,
@@ -27,12 +27,12 @@
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
     },
     "README.md": {
-      "bytes": 8631,
-      "sha256": "78a93c61228abfebccdfe9cd31f2056f129c1c273c3e7dbcd1db20238c979a42"
+      "bytes": 10511,
+      "sha256": "0f85ed14c560b53d1783fcc6664d30eb2d6983d618d84c7988376004cf99c252"
     },
     "RESOURCE_USAGE.md": {
-      "bytes": 8359,
-      "sha256": "ca1b19a5565c3795c23949df577dc9001859cfe5098e942e7238ea9cb0ee19be"
+      "bytes": 8455,
+      "sha256": "646bb9fb4007a1717b90c994a85d6cdaaa2ec5c509f361444d9621fd3f4cdf10"
     },
     "THIRD_PARTY_LICENSES/react-19.2.8-LICENSE": {
       "bytes": 1088,
@@ -59,12 +59,12 @@
       "sha256": "387dd7baa307083401a27c58c362c30832f5ba1dba84f10cc22c33401523f45c"
     },
     "VALIDATION.md": {
-      "bytes": 15460,
-      "sha256": "77c17d6e5f69a74dd2df6f50558d5c9fe066d0a59492e1ec89eab6cb51ba0bb5"
+      "bytes": 19202,
+      "sha256": "5ea92ad48bf7e37151787adee4944421c4d2150516ce5fcff821901408ef94fb"
     },
     "VERSION.json": {
-      "bytes": 5300,
-      "sha256": "64d73fbb380f71e644601c419e8b589f6d407138c412f7967a7df1d7484fe7d4"
+      "bytes": 6144,
+      "sha256": "d89e307663b0662dcf822969fa56c0b30267422a25e20ed2d2711ea1558fdabc"
     },
     "application/CONTRIBUTING.md": {
       "bytes": 2912,
@@ -277,6 +277,14 @@
     "application/backend/app/frontend_acceptance_server.py": {
       "bytes": 1965,
       "sha256": "0799ef5a9af45cd6164fd66754cac9f9a3d76023744ed57bd541055760947542"
+    },
+    "application/backend/app/headless_scan.py": {
+      "bytes": 15188,
+      "sha256": "b22af58cc2ef12e6483f238cd18d1873790a5c47580ed2d982bef4afe4c5b729"
+    },
+    "application/backend/app/headless_scan_report.py": {
+      "bytes": 14924,
+      "sha256": "a3048da32110aea60196075b866ad7703af69b207da8fe5a6067e8a69d9bf621"
     },
     "application/backend/app/ingestion/__init__.py": {
       "bytes": 446,
@@ -3502,6 +3510,10 @@
       "bytes": 4674,
       "sha256": "c2f834e2ffee6475fad4b0dd4c65182b108c600dc698f271dcfdb14e7c07a33c"
     },
+    "application/tests/unit/test_task56_headless_cli.py": {
+      "bytes": 30361,
+      "sha256": "b452282f4d37bc96ccd9e5844f0e173df171a13b4db698d9583dc4b0c35df81d"
+    },
     "application/tests/unit/test_v4_assessment_api.py": {
       "bytes": 11295,
       "sha256": "3af5fe6112b432fc8fc6d35d3492d1129d41d6d7f20daea878c8d79e6655aac5"
@@ -3531,8 +3543,8 @@
       "sha256": "6489e1755cefe4dae193989bb70c584d59e1ea092984af69294610ec97d391ab"
     },
     "deployment/launcher.py": {
-      "bytes": 26484,
-      "sha256": "32872c983d7d6c02270961e5349c4b5e06e61938d0df4553e6d351d1fc995e8c"
+      "bytes": 35263,
+      "sha256": "f10a013b0c75ef49261016174a4434a88dfdd2a715bd4b9d5d8ec8f228e40636"
     },
     "deployment/requirements.lock": {
       "bytes": 720,
@@ -3547,8 +3559,8 @@
       "sha256": "0727fe5a29ef170a2cd6883c30fab9a3b0537f8491a83b3ac1f3872a7bc911d6"
     },
     "openguard.py": {
-      "bytes": 196,
-      "sha256": "467ea05bae65d74ace4b2f0d679ea4a0c3572c812c5222f59216beeb10806b61"
+      "bytes": 302,
+      "sha256": "6de57f0c8708416e5e31e208b6bc844eadd72f908ea824903194ca9febfd3365"
     },
     "samples/http-server-LICENSE.txt": {
       "bytes": 1124,

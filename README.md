@@ -1,10 +1,13 @@
-# OpenGuard v2.4.0
+# OpenGuard v2.5.0
 
 OpenGuard 是面向开发团队的本地优先开源合规与证据溯源工作台。它从项目输入中发现资源和依赖，关联许可证、声明用途和原文证据，并将研判及报告固定为可复核的版本。
 
 本包提供本机 `TEST_ONLY` 运行环境。版本和产品树见 [VERSION.json](VERSION.json)，文件校验见 [FILE_HASHES.json](FILE_HASHES.json)，实测范围见 [VALIDATION.md](VALIDATION.md)。这是本地里程碑，远程发布状态以 `VERSION.json` 为准。
 
 ## 核心能力
+
+- **无头离线扫描 CLI（`openguard.py scan`）。** 复用生产五生态 ZIP 流水线、B58 依赖证据和 SBOM 解析。根目录的 `LICENSE`、`LICENSE.txt`、`LICENSE.md`、`COPYING` 与 `COPYING.txt` 复用 `material-claims/4` 原文解析器和同族 Copyleft 冲突规则，保守报告 `UNKNOWN`，产生 0 条 `SUPPORT`。支持本地项目目录与 ZIP。目录遍历自动排除 `.git`、`node_modules`、`__pycache__`、`.venv`、`venv`、`target`、`dist`、`build` 和 `.pytest_cache`，遇到符号链接或其他非普通条目时跳过并标记 `partial`。ZIP 走生产归档安全检查。
+- **报告与 CI 门禁。** 无头扫描支持 `--format text|json|markdown`，JSON 默认单独写到标准输出并使用 `openguard-cli-scan/1`，报告不含宿主机绝对路径。`--output <file>` 独占新建，拒绝覆盖现有文件。`--usage commercial,distributed,modified` 记录用途，`--fail-on conflict,copyleft,partial` 选择门禁。退出码 `0` 表示通过选定门禁，`1` 表示命中选定门禁，`2` 表示参数、输入或运行环境错误。
 
 - **五生态离线扫描。** 支持 npm、Python、Go、Rust 和 Java。Go 读取 `go.mod` 与 `go.sum`，Rust 读取 `Cargo.toml` 与 `Cargo.lock` v3/v4，Java 读取 `pom.xml` 与 `gradle.lockfile`。CycloneDX 1.5（JSON/XML）及 SPDX 2.3（JSON/tag-value）按组件声明的身份与版本核对 PURL。动态版本、无法解析的依赖与不能唯一确定的冲突保留为待核查证据。
 - **npm 与 Python 根包。** ZIP 扫描读取根目录的 `package.json` 或 `pyproject.toml`。Python 优先采用 PEP 621 的 `[project]`，仅在该表缺失时读取 Poetry 的 `[tool.poetry]`。根包版本缺失、声明为动态或无效时跳过 Python 根包，独立保留已有依赖观察。根包进入同一扫描、正式 Assessment 和 v4 研判。
@@ -28,7 +31,7 @@ python3.12 openguard.py self-test
 python3.12 openguard.py start
 ```
 
-`verify_package.py` 核对清单中 902 份文件的字节数和 SHA-256。`setup` 默认从 PyPI 安装 [27 项固定依赖](deployment/requirements.lock)。已有匹配平台及 CPython 3.12 的完整 wheelhouse 时，可用 `python3.12 openguard.py setup --offline-wheelhouse /path/to/wheelhouse` 离线安装。wheelhouse 由开发者单独准备。已有满足同一锁文件的 venv 时，可用其解释器运行 `check`、`self-test` 与 `start`。
+`verify_package.py` 核对清单中 905 份文件的字节数和 SHA-256。`setup` 默认从 PyPI 安装 [27 项固定依赖](deployment/requirements.lock)。已有匹配平台及 CPython 3.12 的完整 wheelhouse 时，可用 `python3.12 openguard.py setup --offline-wheelhouse /path/to/wheelhouse` 离线安装。wheelhouse 由开发者单独准备。已有满足同一锁文件的 venv 时，可用其解释器运行 `check`、`self-test` 与 `start`。
 
 `self-test` 启动临时回环服务，使用隔离的 `TEST_ONLY` 账户与数据验证 `material-claims/4`、补材引起的 r1→r2 变化、历史 Result 的原字节和评估包下载。TASK54 产品基线的 37 项自检已实测通过。自检证据保存在该包的 `runtime/self-tests/`，服务在命令退出前停止。
 
@@ -50,6 +53,23 @@ docker compose up --build
 
 使用容器模式与上述明示端点时，Assistant 和 P2 AI 仍由用户发起。直接在宿主机运行 `start.sh` 时，服务监听和模型连接分别限定为 `127.0.0.1` 和 `http://127.0.0.1:11434`。
 
+### 无头扫描 CLI（本机与 Docker）
+
+使用满足锁文件的 CPython 3.12 环境运行。当前解释器缺少锁定依赖时，CLI 可只读复用已安装且通过校验的包内 `runtime/venv`，在同一 PID 内至多调用一次 `execve`，并使用 `-B` 禁止写入字节码。扫描阶段禁止网络和子进程，模型调用为 0，且不创建或写入包内 `runtime/`。
+
+```sh
+python3.12 -B openguard.py scan samples/is-number-7.0.0-derived.zip --format json
+python3.12 -B openguard.py scan ./my-project --format markdown \
+  --usage commercial,distributed,modified --fail-on conflict,copyleft,partial
+```
+
+镜像已构建时，可在无网络容器中扫描内置 ZIP。将 `openguard:local` 替换为本地镜像名。
+
+```sh
+docker run --rm --network none --security-opt no-new-privileges openguard:local \
+  /opt/openguard-venv/bin/python -B openguard.py scan samples/is-number-7.0.0-derived.zip --format json
+```
+
 ### 从扫描到报告
 
 1. 上传待审查项目的 ZIP。可用 `samples/is-number-7.0.0-derived.zip` 熟悉流程，并声明商业使用、分发或修改等实际用途。
@@ -70,7 +90,6 @@ docker compose up --build
 
 依赖发现、材料完整性、文本支持、条款适用和实际履约分别呈现。`UNKNOWN` 表示当前证据或规则不足，带条件的 `SUPPORT` 仍需按实际分发范围核对。历史归档用于复核当时证据，更新用途或材料后应审查新版结果。
 
-- **v2.5** 优先交付无头扫描 CLI，计划通过 `openguard.py scan` 扫描目录或 ZIP，提供终端摘要、JSON/Markdown 报告与 CI 退出码。
 - **v2.6 及后续版本**计划扩展项目级许可证兼容矩阵引擎与团队协作能力。
 
 OpenGuard 自有代码采用 [Apache-2.0](LICENSE)。第三方组件按各自许可归属，见 [RESOURCE_USAGE.md](RESOURCE_USAGE.md)。

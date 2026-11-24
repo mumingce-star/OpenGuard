@@ -1,11 +1,11 @@
-# OpenGuard v2.4.0 资源与第三方归属
+# OpenGuard v2.5.0 资源与第三方归属
 
-本里程碑的产品与测试树继承自 `b0842bc8a37fe48f69029262e19e43df2fcd2519`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
+本里程碑的产品与测试树继承自 `f79d42fa81a54ee31e2a8b65f2e8cc6c65801093`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
 
 ## 自有代码及第三方组件
 
 - OpenGuard 自有代码采用 [Apache-2.0](LICENSE)。历史 UI 贡献和许可说明见 [THIRD_PARTY_UI.md](application/frontend/THIRD_PARTY_UI.md)。现用首页由代码绘制。旧界面视频、海报和独立字体文件不在本包。
-- 后端使用 [27 项精确依赖](deployment/requirements.lock)，含 FastAPI、Starlette、Pydantic、Uvicorn、httpx2 与测试工具。包内提供锁文件，Python 解释器、虚拟环境、wheelhouse 及操作系统工具由使用者准备。本次离线复验复用固定 CPython 3.12 venv。
+- 后端使用 [27 项精确依赖](deployment/requirements.lock)，含 FastAPI、Starlette、Pydantic、Uvicorn、httpx2 与测试工具。包内提供锁文件，Python 解释器、虚拟环境、wheelhouse 及操作系统工具由使用者准备。本次离线复验复用固定 CPython 3.12 venv。v2.5 的无头离线 CLI 仅使用标准库与既有锁定依赖，新增第三方依赖为 0。
 - 预构建页面包含 React `19.2.8`、ReactDOM `19.2.8`、scheduler `0.27.0`（MIT）及 Tailwind CSS `4.3.3`（MIT）。圆形玻璃按钮改编自 cssbuttons-io / massive-mayfly-74（MIT）。署名及许可证见 [web/third-party-licenses.txt](web/third-party-licenses.txt)、[THIRD_PARTY_LICENSES/](THIRD_PARTY_LICENSES/) 和 [按钮许可](application/frontend/UIVERSE_CSSBUTTONS_IO_LICENSE.txt)。
 - 前端完整版本见 [pnpm-lock.yaml](application/frontend/pnpm-lock.yaml)。Vite `8.2.2`（MIT）、TypeScript `5.9.2`（Apache-2.0）用于构建或类型检查，所附上游许可证位于 `THIRD_PARTY_LICENSES/`。运行包包含预构建页面。Node `v24.22.3`、同锁依赖缓存和用于 pnpm 锁测试的 `yaml@2.9.0` 只作为包外离线复验输入。
 - 外部 ScanCode 与 Syft 适配代码保留，交付启动配置关闭外部扫描器，这些工具未随包分发。P6 基准样本来源及许可声明见 [冻结清单](application/benchmarks/p6_benchmark_manifest.json)。
