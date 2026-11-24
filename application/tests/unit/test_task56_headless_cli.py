@@ -467,6 +467,73 @@ def test_package_venv_reexec_refuses_unsafe_structure(package, tmp_path, relativ
     assert not startup_log.exists(), "An unsafe interpreter was started"
 
 
+@pytest.mark.parametrize(("mode", "same_base", "candidate_is_link", "accepted"), [
+    pytest.param(0o775, True, True, True, id="same-base-group-writable"),
+    pytest.param(0o777, True, True, False, id="same-base-world-writable"),
+    pytest.param(0o775, False, True, False, id="different-base-group-writable"),
+    pytest.param(0o775, True, False, False, id="regular-candidate-group-writable"),
+])
+def test_package_venv_reexec_binary_permission_boundaries(
+    tmp_path, monkeypatch, capsys, mode, same_base, candidate_is_link, accepted,
+):
+    root = tmp_path / "package"
+    runtime = root / "runtime"
+    venv_dir = runtime / "venv"
+    bin_dir = venv_dir / "bin"
+    external = tmp_path / "external"
+    for directory in (root, runtime, venv_dir, bin_dir, external):
+        directory.mkdir(mode=0o700)
+    (venv_dir / "pyvenv.cfg").touch(mode=0o600)
+
+    candidate = bin_dir / "python"
+    current = external / "python"
+    if candidate_is_link:
+        current.touch(mode=0o755)
+        target = current if same_base else external / "other-python"
+        if not same_base:
+            target.touch()
+        candidate.symlink_to(target)
+    else:
+        target = candidate
+        target.touch()
+        current.hardlink_to(target)
+    target.chmod(mode)
+    assert stat.S_IMODE(candidate.stat().st_mode) == mode
+    assert os.path.samestat(candidate.stat(), current.stat()) is same_base
+
+    class ReexecRequested(Exception):
+        pass
+
+    calls = []
+
+    def record_exec(executable, argv, env):
+        calls.append((executable, argv, env.get("_OPENGUARD_SCAN_REEXEC"), env.get("PYTHONDONTWRITEBYTECODE")))
+        raise ReexecRequested
+
+    monkeypatch.setattr(launcher, "ROOT", root)
+    monkeypatch.setattr(launcher, "RUNTIME", runtime)
+    monkeypatch.setattr(launcher, "_scan_python_ready", lambda: False)
+    monkeypatch.setattr(sys, "executable", str(current))
+    monkeypatch.setattr(sys, "prefix", str(external))
+    monkeypatch.setattr(os, "execve", record_exec)
+    monkeypatch.delenv("_OPENGUARD_SCAN_REEXEC", raising=False)
+
+    arguments = ["scan", SAMPLE, "--format=json", "--usage", "commercial"]
+    before = _runtime_snapshot(runtime)
+    if accepted:
+        with pytest.raises(ReexecRequested):
+            launcher.main(arguments)
+        assert calls == [(str(candidate), [str(candidate), "-B", str(root / "openguard.py"), *arguments], "1", "1")]
+        assert capsys.readouterr() == ("", "")
+    else:
+        code = launcher.main(arguments)
+        output = capsys.readouterr()
+        _assert_locked_python_required(SimpleNamespace(returncode=code, stdout=output.out, stderr=output.err))
+        assert str(tmp_path) not in output.err
+        assert not calls
+    assert _runtime_snapshot(runtime) == before
+
+
 def test_package_runtime_is_blocked_for_input_and_output(package, tmp_path):
     isolated = shutil.copytree(package, tmp_path / "isolated-package").resolve()
     runtime = isolated / "runtime"
