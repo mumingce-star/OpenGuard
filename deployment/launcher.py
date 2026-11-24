@@ -556,17 +556,19 @@ def _reexec_scan_with_runtime(raw_scan_args):
         return
     candidate = bin_dir / "python"
     entry = candidate.lstat()
+    if not (stat.S_ISREG(entry.st_mode) or stat.S_ISLNK(entry.st_mode)):
+        return
     owner = os.geteuid()
     if stat.S_ISREG(entry.st_mode) and (entry.st_uid != owner or entry.st_mode & 0o022):
         return
     target = candidate.resolve(strict=True).stat()
-    if (not stat.S_ISREG(target.st_mode) or target.st_mode & stat.S_IWOTH
-            or not os.access(candidate, os.X_OK)):
+    if not stat.S_ISREG(target.st_mode) or not os.access(candidate, os.X_OK):
         return
-    # Hosted Python may already be group-writable. Only the exact running
-    # binary may retain that bit when reached through a venv interpreter link.
+    # A venv link to the same device and inode may inherit the host Python's
+    # existing write bits. A different binary still requires a trusted owner
+    # and neither group nor other write permission.
     same_base = os.path.samestat(target, Path(sys.executable).resolve(strict=True).stat())
-    if not same_base and (target.st_uid not in {0, owner} or target.st_mode & stat.S_IWGRP):
+    if not same_base and (target.st_uid not in {0, owner} or target.st_mode & 0o022):
         return
 
     reexec_env = {**os.environ, "_OPENGUARD_SCAN_REEXEC": "1", "PYTHONDONTWRITEBYTECODE": "1"}

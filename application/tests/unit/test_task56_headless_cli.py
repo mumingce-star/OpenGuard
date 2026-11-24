@@ -120,7 +120,7 @@ def _cli_venv(path, *, locked=False, startup_log=None):
             f"    with open({str(startup_log)!r}, 'a', encoding='utf-8') as log:\n"
             "        log.write(json.dumps([os.getpid(), sys.prefix, "
             "os.getenv('_OPENGUARD_SCAN_REEXEC'), sys.flags.dont_write_bytecode, "
-            "os.getenv('PYTHONDONTWRITEBYTECODE'), sys.orig_argv]) + '\\n')\n"
+            "os.getenv('PYTHONDONTWRITEBYTECODE'), sys.executable, sys.orig_argv]) + '\\n')\n"
         )
         (packages / "task56b-startup.pth").write_text(f"import sys; exec({observation!r})\n", encoding="utf-8")
     return path / "bin/python"
@@ -149,11 +149,45 @@ def _assert_locked_python_required(result):
 
 
 def _assert_scan_reexec(startup_log, external, runtime, package, arguments):
-    initial, resumed = [json.loads(record) for record in startup_log.read_text(encoding="utf-8").splitlines()]
+    records = startup_log.read_text(encoding="utf-8").splitlines()
+    assert len(records) == 2
+    initial, resumed = map(json.loads, records)
+    assert len(initial) == len(resumed) == 7
     pid = initial[0]
     command = [str(package / "openguard.py"), "scan", *arguments]
-    assert initial == [pid, str(external.parent.parent), None, 0, None, [str(external), *command]]
-    assert resumed == [pid, str(runtime.parent.parent), "1", 1, "1", [str(runtime), "-B", *command]]
+    assert initial[:6] == [pid, str(external.parent.parent), None, 0, None, str(external)]
+    assert resumed[:6] == [pid, str(runtime.parent.parent), "1", 1, "1", str(runtime)]
+    assert initial[6][1:] == command
+    assert resumed[6][1:] == ["-B", *command]
+    # Python.framework can rewrite argv[0] without changing the venv executable.
+    assert initial[6][0] in {str(external), sys.orig_argv[0]}
+    assert resumed[6][0] in {str(runtime), sys.orig_argv[0]}
+
+
+def test_assert_scan_reexec_accepts_framework_argv0_and_rejects_mismatches(tmp_path, monkeypatch):
+    package = tmp_path / "package"
+    external = tmp_path / "external" / "bin" / "python"
+    runtime = package / "runtime" / "venv" / "bin" / "python"
+    arguments = [SAMPLE, "--format", "json"]
+    command = [str(package / "openguard.py"), "scan", *arguments]
+    framework = "/Library/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python"
+    monkeypatch.setattr(sys, "orig_argv", [framework, *sys.orig_argv[1:]])
+    pid = os.getpid()
+    initial = [pid, str(external.parent.parent), None, 0, None, str(external), [framework, *command]]
+    resumed = [pid, str(runtime.parent.parent), "1", 1, "1", str(runtime), [framework, "-B", *command]]
+    startup_log = tmp_path / "interpreter-starts.jsonl"
+
+    def check(initial_record, resumed_record):
+        startup_log.write_text(f"{json.dumps(initial_record)}\n{json.dumps(resumed_record)}\n", encoding="utf-8")
+        _assert_scan_reexec(startup_log, external, runtime, package, arguments)
+
+    check(initial, resumed)
+    with pytest.raises(AssertionError):
+        check(initial, [*resumed[:5], str(external), resumed[6]])
+    with pytest.raises(AssertionError):
+        check(initial, [*resumed[:6], [framework, *command]])
+    with pytest.raises(AssertionError):
+        check(initial, [*resumed[:6], [str(external), "-B", *command]])
 
 
 def _json_report(result, *, exit_code=0):
@@ -469,9 +503,11 @@ def test_package_venv_reexec_refuses_unsafe_structure(package, tmp_path, relativ
 
 @pytest.mark.parametrize(("mode", "same_base", "candidate_is_link", "accepted"), [
     pytest.param(0o775, True, True, True, id="same-base-group-writable"),
-    pytest.param(0o777, True, True, False, id="same-base-world-writable"),
+    pytest.param(0o777, True, True, True, id="same-base-world-writable"),
     pytest.param(0o775, False, True, False, id="different-base-group-writable"),
+    pytest.param(0o777, False, True, False, id="different-base-world-writable"),
     pytest.param(0o775, True, False, False, id="regular-candidate-group-writable"),
+    pytest.param(0o777, True, False, False, id="regular-candidate-world-writable"),
 ])
 def test_package_venv_reexec_binary_permission_boundaries(
     tmp_path, monkeypatch, capsys, mode, same_base, candidate_is_link, accepted,
