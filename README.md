@@ -1,4 +1,4 @@
-# OpenGuard v2.2.0
+# OpenGuard v2.3.0
 
 OpenGuard 是面向开发团队的本地优先开源合规与证据溯源工作台。它从项目输入中发现资源和依赖，关联许可证、声明用途和原文证据，并将研判及报告固定为可复核的版本。
 
@@ -14,6 +14,8 @@ OpenGuard 是面向开发团队的本地优先开源合规与证据溯源工作�
 
 ## 快速启动
 
+### 原生 macOS / Linux
+
 将 ZIP 解压到新的用户可写目录，进入 `OpenGuard/`。需要 CPython 3.12（含 venv/pip）、Git 和现代浏览器。启动器面向 macOS 和 Linux，Windows 使用 WSL2 的 Linux 用户目录。跨平台实测范围见 [VALIDATION.md](VALIDATION.md)。
 
 ```sh
@@ -24,18 +26,19 @@ python3.12 openguard.py self-test
 python3.12 openguard.py start
 ```
 
-`verify_package.py` 核对清单中 886 份文件的字节数和 SHA-256。`setup` 默认从 PyPI 安装 [27 项固定依赖](deployment/requirements.lock)。已有匹配平台及 CPython 3.12 的完整 wheelhouse 时，可用 `python3.12 openguard.py setup --offline-wheelhouse /path/to/wheelhouse` 离线安装。包内未附 wheelhouse。已有满足同一锁文件的 venv 时，可用其解释器运行 `check`、`self-test` 与 `start`。
+`verify_package.py` 核对清单中 892 份文件的字节数和 SHA-256。`setup` 默认从 PyPI 安装 [27 项固定依赖](deployment/requirements.lock)。已有匹配平台及 CPython 3.12 的完整 wheelhouse 时，可用 `python3.12 openguard.py setup --offline-wheelhouse /path/to/wheelhouse` 离线安装。wheelhouse 由开发者单独准备。已有满足同一锁文件的 venv 时，可用其解释器运行 `check`、`self-test` 与 `start`。
 
-`self-test` 启动临时回环服务，使用隔离的 `TEST_ONLY` 账户与数据验证 `material-claims/4`、补材引起的 r1→r2 变化、历史 Result 的原字节和评估包下载。37 项已在冻结 v2.2 产品树上实测通过。自检证据保存在该包的 `runtime/self-tests/`，服务在命令退出前停止。
+`self-test` 启动临时回环服务，使用隔离的 `TEST_ONLY` 账户与数据验证 `material-claims/4`、补材引起的 r1→r2 变化、历史 Result 的原字节和评估包下载。37 项已在 v2.3.0 的产品基线上实测通过。自检证据保存在该包的 `runtime/self-tests/`，服务在命令退出前停止。
 
 也可使用 `sh ./start.sh`，或在 macOS 运行 `./启动OpenGuard.command`。打开终端显示的 `READY http://127.0.0.1:端口/`，在本包中注册本机账号。用 `--port` 指定空闲端口，按 Ctrl+C 停止服务。预构建页面位于 `web/`，普通运行无需 Node 或 Vite。账号、扫描和报告写入当前包私有的 `runtime/`。
 
-### Docker（v2.3 开发分支）
+### Docker Compose
 
-在源码根目录运行 `docker compose up --build`，通过 `http://127.0.0.1:8000/` 访问。容器以专用非 root 用户运行，账号、扫描和报告保存在 `openguard_runtime` 命名卷，Python 依赖位于镜像内的 `/opt/openguard-venv`。`docker compose stop` 停止服务并保留数据卷。首次构建需要镜像仓库、系统软件源和 Python 包索引。
-如需其他宿主机回环端口，可设置 `OPENGUARD_HOST_PORT`，Compose 会将同一端口传给容器内的 `OPENGUARD_PUBLIC_PORT`。
+在解压后的 `OpenGuard/` 目录运行 `docker compose up --build`，通过 `http://127.0.0.1:8000/` 访问。Compose 仅在宿主机回环地址发布端口。容器以专用非 root 用户运行，账号、扫描和报告保存在 `openguard_runtime` 命名卷，Python 依赖位于镜像内的 `/opt/openguard-venv`。`docker compose stop` 停止服务并保留数据卷。首次构建需要镜像仓库、系统软件源和 Python 包索引。
 
-需要在容器内使用宿主机 Ollama 时，显式选择固定主机端点。宿主机的 Ollama 必须能够从 Docker 主机网关访问。
+例如，运行 `OPENGUARD_HOST_PORT=18000 docker compose up --build` 后，通过 `http://127.0.0.1:18000/` 访问。Compose 会将同一端口传给容器内的 `OPENGUARD_PUBLIC_PORT`。网关同时接受内部端口和显式声明的映射端口上的 `127.0.0.1` 与 `localhost`。
+
+需要在容器内使用宿主机 Ollama 时，启用 `OPENGUARD_CONTAINER_MODE=1` 与 `OPENGUARD_OLLAMA_DOCKER_HOST=1` 两个开关，再显式选择固定主机端点。Compose 在容器内设置第一个开关。宿主机的 Ollama 必须能够从 Docker 主机网关访问。
 
 ```sh
 OPENGUARD_OLLAMA_DOCKER_HOST=1 \
@@ -43,7 +46,7 @@ OPENGUARD_MODEL_ORIGIN=http://host.docker.internal:11434 \
 docker compose up --build
 ```
 
-使用容器模式与上述明示端点时，Assistant 和 P2 AI 仍由用户发起。直接在宿主机运行 `start.sh` 时，服务监听和模型连接分别限定为 `127.0.0.1` 和 `http://127.0.0.1:11434`。发布包的版本和校验清单在里程碑打包时刷新。
+使用容器模式与上述明示端点时，Assistant 和 P2 AI 仍由用户发起。直接在宿主机运行 `start.sh` 时，服务监听和模型连接分别限定为 `127.0.0.1` 和 `http://127.0.0.1:11434`。
 
 ### 从扫描到报告
 
@@ -65,7 +68,7 @@ docker compose up --build
 
 依赖发现、材料完整性、文本支持、条款适用和实际履约分别呈现。`UNKNOWN` 表示当前证据或规则不足，带条件的 `SUPPORT` 仍需按实际分发范围核对。历史归档用于复核当时证据，更新用途或材料后应审查新版结果。
 
-- **v2.3** 计划完善 Docker 与 Linux/macOS 一键部署，并实测各平台冷启动。
-- **后续版本**计划扩大 Go、Rust、Java 等生态覆盖，扩充许可证兼容矩阵与协作能力。
+- **v2.4** 优先扩展 Go、Rust、Java 等生态扫描。
+- **后续版本**计划扩充许可证兼容矩阵与团队协作能力。
 
 OpenGuard 自有代码采用 [Apache-2.0](LICENSE)。第三方组件按各自许可归属，见 [RESOURCE_USAGE.md](RESOURCE_USAGE.md)。

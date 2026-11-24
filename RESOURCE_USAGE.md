@@ -1,6 +1,6 @@
-# OpenGuard v2.2.0 资源与第三方归属
+# OpenGuard v2.3.0 资源与第三方归属
 
-本里程碑的产品与测试树继承自 `2a07d7bbe43b39cb4b8f211895f1fc5a54a77893`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
+本里程碑的产品与测试树继承自 `82446e1153941ea159489225fc6f5bdadbe1d8d7`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
 
 ## 自有代码及第三方组件
 
@@ -9,6 +9,10 @@
 - 预构建页面包含 React `19.2.8`、ReactDOM `19.2.8`、scheduler `0.27.0`（MIT）及 Tailwind CSS `4.3.3`（MIT）。圆形玻璃按钮改编自 cssbuttons-io / massive-mayfly-74（MIT）。署名及许可证见 [web/third-party-licenses.txt](web/third-party-licenses.txt)、[THIRD_PARTY_LICENSES/](THIRD_PARTY_LICENSES/) 和 [按钮许可](application/frontend/UIVERSE_CSSBUTTONS_IO_LICENSE.txt)。
 - 前端完整版本见 [pnpm-lock.yaml](application/frontend/pnpm-lock.yaml)。Vite `8.2.2`（MIT）、TypeScript `5.9.2`（Apache-2.0）用于构建或类型检查，所附上游许可证位于 `THIRD_PARTY_LICENSES/`。运行包包含预构建页面。Node `v24.22.3`、同锁依赖缓存和用于 pnpm 锁测试的 `yaml@2.9.0` 只作为包外离线复验输入。
 - 外部 ScanCode 与 Syft 适配代码保留，交付启动配置关闭外部扫描器，这些工具未随包分发。P6 基准样本来源及许可声明见 [冻结清单](application/benchmarks/p6_benchmark_manifest.json)。
+
+## 容器构建依赖
+
+[Dockerfile](Dockerfile) 使用官方 `python:3.12-slim` 基础镜像，从 Debian 软件源安装 `git`，并将锁定的 Python 依赖安装到 `/opt/openguard-venv`。[docker-compose.yml](docker-compose.yml) 声明回环端口映射和独立运行数据卷，[.dockerignore](.dockerignore) 限定镜像构建输入。发布 ZIP 提供构建配置和应用文件，容器镜像由用户或 CI 构建，wheelhouse 由使用者单独准备。
 
 ## Web 产物清单
 

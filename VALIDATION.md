@@ -1,8 +1,41 @@
-# OpenGuard v2.2.0 验证记录
+# OpenGuard v2.3.0 验证记录
 
-产品与测试基线为 `2a07d7bbe43b39cb4b8f211895f1fc5a54a77893`。里程碑只刷新五份顶层元数据、文档和文件清单。提交链和受保护树摘要见 [VERSION.json](VERSION.json)。
+产品与测试基线为 `82446e1153941ea159489225fc6f5bdadbe1d8d7`。里程碑只刷新五份顶层元数据、文档和文件清单。提交链和受保护树摘要见 [VERSION.json](VERSION.json)。
 
-## TASK50 冻结产品树实测
+## v2.3.0 产品基线的本机实测
+
+| 门禁 | 通过／总数 |
+| --- | ---: |
+| 九组离线回归 | 1062/1062 |
+| TASK52/52B Python 专项 | 70/70 |
+| Node 部署配置 | 4/4 |
+| 原生隔离 `openguard.py self-test` | 37/37 |
+| **合计** | **1173/1173** |
+
+失败、错误、跳过、IP/DNS 拒绝和模型调用均为 0。专项测试在真实 ASGI 网关验证容器内部与显式映射端口的回环访问，注册请求使用真实 CSRF token。原生自检退出码为 0，62 次 HTTP 交换均使用同一个临时回环端口，隔离服务已退出。
+
+TASK52B 原始回执位于包外的 `output/releases/v2.3-task52b/TASK52B_RECEIPT.md`，SHA-256 为 `ea8ac3051a2db8a67c112ff53c96f3525cff33d3bc9c56dc63ca57d20459bb51`。同目录下 `logs/task52b-gate-summary-01.json` 的 SHA-256 为 `d89a297fe0dcb8e7e4aa94fe02c385a850ee3d2dfd0b2809903278cea6273bb4`。
+
+## 官方托管 OpenGuard CI
+
+第二次运行的 `head_sha` 为 `82446e1153941ea159489225fc6f5bdadbe1d8d7`，`completed / success`，四个作业实例全部通过。本轮里程碑离线引用 Antigravity 已核对的官方运行记录及固定工作流断言。 [Run 45338507883](https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883)
+
+| 实例 | 结论 | 证据 |
+| --- | --- | --- |
+| `cross-platform-python-and-selftest`，`ubuntu-latest` | 通过 | 运行总览及矩阵结论，现有记录未单列 Job ID |
+| `cross-platform-python-and-selftest`，`macos-latest` | 通过 | [Job 138256192580](https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883/job/138256192580) |
+| `frontend-node-and-build` | 通过 | [Job 138256192250](https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883/job/138256192250) |
+| `docker-build-and-smoke` | 通过 | [Job 138256192633](https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883/job/138256192633) |
+
+Docker 在 GitHub Actions 的 Ubuntu Runner 真实构建。成功步骤覆盖非 root UID 10001、`--network none` 容器内 `check` 和 `self-test`、宿主机回环端口 `127.0.0.1:18000` 的 `/healthz` 和 `/` 返回 200、`Host: evil.example:18000` 返回 403，以及 `docker stop` 后容器退出码为 0。依据为托管步骤结论和固定工作流的对应断言。
+
+首跑在 `506f018` 暴露映射端口 403，`82446e1` 增加显式 `OPENGUARD_PUBLIC_PORT` 并保留第三方 Host 和 Origin 拒绝边界。 [首跑 45336145840](https://github.com/mumingce-star/OpenGuard/actions/runs/45336145840)
+
+## TASK53 洁净解压复验
+
+冷验对 893 个解压文件执行 892 份清单核对、启动检查及外层与嵌套归档扫描。原生回环自检使用同一解压树的隔离副本，1136 项离线测试从原解压树执行。最终 ZIP 身份、1173 项实跑结果及门禁后 Git blob 与清单校验由包外的 `output/releases/v2.3.0/TASK53_RECEIPT.md` 绑定。本节列明本轮复验范围，前两节记录冻结产品基线的已完成验收。
+
+## TASK50 历史冻结产品树实测
 
 | 门禁 | 通过／总数 |
 | --- | ---: |
@@ -27,9 +60,9 @@ TASK50 总验收为 1100/1100，即九组门禁 1062 项、原生自检 37 项�
 
 ## TASK51 洁净解压复验
 
-本轮使用本地提交的 887 个跟踪文件构建确定性 ZIP。从同一新解压树验证 886 份清单记录、运行 `openguard.py check`、检查外层及嵌套归档的禁入项、复跑原生隔离自检 37 项与上述九组 1062 项门禁。临时测试输入与运行时来自指定的本地离线依赖。复验后重新对照包内 887 个文件的提交字节及 886 份清单记录。
+TASK51 在 v2.2.0 里程碑使用 887 个跟踪文件构建确定性 ZIP，验证 886 份清单记录并完成 `openguard.py check` 和归档扫描。原生隔离自检 37 项与九组离线门禁 1062 项共通过 1099/1099。复验后重新对照包内 887 个文件的提交字节及 886 份清单记录。
 
-最终 ZIP 的身份、本轮冷验实测结果与日志摘要记录在包外的 `output/releases/v2.2.0/TASK51_RECEIPT.md`。上文的 1100/1100 来自 TASK50 独立验收。
+最终 ZIP 身份、TASK51 冷验和日志摘要见包外的 `output/releases/v2.2.0/TASK51_RECEIPT.md`。1100/1100 来自 TASK50 独立验收。
 
 ## 历史验证
 
@@ -92,6 +125,6 @@ Owner 仅批准固定 `samples/http-server.bundle` 内的下列六个台账项�
 ## 尚未覆盖的范围
 
 - 本机 Ollama 的 `openguard-action-plan/3` 真机推理为 `NOT_RUN (LOCAL_OLLAMA_STOPPED)`。TASK50 的协议、失败隔离及纠偏门禁均使用确定性替身。
-- TASK51 洁净解压复用同锁 CPython 3.12 venv。Linux、WSL2 与 Docker 首次安装，以及 Linux/macOS 跨环境冷启动和一键部署，留待 v2.3 验证。
+- TASK53 洁净解压复用同锁 CPython 3.12 venv。本机 Docker daemon 不可用，真实容器验证来自上述 GitHub Actions Ubuntu Runner。原生跨平台验证覆盖托管 Linux 和 macOS，WSL2 首次安装未单独验证。
 - 可选模型为 Ollama `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M`，manifest digest `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。历史 TEST_ONLY 模型证据见 `output/competition/qwen3-workbench-recovery-01/evidence/FINAL_RUNTIME_RECEIPT.json`，SHA-256 `a888ac1284d3ecb244a0abb714541b53a95953471d0fe6570b954229262e2893`。
-- `P2_V11_8_HARNESS=NOT_RUN (HISTORICAL BLOCKED)` 为独立的历史验收记录。TASK51 未复跑 Chrome 或重新构建 Vite。
+- `P2_V11_8_HARNESS=NOT_RUN (HISTORICAL BLOCKED)` 为独立的历史验收记录。TASK53 未复跑 Chrome 或在本机重新构建 Vite。

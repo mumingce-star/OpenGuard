@@ -1,12 +1,12 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.0",
   "release_channel": "local-verified-milestone",
   "release_publication": "PENDING_LOCAL_REVIEW_BEFORE_PUSH",
   "release_tag": null,
   "release_url": null,
   "runtime_scope": "TEST_ONLY",
-  "source_branch": "feat/v2.2-qwen3-v4-collab",
-  "source_parent_commit": "2a07d7bbe43b39cb4b8f211895f1fc5a54a77893",
+  "source_branch": "feat/v2.3-docker-cross-platform",
+  "source_parent_commit": "82446e1153941ea159489225fc6f5bdadbe1d8d7",
   "source_commit_chain": [
     {
       "commit": "8dfbbde3d4c52c1bbe31d4320fc5333137277208",
@@ -83,14 +83,26 @@
     {
       "commit": "2a07d7bbe43b39cb4b8f211895f1fc5a54a77893",
       "scope": "TASK50 evidence-bound Qwen3 action-plan/3 and B58 dependency conflicts"
+    },
+    {
+      "commit": "c82282d46f3b8af7567375f33235674ee7c8a69b",
+      "scope": "v2.2.0 open-source milestone metadata"
+    },
+    {
+      "commit": "506f01824212fde0a6dd0b73723701f04c8a0b75",
+      "scope": "TASK52 guarded Docker deployment and cross-platform CI"
+    },
+    {
+      "commit": "82446e1153941ea159489225fc6f5bdadbe1d8d7",
+      "scope": "TASK52B explicit loopback host port for the container gateway"
     }
   ],
   "code_tree_sha1": {
-    "application": "2a2133145a486a74d63d38cce74ffbc83242797e",
-    "application/backend": "25466a929fd40461224c63d504311a541c3841b0",
+    "application": "a3fe0ca9e77052f07b5b11b85085c3ed011a16c4",
+    "application/backend": "144e64536879a049164f85a89915588911b89eb5",
     "application/frontend": "8c4e6f0b4f7676f47165431da52ccdba31af3690",
     "web": "b50b25d57ad53fecbd47233096d2068c21525101",
-    "deployment": "cfbaaf7138f6c94ca9d3a15f1531b7685df54a52",
+    "deployment": "d78e0f815b692b0773a461c21cbe73750135ef4e",
     "samples": "a3f2a56f1a529b5eb60eea042e0262e37c978a24"
   },
   "model": {
@@ -100,7 +112,7 @@
     "name": "qwen3:4b-instruct-2507-q4_K_M",
     "manifest_sha256": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
     "weights_included": false,
-    "model_calls_during_task51": 0
+    "model_calls_during_task53": 0
   },
   "lockfile_sha256": {
     "deployment/requirements.lock": "15aa7739d2d387e9763975a87e6e20e7b224a242be0a0aeff257c081f8e23ab0",
@@ -108,5 +120,15 @@
   },
   "source_manifest": "FILE_HASHES.json",
   "validation_reference": "VALIDATION.md",
-  "zip_and_freeze_commit_binding": "The external TASK51 receipt binds the exact ZIP bytes to the local milestone commit and the packaged file manifest."
+  "zip_and_freeze_commit_binding": "The external TASK53 receipt binds the exact ZIP bytes to the local milestone commit and the packaged file manifest.",
+  "official_ci": {
+    "provider": "GitHub Actions",
+    "workflow": "OpenGuard CI",
+    "run_id": 45338507883,
+    "run_url": "https://github.com/mumingce-star/OpenGuard/actions/runs/45338507883",
+    "head_sha": "82446e1153941ea159489225fc6f5bdadbe1d8d7",
+    "conclusion": "SUCCESS",
+    "jobs_passed": 4,
+    "jobs_total": 4
+  }
 }

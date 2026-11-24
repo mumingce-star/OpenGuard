@@ -1,10 +1,22 @@
 {
   "algorithm": "sha256",
-  "scope": "OpenGuard v2.2.0 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
+  "scope": "OpenGuard v2.3.0 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
   "files": {
+    ".dockerignore": {
+      "bytes": 1206,
+      "sha256": "0c84a4cca7d8a78d228b10086b13f56493bcea748102df4f1850684c6abcac1a"
+    },
+    ".github/workflows/openguard-ci.yml": {
+      "bytes": 6284,
+      "sha256": "174f8bf6d89569cbe46393d4e207cafdf21e503f063172f227b9a3b6368a1550"
+    },
     ".gitignore": {
       "bytes": 99,
       "sha256": "cb6c70503128c1b6885699529d1cbde41823b5a33f763d13495dbed4a11849cb"
+    },
+    "Dockerfile": {
+      "bytes": 1526,
+      "sha256": "05f7727fd71dfcf39f37a94856044221457c0320395829dd860c2a80aca451b6"
     },
     "FRONTEND_UPDATE_20261116.md": {
       "bytes": 1981,
@@ -15,12 +27,12 @@
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
     },
     "README.md": {
-      "bytes": 6327,
-      "sha256": "2acccb666cf77b68c30c47d1c593ec66aa7baaecbd8a2f0de3d89817e1e9f128"
+      "bytes": 7684,
+      "sha256": "5226a0d9d1a7706c08d2c02e227a915d33224bc8c03bdbfddf05059a3092aeb3"
     },
     "RESOURCE_USAGE.md": {
-      "bytes": 7892,
-      "sha256": "c1f48bb989454887d58e753fc6e876842b1306a66303f10a5ad4701a91715d47"
+      "bytes": 8359,
+      "sha256": "1f0d3686114cd478e2f990f23a29005bf2e98cea79fc354d3515613cdd364be7"
     },
     "THIRD_PARTY_LICENSES/react-19.2.8-LICENSE": {
       "bytes": 1088,
@@ -47,12 +59,12 @@
       "sha256": "387dd7baa307083401a27c58c362c30832f5ba1dba84f10cc22c33401523f45c"
     },
     "VALIDATION.md": {
-      "bytes": 8902,
-      "sha256": "c2ab0df0ea58d685f912142e0b09cbd35e06348a8261ba00c9611a8b11129083"
+      "bytes": 11810,
+      "sha256": "a97371e1762a9a7aa2411c643a2830076f868272c857c97fd1539e147871ca79"
     },
     "VERSION.json": {
-      "bytes": 4119,
-      "sha256": "dcbd8af6a7c50cbc2f32136538e1a3e02e96f267cc4163dbd8198680eb22935d"
+      "bytes": 4884,
+      "sha256": "fda28b8bced29d7178261a40f213f5f28f695ffa7963fc5962754c81049a194d"
     },
     "application/CONTRIBUTING.md": {
       "bytes": 2912,
@@ -83,8 +95,8 @@
       "sha256": "a5c4c743013b0967da606ca405bf559d8d8d7145de4f19dac7975c902113cab7"
     },
     "application/backend/app/ai/p2_analysis.py": {
-      "bytes": 23342,
-      "sha256": "88a5e116f6537b5651c05d00323c4d1604a81a354706767709e62933774ea97b"
+      "bytes": 23403,
+      "sha256": "dbb2444ed830b8434f6f0a97e0b08c6d9c3f656eaa98cc7c36e4d7ee6104a6d4"
     },
     "application/backend/app/ai/project.py": {
       "bytes": 20310,
@@ -195,16 +207,16 @@
       "sha256": "cb9b57f1392a0399a89f0733daeb0f3ddeffc90b8861c0b364734221086e1ed3"
     },
     "application/backend/app/assistant/service.py": {
-      "bytes": 11357,
-      "sha256": "a11b7031dbb8ba3ae48c5005d0f5ddd3160ce92bd58348c7691a1bf49ef0f7b8"
+      "bytes": 11542,
+      "sha256": "6f16a5a934be0168f7cbb269425f67b11321d0683260059e0c8787953b134528"
     },
     "application/backend/app/assistant/store.py": {
       "bytes": 11505,
       "sha256": "609fa7c263a2978d6a35e62c23dad31ed489380f7dc4a51093e227e06817a6ae"
     },
     "application/backend/app/assistant/transport.py": {
-      "bytes": 7754,
-      "sha256": "d71e85662ebc1cdc8e7ea5d834cdae67b4b8c11c2bb25cd61a773ac368102bfa"
+      "bytes": 7726,
+      "sha256": "4f21c7c909d98630142473ad93fe184a892090a2a961ce1e1ef589236e28d68e"
     },
     "application/backend/app/cli.py": {
       "bytes": 14566,
@@ -495,8 +507,8 @@
       "sha256": "4a715d848e13cba5e28eaabbe7d8d8acd03b85ac3061a5bf482f17e0d0190dd8"
     },
     "application/backend/app/p2/ai_analysis.py": {
-      "bytes": 32552,
-      "sha256": "0ed6f9ba264cc28192deab1336149c10b1cb8899c671b8bb33a9fddaa68e33b9"
+      "bytes": 32745,
+      "sha256": "ab8084027619e46ddc70d95dc2e59d83fd9b170e66e47044e7d5ee798af2feb6"
     },
     "application/backend/app/p2/automatic_contract.py": {
       "bytes": 1991,
@@ -2858,6 +2870,10 @@
       "bytes": 10455,
       "sha256": "025747e454cc26d845691f819d8c6f2341c5539c341454133db8437904878ff6"
     },
+    "application/tests/unit/task52-deployment-config.test.mjs": {
+      "bytes": 4674,
+      "sha256": "95eebe7259c2ad4e345dcd9aa2fb4f16c6621194c662f49a9dd1edca5cb6971f"
+    },
     "application/tests/unit/test_a2_public_git_ingestion.py": {
       "bytes": 53555,
       "sha256": "36656e97b4418fa5759752b814f1ea4cf9d73c7d2d40c75268c77e73f5c37a18"
@@ -3442,6 +3458,10 @@
       "bytes": 4331,
       "sha256": "4eb3d066533b070ab1728d1e2cfebeba2438f4076dc59832384ae22653c5b126"
     },
+    "application/tests/unit/test_task52_container_and_cross_platform.py": {
+      "bytes": 19294,
+      "sha256": "20ebf846697e789e446a42675ef37685721887efd8be440ace283ac34562eb33"
+    },
     "application/tests/unit/test_v4_assessment_api.py": {
       "bytes": 11295,
       "sha256": "3af5fe6112b432fc8fc6d35d3492d1129d41d6d7f20daea878c8d79e6655aac5"
@@ -3471,8 +3491,8 @@
       "sha256": "6489e1755cefe4dae193989bb70c584d59e1ea092984af69294610ec97d391ab"
     },
     "deployment/launcher.py": {
-      "bytes": 19979,
-      "sha256": "c0e1503de446844be519fc28add8d9baa7d669f9061b7046411af828a9b42953"
+      "bytes": 26484,
+      "sha256": "32872c983d7d6c02270961e5349c4b5e06e61938d0df4553e6d351d1fc995e8c"
     },
     "deployment/requirements.lock": {
       "bytes": 720,
@@ -3481,6 +3501,10 @@
     "deployment/selftest.py": {
       "bytes": 2788,
       "sha256": "815662d6ee2292e82093b174dfe078a5f42f3aa15ad2e483154525e9f420b3ec"
+    },
+    "docker-compose.yml": {
+      "bytes": 769,
+      "sha256": "0727fe5a29ef170a2cd6883c30fab9a3b0537f8491a83b3ac1f3872a7bc911d6"
     },
     "openguard.py": {
       "bytes": 196,
@@ -3503,8 +3527,8 @@
       "sha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
     },
     "start.sh": {
-      "bytes": 387,
-      "sha256": "a1ced8cbbbd5141c6feb6df0882c4bb01c89cb3cedfc432086f31624423adfaa"
+      "bytes": 1098,
+      "sha256": "70148d3542f210b6027dff5c3d680fbf337b22e216159e89e0a9e5760dd2896e"
     },
     "verify_package.py": {
       "bytes": 1167,
