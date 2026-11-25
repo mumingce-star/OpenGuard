@@ -1,6 +1,44 @@
-# OpenGuard v2.5.0 验证记录
+# OpenGuard v2.6.0 验证记录
 
-产品与测试基线为 `f79d42fa81a54ee31e2a8b65f2e8cc6c65801093`。里程碑只刷新五份顶层元数据、文档和文件清单。提交链和受保护树摘要见 [VERSION.json](VERSION.json)。
+产品与测试基线为 `9238d198915dda6bb4c5a86d635a61abc6f17759`。里程碑只刷新五份顶层元数据、文档和文件清单。提交链和受保护树摘要见 [VERSION.json](VERSION.json)。
+
+## TASK58 项目级许可证兼容矩阵引擎、CLI v2、API 与工作台本机实测
+
+产品提交为 `9238d198915dda6bb4c5a86d635a61abc6f17759`，父提交为 `2ed385cf63d89e5508fab877b738e5ffd037e596`（`v2.5.0`）。交付离线许可证兼容矩阵引擎（22 种 SPDX 规范标识与 `PROPRIETARY`、五态判定与用途感知规则、保守目标解析、依赖间两两兼容矩阵）、无头 CLI v2（`openguard-cli-scan/2`、`--target-license`、`--fail-on ...,incompatible`）、只读 Web API（`GET /api/v1/scans/{scan_id}/license-compatibility`，`Cache-Control: no-store`）以及工作台 `LicenseCompatibilityPanel` 面板与离线 `web/` 构建。
+
+| 门禁 | 通过／总数 |
+| --- | ---: |
+| 官方 CI 完整 Python 套件（含 TASK58 29 项与 TASK56 46 项） | 559/559 |
+| 前端全量 Node 测试（含 TASK58 2 项及真实链契约） | 353/353 |
+| 后端 Scanner 与部署配置 Node 测试 | 29/29 |
+| 隔离回环 `openguard.py self-test` | 37/37 |
+| TypeScript 类型检查 + 离线 Vite 构建（8 份产物 1,275,134 B，0 chunk > 500 kB） | 通过 |
+| 宿主机无头 CLI v2 样例冒烟（`openguard-cli-scan/2`，无 `runtime/` 写入） | 通过 |
+
+## v2.6.0 官方托管 OpenGuard CI
+
+Run `45552562900` 的 `head_sha` 为 `9238d198915dda6bb4c5a86d635a61abc6f17759`，状态 `completed / success`，四个作业实例全部通过。[Run 45552562900](https://github.com/mumingce-star/OpenGuard/actions/runs/45552562900)
+
+| 实例 | 结论 | 证据 |
+| --- | --- | --- |
+| `cross-platform-python-and-selftest`，`ubuntu-latest` | 通过 | [Job 138996890191](https://github.com/mumingce-star/OpenGuard/actions/runs/45552562900/job/138996890191) |
+| `cross-platform-python-and-selftest`，`macos-latest` | 通过 | [Job 138996889504](https://github.com/mumingce-star/OpenGuard/actions/runs/45552562900/job/138996889504) |
+| `frontend-node-and-build` | 通过 | [Job 138996889889](https://github.com/mumingce-star/OpenGuard/actions/runs/45552562900/job/138996889889) |
+| `docker-build-and-smoke` | 通过 | [Job 138996890725](https://github.com/mumingce-star/OpenGuard/actions/runs/45552562900/job/138996890725) |
+
+托管工作流覆盖 Ubuntu、macOS 的锁定 559 项 Python 门禁、宿主机 `openguard.py scan` v2 冒烟及隔离自检，前端测试与 Vite，以及 `--network none` 容器内的无头扫描 v2 冒烟。
+
+## TASK59 洁净解压复验
+
+| 冷验 | 范围 |
+| --- | --- |
+| 1 | 洁净解压树执行 `verify_package.py`，核对 912 份清单记录。 |
+| 2 | 洁净解压树执行 `openguard.py check` 与 `sh -n start.sh`。 |
+| 3 | 安全检查 913 个外层成员和嵌套归档，按下方台账核对固定层级的六项例外。 |
+| 4 | 同字节隔离副本执行 37 项原生回环 `self-test`，原解压树以样例 ZIP 验证无头扫描 v2（`openguard-cli-scan/2`）。 |
+| 5 | 原解压树运行 1307 项离线门禁，与冷验 4 的 37 项自检合计 1344 项。官方 CI Python 命令另行复跑 559 项，单列结果。 |
+
+1307 项包括九组回归 1062、TASK52/52B Python 70、Node 部署配置 4、TASK54 Python 90、前端 Node 4、无头 CLI 专项 46，以及 TASK58 兼容矩阵专项 31（Python 29 + 前端 Node 2）。最终 ZIP 身份、五项实跑结果和门禁后洁净核验由包外 `output/releases/v2.6.0/TASK59_RECEIPT.md` 绑定。
 
 ## TASK56 / 56B / 56C / 56D 无头 CLI 本机演进与实测
 
@@ -201,6 +239,6 @@ Owner 仅批准固定 `samples/http-server.bundle` 内的下列六个台账项�
 ## 尚未覆盖的范围
 
 - 本机 Ollama 的 `openguard-action-plan/3` 真机推理为 `NOT_RUN (LOCAL_OLLAMA_STOPPED)`。TASK50 的协议、失败隔离及纠偏门禁均使用确定性替身。
-- TASK57 洁净解压复用同锁 CPython 3.12 venv。容器与原生跨平台结果引用 Run `45411692260` 的托管证据。WSL2 首次安装未单独验证。
+- TASK59 洁净解压复用同锁 CPython 3.12 venv。容器与原生跨平台结果引用 Run `45552562900` 的托管证据。WSL2 首次安装未单独验证。
 - 可选模型为 Ollama `0.33.3`、`qwen3:4b-instruct-2507-q4_K_M`，manifest digest `0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0`。历史 TEST_ONLY 模型证据见 `output/competition/qwen3-workbench-recovery-01/evidence/FINAL_RUNTIME_RECEIPT.json`，SHA-256 `a888ac1284d3ecb244a0abb714541b53a95953471d0fe6570b954229262e2893`。
-- `P2_V11_8_HARNESS=NOT_RUN (HISTORICAL BLOCKED)` 为独立的历史验收记录。TASK57 沿用历史浏览器和本机 Vite 记录。
+- `P2_V11_8_HARNESS=NOT_RUN (HISTORICAL BLOCKED)` 为独立的历史验收记录。TASK59 沿用历史浏览器和本机 Vite 记录。

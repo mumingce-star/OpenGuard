@@ -1,12 +1,12 @@
 {
-  "version": "2.5.0",
+  "version": "2.6.0",
   "release_channel": "local-verified-milestone",
   "release_publication": "PENDING_LOCAL_REVIEW_BEFORE_PUSH",
   "release_tag": null,
   "release_url": null,
   "runtime_scope": "TEST_ONLY",
-  "source_branch": "feat/v2.5-headless-cli",
-  "source_parent_commit": "f79d42fa81a54ee31e2a8b65f2e8cc6c65801093",
+  "source_branch": "feat/v2.6-license-compatibility",
+  "source_parent_commit": "9238d198915dda6bb4c5a86d635a61abc6f17759",
   "source_commit_chain": [
     {
       "commit": "8dfbbde3d4c52c1bbe31d4320fc5333137277208",
@@ -127,14 +127,22 @@
     {
       "commit": "f79d42fa81a54ee31e2a8b65f2e8cc6c65801093",
       "scope": "TASK56D hosted Python world-writable same-inode support and macOS Python.framework argv[0] test parity"
+    },
+    {
+      "commit": "2ed385cf63d89e5508fab877b738e5ffd037e596",
+      "scope": "v2.5.0 milestone metadata"
+    },
+    {
+      "commit": "9238d198915dda6bb4c5a86d635a61abc6f17759",
+      "scope": "TASK58 project-level license compatibility matrix engine, CLI v2, API, and workbench panel"
     }
   ],
   "code_tree_sha1": {
-    "application": "1cbd2e5fef10567e7c6833495d49ddd51a862201",
-    "application/backend": "1f7acd4562a4b0c6f884641186effccc6d0bf1fe",
-    "application/frontend": "f2f9067af2eeb273d8b61b84fcc967d111b813f8",
-    "web": "dd9c493741c58283e502a8f56197e775e0db2486",
-    "deployment": "49c87e9f958ced022f9eaf6ed3fd9f30f6578430",
+    "application": "021cc8201a46e8ce698e53c0612807f7c1172137",
+    "application/backend": "1966fff7f3f6ea1a850873421dcc0bf95a02a425",
+    "application/frontend": "5f793dc5af5ef34160dce5480c4a44d6661a6d43",
+    "web": "f79e7430fec0a9f13d4b3c4838b833b991220b34",
+    "deployment": "bccb8ac4c92babe8ffc6149de0560d3664a7e217",
     "samples": "a3f2a56f1a529b5eb60eea042e0262e37c978a24"
   },
   "model": {
@@ -144,7 +152,7 @@
     "name": "qwen3:4b-instruct-2507-q4_K_M",
     "manifest_sha256": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
     "weights_included": false,
-    "model_calls_during_task57": 0
+    "model_calls_during_task59": 0
   },
   "lockfile_sha256": {
     "deployment/requirements.lock": "15aa7739d2d387e9763975a87e6e20e7b224a242be0a0aeff257c081f8e23ab0",
@@ -152,13 +160,13 @@
   },
   "source_manifest": "FILE_HASHES.json",
   "validation_reference": "VALIDATION.md",
-  "zip_and_freeze_commit_binding": "The external TASK57 receipt at output/releases/v2.5.0/TASK57_RECEIPT.md binds the exact ZIP bytes to the local milestone commit and the packaged file manifest.",
+  "zip_and_freeze_commit_binding": "The external TASK59 receipt at output/releases/v2.6.0/TASK59_RECEIPT.md binds the exact ZIP bytes to the local milestone commit and the packaged file manifest.",
   "official_ci": {
     "provider": "GitHub Actions",
     "workflow": "OpenGuard CI",
-    "run_id": 45411692260,
-    "run_url": "https://github.com/mumingce-star/OpenGuard/actions/runs/45411692260",
-    "head_sha": "f79d42fa81a54ee31e2a8b65f2e8cc6c65801093",
+    "run_id": 45552562900,
+    "run_url": "https://github.com/mumingce-star/OpenGuard/actions/runs/45552562900",
+    "head_sha": "9238d198915dda6bb4c5a86d635a61abc6f17759",
     "conclusion": "SUCCESS",
     "jobs_passed": 4,
     "jobs_total": 4

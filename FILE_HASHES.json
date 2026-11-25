@@ -1,14 +1,14 @@
 {
   "algorithm": "sha256",
-  "scope": "OpenGuard v2.5.0 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
+  "scope": "OpenGuard v2.6.0 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
   "files": {
     ".dockerignore": {
       "bytes": 1206,
       "sha256": "0c84a4cca7d8a78d228b10086b13f56493bcea748102df4f1850684c6abcac1a"
     },
     ".github/workflows/openguard-ci.yml": {
-      "bytes": 7294,
-      "sha256": "2677c68b665ca00e2719bfab5090e4d1aff6831f46e97630dd99981093a239a6"
+      "bytes": 7498,
+      "sha256": "29fa9fe908307e8db1612d93ef78220245ed5c75d4757c5ca55c99636c5528c4"
     },
     ".gitignore": {
       "bytes": 99,
@@ -27,12 +27,12 @@
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
     },
     "README.md": {
-      "bytes": 10511,
-      "sha256": "0f85ed14c560b53d1783fcc6664d30eb2d6983d618d84c7988376004cf99c252"
+      "bytes": 11436,
+      "sha256": "2f2becb9161e9965f53413cf39faa0ee4a0ad8e1b05dd7f72b67565c428bbae5"
     },
     "RESOURCE_USAGE.md": {
-      "bytes": 8455,
-      "sha256": "646bb9fb4007a1717b90c994a85d6cdaaa2ec5c509f361444d9621fd3f4cdf10"
+      "bytes": 8532,
+      "sha256": "e3f75f195ac09df4fb9f325f1b0943aed4d05315e7907433f28261905bda928c"
     },
     "THIRD_PARTY_LICENSES/react-19.2.8-LICENSE": {
       "bytes": 1088,
@@ -59,12 +59,12 @@
       "sha256": "387dd7baa307083401a27c58c362c30832f5ba1dba84f10cc22c33401523f45c"
     },
     "VALIDATION.md": {
-      "bytes": 19202,
-      "sha256": "5ea92ad48bf7e37151787adee4944421c4d2150516ce5fcff821901408ef94fb"
+      "bytes": 22538,
+      "sha256": "9a5c38b1059dd557e3eac403bbdd702e0e6fe4ccb02a520aee2a701eda817c62"
     },
     "VERSION.json": {
-      "bytes": 6144,
-      "sha256": "d89e307663b0662dcf822969fa56c0b30267422a25e20ed2d2711ea1558fdabc"
+      "bytes": 6450,
+      "sha256": "fb09909d8d1a8bca75278230ca2ba07e12135554a6856f64efc104702fe67ff4"
     },
     "application/CONTRIBUTING.md": {
       "bytes": 2912,
@@ -135,8 +135,8 @@
       "sha256": "8d8214453353e81fd9cf6eb511dfd37a5a71b6b0f492b540aad59b444bf926ca"
     },
     "application/backend/app/api/main.py": {
-      "bytes": 53895,
-      "sha256": "18869335518d9d641e5ea7b8e358780dbd19713be0208cc0ae8ab1bcd82e293b"
+      "bytes": 55265,
+      "sha256": "a3b9076ce30361e4965c0406a558383d183963dc4c186c1e5e6665c57b4d576b"
     },
     "application/backend/app/api/models.py": {
       "bytes": 3712,
@@ -163,8 +163,8 @@
       "sha256": "5bfff90e55842cb6ada618bd3b80351929866612aaab606c1244fd6cfd301e6f"
     },
     "application/backend/app/api/service.py": {
-      "bytes": 21885,
-      "sha256": "aaaeb824c236f142cd81753b1f508467b58303bb1c963fb6a6e99b78bc37855f"
+      "bytes": 23337,
+      "sha256": "fde1ca8b3efe8b5079a6a17f0f23482435e4708b8ce34782c6c6f6c2e3ff6589"
     },
     "application/backend/app/api/zip_scan.py": {
       "bytes": 18192,
@@ -283,8 +283,8 @@
       "sha256": "b22af58cc2ef12e6483f238cd18d1873790a5c47580ed2d982bef4afe4c5b729"
     },
     "application/backend/app/headless_scan_report.py": {
-      "bytes": 14924,
-      "sha256": "a3048da32110aea60196075b866ad7703af69b207da8fe5a6067e8a69d9bf621"
+      "bytes": 16451,
+      "sha256": "7785ada357bc172b4dd827bb460dde0fedf84b29f614f7c3ee9efe9fc527ed14"
     },
     "application/backend/app/ingestion/__init__.py": {
       "bytes": 446,
@@ -355,8 +355,16 @@
       "sha256": "966866a6c7cf3d96cbe54a633d7c78374dd8bf795083db43b3de062dfc1d9b6d"
     },
     "application/backend/app/licenses/__init__.py": {
-      "bytes": 254,
-      "sha256": "c93abca5e6a0c48075c08d32c596ccf4bf85cfcedfc02f0f42ead3268fc86fe8"
+      "bytes": 1056,
+      "sha256": "969d88b3f4f64d49307d78b46f6f0b31c35af93533623c52f0f525392449e64e"
+    },
+    "application/backend/app/licenses/compatibility.py": {
+      "bytes": 34918,
+      "sha256": "f253308aed21ac1f6ce8a60320d4a4a26d62f43e9847f49138c6090ee6564fc4"
+    },
+    "application/backend/app/licenses/compatibility_models.py": {
+      "bytes": 3133,
+      "sha256": "7ac64543b199f6e007f87821e456e90c32fac34a6b9b43c79de5aed58ae44db0"
     },
     "application/backend/app/licenses/spdx.py": {
       "bytes": 4612,
@@ -1090,6 +1098,14 @@
       "bytes": 5595,
       "sha256": "782421395d12fcca1c955ff9bf82f5a7a988be1658824ab5cd0138a83157fe0c"
     },
+    "application/frontend/src/components/LicenseCompatibilityPanel.css": {
+      "bytes": 4093,
+      "sha256": "d2949aee74b8a13be13f9ebde3d0d778aec6755cfe2ca669477408cc569acee6"
+    },
+    "application/frontend/src/components/LicenseCompatibilityPanel.tsx": {
+      "bytes": 13186,
+      "sha256": "1227cb69aa3a65fb2df6163beb069108e42d268d832fce997aa9dc8c87a5d13c"
+    },
     "application/frontend/src/components/MaterialClaimsPanel.tsx": {
       "bytes": 18501,
       "sha256": "cc659151d7b4a77ccca4925e035b2710a8a099208bb75d517a572e371f79acb3"
@@ -1275,8 +1291,8 @@
       "sha256": "50ef2d6939630269ca9ce55983cf0fe3575a06c8a5eb8bce5d3036e54ea331e3"
     },
     "application/frontend/src/pages/Risks.tsx": {
-      "bytes": 12572,
-      "sha256": "4991da20855c1942fb78d8d2c7fd0710705cd73bb295a2fe671b21a17be34e90"
+      "bytes": 12719,
+      "sha256": "5e5272bcca88a85d97e9b1f6acd064f1b8d7367e9d2f826852ad9c1d45064b3f"
     },
     "application/frontend/src/pages/ScanDiff.tsx": {
       "bytes": 12959,
@@ -1345,6 +1361,10 @@
     "application/frontend/src/services/fixedSourceNotice.ts": {
       "bytes": 770,
       "sha256": "5cde54b5c84fc22e6b1059333203a3f8c0495018564b0ca4ae877958e0698425"
+    },
+    "application/frontend/src/services/licenseCompatibility.ts": {
+      "bytes": 10863,
+      "sha256": "fa880a4a5136eb1852663ec84ca5a129b58ade94d06fc86a924d07c207ed3dbb"
     },
     "application/frontend/src/services/materialClaims.ts": {
       "bytes": 35437,
@@ -2085,6 +2105,10 @@
     "application/frontend/tests/task54-multi-ecosystems.test.mjs": {
       "bytes": 5436,
       "sha256": "395a6a07ed8e962452c845e6144226eb5ab1b5e7048faf9492f149ee3934eb84"
+    },
+    "application/frontend/tests/task58-license-compatibility.test.mjs": {
+      "bytes": 6767,
+      "sha256": "1fdbb4af7cba4cdf61921debbb4239a77be0cebeb8563cc88454e7245c897e69"
     },
     "application/frontend/tests/team-integration.test.mjs": {
       "bytes": 7394,
@@ -3511,8 +3535,12 @@
       "sha256": "c2f834e2ffee6475fad4b0dd4c65182b108c600dc698f271dcfdb14e7c07a33c"
     },
     "application/tests/unit/test_task56_headless_cli.py": {
-      "bytes": 30361,
-      "sha256": "b452282f4d37bc96ccd9e5844f0e173df171a13b4db698d9583dc4b0c35df81d"
+      "bytes": 30386,
+      "sha256": "f5e01c876f938edd26bb593f80a01a9a10a0ed5aa876aa6d4071206db310345d"
+    },
+    "application/tests/unit/test_task58_license_compatibility.py": {
+      "bytes": 14193,
+      "sha256": "5c77e42d39551b1e4d91e760a2b01413606cd4ffc5cb72c6f2f8c64d52a94d77"
     },
     "application/tests/unit/test_v4_assessment_api.py": {
       "bytes": 11295,
@@ -3543,8 +3571,8 @@
       "sha256": "6489e1755cefe4dae193989bb70c584d59e1ea092984af69294610ec97d391ab"
     },
     "deployment/launcher.py": {
-      "bytes": 35263,
-      "sha256": "f10a013b0c75ef49261016174a4434a88dfdd2a715bd4b9d5d8ec8f228e40636"
+      "bytes": 35641,
+      "sha256": "c995de581a96a4c43de6f65c642e071bad4576eaae9c27858de90a258822ba8b"
     },
     "deployment/requirements.lock": {
       "bytes": 720,
@@ -3588,23 +3616,23 @@
     },
     "web/about.html": {
       "bytes": 898,
-      "sha256": "e4c7f9c9198ce74ec597afce4e52bbeca1c1fa67f13b27e1b3895d98bc283a45"
+      "sha256": "eed60c890388a76de5147bb2b879e99d1cb379ea8cb126ae79e8d3824fd09596"
     },
-    "web/assets/main-DfOMEasE.css": {
-      "bytes": 433430,
-      "sha256": "6a7dadd641e679bf97e591f55fc7df841a978c195fa74e43e73ba8d8e36cf7fd"
+    "web/assets/main-CzamUJLH.js": {
+      "bytes": 303439,
+      "sha256": "455fa452d18b27d314d96b5cf1bf21d6c6df3b23494870c7b567263e8cab1c94"
     },
-    "web/assets/main-Fhw4By9g.js": {
-      "bytes": 290408,
-      "sha256": "1bd6d1d19315ee8512ee981de4394abc7be67cbdab5a0bf30338d0eca95ad113"
+    "web/assets/main-D1Dke-iz.css": {
+      "bytes": 436821,
+      "sha256": "b6f8b808ea339d08ece33de900565e6249cce9779d22ca0f7b838eae1e81eb53"
     },
     "web/assets/p2-workbench-BpK-WfaC.css": {
       "bytes": 50269,
       "sha256": "52f626427defd032001820ea6a4b656cd2d263f713e75a45b9e02ffb8154edb2"
     },
-    "web/assets/p2-workbench-BtGfqYV0.js": {
-      "bytes": 287386,
-      "sha256": "a3101a87c93c7ba82665eac24f9f83f8d36062a880acc4872d455f99c2721324"
+    "web/assets/p2-workbench-CTx-e-Sd.js": {
+      "bytes": 287395,
+      "sha256": "038f6ad9e77a5343c6216feb363b25157a2f4710a79c829ca5a5edb5a3a875c6"
     },
     "web/assets/react-runtime-YahHAMAi.js": {
       "bytes": 189620,
@@ -3612,7 +3640,7 @@
     },
     "web/index.html": {
       "bytes": 898,
-      "sha256": "e4c7f9c9198ce74ec597afce4e52bbeca1c1fa67f13b27e1b3895d98bc283a45"
+      "sha256": "eed60c890388a76de5147bb2b879e99d1cb379ea8cb126ae79e8d3824fd09596"
     },
     "web/third-party-licenses.txt": {
       "bytes": 5794,
