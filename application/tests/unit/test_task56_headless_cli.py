@@ -24,11 +24,11 @@ from deployment import launcher
 
 ROOT = Path(__file__).resolve().parents[3]
 SAMPLE = "samples/is-number-7.0.0-derived.zip"
-SCHEMA = "openguard-cli-scan/1"
+SCHEMA = "openguard-cli-scan/2"
 ECOSYSTEMS = {"npm", "pypi", "golang", "cargo", "maven", "unknown"}
 REPORT_FIELDS = {
     "schema_version", "input", "scan", "root_packages", "components", "conflicts",
-    "root_license_checks", "copyleft_findings", "diagnostics", "policy",
+    "root_license_checks", "copyleft_findings", "license_compatibility", "diagnostics", "policy",
 }
 PACKAGE = {
     "name": "cli-fixture", "version": "1.0.0", "license": "MIT",

@@ -44,6 +44,7 @@ from app.api.models import (
     ZipScanCreateFields,
 )
 from app.api.service import APPLICATION_VERSION, ApiError, DependencyEvidencePage, ScanApiService
+from app.licenses.compatibility_models import LicenseCompatibilityResponse
 from app.api.git_scan import GitScanRuntime
 from app.api.zip_scan import MULTIPART_REQUEST_MAX_BYTES, RequestBodyTooLarge, ZipScanRuntime
 from app.domain.models import Ecosystem, Evidence, FindingOutcome, ReportFormat, ReportLink, Severity, VerificationStatus
@@ -374,6 +375,26 @@ def _router() -> APIRouter:
             scan_id, account_id=account_id, cursor_key=request.app.state.history_cursor_key,
             source=source, limit=limit, cursor=cursor,
         )
+
+    @router.get(
+        "/scans/{scan_id}/license-compatibility", response_model=LicenseCompatibilityResponse,
+        responses={**_ERROR_RESPONSES, 400: {"model": ErrorEnvelope}, 401: {"model": ErrorEnvelope}},
+    )
+    def get_license_compatibility(
+        scan_id: str, request: Request, response: Response,
+        service: Annotated[ScanApiService, Depends(_service)],
+        target_license: Annotated[str | None, Query(max_length=100)] = None,
+    ) -> LicenseCompatibilityResponse:
+        account_id = getattr(request.state, "local_account_id", None)
+        if not isinstance(account_id, str) or not ACCOUNT_ID.fullmatch(account_id):
+            raise ApiError(status_code=401, code="auth_login_required",
+                           message="Sign in to read license compatibility.", reason="login_required")
+        query = request.query_params
+        if set(query) - {"target_license"} or len(query.multi_items()) != len(query):
+            raise ApiError(status_code=400, code="license_compatibility_query_invalid",
+                           message="Use one value for each supported query parameter.", reason="query_invalid")
+        response.headers["Cache-Control"] = "private, no-store"
+        return service.license_compatibility(scan_id, target_license=target_license)
 
     @router.get("/scans/{scan_id}/risks", response_model=RisksResponse, responses=_ERROR_RESPONSES)
     def get_risks(

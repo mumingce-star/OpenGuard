@@ -12,6 +12,7 @@ from urllib.parse import quote, unquote
 from app.domain.models import (
     ComponentType, EvidenceKind, ScanRun, ScanStatus, _contains_absolute_path_fragment,
 )
+from app.licenses.compatibility import evaluate_scan_compatibility
 from app.p1.dependency_evidence import project_dependency_evidence
 from app.p2.material_claims import COPYLEFT, LICENSE_MATCHES, WEAK_COPYLEFT, _COPYLEFT_DECLARATION_FAMILIES
 from app.p2b.material_claims import parse_claim_material
@@ -19,7 +20,7 @@ from app.security.archive_path import normalize_member_path
 from app.security.errors import IngestionSecurityError
 from app.security.limits import ZipSafetyLimits
 
-SCHEMA_VERSION = "openguard-cli-scan/1"
+SCHEMA_VERSION = "openguard-cli-scan/2"
 ROOT_LICENSE_LIMIT = 65536
 ROOT_LICENSE_NAMES = frozenset({"license", "license.txt", "license.md", "copying", "copying.txt"})
 _ECOSYSTEMS = ("npm", "pypi", "golang", "cargo", "maven", "unknown")
@@ -149,6 +150,7 @@ def build_report(
     license_files: Mapping[str, bytes],
     fail_on: tuple[str, ...],
     skipped_entries: int = 0,
+    target_license: str | None = None,
 ) -> dict:
     """Project the saved dependency facts and apply the caller's exit policy."""
     if run.status not in {ScanStatus.COMPLETED, ScanStatus.PARTIAL} or run.project.root_digest is None:
@@ -203,6 +205,9 @@ def build_report(
     conflicts = [projected_conflicts[key] for key in sorted(projected_conflicts)]
     root_checks, root_findings = _root_license_observations(license_files, roots, licenses)
     findings.extend(root_findings)
+    compatibility = evaluate_scan_compatibility(
+        run, usage=usage, target_license=target_license, root_license_checks=root_checks,
+    )
     diagnostics = [
         {"code": _safe_text(error.code, "scan_diagnostic"), "stage": error.stage.value,
          "message": _safe_text(error.message, "Diagnostic text withheld."), "evidence_ids": list(error.evidence_ids)}
@@ -212,8 +217,15 @@ def build_report(
         diagnostics.append({"code": "directory_entries_skipped", "stage": "ingestion",
                             "message": f"Skipped {skipped_entries} unsafe directory entries.", "evidence_ids": []})
     conflict_count = sum(item["status"] == "confirmed" for item in conflicts)
+    incompatible_count = compatibility["summary"]["incompatible_count"]
+    review_required_count = compatibility["summary"]["review_required_count"]
     partial = run.status == ScanStatus.PARTIAL or bool(skipped_entries)
-    matches = {"conflict": conflict_count > 0, "copyleft": bool(findings), "partial": partial}
+    matches = {
+        "conflict": conflict_count > 0,
+        "copyleft": bool(findings),
+        "partial": partial,
+        "incompatible": incompatible_count > 0,
+    }
     triggered = [rule for rule in sorted(set(fail_on)) if matches[rule]]
     return {
         "schema_version": SCHEMA_VERSION,
@@ -223,12 +235,14 @@ def build_report(
         "scan": {"status": "partial" if partial else "completed", "usage": dict(usage),
                  "component_count": len(components), "root_package_count": len(root_packages),
                  "ecosystem_counts": counts, "conflict_count": conflict_count,
-                 "copyleft_count": len(findings), "gap_count": len(diagnostics)},
+                 "copyleft_count": len(findings), "incompatible_count": incompatible_count,
+                 "review_required_count": review_required_count, "gap_count": len(diagnostics)},
         "root_packages": root_packages,
         "components": components,
         "conflicts": conflicts,
         "root_license_checks": root_checks,
         "copyleft_findings": sorted(findings, key=_json_key),
+        "license_compatibility": compatibility,
         "diagnostics": sorted(diagnostics, key=_json_key),
         "policy": {"fail_on": sorted(set(fail_on)), "triggered": triggered, "exit_code": int(bool(triggered))},
     }
@@ -236,15 +250,19 @@ def build_report(
 
 def _summary(document: dict) -> list[tuple[str, object]]:
     scan, policy, source = document["scan"], document["policy"], document["input"]
+    compat = document["license_compatibility"]
     return [
         ("Input", f"{source['name']} ({source['kind']})"),
         ("Status", scan["status"]),
         ("Components", scan["component_count"]),
         ("Root packages", scan["root_package_count"]),
+        ("Target license", f"{compat['target']['license'] or 'UNKNOWN'} ({compat['target']['source']})"),
         ("Ecosystems", ", ".join(f"{name}={count}" for name, count in scan["ecosystem_counts"].items())),
         ("Usage", ", ".join(name for name, active in scan["usage"].items() if active) or "none"),
         ("Confirmed version conflicts", scan["conflict_count"]),
         ("Copyleft findings", scan["copyleft_count"]),
+        ("Incompatible license verdicts", scan["incompatible_count"]),
+        ("Review-required license verdicts", scan["review_required_count"]),
         ("Diagnostics", scan["gap_count"]),
         ("Fail-on policies", ", ".join(policy["fail_on"]) or "none"),
         ("Triggered policies", ", ".join(policy["triggered"]) or "none"),
@@ -253,6 +271,7 @@ def _summary(document: dict) -> list[tuple[str, object]]:
 
 
 def _sections(document: dict) -> list[tuple[str, tuple[str, ...], list[tuple]]]:
+    compat = document["license_compatibility"]
     return [
         ("Root packages", ("Name", "Version", "Ecosystem", "SPDX"), [
             (row["name"], row["version"], row["ecosystem"], row["declared_license"])
@@ -262,6 +281,14 @@ def _sections(document: dict) -> list[tuple[str, tuple[str, ...], list[tuple]]]:
             (row["file_path"], row["sha256"], row["text_license"], row["declared_license"],
              "SPDX_TEXT_CONFLICT" if row["spdx_text_conflict"] else "—", row["support_state"])
             for row in document["root_license_checks"]
+        ]),
+        ("License compatibility (target <- dependency)", ("Component", "Version", "Ecosystem", "Declared SPDX", "Status", "Rule"), [
+            (row["name"], row["version"], row["ecosystem"], row["declared_license"], row["status"], row["rule_id"])
+            for row in compat["target_assessments"]
+        ]),
+        ("Pairwise license conflicts", ("License A", "License B", "Status", "Rule"), [
+            (row["license_a"], row["license_b"], row["status"], row["rule_id"])
+            for row in compat["pairwise_conflicts"]
         ]),
         ("Version conflicts", ("Ecosystem", "Name", "Status", "Declaration", "Lock"), [
             (row["ecosystem"], row["name"], row["status"], (row["declaration"] or {}).get("version"),

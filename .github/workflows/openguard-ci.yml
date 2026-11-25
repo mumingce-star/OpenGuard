@@ -61,11 +61,12 @@ jobs:
             tests/unit/test_task37_real_material_chain.py tests/unit/test_task50_*.py \
             tests/unit/test_task52_container_and_cross_platform.py \
             tests/unit/test_task54_*.py \
-            tests/unit/test_task56_headless_cli.py
+            tests/unit/test_task56_headless_cli.py \
+            tests/unit/test_task58_license_compatibility.py
       - name: Smoke-test the offline headless scan
         run: |
           scan=$(python -B openguard.py scan samples/is-number-7.0.0-derived.zip --format json)
-          printf '%s\n' "$scan" | python -B -c 'import json, sys; report = json.load(sys.stdin); assert report["schema_version"] == "openguard-cli-scan/1"; assert any(item["name"] == "is-number" for item in report["components"])'
+          printf '%s\n' "$scan" | python -B -c 'import json, sys; report = json.load(sys.stdin); assert report["schema_version"] == "openguard-cli-scan/2"; assert "license_compatibility" in report; assert any(item["name"] == "is-number" for item in report["components"])'
           test ! -e runtime
       - name: Run the real isolated host self-test
         run: python -B openguard.py self-test
@@ -105,7 +106,8 @@ jobs:
           node --test tests/landing-anchor.test.mjs tests/task33-material-claims.test.mjs \
             tests/task37-real-material-chain.test.mjs tests/task40-p5-experience.test.mjs \
             tests/task50*.test.mjs \
-            tests/task54-multi-ecosystems.test.mjs
+            tests/task54-multi-ecosystems.test.mjs \
+            tests/task58-license-compatibility.test.mjs
       - name: Scanner and deployment configuration tests
         working-directory: application
         run: |
@@ -135,7 +137,7 @@ jobs:
             /opt/openguard-venv/bin/python -B openguard.py self-test
           scan=$(docker run --rm --network none --security-opt no-new-privileges openguard:ci \
             /opt/openguard-venv/bin/python -B openguard.py scan samples/is-number-7.0.0-derived.zip --format json)
-          printf '%s\n' "$scan" | python3 -B -c 'import json, sys; report = json.load(sys.stdin); assert report["schema_version"] == "openguard-cli-scan/1"; assert any(item["name"] == "is-number" for item in report["components"])'
+          printf '%s\n' "$scan" | python3 -B -c 'import json, sys; report = json.load(sys.stdin); assert report["schema_version"] == "openguard-cli-scan/2"; assert "license_compatibility" in report; assert any(item["name"] == "is-number" for item in report["components"])'
       - name: Check the mapped HTTP endpoints and graceful stop
         shell: bash
         run: |

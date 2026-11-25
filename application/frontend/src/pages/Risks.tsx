@@ -18,6 +18,7 @@ import {
   ActionButton,
 } from "../components/ui";
 import { EvidenceReader } from "../components/EvidenceReader";
+import { LicenseCompatibilityPanel } from "../components/LicenseCompatibilityPanel";
 export function Risks({
   scan,
   query,
@@ -50,6 +51,7 @@ export function Risks({
           </div>)}
         </details>
       </Panel>}
+      <LicenseCompatibilityPanel key={scan.id} scan={scan} />
       <div className="og-filters">
         <label className="og-field">
           搜索风险

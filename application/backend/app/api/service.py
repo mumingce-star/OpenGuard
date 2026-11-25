@@ -43,6 +43,8 @@ from app.domain.models import (
     SourceType,
 )
 from app.assessment.engine import canonical_bytes, digest, facts_digest
+from app.licenses.compatibility import evaluate_scan_compatibility, normalize_target_license
+from app.licenses.compatibility_models import LicenseCompatibilityResponse
 from app.p1.dependency_evidence import DependencyEvidenceItem, DependencySource, project_dependency_evidence
 from app.p1.models import P1Model, P1ScanRef
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError, StoredScanRun
@@ -396,6 +398,16 @@ class ScanApiService:
                 return evidence
         _fail(status_code=404, code="evidence_not_found", message="Evidence was not found.", reason="not_found")
 
+    @staticmethod
+    def _scan_ref(stored: StoredScanRun) -> P1ScanRef:
+        run = stored.run
+        inventory = run.provenance.inventory_digest
+        return P1ScanRef(
+            scan_id=run.id, registry_revision=stored.revision, revision=run.project.revision,
+            facts_hash=facts_digest(run), input_hash=run.provenance.input_digest.value,
+            inventory_hash=inventory.value if inventory else None, status=run.status,
+        )
+
     def dependency_evidence(
         self, scan_id: str, *, account_id: str, cursor_key: bytes,
         source: DependencySource | None, limit: int, cursor: str | None,
@@ -403,12 +415,7 @@ class ScanApiService:
         stored = self._get_stored_run(scan_id)
         run = stored.run
         self._require_ready(run)
-        inventory = run.provenance.inventory_digest
-        scan_ref = P1ScanRef(
-            scan_id=run.id, registry_revision=stored.revision, revision=run.project.revision,
-            facts_hash=facts_digest(run), input_hash=run.provenance.input_digest.value,
-            inventory_hash=inventory.value if inventory else None, status=run.status,
-        )
+        scan_ref = self._scan_ref(stored)
         key = hmac.digest(cursor_key, b"openguard/dependency-evidence/1\0" + account_id.encode(), "sha256")
         query = digest({"scan_id": scan_ref.scan_id, "source": source, "limit": limit})
         snapshot = digest(scan_ref.model_dump(mode="json"))
@@ -419,6 +426,31 @@ class ScanApiService:
             scan_ref=scan_ref, source=source, limit=limit, total=total, returned=len(items), next_cursor=next_cursor,
             incomplete=run.status is ScanStatus.PARTIAL or any(item.incomplete for item in items), items=items,
         )
+
+    def license_compatibility(
+        self, scan_id: str, *, target_license: str | None = None,
+    ) -> LicenseCompatibilityResponse:
+        stored = self._get_stored_run(scan_id)
+        run = stored.run
+        self._require_ready(run)
+        try:
+            normalized_target = normalize_target_license(target_license)
+        except ValueError:
+            _fail(
+                status_code=400,
+                code="invalid_target_license",
+                message="Use a single supported SPDX identifier or PROPRIETARY.",
+                reason="invalid_target_license",
+            )
+        usage_obj = run.project.usage
+        usage = {
+            "commercial": usage_obj.commercial if usage_obj else False,
+            "distributed": usage_obj.distributed if usage_obj else False,
+            "modified": usage_obj.modified if usage_obj else False,
+            "network_service": usage_obj.network_service if usage_obj else False,
+        }
+        payload = evaluate_scan_compatibility(run, usage=usage, target_license=normalized_target)
+        return LicenseCompatibilityResponse(scan_ref=self._scan_ref(stored), **payload)
 
     def report(self, scan_id: str, report_format: ReportFormat) -> ReportLink:
         run = self._get_run(scan_id)

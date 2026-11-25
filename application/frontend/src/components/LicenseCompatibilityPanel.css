@@ -1,0 +1,237 @@
+.og-compat-panel {
+  min-width: 0;
+  margin-block: 12px;
+}
+
+.og-compat-target-select {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.og-compat-target-select select {
+  min-height: 30px;
+  padding: 4px 8px;
+}
+
+.og-compat-message,
+.og-compat-error {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--og-border);
+}
+
+.og-compat-error {
+  color: var(--og-warning, #b45309);
+  background: var(--og-warning-soft, #fef9ec);
+}
+
+.og-compat-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--og-border);
+  background: var(--ui-panel-soft);
+}
+
+.og-compat-target-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.og-compat-usage-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.og-compat-usage-chips > span {
+  border: 1px solid var(--og-border);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.og-compat-usage-chips > span.is-active {
+  border-color: var(--og-accent);
+  color: var(--og-accent);
+  font-weight: 600;
+}
+
+.og-compat-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--og-border);
+}
+
+.og-compat-counts button {
+  border: 1px solid var(--og-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  background: transparent;
+  color: var(--og-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.og-compat-counts button.is-selected {
+  border-color: var(--og-accent);
+  background: var(--ui-panel-soft);
+  font-weight: 600;
+}
+
+.og-compat-pill {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--og-border);
+}
+
+.og-compat-pill.is-incompatible,
+td.is-incompatible {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.og-compat-pill.is-review_required,
+td.is-review_required {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.og-compat-pill.is-conditional,
+td.is-conditional {
+  color: #1e40af;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.og-compat-pill.is-compatible,
+td.is-compatible {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.og-compat-pill.is-unknown,
+td.is-unknown {
+  color: #374151;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.og-compat-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--og-border);
+}
+
+.og-compat-section > h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.og-compat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.og-compat-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.3fr) max-content max-content;
+  gap: 10px;
+  align-items: center;
+}
+
+.og-compat-identity,
+.og-compat-license {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.og-compat-action {
+  color: var(--og-accent);
+  font-weight: 600;
+}
+
+.og-compat-detail {
+  padding: 10px 14px;
+  background: var(--ui-panel-soft);
+  border-bottom: 1px solid var(--og-border);
+  font-size: 12px;
+}
+
+.og-compat-obligations {
+  margin: 6px 0;
+  padding-inline-start: 18px;
+}
+
+.og-compat-pairs {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.og-compat-pair-card {
+  border: 1px solid var(--og-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+
+.og-compat-pair-card header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.og-compat-matrix-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.og-compat-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.og-compat-matrix th,
+.og-compat-matrix td {
+  border: 1px solid var(--og-border);
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.og-compat-matrix th[scope="row"] {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.og-compat-limits {
+  padding: 10px 16px;
+  font-size: 11px;
+  color: var(--og-muted);
+}

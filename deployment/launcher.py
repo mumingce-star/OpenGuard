@@ -582,7 +582,7 @@ def _run_headless_scan(args, raw_scan_args):
         selected = _scan_selection(args.usage, set(uses))
         usage = dict.fromkeys(uses, False)
         usage.update(dict.fromkeys(selected, True))
-        fail_on = _scan_selection(args.fail_on, {"conflict", "copyleft", "partial"})
+        fail_on = _scan_selection(args.fail_on, {"conflict", "copyleft", "partial", "incompatible"})
         require_platform()
     except (ValueError, RuntimeError):
         print("ERROR: invalid_scan_arguments_or_platform. Use CPython 3.12 on macOS or Linux.", file=sys.stderr)
@@ -604,15 +604,20 @@ def _run_headless_scan(args, raw_scan_args):
         use_package_backend()
         from app.headless_scan import HeadlessScanError, scan_target
         from app.headless_scan_report import build_report, render_report
+        from app.licenses.compatibility import normalize_target_license
     except (ImportError, RuntimeError, ValueError, OSError):
         print("ERROR: headless_scan_backend_unavailable", file=sys.stderr)
         return 2
     try:
+        try:
+            normalized_target = normalize_target_license(args.target_license)
+        except ValueError as error:
+            raise HeadlessScanError("invalid_target_license") from error
         case = scan_target(Path(args.target), usage=usage, package_root=ROOT)
         document = build_report(
             case.run, input_kind=case.kind, input_name=case.name, input_sha256=case.sha256,
             excluded_dirs=case.excluded_dirs, usage=usage, license_files=case.license_files,
-            fail_on=fail_on, skipped_entries=case.skipped_entries,
+            fail_on=fail_on, skipped_entries=case.skipped_entries, target_license=normalized_target,
         )
         text = render_report(document, args.format)
         if args.output is None:
@@ -656,6 +661,7 @@ def main(argv=None):
     scan.add_argument('--output')
     scan.add_argument('--usage', default='')
     scan.add_argument('--fail-on', default='')
+    scan.add_argument('--target-license', default=None)
     args=parser.parse_args(arguments)
     if args.command == 'scan':
         return _run_headless_scan(args, arguments[1:])
