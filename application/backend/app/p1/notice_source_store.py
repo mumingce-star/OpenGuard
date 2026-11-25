@@ -512,6 +512,71 @@ class StagedNoticeSourceReader:
         return self.source_store._read_staged(scan_id)
 
 
+_ROOT_LICENSE_BASENAMES = frozenset({'license', 'license.txt', 'license.md', 'copying', 'copying.txt'})
+_ROOT_LICENSE_LIMIT = 65536
+
+
+class StagedRootLicenseReader:
+    """Read-only accessor for staged root license texts without mutating store or StagedNoticeSource."""
+
+    def __init__(self, source_store: NoticeSourceStore):
+        self.source_store = source_store
+
+    def read_root_license_files(
+        self,
+        scan_id: str,
+        *,
+        expected_input_digest: str,
+        expected_inventory_digest: str | None,
+    ) -> dict[str, bytes]:
+        if not _text(scan_id):
+            raise NoticeSourceStoreError('invalid_argument')
+        try:
+            db = self.source_store._connect()
+            if db is None:
+                return {}
+            with closing(db):
+                saved = self.source_store._load_stage(db, scan_id)
+            if saved is None:
+                return {}
+            meta, package_bytes = saved
+            if (
+                meta.get('observed_input_digest') != expected_input_digest
+                or meta.get('observed_inventory_digest') != expected_inventory_digest
+            ):
+                return {}
+            package = json.loads(package_bytes.decode('utf-8'))
+        except (OSError, sqlite3.Error) as error:
+            raise self.source_store._error(error) from error
+        except (UnicodeDecodeError, json.JSONDecodeError, AttributeError, TypeError) as error:
+            raise NoticeSourceStoreError('storage_unavailable') from error
+
+        files: dict[str, bytes] = {}
+        for observation in package.get('observations', ()):
+            if type(observation) is not dict:
+                continue
+            locator = observation.get('locator')
+            content = observation.get('content')
+            if (
+                type(locator) is not str
+                or '/' in locator
+                or locator.casefold() not in _ROOT_LICENSE_BASENAMES
+                or type(content) is not dict
+                or content.get('state') != 'full'
+            ):
+                continue
+            text = content.get('text')
+            if type(text) is not str:
+                continue
+            raw = text.encode('utf-8')
+            if not 0 < len(raw) <= _ROOT_LICENSE_LIMIT:
+                continue
+            if _sha(raw) != content.get('whole_bytes_sha256'):
+                continue
+            files[locator] = raw
+        return files
+
+
 class BoundNoticeSourceReader:
     """Read only immutable BOUND material; never query scanner, registry or network."""
     def __init__(self, source_store: NoticeSourceStore):

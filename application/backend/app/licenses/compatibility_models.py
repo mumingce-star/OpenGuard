@@ -11,6 +11,7 @@ from app.licenses.compatibility import CompatibilityStatus, RULE_VERSION, SCHEMA
 from app.p1.models import P1Model, P1ScanRef
 
 Text = Annotated[str, Field(min_length=1, max_length=2000)]
+LicenseExprText = Annotated[str, Field(min_length=1, max_length=1000)]
 
 
 class TargetLicenseResolution(P1Model):
@@ -58,7 +59,7 @@ class CompatibilityComponentRef(P1Model):
 
 
 class TargetAssessment(CompatibilityComponentRef):
-    declared_license: str | None = Field(default=None, max_length=200)
+    declared_license: str | None = Field(default=None, max_length=1000)
     status: CompatibilityStatus
     rule_id: Text
     rationale: Text
@@ -67,8 +68,8 @@ class TargetAssessment(CompatibilityComponentRef):
 
 
 class PairwiseConflict(P1Model):
-    license_a: Text
-    license_b: Text
+    license_a: LicenseExprText
+    license_b: LicenseExprText
     status: Literal["CONDITIONAL", "REVIEW_REQUIRED", "INCOMPATIBLE"]
     rule_id: Text
     rationale: Text
@@ -84,7 +85,7 @@ class CompatibilityMatrixCell(P1Model):
 
 
 class CompatibilityMatrix(P1Model):
-    licenses: list[str]
+    licenses: list[LicenseExprText]
     truncated: bool
     cells: list[CompatibilityMatrixCell]
 

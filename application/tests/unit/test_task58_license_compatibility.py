@@ -19,6 +19,7 @@ from app.licenses.compatibility import (
     SCHEMA_VERSION,
     SUPPORTED_SPDX,
     SUPPORTED_TARGETS,
+    canonicalize_compatibility_expression,
     evaluate_pairwise_atomic,
     evaluate_pairwise_expressions,
     evaluate_scan_compatibility,
@@ -262,3 +263,175 @@ def test_asgi_license_compatibility_endpoint_contracts(tmp_path, monkeypatch):
         assert prop_resp["target"]["license"] == "PROPRIETARY"
         assert prop_resp["target"]["source"] == "explicit"
         assert prop_resp["scan_ref"]["scan_id"] == stored.run.id
+
+
+def test_headless_cli_network_service_usage_flag(tmp_path):
+    """Audit Finding #1: --usage network_service is accepted and enforced."""
+    package = _package_copy(tmp_path)
+    archive = tmp_path / "agpl-network.zip"
+    _write_spdx_archive(archive, "PROPRIETARY", ["AGPL-3.0-only"])
+
+    res = _run_cli(
+        package, tmp_path, archive,
+        "--format", "json",
+        "--target-license", "PROPRIETARY",
+        "--usage", "network_service",
+        "--fail-on", "incompatible",
+    )
+    assert res.returncode == 1, res.stderr
+    doc = json.loads(res.stdout)
+    assert doc["scan"]["usage"] == {
+        "commercial": False,
+        "distributed": False,
+        "modified": False,
+        "network_service": True,
+    }
+    assert doc["license_compatibility"]["summary"]["overall_status"] == "INCOMPATIBLE"
+
+    mit_zip = tmp_path / "all-usage-flags.zip"
+    _write_spdx_archive(mit_zip, "MIT", ["ISC"])
+    all_flags = _run_cli(
+        package, tmp_path, mit_zip,
+        "--format", "json",
+        "--usage", "commercial,distributed,modified,network_service",
+        "--fail-on", "incompatible",
+    )
+    assert all_flags.returncode == 0, all_flags.stderr
+    assert json.loads(all_flags.stdout)["scan"]["usage"] == {
+        "commercial": True,
+        "distributed": True,
+        "modified": True,
+        "network_service": True,
+    }
+
+
+def test_asgi_web_api_detects_root_spdx_text_conflict_like_cli(tmp_path, monkeypatch):
+    """Audit Finding #2: Web API matches CLI root_conflict UNKNOWN when LICENSE disagrees with package.json."""
+    profile = json.loads(
+        (ROOT / "application/tests/fixtures/task49-copyleft-licenses.json").read_text(encoding="utf-8"),
+    )["licenses"]["GPL-3.0"]
+    gpl_bytes = profile["text"].encode("utf-8")
+    assert sha256(gpl_bytes).hexdigest() == profile["sha256"]
+
+    zip_path = tmp_path / "web-root-conflict.zip"
+    _write_spdx_archive(zip_path, "MIT", ["MIT"])
+    members = {}
+    with ZipFile(zip_path, "r") as zf:
+        for name in zf.namelist():
+            members[name] = zf.read(name)
+    members["LICENSE"] = gpl_bytes
+
+    for gateway in _open_zip_gateway(tmp_path, monkeypatch, assessment_and_p2=True):
+        session = gateway.register("task58-conflict-user")
+        status_url, _ = gateway.upload(session, members, filename="web-root-conflict.zip")
+        scan_path = status_url.removesuffix("/status")
+
+        auto_data = _checked(gateway.client.get(scan_path + "/license-compatibility"), 200).json()
+        assert auto_data["target"]["license"] is None
+        assert auto_data["target"]["source"] == "root_conflict"
+        assert auto_data["target"]["status"] == "UNKNOWN"
+        assert auto_data["target"]["gaps"] == ["root_spdx_text_conflict"]
+        assert auto_data["summary"]["overall_status"] == "UNKNOWN"
+
+        explicit_data = _checked(
+            gateway.client.get(scan_path + "/license-compatibility", params={"target_license": "MIT"}),
+            200,
+        ).json()
+        assert explicit_data["target"]["license"] == "MIT"
+        assert explicit_data["target"]["source"] == "explicit"
+        assert explicit_data["summary"]["overall_status"] == "COMPATIBLE"
+
+
+def test_target_independent_incompatible_when_target_unresolved(tmp_path):
+    """Audit Finding #3: commercial+CC-BY-NC-4.0 and self-contradictory AND fail even when target is UNKNOWN."""
+    verdict = evaluate_target_expression(None, "CC-BY-NC-4.0", {"commercial": True})
+    assert verdict["status"] == "INCOMPATIBLE"
+    assert verdict["rule_id"] == "COMPAT-CC-BY-NC-COMMERCIAL"
+
+    non_comm = evaluate_target_expression(None, "CC-BY-NC-4.0", {"commercial": False})
+    assert non_comm["status"] == "UNKNOWN"
+
+    self_bad = evaluate_target_expression(None, "Apache-2.0 AND GPL-2.0-only", {"distributed": True})
+    assert self_bad["status"] == "INCOMPATIBLE"
+    assert self_bad["rule_id"] == "COMPAT-SELF-INCOMPATIBLE-AND"
+
+    # Even with an otherwise CONDITIONAL target, an internal AND contradiction stays INCOMPATIBLE.
+    masked_target = evaluate_target_expression("GPL-2.0-or-later", "Apache-2.0 AND GPL-2.0-only", {"distributed": True})
+    assert masked_target["status"] == "INCOMPATIBLE"
+    assert masked_target["rule_id"] == "COMPAT-SELF-INCOMPATIBLE-AND"
+
+    package = _package_copy(tmp_path)
+    nc_zip = tmp_path / "cc-by-nc-no-root.zip"
+    _write_spdx_archive(nc_zip, None, ["CC-BY-NC-4.0"])
+    res = _run_cli(package, tmp_path, nc_zip, "--format", "json", "--usage", "commercial", "--fail-on", "incompatible")
+    assert res.returncode == 1, res.stderr
+    report = json.loads(res.stdout)
+    assert report["license_compatibility"]["target"]["license"] is None
+    assert report["license_compatibility"]["summary"]["overall_status"] == "INCOMPATIBLE"
+    assert report["scan"]["incompatible_count"] == 1
+
+    and_zip = tmp_path / "self-contradicting-and-no-root.zip"
+    _write_spdx_archive(and_zip, None, ["Apache-2.0 AND GPL-2.0-only"])
+    res_and = _run_cli(package, tmp_path, and_zip, "--format", "json", "--usage", "distributed", "--fail-on", "incompatible")
+    assert res_and.returncode == 1, res_and.stderr
+    assert json.loads(res_and.stdout)["license_compatibility"]["summary"]["overall_status"] == "INCOMPATIBLE"
+
+
+def test_pairwise_spdx_and_expression_order_invariance(tmp_path):
+    """Audit Finding #4: swapping AND/OR operands produces identical canonical keys, verdicts, and exit codes."""
+    assert canonicalize_compatibility_expression("MIT AND GPL-2.0-only") == "GPL-2.0-only AND MIT"
+    assert canonicalize_compatibility_expression("GPL-2.0-only AND MIT") == "GPL-2.0-only AND MIT"
+    assert canonicalize_compatibility_expression("MIT AND MIT") == "MIT"
+
+    usage = {"distributed": True, "commercial": False}
+    for expr1_a, expr1_b in (
+        ("MIT AND GPL-2.0-only", "GPL-2.0-only AND MIT"),
+        ("Apache-2.0 AND GPL-2.0-only", "GPL-2.0-only AND Apache-2.0"),
+    ):
+        other = "Apache-2.0 OR GPL-2.0-only"
+        v1 = evaluate_pairwise_expressions(expr1_a, other, usage)
+        v2 = evaluate_pairwise_expressions(expr1_b, other, usage)
+        v3 = evaluate_pairwise_expressions(other, expr1_a, usage)
+        v4 = evaluate_pairwise_expressions(other, expr1_b, usage)
+        assert v1 == v2 == v3 == v4
+
+    package = _package_copy(tmp_path)
+    zip_a = tmp_path / "order-a.zip"
+    zip_b = tmp_path / "order-b.zip"
+    _write_spdx_archive(zip_a, None, ["MIT AND GPL-2.0-only", "Apache-2.0 OR GPL-2.0-only"])
+    _write_spdx_archive(zip_b, None, ["GPL-2.0-only AND MIT", "Apache-2.0 OR GPL-2.0-only"])
+    res_a = _run_cli(package, tmp_path, zip_a, "--format", "json", "--usage", "distributed", "--fail-on", "incompatible")
+    res_b = _run_cli(package, tmp_path, zip_b, "--format", "json", "--usage", "distributed", "--fail-on", "incompatible")
+    assert res_a.returncode == res_b.returncode == 0
+    doc_a = json.loads(res_a.stdout)["license_compatibility"]
+    doc_b = json.loads(res_b.stdout)["license_compatibility"]
+    assert doc_a["matrix"] == doc_b["matrix"]
+    assert doc_a["pairwise_conflicts"][0]["status"] == doc_b["pairwise_conflicts"][0]["status"]
+    assert doc_a["pairwise_conflicts"][0]["rule_id"] == doc_b["pairwise_conflicts"][0]["rule_id"]
+
+
+def test_long_normalized_spdx_expression_over_200_chars_returns_200(tmp_path, monkeypatch):
+    """Audit Finding #5: valid normalized SPDX expressions > 200 chars must not cause HTTP 500."""
+    raw_long = " or ".join([
+        "agpl 3.0", "apache 2.0", "bsd 2 clause", "bsd 3 clause", "cc0",
+        "cddl 1.0", "epl 2.0", "gpl 2.0", "gpl 2.0 or later", "gpl 3.0",
+        "isc", "lgpl 2.1", "lgpl 3.0", "mit", "mpl 2.0", "unlicense",
+    ])
+    assert len(raw_long) <= 200
+    canonical_long = canonicalize_compatibility_expression(raw_long)
+    assert 209 <= len(canonical_long) <= 500
+
+    zip_path = tmp_path / "long-spdx.zip"
+    _write_spdx_archive(zip_path, "MIT", [raw_long, "GPL-2.0-only"])
+    members = {}
+    with ZipFile(zip_path, "r") as zf:
+        for name in zf.namelist():
+            members[name] = zf.read(name)
+
+    for gateway in _open_zip_gateway(tmp_path, monkeypatch):
+        session = gateway.register("task58-long-spdx-user")
+        status_url, _ = gateway.upload(session, members, filename="long-spdx.zip")
+        scan_path = status_url.removesuffix("/status")
+        data = _checked(gateway.client.get(scan_path + "/license-compatibility"), 200).json()
+        assert any(item["declared_license"] == canonical_long for item in data["target_assessments"])
+        assert canonical_long in data["matrix"]["licenses"]

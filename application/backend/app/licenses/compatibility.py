@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
+from hashlib import sha256
 from typing import Literal
 from urllib.parse import unquote
 import re
@@ -15,12 +16,21 @@ from app.domain.models import (
     _contains_absolute_path_fragment,
 )
 from app.licenses.spdx import _ALIASES, parse_license_expression
+from app.p2.material_claims import COPYLEFT, LICENSE_MATCHES, WEAK_COPYLEFT, _COPYLEFT_DECLARATION_FAMILIES
+from app.p2b.material_claims import parse_claim_material
 
 SCHEMA_VERSION = "openguard-license-compatibility/1"
 RULE_VERSION = "license-compatibility-matrix/1"
 PROPRIETARY = "PROPRIETARY"
 SUPPORTED_SPDX: tuple[str, ...] = tuple(sorted(set(_ALIASES.values())))
 SUPPORTED_TARGETS: tuple[str, ...] = (PROPRIETARY, *SUPPORTED_SPDX)
+ROOT_LICENSE_LIMIT = 65536
+ROOT_LICENSE_NAMES = frozenset({"license", "license.txt", "license.md", "copying", "copying.txt"})
+_FAMILIES = _COPYLEFT_DECLARATION_FAMILIES
+_SEVERITIES = {
+    **{_FAMILIES[identifier]: "strong" for identifier in COPYLEFT},
+    **{_FAMILIES[identifier]: "weak" for identifier in WEAK_COPYLEFT},
+}
 
 CompatibilityStatus = Literal["COMPATIBLE", "CONDITIONAL", "REVIEW_REQUIRED", "INCOMPATIBLE", "UNKNOWN"]
 
@@ -77,6 +87,83 @@ def normalize_target_license(raw: str | None) -> str | None:
     if not parsed.supported or parsed.operators or len(parsed.normalized_ids) != 1:
         raise ValueError("invalid_target_license")
     return parsed.normalized_ids[0]
+
+
+def canonicalize_compatibility_expression(raw: str) -> str:
+    """Normalize flat single-operator SPDX expressions to an order-independent form."""
+    parsed = parse_license_expression(raw)
+    if not parsed.supported:
+        return raw
+    op_set = set(parsed.operators)
+    if not op_set:
+        return parsed.normalized_ids[0]
+    if len(op_set) == 1:
+        operator = next(iter(op_set))
+        return f" {operator} ".join(parsed.normalized_ids)
+    return parsed.expression
+
+
+def _copyleft_severity(identifier: str | None) -> str | None:
+    return _SEVERITIES.get(_FAMILIES.get(identifier, identifier))
+
+
+def build_root_license_checks(
+    license_files: Mapping[str, bytes],
+    roots: Iterable[Component],
+    licenses: Mapping[str, object],
+) -> tuple[list[dict], list[dict]]:
+    """Evaluate root LICENSE/COPYING full-text vs declared root SPDX conflicts."""
+    checks: list[dict] = []
+    findings: list[dict] = []
+    root_list = list(roots)
+    for name, raw in sorted(license_files.items()):
+        if name.casefold() not in ROOT_LICENSE_NAMES or not 0 < len(raw) <= ROOT_LICENSE_LIMIT:
+            continue
+        profile = "LICENSE" if name.casefold().startswith("copying") else name
+        matched = parse_claim_material(raw, profile)["text_license"]
+        digest = sha256(raw).hexdigest()
+        family = matched if matched in _SEVERITIES else None
+        if family is not None:
+            findings.append({
+                "source": "root_license_text",
+                "file_path": name,
+                "license_id": matched,
+                "severity": _SEVERITIES[family],
+            })
+        for root in root_list or [None]:
+            license_ = licenses.get(root.license_expression_id) if (root is not None and root.license_expression_id) else None
+            expr = getattr(license_, "expression", None) if license_ is not None else None
+            declared = None if (expr is None or expr in {"NONE", "NOASSERTION"}) else _safe_text(expr)
+            normalized_ids = list(getattr(license_, "normalized_ids", ())) if license_ is not None else []
+            single = declared is not None and normalized_ids == [declared]
+            conflict = (
+                single
+                and (matched in LICENSE_MATCHES or family is not None)
+                and matched != _FAMILIES.get(declared, declared)
+            )
+            root_id = root.id if root is not None else None
+            checks.append({
+                "file_path": name,
+                "sha256": digest,
+                "text_license": matched,
+                "copyleft_family": family,
+                "root_package_id": root_id,
+                "declared_license": declared,
+                "spdx_text_conflict": conflict,
+                "support_state": "UNKNOWN",
+            })
+            if conflict:
+                identifiers = (item for item in (matched, declared) if _copyleft_severity(item))
+                strongest = min(identifiers, key=lambda item: _copyleft_severity(item) != "strong", default=None)
+                if strongest is not None:
+                    findings.append({
+                        "source": "spdx_text_conflict",
+                        "file_path": name,
+                        "resource_id": root_id,
+                        "license_id": strongest,
+                        "severity": _copyleft_severity(strongest),
+                    })
+    return checks, findings
 
 
 def _usage_flags(usage: Mapping[str, bool | None] | None) -> dict[str, bool]:
@@ -405,13 +492,71 @@ def evaluate_target_pair(target: str, dep: str, usage: Mapping[str, bool | None]
     return _verdict("UNKNOWN", "COMPAT-UNSUPPORTED-LICENSE", f"未收录或不支持推演的许可证 {dep}，保守降级为未知。")
 
 
+def _evaluate_target_independent_atomic(dep: str, usage: Mapping[str, bool | None] | None) -> dict | None:
+    """Rules that produce INCOMPATIBLE regardless of what outbound target license is chosen."""
+    if dep == "CC-BY-NC-4.0" and _usage_flags(usage)["commercial"]:
+        return _verdict(
+            "INCOMPATIBLE",
+            "COMPAT-CC-BY-NC-COMMERCIAL",
+            "CC-BY-NC-4.0 禁止商业用途，与当前声明的商业使用冲突（与项目目标许可证无关）。",
+            obligations=("移除或替换为允许商业使用的组件",),
+        )
+    return None
+
+
+def _evaluate_internal_and_contradiction(
+    normalized_ids: Sequence[str],
+    usage: Mapping[str, bool | None] | None,
+) -> dict | None:
+    """Detect pairwise INCOMPATIBLE contradictions inside a single dependency's AND expression."""
+    conflicts: list[tuple[str, str, dict]] = []
+    for i, lic_a in enumerate(normalized_ids):
+        for lic_b in normalized_ids[i + 1:]:
+            verdict = evaluate_pairwise_atomic(lic_a, lic_b, usage)
+            if verdict["status"] == "INCOMPATIBLE":
+                conflicts.append((lic_a, lic_b, verdict))
+    if not conflicts:
+        return None
+    lic_a, lic_b, chosen = min(conflicts, key=lambda item: (item[2]["rule_id"], item[0], item[1]))
+    return _verdict(
+        "INCOMPATIBLE",
+        "COMPAT-SELF-INCOMPATIBLE-AND",
+        f"合取许可证（AND）内部存在互斥子项 {lic_a} 与 {lic_b}：{chosen['rationale']}",
+        obligations=("替换或拆分存在内部许可证互斥的依赖组件",),
+    )
+
+
 def evaluate_target_expression(target: str | None, dep_expression: str | None, usage: Mapping[str, bool | None] | None) -> dict:
     """Evaluate a dependency's raw/normalized expression against outbound target license."""
     if target is None:
+        if dep_expression and dep_expression not in {"NONE", "NOASSERTION"}:
+            parsed = parse_license_expression(dep_expression)
+            op_set = set(parsed.operators)
+            if parsed.supported and len(op_set) <= 1:
+                operator = next(iter(op_set), None)
+                if operator is None:
+                    indep = _evaluate_target_independent_atomic(parsed.normalized_ids[0], usage)
+                    if indep is not None:
+                        return indep
+                elif operator == "AND":
+                    indeps = [
+                        verdict
+                        for term in parsed.normalized_ids
+                        if (verdict := _evaluate_target_independent_atomic(term, usage)) is not None
+                    ]
+                    if indeps:
+                        return indeps[0]
+                    internal = _evaluate_internal_and_contradiction(parsed.normalized_ids, usage)
+                    if internal is not None:
+                        return internal
+                elif operator == "OR":
+                    indeps = [_evaluate_target_independent_atomic(term, usage) for term in parsed.normalized_ids]
+                    if all(item is not None for item in indeps):
+                        return indeps[0]  # type: ignore[return-value]
         return _verdict(
             "UNKNOWN",
             "COMPAT-TARGET-UNRESOLVED",
-            "项目目标许可证尚未确立，无法判定目标与依赖的出向兼容性；下表仍会检查依赖间两两冲突。",
+            "项目目标许可证尚未确立，无法判定目标与依赖的出向兼容性；下表仍会检查依赖间两两冲突与目标无关违约。",
         )
     if not dep_expression or dep_expression in {"NONE", "NOASSERTION"}:
         return _verdict("UNKNOWN", "COMPAT-DEPENDENCY-UNDECLARED", "该依赖未声明有效许可证，保守保持 UNKNOWN。")
@@ -453,10 +598,19 @@ def evaluate_target_expression(target: str | None, dep_expression: str | None, u
             chosen_branch=branch,
         )
 
-    # Pure AND: every conjunct must be satisfied simultaneously -> worst rank wins.
+    # Pure AND: every conjunct must be satisfied simultaneously -> worst rank wins, including internal contradictions.
     worst_idx = max(range(len(terms)), key=lambda idx: _STATUS_RANK[terms[idx]["status"]])
     worst = terms[worst_idx]
     obligations = tuple(dict.fromkeys(item for term in terms for item in term["obligations"]))
+    internal = _evaluate_internal_and_contradiction(parsed.normalized_ids, usage)
+    if internal is not None and _STATUS_RANK[internal["status"]] >= _STATUS_RANK[worst["status"]]:
+        merged = tuple(dict.fromkeys((*internal["obligations"], *obligations)))
+        return _verdict(
+            "INCOMPATIBLE",
+            internal["rule_id"],
+            internal["rationale"],
+            obligations=merged,
+        )
     return _verdict(
         worst["status"],
         worst["rule_id"],
@@ -589,7 +743,7 @@ def evaluate_pairwise_expressions(
     expr_b: str,
     usage: Mapping[str, bool | None] | None,
 ) -> dict:
-    """Evaluate compatibility between two normalized/raw dependency license expressions."""
+    """Symmetric pairwise evaluation over normalized flat AND/OR license expressions."""
     parsed_a = parse_license_expression(expr_a)
     parsed_b = parse_license_expression(expr_b)
     if not parsed_a.supported or not parsed_b.supported:
@@ -599,31 +753,22 @@ def evaluate_pairwise_expressions(
     if len(ops_a) > 1 or len(ops_b) > 1:
         return _verdict("UNKNOWN", "PAIR-COMPLEX-EXPRESSION", "存在未括起的混合 AND/OR 表达式，保守保持 UNKNOWN。")
 
-    def combine(verdicts: list[dict], op: str | None) -> dict:
-        if op == "OR":
-            idx = min(range(len(verdicts)), key=lambda i: _STATUS_RANK[verdicts[i]["status"]])
-            return verdicts[idx]
-        if op == "AND":
-            idx = max(range(len(verdicts)), key=lambda i: _STATUS_RANK[verdicts[i]["status"]])
-            return verdicts[idx]
-        return verdicts[0]
-
     op_a = next(iter(ops_a), None)
     op_b = next(iter(ops_b), None)
-    outer_verdicts = []
-    for term_a in parsed_a.normalized_ids:
-        inner = [evaluate_pairwise_atomic(term_a, term_b, usage) for term_b in parsed_b.normalized_ids]
-        outer_verdicts.append(combine(inner, op_b))
-    chosen = combine(outer_verdicts, op_a)
+    choices_a = [(lic,) for lic in parsed_a.normalized_ids] if op_a == "OR" else [parsed_a.normalized_ids]
+    choices_b = [(lic,) for lic in parsed_b.normalized_ids] if op_b == "OR" else [parsed_b.normalized_ids]
+
+    combination_verdicts: list[dict] = []
+    for bundle_a in choices_a:
+        for bundle_b in choices_b:
+            pair_keys = sorted({_pair_key(x, y) for x in bundle_a for y in bundle_b})
+            cross_verdicts = [evaluate_pairwise_atomic(left, right, usage) for left, right in pair_keys]
+            worst = max(cross_verdicts, key=lambda item: (_STATUS_RANK[item["status"]], item["rule_id"]))
+            combination_verdicts.append(worst)
+
+    chosen = min(combination_verdicts, key=lambda item: (_STATUS_RANK[item["status"]], item["rule_id"]))
     if (op_a == "OR" or op_b == "OR") and chosen["status"] == "COMPATIBLE":
-        # Both expressions had at least one compatible OR branch; keep COMPATIBLE if strictly clean,
-        # or CONDITIONAL when one branch conflicted.
-        all_statuses = {
-            evaluate_pairwise_atomic(term_a, term_b, usage)["status"]
-            for term_a in parsed_a.normalized_ids
-            for term_b in parsed_b.normalized_ids
-        }
-        if len(all_statuses) > 1:
+        if len({item["status"] for item in combination_verdicts}) > 1:
             return _verdict(
                 "CONDITIONAL",
                 "PAIR-OR-BRANCH-SELECTION",
@@ -669,7 +814,7 @@ def evaluate_scan_compatibility(
         canonical_expr: str | None = None
         if raw_expr:
             parsed = parse_license_expression(raw_expr)
-            canonical_expr = parsed.expression if parsed.supported else raw_expr
+            canonical_expr = canonicalize_compatibility_expression(raw_expr) if parsed.supported else raw_expr
             if parsed.supported and len(set(parsed.operators)) <= 1:
                 by_canonical_expr[canonical_expr].append(_component_ref(component))
         verdict = evaluate_target_expression(resolved_target, canonical_expr, flags)
@@ -724,7 +869,7 @@ def evaluate_scan_compatibility(
     combined_statuses = [item["status"] for item in target_assessments] + [item["status"] for item in pairwise_conflicts]
     if not dependencies and resolved_target is not None:
         overall_status: CompatibilityStatus = "COMPATIBLE"
-    elif resolved_target is None and not any(item["status"] in {"INCOMPATIBLE", "REVIEW_REQUIRED"} for item in pairwise_conflicts):
+    elif resolved_target is None and not any(status in {"INCOMPATIBLE", "REVIEW_REQUIRED"} for status in combined_statuses):
         overall_status = "UNKNOWN"
     elif combined_statuses:
         overall_status = max(combined_statuses, key=lambda s: _STATUS_RANK[s])

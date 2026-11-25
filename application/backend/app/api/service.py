@@ -8,7 +8,7 @@ import json
 import platform
 import sys
 from base64 import b64decode, urlsafe_b64encode
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Literal
@@ -28,6 +28,7 @@ from app.api.models import (
 )
 from app.domain.models import (
     CONTRACT_VERSION,
+    ComponentType,
     Evidence,
     FindingOutcome,
     HashValue,
@@ -43,10 +44,15 @@ from app.domain.models import (
     SourceType,
 )
 from app.assessment.engine import canonical_bytes, digest, facts_digest
-from app.licenses.compatibility import evaluate_scan_compatibility, normalize_target_license
+from app.licenses.compatibility import (
+    build_root_license_checks,
+    evaluate_scan_compatibility,
+    normalize_target_license,
+)
 from app.licenses.compatibility_models import LicenseCompatibilityResponse
 from app.p1.dependency_evidence import DependencyEvidenceItem, DependencySource, project_dependency_evidence
 from app.p1.models import P1Model, P1ScanRef
+from app.p1.notice_source_store import NoticeSourceStoreError
 from app.persistence import SQLiteScanRunRegistry, ScanRegistryError, StoredScanRun
 from app.reporting import ReportArtifactStore, ReportStoreError, StoredReport
 from app.ingestion.url_policy import parse_public_git_url
@@ -145,11 +151,13 @@ class ScanApiService:
         registry: SQLiteScanRunRegistry,
         *,
         report_store: ReportArtifactStore | None = None,
+        root_license_reader: Callable[[ScanRun], Mapping[str, bytes]] | None = None,
         clock: Callable[[], datetime] | None = None,
         id_factory: Callable[[], UUID] | None = None,
     ) -> None:
         self._registry = registry
         self._report_store = report_store
+        self._root_license_reader = root_license_reader
         self._clock = clock or (lambda: datetime.now(timezone.utc))
         self._id_factory = id_factory or uuid4
 
@@ -449,7 +457,24 @@ class ScanApiService:
             "modified": usage_obj.modified if usage_obj else False,
             "network_service": usage_obj.network_service if usage_obj else False,
         }
-        payload = evaluate_scan_compatibility(run, usage=usage, target_license=normalized_target)
+        root_checks: list[dict] | tuple[()] = ()
+        if self._root_license_reader is not None:
+            try:
+                license_files = self._root_license_reader(run)
+            except NoticeSourceStoreError:
+                _fail(
+                    status_code=503,
+                    code="storage_unavailable",
+                    message="Scan license source storage is unavailable.",
+                    reason="storage_unavailable",
+                )
+            if license_files:
+                roots = [component for component in run.components if component.component_type is ComponentType.APPLICATION]
+                licenses = {item.id: item for item in run.licenses}
+                root_checks, _ = build_root_license_checks(license_files, roots, licenses)
+        payload = evaluate_scan_compatibility(
+            run, usage=usage, target_license=normalized_target, root_license_checks=root_checks,
+        )
         return LicenseCompatibilityResponse(scan_ref=self._scan_ref(stored), **payload)
 
     def report(self, scan_id: str, report_format: ReportFormat) -> ReportLink:

@@ -217,7 +217,7 @@ export function validateLicenseCompatibility(raw: unknown, scanId: string): Lice
       'declared_license', 'status', 'rule_id', 'rationale', 'obligations', 'chosen_branch',
     ]);
     assertCompatDto(
-      (row.declared_license === null || nonEmptyText(row.declared_license, 200)) &&
+      (row.declared_license === null || nonEmptyText(row.declared_license, 1000)) &&
       isEnum(row.status, compatibilityStatuses) &&
       nonEmptyText(row.rule_id, 200) &&
       nonEmptyText(row.rationale, 2000) &&
@@ -230,8 +230,8 @@ export function validateLicenseCompatibility(raw: unknown, scanId: string): Lice
   for (const item of root.pairwise_conflicts) {
     const pair = recordFields(item, ['license_a', 'license_b', 'status', 'rule_id', 'rationale', 'components_a', 'components_b']);
     assertCompatDto(
-      nonEmptyText(pair.license_a, 200) &&
-      nonEmptyText(pair.license_b, 200) &&
+      nonEmptyText(pair.license_a, 1000) &&
+      nonEmptyText(pair.license_b, 1000) &&
       isEnum(pair.status, pairwiseConflictStatuses) &&
       nonEmptyText(pair.rule_id, 200) &&
       nonEmptyText(pair.rationale, 2000) &&
@@ -243,7 +243,7 @@ export function validateLicenseCompatibility(raw: unknown, scanId: string): Lice
   }
 
   const matrix = recordFields(root.matrix, ['licenses', 'truncated', 'cells']);
-  const licenses = stringList(matrix.licenses, 30, 200);
+  const licenses = stringList(matrix.licenses, 30, 1000);
   assertCompatDto(typeof matrix.truncated === 'boolean' && Array.isArray(matrix.cells) && matrix.cells.length <= 900);
   for (const cellRaw of matrix.cells) {
     const cell = recordFields(cellRaw, ['row', 'col', 'status', 'rule_id']);

@@ -103,8 +103,43 @@ function PairwiseCard({ conflict }: { conflict: PairwiseConflict }) {
   </article>;
 }
 
+export type CompatibilityPanelState = {
+  report: LicenseCompatibilityReport | null;
+  supportedTargets: string[];
+  loading: boolean;
+  error: string | null;
+};
+
+export const initialCompatibilityPanelState: CompatibilityPanelState = {
+  report: null,
+  supportedTargets: defaultTargets,
+  loading: true,
+  error: null,
+};
+
+export function compatLoadStarted(state: CompatibilityPanelState): CompatibilityPanelState {
+  return { ...state, report: null, loading: true, error: null };
+}
+
+export function compatLoadSucceeded(
+  _state: CompatibilityPanelState,
+  report: LicenseCompatibilityReport,
+): CompatibilityPanelState {
+  return {
+    report,
+    supportedTargets: report.supported_targets.length > 0 ? report.supported_targets : defaultTargets,
+    loading: false,
+    error: null,
+  };
+}
+
+export function compatLoadFailed(state: CompatibilityPanelState, error: string): CompatibilityPanelState {
+  return { ...state, report: null, loading: false, error };
+}
+
 export function LicenseCompatibilityView({
   report,
+  supportedTargets = defaultTargets,
   loading,
   error,
   targetChoice,
@@ -114,6 +149,7 @@ export function LicenseCompatibilityView({
   onRetry,
 }: {
   report: LicenseCompatibilityReport | null;
+  supportedTargets?: string[];
   loading: boolean;
   error: string | null;
   targetChoice: string;
@@ -123,7 +159,7 @@ export function LicenseCompatibilityView({
   onRetry: () => void;
 }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const targets = report?.supported_targets ?? defaultTargets;
+  const targets = report?.supported_targets ?? supportedTargets;
   const filteredRows = report
     ? (statusFilter ? report.target_assessments.filter(item => item.status === statusFilter) : report.target_assessments)
     : [];
@@ -279,29 +315,24 @@ export function LicenseCompatibilityView({
 function LiveLicenseCompatibilityPanel({ scanId }: { scanId: string }) {
   const [targetChoice, setTargetChoice] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("");
-  const [report, setReport] = useState<LicenseCompatibilityReport | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [panelState, setPanelState] = useState<CompatibilityPanelState>(initialCompatibilityPanelState);
   const active = useRef<AbortController | null>(null);
 
   const load = useCallback(async (target: string) => {
     active.current?.abort();
     const controller = new AbortController();
     active.current = controller;
-    setLoading(true);
-    setError(null);
+    setPanelState(prev => compatLoadStarted(prev));
     try {
       const next = await readLicenseCompatibility(scanId, {
         targetLicense: target || undefined,
         signal: controller.signal,
       });
       if (controller.signal.aborted) return;
-      setReport(next);
-      setLoading(false);
+      setPanelState(prev => compatLoadSucceeded(prev, next));
     } catch (err) {
       if (controller.signal.aborted) return;
-      setLoading(false);
-      setError(describeCompatError(err));
+      setPanelState(prev => compatLoadFailed(prev, describeCompatError(err)));
     }
   }, [scanId]);
 
@@ -311,9 +342,10 @@ function LiveLicenseCompatibilityPanel({ scanId }: { scanId: string }) {
   }, [load, targetChoice]);
 
   return <LicenseCompatibilityView
-    report={report}
-    loading={loading}
-    error={error}
+    report={panelState.report}
+    supportedTargets={panelState.supportedTargets}
+    loading={panelState.loading}
+    error={panelState.error}
     targetChoice={targetChoice}
     statusFilter={statusFilter}
     onTargetChange={setTargetChoice}

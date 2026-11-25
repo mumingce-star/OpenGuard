@@ -522,6 +522,7 @@ def create_app(
     profile_routes_enabled=True,
     progress_event_store=None,
     assistant_service=None,
+    root_license_reader=None,
 ) -> FastAPI:
     if zip_dispatcher is not None:
         # Durable lifecycle ownership is deliberately all-or-nothing.  An
@@ -565,7 +566,9 @@ def create_app(
                 zip_dispatcher.release_lifecycle_lock()
 
     app = FastAPI(title="OpenGuard API", version=APPLICATION_VERSION, lifespan=lifespan)
-    app.state.scan_api_service = ScanApiService(registry, report_store=report_store)
+    app.state.scan_api_service = ScanApiService(
+        registry, report_store=report_store, root_license_reader=root_license_reader,
+    )
     if progress_event_store is not None:
         from app.progress_events import ProgressEventView
         @app.get('/api/v1/scans/{scan_id}/progress-events', response_model=ProgressEventView)
@@ -920,6 +923,7 @@ def create_default_app(
     report_v2_service = None
     notice_draft_service = None
     notice_lifecycle = None
+    root_license_reader = None
     if v4_enabled == "1":
         from app.assessment.service import AssessmentService
         from app.assessment.store import AssessmentStore
@@ -928,7 +932,7 @@ def create_default_app(
         from app.p1.report_v2 import ReportV2Service
         from app.p1.report_v2_store import ReportV2Store
         from app.p1.report_v2_graph import ReportGraphReader
-        from app.p1.notice_source_store import NoticeSourceStore, BoundNoticeSourceReader
+        from app.p1.notice_source_store import NoticeSourceStore, BoundNoticeSourceReader, StagedRootLicenseReader
         from app.p1.notice_source_lifecycle import NoticeSourceLifecycle
         from app.p1.notice_draft_store import NoticeDraftStore
         from app.p1.notice_draft import NoticeDraftService
@@ -945,6 +949,12 @@ def create_default_app(
         report_v2_store.initialize()
         notice_source_store = NoticeSourceStore(data_dir / "notice_source.db")
         notice_source_store.initialize()
+        staged_root_reader = StagedRootLicenseReader(notice_source_store)
+        root_license_reader = lambda run, _reader=staged_root_reader: _reader.read_root_license_files(
+            run.id,
+            expected_input_digest=run.provenance.input_digest.value,
+            expected_inventory_digest=run.provenance.inventory_digest.value if run.provenance.inventory_digest else None,
+        )
         notice_draft_store = NoticeDraftStore(data_dir / "notice_draft.db")
         notice_draft_store.initialize()
         notice_lifecycle = NoticeSourceLifecycle(registry, assessment_store, notice_source_store)
@@ -1088,6 +1098,7 @@ def create_default_app(
         assistant_service=assistant_service,
         profile_service=profile_service,
         progress_event_store=progress_event_store,
+        root_license_reader=root_license_reader,
     )
 
 

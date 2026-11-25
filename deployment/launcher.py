@@ -578,7 +578,7 @@ def _reexec_scan_with_runtime(raw_scan_args):
 
 def _run_headless_scan(args, raw_scan_args):
     try:
-        uses = ("commercial", "distributed", "modified")
+        uses = ("commercial", "distributed", "modified", "network_service")
         selected = _scan_selection(args.usage, set(uses))
         usage = dict.fromkeys(uses, False)
         usage.update(dict.fromkeys(selected, True))

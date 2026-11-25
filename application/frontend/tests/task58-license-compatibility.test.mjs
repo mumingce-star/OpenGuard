@@ -173,3 +173,78 @@ test('TASK58 LicenseCompatibilityView renders target resolution, pairwise confli
   assert.match(html, /Apache-2\.0.*GPL-2\.0-only/);
   assert.match(html, /不构成正式法律签认/);
 });
+
+test('TASK58 validateLicenseCompatibility accepts canonical SPDX expressions longer than 200 chars', () => {
+  const { validateLicenseCompatibility } = loadPanel();
+  const longExpr = Array.from({ length: 22 }, () => 'Apache-2.0').slice(0, 1).concat([
+    'BSD-2-Clause', 'BSD-3-Clause', 'CC0-1.0', 'EPL-2.0', 'GPL-2.0-only',
+    'GPL-2.0-or-later', 'GPL-3.0-only', 'GPL-3.0-or-later', 'ISC',
+    'LGPL-2.1-only', 'LGPL-2.1-or-later', 'LGPL-3.0-only', 'LGPL-3.0-or-later', 'MIT', 'MPL-2.0',
+  ]).join(' OR ');
+  assert.ok(longExpr.length > 200 && longExpr.length <= 500, `Expected >200 chars, got ${longExpr.length}`);
+
+  const base = validReport();
+  base.target_assessments[0].declared_license = longExpr;
+  base.pairwise_conflicts[0].license_a = longExpr;
+  base.matrix.licenses = [longExpr, 'GPL-2.0-only'];
+
+  const parsed = validateLicenseCompatibility(base, scanId);
+  assert.equal(parsed.target_assessments[0].declared_license, longExpr);
+  assert.equal(parsed.pairwise_conflicts[0].license_a, longExpr);
+  assert.deepEqual(parsed.matrix.licenses, [longExpr, 'GPL-2.0-only']);
+});
+
+test('TASK58 compatPanel state transitions clear stale report on target switch and failure', () => {
+  const {
+    LicenseCompatibilityView,
+    initialCompatibilityPanelState,
+    compatLoadStarted,
+    compatLoadSucceeded,
+    compatLoadFailed,
+  } = loadPanel();
+
+  const firstReport = validReport({ target: { license: 'MIT', source: 'explicit', status: 'RESOLVED', root_component_id: null, gaps: [] } });
+  let state = compatLoadSucceeded(initialCompatibilityPanelState, firstReport);
+  assert.equal(state.loading, false);
+  assert.equal(state.report.target.license, 'MIT');
+
+  // Switching target must immediately discard the previous target report while loading.
+  state = compatLoadStarted(state);
+  assert.equal(state.loading, true);
+  assert.equal(state.report, null);
+  assert.equal(state.error, null);
+  const loadingHtml = renderToStaticMarkup(React.createElement(LicenseCompatibilityView, {
+    report: state.report,
+    supportedTargets: state.supportedTargets,
+    loading: state.loading,
+    error: state.error,
+    targetChoice: 'PROPRIETARY',
+    statusFilter: '',
+    onTargetChange: () => {},
+    onStatusFilterChange: () => {},
+    onRetry: () => {},
+  }));
+  assert.match(loadingHtml, /正在计算许可证兼容矩阵/);
+  assert.doesNotMatch(loadingHtml, /gpl2-dep/);
+  assert.doesNotMatch(loadingHtml, /PAIR-GPL2-ONLY-APACHE2/);
+
+  // A failed reload must keep report cleared so stale target verdict is never displayed behind an error alert.
+  state = compatLoadFailed(state, '请求失败');
+  assert.equal(state.loading, false);
+  assert.equal(state.report, null);
+  assert.equal(state.error, '请求失败');
+  const failedHtml = renderToStaticMarkup(React.createElement(LicenseCompatibilityView, {
+    report: state.report,
+    supportedTargets: state.supportedTargets,
+    loading: state.loading,
+    error: state.error,
+    targetChoice: 'PROPRIETARY',
+    statusFilter: '',
+    onTargetChange: () => {},
+    onStatusFilterChange: () => {},
+    onRetry: () => {},
+  }));
+  assert.match(failedHtml, /请求失败/);
+  assert.doesNotMatch(failedHtml, /gpl2-dep/);
+  assert.doesNotMatch(failedHtml, /PAIR-GPL2-ONLY-APACHE2/);
+});

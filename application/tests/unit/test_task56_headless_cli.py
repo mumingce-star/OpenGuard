@@ -259,7 +259,7 @@ def test_directory_five_ecosystems_exclusions_and_determinism(package, tmp_path,
     assert report["input"]["excluded_dirs"] == [
         "nested/.git", "nested/__pycache__", "nested/node_modules", "nested/target",
     ]
-    assert report["scan"]["usage"] == {"commercial": True, "distributed": False, "modified": True}
+    assert report["scan"]["usage"] == {"commercial": True, "distributed": False, "modified": True, "network_service": False}
     _assert_mixed(report)
     repeated = _run(package, tmp_path, mixed, "--format", "json", "--usage", "commercial,modified")
     _json_report(repeated)
@@ -276,7 +276,7 @@ def test_local_sample_zip_uses_pinned_interpreter_without_package_runtime(packag
     assert report["input"]["kind"] == "zip" and report["input"]["name"] == sample.name
     assert report["input"]["sha256"] == sha256(sample.read_bytes()).hexdigest()
     assert any(row["name"] == "is-number" for row in report["components"])
-    assert report["scan"]["usage"] == {"commercial": False, "distributed": False, "modified": False}
+    assert report["scan"]["usage"] == {"commercial": False, "distributed": False, "modified": False, "network_service": False}
 
 
 def test_scan_without_python_bytecode_flag_leaves_package_untouched(package, tmp_path):
@@ -445,7 +445,7 @@ def test_package_venv_reexec_forwards_original_arguments_without_writing_runtime
     before = _runtime_snapshot(runtime)
     report = _json_report(_run(isolated, tmp_path, *arguments, suppress_bytecode=False, python=external))
     assert any(component["name"] == "is-number" for component in report["components"])
-    assert report["scan"]["usage"] == {"commercial": True, "distributed": False, "modified": False}
+    assert report["scan"]["usage"] == {"commercial": True, "distributed": False, "modified": False, "network_service": False}
     assert report["policy"] == {"fail_on": ["partial"], "triggered": [], "exit_code": 0}
     _assert_scan_reexec(startup_log, external, python, isolated, arguments)
     assert _runtime_snapshot(runtime) == before

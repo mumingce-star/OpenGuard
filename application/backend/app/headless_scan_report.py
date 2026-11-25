@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from hashlib import sha256
 from html import escape
 import json
 import re
@@ -12,17 +11,19 @@ from urllib.parse import quote, unquote
 from app.domain.models import (
     ComponentType, EvidenceKind, ScanRun, ScanStatus, _contains_absolute_path_fragment,
 )
-from app.licenses.compatibility import evaluate_scan_compatibility
+from app.licenses.compatibility import (
+    ROOT_LICENSE_LIMIT,
+    ROOT_LICENSE_NAMES,
+    build_root_license_checks,
+    evaluate_scan_compatibility,
+)
 from app.p1.dependency_evidence import project_dependency_evidence
-from app.p2.material_claims import COPYLEFT, LICENSE_MATCHES, WEAK_COPYLEFT, _COPYLEFT_DECLARATION_FAMILIES
-from app.p2b.material_claims import parse_claim_material
+from app.p2.material_claims import COPYLEFT, WEAK_COPYLEFT, _COPYLEFT_DECLARATION_FAMILIES
 from app.security.archive_path import normalize_member_path
 from app.security.errors import IngestionSecurityError
 from app.security.limits import ZipSafetyLimits
 
 SCHEMA_VERSION = "openguard-cli-scan/2"
-ROOT_LICENSE_LIMIT = 65536
-ROOT_LICENSE_NAMES = frozenset({"license", "license.txt", "license.md", "copying", "copying.txt"})
 _ECOSYSTEMS = ("npm", "pypi", "golang", "cargo", "maven", "unknown")
 _LIMITS = ZipSafetyLimits()
 _SENSITIVE = re.compile(r"(?i)(?:(?:api[_-]?key|secret|token|password)\s*[=:]|bearer\s+\S+)")
@@ -105,38 +106,7 @@ def _copyleft(identifier: str | None) -> str | None:
 
 
 def _root_license_observations(license_files, roots, licenses):
-    checks, findings = [], []
-    for name, raw in sorted(license_files.items()):
-        if name.casefold() not in ROOT_LICENSE_NAMES or not 0 < len(raw) <= ROOT_LICENSE_LIMIT:
-            continue
-        # Preserve COPYING as the observed path and use the existing parser's
-        # equivalent LICENSE filename profile for this approved basename.
-        profile = "LICENSE" if name.casefold().startswith("copying") else name
-        matched = parse_claim_material(raw, profile)["text_license"]
-        digest = sha256(raw).hexdigest()
-        family = matched if matched in _SEVERITIES else None
-        if family is not None:
-            findings.append({"source": "root_license_text", "file_path": name,
-                             "license_id": matched, "severity": _SEVERITIES[family]})
-        for root in roots or [None]:
-            license_ = licenses.get(root.license_expression_id) if root is not None else None
-            declared = _declaration(license_)
-            single = declared is not None and license_.normalized_ids == [declared]
-            conflict = (single and (matched in LICENSE_MATCHES or family is not None)
-                        and matched != _FAMILIES.get(declared, declared))
-            root_id = root.id if root is not None else None
-            checks.append({
-                "file_path": name, "sha256": digest, "text_license": matched, "copyleft_family": family,
-                "root_package_id": root_id, "declared_license": declared,
-                "spdx_text_conflict": conflict, "support_state": "UNKNOWN",
-            })
-            if conflict:
-                identifiers = (item for item in (matched, declared) if _copyleft(item))
-                strongest = min(identifiers, key=lambda item: _copyleft(item) != "strong", default=None)
-                if strongest is not None:
-                    findings.append({"source": "spdx_text_conflict", "file_path": name, "resource_id": root_id,
-                                     "license_id": strongest, "severity": _copyleft(strongest)})
-    return checks, findings
+    return build_root_license_checks(license_files, roots, licenses)
 
 
 def build_report(
@@ -232,7 +202,8 @@ def build_report(
         "input": {"kind": input_kind, "name": _safe_text(input_name, "[redacted]"), "sha256": input_sha256,
                   "root_digest": run.project.root_digest.value,
                   "excluded_dirs": sorted({name for name in excluded_dirs if _safe_path(name) is not None})},
-        "scan": {"status": "partial" if partial else "completed", "usage": dict(usage),
+        "scan": {"status": "partial" if partial else "completed",
+                 "usage": {k: bool(usage.get(k)) for k in ("commercial", "distributed", "modified", "network_service")},
                  "component_count": len(components), "root_package_count": len(root_packages),
                  "ecosystem_counts": counts, "conflict_count": conflict_count,
                  "copyleft_count": len(findings), "incompatible_count": incompatible_count,
