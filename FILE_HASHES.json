@@ -1,6 +1,6 @@
 {
   "algorithm": "sha256",
-  "scope": "OpenGuard v2.6.0 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
+  "scope": "OpenGuard v2.6.1 milestone payload. Covers every tracked file in OpenGuard/ except FILE_HASHES.json itself.",
   "files": {
     ".dockerignore": {
       "bytes": 1206,
@@ -27,12 +27,12 @@
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
     },
     "README.md": {
-      "bytes": 11436,
-      "sha256": "2f2becb9161e9965f53413cf39faa0ee4a0ad8e1b05dd7f72b67565c428bbae5"
+      "bytes": 11807,
+      "sha256": "a3ba9a20ebc4cf414d8ec154c0ef3b609fa16f65829e629256cb7e8791c2bebc"
     },
     "RESOURCE_USAGE.md": {
-      "bytes": 8532,
-      "sha256": "e3f75f195ac09df4fb9f325f1b0943aed4d05315e7907433f28261905bda928c"
+      "bytes": 8554,
+      "sha256": "d8532e0114ec605ddc378028301831a1b54fd5286910146f1cfb08404c667320"
     },
     "THIRD_PARTY_LICENSES/react-19.2.8-LICENSE": {
       "bytes": 1088,
@@ -59,12 +59,12 @@
       "sha256": "387dd7baa307083401a27c58c362c30832f5ba1dba84f10cc22c33401523f45c"
     },
     "VALIDATION.md": {
-      "bytes": 22538,
-      "sha256": "9a5c38b1059dd557e3eac403bbdd702e0e6fe4ccb02a520aee2a701eda817c62"
+      "bytes": 26572,
+      "sha256": "08dd758b9faf5fc5a4ba342dd0a7cba06120a662b0d819f5e59edb85d8c6ea18"
     },
     "VERSION.json": {
-      "bytes": 6450,
-      "sha256": "fb09909d8d1a8bca75278230ca2ba07e12135554a6856f64efc104702fe67ff4"
+      "bytes": 6720,
+      "sha256": "434dca6541bb91c93f85cafc03eff7729636c9ec957e8ac89184d661586f8bb4"
     },
     "application/CONTRIBUTING.md": {
       "bytes": 2912,
@@ -135,8 +135,8 @@
       "sha256": "8d8214453353e81fd9cf6eb511dfd37a5a71b6b0f492b540aad59b444bf926ca"
     },
     "application/backend/app/api/main.py": {
-      "bytes": 55265,
-      "sha256": "a3b9076ce30361e4965c0406a558383d183963dc4c186c1e5e6665c57b4d576b"
+      "bytes": 55854,
+      "sha256": "8ab26ac9a478bb4340f2a1d14a8aaf479789696576d6a8194e300e98009479ce"
     },
     "application/backend/app/api/models.py": {
       "bytes": 3712,
@@ -163,8 +163,8 @@
       "sha256": "5bfff90e55842cb6ada618bd3b80351929866612aaab606c1244fd6cfd301e6f"
     },
     "application/backend/app/api/service.py": {
-      "bytes": 23337,
-      "sha256": "fde1ca8b3efe8b5079a6a17f0f23482435e4708b8ce34782c6c6f6c2e3ff6589"
+      "bytes": 24455,
+      "sha256": "f9d17271f7f932c4aae64c07dbce818233f1fb9f7d70b331653cef73bffc27ac"
     },
     "application/backend/app/api/zip_scan.py": {
       "bytes": 18192,
@@ -283,8 +283,8 @@
       "sha256": "b22af58cc2ef12e6483f238cd18d1873790a5c47580ed2d982bef4afe4c5b729"
     },
     "application/backend/app/headless_scan_report.py": {
-      "bytes": 16451,
-      "sha256": "7785ada357bc172b4dd827bb460dde0fedf84b29f614f7c3ee9efe9fc527ed14"
+      "bytes": 14407,
+      "sha256": "42548cc1ef87edf43ed4bb1f72a6f40ea7ed5ed1355030aa61268f33f281adfb"
     },
     "application/backend/app/ingestion/__init__.py": {
       "bytes": 446,
@@ -359,12 +359,12 @@
       "sha256": "969d88b3f4f64d49307d78b46f6f0b31c35af93533623c52f0f525392449e64e"
     },
     "application/backend/app/licenses/compatibility.py": {
-      "bytes": 34918,
-      "sha256": "f253308aed21ac1f6ce8a60320d4a4a26d62f43e9847f49138c6090ee6564fc4"
+      "bytes": 42078,
+      "sha256": "632f2f9a8b2506382e5e141bf35a7966e302869b0f90ed02f39939614a09b162"
     },
     "application/backend/app/licenses/compatibility_models.py": {
-      "bytes": 3133,
-      "sha256": "7ac64543b199f6e007f87821e456e90c32fac34a6b9b43c79de5aed58ae44db0"
+      "bytes": 3239,
+      "sha256": "1263067957fa36efaae0ab06f4727f8e8a11ba2d5fee17d8b2114a798d26daa5"
     },
     "application/backend/app/licenses/spdx.py": {
       "bytes": 4612,
@@ -447,8 +447,8 @@
       "sha256": "030e578fba2274e58f1b9b10291f22e8401ae70cdea67c5ae465096257148055"
     },
     "application/backend/app/p1/notice_source_store.py": {
-      "bytes": 27506,
-      "sha256": "19a64523b2dee3e12acf3fbb5bcfbde1de45a844926656d8bcb95f00164b376d"
+      "bytes": 29956,
+      "sha256": "844f6f93553bd493c82bc4c0ede5554db20158a776b001acea6526e951b9fcd1"
     },
     "application/backend/app/p1/profile.py": {
       "bytes": 13106,
@@ -1103,8 +1103,8 @@
       "sha256": "d2949aee74b8a13be13f9ebde3d0d778aec6755cfe2ca669477408cc569acee6"
     },
     "application/frontend/src/components/LicenseCompatibilityPanel.tsx": {
-      "bytes": 13186,
-      "sha256": "1227cb69aa3a65fb2df6163beb069108e42d268d832fce997aa9dc8c87a5d13c"
+      "bytes": 14258,
+      "sha256": "753c367283f1acc9acdef1abae257651e9bfd6c0eb57238239fb7e9f4bac6bce"
     },
     "application/frontend/src/components/MaterialClaimsPanel.tsx": {
       "bytes": 18501,
@@ -1363,8 +1363,8 @@
       "sha256": "5cde54b5c84fc22e6b1059333203a3f8c0495018564b0ca4ae877958e0698425"
     },
     "application/frontend/src/services/licenseCompatibility.ts": {
-      "bytes": 10863,
-      "sha256": "fa880a4a5136eb1852663ec84ca5a129b58ade94d06fc86a924d07c207ed3dbb"
+      "bytes": 10867,
+      "sha256": "341606569eda010d6f8a0069b3d3da1d9d238991609330defbd8138fde749706"
     },
     "application/frontend/src/services/materialClaims.ts": {
       "bytes": 35437,
@@ -2107,8 +2107,8 @@
       "sha256": "395a6a07ed8e962452c845e6144226eb5ab1b5e7048faf9492f149ee3934eb84"
     },
     "application/frontend/tests/task58-license-compatibility.test.mjs": {
-      "bytes": 6767,
-      "sha256": "1fdbb4af7cba4cdf61921debbb4239a77be0cebeb8563cc88454e7245c897e69"
+      "bytes": 10017,
+      "sha256": "5f6549b509f736aa9163d50884feca08d998fd3465af814cb1139107d0bb95ce"
     },
     "application/frontend/tests/team-integration.test.mjs": {
       "bytes": 7394,
@@ -3535,12 +3535,12 @@
       "sha256": "c2f834e2ffee6475fad4b0dd4c65182b108c600dc698f271dcfdb14e7c07a33c"
     },
     "application/tests/unit/test_task56_headless_cli.py": {
-      "bytes": 30386,
-      "sha256": "f5e01c876f938edd26bb593f80a01a9a10a0ed5aa876aa6d4071206db310345d"
+      "bytes": 30464,
+      "sha256": "fd20693ed6b4bf85ff1285a5fc922ee33bf1ea5c8dbbf22aeaf7229a4b5636f9"
     },
     "application/tests/unit/test_task58_license_compatibility.py": {
-      "bytes": 14193,
-      "sha256": "5c77e42d39551b1e4d91e760a2b01413606cd4ffc5cb72c6f2f8c64d52a94d77"
+      "bytes": 22801,
+      "sha256": "7af7d23a16bd933e02734ab5ff75cf8c097fa15ad21a7f68b255e885c61aae17"
     },
     "application/tests/unit/test_v4_assessment_api.py": {
       "bytes": 11295,
@@ -3571,8 +3571,8 @@
       "sha256": "6489e1755cefe4dae193989bb70c584d59e1ea092984af69294610ec97d391ab"
     },
     "deployment/launcher.py": {
-      "bytes": 35641,
-      "sha256": "c995de581a96a4c43de6f65c642e071bad4576eaae9c27858de90a258822ba8b"
+      "bytes": 35660,
+      "sha256": "3fd75f8946793c7a3a020a6e4d2c59e204b0abb10e13352144bcaa00e2abfa62"
     },
     "deployment/requirements.lock": {
       "bytes": 720,
@@ -3616,23 +3616,23 @@
     },
     "web/about.html": {
       "bytes": 898,
-      "sha256": "eed60c890388a76de5147bb2b879e99d1cb379ea8cb126ae79e8d3824fd09596"
-    },
-    "web/assets/main-CzamUJLH.js": {
-      "bytes": 303439,
-      "sha256": "455fa452d18b27d314d96b5cf1bf21d6c6df3b23494870c7b567263e8cab1c94"
+      "sha256": "5d49fe169da46c4d3a4523a001ad7d23de8730f6b115af3af622add175b657ca"
     },
     "web/assets/main-D1Dke-iz.css": {
       "bytes": 436821,
       "sha256": "b6f8b808ea339d08ece33de900565e6249cce9779d22ca0f7b838eae1e81eb53"
     },
+    "web/assets/main-DTjwc3MZ.js": {
+      "bytes": 340236,
+      "sha256": "76b9fa576bb6868c1969e0a32d900334e7cc2cebc60a6f52089ab4b651ade80a"
+    },
     "web/assets/p2-workbench-BpK-WfaC.css": {
       "bytes": 50269,
       "sha256": "52f626427defd032001820ea6a4b656cd2d263f713e75a45b9e02ffb8154edb2"
     },
-    "web/assets/p2-workbench-CTx-e-Sd.js": {
-      "bytes": 287395,
-      "sha256": "038f6ad9e77a5343c6216feb363b25157a2f4710a79c829ca5a5edb5a3a875c6"
+    "web/assets/p2-workbench-CXBmWfYD.js": {
+      "bytes": 237076,
+      "sha256": "1ee5d5951d63e6c3c93eee8d127e723ed6f6715f95784b835d40bc421e94d606"
     },
     "web/assets/react-runtime-YahHAMAi.js": {
       "bytes": 189620,
@@ -3640,7 +3640,7 @@
     },
     "web/index.html": {
       "bytes": 898,
-      "sha256": "eed60c890388a76de5147bb2b879e99d1cb379ea8cb126ae79e8d3824fd09596"
+      "sha256": "5d49fe169da46c4d3a4523a001ad7d23de8730f6b115af3af622add175b657ca"
     },
     "web/third-party-licenses.txt": {
       "bytes": 5794,

@@ -1,11 +1,11 @@
-# OpenGuard v2.6.0 资源与第三方归属
+# OpenGuard v2.6.1 资源与第三方归属
 
-本里程碑的产品与测试树继承自 `9238d198915dda6bb4c5a86d635a61abc6f17759`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
+本里程碑的产品与测试树继承自 `b304f4338422a5472b281f6a09c1e5b8895ff642`。完整版本链、树摘要及锁文件身份见 [VERSION.json](VERSION.json)，配套文件摘要见 [FILE_HASHES.json](FILE_HASHES.json)。
 
 ## 自有代码及第三方组件
 
 - OpenGuard 自有代码采用 [Apache-2.0](LICENSE)。历史 UI 贡献和许可说明见 [THIRD_PARTY_UI.md](application/frontend/THIRD_PARTY_UI.md)。现用首页由代码绘制。旧界面视频、海报和独立字体文件不在本包。
-- 后端使用 [27 项精确依赖](deployment/requirements.lock)，含 FastAPI、Starlette、Pydantic、Uvicorn、httpx2 与测试工具。包内提供锁文件，Python 解释器、虚拟环境、wheelhouse 及操作系统工具由使用者准备。本次离线复验复用固定 CPython 3.12 venv。v2.5 的无头离线 CLI 与 v2.6 的许可证兼容矩阵引擎仅使用标准库与既有锁定依赖，新增第三方依赖为 0。
+- 后端使用 [27 项精确依赖](deployment/requirements.lock)，含 FastAPI、Starlette、Pydantic、Uvicorn、httpx2 与测试工具。包内提供锁文件，Python 解释器、虚拟环境、wheelhouse 及操作系统工具由使用者准备。本次离线复验复用固定 CPython 3.12 venv。v2.5 的无头离线 CLI、v2.6 的许可证兼容矩阵引擎与 v2.6.1 审计加固仅使用标准库与既有锁定依赖，新增第三方依赖为 0。
 - 预构建页面包含 React `19.2.8`、ReactDOM `19.2.8`、scheduler `0.27.0`（MIT）及 Tailwind CSS `4.3.3`（MIT）。圆形玻璃按钮改编自 cssbuttons-io / massive-mayfly-74（MIT）。署名及许可证见 [web/third-party-licenses.txt](web/third-party-licenses.txt)、[THIRD_PARTY_LICENSES/](THIRD_PARTY_LICENSES/) 和 [按钮许可](application/frontend/UIVERSE_CSSBUTTONS_IO_LICENSE.txt)。
 - 前端完整版本见 [pnpm-lock.yaml](application/frontend/pnpm-lock.yaml)。Vite `8.2.2`（MIT）、TypeScript `5.9.2`（Apache-2.0）用于构建或类型检查，所附上游许可证位于 `THIRD_PARTY_LICENSES/`。运行包包含预构建页面。Node `v24.22.3`、同锁依赖缓存和用于 pnpm 锁测试的 `yaml@2.9.0` 只作为包外离线复验输入。
 - 外部 ScanCode 与 Syft 适配代码保留，交付启动配置关闭外部扫描器，这些工具未随包分发。P6 基准样本来源及许可声明见 [冻结清单](application/benchmarks/p6_benchmark_manifest.json)。
@@ -16,17 +16,17 @@
 
 ## Web 产物清单
 
-以下 8 份预构建文件来自冻结产品树，共 1,275,134 字节。TASK58 的同锁离线 Vite 构建已逐字节核对，超过 500 kB 的 chunk 告警为 0。
+以下 8 份预构建文件来自冻结产品树，共 1,261,612 字节。TASK60A 的同锁离线 Vite 构建已逐字节核对，超过 500 kB 的 chunk 告警为 0。
 
 | 包内路径 | 字节 | SHA-256 |
 | --- | ---: | --- |
-| `web/index.html` | 898 | `eed60c890388a76de5147bb2b879e99d1cb379ea8cb126ae79e8d3824fd09596` |
-| `web/about.html` | 898 | `eed60c890388a76de5147bb2b879e99d1cb379ea8cb126ae79e8d3824fd09596` |
+| `web/index.html` | 898 | `5d49fe169da46c4d3a4523a001ad7d23de8730f6b115af3af622add175b657ca` |
+| `web/about.html` | 898 | `5d49fe169da46c4d3a4523a001ad7d23de8730f6b115af3af622add175b657ca` |
 | `web/third-party-licenses.txt` | 5,794 | `6bace3f1e7ccee1144b6a3ff4a8ac947c5a9afb00f1419b2f406843a21139d53` |
-| `web/assets/main-CzamUJLH.js` | 303,439 | `455fa452d18b27d314d96b5cf1bf21d6c6df3b23494870c7b567263e8cab1c94` |
+| `web/assets/main-DTjwc3MZ.js` | 340,236 | `76b9fa576bb6868c1969e0a32d900334e7cc2cebc60a6f52089ab4b651ade80a` |
 | `web/assets/main-D1Dke-iz.css` | 436,821 | `b6f8b808ea339d08ece33de900565e6249cce9779d22ca0f7b838eae1e81eb53` |
 | `web/assets/p2-workbench-BpK-WfaC.css` | 50,269 | `52f626427defd032001820ea6a4b656cd2d263f713e75a45b9e02ffb8154edb2` |
-| `web/assets/p2-workbench-CTx-e-Sd.js` | 287,395 | `038f6ad9e77a5343c6216feb363b25157a2f4710a79c829ca5a5edb5a3a875c6` |
+| `web/assets/p2-workbench-CXBmWfYD.js` | 237,076 | `1ee5d5951d63e6c3c93eee8d127e723ed6f6715f95784b835d40bc421e94d606` |
 | `web/assets/react-runtime-YahHAMAi.js` | 189,620 | `c5f08825cdca736a015fe6303f97a64ec1e4511a38b5f2f6f589ecb35e815c65` |
 
 ## 冻结锁文件、许可规则及基准

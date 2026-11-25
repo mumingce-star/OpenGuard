@@ -1,4 +1,4 @@
-# OpenGuard v2.6.0
+# OpenGuard v2.6.1
 
 OpenGuard 是面向开发团队的本地优先开源合规与证据溯源工作台。它从项目输入中发现资源和依赖，关联许可证、声明用途和原文证据，并将研判及报告固定为可复核的版本。
 
@@ -6,7 +6,7 @@ OpenGuard 是面向开发团队的本地优先开源合规与证据溯源工作�
 
 ## 核心能力
 
-- **项目级许可证兼容矩阵引擎（`openguard-license-compatibility/1`）。** 支持 22 种 SPDX 规范标识与 `PROPRIETARY`，基于确定的规则表给出五态结论（`COMPATIBLE`、`CONDITIONAL`、`REVIEW_REQUIRED`、`INCOMPATIBLE`、`UNKNOWN`）与用途感知规则（`commercial`、`distributed`、`modified`、`network_service`）。采用保守目标解析（`explicit` > 唯一清晰的 `root_package` > 冲突/歧义/未声明保留 `UNKNOWN`），并在目标未确定时仍执行依赖间两两兼容判定。提供只读端点 `GET /api/v1/scans/{scan_id}/license-compatibility`（支持 `?target_license=` 覆盖试算）及工作台 `LicenseCompatibilityPanel` 矩阵视图。
+- **项目级许可证兼容矩阵引擎（`openguard-license-compatibility/1`）。** 支持 22 种 SPDX 规范标识与 `PROPRIETARY`（支持最长 1000 字符的规范复合表达式），基于确定的规则表给出五态结论（`COMPATIBLE`、`CONDITIONAL`、`REVIEW_REQUIRED`、`INCOMPATIBLE`、`UNKNOWN`）与用途感知规则（`commercial`、`distributed`、`modified`、`network_service`）。采用保守目标解析（`explicit` > 唯一清晰的 `root_package` > 冲突/歧义/未声明保留 `UNKNOWN`）；v2.6.1 加固 Web API 与 CLI 共用根目录许可文件（`LICENSE`/`LICENSE.txt`/`LICENSE.md`/`COPYING`/`COPYING.txt`）只读冲突校验、无目标许可证时对目标无关违规（如商业用途下的 `CC-BY-NC-4.0` 与单组件 `AND` 内部矛盾）输出 `INCOMPATIBLE`、成对 `SPDX AND/OR` 表达式对称规约，以及工作台 `LicenseCompatibilityPanel` 切换试算目标或请求失败时即时清空旧结果。提供只读端点 `GET /api/v1/scans/{scan_id}/license-compatibility`（支持 `?target_license=` 覆盖试算）。
 - **无头离线扫描 CLI（`openguard.py scan`）。** 复用生产五生态 ZIP 流水线、B58 依赖证据和 SBOM 解析。根目录的 `LICENSE`、`LICENSE.txt`、`LICENSE.md`、`COPYING` 与 `COPYING.txt` 复用 `material-claims/4` 原文解析器和同族 Copyleft 冲突规则，保守报告 `UNKNOWN`，产生 0 条 `SUPPORT`。支持本地项目目录与 ZIP。目录遍历自动排除 `.git`、`node_modules`、`__pycache__`、`.venv`、`venv`、`target`、`dist`、`build` 和 `.pytest_cache`，遇到符号链接或其他非普通条目时跳过并标记 `partial`。ZIP 走生产归档安全检查。
 - **报告与 CI 门禁。** 无头扫描支持 `--format text|json|markdown`，JSON 默认单独写到标准输出并使用 `openguard-cli-scan/2`（附带 `license_compatibility` 字段与冲突/待复核计数），报告不含宿主机绝对路径。`--output <file>` 独占新建，拒绝覆盖现有文件。支持 `--target-license <SPDX|PROPRIETARY>` 指定目标许可证、`--usage commercial,distributed,modified,network_service` 记录用途、`--fail-on conflict,copyleft,partial,incompatible` 选择门禁。退出码 `0` 表示通过选定门禁，`1` 表示命中选定门禁，`2` 表示参数、输入或运行环境错误。
 
